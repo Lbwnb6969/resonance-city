@@ -73,8 +73,20 @@ func _init(city: Array) -> void:
 		routing.append({"id": id, "type": district["type"], "base_midi": district["current_midi"],
 			"rhythm_steps": PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
 			"phase_key": "_phase_" + id, "highpass_key": "_highpass_" + id,
-			"table": tables[district["type"]],
+			"table": tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
 			"stereo": Vector2(cos((pan + 1.0) * PI / 4.0), sin((pan + 1.0) * PI / 4.0))})
+
+func _append_district(district: Dictionary) -> void:
+	var id: String = district["district_id"]
+	var pan := 0.0
+	for region in values["synthesis"]["pan_regions"]:
+		if Schema.cell(district).x >= int(region[0]) and Schema.cell(district).x <= int(region[1]):
+			pan = float(region[2])
+	routing.append({"id":id,"type":district["type"],"base_midi":district["current_midi"],
+		"rhythm_steps":PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
+		"phase_key":"_phase_"+id,"highpass_key":"_highpass_"+id,
+		"table":tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
+		"stereo":Vector2(cos((pan+1.0)*PI/4.0),sin((pan+1.0)*PI/4.0))})
 
 func frequency(midi: int) -> float:
 	if frequencies.has(midi):
@@ -172,8 +184,9 @@ func _voice_layers(route: Dictionary, state: Dictionary, at: int, rate: int) -> 
 	var phase_key: String = route["phase_key"]
 	var phase := float(state.get(phase_key, 0.0))
 	var midi := int(state.get(route["id"], route["base_midi"]))
-	var drone := _table_wave(route["table"], phase) * drone_gain
-	var rhythm := _rhythm(route, phase, at, rate, state) if active_layers.has("rhythm") else 0.0
+	var drone := _table_wave(route["table"], phase) * drone_gain*float(route["level"])
+	var rhythm := _rhythm(route, phase, at, rate, state) if active_layers.has("rhythm") and not route["anchor"] else 0.0
+	rhythm *= float(route["level"])
 	if active_layers.has("rhythm") and (gray_enabled or gray_level(at,rate) > 0.0):
 		rhythm = _gray_rhythm(rhythm,route["id"],at,rate,state)
 	if guard_enabled:
@@ -302,7 +315,7 @@ func _assist_tracks(state: Dictionary, at: int, routes: Array[Dictionary], ignor
 		var id: String = route["id"]
 		var phase := float(state.get(route["phase_key"],0.0))
 		var other_phase := float(state.get("_phase_"+str(item["neighbor"]),0.0))
-		var sample := _table_wave(route["table"],phase*multiplier)*drone_gain*level*assist_envelope(phase-other_phase)*gain
+		var sample := _table_wave(route["table"],phase*multiplier)*drone_gain*float(route["level"])*level*assist_envelope(phase-other_phase)*gain
 		if not ignore_faders and (muted.get(id,false) or (not solo_id.is_empty() and solo_id != id) or at < int(silent_until.get(id,0))):
 			sample = 0.0
 		tracks["District_"+id+"_Assist"] = sample*route["stereo"]
@@ -338,7 +351,7 @@ func _assist_block(state: Dictionary, start: int, count: int, rate: int, routes:
 			var index := int(position)
 			var wave := lerpf(table[index],table[(index+1)%size],position-index)
 			var envelope := (1.0+depth*cos(TAU*(phase-other)))/(1.0+depth)
-			var sample := wave*drone_gain*level*envelope*gain
+			var sample := wave*drone_gain*float(route["level"])*level*envelope*gain
 			if disabled or start+offset < silence_end:
 				sample = 0.0
 			result[offset] += sample*stereo
@@ -413,13 +426,15 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var disabled := bool(muted.get(id,false)) or (not solo_id.is_empty() and solo_id != id)
 		var silence_end := int(silent_until.get(id,0))
 		var emphasis := emphasis_level if emphasized_id == id else 1.0
+		var voice_level := float(route["level"])
+		var is_anchor := bool(route["anchor"])
 		for offset in range(count):
 			var at := start+offset
 			var position := fposmod(phase,1.0)*size
 			var index := int(position)
-			var drone := lerpf(table[index],table[(index+1)%size],position-index)*drone_gain if drone_enabled else 0.0
+			var drone := lerpf(table[index],table[(index+1)%size],position-index)*drone_gain*voice_level if drone_enabled else 0.0
 			var rhythm := 0.0
-			if rhythm_enabled:
+			if rhythm_enabled and not is_anchor:
 				position = fposmod(phase*rhythm_multiplier,1.0)*size
 				index = int(position)
 				var pulse := lerpf(table[index],table[(index+1)%size],position-index)*envelope[at%envelope_count]
@@ -427,7 +442,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 					var output := alpha*(previous.y+pulse-previous.x)
 					previous = Vector2(pulse,output)
 					pulse = output
-				rhythm = pulse*rhythm_gain
+				rhythm = pulse*rhythm_gain*voice_level
 				if gray_active and (gray_enabled or gray_levels[offset] > 0.0):
 					gray_previous.x += lowpass_alpha*(rhythm-gray_previous.x)
 					gray_previous.y += lowpass_alpha*(gray_previous.x-gray_previous.y)
@@ -471,6 +486,8 @@ func update_city(city: Array, state: Dictionary) -> void:
 	for district in city:
 		var id: String = district["district_id"]
 		state[id] = int(district["current_midi"])
+		if not routing.any(func(route: Dictionary) -> bool: return route["id"] == id):
+			_append_district(district)
 		for route in routing:
 			if route["id"] != id:
 				continue

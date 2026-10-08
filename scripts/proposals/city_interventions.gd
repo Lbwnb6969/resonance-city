@@ -2,6 +2,7 @@ class_name CityInterventions
 extends RefCounted
 ## Pure city transaction used by playback and preview forks.
 
+const Growth = preload("res://scripts/city/city_growth.gd")
 const Values = preload("res://scripts/spec_values.gd")
 const Harmony = preload("res://scripts/city/harmony.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
@@ -20,13 +21,17 @@ var pending: Dictionary = {}
 var silent_until: Dictionary = {}
 var lifecycle := {"gray":false, "low_phrases":0, "ended":false}
 var last_result: Dictionary = {}
+var growth_enabled := false
+var growth_serial := 0
+var growth_values: Dictionary = {}
 
 func _init(initial_city: Array, seed: String, random_state: Dictionary = {}) -> void:
 	city = initial_city.duplicate(true)
 	rng = RandomStreams.new(seed)
 	if not random_state.is_empty():
 		rng.restore(random_state)
-	settings = Values.load_values()["proposals"]
+	growth_values = Values.load_values()
+	settings = growth_values["proposals"]
 	assert(int(settings["per_phrase"]) == 1)
 	_refresh_catalog()
 
@@ -86,7 +91,12 @@ func proposal(id: String) -> Dictionary:
 			return item.duplicate(true)
 	return {}
 
+func request_release(midi: int, target: Vector2i, rendered_frames: int, audible_frame: float) -> Dictionary:
+	return request({"verb":"release","proposal_id":"release","midi":midi,"target":[target.x,target.y]},rendered_frames,audible_frame)
+
 func _legal(choice: Dictionary) -> bool:
+	if choice.get("verb","") == "release":
+		return growth_enabled and city.size() < int(growth_values["growth"]["max_entities"])-1 and PackedInt32Array(settings["allowed_pitches"]).has(int(choice.get("midi",-1))) and _empty_cells().has(choice.get("target"))
 	var item := proposal(str(choice.get("proposal_id","")))
 	if item.is_empty() or _district(item["district_id"]).is_empty():
 		return false
@@ -132,18 +142,34 @@ func settle(at: int) -> Dictionary:
 		if _legal(pending):
 			applied = pending.duplicate(true)
 			var item := proposal(applied["proposal_id"])
+			if applied.get("verb","") == "release":
+				growth_serial += 1
+				var point := Schema.create("anchor_%03d" % growth_serial,"commercial" if int(applied["midi"]) == 52 else "residential",Vector2i(int(applied["target"][0]),int(applied["target"][1])))
+				point["current_midi"] = int(applied["midi"])
+				point["is_anchor"] = true
+				point["anchor_id"] = point["district_id"]
+				point["voice_level"] = growth_values["growth"]["new_voice_level"]
+				point["form"] = "共鸣点"
+				city.append(point)
+				applied["district_id"] = point["district_id"]
+				item = {"verb":"release","district_id":point["district_id"]}
 			var district := _district(item["district_id"])
 			applied["verb"] = item["verb"]
 			applied["district_id"] = item["district_id"]
 			if item["verb"] == "retune":
 				district["current_midi"] = int(applied["target"])
 				costs[item["district_id"]] = float(settings["retune_cost"])
-			else:
+			elif item["verb"] == "relocate":
 				district["footprint"] = [applied["target"].duplicate()]
 				silent_until[item["district_id"]] = transport.phrase_frame(phrase_index + int(settings["relocate_silent_phrases"]))
-			if bool(applied["on_grid"]):
+			if item["verb"] != "release" and bool(applied["on_grid"]):
 				costs[item["district_id"]] = float(costs.get(item["district_id"],0.0)) + float(settings["landing_bonus"])
 		pending.clear()
+	var growth_events: Array[Dictionary] = []
+	if growth_enabled:
+		growth_events = Growth.advance(self,at)
+		if applied.get("verb","") == "release":
+			growth_events.append({"district_id":applied["district_id"],"kind":"birth","frame":at+transport.beat_frame(1),"form":"共鸣点"})
 	var edges := harmony.adjacency(city)
 	var resonance := harmony.resonance(city,edges)
 	var next_v := harmony.vitality(city,edges,resonance,costs)
@@ -151,23 +177,25 @@ func settle(at: int) -> Dictionary:
 		district["vitality"] = next_v[district["district_id"]]
 	lifecycle = harmony.lifecycle(lifecycle,resonance)
 	var refresh_frames := roundi(float(settings["refresh_seconds"]) * transport.sample_rate)
-	if at % refresh_frames == 0:
+	if at % refresh_frames == 0 or growth_enabled:
 		refresh_cycle = at / refresh_frames
 		_refresh_catalog()
 	last_result = {"frame":at,"choice":applied,"before":before,"after":city.duplicate(true),
 		"before_edges":old_edges,"after_edges":edges,"before_r":harmony.resonance(before,old_edges),
-		"after_r":resonance,"intervention_deltas":costs.duplicate(true),"silent_until":silent_until.duplicate(true)}
+		"after_r":resonance,"growth_events":growth_events,"intervention_deltas":costs.duplicate(true),"silent_until":silent_until.duplicate(true)}
 	return last_result.duplicate(true)
 
 func snapshot() -> Dictionary:
 	return {"city":city.duplicate(true),"rng":rng.snapshot(),"phrase_index":phrase_index,
-		"refresh_cycle":refresh_cycle,"catalog":catalog.duplicate(true),"pending":pending.duplicate(true),
+		"growth_enabled":growth_enabled,"growth_serial":growth_serial,"refresh_cycle":refresh_cycle,"catalog":catalog.duplicate(true),"pending":pending.duplicate(true),
 		"silent_until":silent_until.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_result":last_result.duplicate(true)}
 
 func restore(saved: Dictionary) -> void:
 	city = saved["city"].duplicate(true)
 	rng.restore(saved["rng"])
 	phrase_index = int(saved["phrase_index"])
+	growth_enabled = bool(saved.get("growth_enabled",false))
+	growth_serial = int(saved.get("growth_serial",0))
 	refresh_cycle = int(saved["refresh_cycle"])
 	catalog.assign(saved["catalog"].duplicate(true))
 	pending = saved["pending"].duplicate(true)

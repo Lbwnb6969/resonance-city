@@ -198,6 +198,27 @@ def generate():
     for kind, label in [('residential', '住宅'), ('commercial', '商业'), ('industrial', '工业')]:
         coords = numbers(generation['安全fixture' + label])
         result['city']['safe_cells'][kind] = [[int(coords[i]), int(coords[i+1])] for i in range(0, len(coords), 2)]
+    growth = dict(table(city, '## 表 E ·'))
+    result['growth'] = {
+        'stage_phrases': [int(x) for x in numbers(growth['形态乐句'])],
+        'embryo_score': numbers(growth['胚和声'])[1],
+        'group_neighbors': int(numbers(growth['群和声与密度'])[0]),
+        'group_score': numbers(growth['群和声与密度'])[1],
+        'group_local_r': numbers(growth['群和声与密度'])[2],
+        'group_radius': int(numbers(growth['群和声与密度'])[3]),
+        'group_count': int(numbers(growth['群和声与密度'])[4]),
+        'center_neighbors': int(numbers(growth['央和声与密度'])[0]),
+        'center_score': numbers(growth['央和声与密度'])[1],
+        'center_radius': int(numbers(growth['央和声与密度'])[4]),
+        'center_count': int(numbers(growth['央和声与密度'])[5]),
+        'chamber_neighbors': int(numbers(growth['腔和声'])[0]),
+        'chamber_score': numbers(growth['腔和声'])[1],
+        'freeze_score': numbers(growth['碴'])[0],
+        'max_entities': int(numbers(growth['Demo声音预算'])[0]),
+        'new_voice_level': numbers(growth['Demo声音预算'])[2],
+        'tile_half_width': numbers(growth['Demo显示'])[2],
+        'tile_half_height': numbers(growth['Demo显示'])[3],
+    }
     result['sources'] = {name: hashlib.sha256(read(name).encode()).hexdigest()
                          for name in ['spec.audio.md', 'spec.city.md', 'spec.harmony.md', 'spec.proposal.md']}
     return json.dumps(result, ensure_ascii=False, indent=2) + '\n'

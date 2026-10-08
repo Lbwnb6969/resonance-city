@@ -380,9 +380,34 @@
     "maximum_difference_hz": 16.0,
     "octave_multiplier": 2.0
   },
+  "growth": {
+    "stage_phrases": [
+      1,
+      2,
+      3,
+      2
+    ],
+    "embryo_score": 0.6,
+    "group_neighbors": 2,
+    "group_score": 0.85,
+    "group_local_r": 60.0,
+    "group_radius": 4,
+    "group_count": 3,
+    "center_neighbors": 3,
+    "center_score": 0.85,
+    "center_radius": 5,
+    "center_count": 6,
+    "chamber_neighbors": 3,
+    "chamber_score": 0.85,
+    "freeze_score": 0.05,
+    "max_entities": 27,
+    "new_voice_level": 0.2,
+    "tile_half_width": 28.0,
+    "tile_half_height": 14.0
+  },
   "sources": {
     "spec.audio.md": "d64268ff1e77ead40288c02cb446d0b28fa7df71635871dfb6b9e08e1fe9082d",
-    "spec.city.md": "cf5bbf22a2184c9f8672648fb3e964449a1b970a6dd180182b0e7a88678f566d",
+    "spec.city.md": "f77a894e0cbe29cf889f51db8010dc014003a47ab0b9b1931304e72ffa250d3e",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "19619120e957945fee0d12d371882fb63f18fe0757cd5453466c4fc2be534753"
   }

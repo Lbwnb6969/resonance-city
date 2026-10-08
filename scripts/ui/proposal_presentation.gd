@@ -31,16 +31,20 @@ static func describe(result: Dictionary) -> Dictionary:
 		if not old.has(key):
 			changed.append("新增邻接 %s：%s（每方活力 %+.1f）" % [key,next[key]["name"],next[key]["vitality_delta"]])
 	var vitality: Array[String] = []
-	for index in range(result["after"].size()):
-		var before: Dictionary = result["before"][index]
-		var after: Dictionary = result["after"][index]
-		vitality.append("%s：%.1f → %.1f" % [after["district_id"],before["vitality"],after["vitality"]])
+	var old_by_id: Dictionary = {}
+	for d in result["before"]:
+		old_by_id[d["district_id"]] = d
+	for after in result["after"]:
+		var before: Dictionary = old_by_id.get(after["district_id"],{})
+		vitality.append("%s：新生 %.1f" % [after["district_id"],after["vitality"]] if before.is_empty() else "%s：%.1f → %.1f" % [after["district_id"],before["vitality"],after["vitality"]])
 	var choice: Dictionary = result["choice"]
 	var values := Values.load_values()
 	var params: Dictionary = values["proposals"]
 	var phrase_seconds := 60.0 / float(values["timing"]["bpm"]) * int(values["timing"]["beats_per_bar"]) * int(values["timing"]["bars_per_phrase"])
 	var cost := "改造 %+.0f 活力" % params["retune_cost"] if choice.get("verb") == "retune" else "该街区静音 %d 乐句（%.0f 秒）；原邻居失去相应关系" % [params["relocate_silent_phrases"],phrase_seconds*int(params["relocate_silent_phrases"])]
-	if choice.get("on_grid",false):
+	if choice.get("verb") == "release":
+		cost = "共鸣点占1格；下一乐句参与和声并吸引生长"
+	if choice.get("on_grid",false) and choice.get("verb") != "release":
 		cost += "；含可选卡拍 %+.0f" % params["landing_bonus"]
 	var text := "预期 R：%.2f → %.2f\n代价：%s\n下个乐句活力：%s\n%s" % [
 		result["before_r"],result["after_r"],cost,"；".join(vitality),

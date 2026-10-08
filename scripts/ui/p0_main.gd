@@ -1,6 +1,8 @@
 class_name P0Main
 extends Control
 
+const CityView = preload("res://scripts/visual/city_demo_view.gd")
+const Growth = preload("res://scripts/city/city_growth.gd")
 const Generator = preload("res://scripts/city/city_generator.gd")
 const RandomStreams = preload("res://scripts/city/named_random.gd")
 const Session = preload("res://scripts/proposals/city_interventions.gd")
@@ -12,6 +14,7 @@ const Calibration = preload("res://scripts/audio/loudness_calibration.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
 
 @export var start_audio_on_ready := true
+@export var growth_demo := true
 @export var black_screen := false
 var model: CityAudioModel
 var clock: AudibleAudioClock
@@ -29,6 +32,16 @@ var generation: Dictionary
 var preview_skips := 0
 var closed := false
 var calibration: Dictionary = {}
+var city_view: CityDemoView
+var release_pitch: OptionButton
+var selected_empty := Vector2i(-1,-1)
+var city_summary: Label
+var condition_text: Label
+var beat_progress: ProgressBar
+var population := 0
+var release_armed := false
+var condition_selection := ""
+var condition_phrase := -1
 
 @onready var panel: MarginContainer = $Panel
 @onready var controls: VBoxContainer = $Panel/Controls
@@ -55,6 +68,9 @@ func _ready() -> void:
 	generation = Generator.new().generate(seed,daily)
 	model = Model.new(Session.new(generation["city"],generation["seed"],generation["rng"]))
 	model.synth.guard_enabled = true
+	model.session.growth_enabled = growth_demo
+	Growth.assign_assets(model.session.city)
+	_build_city_view()
 	clock = get_node("/root/AudioClock")
 	preview_clock = PreviewOutput.new()
 	preview_clock.name = "PreviewClock"
@@ -88,12 +104,31 @@ func _button(text: String, node_name: String) -> Button:
 	return button
 
 func _build_controls() -> void:
-	_label("共鸣之城 · P0 声音原型","Title")
-	_label("聆听 → solo / mute 定位 → 选择方案 → 长按试听 → 确认。B 黑屏；Esc 返回。","Instructions")
+	_label("共鸣之城 · 生长 Demo","Title").add_theme_font_size_override("font_size",24)
+	city_summary = _label("城市先响着。","CitySummary")
+	beat_progress = ProgressBar.new()
+	beat_progress.show_percentage = false
+	beat_progress.custom_minimum_size.y = 8
+	controls.add_child(beat_progress)
+	var release_button := CheckButton.new()
+	release_button.name = "ReleaseMode"
+	release_button.text = "释放共鸣点：开启后点击地图空格"
+	release_button.toggled.connect(func(enabled: bool) -> void:
+		release_armed = enabled
+		city_view.release_mode = enabled)
+	controls.add_child(release_button)
+	release_pitch = OptionButton.new()
+	release_pitch.name = "ReleasePitch"
+	var names := ["C · 住宅共鸣","D · 住宅共鸣","E · 商业共鸣","G · 住宅共鸣","A · 住宅共鸣"]
+	for index in range(model.session.settings["allowed_pitches"].size()):
+		release_pitch.add_item(names[index])
+		release_pitch.set_item_metadata(index,model.session.settings["allowed_pitches"][index])
+	controls.add_child(release_pitch)
+	_button("重新开始这座城市","Restart").pressed.connect(func() -> void: get_tree().reload_current_scene())
+	_label("点击建筑选中；释放共鸣点后城市每16秒回应。迁移模式可点空格。B黑屏，Esc返回。","Instructions")
 	district_select = OptionButton.new()
 	district_select.name = "District"
-	for district in model.session.city:
-		district_select.add_item("%s · (%d, %d)" % [district["district_id"],Schema.cell(district).x,Schema.cell(district).y])
+	_refresh_district_list()
 	controls.add_child(district_select)
 	district_select.item_selected.connect(func(_index: int) -> void:
 		solo.set_pressed_no_signal(model.synth.solo_id == _selected_id())
@@ -146,13 +181,88 @@ func _build_controls() -> void:
 	confirm_button.pressed.connect(_confirm)
 	_button("取消待提交介入 / 试听","Cancel").pressed.connect(func() -> void:
 		model.session.cancel_pending()
+		city_view.preview_cell = Vector2i(-1,-1)
 		_cancel_audition()
 		status.text = "已取消待提交介入。")
 	_button("黑屏聆听（B）","Black").pressed.connect(func() -> void: set_black_screen(true))
 	_button("正式黑屏听测（6练习 + 10正式）","ListeningTest").pressed.connect(func() -> void:
 		get_tree().change_scene_to_file("res://scenes/listening_session.tscn"))
-	status = _label("城市正在响着。","Status")
+	status = _label("开启释放模式，选择一个音级，然后点击地图空格。","Status")
+	condition_text = _label("点击建筑查看它等待的生长条件。","Conditions")
 	prediction = _label("选择方案并长按试听，查看同一副本的收益与代价。","Prediction")
+
+func _build_city_view() -> void:
+	$Background.color = Color("252c33")
+	panel.anchor_left = 0.69
+	panel.offset_left = 12
+	panel.offset_top = 20
+	panel.offset_right = -20
+	panel.offset_bottom = -20
+	var scroll := ScrollContainer.new()
+	scroll.name = "DemoScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.remove_child(controls)
+	panel.add_child(scroll)
+	scroll.add_child(controls)
+	controls.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	controls.add_theme_font_size_override("font_size",16)
+	controls.add_theme_constant_override("separation",7)
+	city_view = CityView.new()
+	city_view.name = "CityView"
+	city_view.anchor_right = 0.69
+	city_view.anchor_bottom = 1.0
+	city_view.session = model.session
+	add_child(city_view)
+	move_child(city_view,1)
+	city_view.district_clicked.connect(_select_district)
+	city_view.empty_clicked.connect(_select_empty)
+	var title := Label.new()
+	title.text = "共 鸣 之 城"
+	title.position = Vector2(38,34)
+	title.add_theme_font_size_override("font_size",30)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	city_view.add_child(title)
+	var hint := Label.new()
+	hint.text = "释放声音，让城市回应。\n住宅 C / 商业 E / 工业 F♯；新增共鸣只来自系统允许音级。"
+	hint.position = Vector2(40,85)
+	hint.add_theme_font_size_override("font_size",15)
+	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	city_view.add_child(hint)
+
+func _refresh_district_list() -> void:
+	var selected := _selected_id() if district_select.item_count > 0 and district_select.selected < model.session.city.size() else ""
+	district_select.clear()
+	for d in model.session.city:
+		var type_name := "住宅" if d["type"] == "residential" else ("商业" if d["type"] == "commercial" else "工业")
+		district_select.add_item("%s · %s · MIDI %d · (%d,%d)" % [type_name,d["district_id"],d["current_midi"],Schema.cell(d).x,Schema.cell(d).y])
+		if d["district_id"] == selected: district_select.select(district_select.item_count-1)
+	population = model.session.city.size()
+
+func _select_district(id: String) -> void:
+	for index in range(model.session.city.size()):
+		if model.session.city[index]["district_id"] == id:
+			district_select.select(index)
+			solo.set_pressed_no_signal(model.synth.solo_id == id)
+			mute.set_pressed_no_signal(model.synth.muted.get(id,false))
+			_rebuild_targets()
+			break
+
+func _select_empty(cell: Vector2i) -> void:
+	selected_empty = cell
+	city_view.preview_cell = cell
+	if release_armed:
+		_cancel_audition()
+		var request := model.session.request_release(int(release_pitch.get_item_metadata(release_pitch.selected)),cell,clock.renderer.transport.rendered_frames,clock.renderer.transport.audible_frame)
+		status.text = "共鸣点已选 (%d,%d)，将在下一乐句落定；可点击另一空格替换。" % [cell.x,cell.y] if request["accepted"] else "该位置无法释放，或声音预算已满。"
+	elif verb_select.selected == 1:
+		for index in range(target_select.item_count):
+			if target_select.get_item_metadata(index)["target"] == [cell.x,cell.y]:
+				target_select.select(index)
+				_choice_changed()
+				status.text = "迁移目标 (%d,%d)：可长按试听，然后确认。" % [cell.x,cell.y]
+				return
+	else:
+		status.text = "这是空格。开启释放模式，或选迁移后点击。"
 
 func diagnostic_state() -> Dictionary:
 	return {"guard_factor":clock.renderer.state.get("_guard_factor",1.0),"calibration":calibration.duplicate(true),"gain":model.synth.gain,"assist_enabled":model.synth.assist_enabled,"device_mode":model.synth.device_mode,"skips":clock.underruns,"preview_skips":preview_skips,"phase":model.session.phrase_index,
@@ -225,8 +335,20 @@ func _process(_delta: float) -> void:
 			status.text = "试听中：真实城市继续计时，松开恢复原混音。"
 		elif want_preview:
 			status.text = result.get("reason","此方案已失效。")
+	city_view.selected_id = _selected_id()
+	var resonance := model.session.harmony.resonance(model.session.city,model.session.harmony.adjacency(model.session.city))
+	var bar := clock.renderer.transport.phrase_frame(1)
+	var remaining := float(bar)-fposmod(clock.renderer.transport.audible_frame,float(bar))
+	city_summary.text = "R %.0f · %d/%d 声部 · 第%d乐句\n下一次回应 %.1f 秒" % [resonance,model.session.city.size(),model.session.growth_values["growth"]["max_entities"],model.session.phrase_index+1,remaining/clock.renderer.transport.sample_rate]
+	beat_progress.value = fposmod(clock.renderer.transport.audible_frame,float(clock.renderer.transport.beat_frame(1)))/clock.renderer.transport.beat_frame(1)*100.0
+	if condition_selection != _selected_id() or condition_phrase != model.session.phrase_index:
+		condition_selection = _selected_id()
+		condition_phrase = model.session.phrase_index
+		condition_text.text = Growth.describe(model.session.city,model.session.city[district_select.selected])
 	if model.session.phrase_index != display_phrase:
 		display_phrase = model.session.phrase_index
+		if population != model.session.city.size(): _refresh_district_list()
+		city_view.preview_cell = Vector2i(-1,-1)
 		if display_phrase > 0:
 			status.text = "第 %d 乐句已落定%s" % [display_phrase,"；本局已崩盘，重新运行可重试。" if model.session.lifecycle["ended"] else ""]
 			if model.session.refresh_cycle != display_cycle or not model.session.last_result.get("choice",{}).is_empty():
@@ -273,6 +395,8 @@ func set_black_screen(enabled: bool) -> void:
 	_cancel_audition()
 	black_screen = enabled
 	panel.visible = not enabled
+	if is_instance_valid(city_view): city_view.visible = not enabled
+	$Background.color = Color.BLACK if enabled else Color("252c33")
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN if enabled else Input.MOUSE_MODE_VISIBLE
 
 func _input(event: InputEvent) -> void:
