@@ -176,7 +176,7 @@ func _start_job() -> void:
 	var renderer_saved := clock.renderer.snapshot()
 	var requested := clock.renderer.transport.audible_frame
 	worker = Thread.new()
-	worker.start(func() -> Dictionary: return Preview.build(model_saved,renderer_saved,job_choice,requested))
+	worker.start(func() -> Dictionary: return Preview.build(model_saved,renderer_saved,job_choice,requested,true))
 	status.text = "正在模拟下一乐句的声音；松开可取消。"
 
 func _process(_delta: float) -> void:
@@ -192,6 +192,7 @@ func _process(_delta: float) -> void:
 			preview_data = result
 			prediction.text = Presentation.describe(result["result"])["text"]
 			AudioServer.lock()
+			model.synth.begin_duck()
 			clock.player.volume_db = -INF
 			preview_clock.begin(result["pcm"])
 			AudioServer.unlock()
@@ -212,6 +213,7 @@ func _process(_delta: float) -> void:
 func _audition_finished(skips: int) -> void:
 	preview_skips = skips
 	clock.player.volume_db = 0.0
+	model.synth.release_duck(clock.renderer.transport.rendered_frames)
 	want_preview = false
 	status.text = "3 秒试听结束，已恢复原混音；可确认或更换方案。"
 
@@ -223,6 +225,8 @@ func _cancel_audition() -> void:
 		preview_clock.stop_output()
 	if is_instance_valid(clock) and is_instance_valid(clock.player):
 		clock.player.volume_db = 0.0
+		if model != null:
+			model.synth.release_duck(clock.renderer.transport.rendered_frames)
 	AudioServer.unlock()
 
 func _confirm() -> void:

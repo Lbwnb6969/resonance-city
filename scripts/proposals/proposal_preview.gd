@@ -15,7 +15,7 @@ static func model_from_snapshot(saved: Dictionary) -> CityAudioModel:
 	model.restore(saved)
 	return model
 
-static func build(model_saved: Dictionary, renderer_saved: Dictionary, choice: Dictionary, requested_audio_frame: float) -> Dictionary:
+static func build(model_saved: Dictionary, renderer_saved: Dictionary, choice: Dictionary, requested_audio_frame: float, listening: bool = false) -> Dictionary:
 	var model := model_from_snapshot(model_saved)
 	var output := Renderer.new()
 	output.restore(renderer_saved)
@@ -27,9 +27,12 @@ static func build(model_saved: Dictionary, renderer_saved: Dictionary, choice: D
 	while output.transport.rendered_frames < boundary:
 		output.render(mini(output.transport.sample_rate,boundary-output.transport.rendered_frames))
 	var start := output.snapshot()
+	if listening:
+		model.synth.begin_duck()
+		model.synth.emphasized_id = model.session.proposal(choice["proposal_id"])["district_id"]
 	var frames := roundi(float(Values.load_values()["timing"]["preview_seconds"]) * output.transport.sample_rate)
 	var pcm := output.render(frames)
 	return {"accepted":true,"pcm":pcm,"sample_rate":output.transport.sample_rate,
 		"commit_boundary":boundary,"start_snapshot":start,"choice":choice.duplicate(true),
 		"result":model.session.last_result.duplicate(true),"model_after":model.snapshot(),
-		"renderer_after":output.snapshot(),"emphasis":false}
+		"renderer_after":output.snapshot(),"emphasis":listening}

@@ -118,6 +118,14 @@ def generate():
         'relocate_silent_phrases': int(numbers(p4['迁移静音'])[0]),
         'landing_bonus': numbers(a2['副轨卡拍窗口'])[-1],
     }
+    result['mixing'] = {
+        'duck_db': numbers(a2['ducking 白名单'])[0],
+        'duck_release_seconds': numbers(a2['ducking 白名单'])[1] / 1000,
+        'emphasis_db': numbers(a2['试听被改动声部强调'])[0],
+        'target_lufs': numbers(a2['总混音'])[0],
+        'peak_headroom_db': numbers(a2['总混音'])[1],
+        'drone_ratio': numbers(a2['drone 技术下限'])[0] / 100,
+    }
     result['acoustic_measurement'] = {
         'duration_seconds': numbers(a6['合成长度 / 稳态裁剪'])[0],
         'trim_seconds': numbers(a6['合成长度 / 稳态裁剪'])[1],

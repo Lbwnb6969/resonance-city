@@ -20,9 +20,16 @@ var drone_gain: float
 var rhythm_gain: float
 var rhythm_multiplier: float
 var highpass_alpha: Dictionary = {}
+var ducking := false
+var duck_release_at := -1
+var emphasized_id := ""
+var duck_level: float
+var emphasis_level: float
 
 func _init(city: Array) -> void:
 	values = Values.load_values()
+	duck_level = pow(10.0,float(values["mixing"]["duck_db"])/20.0)
+	emphasis_level = pow(10.0,float(values["mixing"]["emphasis_db"])/20.0)
 	drone_gain = float(values["synthesis"]["drone_gain"])
 	rhythm_gain = float(values["synthesis"]["rhythm_gain"])
 	rhythm_multiplier = pow(2.0, float(values["synthesis"]["rhythm_octave"]) / 12.0)
@@ -125,6 +132,7 @@ func _voice_layers(route: Dictionary, state: Dictionary, at: int, rate: int) -> 
 	var midi := int(state.get(route["id"], route["base_midi"]))
 	var drone := _table_wave(route["table"], phase) * drone_gain
 	var rhythm := _rhythm(route, phase, at, rate, state) if active_layers.has("rhythm") else 0.0
+	rhythm *= rhythm_level(at,rate)*(emphasis_level if emphasized_id == route["id"] else 1.0)
 	state[phase_key] = fposmod(phase + frequency(midi) / rate, 1.0)
 	if not active_layers.has("drone"):
 		drone = 0.0
@@ -152,12 +160,33 @@ func _mix_frame(state: Dictionary, at: int, rate: int) -> Vector2:
 	return sample
 
 
+func begin_duck() -> void:
+	ducking = true
+	duck_release_at = -1
+
+func release_duck(at: int) -> void:
+	if ducking:
+		ducking = false
+		duck_release_at = at
+
+func rhythm_level(at: int, rate: int) -> float:
+	if ducking:
+		return duck_level
+	if duck_release_at < 0:
+		return 1.0
+	var duration := float(values["mixing"]["duck_release_seconds"])*rate
+	return lerpf(duck_level,1.0,clampf(float(at-duck_release_at)/duration,0.0,1.0))
+
 func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
 	_prepare_envelopes(rate)
 	var block := PackedVector2Array()
 	block.resize(count)
 	var drone_enabled := active_layers.has("drone")
 	var rhythm_enabled := active_layers.has("rhythm")
+	var levels := PackedFloat64Array()
+	levels.resize(count)
+	for offset in range(count):
+		levels[offset] = rhythm_level(start+offset,rate)
 	for route in routing:
 		var id: String = route["id"]
 		var phase_key: String = route["phase_key"]
@@ -173,6 +202,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var alpha := float(highpass_alpha[rate])
 		var disabled := bool(muted.get(id,false)) or (not solo_id.is_empty() and solo_id != id)
 		var silence_end := int(silent_until.get(id,0))
+		var emphasis := emphasis_level if emphasized_id == id else 1.0
 		for offset in range(count):
 			var at := start+offset
 			var position := fposmod(phase,1.0)*size
@@ -188,6 +218,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 					previous = Vector2(pulse,output)
 					pulse = output
 				rhythm = pulse*rhythm_gain
+			rhythm *= levels[offset]*emphasis
 			phase = fposmod(phase+increment,1.0)
 			if not disabled and at >= silence_end:
 				var layers := Vector2(drone,rhythm)*gain
