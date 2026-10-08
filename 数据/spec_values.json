@@ -427,11 +427,28 @@
     "origin_y": 174.0,
     "smooth_seconds": 0.7
   },
+  "visual_diagnosis": {
+    "slow_min_hz": 3.0,
+    "slow_max_hz": 16.0,
+    "frequency_divisor": 8.0,
+    "display_min_hz": 0.5,
+    "display_max_hz": 2.0,
+    "width_px": 2.0,
+    "amplitude_px": 2.0,
+    "max_alpha": 0.55,
+    "inactive_alpha": 0.25,
+    "span_ratio": 0.7,
+    "samples": 32.0,
+    "wave_cycles": 2.0,
+    "reduced_offset_px": 1.0,
+    "slow_color": "#77969A",
+    "rough_color": "#B38F87"
+  },
   "sources": {
     "spec.audio.md": "d64268ff1e77ead40288c02cb446d0b28fa7df71635871dfb6b9e08e1fe9082d",
     "spec.city.md": "9a1758bbe75438ce19dbe3767d9c89b622425682c3cf1be4f1197d481632de9e",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "0c5b5b93e7c99c82d6e1384f0aa552b3d61db938f3b786bbc8d44e2e624bb74a",
-    "spec.ui.md": "a2cc5546fed698b130ccec5501b0786d89a484d2a61e894ed51bc9a1283f44e6"
+    "spec.ui.md": "9993304afb2fa3397d43f37f5ef1f48843d88a565d9c12254c239b2c696277f3"
   }
 }

@@ -1,5 +1,6 @@
 class_name CityDemoView
 extends Control
+const Diagnosis = preload("res://scripts/visual/boundary_diagnosis.gd")
 const Roads = preload("res://scripts/city/city_roads.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
 const Values = preload("res://scripts/spec_values.gd")
@@ -8,6 +9,10 @@ signal district_clicked(id: String)
 signal empty_clicked(cell: Vector2i)
 signal draft_requested(start: Vector2i, end: Vector2i)
 signal tread_selected(start: Vector2i, end: Vector2i)
+var diagnosis := Diagnosis.new()
+var diagnosis_enabled := false
+var reduced_motion := false
+var diagnosis_edges: Array[Dictionary] = []
 var session: CityInterventions
 var selected_id := ""
 var hover_cell := Vector2i(-1,-1)
@@ -236,6 +241,45 @@ func _draw_tread_edge(a: Vector2i,b: Vector2i,count: int,color: Color) -> void:
 			var position := (middle-span).lerp(middle+span,float(i+1)/float(total+1))
 			draw_circle(position,2.4*view_zoom,color if i < count else Color(color,0.22))
 
+func diagnosis_points(edge: Dictionary, band: int = 0) -> PackedVector2Array:
+	var a: Vector2i = edge["cell_a"]
+	var b: Vector2i = edge["cell_b"]
+	var middle := (point(a)+point(b))*0.5
+	var half := Vector2(cfg["tile_half_width"],cfg["tile_half_height"])*view_zoom
+	var span := (Vector2(-half.x,half.y) if a.x != b.x else Vector2(half.x,half.y))*float(diagnosis.cfg["span_ratio"])
+	var normal := Vector2(-span.y,span.x).normalized()
+	var points := PackedVector2Array()
+	var count := int(diagnosis.cfg["samples"])
+	var amplitude := float(diagnosis.cfg["amplitude_px"])*view_zoom
+	var static_wave: bool = reduced_motion or not edge["audible"]
+	var phase := 0.0
+	if not static_wave and edge["kind"] == "抖":
+		var clock := get_node("/root/AudioClock")
+		phase = TAU*float(edge["display_hz"])*clock.renderer.transport.audible_frame/clock.renderer.transport.sample_rate
+	for i in range(count+1):
+		var t := float(i)/count
+		var offset := 0.0
+		if edge["kind"] == "抖":
+			var separation := float(diagnosis.cfg["reduced_offset_px"])*view_zoom if static_wave else 0.0
+			offset = sin(TAU*float(diagnosis.cfg["wave_cycles"])*t-phase)*(amplitude-separation)+band*separation
+		else:
+			offset = amplitude*(1.0 if i%2 else -1.0)
+		offset *= sin(PI*t)
+		points.append(middle-span+span*2.0*t+normal*offset)
+	return points
+
+func _draw_diagnosis() -> void:
+	if not diagnosis_enabled: return
+	for edge in diagnosis_edges:
+		if edge["kind"] not in ["抖","刺"]: continue
+		var color := Color(diagnosis.cfg["slow_color"] if edge["kind"] == "抖" else diagnosis.cfg["rough_color"])
+		color.a = float(diagnosis.cfg["max_alpha"] if edge["audible"] else diagnosis.cfg["inactive_alpha"])
+		var width := float(diagnosis.cfg["width_px"])*view_zoom
+		if edge["kind"] == "抖" and (reduced_motion or not edge["audible"]):
+			draw_polyline(diagnosis_points(edge,-1),color,width,true)
+			draw_polyline(diagnosis_points(edge,1),color,width,true)
+		else: draw_polyline(diagnosis_points(edge),color,width,true)
+
 func _draw() -> void:
 	if cfg == null: return
 	var half := Vector2(float(cfg["tile_half_width"]),float(cfg["tile_half_height"]))*view_zoom
@@ -260,6 +304,7 @@ func _draw() -> void:
 			draw_colored_polygon(vertices,color)
 			draw_polyline(PackedVector2Array([vertices[0],vertices[1],vertices[2],vertices[3],vertices[0]]),Color(1.0,1.0,1.0,0.38),0.6,true)
 	if session == null: return
+	_draw_diagnosis()
 	if session.pending.get("verb","") == "release":
 		var target: Array = session.pending["target"]
 		var center := point(Vector2i(target[0],target[1]))
@@ -326,6 +371,10 @@ func _process(delta: float) -> void:
 	var clock := get_node("/root/AudioClock")
 	var audible := float(clock.renderer.transport.audible_frame)
 	var gray: float = clock.renderer.source.get_object().synth.gray_level(int(audible),clock.renderer.transport.sample_rate) if clock.renderer.source.is_valid() else 0.0
+	if diagnosis_enabled and clock.renderer.source.is_valid():
+		diagnosis_edges.assign(diagnosis.edges(session,clock.renderer.source.get_object().synth,audible))
+	else:
+		diagnosis_edges.clear()
 	var events: Dictionary = {}
 	for event in session.last_result.get("growth_events",[]): events[event["district_id"]] = event
 	for d in session.city:

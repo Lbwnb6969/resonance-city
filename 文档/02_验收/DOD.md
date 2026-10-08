@@ -243,3 +243,5 @@ UI-004风格小景：独立scenes/style_frame.tscn -- --capture-style-frame，�
 ASSET-004历史SVG候选：style_frame.tscn -- --classical-frame --capture-style-frame实际Compatibility运行，检查四件SVG存在并加载、6纹理/6摆放、mipmaps、定点缩放/中键/Home，三图人工查看尺度/接地/遮挡；日志无Assertion/脚本错误且exit0。截图古典建筑小景_白网格/净画面/推近.png，日志古典建筑运行检查.log。此处技术/实现者画面检查不等于用户艺术定稿或时代音乐获批；轻微分面AA细线记录为待优化。
 
 UI-004可听城市：真实GPU入口tests/audible_city_contract.gd，预填已结算而audible_frame<边界时保留旧地图/形态/列表/HUD/道路，到达精确边界后更新；核验下一拍一拍揭示、迁移/静音恢复、多预填历史、fork/只读/PCM一致、新pending取消、已生成PCM不可撤回提示与B黑屏。日志可听城市同步运行检查.log无Assertion/脚本错误且exit0；边界前/落定后两PNG人工查看。此入口不代替长期声音/性能或人工美感。
+
+UI-003/U12获批边界切片：实际GPU入口`tests/boundary_diagnosis_contract.gd`，检查默认关闭、真实邻接和合成器基频差、抖/刺/其它张力分类、减弱运动静态形状、静音/Solo/长音关闭/迁移静音原因、可听边界道路断边及调音/迁移变化、未来试听来源提醒、实际滚轮/点选和B黑屏。开关/query前后城市/RNG快照及127样本PCM严格一致。日志边界诊断运行检查.log须无Assertion/脚本错误且exit0，动态与减弱运动两PNG人工查看；打印PASS但有脚本错误不能验收。当前33检查通过，仅覆盖spec.ui U10，不覆盖未实现E或HUMAN-VISUAL。

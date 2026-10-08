@@ -241,6 +241,9 @@ def generate():
         'origin_y': numbers(camera['地图默认原点'])[0],
         'smooth_seconds': numbers(camera['镜头缓动'])[0]/1000,
     }
+    diagnosis = table(ui, '## 表 U10')
+    result['visual_diagnosis'] = {key: (value if value.startswith('#') else numbers(value)[0])
+                                  for key, value, _ in diagnosis}
     result['sources'] = {name: hashlib.sha256(read(name).encode()).hexdigest()
                          for name in ['spec.audio.md', 'spec.city.md', 'spec.harmony.md', 'spec.proposal.md', 'spec.ui.md']}
     return json.dumps(result, ensure_ascii=False, indent=2) + '\n'

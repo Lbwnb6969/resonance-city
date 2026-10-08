@@ -50,6 +50,9 @@ var forecast_available := false
 var draft_button: CheckButton
 var draft_bias: OptionButton
 var draft_state: Label
+var diagnosis_button: CheckButton
+var reduced_motion_button: CheckButton
+var diagnosis_legend: Label
 var condition_selection := ""
 var condition_phrase := -1
 
@@ -244,6 +247,24 @@ func _build_controls() -> void:
 		model.synth.set_mute(_selected_id(),enabled)
 		_cancel_audition())
 	controls.add_child(mute)
+	diagnosis_button = CheckButton.new()
+	diagnosis_button.name = "BoundaryDiagnosis"
+	diagnosis_button.text = "失谐边界 · 看见抖 / 刺"
+	controls.add_child(diagnosis_button)
+	reduced_motion_button = CheckButton.new()
+	reduced_motion_button.name = "ReducedMotion"
+	reduced_motion_button.text = "减弱运动 · 保留静态形状"
+	reduced_motion_button.visible = false
+	reduced_motion_button.toggled.connect(func(enabled: bool) -> void: city_view.reduced_motion = enabled)
+	controls.add_child(reduced_motion_button)
+	diagnosis_legend = _label("波纹＝抖 · 短齿＝刺\n选中建筑可看真实邻接。","DiagnosisLegend")
+	diagnosis_legend.add_theme_font_size_override("font_size",14)
+	diagnosis_legend.visible = false
+	diagnosis_button.toggled.connect(func(enabled: bool) -> void:
+		city_view.diagnosis_enabled = enabled
+		reduced_motion_button.visible = enabled
+		diagnosis_legend.visible = enabled
+		_update_map_notice())
 	var assist := CheckButton.new()
 	assist.name = "BeatAssist"
 	assist.text = "窄带拍频辅助（只在窄带模式激活）"
@@ -572,7 +593,7 @@ func _process(_delta: float) -> void:
 func _update_map_notice() -> void:
 	var shown := _audible_session()
 	var text := ""
-	city_view.get_node("MapNotice").offset_top = -176 if city_view.tread_mode else -136
+	city_view.get_node("MapNotice").offset_top = -176 if city_view.tread_mode else (-252 if city_view.diagnosis_enabled and not release_armed and not city_view.draft_mode else -136)
 	if city_view.tread_mode:
 		text = forecast_summary.text+"\n划过先预览，确认才计数；累计3次成路，本局不可撤销。"
 	elif release_armed:
@@ -587,6 +608,11 @@ func _update_map_notice() -> void:
 		var kind := "住宅" if district["type"] == "residential" else ("商业" if district["type"] == "commercial" else "工业")
 		var details: PackedStringArray = Growth.describe(shown.city,district,shown.road_marks).split("\n")
 		text = "%s · %s · 活力 %.0f\n%s" % [kind,district.get("form","胚"),district["vitality"],"\n".join(details.slice(0,mini(2,details.size())))]
+		if city_view.diagnosis_enabled:
+			var rows: Array[Dictionary] = city_view.diagnosis.edges(shown,model.synth,clock.renderer.transport.audible_frame)
+			text += "\n"+city_view.diagnosis.describe(rows,_selected_id())
+			if want_preview or preview_clock.active: text += "\n边界来自当前城市；试听是未来声音。"
+
 	var pending: Dictionary = shown.pending
 	if not pending.is_empty():
 		var wait := maxf(0.0,float(pending["frame"])-clock.renderer.transport.audible_frame)/clock.renderer.transport.sample_rate
