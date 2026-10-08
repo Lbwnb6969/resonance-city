@@ -1,0 +1,128 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/proposal_contract.gd"
+	],
+	"case": "verbs",
+	"checks": [
+		{
+			"description": "Supported case: verbs",
+			"passed": true
+		},
+		{
+			"description": "Industrial G3 option is legal and future-quantized",
+			"passed": true
+		},
+		{
+			"description": "Confirmation cannot mutate city before the boundary",
+			"passed": true
+		},
+		{
+			"description": "No free pitch input or unchanged pitch",
+			"passed": true
+		},
+		{
+			"description": "Rejected selection preserves the valid pending choice",
+			"passed": true
+		},
+		{
+			"description": "Retune preserves industrial identity",
+			"passed": true
+		},
+		{
+			"description": "Retune cost and new-neighbor deltas settle once",
+			"passed": true
+		},
+		{
+			"description": "New fifth and neutral minor third drive actual vitality",
+			"passed": true
+		},
+		{
+			"description": "Consumed intervention cannot replay",
+			"passed": true
+		},
+		{
+			"description": "Occupied target rejected",
+			"passed": true
+		},
+		{
+			"description": "Out-of-map target rejected",
+			"passed": true
+		},
+		{
+			"description": "Latest confirmation replaces previous action without a second cost",
+			"passed": true
+		},
+		{
+			"description": "Original neighbor loses relationship; R uses new graph",
+			"passed": true
+		},
+		{
+			"description": "Relocate silent exactly one phrase",
+			"passed": true
+		},
+		{
+			"description": "Restore due migration before next phrase settles",
+			"passed": true
+		},
+		{
+			"description": "Rendered boundary cannot be rewritten",
+			"passed": true
+		},
+		{
+			"description": "Canceled confirmation has no intervention cost",
+			"passed": true
+		},
+		{
+			"description": "Catalog refreshes at 64 audio seconds",
+			"passed": true
+		},
+		{
+			"description": "Optional landing includes both 80ms limits",
+			"passed": true
+		},
+		{
+			"description": "Quantization does not turn a late input into a landing",
+			"passed": true
+		},
+		{
+			"description": "PCM immediately before boundary keeps old location",
+			"passed": true
+		},
+		{
+			"description": "First boundary sample submits new graph",
+			"passed": true
+		},
+		{
+			"description": "Actual relocated output is silent",
+			"passed": true
+		},
+		{
+			"description": "Migration does not suppress unrelated district",
+			"passed": true
+		},
+		{
+			"description": "Next boundary restores continuously advanced oscillator",
+			"passed": true
+		},
+		{
+			"description": "Restored migration follows new right-hand pan",
+			"passed": true
+		},
+		{
+			"description": "Fork owns city and all five RNG counters",
+			"passed": true
+		}
+	],
+	"details": {
+		"boundary_order": "restore, commit, R, V+cost, cap, clamp",
+		"full_error_gameplay": "PENDING P1 U06",
+		"relocation_end_frame": 705600,
+		"retune_v": 46.0
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "PROPOSAL-001",
+	"scope": "P0 approved exact choices and optional landing only; no P1 pitch-error mechanics",
+	"status": "PASS"
+}

@@ -32,6 +32,7 @@ def generate():
     audio = read('spec.audio.md')
     city = read('spec.city.md')
     harmony = read('spec.harmony.md')
+    proposal = read('spec.proposal.md')
     a2 = dict(table(audio, '## 表 A2'))
     a4 = dict(table(audio, '## 表 A4'))
     a5_rows = table(audio, '## 表 A5')
@@ -107,6 +108,16 @@ def generate():
                                       [int(pan_numbers[4]), int(pan_numbers[5]), pan_numbers[8]]]},
     }
     result['city']['initial_count'] = int(numbers(city_space['P0 初始街区数'])[0])
+    p4 = dict(table(proposal, '## 表 P4'))
+    p2 = {row[0]: row[2] for row in table(proposal, '## 表 P2')}
+    result['proposals'] = {
+        'allowed_pitches': [int(x) for x in numbers(p4['目标音级白名单'])],
+        'refresh_seconds': numbers(p4['提案刷新'])[0],
+        'per_phrase': int(numbers(p4['每乐句介入'])[0]),
+        'retune_cost': -abs(numbers(p2['retune'])[0]),
+        'relocate_silent_phrases': int(numbers(p4['迁移静音'])[0]),
+        'landing_bonus': numbers(a2['副轨卡拍窗口'])[-1],
+    }
     result['acoustic_measurement'] = {
         'duration_seconds': numbers(a6['合成长度 / 稳态裁剪'])[0],
         'trim_seconds': numbers(a6['合成长度 / 稳态裁剪'])[1],
@@ -127,7 +138,7 @@ def generate():
         coords = numbers(generation['安全fixture' + label])
         result['city']['safe_cells'][kind] = [[int(coords[i]), int(coords[i+1])] for i in range(0, len(coords), 2)]
     result['sources'] = {name: hashlib.sha256(read(name).encode()).hexdigest()
-                         for name in ['spec.audio.md', 'spec.city.md', 'spec.harmony.md']}
+                         for name in ['spec.audio.md', 'spec.city.md', 'spec.harmony.md', 'spec.proposal.md']}
     return json.dumps(result, ensure_ascii=False, indent=2) + '\n'
 
 

@@ -151,6 +151,21 @@ func _mix_frame(state: Dictionary, at: int, rate: int) -> Vector2:
 		sample += layers.y * route["stereo"]
 	return sample
 
+
+func update_city(city: Array, state: Dictionary) -> void:
+	districts = city.duplicate(true)
+	for district in city:
+		var id: String = district["district_id"]
+		state[id] = int(district["current_midi"])
+		for route in routing:
+			if route["id"] != id:
+				continue
+			var pan := 0.0
+			for region in values["synthesis"]["pan_regions"]:
+				if Schema.cell(district).x >= int(region[0]) and Schema.cell(district).x <= int(region[1]):
+					pan = float(region[2])
+			route["stereo"] = Vector2(cos((pan+1.0)*PI/4.0),sin((pan+1.0)*PI/4.0))
+
 func set_solo(id: String) -> bool:
 	if not id.is_empty() and not routing.any(func(route: Dictionary) -> bool: return route["id"] == id):
 		return false
