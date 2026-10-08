@@ -896,6 +896,104 @@
       "source_texture": "资源/P0城市/整图/industrial_building_c_03_base.png",
       "source_texture_sha256": "470b6c57413e875433bc0df1130bc62bf2dc67585a3b9088c12ee5296a4f5412",
       "processing": "P0 slot LUT -> Demo pastel palette; shade=0.78+0.22*source_shade; original alpha/origin retained"
+    },
+    {
+      "id": "residential_compound_gable_01",
+      "category": "compound",
+      "voice_tag": "residential",
+      "variant": "gable",
+      "texture": "资源/Demo城市/整图/residential_compound_gable_01.png",
+      "origin": [
+        1037.7310698376796,
+        1068.5558344161634
+      ],
+      "image_bounds": {
+        "width": 2048,
+        "height": 1602,
+        "crop": [
+          14,
+          15,
+          2165,
+          1693
+        ]
+      },
+      "pixels_per_world": 945.9584295612009,
+      "plot_span": 1.5,
+      "footprint_tiles": [
+        2,
+        1
+      ],
+      "model_bounds": {
+        "position": [
+          -0.99,
+          0,
+          -0.47
+        ],
+        "size": [
+          1.98,
+          0.99,
+          0.94
+        ]
+      },
+      "source": "tools/build_demo_compounds.py; original project geometry and coordinated facade",
+      "license": "Project-authored geometry",
+      "source_url": "",
+      "availability": "demo_style_candidate; user_visual_review_pending",
+      "camera": {
+        "azimuth": 45,
+        "elevation": 30,
+        "projection": "orthogonal"
+      },
+      "texture_sha256": "a1e636bf36f0e00501db127177a210147517704e9c8bd5f7e2cebb752168a59f"
+    },
+    {
+      "id": "residential_compound_terrace_01",
+      "category": "compound",
+      "voice_tag": "residential",
+      "variant": "terrace",
+      "texture": "资源/Demo城市/整图/residential_compound_terrace_01.png",
+      "origin": [
+        1037.7310698376796,
+        1248.0296338072994
+      ],
+      "image_bounds": {
+        "width": 2048,
+        "height": 1781,
+        "crop": [
+          14,
+          15,
+          2165,
+          1883
+        ]
+      },
+      "pixels_per_world": 945.9584295612009,
+      "plot_span": 1.5,
+      "footprint_tiles": [
+        2,
+        1
+      ],
+      "model_bounds": {
+        "position": [
+          -0.99,
+          0,
+          -0.47
+        ],
+        "size": [
+          1.98,
+          0.983,
+          0.94
+        ]
+      },
+      "source": "tools/build_demo_compounds.py; original project geometry and coordinated facade",
+      "license": "Project-authored geometry",
+      "source_url": "",
+      "availability": "demo_style_candidate; user_visual_review_pending",
+      "camera": {
+        "azimuth": 45,
+        "elevation": 30,
+        "projection": "orthogonal"
+      },
+      "texture_sha256": "66a02153cc2c2544447e1ca33354c40cc1cc7b19ff6731070c50d82cf6220da6"
     }
   ],
   "palette": "资源/Demo城市/palette.json",

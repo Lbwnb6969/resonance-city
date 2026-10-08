@@ -36,6 +36,39 @@ func run_demo() -> void:
 	assert(main.model.synth.routing.size() == main.model.session.city.size())
 	assert(forms.has("群") and (forms.has("央") or forms.has("腔")))
 	assert(main.city_view.sprites.size() == main.model.session.city.size())
+	if "--community" in OS.get_cmdline_user_args():
+		var templates: Dictionary = {}
+		var pairs := 0
+		for d in main.model.session.city:
+			if d["type"] == "residential" and not d.get("is_anchor",false): templates[d["manifest_id"]] = true
+			if d.has("visual_partner"):
+				pairs += 1
+				var other: Dictionary = main.model.session._district(d["visual_partner"])
+				assert(other["visual_owner"] == d["district_id"] and not main.city_view.sprites[other["district_id"]].visible)
+				assert(d["current_midi"] == other["current_midi"])
+		assert(pairs > 0 and templates.size() >= 3)
+		main.city_view.zoom_at(main.city_view.point(chosen),2.4)
+		await create_timer(float(main.city_view.camera_cfg["smooth_seconds"])+0.05).timeout
+		main.clock.renderer.transport.audible_frame = main.model.session.transport.phrase_frame(main.model.session.phrase_index)+2*main.clock.renderer.transport.beat_frame(1)
+		await process_frame
+		# Selecting the other logical half must keep its own solo/mute/retune controls.
+		for d in main.model.session.city:
+			if not d.has("visual_partner"): continue
+			var other: Dictionary = main.model.session._district(d["visual_partner"])
+			var event := InputEventMouseButton.new()
+			event.button_index = MOUSE_BUTTON_LEFT
+			event.pressed = true
+			event.position = main.city_view.point(Vector2i(other["footprint"][0][0],other["footprint"][0][1]))
+			main.city_view._gui_input(event)
+			assert(main._selected_id() == other["district_id"])
+			break
+		if DisplayServer.get_name() != "headless":
+			await process_frame
+			await RenderingServer.frame_post_draw
+			get_root().get_texture().get_image().save_png("res://验证记录/Demo/协调房群.png")
+		print("DEMO_COMMUNITY PASS paired_whole_images=",pairs," templates=",templates.size()," independent_voices=",main.model.synth.routing.size())
+		main.city_view.reset_view()
+		await create_timer(float(main.city_view.camera_cfg["smooth_seconds"])+0.05).timeout
 	if "--camera" in OS.get_cmdline_user_args():
 		var view = main.city_view
 		var before: Array = main.model.session.city.duplicate(true)
@@ -64,7 +97,7 @@ func run_demo() -> void:
 		await process_frame
 		var front: Dictionary = {}
 		for d in main.model.session.city:
-			if d.get("is_anchor",false) or str(d.get("anchor_id","")).is_empty(): continue
+			if d.get("is_anchor",false) or str(d.get("anchor_id","")).is_empty() or not view.sprites[d["district_id"]].visible: continue
 			if front.is_empty() or view.point(Vector2i(d["footprint"][0][0],d["footprint"][0][1])).y > view.point(Vector2i(front["footprint"][0][0],front["footprint"][0][1])).y:
 				front = d
 		var sprite: Sprite2D = view.sprites[front["district_id"]]

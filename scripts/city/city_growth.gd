@@ -64,13 +64,26 @@ static func conditions(city: Array, d: Dictionary) -> Dictionary:
 		"density_group":density_group,"density_center":density_center,"local_r":local_r,"connected":linked,"frozen":frozen}
 
 static func assign_assets(city: Array) -> void:
-	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://资源/P0城市/manifest.json"))
+	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://资源/Demo城市/manifest.json"))
 	var groups: Dictionary = {}
+	var compounds: Array[String] = []
+	var occupied: Dictionary = {}
+	var by_id: Dictionary = {}
+	var previous: Dictionary = {}
 	for entry in manifest["entries"]:
-		if entry["category"] not in ["residential","commercial","industrial"]: continue
-		if not groups.has(entry["category"]): groups[entry["category"]] = []
-		groups[entry["category"]].append(entry["id"])
+		if entry["category"] == "compound":
+			compounds.append(entry["id"])
+		elif entry["category"] in ["residential","commercial","industrial"]:
+			if not groups.has(entry["category"]): groups[entry["category"]] = []
+			groups[entry["category"]].append(entry["id"])
 	for list in groups.values(): list.sort()
+	compounds.sort()
+	for d in city:
+		occupied[Schema.cell(d)] = d
+		by_id[d["district_id"]] = d
+		if d.has("visual_partner"): previous[d["district_id"]] = {"partner":d["visual_partner"],"asset":d["manifest_id"]}
+		d.erase("visual_partner")
+		d.erase("visual_owner")
 	for d in city:
 		if d.get("is_anchor",false): continue
 		var cell := Schema.cell(d)
@@ -84,12 +97,39 @@ static func assign_assets(city: Array) -> void:
 				front = front and cell.x+cell.y >= oc.x+oc.y
 		var index := 0
 		if d["type"] == "residential":
-			# Dense interiors use compact roofs; detached perimeter plots may show side wings.
-			index = 0 if adjacent >= 2 else posmod(cell.x*31+cell.y*17,3)
+			var motif := posmod(cell.x*13+cell.y*7,7)
+			index = (2 if motif in [1,4] else 0) if adjacent >= 2 else posmod(cell.x*31+cell.y*17,3)
 		elif d["type"] == "commercial":
-			# A lower front row lets the rear buildings retain readable facades.
 			index = 2 if adjacent > 0 and front else posmod(cell.x+cell.y,2)
 		d["manifest_id"] = groups[d["type"]][mini(index,groups[d["type"]].size()-1)]
+	var paired: Dictionary = {}
+	# Keep accepted pairs stable as new neighbors mature.
+	for id in previous:
+		var d: Dictionary = by_id[id]
+		var other: Dictionary = by_id.get(previous[id]["partner"],{})
+		if _can_pair(d,other) and previous[id]["asset"] in compounds:
+			d["visual_partner"] = other["district_id"]
+			d["manifest_id"] = previous[id]["asset"]
+			other["visual_owner"] = id
+			paired[id] = true
+			paired[other["district_id"]] = true
+	var ordered: Array = city.duplicate()
+	ordered.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+		return Schema.cell(a).y < Schema.cell(b).y if Schema.cell(a).y != Schema.cell(b).y else Schema.cell(a).x < Schema.cell(b).x)
+	for d in ordered:
+		if compounds.is_empty() or paired.has(d["district_id"]): continue
+		var cell := Schema.cell(d)
+		if posmod(cell.x+cell.y,3) != 0: continue
+		var other: Dictionary = occupied.get(cell+Vector2i.RIGHT,{})
+		if other.is_empty() or paired.has(other["district_id"]) or not _can_pair(d,other): continue
+		d["visual_partner"] = other["district_id"]
+		d["manifest_id"] = compounds[posmod(cell.x+cell.y,compounds.size())]
+		other["visual_owner"] = d["district_id"]
+		paired[d["district_id"]] = true
+		paired[other["district_id"]] = true
+
+static func _can_pair(a: Dictionary,b: Dictionary) -> bool:
+	return not b.is_empty() and a["type"] == "residential" and b["type"] == "residential" and not a.get("is_anchor",false) and not b.get("is_anchor",false) and not str(a.get("anchor_id","")).is_empty() and a.get("anchor_id","") == b.get("anchor_id","") and a["current_midi"] == b["current_midi"] and Schema.cell(b)-Schema.cell(a) == Vector2i.RIGHT and a.get("form","胚") in ["群","央","腔"] and b.get("form","胚") in ["群","央","腔"]
 
 static func draft_priority(cell: Vector2i, kind: String, band: Dictionary) -> Vector2:
 	if band.is_empty() or band["bias"] != kind: return Vector2.ZERO

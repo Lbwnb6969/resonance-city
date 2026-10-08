@@ -104,6 +104,18 @@ func _sample_camera(delta: float) -> void:
 	else:
 		view_pan = zoom_pivot-Vector2(size.x*0.5,float(camera_cfg["origin_y"]))-zoom_world*view_zoom
 
+func _display_point(d: Dictionary) -> Vector2:
+	var center := point(Schema.cell(d))
+	if d.has("visual_partner"):
+		var partner := session._district(d["visual_partner"])
+		return (center+point(Schema.cell(partner)))*0.5
+	if not d.get("is_anchor",false):
+		var cell := Schema.cell(d)
+		var x := float(posmod(cell.x*17+cell.y*7,5)-2)*0.025
+		var y := float(posmod(cell.x*11+cell.y*13,5)-2)*0.025
+		center += Vector2((x-y)*float(cfg["tile_half_width"]),(x+y)*float(cfg["tile_half_height"]))*view_zoom
+	return center
+
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		if pan_active:
@@ -141,11 +153,12 @@ func _gui_input(event: InputEvent) -> void:
 			return
 		if not release_mode:
 			var ordered: Array = session.city.duplicate()
-			ordered.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return point(Schema.cell(a)).y > point(Schema.cell(b)).y)
+			ordered.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return _display_point(a).y > _display_point(b).y)
 			for d in ordered:
 				var id: String = d["district_id"]
 				if not sprites.has(id): continue
 				var sprite: Sprite2D = sprites[id]
+				if not sprite.visible: continue
 				if d.get("is_anchor",false):
 					if event.position.distance_to(sprite.position) <= 14*view_zoom:
 						district_clicked.emit(id)
@@ -155,7 +168,9 @@ func _gui_input(event: InputEvent) -> void:
 					var entry: Dictionary = entries[sprite.get_meta("asset_id")]
 					var rect := Rect2(sprite.position+sprite.offset*sprite.scale,sprite.texture.get_size()*sprite.scale)
 					if rect.has_point(event.position):
-						district_clicked.emit(id)
+						var picked: String = id
+						if d.has("visual_partner") and cell == Schema.cell(session._district(d["visual_partner"])): picked = d["visual_partner"]
+						district_clicked.emit(picked)
 						accept_event()
 						return
 		if cell.x < 0 or cell.x >= 16 or cell.y < 0 or cell.y >= 16: return
@@ -272,6 +287,7 @@ func _process(delta: float) -> void:
 				sprite.material.set_shader_parameter("growth_progress",1.0)
 		var asset_id: String = d.get("manifest_id","")
 		if forms.get(id,"") != form or appearance.get(id,"") != asset_id:
+			var old_asset: String = appearance.get(id,"")
 			appearance[id] = asset_id
 			forms[id] = form
 			var sprite: Sprite2D = sprites[id]
@@ -292,16 +308,23 @@ func _process(delta: float) -> void:
 				var horizontal := (float(bounds[0])+float(bounds[2]))/sqrt(2.0)
 				var camera_span := maxf(horizontal,float(bounds[1])*cos(PI/6.0)+horizontal*0.5)*1.1
 				var crop: Array = entry["image_bounds"]["crop"]
-				var pixels_per_world := 2048.0*2048.0/(camera_span*maxf(float(crop[2]),float(crop[3])))
-				var fit := float(cfg["plot_coverage"])/maxf(float(bounds[0]),float(bounds[2]))
+				var pixels_per_world := float(entry.get("pixels_per_world",2048.0*2048.0/(camera_span*maxf(float(crop[2]),float(crop[3])))))
+				var fit := float(entry.get("plot_span",cfg["plot_coverage"]))/maxf(float(bounds[0]),float(bounds[2]))
+				if entry["category"] != "compound":
+					var cell := Schema.cell(d)
+					fit *= 1.0-float(posmod(cell.x*7+cell.y*3,4))*0.02
 				var world_to_screen := float(cfg["tile_half_width"])*sqrt(2.0)
 				base_scales[id] = Vector2.ONE*world_to_screen*fit/pixels_per_world
 				sprite.set_meta("asset_id",entry["id"])
+				if entry["category"] == "compound" and not old_asset.is_empty() and old_asset != asset_id:
+					var event: Dictionary = events.get(id,events.get(d.get("visual_partner",""),{}))
+					sprite.begin_at(int(event.get("frame",int(session.last_result.get("frame",0))+clock.renderer.transport.beat_frame(1))))
 		if events.has(id) and event_seen.get(id,-1) != events[id]["frame"]:
 			event_seen[id] = events[id]["frame"]
 			sprites[id].begin_at(int(events[id]["frame"]))
 		sprites[id].scale = base_scales[id]*view_zoom
-		sprites[id].position = point(Schema.cell(d))
+		sprites[id].visible = not d.has("visual_owner")
+		sprites[id].position = _display_point(d)
 		sprites[id].modulate = Color(1.0-gray*0.35,1.0-gray*0.35,1.0-gray*0.25,0.45 if clock.renderer.transport.audible_frame < int(session.silent_until.get(id,0)) else 1.0)
 		var label: Label = labels[id]
 		label.position = point(Schema.cell(d))+Vector2(-24,15*view_zoom)
