@@ -118,7 +118,7 @@ func run_demo() -> void:
 			await process_frame
 			await RenderingServer.frame_post_draw
 			get_root().get_texture().get_image().save_png("res://验证记录/Demo/镜头推近.png")
-		main.controls.get_node("ResetView").pressed.emit()
+		main.controls.find_child("ResetView",true,false).pressed.emit()
 		await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
 		assert(view.view_zoom == 1.0 and view.view_pan == Vector2.ZERO)
 		assert(view.cell_at(view.point(chosen)) == chosen and main.model.session.city == before)

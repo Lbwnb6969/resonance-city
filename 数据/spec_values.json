@@ -425,7 +425,9 @@
     "wheel_multiplier": 1.15,
     "header_height": 156.0,
     "origin_y": 174.0,
-    "smooth_seconds": 0.7
+    "smooth_seconds": 0.7,
+    "focus_zoom": 2.0,
+    "focus_margin": 0.85
   },
   "visual_diagnosis": {
     "slow_min_hz": 3.0,
@@ -449,6 +451,6 @@
     "spec.city.md": "9a1758bbe75438ce19dbe3767d9c89b622425682c3cf1be4f1197d481632de9e",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "0c5b5b93e7c99c82d6e1384f0aa552b3d61db938f3b786bbc8d44e2e624bb74a",
-    "spec.ui.md": "0ec8fc2bbfd3cd07352b243aa1cd548bf5d16ed3e2d39684a84057d10b939111"
+    "spec.ui.md": "5e6a789337d9b0fd5caa6a1e840a35c0b7c77f34a6d28bb264020d396416b375"
   }
 }

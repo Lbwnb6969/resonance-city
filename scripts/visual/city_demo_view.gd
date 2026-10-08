@@ -42,6 +42,8 @@ var zoom_world := Vector2.ZERO
 var pan_from := Vector2.ZERO
 var camera_age := 1.0
 var camera_resetting := false
+var camera_focusing := false
+var pan_target := Vector2.ZERO
 var base_scales: Dictionary = {}
 var view_pan := Vector2.ZERO
 var pan_active := false
@@ -100,6 +102,7 @@ func zoom_at(position: Vector2, requested: float) -> void:
 	zoom_world = (position-_view_origin())/view_zoom
 	camera_age = 0.0
 	camera_resetting = false
+	camera_focusing = false
 
 func reset_view() -> void:
 	zoom_from = view_zoom
@@ -108,6 +111,35 @@ func reset_view() -> void:
 	pan_active = false
 	camera_age = 0.0
 	camera_resetting = true
+	camera_focusing = false
+
+func focus_selected() -> bool:
+	var district := session._district(selected_id)
+	if district.is_empty(): return false
+	var owner: String = district.get("visual_owner",selected_id)
+	if not sprites.has(owner): return false
+	var sprite: Sprite2D = sprites[owner]
+	if not sprite.visible: return false
+	var rect := sprite.get_rect()
+	var scale_at_one: Vector2 = base_scales[owner]
+	var world := (_display_point(session._district(owner))-_view_origin())/view_zoom+rect.get_center()*scale_at_one
+	var upper := float(camera_cfg["header_height"])
+	var bottom := size.y
+	var notice := get_node_or_null("MapNotice") as Control
+	if notice != null: bottom = minf(bottom,notice.position.y)
+	var available := Vector2(size.x,maxf(1.0,bottom-upper))
+	var target := Vector2(available.x*0.5,upper+available.y*0.5)
+	var extent := rect.size*scale_at_one
+	var fit := minf(available.x/extent.x,available.y/extent.y)*float(camera_cfg["focus_margin"])
+	zoom_from = view_zoom
+	zoom_target = clampf(minf(maxf(view_zoom,float(camera_cfg["focus_zoom"])),fit),float(camera_cfg["minimum_zoom"]),float(camera_cfg["maximum_zoom"]))
+	pan_from = view_pan
+	pan_target = target-Vector2(size.x*0.5,float(camera_cfg["origin_y"]))-world*zoom_target
+	pan_active = false
+	camera_age = 0.0
+	camera_resetting = false
+	camera_focusing = true
+	return true
 
 func _sample_camera(delta: float) -> void:
 	var duration := float(camera_cfg["smooth_seconds"])
@@ -115,8 +147,8 @@ func _sample_camera(delta: float) -> void:
 	camera_age = minf(camera_age+delta,duration)
 	var t := 1.0-pow(1.0-camera_age/duration,3.0)
 	view_zoom = lerpf(zoom_from,zoom_target,t)
-	if camera_resetting:
-		view_pan = pan_from.lerp(Vector2.ZERO,t)
+	if camera_resetting or camera_focusing:
+		view_pan = pan_from.lerp(pan_target if camera_focusing else Vector2.ZERO,t)
 	else:
 		view_pan = zoom_pivot-Vector2(size.x*0.5,float(camera_cfg["origin_y"]))-zoom_world*view_zoom
 
@@ -154,6 +186,8 @@ func _gui_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_MIDDLE:
 			pan_active = event.pressed and event.position.y >= float(camera_cfg["header_height"])
 			if pan_active:
+				camera_focusing = false
+				camera_resetting = false
 				camera_age = float(camera_cfg["smooth_seconds"])
 				zoom_target = view_zoom
 				tread_start = Vector2i(-1,-1)

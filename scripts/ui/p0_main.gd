@@ -50,6 +50,7 @@ var forecast_available := false
 var draft_button: CheckButton
 var draft_bias: OptionButton
 var draft_state: Label
+var focus_button: Button
 var map_tool: OptionButton
 var tool_hint: Label
 var details_button: Button
@@ -162,7 +163,17 @@ func _build_controls() -> void:
 	beat_progress.show_percentage = false
 	beat_progress.custom_minimum_size.y = 8
 	controls.add_child(beat_progress)
-	_button("复位视角（Home）","ResetView").pressed.connect(func() -> void: city_view.reset_view())
+	var camera_actions := HBoxContainer.new()
+	camera_actions.name = "CameraActions"
+	controls.add_child(camera_actions)
+	var reset := _button("复位视角（Home）","ResetView")
+	reset.reparent(camera_actions)
+	reset.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	reset.pressed.connect(func() -> void: city_view.reset_view())
+	focus_button = _button("聚焦选中","FocusSelected")
+	focus_button.reparent(camera_actions)
+	focus_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	focus_button.pressed.connect(city_view.focus_selected)
 	map_tool = OptionButton.new()
 	map_tool.name = "MapTool"
 	for text in ["地图工具 · 浏览与选择","地图工具 · 释放共鸣点","地图工具 · 划定引力","地图工具 · 踩路径"]:

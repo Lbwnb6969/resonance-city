@@ -70,7 +70,8 @@ func roof(main: Control,id: String) -> Vector2:
 	return Vector2(-1,-1)
 func capture() -> void:
 	await frames()
-	root.get_texture().get_image().save_png("res://验证记录/Demo/轮廓点选_透明角落.png")
+	var name := "聚焦前轮廓复核" if "--focus" in OS.get_cmdline_user_args() else "轮廓点选_透明角落"
+	root.get_texture().get_image().save_png("res://验证记录/Demo/"+name+".png")
 func run_check() -> void:
 	check(DisplayServer.get_name() != "headless","requires actual GPU")
 	var main: Control = load("res://scenes/p0_main.tscn").instantiate()
@@ -138,7 +139,70 @@ func run_check() -> void:
 	await click(view,view.point(Vector2i(8,8)))
 	check(main._selected_id() == "partner","compound second plot independently selected")
 	check(main.model.session.snapshot() == saved,"pixel picking does not mutate city/RNG/pending")
+	if "--focus" in OS.get_cmdline_user_args():
+		marker.visible = false
+		await check_focus(main)
 	print("PICKING %s checks=%d real_PNG/empty/roof/compound/zoom/readonly" % ["FAIL" if failed else "PASS",checks])
 	main.queue_free()
 	await frames()
 	quit(1 if failed else 0)
+
+func image_bounds(view: Control,id: String) -> Rect2:
+	var sprite: Sprite2D = view.sprites[id]
+	return Rect2(sprite.position+sprite.get_rect().position*sprite.scale,sprite.get_rect().size*sprite.scale)
+func check_focus(main: Control) -> void:
+	var view: Control = main.city_view
+	check(main.model.session.request_release(48,Vector2i(2,2),main.clock.renderer.transport.rendered_frames,main.clock.renderer.transport.audible_frame)["accepted"],"pending release fixture")
+	main.diagnosis_button.button_pressed = true
+	main._select_district("partner")
+	await frames()
+	var saved: Dictionary = main.model.session.snapshot()
+	await click(main,main.focus_button.get_global_rect().get_center())
+	check(view.camera_focusing and view.camera_age < float(view.camera_cfg["smooth_seconds"]),"actual focus button starts smooth movement")
+	await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
+	await frames()
+	var bounds := image_bounds(view,"home")
+	var top := float(view.camera_cfg["header_height"])
+	var bottom: float = view.get_node("MapNotice").position.y
+	var center := Vector2(view.size.x*0.5,(top+bottom)*0.5)
+	check(bounds.get_center().distance_to(center) < 0.01,"compound centered as whole image, not just its ground point")
+	check(bounds.position.y >= top and bounds.end.y <= bottom and bounds.position.x >= 0 and bounds.end.x <= view.size.x,"whole compound clear of header/card/panel")
+	check(main._selected_id() == "partner" and main.model.session.snapshot() == saved,"focus retains independent selected half and pending/RNG")
+	check(view.view_zoom >= float(view.camera_cfg["focus_zoom"]) and view.view_zoom <= float(view.camera_cfg["maximum_zoom"]),"legal focus zoom")
+	await frames()
+	root.get_texture().get_image().save_png("res://验证记录/Demo/聚焦选中连宅.png")
+	var cursor: Vector2 = view.point(Vector2i(8,8))
+	var wheel := InputEventMouseButton.new()
+	wheel.button_index = MOUSE_BUTTON_WHEEL_DOWN
+	wheel.pressed = true
+	wheel.position = cursor
+	view._gui_input(wheel)
+	check(not view.camera_focusing,"wheel takes over focus")
+	await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
+	check(view.point(Vector2i(8,8)).distance_to(cursor) < 0.01,"wheel preserves pivot after focus")
+	await click(main,main.focus_button.get_global_rect().get_center())
+	var before_pan: Vector2 = view.view_pan
+	var middle := InputEventMouseButton.new()
+	middle.button_index = MOUSE_BUTTON_MIDDLE
+	middle.pressed = true
+	middle.position = cursor
+	view._gui_input(middle)
+	var motion := InputEventMouseMotion.new()
+	motion.position = cursor+Vector2(50,-20)
+	motion.relative = Vector2(50,-20)
+	view._gui_input(motion)
+	middle.pressed = false
+	view._gui_input(middle)
+	check(not view.camera_focusing and view.view_pan.distance_to(before_pan+motion.relative) < 0.01,"middle drag stops focus without jumping")
+	main._select_district("shop")
+	await frames()
+	await click(main,main.focus_button.get_global_rect().get_center())
+	await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
+	await frames()
+	bounds = image_bounds(view,"shop")
+	check(bounds.get_center().distance_to(center) < 0.01 and bounds.position.y >= top and bounds.end.y <= bottom,"single tall building also framed")
+	await click(main,main.controls.find_child("ResetView",true,false).get_global_rect().get_center())
+	await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
+	check(view.view_pan == Vector2.ZERO and view.view_zoom == float(view.camera_cfg["default_zoom"]),"actual adjacent reset restores full map")
+	check(main.model.session.snapshot() == saved,"all camera operations leave city/RNG/pending untouched")
+	print("FOCUS_CAMERA PASS actual_button/whole_image/visible_area/interrupts/reset/readonly" if not failed else "FOCUS_CAMERA FAIL")

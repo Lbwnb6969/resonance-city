@@ -240,6 +240,8 @@ def generate():
         'header_height': numbers(camera['裁剪'])[0],
         'origin_y': numbers(camera['地图默认原点'])[0],
         'smooth_seconds': numbers(camera['镜头缓动'])[0]/1000,
+        'focus_zoom': numbers(camera['聚焦倍率'])[0],
+        'focus_margin': numbers(camera['聚焦留边'])[0],
     }
     diagnosis = table(ui, '## 表 U10')
     result['visual_diagnosis'] = {key: (value if value.startswith('#') else numbers(value)[0])
