@@ -1,0 +1,145 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/asset_contract.gd"
+	],
+	"case": "packages",
+	"checks": [
+		{
+			"description": "Approved four-pack evidence exists",
+			"passed": true
+		},
+		{
+			"description": "Exactly four approved City Kit packages",
+			"passed": true
+		},
+		{
+			"description": "Official source and download: city-kit-roads",
+			"passed": true
+		},
+		{
+			"description": "Real downloaded archive SHA-256 matches: city-kit-roads",
+			"passed": true
+		},
+		{
+			"description": "Package license and actual version match: city-kit-roads",
+			"passed": true
+		},
+		{
+			"description": "Every unmodified extracted file matches original archive: city-kit-roads",
+			"passed": true
+		},
+		{
+			"description": "Actual package model formats recorded: city-kit-roads",
+			"passed": true
+		},
+		{
+			"description": "Official source and download: city-kit-commercial",
+			"passed": true
+		},
+		{
+			"description": "Real downloaded archive SHA-256 matches: city-kit-commercial",
+			"passed": true
+		},
+		{
+			"description": "Package license and actual version match: city-kit-commercial",
+			"passed": true
+		},
+		{
+			"description": "Every unmodified extracted file matches original archive: city-kit-commercial",
+			"passed": true
+		},
+		{
+			"description": "Actual package model formats recorded: city-kit-commercial",
+			"passed": true
+		},
+		{
+			"description": "Official source and download: city-kit-industrial",
+			"passed": true
+		},
+		{
+			"description": "Real downloaded archive SHA-256 matches: city-kit-industrial",
+			"passed": true
+		},
+		{
+			"description": "Package license and actual version match: city-kit-industrial",
+			"passed": true
+		},
+		{
+			"description": "Every unmodified extracted file matches original archive: city-kit-industrial",
+			"passed": true
+		},
+		{
+			"description": "Actual package model formats recorded: city-kit-industrial",
+			"passed": true
+		},
+		{
+			"description": "Official source and download: city-kit-suburban",
+			"passed": true
+		},
+		{
+			"description": "Real downloaded archive SHA-256 matches: city-kit-suburban",
+			"passed": true
+		},
+		{
+			"description": "Package license and actual version match: city-kit-suburban",
+			"passed": true
+		},
+		{
+			"description": "Every unmodified extracted file matches original archive: city-kit-suburban",
+			"passed": true
+		},
+		{
+			"description": "Actual package model formats recorded: city-kit-suburban",
+			"passed": true
+		},
+		{
+			"description": "Whitelist has all requested kits with no replacements",
+			"passed": true
+		},
+		{
+			"description": "Current prohibited resale-package statement is present",
+			"passed": true
+		},
+		{
+			"description": "Current runtime resource references exclude ignored/resale sources",
+			"passed": true
+		}
+	],
+	"details": {
+		"baked_assets": "PENDING",
+		"final_export_audit": "PENDING",
+		"packages": [
+			{
+				"archive_sha256": "22058af3d68173a7cf9bda9f0e243a8cef6bd68168c302ebc76327063849674e",
+				"downloaded_at": "2026-10-08T11:30:11.131097+00:00",
+				"name": "city-kit-roads",
+				"version": "2.1"
+			},
+			{
+				"archive_sha256": "f8b09b081c2bb88bcc126e2dec1cb40fd0dad7e7e591b6c26aaefe96fb35276b",
+				"downloaded_at": "2026-10-08T11:30:09.626475+00:00",
+				"name": "city-kit-commercial",
+				"version": "2.1"
+			},
+			{
+				"archive_sha256": "5b381164e5760f3830a2dbee43b972deee38b2a695d091b56e238ab2910c96d2",
+				"downloaded_at": "2026-10-08T11:30:26.630414+00:00",
+				"name": "city-kit-industrial",
+				"version": "2.0"
+			},
+			{
+				"archive_sha256": "5869c35cf30b1c87bdb2d197b6d325eebadd2ef08ea27f04797e8e08d77a9a39",
+				"downloaded_at": "2026-10-08T11:30:39.022079+00:00",
+				"name": "city-kit-suburban",
+				"version": "2.0"
+			}
+		],
+		"resource_file_count": 2
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "ASSET-001",
+	"scope": "Real archive/extraction/license verification; final baked/export dependencies pending",
+	"status": "PASS"
+}
