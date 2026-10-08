@@ -40,6 +40,7 @@ func run_demo() -> void:
 	assert(main.model.synth.routing.size() == main.model.session.city.size())
 	assert(forms.has("群") and (forms.has("央") or forms.has("腔")))
 	assert(main.city_view.sprites.size() == main.model.session.city.size())
+	if "--landscape" in OS.get_cmdline_user_args(): await _check_landscape(main)
 	if "--conditions" in OS.get_cmdline_user_args(): await _check_conditions(main)
 	if "--tread" in OS.get_cmdline_user_args(): await _check_tread(main)
 	if "--community" in OS.get_cmdline_user_args():
@@ -71,7 +72,7 @@ func run_demo() -> void:
 		if DisplayServer.get_name() != "headless":
 			await process_frame
 			await RenderingServer.frame_post_draw
-			get_root().get_texture().get_image().save_png("res://验证记录/Demo/柔和岛台_房群.png" if "--terrain" in OS.get_cmdline_user_args() else "res://验证记录/Demo/协调房群.png")
+			get_root().get_texture().get_image().save_png("res://验证记录/Demo/社区绿化_房群.png" if "--landscape" in OS.get_cmdline_user_args() else "res://验证记录/Demo/柔和岛台_房群.png" if "--terrain" in OS.get_cmdline_user_args() else "res://验证记录/Demo/协调房群.png")
 		print("DEMO_COMMUNITY PASS paired_whole_images=",pairs," templates=",templates.size()," independent_voices=",main.model.synth.routing.size())
 		main.city_view.reset_view()
 		await create_timer(float(main.city_view.camera_cfg["smooth_seconds"])+0.05).timeout
@@ -117,7 +118,7 @@ func run_demo() -> void:
 		if DisplayServer.get_name() != "headless":
 			await process_frame
 			await RenderingServer.frame_post_draw
-			get_root().get_texture().get_image().save_png("res://验证记录/Demo/柔和岛台_推近.png" if "--terrain" in OS.get_cmdline_user_args() else "res://验证记录/Demo/镜头推近.png")
+			get_root().get_texture().get_image().save_png("res://验证记录/Demo/社区绿化_推近.png" if "--landscape" in OS.get_cmdline_user_args() else "res://验证记录/Demo/柔和岛台_推近.png" if "--terrain" in OS.get_cmdline_user_args() else "res://验证记录/Demo/镜头推近.png")
 		main.controls.find_child("ResetView",true,false).pressed.emit()
 		await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
 		assert(view.view_zoom == 1.0 and view.view_pan == Vector2.ZERO)
@@ -166,7 +167,7 @@ func run_demo() -> void:
 		await process_frame
 		await RenderingServer.frame_post_draw
 		var black := get_root().get_texture().get_image()
-		black.save_png("res://验证记录/Demo/柔和岛台_黑屏.png")
+		black.save_png("res://验证记录/Demo/社区绿化_黑屏.png" if "--landscape" in OS.get_cmdline_user_args() else "res://验证记录/Demo/柔和岛台_黑屏.png")
 		black.convert(Image.FORMAT_RGB8)
 		var rgb := black.get_data()
 		assert(rgb.count(0) == rgb.size(),"Background material must preserve every black-screen RGB pixel")
@@ -178,7 +179,7 @@ func run_demo() -> void:
 	if DisplayServer.get_name() != "headless":
 		await RenderingServer.frame_post_draw
 		DirAccess.make_dir_recursive_absolute("res://验证记录/Demo")
-		get_root().get_texture().get_image().save_png("res://验证记录/Demo/柔和岛台_全景.png" if "--terrain" in OS.get_cmdline_user_args() else ("res://验证记录/Demo/条件城市.png" if "--conditions" in OS.get_cmdline_user_args() else "res://验证记录/Demo/城市生长.png"))
+		get_root().get_texture().get_image().save_png("res://验证记录/Demo/社区绿化_全景.png" if "--landscape" in OS.get_cmdline_user_args() else "res://验证记录/Demo/柔和岛台_全景.png" if "--terrain" in OS.get_cmdline_user_args() else ("res://验证记录/Demo/条件城市.png" if "--conditions" in OS.get_cmdline_user_args() else "res://验证记录/Demo/城市生长.png"))
 	print("DEMO_SMOKE PASS entities=",main.model.session.city.size()," forms=",forms," real_manifest_sprites=",main.city_view.sprites.size())
 	main.queue_free()
 	await process_frame
@@ -483,3 +484,49 @@ func _check_conditions(main: Control) -> void:
 	assert(not main.city_view.visible and not main.panel.visible)
 	main.set_black_screen(false)
 	print("DEMO_CONDITIONS PASS actual_gaps + two_complete_phrases + readonly_and_snapshot + no_false_progress_warning + upgrade_reset + mature_excluded + road_disconnect + frozen + newborn_excluded + selected_map_card + black_screen")
+
+func _check_landscape(main: Control) -> void:
+	var helper = load("res://scripts/visual/community_landscape.gd")
+	var roads = load("res://scripts/city/city_roads.gd")
+	var schema = load("res://scripts/city/district_schema.gd")
+	var session: RefCounted = main.model.session
+	var view: Control = main.city_view
+	var before: Dictionary = session.snapshot()
+	var expected: Array = helper.slots(session,view.landscape_cfg,view.tree_ids)
+	assert(not expected.is_empty() and expected.size() <= int(view.landscape_cfg["maximum"]))
+	assert(expected == helper.slots(session,view.landscape_cfg,view.tree_ids) and before == session.snapshot())
+	await process_frame
+	assert(view.landscape_slots == expected and view.landscape_sprites.size() == expected.size())
+	for slot in expected:
+		var cell: Vector2i = slot["cell"]
+		assert(session._empty_cells().has([cell.x,cell.y]))
+		var sprite: Sprite2D = view.landscape_sprites[slot["key"]]
+		assert(sprite.texture.get_image().has_mipmaps())
+		assert(sprite.position.distance_to(view.point(cell)) < float(view.cfg["tile_half_width"])*0.2*view.view_zoom)
+	var key: String = expected[0]["key"]
+	var sprite: Sprite2D = view.landscape_sprites[key]
+	var instance: int = sprite.get_instance_id()
+	view.release_mode = true
+	await process_frame
+	assert(not sprite.visible)
+	view.release_mode = false
+	view.pointer_inside = true
+	view.pointer_position = view.point(expected[0]["cell"])
+	await process_frame
+	assert(not sprite.visible)
+	view.pointer_inside = false
+	await process_frame
+	assert(sprite.visible and sprite.get_instance_id() == instance)
+	var occupied: RefCounted = session.fork()
+	occupied.city.append(schema.create("landscape_occupied","residential",expected[0]["cell"]))
+	for slot in helper.slots(occupied,view.landscape_cfg,view.tree_ids): assert(slot["cell"] != expected[0]["cell"])
+	# Cut all edges out of this anchor in a fork; detached mature houses must not decorate.
+	var cut: RefCounted = session.fork()
+	var family: String = expected[0]["family"]
+	var anchor: Vector2i = schema.cell(cut._district(family))
+	for d in cut.city:
+		var cell: Vector2i = schema.cell(d)
+		if (cell-anchor).length_squared() == 1: cut.road_marks[roads.key(anchor,cell)] = {"count":3}
+	for slot in helper.slots(cut,view.landscape_cfg,view.tree_ids): assert(slot["family"] != family)
+	assert(session.snapshot() == before)
+	print("DEMO_LANDSCAPE PASS slots=",expected.size()," empty_cell + mipmaps + stable_node + release/hover_clear + occupied_clear + road_connectivity + read_only")

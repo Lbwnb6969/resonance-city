@@ -1,5 +1,6 @@
 class_name CityDemoView
 extends Control
+const Landscape = preload("res://scripts/visual/community_landscape.gd")
 const Diagnosis = preload("res://scripts/visual/boundary_diagnosis.gd")
 const Roads = preload("res://scripts/city/city_roads.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
@@ -49,6 +50,11 @@ var view_pan := Vector2.ZERO
 var pan_active := false
 var camera_cfg: Dictionary
 var cfg: Dictionary
+var landscape_cfg: Dictionary
+var tree_ids: Array[String] = []
+var landscape_slots: Array[Dictionary] = []
+var landscape_sprites: Dictionary = {}
+var landscape_key := ""
 var terrain_cfg: Dictionary
 var map_size := Vector2i.ZERO
 var buildings: Node2D
@@ -59,6 +65,7 @@ func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	cfg = Values.load_values()["growth"]
 	terrain_cfg = Values.load_values()["terrain"]
+	landscape_cfg = Values.load_values()["landscape"]
 	var space: Dictionary = Values.load_values()["city"]
 	map_size = Vector2i(int(space["width"]),int(space["height"]))
 	camera_cfg = Values.load_values()["camera"]
@@ -68,9 +75,11 @@ func _ready() -> void:
 	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://资源/Demo城市/manifest.json"))
 	for entry in manifest["entries"]:
 		entries[entry["id"]] = entry
+		if entry["category"] == "tree": tree_ids.append(entry["id"])
 		if entry["category"] in ["residential","commercial","industrial"]:
 			if not by_type.has(entry["category"]): by_type[entry["category"]] = []
 			by_type[entry["category"]].append(entry["id"])
+	tree_ids.sort_custom(func(a: String,b: String) -> bool: return float(entries[a]["model_bounds"]["size"][1]) < float(entries[b]["model_bounds"]["size"][1]))
 	for list in by_type.values(): list.sort()
 	buildings = Node2D.new()
 	buildings.y_sort_enabled = true
@@ -330,6 +339,56 @@ func ground_shape(half: Vector2) -> PackedVector2Array:
 		point(map_size-Vector2i.ONE)+Vector2(0,half.y),
 		point(Vector2i(0,map_size.y-1))+Vector2(-half.x,0)])
 
+func _sync_landscape(audible: float, gray: float) -> void:
+	var key := "%d:%d" % [session.get_instance_id(),session.phrase_index]
+	if key != landscape_key:
+		landscape_key = key
+		landscape_slots = Landscape.slots(session,landscape_cfg,tree_ids)
+		var keep: Dictionary = {}
+		for slot in landscape_slots:
+			keep[slot["key"]] = true
+			if landscape_sprites.has(slot["key"]): continue
+			var entry: Dictionary = entries[slot["asset_id"]]
+			var path: String = "res://"+str(entry["texture"])
+			if not textures.has(path): textures[path] = load(path)
+			var sprite := GrowthMask.new()
+			sprite.name = "Landscape_"+str(landscape_sprites.size())
+			sprite.centered = false
+			sprite.texture = textures[path]
+			sprite.offset = -Vector2(float(entry["origin"][0]),float(entry["origin"][1]))
+			sprite.set_meta("asset_id",slot["asset_id"])
+			buildings.add_child(sprite)
+			landscape_sprites[slot["key"]] = sprite
+			if session.last_result.is_empty():
+				sprite.progress = 1.0
+				sprite.material.set_shader_parameter("growth_progress",1.0)
+			else:
+				sprite.begin_at(int(session.last_result["frame"])+get_node("/root/AudioClock").renderer.transport.beat_frame(1))
+		for obsolete in landscape_sprites.keys():
+			if not keep.has(obsolete):
+				landscape_sprites[obsolete].queue_free()
+				landscape_sprites.erase(obsolete)
+	for slot in landscape_slots:
+		var sprite: Sprite2D = landscape_sprites[slot["key"]]
+		var cell: Vector2i = slot["cell"]
+		var index := tree_ids.find(slot["asset_id"])
+		var height: float = landscape_cfg["tree_heights_px"][mini(index,landscape_cfg["tree_heights_px"].size()-1)]
+		sprite.scale = Vector2.ONE*height/sprite.texture.get_height()*view_zoom
+		var offset := Vector2(float(posmod(cell.x*7+cell.y*3,3)-1)*0.12*float(cfg["tile_half_width"]),-0.12*float(cfg["tile_half_height"]))
+		sprite.position = point(cell)+offset*view_zoom
+		sprite.visible = not release_mode and (not pointer_inside or cell != hover_cell)
+		sprite.modulate = Color(1.0-gray*0.35,1.0-gray*0.35,1.0-gray*0.25,1.0)
+
+func _draw_landscape_ground() -> void:
+	var half := Vector2(float(cfg["tile_half_width"]),float(cfg["tile_half_height"]))*view_zoom*float(landscape_cfg["ground_ratio"])
+	for slot in landscape_slots:
+		var sprite: AudioGrowthMask = landscape_sprites[slot["key"]]
+		if not sprite.visible or sprite.progress <= 0.0: continue
+		var center := point(slot["cell"])
+		var color := Color(landscape_cfg["ground_color"])
+		color.a = float(landscape_cfg["ground_alpha"])*sprite.progress
+		draw_colored_polygon(PackedVector2Array([center+Vector2(-half.x,0),center+Vector2(0,-half.y),center+Vector2(half.x,0),center+Vector2(0,half.y)]),color)
+
 func _draw_ground_base(shape: PackedVector2Array) -> void:
 	var shadow := shape.duplicate()
 	var offset := Vector2(terrain_cfg["shadow_offset"][0],terrain_cfg["shadow_offset"][1])*view_zoom
@@ -369,6 +428,7 @@ func _draw() -> void:
 	ground.append(ground[0])
 	draw_polyline(ground,Color(terrain_cfg["rim_color"]),float(terrain_cfg["rim_width_px"])*view_zoom,true)
 	if session == null: return
+	_draw_landscape_ground()
 	_draw_diagnosis()
 	if session.pending.get("verb","") == "release":
 		var target: Array = session.pending["target"]
@@ -508,4 +568,5 @@ func _process(delta: float) -> void:
 		label.position = point(Schema.cell(d))+Vector2(-24,15*view_zoom)
 		label.text = ("● %s" % form if d.get("is_anchor",false) else "%s %.0f" % [form,d["vitality"]]) if d["type"] != "industrial" else "工业 %.0f" % d["vitality"]
 		label.visible = sprites[id].progress >= 1.0 and (id == selected_id or Schema.cell(d) == hover_cell)
+	_sync_landscape(audible,gray)
 	queue_redraw()

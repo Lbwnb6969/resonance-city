@@ -27,7 +27,7 @@ def main():
     new_colors = np.array([rgb(color) for color in COLORS], dtype=np.float32)
     entries = []
     for original_entry in original['entries']:
-        if original_entry['category'] not in ('residential', 'commercial', 'industrial'):
+        if original_entry['category'] not in ('residential', 'commercial', 'industrial', 'tree'):
             continue
         entry = copy.deepcopy(original_entry)
         source = ROOT / entry['texture']

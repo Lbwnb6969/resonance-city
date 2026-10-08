@@ -444,6 +444,18 @@
     "rim_width_px": 1.2,
     "rim_color": "#F3EEE4"
   },
+  "landscape": {
+    "per_family": 2,
+    "maximum": 6,
+    "minimum_spacing": 2,
+    "tree_heights_px": [
+      22.0,
+      28.0
+    ],
+    "ground_ratio": 0.42,
+    "ground_color": "#D4DFC9",
+    "ground_alpha": 0.7
+  },
   "visual_diagnosis": {
     "slow_min_hz": 3.0,
     "slow_max_hz": 16.0,
@@ -466,6 +478,6 @@
     "spec.city.md": "7b4fc0eec1d466254cfbd2e592600f9badfe864145a5b509a8c106b158e8062b",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "ba7bf2df7f767ba597d333edce9ea32f1d7c08fe4659680c76de2d9b76cdbfe7",
-    "spec.ui.md": "96e7af429aa7f4c037f5e4162df01f6b97c715ded7990186d619b94f3141e673"
+    "spec.ui.md": "012a1b0e4c576b7644ddd20c9dfec996cae8e3faa98e34fbe7eb3884af4ab568"
   }
 }

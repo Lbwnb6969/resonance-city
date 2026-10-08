@@ -1,0 +1,52 @@
+{
+  "rule_id": "UI-004",
+  "case": "community_landscape",
+  "status": "PASS",
+  "scope": "Actual 22-entity main scene after simulated growth; presentation-only tree slots and shared camera/black screen; excludes long-run performance, new park audio and human art approval",
+  "command": "Godot_v4.7.2-stable_win64_console.exe --audio-driver Dummy --path . --script res://tests/growth_demo_smoke.gd -- --community --camera --terrain --landscape --seed=2026100800000001",
+  "driver": "Dummy",
+  "renderer": "Compatibility",
+  "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "viewport": [
+    1440,
+    900
+  ],
+  "district_count": 22,
+  "landscape_slots": 2,
+  "manifest_entries": 13,
+  "trees": [
+    {
+      "id": "tree_tree_small_01_base",
+      "texture": "资源/Demo城市/整图/tree_tree_small_01_base.png",
+      "texture_sha256": "b2f6b88d0a84b599791ee7a4729fd644b653064fb5b4f16bc5dc81583660018b",
+      "source_texture_sha256": "4bff23cb56107b47b182d7955f01b98a829c7c8269449b2d02f3990e8221b20d",
+      "license": "CC0-1.0",
+      "voice_tag": "non_voice",
+      "source_url": "https://kenney.nl/assets/city-kit-suburban"
+    },
+    {
+      "id": "tree_tree_large_02_base",
+      "texture": "资源/Demo城市/整图/tree_tree_large_02_base.png",
+      "texture_sha256": "14be9c5552cf5b2c30033da68223172a1b2b0e627e3cd2b54dd7b0b756157459",
+      "source_texture_sha256": "6bb7f559f888054977cc5103c0248585e6daa39b2dfd96203c63e44593ea607e",
+      "license": "CC0-1.0",
+      "voice_tag": "non_voice",
+      "source_url": "https://kenney.nl/assets/city-kit-suburban"
+    }
+  ],
+  "checks": [
+    "actual legal empty cells",
+    "pure repeat query and city snapshot unchanged",
+    "actual imported texture mipmaps",
+    "stable decoration node identity",
+    "release and hover clear feedback",
+    "occupied cells excluded",
+    "anchor road disconnection excludes family",
+    "community pairing and independent voices",
+    "shared camera and selection",
+    "1296000 RGB8 black screen pixels all zero",
+    "existing 11 image SHA unchanged",
+    "existing runtime parameters unchanged apart from source SHA and new landscape config"
+  ],
+  "log_sha256": "3b3696655b913b468c414e430478f73b3f952e9ceeb6b5d7d9ece88a3b8f1063"
+}

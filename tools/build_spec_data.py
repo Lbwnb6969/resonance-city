@@ -258,6 +258,16 @@ def generate():
         'rim_width_px': numbers(atmosphere['岛台边沿'])[0],
         'rim_color': colors(atmosphere['岛台边沿'])[0],
     }
+    landscape = dict(table(ui, '## 表 U13 ·'))
+    result['landscape'] = {
+        'per_family': int(numbers(landscape['数量'])[0]),
+        'maximum': int(numbers(landscape['数量'])[1]),
+        'minimum_spacing': int(numbers(landscape['间距'])[0]),
+        'tree_heights_px': numbers(landscape['树高'])[:2],
+        'ground_ratio': numbers(landscape['庭院'])[0],
+        'ground_color': colors(landscape['庭院'])[0],
+        'ground_alpha': float(re.search(r'alpha([0-9.]+)', landscape['庭院'])[1]),
+    }
     diagnosis = table(ui, '## 表 U10')
     result['visual_diagnosis'] = {key: (value if value.startswith('#') else numbers(value)[0])
                                   for key, value, _ in diagnosis}
