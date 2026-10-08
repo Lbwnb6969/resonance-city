@@ -243,6 +243,21 @@ def generate():
         'focus_zoom': numbers(camera['聚焦倍率'])[0],
         'focus_margin': numbers(camera['聚焦留边'])[0],
     }
+    atmosphere = dict(table(ui, '## 表 U8 ·'))
+    def colors(text):
+        return re.findall(r'#[0-9A-Fa-f]{6}', text)
+    result['terrain'] = {
+        'background_top': colors(atmosphere['背景渐变'])[0],
+        'background_bottom': colors(atmosphere['背景渐变'])[1],
+        'depth_px': numbers(atmosphere['岛台侧面'])[0],
+        'side_light': colors(atmosphere['岛台侧面'])[0],
+        'side_dark': colors(atmosphere['岛台侧面'])[1],
+        'shadow_offset': numbers(atmosphere['岛台阴影'].split(';')[0].split('；')[0]),
+        'shadow_color': colors(atmosphere['岛台阴影'])[0],
+        'shadow_alpha': float(re.search(r'alpha([0-9.]+)', atmosphere['岛台阴影'])[1]),
+        'rim_width_px': numbers(atmosphere['岛台边沿'])[0],
+        'rim_color': colors(atmosphere['岛台边沿'])[0],
+    }
     diagnosis = table(ui, '## 表 U10')
     result['visual_diagnosis'] = {key: (value if value.startswith('#') else numbers(value)[0])
                                   for key, value, _ in diagnosis}

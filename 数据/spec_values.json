@@ -429,6 +429,21 @@
     "focus_zoom": 2.0,
     "focus_margin": 0.85
   },
+  "terrain": {
+    "background_top": "#E9EDF2",
+    "background_bottom": "#DCE8E7",
+    "depth_px": 14.0,
+    "side_light": "#CCD8D5",
+    "side_dark": "#C0CFCE",
+    "shadow_offset": [
+      -12.0,
+      18.0
+    ],
+    "shadow_color": "#708C90",
+    "shadow_alpha": 0.08,
+    "rim_width_px": 1.2,
+    "rim_color": "#F3EEE4"
+  },
   "visual_diagnosis": {
     "slow_min_hz": 3.0,
     "slow_max_hz": 16.0,
@@ -451,6 +466,6 @@
     "spec.city.md": "9a1758bbe75438ce19dbe3767d9c89b622425682c3cf1be4f1197d481632de9e",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "0c5b5b93e7c99c82d6e1384f0aa552b3d61db938f3b786bbc8d44e2e624bb74a",
-    "spec.ui.md": "5e6a789337d9b0fd5caa6a1e840a35c0b7c77f34a6d28bb264020d396416b375"
+    "spec.ui.md": "052076b330d815207e4bb7835f7104d9830bf0cfab491dfe18c760816e64edd3"
   }
 }

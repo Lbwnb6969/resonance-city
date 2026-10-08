@@ -386,7 +386,13 @@ func _sync_map_tool() -> void:
 
 
 func _build_city_view() -> void:
-	$Background.color = Color("e9edf2")
+	var atmosphere: Dictionary = Values.load_values()["terrain"]
+	var background := ShaderMaterial.new()
+	background.shader = load("res://资源/着色器/柔和背景.gdshader")
+	background.set_shader_parameter("top_color",Color(atmosphere["background_top"]))
+	background.set_shader_parameter("bottom_color",Color(atmosphere["background_bottom"]))
+	$Background.material = background
+	$Background.color = Color.WHITE
 	panel.anchor_left = 0.69
 	panel.offset_left = 12
 	panel.offset_top = 20
@@ -724,7 +730,7 @@ func set_black_screen(enabled: bool) -> void:
 	black_screen = enabled
 	panel.visible = not enabled
 	if is_instance_valid(city_view): city_view.visible = not enabled
-	$Background.color = Color.BLACK if enabled else Color("e9edf2")
+	$Background.color = Color.BLACK if enabled else Color.WHITE
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN if enabled else Input.MOUSE_MODE_VISIBLE
 
 func _input(event: InputEvent) -> void:

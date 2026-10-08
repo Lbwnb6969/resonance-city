@@ -49,6 +49,8 @@ var view_pan := Vector2.ZERO
 var pan_active := false
 var camera_cfg: Dictionary
 var cfg: Dictionary
+var terrain_cfg: Dictionary
+var map_size := Vector2i.ZERO
 var buildings: Node2D
 var label_layer: Control
 var point_texture: Texture2D
@@ -56,6 +58,9 @@ var point_texture: Texture2D
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	cfg = Values.load_values()["growth"]
+	terrain_cfg = Values.load_values()["terrain"]
+	var space: Dictionary = Values.load_values()["city"]
+	map_size = Vector2i(int(space["width"]),int(space["height"]))
 	camera_cfg = Values.load_values()["camera"]
 	view_zoom = float(camera_cfg["default_zoom"])
 	clip_contents = true
@@ -318,9 +323,29 @@ func _draw_diagnosis() -> void:
 			draw_polyline(diagnosis_points(edge,1),color,width,true)
 		else: draw_polyline(diagnosis_points(edge),color,width,true)
 
+func ground_shape(half: Vector2) -> PackedVector2Array:
+	return PackedVector2Array([
+		point(Vector2i.ZERO)+Vector2(0,-half.y),
+		point(Vector2i(map_size.x-1,0))+Vector2(half.x,0),
+		point(map_size-Vector2i.ONE)+Vector2(0,half.y),
+		point(Vector2i(0,map_size.y-1))+Vector2(-half.x,0)])
+
+func _draw_ground_base(shape: PackedVector2Array) -> void:
+	var shadow := shape.duplicate()
+	var offset := Vector2(terrain_cfg["shadow_offset"][0],terrain_cfg["shadow_offset"][1])*view_zoom
+	for i in range(shadow.size()): shadow[i] += offset
+	var tint := Color(terrain_cfg["shadow_color"])
+	tint.a = float(terrain_cfg["shadow_alpha"])
+	draw_colored_polygon(shadow,tint)
+	var drop := Vector2(0,float(terrain_cfg["depth_px"]))*view_zoom
+	draw_colored_polygon(PackedVector2Array([shape[1],shape[2],shape[2]+drop,shape[1]+drop]),Color(terrain_cfg["side_light"]))
+	draw_colored_polygon(PackedVector2Array([shape[2],shape[3],shape[3]+drop,shape[2]+drop]),Color(terrain_cfg["side_dark"]))
+
 func _draw() -> void:
 	if cfg == null: return
 	var half := Vector2(float(cfg["tile_half_width"]),float(cfg["tile_half_height"]))*view_zoom
+	var ground := ground_shape(half)
+	_draw_ground_base(ground)
 	var occupied: Dictionary = {}
 	if session != null:
 		for d in session.city: occupied[Schema.cell(d)] = d
@@ -341,6 +366,8 @@ func _draw() -> void:
 			if pending_here: color = Color("e8d4bb")
 			draw_colored_polygon(vertices,color)
 			draw_polyline(PackedVector2Array([vertices[0],vertices[1],vertices[2],vertices[3],vertices[0]]),Color(1.0,1.0,1.0,0.38),0.6,true)
+	ground.append(ground[0])
+	draw_polyline(ground,Color(terrain_cfg["rim_color"]),float(terrain_cfg["rim_width_px"])*view_zoom,true)
 	if session == null: return
 	_draw_diagnosis()
 	if session.pending.get("verb","") == "release":

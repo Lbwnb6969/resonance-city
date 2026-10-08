@@ -71,7 +71,7 @@ func run_demo() -> void:
 		if DisplayServer.get_name() != "headless":
 			await process_frame
 			await RenderingServer.frame_post_draw
-			get_root().get_texture().get_image().save_png("res://验证记录/Demo/协调房群.png")
+			get_root().get_texture().get_image().save_png("res://验证记录/Demo/柔和岛台_房群.png" if "--terrain" in OS.get_cmdline_user_args() else "res://验证记录/Demo/协调房群.png")
 		print("DEMO_COMMUNITY PASS paired_whole_images=",pairs," templates=",templates.size()," independent_voices=",main.model.synth.routing.size())
 		main.city_view.reset_view()
 		await create_timer(float(main.city_view.camera_cfg["smooth_seconds"])+0.05).timeout
@@ -117,7 +117,7 @@ func run_demo() -> void:
 		if DisplayServer.get_name() != "headless":
 			await process_frame
 			await RenderingServer.frame_post_draw
-			get_root().get_texture().get_image().save_png("res://验证记录/Demo/镜头推近.png")
+			get_root().get_texture().get_image().save_png("res://验证记录/Demo/柔和岛台_推近.png" if "--terrain" in OS.get_cmdline_user_args() else "res://验证记录/Demo/镜头推近.png")
 		main.controls.find_child("ResetView",true,false).pressed.emit()
 		await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
 		assert(view.view_zoom == 1.0 and view.view_pan == Vector2.ZERO)
@@ -162,6 +162,15 @@ func run_demo() -> void:
 		print("DEMO_DRAFT PASS actual_drag + boundary_commit + redraw_one_phrase + resumed_routes")
 	main.set_black_screen(true)
 	assert(not main.city_view.visible and not main.panel.visible)
+	if "--terrain" in OS.get_cmdline_user_args():
+		await process_frame
+		await RenderingServer.frame_post_draw
+		var black := get_root().get_texture().get_image()
+		black.save_png("res://验证记录/Demo/柔和岛台_黑屏.png")
+		black.convert(Image.FORMAT_RGB8)
+		var rgb := black.get_data()
+		assert(rgb.count(0) == rgb.size(),"Background material must preserve every black-screen RGB pixel")
+		print("DEMO_TERRAIN_BLACK PASS all_RGB_zero pixels=",black.get_width()*black.get_height())
 	main.set_black_screen(false)
 	assert(main.city_view.visible and main.panel.visible)
 	main._select_district(main.model.session.city.back()["district_id"])
@@ -169,7 +178,7 @@ func run_demo() -> void:
 	if DisplayServer.get_name() != "headless":
 		await RenderingServer.frame_post_draw
 		DirAccess.make_dir_recursive_absolute("res://验证记录/Demo")
-		get_root().get_texture().get_image().save_png("res://验证记录/Demo/条件城市.png" if "--conditions" in OS.get_cmdline_user_args() else "res://验证记录/Demo/城市生长.png")
+		get_root().get_texture().get_image().save_png("res://验证记录/Demo/柔和岛台_全景.png" if "--terrain" in OS.get_cmdline_user_args() else ("res://验证记录/Demo/条件城市.png" if "--conditions" in OS.get_cmdline_user_args() else "res://验证记录/Demo/城市生长.png"))
 	print("DEMO_SMOKE PASS entities=",main.model.session.city.size()," forms=",forms," real_manifest_sprites=",main.city_view.sprites.size())
 	main.queue_free()
 	await process_frame

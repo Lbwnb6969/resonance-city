@@ -253,3 +253,5 @@ UI-004可见轮廓点选：实际GPU入口`tests/picking_contract.gd`；真实PN
 UI-004手动聚焦：复用实际GPU入口`tests/picking_contract.gd -- --focus`。真实FocusSelected按钮须启动缓动；连宅任一半以整张图在标题与条件卡之间居中且留边，保留所选逻辑ID；高楼同样完整取景。检查滚轮从当前镜头接管并保持鼠标定点、中键直接接管、同排ResetView恢复默认镜头、pending/城市/RNG快照不变。新增12项与原12项点选合计24检查，聚焦镜头运行检查.log须无Assertion/脚本错误且exit0；聚焦选中连宅.png查看整栋完整和主要操作可达。Dummy与受控场景不代表长期供音、所有小窗口布局或人工体验。
 
 ASSET-001本地可携带Demo：`python tools/build_demo_bundle.py --engine <现有Godot.exe> --output <新运行目录> --evidence <新证据目录>`；旧目录拒绝覆盖。实际ZIP核对manifest/数据、源纹理SHA及ctex SHA、排除开发树；复制引擎从空目录挂载ZIP运行包外demo_bundle_contract.gd，检查AudioClock无MCP、三组全部纹理mips、最新控件、释放可见落定、聚焦只读、古典摆放。实际默认主入口/风格入口启动与日志错误检查、交付ZIP CRC及相对路径启动器另验。当前11隔离检查/44清单项通过，两PNG查看；--quit-after/Dummy的AudioStreamGeneratorPlayback残留警告单独保留定位，不称无警告或物理退出通过。证据本地运行包/构建记录.json，便携包不等同模板发行EXE、人测或长期压力。
+
+UI-004完整柔和岛台：复用实际GPU入口`tests/growth_demo_smoke.gd -- --community --camera --terrain`；现有真实生长/配对/镜头/独立点选与城市不变检查，独立保存柔和岛台_全景/房群/推近.png。新增一次实际全屏黑屏RGB8字节全零检查和黑屏PNG，防止背景shader绕过B；最终日志须无Assertion/脚本/着色器错误且exit0。画面审阅完整地面承托、浅侧面/薄影、淡白网格和控件可读；不以本次模拟乐句证明长期性能/真人体验，不要求重复700栋/频谱/导出。
