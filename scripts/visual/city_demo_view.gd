@@ -132,6 +132,12 @@ func _display_point(d: Dictionary) -> Vector2:
 		center += Vector2((x-y)*float(cfg["tile_half_width"]),(x+y)*float(cfg["tile_half_height"]))*view_zoom
 	return center
 
+func _contains_visible_pixel(sprite: AudioGrowthMask, position: Vector2) -> bool:
+	var local := sprite.to_local(get_global_transform()*position)
+	if not sprite.is_pixel_opaque(local): return false
+	var rect := sprite.get_rect()
+	return 1.0-(local.y-rect.position.y)/rect.size.y <= sprite.progress
+
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouse:
 		pointer_position = event.position
@@ -193,7 +199,7 @@ func _gui_input(event: InputEvent) -> void:
 			for d in ordered:
 				var id: String = d["district_id"]
 				if not sprites.has(id): continue
-				var sprite: Sprite2D = sprites[id]
+				var sprite: AudioGrowthMask = sprites[id]
 				if not sprite.visible: continue
 				if d.get("is_anchor",false):
 					if event.position.distance_to(sprite.position) <= 14*view_zoom:
@@ -201,9 +207,7 @@ func _gui_input(event: InputEvent) -> void:
 						accept_event()
 						return
 				else:
-					var entry: Dictionary = entries[sprite.get_meta("asset_id")]
-					var rect := Rect2(sprite.position+sprite.offset*sprite.scale,sprite.texture.get_size()*sprite.scale)
-					if rect.has_point(event.position):
+					if _contains_visible_pixel(sprite,event.position):
 						var picked: String = id
 						if d.has("visual_partner") and cell == Schema.cell(session._district(d["visual_partner"])): picked = d["visual_partner"]
 						district_clicked.emit(picked)
