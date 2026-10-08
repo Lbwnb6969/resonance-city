@@ -1,2 +1,4 @@
 # Normalize EOL for all files that Git considers text files.
 * text=auto eol=lf
+资产/许可记录/CityKits/*/License.txt -text -diff
+资产/许可记录/CityKits/*/official-page.html -text -diff
