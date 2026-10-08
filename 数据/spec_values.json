@@ -337,6 +337,12 @@
     "tester_count": 3,
     "required_correct": 7
   },
+  "gray_audio": {
+    "lowpass_hz": 900.0,
+    "hold_rate": 4410.0,
+    "wet": 0.7,
+    "transition_bars": 1
+  },
   "rms_guard": {
     "window_seconds": 0.4,
     "minimum_ratio": 0.25,
@@ -375,7 +381,7 @@
     "octave_multiplier": 2.0
   },
   "sources": {
-    "spec.audio.md": "51db1a040ce67592c138e7cccb020910a1c0609e6d6c35c86e93a87156be6bf3",
+    "spec.audio.md": "d64268ff1e77ead40288c02cb446d0b28fa7df71635871dfb6b9e08e1fe9082d",
     "spec.city.md": "cf5bbf22a2184c9f8672648fb3e964449a1b970a6dd180182b0e7a88678f566d",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "19619120e957945fee0d12d371882fb63f18fe0757cd5453466c4fc2be534753"

@@ -9,6 +9,9 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	if Contract.selected_case("fader") == "signal_protection":
+		load("res://tests/signal_protection_contract.gd").run(self)
+		return
 	if Contract.selected_case("fader") == "beat_assist":
 		_assist_contract()
 		return

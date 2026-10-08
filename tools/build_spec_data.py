@@ -45,6 +45,7 @@ def generate():
     a9 = dict(table(audio, '## 表 A9'))
     a10 = dict(table(audio, '## 表 A10'))
     a11 = dict(table(audio, '## 表 A11'))
+    a12 = dict(table(audio, '## 表 A12'))
     musical = numbers(a2['BPM / 拍号 / 小节 / 乐句'])
     assert len(musical) == 6, musical
     voices = {}
@@ -162,6 +163,10 @@ def generate():
         'tester_count': int(numbers(a11['人数 / 判定'])[0]),
         'required_correct': int(numbers(a11['人数 / 判定'])[-2]),
     }
+    result['gray_audio'] = {'lowpass_hz': numbers(a12['低通'])[1],
+                            'hold_rate': numbers(a12['轻颗粒'])[0],
+                            'wet': numbers(a12['完全灰态干湿'])[0]/100,
+                            'transition_bars': int(numbers(a12['进入 / 退出'])[0])}
     result['rms_guard'] = {
         'window_seconds': numbers(a10['统计窗'])[0]/1000,
         'minimum_ratio': numbers(a10['最低比例 / 补偿目标'])[0]/100,

@@ -12,8 +12,8 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var mode := Contract.selected_case("live_supply")
-	var assisted := mode == "assist_supply" or mode == "assist_stress"
-	var test := Contract.new("AUDIO-004" if assisted else "AUDIO-002",mode)
+	var assisted := mode in ["assist_supply","assist_stress","gray_stress"]
+	var test := Contract.new("AUDIO-005" if mode == "gray_stress" else ("AUDIO-004" if assisted else "AUDIO-002"),mode)
 	var city: Array = Generator.new().generate("2026100800000001")["city"]
 	if assisted:
 		for index in range(city.size()):
@@ -22,20 +22,24 @@ func _run() -> void:
 		city[1]["footprint"] = [[8,7]]
 		city[0]["current_midi"] = 48
 		city[1]["current_midi"] = 49
-	if mode == "assist_stress":
+	if mode in ["assist_stress","gray_stress"]:
 		for index in range(city.size()):
 			var row := floori(index/3.0)
 			city[index]["footprint"] = [[6+index%3,6+row]]
 			city[index]["current_midi"] = 48+(index%3+row)%2
 	var synth := Synth.new(city)
 	synth.guard_enabled = true
+	if mode == "gray_stress":
+		synth.set_gray(true,0)
 	if assisted:
 		synth.device_mode = "narrowband"
-		test.check(synth.assist_routes(synth.initial_state()).size() == 9 if mode == "assist_stress" else synth.assist_routes(synth.initial_state()).size() >= 2,"Physical fixture contains requested active slow-beat helpers")
+		test.check(synth.assist_routes(synth.initial_state()).size() == 9 if mode in ["assist_stress","gray_stress"] else synth.assist_routes(synth.initial_state()).size() >= 2,"Physical fixture contains requested active slow-beat helpers")
 	var offline := Renderer.new()
 	offline.source = synth._mix_frame
 	offline.state = synth.initial_state()
 	var rate := offline.transport.sample_rate
+	if mode == "gray_stress":
+		offline.render(rate*2)
 	var start := Time.get_ticks_usec()
 	offline.render(rate)
 	var render_ms := float(Time.get_ticks_usec() - start) / 1000.0
@@ -59,5 +63,8 @@ func _run() -> void:
 		"wall_ms":Time.get_ticks_msec()-wall_start,"audible_frame":audible,
 		"rendered_frames":rendered,"capacity":clock.capacity,"skips":measured_skips,
 		"assist_routes":synth.assist_routes(synth.initial_state()).size(),"guard_factor":clock.renderer.state.get("_guard_factor",1.0),"device_mode":synth.device_mode,"driver":AudioServer.get_driver_name(),"hardware_latency":clock.output_latency}
+	if mode == "gray_stress":
+		test.check(synth.gray_level(int(audible),rate) == 1.0,"Physical supply includes gray entry and fully faded steady state")
+		test.details["gray_level"] = synth.gray_level(int(audible),rate)
 	clock.stop_output()
 	test.finish(self, "Actual output device; nine voices with rhythm, one phrase; excludes human audibility")

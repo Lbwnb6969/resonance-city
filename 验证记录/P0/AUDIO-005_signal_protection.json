@@ -1,0 +1,83 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/mix_contract.gd"
+	],
+	"case": "signal_protection",
+	"checks": [
+		{
+			"description": "Normal nine-voice guarded PCM exactly equals captured pre-change float32 baseline",
+			"passed": true
+		},
+		{
+			"description": "Gray transition follows one audio-clock bar exactly",
+			"passed": true
+		},
+		{
+			"description": "Fixed-pitch drone and all narrowband helpers are sample-identical during gray entry",
+			"passed": true
+		},
+		{
+			"description": "Gray processing changes real rhythm PCM",
+			"passed": true
+		},
+		{
+			"description": "Gray processing does not change any oscillator phase or pitch",
+			"passed": true
+		},
+		{
+			"description": "Entry and steady gray across irregular blocks match canonical PCM and float32 filters exactly",
+			"passed": true
+		},
+		{
+			"description": "Exit through bypass seam preserves block/canonical PCM and filter state",
+			"passed": true
+		},
+		{
+			"description": "After gray exit normal synthesis is restored at continuous current phase",
+			"passed": true
+		},
+		{
+			"description": "Interrupted transition reverses continuously from current proportion",
+			"passed": true
+		},
+		{
+			"description": "Mute zeroes target only while gray filters, guard and phase keep running identically",
+			"passed": true
+		},
+		{
+			"description": "Gray mute isolation is exercised under actual nontrivial RMS compensation",
+			"passed": true
+		},
+		{
+			"description": "All-muted gray remains exact zero with protection enabled",
+			"passed": true
+		},
+		{
+			"description": "Real low-R phrase transaction activates gray sound exactly on boundary",
+			"passed": true
+		},
+		{
+			"description": "Preview fork restores gray target, fade origin and every per-voice filter sample exactly",
+			"passed": true
+		},
+		{
+			"description": "Real recovered-R phrase transaction reverses gray sound on boundary",
+			"passed": true
+		}
+	],
+	"details": {
+		"baseline_bytes": 352800,
+		"event_feedback": "not triggered in P0",
+		"hold_frames": 5,
+		"lowpass_hz": 900.0,
+		"subjective_acceptance": "PENDING human aesthetic and diagnostic listening",
+		"transition_frames": 44100,
+		"wet": 0.7
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "AUDIO-005",
+	"scope": "Technical gray-layer protection only; subjective beauty and diagnostic masking require humans",
+	"status": "PASS"
+}

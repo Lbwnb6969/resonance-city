@@ -29,6 +29,11 @@ var assist_enabled := true
 var device_mode := "standard"
 var assist_neighbors: Dictionary = {}
 var guard_enabled := false
+var gray_enabled := false
+var gray_from := 0.0
+var gray_change_at := -1
+var gray_alpha: Dictionary = {}
+var gray_hold_frames: Dictionary = {}
 var _last_raw_layers := Vector2.ZERO
 
 func _init(city: Array) -> void:
@@ -119,6 +124,8 @@ func _prepare_envelopes(rate: int) -> void:
 			envelope[at] = sum
 		by_type[type] = envelope
 	envelopes[rate] = by_type
+	gray_alpha[rate] = 1.0-exp(-TAU*float(values["gray_audio"]["lowpass_hz"])/rate)
+	gray_hold_frames[rate] = maxi(1,roundi(rate/float(values["gray_audio"]["hold_rate"])))
 	var rc := 1.0 / (TAU * float(settings["industrial_highpass_hz"]))
 	highpass_alpha[rate] = rc / (rc + 1.0 / rate)
 
@@ -134,12 +141,41 @@ func _rhythm(route: Dictionary, phase: float, at: int, rate: int, state: Diction
 		pulse = output
 	return pulse * rhythm_gain
 
+func gray_level(at: int, rate: int) -> float:
+	if gray_change_at < 0:
+		return 0.0
+	var duration := float(values["gray_audio"]["transition_bars"])*float(values["timing"]["beats_per_bar"])*60.0*rate/float(values["timing"]["bpm"])
+	return lerpf(gray_from,1.0 if gray_enabled else 0.0,clampf(float(at-gray_change_at)/duration,0.0,1.0))
+
+func set_gray(enabled: bool, at: int) -> void:
+	if gray_enabled == enabled:
+		return
+	gray_from = gray_level(at,int(values["timing"]["sample_rate"]))
+	gray_enabled = enabled
+	gray_change_at = at
+
+func _gray_rhythm(input: float, id: String, at: int, rate: int, state: Dictionary) -> float:
+	var blend := gray_level(at,rate)
+	if not gray_enabled and blend == 0.0:
+		return input
+	var key := "_gray_"+id
+	var previous: Vector3 = state.get(key,Vector3.ZERO)
+	var alpha := float(gray_alpha[rate])
+	previous.x += alpha*(input-previous.x)
+	previous.y += alpha*(previous.x-previous.y)
+	if at%int(gray_hold_frames[rate]) == 0:
+		previous.z = previous.y
+	state[key] = previous
+	return lerpf(input,previous.z,blend*float(values["gray_audio"]["wet"]))
+
 func _voice_layers(route: Dictionary, state: Dictionary, at: int, rate: int) -> Vector2:
 	var phase_key: String = route["phase_key"]
 	var phase := float(state.get(phase_key, 0.0))
 	var midi := int(state.get(route["id"], route["base_midi"]))
 	var drone := _table_wave(route["table"], phase) * drone_gain
 	var rhythm := _rhythm(route, phase, at, rate, state) if active_layers.has("rhythm") else 0.0
+	if active_layers.has("rhythm") and (gray_enabled or gray_level(at,rate) > 0.0):
+		rhythm = _gray_rhythm(rhythm,route["id"],at,rate,state)
 	if guard_enabled:
 		_last_raw_layers = Vector2(drone if active_layers.has("drone") else 0.0,rhythm)*gain
 	rhythm *= rhythm_level(at,rate)*(emphasis_level if emphasized_id == route["id"] else 1.0)
@@ -347,6 +383,14 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		controlled_drone.resize(count)
 	var drone_enabled := active_layers.has("drone")
 	var rhythm_enabled := active_layers.has("rhythm")
+	var gray_active := rhythm_enabled and (gray_enabled or gray_level(start,rate) > 0.0)
+	var gray_levels := PackedFloat64Array()
+	var lowpass_alpha := float(gray_alpha[rate])
+	var hold_frames := int(gray_hold_frames[rate])
+	if gray_active:
+		gray_levels.resize(count)
+		for offset in range(count):
+			gray_levels[offset] = gray_level(start+offset,rate)*float(values["gray_audio"]["wet"])
 	var levels := PackedFloat64Array()
 	levels.resize(count)
 	for offset in range(count):
@@ -364,6 +408,8 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var industrial: bool = route["type"] == "industrial"
 		var previous: Vector2 = state.get(route["highpass_key"],Vector2.ZERO)
 		var alpha := float(highpass_alpha[rate])
+		var gray_key := "_gray_"+id
+		var gray_previous: Vector3 = state.get(gray_key,Vector3.ZERO)
 		var disabled := bool(muted.get(id,false)) or (not solo_id.is_empty() and solo_id != id)
 		var silence_end := int(silent_until.get(id,0))
 		var emphasis := emphasis_level if emphasized_id == id else 1.0
@@ -382,6 +428,12 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 					previous = Vector2(pulse,output)
 					pulse = output
 				rhythm = pulse*rhythm_gain
+				if gray_active and (gray_enabled or gray_levels[offset] > 0.0):
+					gray_previous.x += lowpass_alpha*(rhythm-gray_previous.x)
+					gray_previous.y += lowpass_alpha*(gray_previous.x-gray_previous.y)
+					if at%hold_frames == 0:
+						gray_previous.z = gray_previous.y
+					rhythm = lerpf(rhythm,gray_previous.z,gray_levels[offset])
 			if guard_enabled:
 				var dry_layers := Vector2(drone,rhythm)*gain
 				raw_drone[offset] += dry_layers.x*stereo
@@ -395,6 +447,8 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 				if guard_enabled:
 					controlled_drone[offset] += layers.x*stereo
 		state[phase_key] = phase
+		if gray_active:
+			state[gray_key] = gray_previous
 		if industrial and rhythm_enabled:
 			state[route["highpass_key"]] = previous
 	if not helpers.is_empty():

@@ -15,3 +15,9 @@ P0 City Kit烘焙：`python tools/prepare_city_bake.py`复制白名单模型/纹
 
 
 导出依赖审计：关闭本Agent临时MCP helper后运行Godot `--headless --path . --export-pack "P0依赖审计" .git/任务备份/2026-10-08_续作/P0依赖审计.zip`。然后`python tools/audit_export_zip.py <ZIP>`。空隔离目录挂载该ZIP，`--headless --path <空目录> --main-pack <绝对ZIP> --script <绝对tests/export_contract.gd> -- --result=<绝对结果JSON>`，26项实际资源/场景合约。出口成功不代表依赖完整，必须读取引擎错误日志和隔离结果。此preset为技术候选资源包审计；人工艺术与正式导出模板/EXE另验。
+
+### 灰态声音（AUDIO-005）
+
+`tests/mix_contract.gd -- --case signal_protection` 对照改前float32 PCM，验证诊断保护、灰态边界、进退/快照和补偿下mute；`tests/live_audio_contract.gd -- --case gray_stress` 必须用实际WASAPI，验证九声部九辅助供音。`tests/gray_baseline_probe.gd` 是改前基线捕获脚本，已有基线时拒绝覆盖，不能用新代码重造旧证据。
+
+`tests/gray_listening_probe.gd` 生成同一初始gain的8秒九声部normal/gray PCM；`python tools/analyze_gray_audio.py` 独立测截止以上能量、降采样镜像与整城FFmpeg响度/真峰值，并生成未再归一化WAV。人工听评说明在`验证记录/P0/声音褪色/说明.md`。此技术PASS不等于作品听感或诊断遮蔽已获批准。

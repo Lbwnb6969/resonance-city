@@ -1,0 +1,270 @@
+{
+	"assist": false,
+	"calibration": {
+		"blocks": 77,
+		"calibration_ms": 792.479,
+		"duration_seconds": 8.0,
+		"gain": 0.881190818909579,
+		"initial_lufs": -14.9013992721239,
+		"sample_rate": 22050,
+		"target_lufs": -16.0
+	},
+	"city": [
+		{
+			"base_midi": 48,
+			"current_midi": 48,
+			"debt_edges": [],
+			"district_id": "residential_0",
+			"footprint": [
+				[
+					2,
+					15
+				]
+			],
+			"layers": {
+				"drone": {
+					"continuous": true
+				},
+				"ornament": {
+					"enabled": false
+				},
+				"rhythm": {
+					"signature": "稳定 4/4 中速"
+				}
+			},
+			"manifest_id": "",
+			"shared_boundary_cells": {},
+			"state": "normal",
+			"type": "residential",
+			"vitality": 50.0
+		},
+		{
+			"base_midi": 48,
+			"current_midi": 48,
+			"debt_edges": [],
+			"district_id": "residential_1",
+			"footprint": [
+				[
+					2,
+					11
+				]
+			],
+			"layers": {
+				"drone": {
+					"continuous": true
+				},
+				"ornament": {
+					"enabled": false
+				},
+				"rhythm": {
+					"signature": "稳定 4/4 中速"
+				}
+			},
+			"manifest_id": "",
+			"shared_boundary_cells": {},
+			"state": "normal",
+			"type": "residential",
+			"vitality": 50.0
+		},
+		{
+			"base_midi": 48,
+			"current_midi": 48,
+			"debt_edges": [],
+			"district_id": "residential_2",
+			"footprint": [
+				[
+					12,
+					12
+				]
+			],
+			"layers": {
+				"drone": {
+					"continuous": true
+				},
+				"ornament": {
+					"enabled": false
+				},
+				"rhythm": {
+					"signature": "稳定 4/4 中速"
+				}
+			},
+			"manifest_id": "",
+			"shared_boundary_cells": {},
+			"state": "normal",
+			"type": "residential",
+			"vitality": 50.0
+		},
+		{
+			"base_midi": 52,
+			"current_midi": 52,
+			"debt_edges": [],
+			"district_id": "commercial_0",
+			"footprint": [
+				[
+					10,
+					2
+				]
+			],
+			"layers": {
+				"drone": {
+					"continuous": true
+				},
+				"ornament": {
+					"enabled": false
+				},
+				"rhythm": {
+					"signature": "十六分律动"
+				}
+			},
+			"manifest_id": "",
+			"shared_boundary_cells": {},
+			"state": "normal",
+			"type": "commercial",
+			"vitality": 50.0
+		},
+		{
+			"base_midi": 52,
+			"current_midi": 52,
+			"debt_edges": [],
+			"district_id": "commercial_1",
+			"footprint": [
+				[
+					15,
+					11
+				]
+			],
+			"layers": {
+				"drone": {
+					"continuous": true
+				},
+				"ornament": {
+					"enabled": false
+				},
+				"rhythm": {
+					"signature": "十六分律动"
+				}
+			},
+			"manifest_id": "",
+			"shared_boundary_cells": {},
+			"state": "normal",
+			"type": "commercial",
+			"vitality": 50.0
+		},
+		{
+			"base_midi": 52,
+			"current_midi": 52,
+			"debt_edges": [],
+			"district_id": "commercial_2",
+			"footprint": [
+				[
+					3,
+					8
+				]
+			],
+			"layers": {
+				"drone": {
+					"continuous": true
+				},
+				"ornament": {
+					"enabled": false
+				},
+				"rhythm": {
+					"signature": "十六分律动"
+				}
+			},
+			"manifest_id": "",
+			"shared_boundary_cells": {},
+			"state": "normal",
+			"type": "commercial",
+			"vitality": 50.0
+		},
+		{
+			"base_midi": 54,
+			"current_midi": 54,
+			"debt_edges": [],
+			"district_id": "industrial_0",
+			"footprint": [
+				[
+					14,
+					13
+				]
+			],
+			"layers": {
+				"drone": {
+					"continuous": true
+				},
+				"ornament": {
+					"enabled": false
+				},
+				"rhythm": {
+					"signature": "不规则切分；300Hz高通仅律动层"
+				}
+			},
+			"manifest_id": "",
+			"shared_boundary_cells": {},
+			"state": "normal",
+			"type": "industrial",
+			"vitality": 50.0
+		},
+		{
+			"base_midi": 54,
+			"current_midi": 54,
+			"debt_edges": [],
+			"district_id": "industrial_1",
+			"footprint": [
+				[
+					4,
+					3
+				]
+			],
+			"layers": {
+				"drone": {
+					"continuous": true
+				},
+				"ornament": {
+					"enabled": false
+				},
+				"rhythm": {
+					"signature": "不规则切分；300Hz高通仅律动层"
+				}
+			},
+			"manifest_id": "",
+			"shared_boundary_cells": {},
+			"state": "normal",
+			"type": "industrial",
+			"vitality": 50.0
+		},
+		{
+			"base_midi": 54,
+			"current_midi": 54,
+			"debt_edges": [],
+			"district_id": "industrial_2",
+			"footprint": [
+				[
+					11,
+					5
+				]
+			],
+			"layers": {
+				"drone": {
+					"continuous": true
+				},
+				"ornament": {
+					"enabled": false
+				},
+				"rhythm": {
+					"signature": "不规则切分；300Hz高通仅律动层"
+				}
+			},
+			"manifest_id": "",
+			"shared_boundary_cells": {},
+			"state": "normal",
+			"type": "industrial",
+			"vitality": 50.0
+		}
+	],
+	"fade_frames": 44100,
+	"frames": 176400,
+	"sample_rate": 22050,
+	"scope": "Nine-voice sound review; human beauty and diagnostic masking PENDING"
+}
