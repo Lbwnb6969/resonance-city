@@ -8,6 +8,7 @@ const CONDITIONS := ["headphones_standard","speaker_standard","speaker_narrowban
 const FIELDS := ["protocol","tester_id","stage","trial_id","seed","layout_id","device","device_notes","assist_state","device_mode","truth_direction","truth_type","answer_direction","answer_type","correct","skips","origin","pcm_sha256","notes"]
 
 var diagnostic_mode := false
+var output_enabled := true
 var panel: MarginContainer
 var box: VBoxContainer
 var player: PreviewAudioOutput
@@ -113,7 +114,8 @@ func _listen() -> void:
 	panel.hide()
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	audio = Fixtures.render(trials[trial_index],condition)
-	player.begin(audio["pcm"])
+	if output_enabled:
+		player.begin(audio["pcm"])
 
 func _ended(skips: int) -> void:
 	playing = false

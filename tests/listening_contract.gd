@@ -54,6 +54,7 @@ func _run() -> void:
 	root.add_child(node)
 	var protocol_before := protocol.duplicate(true)
 	node.diagnostic_mode = true
+	node.output_enabled = false
 	var valid: bool = node.begin_session("AUTOMATION_CONTRACT","headphones_standard","tool validation, not a human")
 	test.check(valid and node.playing and not node.panel.visible,"Actual listening UI hides every control before playback")
 	node.player.stop_output()
