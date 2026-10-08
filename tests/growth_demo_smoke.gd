@@ -36,6 +36,52 @@ func run_demo() -> void:
 	assert(main.model.synth.routing.size() == main.model.session.city.size())
 	assert(forms.has("群") and (forms.has("央") or forms.has("腔")))
 	assert(main.city_view.sprites.size() == main.model.session.city.size())
+	if "--camera" in OS.get_cmdline_user_args():
+		var view = main.city_view
+		var before: Array = main.model.session.city.duplicate(true)
+		var cursor: Vector2 = view.point(chosen)
+		for step in range(6):
+			var wheel := InputEventMouseButton.new()
+			wheel.position = cursor
+			wheel.button_index = MOUSE_BUTTON_WHEEL_UP
+			wheel.pressed = true
+			view._gui_input(wheel)
+		assert(view.view_zoom > 2.0 and view.cell_at(cursor) == chosen)
+		var middle := InputEventMouseButton.new()
+		middle.button_index = MOUSE_BUTTON_MIDDLE
+		middle.position = cursor
+		middle.pressed = true
+		view._gui_input(middle)
+		var motion := InputEventMouseMotion.new()
+		motion.position = cursor+Vector2(0,120)
+		motion.relative = Vector2(0,120)
+		view._gui_input(motion)
+		middle.pressed = false
+		middle.position = motion.position
+		view._gui_input(middle)
+		assert(view.cell_at(motion.position) == chosen)
+		await process_frame
+		var front: Dictionary = {}
+		for d in main.model.session.city:
+			if d.get("is_anchor",false) or str(d.get("anchor_id","")).is_empty(): continue
+			if front.is_empty() or view.point(Vector2i(d["footprint"][0][0],d["footprint"][0][1])).y > view.point(Vector2i(front["footprint"][0][0],front["footprint"][0][1])).y:
+				front = d
+		var sprite: Sprite2D = view.sprites[front["district_id"]]
+		var click := InputEventMouseButton.new()
+		click.button_index = MOUSE_BUTTON_LEFT
+		click.pressed = true
+		click.position = sprite.position+(sprite.offset+sprite.texture.get_size()*0.5)*sprite.scale
+		view._gui_input(click)
+		assert(main._selected_id() == front["district_id"])
+		assert(main.model.session.city == before)
+		if DisplayServer.get_name() != "headless":
+			await process_frame
+			await RenderingServer.frame_post_draw
+			get_root().get_texture().get_image().save_png("res://验证记录/Demo/镜头推近.png")
+		main.controls.get_node("ResetView").pressed.emit()
+		assert(view.view_zoom == 1.0 and view.view_pan == Vector2.ZERO)
+		assert(view.cell_at(view.point(chosen)) == chosen and main.model.session.city == before)
+		print("DEMO_CAMERA PASS wheel_anchor + pan + clicked_building + reset + unchanged_city")
 	main.set_black_screen(true)
 	assert(not main.city_view.visible and not main.panel.visible)
 	main.set_black_screen(false)

@@ -32,6 +32,7 @@ def numbers(text):
 def generate():
     audio = read('spec.audio.md')
     city = read('spec.city.md')
+    ui = read('spec.ui.md')
     harmony = read('spec.harmony.md')
     proposal = read('spec.proposal.md')
     a2 = dict(table(audio, '## 表 A2'))
@@ -220,8 +221,17 @@ def generate():
         'tile_half_height': numbers(growth['Demo显示'])[3],
         'plot_coverage': numbers(growth['地面占地与缩放'])[0],
     }
+    camera = dict(table(ui, '## 表 U7 ·'))
+    result['camera'] = {
+        'default_zoom': numbers(camera['缩放'])[0],
+        'minimum_zoom': numbers(camera['缩放'])[1],
+        'maximum_zoom': numbers(camera['缩放'])[2],
+        'wheel_multiplier': numbers(camera['缩放'])[3],
+        'header_height': numbers(camera['裁剪'])[0],
+        'origin_y': numbers(camera['地图默认原点'])[0],
+    }
     result['sources'] = {name: hashlib.sha256(read(name).encode()).hexdigest()
-                         for name in ['spec.audio.md', 'spec.city.md', 'spec.harmony.md', 'spec.proposal.md']}
+                         for name in ['spec.audio.md', 'spec.city.md', 'spec.harmony.md', 'spec.proposal.md', 'spec.ui.md']}
     return json.dumps(result, ensure_ascii=False, indent=2) + '\n'
 
 

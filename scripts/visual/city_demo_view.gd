@@ -18,6 +18,10 @@ var labels: Dictionary = {}
 var event_seen: Dictionary = {}
 var forms: Dictionary = {}
 var appearance: Dictionary = {}
+var view_zoom := 1.0
+var view_pan := Vector2.ZERO
+var pan_active := false
+var camera_cfg: Dictionary
 var cfg: Dictionary
 var buildings: Node2D
 var label_layer: Control
@@ -26,6 +30,10 @@ var point_texture: Texture2D
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	cfg = Values.load_values()["growth"]
+	camera_cfg = Values.load_values()["camera"]
+	view_zoom = float(camera_cfg["default_zoom"])
+	clip_contents = true
+	focus_mode = Control.FOCUS_ALL
 	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://资源/P0城市/manifest.json"))
 	for entry in manifest["entries"]:
 		entries[entry["id"]] = entry
@@ -48,17 +56,50 @@ func _ready() -> void:
 	point_texture = ImageTexture.create_from_image(image)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
+func _view_origin() -> Vector2:
+	return Vector2(size.x*0.5,float(camera_cfg["origin_y"]))+view_pan
+
 func point(cell: Vector2i) -> Vector2:
-	return Vector2(size.x*0.5,150)+Vector2((cell.x-cell.y)*float(cfg["tile_half_width"]),(cell.x+cell.y)*float(cfg["tile_half_height"]))
+	return _view_origin()+Vector2((cell.x-cell.y)*float(cfg["tile_half_width"]),(cell.x+cell.y)*float(cfg["tile_half_height"]))*view_zoom
 
 func cell_at(position: Vector2) -> Vector2i:
-	var p := position-Vector2(size.x*0.5,150)
+	var p := (position-_view_origin())/view_zoom
 	return Vector2i(roundi((p.x/float(cfg["tile_half_width"])+p.y/float(cfg["tile_half_height"]))*0.5),roundi((p.y/float(cfg["tile_half_height"])-p.x/float(cfg["tile_half_width"]))*0.5))
+
+func zoom_at(position: Vector2, requested: float) -> void:
+	var local := (position-_view_origin())/view_zoom
+	var next := clampf(requested,float(camera_cfg["minimum_zoom"]),float(camera_cfg["maximum_zoom"]))
+	view_pan = position-Vector2(size.x*0.5,float(camera_cfg["origin_y"]))-local*next
+	view_zoom = next
+	appearance.clear()
+	queue_redraw()
+
+func reset_view() -> void:
+	view_zoom = float(camera_cfg["default_zoom"])
+	view_pan = Vector2.ZERO
+	pan_active = false
+	appearance.clear()
+	queue_redraw()
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		hover_cell = cell_at(event.position)
+		if pan_active:
+			view_pan += event.relative
+			hover_cell = Vector2i(-1,-1)
+		else:
+			hover_cell = cell_at(event.position) if event.position.y >= float(camera_cfg["header_height"]) else Vector2i(-1,-1)
 		queue_redraw()
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_MIDDLE:
+			pan_active = event.pressed and event.position.y >= float(camera_cfg["header_height"])
+			accept_event()
+			return
+		if event.position.y < float(camera_cfg["header_height"]): return
+		if event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
+			var factor := float(camera_cfg["wheel_multiplier"])
+			zoom_at(event.position,view_zoom*(factor if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/factor))
+			accept_event()
+			return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var cell := cell_at(event.position)
 		if not release_mode:
@@ -69,7 +110,7 @@ func _gui_input(event: InputEvent) -> void:
 				if not sprites.has(id): continue
 				var sprite: Sprite2D = sprites[id]
 				if d.get("is_anchor",false):
-					if event.position.distance_to(sprite.position) <= 14:
+					if event.position.distance_to(sprite.position) <= 14*view_zoom:
 						district_clicked.emit(id)
 						accept_event()
 						return
@@ -90,7 +131,7 @@ func _gui_input(event: InputEvent) -> void:
 
 func _draw() -> void:
 	if cfg == null: return
-	var half := Vector2(float(cfg["tile_half_width"]),float(cfg["tile_half_height"]))
+	var half := Vector2(float(cfg["tile_half_width"]),float(cfg["tile_half_height"]))*view_zoom
 	var occupied: Dictionary = {}
 	if session != null:
 		for d in session.city: occupied[Schema.cell(d)] = d
@@ -122,7 +163,7 @@ func _draw() -> void:
 		for direction in [Vector2i.RIGHT,Vector2i.DOWN]:
 			var neighbor: Vector2i = cell+direction
 			if occupied.has(neighbor) and occupied[neighbor].get("anchor_id","") == family:
-				draw_line(point(cell),point(neighbor),Color("aaa592"),3.0,true)
+				draw_line(point(cell),point(neighbor),Color("aaa592"),3.0*view_zoom,true)
 	# Highlight the estate perimeter once instead of drawing a ring around every house.
 	var edge_directions := [Vector2i.LEFT,Vector2i.UP,Vector2i.RIGHT,Vector2i.DOWN]
 	var edge_vertices := [Vector2(-half.x,0),Vector2(0,-half.y),Vector2(half.x,0),Vector2(0,half.y)]
@@ -141,10 +182,11 @@ func _draw() -> void:
 		if d["district_id"] == selected_id:
 			draw_polyline(PackedVector2Array([center+Vector2(-half.x,0),center+Vector2(0,-half.y),center+Vector2(half.x,0),center+Vector2(0,half.y),center+Vector2(-half.x,0)]),Color("ffd98a"),2.5,true)
 		if d.get("is_anchor",false):
-			draw_arc(center,11,0,TAU,32,Color("ffd98a"),1.5,true)
+			draw_arc(center,11*view_zoom,0,TAU,32,Color("ffd98a"),1.5,true)
 
 func _process(_delta: float) -> void:
 	if session == null or buildings == null: return
+	if pan_active and not Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE): pan_active = false
 	var clock := get_node("/root/AudioClock")
 	var audible := float(clock.renderer.transport.audible_frame)
 	var gray: float = clock.renderer.source.get_object().synth.gray_level(int(audible),clock.renderer.transport.sample_rate) if clock.renderer.source.is_valid() else 0.0
@@ -178,7 +220,7 @@ func _process(_delta: float) -> void:
 			if d.get("is_anchor",false):
 				sprite.texture = point_texture
 				sprite.offset = Vector2(-24,-24)
-				sprite.scale = Vector2.ONE
+				sprite.scale = Vector2.ONE*view_zoom
 			else:
 				var candidates: Array = by_type[d["type"]]
 				var index := 0 if form == "胚" else (1 if form == "群" else 2)
@@ -195,7 +237,7 @@ func _process(_delta: float) -> void:
 				var pixels_per_world := 2048.0*2048.0/(camera_span*maxf(float(crop[2]),float(crop[3])))
 				var fit := float(cfg["plot_coverage"])/maxf(float(bounds[0]),float(bounds[2]))
 				var world_to_screen := float(cfg["tile_half_width"])*sqrt(2.0)
-				sprite.scale = Vector2.ONE*world_to_screen*fit/pixels_per_world
+				sprite.scale = Vector2.ONE*world_to_screen*fit*view_zoom/pixels_per_world
 				sprite.set_meta("asset_id",entry["id"])
 		if events.has(id) and event_seen.get(id,-1) != events[id]["frame"]:
 			event_seen[id] = events[id]["frame"]
@@ -203,7 +245,7 @@ func _process(_delta: float) -> void:
 		sprites[id].position = point(Schema.cell(d))
 		sprites[id].modulate = Color(1.0-gray*0.35,1.0-gray*0.35,1.0-gray*0.25,0.45 if clock.renderer.transport.audible_frame < int(session.silent_until.get(id,0)) else 1.0)
 		var label: Label = labels[id]
-		label.position = point(Schema.cell(d))+Vector2(-24,15)
+		label.position = point(Schema.cell(d))+Vector2(-24,15*view_zoom)
 		label.text = ("● %s" % form if d.get("is_anchor",false) else "%s %.0f" % [form,d["vitality"]]) if d["type"] != "industrial" else "工业 %.0f" % d["vitality"]
 		label.visible = sprites[id].progress >= 1.0 and (id == selected_id or Schema.cell(d) == hover_cell)
 	queue_redraw()

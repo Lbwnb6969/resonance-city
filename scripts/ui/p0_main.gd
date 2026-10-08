@@ -11,6 +11,7 @@ const Preview = preload("res://scripts/proposals/proposal_preview.gd")
 const Presentation = preload("res://scripts/ui/proposal_presentation.gd")
 const PreviewOutput = preload("res://scripts/audio/preview_audio_output.gd")
 const Calibration = preload("res://scripts/audio/loudness_calibration.gd")
+const Values = preload("res://scripts/spec_values.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
 
 @export var start_audio_on_ready := true
@@ -110,6 +111,7 @@ func _build_controls() -> void:
 	beat_progress.show_percentage = false
 	beat_progress.custom_minimum_size.y = 8
 	controls.add_child(beat_progress)
+	_button("复位视角（Home）","ResetView").pressed.connect(func() -> void: city_view.reset_view())
 	var release_button := CheckButton.new()
 	release_button.name = "ReleaseMode"
 	release_button.text = "释放共鸣点：开启后点击地图空格"
@@ -216,6 +218,13 @@ func _build_city_view() -> void:
 	move_child(city_view,1)
 	city_view.district_clicked.connect(_select_district)
 	city_view.empty_clicked.connect(_select_empty)
+	var header := ColorRect.new()
+	header.name = "MapHeader"
+	header.color = Color("252c33")
+	header.anchor_right = 1.0
+	header.offset_bottom = float(Values.load_values()["camera"]["header_height"])
+	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	city_view.add_child(header)
 	var title := Label.new()
 	title.text = "共 鸣 之 城"
 	title.position = Vector2(38,34)
@@ -223,7 +232,7 @@ func _build_city_view() -> void:
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	city_view.add_child(title)
 	var hint := Label.new()
-	hint.text = "释放声音，让城市回应。\n住宅 C / 商业 E / 工业 F♯；新增共鸣只来自系统允许音级。"
+	hint.text = "释放声音，让城市回应。\n住宅 C / 商业 E / 工业 F♯；新增共鸣只来自系统允许音级。\n滚轮缩放 · 中键拖动 · Home复位视角"
 	hint.position = Vector2(40,85)
 	hint.add_theme_font_size_override("font_size",15)
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -406,6 +415,9 @@ func _input(event: InputEvent) -> void:
 		set_black_screen(not black_screen)
 	elif event.pressed and event.keycode == KEY_ESCAPE:
 		set_black_screen(false)
+	elif event.pressed and not black_screen and event.keycode == KEY_HOME:
+		city_view.reset_view()
+		get_viewport().set_input_as_handled()
 	elif not black_screen and event.keycode == KEY_SPACE:
 		_preview_down() if event.pressed else _preview_up()
 		get_viewport().set_input_as_handled()
