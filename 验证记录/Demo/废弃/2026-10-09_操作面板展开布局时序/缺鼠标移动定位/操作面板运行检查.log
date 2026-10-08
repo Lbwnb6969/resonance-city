@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+P0_READY seed=4d786078ee95f306 districts=9
+ERROR: CONTROL_PANEL_FAIL details reveal full information and restart
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/control_panel_contract.gd:9)
+       [1] run_check (res://tests/control_panel_contract.gd:118)
+       [2] capture (res://tests/control_panel_contract.gd:48)
+ERROR: CONTROL_PANEL_FAIL folding does not change city/RNG/pending
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/control_panel_contract.gd:9)
+       [1] run_check (res://tests/control_panel_contract.gd:120)
+       [2] click (res://tests/control_panel_contract.gd:26)
+       [3] frames (res://tests/control_panel_contract.gd:14)
+ERROR: CONTROL_PANEL_FAIL return keeps tool and fold states
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/control_panel_contract.gd:9)
+       [1] run_check (res://tests/control_panel_contract.gd:124)
+       [2] key (res://tests/control_panel_contract.gd:34)
+CONTROL_PANEL FAIL checks=28 real_dropdown/map/drag/confirm/cancel/details/black/reachability

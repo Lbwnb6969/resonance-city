@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+P0_READY seed=4d786078ee95f306 districts=9
+TOOL_POPUP index=1 previous=0 visible=true
+KEY_BEFORE code=4194322 down=true focus=-1
+KEY_AFTER visible=true focus=0
+KEY_BEFORE code=4194322 down=true focus=0
+KEY_AFTER visible=true focus=0
+KEY_BEFORE code=4194309 down=false focus=0
+KEY_AFTER visible=false focus=-1
+KEY_BEFORE code=4194309 down=false focus=-1
+KEY_AFTER visible=false focus=-1
+ERROR: CONTROL_PANEL_FAIL real tool dropdown selection 1
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/control_panel_contract.gd:9)
+       [1] tool (res://tests/control_panel_contract.gd:43)
+       [2] frames (res://tests/control_panel_contract.gd:12)

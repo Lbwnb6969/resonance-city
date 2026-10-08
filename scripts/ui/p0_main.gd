@@ -50,6 +50,9 @@ var forecast_available := false
 var draft_button: CheckButton
 var draft_bias: OptionButton
 var draft_state: Label
+var map_tool: OptionButton
+var tool_hint: Label
+var details_button: Button
 var diagnosis_button: CheckButton
 var reduced_motion_button: CheckButton
 var diagnosis_legend: Label
@@ -111,6 +114,7 @@ func _demo_theme() -> Theme:
 		result.set_color("font_color",kind,Color("526473"))
 		result.set_color("font_hover_color",kind,Color("40586b"))
 		result.set_color("font_pressed_color",kind,Color("40586b"))
+		result.set_color("font_hover_pressed_color",kind,Color("40586b"))
 		result.set_color("font_disabled_color",kind,Color("9eabb4"))
 	for state in ["normal","hover","pressed","disabled"]:
 		var box := StyleBoxFlat.new()
@@ -159,6 +163,12 @@ func _build_controls() -> void:
 	beat_progress.custom_minimum_size.y = 8
 	controls.add_child(beat_progress)
 	_button("复位视角（Home）","ResetView").pressed.connect(func() -> void: city_view.reset_view())
+	map_tool = OptionButton.new()
+	map_tool.name = "MapTool"
+	for text in ["地图工具 · 浏览与选择","地图工具 · 释放共鸣点","地图工具 · 划定引力","地图工具 · 踩路径"]:
+		map_tool.add_item(text)
+	controls.add_child(map_tool)
+	map_tool.item_selected.connect(_set_map_tool)
 	release_button = CheckButton.new()
 	release_button.name = "ReleaseMode"
 	release_button.text = "释放共鸣点：开启后点击地图空格"
@@ -223,6 +233,8 @@ func _build_controls() -> void:
 		else:
 			city_view.tread_candidate.clear())
 	controls.add_child(tread_button)
+	tool_hint = _label("点击建筑，听它的声音或调整方案。","ToolHint")
+	tool_hint.add_theme_font_size_override("font_size",14)
 	_button("重新开始这座城市","Restart").pressed.connect(func() -> void: get_tree().reload_current_scene())
 	_label("释放：点空格。引力：拖动划线。迁移：选迁移后点空格。B黑屏，Esc返回。","Instructions")
 	district_select = OptionButton.new()
@@ -257,7 +269,7 @@ func _build_controls() -> void:
 	reduced_motion_button.visible = false
 	reduced_motion_button.toggled.connect(func(enabled: bool) -> void: city_view.reduced_motion = enabled)
 	controls.add_child(reduced_motion_button)
-	diagnosis_legend = _label("波纹＝抖 · 短齿＝刺\n选中建筑可看真实邻接。","DiagnosisLegend")
+	diagnosis_legend = _label("波纹＝抖 · 短齿＝刺 · 点选看邻接","DiagnosisLegend")
 	diagnosis_legend.add_theme_font_size_override("font_size",14)
 	diagnosis_legend.visible = false
 	diagnosis_button.toggled.connect(func(enabled: bool) -> void:
@@ -322,9 +334,45 @@ func _build_controls() -> void:
 		assist.visible = enabled
 		device.visible = enabled
 		listening.visible = enabled)
-	status = _label("开启释放模式，选择一个音级，然后点击地图空格。","Status")
+	status = _label("从地图工具选择释放共鸣点，或点击建筑调整声音。","Status")
 	condition_text = _label("点击建筑查看它等待的生长条件。","Conditions")
 	prediction = _label("选择方案并长按试听，查看同一副本的收益与代价。","Prediction")
+	details_button = _button("详细信息 / 设置","Details")
+	details_button.toggle_mode = true
+	controls.move_child(details_button,status.get_index())
+	for item in [controls.get_node("Restart"),controls.get_node("Instructions"),advanced,assist,device,listening,condition_text,prediction]:
+		controls.move_child(item,controls.get_child_count()-1)
+	for item in [controls.get_node("Restart"),controls.get_node("Instructions"),condition_text,prediction,advanced]:
+		item.visible = false
+	details_button.toggled.connect(func(enabled: bool) -> void:
+		for item in [controls.get_node("Restart"),controls.get_node("Instructions"),condition_text,prediction,advanced]:
+			item.visible = enabled
+		for item in [assist,device,listening]: item.visible = enabled and advanced.button_pressed)
+	for item in [release_button,draft_button,tread_button]:
+		item.visible = false
+		item.toggled.connect(func(_enabled: bool) -> void: _sync_map_tool())
+	_sync_map_tool()
+
+func _set_map_tool(index: int) -> void:
+	_cancel_audition()
+	release_button.button_pressed = index == 1
+	draft_button.button_pressed = index == 2
+	tread_button.button_pressed = index == 3
+	_sync_map_tool()
+	_update_map_notice()
+
+func _sync_map_tool() -> void:
+	var index := 1 if release_armed else (2 if city_view.draft_mode else (3 if city_view.tread_mode else 0))
+	map_tool.select(index)
+	release_pitch.visible = index == 1
+	draft_bias.visible = index == 2
+	draft_state.visible = index == 2
+	tool_hint.visible = index != 0
+	tool_hint.text = ["点击建筑，听它的声音或调整方案。","选择音级，再点击地图空格；下一乐句落定。","选择偏向，在地图按住左键划出方向。","划过相邻格，先看收益与代价，再确认足迹。"][index]
+	for item in [verb_select,target_select,preview_button]: item.visible = index == 0
+	forecast_summary.visible = index in [0,3]
+	confirm_button.visible = index in [0,3]
+
 
 func _build_city_view() -> void:
 	$Background.color = Color("e9edf2")
@@ -678,7 +726,8 @@ func _input(event: InputEvent) -> void:
 	elif event.pressed and not black_screen and event.keycode == KEY_HOME:
 		city_view.reset_view()
 		get_viewport().set_input_as_handled()
-	elif not black_screen and event.keycode == KEY_SPACE:
+	elif not black_screen and event.keycode == KEY_SPACE and preview_button.is_visible_in_tree() and not preview_button.disabled:
+		if get_viewport().gui_get_focus_owner() is OptionButton: return
 		_preview_down() if event.pressed else _preview_up()
 		get_viewport().set_input_as_handled()
 
