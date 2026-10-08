@@ -75,15 +75,15 @@ func _packages() -> void:
 		summaries.append({"name":package["package"],"version":package["package_version"],"downloaded_at":package["downloaded_at"],"archive_sha256":package["archive_sha256"]})
 	names.sort()
 	test.check(names == ["city-kit-commercial","city-kit-industrial","city-kit-roads","city-kit-suburban"],"Whitelist has all requested kits with no replacements")
-	var statement := FileAccess.get_file_as_string("res://资产/01_原始素材/已购素材/README.md")
-	test.check(statement.contains("不得入库") and statement.contains("构建产物") and statement.contains("资产/2.5D素材/"),"Current prohibited resale-package statement is present")
+	var statement := FileAccess.get_file_as_string("res://资产/使用授权说明-2.5D素材.md")
+	test.check(statement.contains("已授权") and statement.contains("本项目") and statement.contains("资产/2.5D素材/"),"Current user-authorized material statement is present")
 	var resource_files := _resource_files("res://资源")
 	var approved_only := true
 	for file in resource_files:
 		if file.ends_with(".tscn") or file.ends_with(".tres") or file.ends_with(".json"):
 			var text := FileAccess.get_file_as_string(file)
-			approved_only = approved_only and not text.contains("res://资产/") and not text.contains("2.5D素材")
-	test.check(approved_only,"Current runtime resource references exclude ignored/resale sources")
+			approved_only = approved_only and not text.contains("res://资产/")
+	test.check(approved_only,"Current runtime references exclude the ignored original asset tree")
 	test.details = {"packages":summaries,"resource_file_count":resource_files.size(),"baked_assets":"PENDING","final_export_audit":"PENDING"}
 	test.finish(self,"Real archive/extraction/license verification; final baked/export dependencies pending")
 

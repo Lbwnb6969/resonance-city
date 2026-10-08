@@ -26,7 +26,7 @@ for path in specs:
             assert field in body, f'{rid} missing {field}'
 assert not (root / '文档/游戏策划案v3-共鸣之城.md').exists()
 assert (root / 'PROJECT.md').is_file()
-assert (root / '资产/01_原始素材/已购素材/README.md').is_file()
+assert (root / '资产/使用授权说明-2.5D素材.md').is_file()
 print(f'DOC_CONTRACT PASS specs={len(specs)} rules={len(seen)}')
 '@ | python -
 git diff --check
@@ -53,7 +53,7 @@ git diff --check
 | AUDIO-003 | `tests/mix_contract.gd` / `ducking` | 逐轨验证白名单、drone不受父总线压低 | 只测Master响度 |
 | AUDIO-004 | `tests/mix_contract.gd` / `beat_assist` | OFF/ON/手动窄带；LUFS/峰值/RMS报告 | 默认路径辅助未关却说真实拍频通过 |
 | AUDIO-005 | `tests/mix_contract.gd` / `signal_protection` | 固定音高drone与衰败听感记录 | drone应用±3%随机音高 |
-| ASSET-001 | `tests/asset_contract.gd` / `license` | 来源/许可文件/白名单与构建依赖 | 转售包或派生图进入成品 |
+| ASSET-001 | `tests/asset_contract.gd` / `license` | 来源/许可文件/白名单与构建依赖 | 未登记来源/授权或运行时直接依赖原件 |
 | ASSET-002 | `tests/asset_contract.gd` / `baked_sprite` | 1整图/栋、独立预览与主图、窗光统一 | 把512px预览当主图 |
 | ASSET-003 | `tests/asset_contract.gd` / `import_scope` | 被忽略原件无导入记录、资源/成品可load | 运行时依赖被.gdignore隐藏 |
 | ASSET-004 | `tests/asset_contract.gd` / `quality` | ≥2048px、边缘、抽检10%与三格人工记录 | 把尺寸通过当观感通过 |
@@ -202,7 +202,7 @@ PERF-001计划入口：
 
 入口待实现，必须以有画面的实际Compatibility渲染测试；headless不能证明60fps。记录700栋整图、全屏窗光、粒子系统≤12、Y排序树深≤6；硬件/视口/缩放/统计时段固定后才裁定PASS（U12）。压力fixture独立于16×16声学地图。
 
-资产脚本还需提供`--case packages`（四包版本/下载日期/许可证存在）和`--case palette`（基础1张24槽色板）。未下载不得填写已完成；原件禁入库声明完成不代表构建依赖审计已通过。
+资产脚本还需提供`--case packages`（四包版本/下载日期/许可证存在）和`--case palette`（基础1张24槽色板）。未下载不得填写已完成；使用授权说明完成不代表构建依赖审计已通过。
 
 ## 6. 通过与停工记录
 
