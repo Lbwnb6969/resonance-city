@@ -420,13 +420,14 @@
     "maximum_zoom": 2.8,
     "wheel_multiplier": 1.15,
     "header_height": 156.0,
-    "origin_y": 174.0
+    "origin_y": 174.0,
+    "smooth_seconds": 0.7
   },
   "sources": {
     "spec.audio.md": "d64268ff1e77ead40288c02cb446d0b28fa7df71635871dfb6b9e08e1fe9082d",
     "spec.city.md": "e9f38737f2c8a0fb0eea92b03fb76ac535a6d0e40e06cb0b5cf906fd3cc68d07",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "e36ae7db6a24f5e066c5686336b3b8d5a6c115657a84191ea8a2324091073166",
-    "spec.ui.md": "7897d3dc33757a9003485b7af1c7bcaf7bffb0347653bc8fc5146ba4ba82b968"
+    "spec.ui.md": "ed80040a4a8228106e0e6f5865b2d52739a243071282ee089bd6d779834301d2"
   }
 }

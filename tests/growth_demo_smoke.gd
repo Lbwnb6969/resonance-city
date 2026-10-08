@@ -46,6 +46,7 @@ func run_demo() -> void:
 			wheel.button_index = MOUSE_BUTTON_WHEEL_UP
 			wheel.pressed = true
 			view._gui_input(wheel)
+		await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
 		assert(view.view_zoom > 2.0 and view.cell_at(cursor) == chosen)
 		var middle := InputEventMouseButton.new()
 		middle.button_index = MOUSE_BUTTON_MIDDLE
@@ -79,6 +80,7 @@ func run_demo() -> void:
 			await RenderingServer.frame_post_draw
 			get_root().get_texture().get_image().save_png("res://验证记录/Demo/镜头推近.png")
 		main.controls.get_node("ResetView").pressed.emit()
+		await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
 		assert(view.view_zoom == 1.0 and view.view_pan == Vector2.ZERO)
 		assert(view.cell_at(view.point(chosen)) == chosen and main.model.session.city == before)
 		print("DEMO_CAMERA PASS wheel_anchor + pan + clicked_building + reset + unchanged_city")
@@ -105,6 +107,7 @@ func run_demo() -> void:
 		assert(main.model.session.draft_pause_until == at+main.clock.renderer.transport.phrase_frame(1))
 		if DisplayServer.get_name() != "headless":
 			main.city_view.zoom_at(main.city_view.point(chosen),1.8)
+			await create_timer(float(main.city_view.camera_cfg["smooth_seconds"])+0.05).timeout
 			await process_frame
 			await RenderingServer.frame_post_draw
 			get_root().get_texture().get_image().save_png("res://验证记录/Demo/引力带.png")
@@ -116,6 +119,7 @@ func run_demo() -> void:
 		assert(main.model.session.city.size() == count+1)
 		assert(main.model.synth.routing.size() == main.model.session.city.size())
 		main.city_view.reset_view()
+		await create_timer(float(main.city_view.camera_cfg["smooth_seconds"])+0.05).timeout
 		print("DEMO_DRAFT PASS actual_drag + boundary_commit + redraw_one_phrase + resumed_routes")
 	main.set_black_screen(true)
 	assert(not main.city_view.visible and not main.panel.visible)

@@ -235,6 +235,7 @@ def generate():
         'wheel_multiplier': numbers(camera['缩放'])[3],
         'header_height': numbers(camera['裁剪'])[0],
         'origin_y': numbers(camera['地图默认原点'])[0],
+        'smooth_seconds': numbers(camera['镜头缓动'])[0]/1000,
     }
     result['sources'] = {name: hashlib.sha256(read(name).encode()).hexdigest()
                          for name in ['spec.audio.md', 'spec.city.md', 'spec.harmony.md', 'spec.proposal.md', 'spec.ui.md']}

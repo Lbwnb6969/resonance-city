@@ -64,6 +64,7 @@ func _ready() -> void:
 	if "--performance-fixture=700" in OS.get_cmdline_user_args():
 		get_tree().change_scene_to_file.call_deferred("res://scenes/performance_fixture.tscn")
 		return
+	theme = _demo_theme()
 	var seed := RandomStreams.current_daily_seed()
 	var daily := true
 	for arg in OS.get_cmdline_user_args():
@@ -92,6 +93,38 @@ func _ready() -> void:
 	_rebuild_targets()
 	set_black_screen(black_screen)
 	print("P0_READY seed=%s districts=%d" % [generation["seed"],model.session.city.size()])
+
+func _demo_theme() -> Theme:
+	var result := Theme.new()
+	result.default_font_size = 16
+	for kind in ["Label","Button","OptionButton","CheckButton"]:
+		result.set_color("font_color",kind,Color("526473"))
+		result.set_color("font_hover_color",kind,Color("40586b"))
+		result.set_color("font_pressed_color",kind,Color("40586b"))
+		result.set_color("font_disabled_color",kind,Color("9eabb4"))
+	for state in ["normal","hover","pressed","disabled"]:
+		var box := StyleBoxFlat.new()
+		box.bg_color = Color("f6f5f1") if state == "normal" else (Color("efe2d4") if state in ["hover","pressed"] else Color("e4e9ec"))
+		box.border_color = Color(1.0,1.0,1.0,0.7)
+		box.set_border_width_all(1)
+		box.set_corner_radius_all(6)
+		box.content_margin_left = 9
+		box.content_margin_right = 9
+		box.content_margin_top = 5
+		box.content_margin_bottom = 5
+		result.set_stylebox(state,"Button",box)
+		result.set_stylebox(state,"OptionButton",box)
+	for state in ["background","fill"]:
+		var box := StyleBoxFlat.new()
+		box.bg_color = Color("d6dfe5") if state == "background" else Color("bca99a")
+		box.set_corner_radius_all(3)
+		result.set_stylebox(state,"ProgressBar",box)
+	for state in ["grabber","grabber_highlight","grabber_pressed"]:
+		var box := StyleBoxFlat.new()
+		box.bg_color = Color("b6c3cb")
+		box.set_corner_radius_all(3)
+		result.set_stylebox(state,"VScrollBar",box)
+	return result
 
 func _label(text: String, node_name: String) -> Label:
 	var label := Label.new()
@@ -230,7 +263,7 @@ func _build_controls() -> void:
 	prediction = _label("选择方案并长按试听，查看同一副本的收益与代价。","Prediction")
 
 func _build_city_view() -> void:
-	$Background.color = Color("252c33")
+	$Background.color = Color("e9edf2")
 	panel.anchor_left = 0.69
 	panel.offset_left = 12
 	panel.offset_top = 20
@@ -257,7 +290,7 @@ func _build_city_view() -> void:
 	city_view.draft_requested.connect(_submit_draft)
 	var header := ColorRect.new()
 	header.name = "MapHeader"
-	header.color = Color("252c33")
+	header.color = Color("e9edf2")
 	header.anchor_right = 1.0
 	header.offset_bottom = float(Values.load_values()["camera"]["header_height"])
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -458,7 +491,7 @@ func set_black_screen(enabled: bool) -> void:
 	black_screen = enabled
 	panel.visible = not enabled
 	if is_instance_valid(city_view): city_view.visible = not enabled
-	$Background.color = Color.BLACK if enabled else Color("252c33")
+	$Background.color = Color.BLACK if enabled else Color("e9edf2")
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN if enabled else Input.MOUSE_MODE_VISIBLE
 
 func _input(event: InputEvent) -> void:
