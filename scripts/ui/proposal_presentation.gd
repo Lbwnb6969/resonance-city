@@ -44,7 +44,10 @@ static func describe(result: Dictionary) -> Dictionary:
 	var cost := "改造 %+.0f 活力" % params["retune_cost"] if choice.get("verb") == "retune" else "该街区静音 %d 乐句（%.0f 秒）；原邻居失去相应关系" % [params["relocate_silent_phrases"],phrase_seconds*int(params["relocate_silent_phrases"])]
 	if choice.get("verb") == "release":
 		cost = "共鸣点占1格；下一乐句参与和声并吸引生长"
-	if choice.get("on_grid",false) and choice.get("verb") != "release":
+	if choice.get("verb") == "tread":
+		cost = "足迹 %d/%d；无固定R/V扣除" % [choice["tread_count"],values["tread"]["threshold"]]
+		if choice["formed"]: cost += "；成路后本局不可撤销，切断该边邻接；家族断连%d栋" % choice["disconnected"].size()
+	if choice.get("on_grid",false) and choice.get("verb") not in ["release","draft","tread"]:
 		cost += "；含可选卡拍 %+.0f" % params["landing_bonus"]
 	var text := "预期 R：%.2f → %.2f\n代价：%s\n下个乐句活力：%s\n%s" % [
 		result["before_r"],result["after_r"],cost,"；".join(vitality),
@@ -70,4 +73,6 @@ static func summary(result: Dictionary) -> String:
 		elif full["old_edges"][key] != full["new_edges"][key]: changed += 1
 	for key in full["new_edges"]:
 		if not full["old_edges"].has(key): added += 1
+	if result["choice"].get("verb","") == "tread":
+		return "预期谐振度：%.2f → %.2f\n%s\n失去%d条邻接；其他活力变化见下方明细。" % [result["before_r"],result["after_r"],full["cost"],lost]
 	return "预期谐振度：%.2f → %.2f\n所选活力：%.1f → %.1f\n代价：%s\n邻接新增%d / 失去%d / 音程改变%d；明细见下方。" % [result["before_r"],result["after_r"],before_v,after_v,full["cost"],added,lost,changed]

@@ -5,6 +5,8 @@ extends RefCounted
 const Values = preload("res://scripts/spec_values.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
 
+const Roads = preload("res://scripts/city/city_roads.gd")
+var road_marks: Dictionary = {}
 var values: Dictionary
 var districts: Array
 var active_layers: Array[String] = ["drone", "rhythm", "ornament"]
@@ -36,7 +38,8 @@ var gray_alpha: Dictionary = {}
 var gray_hold_frames: Dictionary = {}
 var _last_raw_layers := Vector2.ZERO
 
-func _init(city: Array) -> void:
+func _init(city: Array, marks: Dictionary = {}) -> void:
+	road_marks = marks.duplicate(true)
 	values = Values.load_values()
 	assist_enabled = bool(values["assist"]["default_enabled"])
 	device_mode = str(values["assist"]["default_mode"])
@@ -280,7 +283,7 @@ func _rebuild_assist_neighbors(city: Array) -> void:
 		var id: String = district["district_id"]
 		var neighbors: Array[String] = []
 		for other in city:
-			if (Schema.cell(district)-Schema.cell(other)).length_squared() == 1:
+			if (Schema.cell(district)-Schema.cell(other)).length_squared() == 1 and not Roads.blocked(road_marks,Schema.cell(district),Schema.cell(other)):
 				neighbors.append(str(other["district_id"]))
 		neighbors.sort()
 		assist_neighbors[id] = neighbors
@@ -480,7 +483,8 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			_guard_step(state,raw_drone[offset],raw_other[offset],rate)
 	return block
 
-func update_city(city: Array, state: Dictionary) -> void:
+func update_city(city: Array, state: Dictionary, marks: Dictionary = {}) -> void:
+	road_marks = marks.duplicate(true)
 	districts = city.duplicate(true)
 	_rebuild_assist_neighbors(city)
 	for district in city:

@@ -224,7 +224,7 @@ UI-004 visual_clock_contract.gd入口已实现：headless验证可听音频帧/�
 
 ## CITY-004：Demo优先的最小运行入口
 
-本次用户批准城市生长P1-α且要求减少检测。`& "D:/GODOT/Godot_v4.7.2-stable_win64_console.exe" --audio-driver Dummy --path . --script res://tests/growth_demo_smoke.gd` 只证明实际场景/合法release/乐句扩张与形态/声音路由/黑屏恢复可运行，不是人工体验或实时压力验收。F5/启动Demo.cmd直接游玩；操作见../Demo快速开始.md。tread与稀有命名形态等未批准项继续待裁定；draft已于第32轮按用户批准接入。
+本次用户批准城市生长P1-α且要求减少检测。`& "D:/GODOT/Godot_v4.7.2-stable_win64_console.exe" --audio-driver Dummy --path . --script res://tests/growth_demo_smoke.gd` 只证明实际场景/合法release/乐句扩张与形态/声音路由/黑屏恢复可运行，不是人工体验或实时压力验收。F5/启动Demo.cmd直接游玩；操作见../Demo快速开始.md。稀有命名形态等未批准项继续待裁定；draft已于第32轮、tread已于第37轮按用户批准接入。
 
 UI-004镜头操作复用上述场景入口追加`-- --camera`：实际放大→拖动→点选正确房屋→复位，城市状态不变；GPU截图留镜头推近.png。这只证明镜头/点击共用变换，不代替视觉优先等价性或压力验收。
 
@@ -233,3 +233,5 @@ PROPOSAL-004引力带：复用Demo入口追加`-- --draft`，受控位置变化/
 CITY-004协调社区复用入口追加`-- --community --camera --draft`：实际整图配对、住宅模板变化、第二逻辑格独立点选、声部路由保留，同时验证镜头与引力操作。截图协调房群.png，日志房群运行检查.log。模拟乐句只验证场景行为，不证明真人观感或完整声画长期性能。
 
 CITY-004释放反馈复用场景入口追加`-- --placement`：只读悬停及缩放不改快照、实际鼠标提交、非法位置保留旧pending、取消无残留与已结束限制。保存释放位置反馈.png及放置反馈运行检查.log；必须检查日志无Assertion/解析错误，单独exit0不足以证明场景检查通过。
+
+PROPOSAL-005踩路径：复用实际GPU Demo入口追加`-- --tread`。必须验证真实拖动→只读预览→确认→未来边界落定；前两次保留邻接，第三次成路切边；反向归一、覆盖/取消、实际R/V同图一致、道路固定世界边界、家族断连保留成熟形态、跨边配对拆分保留声音、阻止跨边扩张与快照一致。日志必须无Assertion/脚本错误且exit0，截图踩路径足迹.png/踩路径成路预览.png/踩路径成路.png。有限模拟乐句/Dummy不证明物理音频、长期性能或人工体验；不要求重复压力/频谱/导出。

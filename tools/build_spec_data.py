@@ -227,6 +227,8 @@ def generate():
         'redraw_pause_phrases': int(numbers(draft['重划代价'])[0]),
         'allowed_biases': ['residential', 'commercial'],
     }
+    tread = dict(table(proposal, '## 表 P6 ·'))
+    result['tread'] = {'threshold': int(numbers(tread['成路阈值'])[0])}
     camera = dict(table(ui, '## 表 U7 ·'))
     result['camera'] = {
         'default_zoom': numbers(camera['缩放'])[0],

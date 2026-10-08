@@ -2,6 +2,7 @@ class_name CityInterventions
 extends RefCounted
 ## Pure city transaction used by playback and preview forks.
 
+const Roads = preload("res://scripts/city/city_roads.gd")
 const Growth = preload("res://scripts/city/city_growth.gd")
 const Values = preload("res://scripts/spec_values.gd")
 const Harmony = preload("res://scripts/city/harmony.gd")
@@ -24,11 +25,13 @@ var last_result: Dictionary = {}
 var growth_enabled := false
 var growth_serial := 0
 var growth_values: Dictionary = {}
+var road_marks: Dictionary = {}
 var gravity_band: Dictionary = {}
 var draft_pause_until := 0
 
 func _init(initial_city: Array, seed: String, random_state: Dictionary = {}) -> void:
 	city = initial_city.duplicate(true)
+	harmony.road_marks = road_marks
 	rng = RandomStreams.new(seed)
 	if not random_state.is_empty():
 		rng.restore(random_state)
@@ -111,7 +114,17 @@ func request_release(midi: int, target: Vector2i, rendered_frames: int, audible_
 func request_draft(start: Vector2i, end: Vector2i, bias: String, rendered_frames: int, audible_frame: float) -> Dictionary:
 	return request({"verb":"draft","proposal_id":"draft","start":[start.x,start.y],"end":[end.x,end.y],"bias":bias},rendered_frames,audible_frame)
 
+func request_tread(start: Vector2i, end: Vector2i, rendered_frames: int, audible_frame: float) -> Dictionary:
+	return request({"verb":"tread","proposal_id":"tread","start":[start.x,start.y],"end":[end.x,end.y]},rendered_frames,audible_frame)
+
 func _legal(choice: Dictionary) -> bool:
+	if choice.get("verb","") == "tread":
+		if not growth_enabled: return false
+		for name in ["start","end"]:
+			if not choice.get(name) is Array or choice[name].size() != 2: return false
+		var a := Vector2i(int(choice["start"][0]),int(choice["start"][1]))
+		var b := Vector2i(int(choice["end"][0]),int(choice["end"][1]))
+		return Roads.valid(a,b) and not Roads.blocked(road_marks,a,b)
 	if choice.get("verb","") == "draft":
 		if not growth_enabled or choice.get("bias","") not in growth_values["draft"]["allowed_biases"]: return false
 		for key in ["start","end"]:
@@ -159,6 +172,7 @@ func settle(at: int) -> Dictionary:
 		return last_result.duplicate(true)
 	var before := city.duplicate(true)
 	var old_edges := harmony.adjacency(before)
+	var old_roads := road_marks.duplicate(true)
 	for id in silent_until.keys():
 		if at >= int(silent_until[id]):
 			silent_until.erase(id)
@@ -173,6 +187,15 @@ func settle(at: int) -> Dictionary:
 				if applied["redrawn"]:
 					draft_pause_until = at+transport.phrase_frame(int(growth_values["draft"]["redraw_pause_phrases"]))
 				gravity_band = next
+			elif applied.get("verb","") == "tread":
+				var a := Vector2i(applied["start"][0],applied["start"][1])
+				var b := Vector2i(applied["end"][0],applied["end"][1])
+				var ends := Roads.endpoints(a,b)
+				var count := Roads.count(road_marks,a,b)+1
+				road_marks[Roads.key(a,b)] = {"start":ends[0],"end":ends[1],"count":count,"frame":at}
+				applied["tread_count"] = count
+				applied["formed"] = Roads.blocked(road_marks,a,b)
+				applied["disconnected"] = []
 			else:
 				var item := proposal(applied["proposal_id"])
 				if applied.get("verb","") == "release":
@@ -203,6 +226,11 @@ func settle(at: int) -> Dictionary:
 		growth_events = Growth.advance(self,at)
 		if applied.get("verb","") == "release":
 			growth_events.append({"district_id":applied["district_id"],"kind":"birth","frame":at+transport.beat_frame(1),"form":"共鸣点"})
+	if applied.get("verb","") == "tread" and applied["formed"]:
+		for d in before:
+			var family: String = d.get("anchor_id","")
+			if not family.is_empty() and Growth.connected(before,family,old_roads).has(d["district_id"]) and not Growth.connected(city,family,road_marks).has(d["district_id"]):
+				applied["disconnected"].append(d["district_id"])
 	var edges := harmony.adjacency(city)
 	var resonance := harmony.resonance(city,edges)
 	var next_v := harmony.vitality(city,edges,resonance,costs)
@@ -220,11 +248,13 @@ func settle(at: int) -> Dictionary:
 
 func snapshot() -> Dictionary:
 	return {"city":city.duplicate(true),"rng":rng.snapshot(),"phrase_index":phrase_index,
-		"growth_enabled":growth_enabled,"growth_serial":growth_serial,"gravity_band":gravity_band.duplicate(true),"draft_pause_until":draft_pause_until,"refresh_cycle":refresh_cycle,"catalog":catalog.duplicate(true),"pending":pending.duplicate(true),
+		"growth_enabled":growth_enabled,"growth_serial":growth_serial,"road_marks":road_marks.duplicate(true),"gravity_band":gravity_band.duplicate(true),"draft_pause_until":draft_pause_until,"refresh_cycle":refresh_cycle,"catalog":catalog.duplicate(true),"pending":pending.duplicate(true),
 		"silent_until":silent_until.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_result":last_result.duplicate(true)}
 
 func restore(saved: Dictionary) -> void:
 	city = saved["city"].duplicate(true)
+	road_marks = saved.get("road_marks",{}).duplicate(true)
+	harmony.road_marks = road_marks
 	rng.restore(saved["rng"])
 	phrase_index = int(saved["phrase_index"])
 	growth_enabled = bool(saved.get("growth_enabled",false))

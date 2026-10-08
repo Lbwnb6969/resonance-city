@@ -1,6 +1,7 @@
 class_name P0Main
 extends Control
 
+const Roads = preload("res://scripts/city/city_roads.gd")
 const CityView = preload("res://scripts/visual/city_demo_view.gd")
 const Growth = preload("res://scripts/city/city_growth.gd")
 const Generator = preload("res://scripts/city/city_generator.gd")
@@ -43,6 +44,9 @@ var beat_progress: ProgressBar
 var population := 0
 var release_armed := false
 var release_button: CheckButton
+var tread_button: CheckButton
+var tread_choice: Dictionary = {}
+var forecast_available := false
 var draft_button: CheckButton
 var draft_bias: OptionButton
 var draft_state: Label
@@ -161,7 +165,13 @@ func _build_controls() -> void:
 		if enabled and is_instance_valid(draft_button):
 			draft_button.set_pressed_no_signal(false)
 			city_view.draft_mode = false
-			city_view.draft_start = Vector2i(-1,-1))
+			city_view.draft_start = Vector2i(-1,-1)
+		if enabled and is_instance_valid(tread_button):
+			tread_button.set_pressed_no_signal(false)
+			city_view.tread_mode = false
+			city_view.tread_start = Vector2i(-1,-1)
+			city_view.tread_candidate.clear()
+			forecast_key = "")
 	controls.add_child(release_button)
 	release_pitch = OptionButton.new()
 	release_pitch.name = "ReleasePitch"
@@ -179,7 +189,12 @@ func _build_controls() -> void:
 		if enabled:
 			release_button.set_pressed_no_signal(false)
 			release_armed = false
-			city_view.release_mode = false)
+			city_view.release_mode = false
+			if is_instance_valid(tread_button):
+				tread_button.set_pressed_no_signal(false)
+				city_view.tread_mode = false
+				city_view.tread_candidate.clear()
+			forecast_key = "")
 	controls.add_child(draft_button)
 	draft_bias = OptionButton.new()
 	draft_bias.name = "DraftBias"
@@ -187,6 +202,24 @@ func _build_controls() -> void:
 	draft_bias.add_item("引力偏向 · 商业")
 	controls.add_child(draft_bias)
 	draft_state = _label("暂无引力带；首次划线不暂停扩张。","DraftState")
+	tread_button = CheckButton.new()
+	tread_button.name = "TreadMode"
+	tread_button.text = "踩路径：划过相邻格，再确认足迹"
+	tread_button.toggled.connect(func(enabled: bool) -> void:
+		_cancel_audition()
+		city_view.tread_mode = enabled
+		city_view.tread_start = Vector2i(-1,-1)
+		forecast_key = ""
+		if enabled:
+			release_button.set_pressed_no_signal(false)
+			draft_button.set_pressed_no_signal(false)
+			release_armed = false
+			city_view.release_mode = false
+			city_view.draft_mode = false
+			city_view.draft_start = Vector2i(-1,-1)
+		else:
+			city_view.tread_candidate.clear())
+	controls.add_child(tread_button)
 	_button("重新开始这座城市","Restart").pressed.connect(func() -> void: get_tree().reload_current_scene())
 	_label("释放：点空格。引力：拖动划线。迁移：选迁移后点空格。B黑屏，Esc返回。","Instructions")
 	district_select = OptionButton.new()
@@ -250,6 +283,10 @@ func _build_controls() -> void:
 		model.session.cancel_pending()
 		city_view.preview_cell = Vector2i(-1,-1)
 		city_view.draft_start = Vector2i(-1,-1)
+		city_view.tread_candidate.clear()
+		tread_choice.clear()
+		forecast_key = ""
+		_refresh_prediction()
 		_cancel_audition()
 		status.text = "已取消待提交介入。"
 		_update_map_notice())
@@ -294,6 +331,7 @@ func _build_city_view() -> void:
 	city_view.district_clicked.connect(_select_district)
 	city_view.empty_clicked.connect(_select_empty)
 	city_view.draft_requested.connect(_submit_draft)
+	city_view.tread_selected.connect(_select_tread)
 	var header := ColorRect.new()
 	header.name = "MapHeader"
 	header.color = Color("e9edf2")
@@ -383,6 +421,15 @@ func _submit_draft(start: Vector2i, end: Vector2i) -> void:
 	else:
 		status.text = "引力线未提交：请在地图内拖动到不同格子。"
 
+func _select_tread(start: Vector2i,end: Vector2i) -> void:
+	_cancel_audition()
+	tread_choice = {"verb":"tread","proposal_id":"tread","start":[start.x,start.y],"end":[end.x,end.y]}
+	city_view.tread_candidate = tread_choice.duplicate(true)
+	forecast_key = ""
+	_refresh_prediction()
+	_update_map_notice()
+	status.text = "足迹已选：查看收益与代价，再按确认。第三次成路后本局不可撤销。"
+
 func diagnostic_state() -> Dictionary:
 	return {"guard_factor":clock.renderer.state.get("_guard_factor",1.0),"calibration":calibration.duplicate(true),"gain":model.synth.gain,"assist_enabled":model.synth.assist_enabled,"device_mode":model.synth.device_mode,"skips":clock.underruns,"preview_skips":preview_skips,"phase":model.session.phrase_index,
 		"black":black_screen,"panel":panel.visible,"mouse_mode":Input.mouse_mode,
@@ -413,24 +460,33 @@ func _choice_changed() -> void:
 	_refresh_prediction()
 
 func _refresh_prediction() -> void:
-	if selected_choice.is_empty():
-		forecast_summary.text = "该街区暂无此类合法提案。"
+	var choice: Dictionary = tread_choice if city_view.tread_mode else selected_choice
+	preview_button.disabled = city_view.tread_mode or choice.is_empty()
+	confirm_button.text = "确认足迹：下一乐句落定" if city_view.tread_mode else "确认：下一乐句边界落定"
+	if choice.is_empty():
+		forecast_available = false
+		forecast_summary.text = "划过相邻格，查看累计足迹及成路影响。" if city_view.tread_mode else "该街区暂无此类合法提案。"
+		confirm_button.disabled = true
 		return
 	var period := clock.renderer.transport.phrase_frame(1)
 	var on_grid := model.session.is_on_grid(clock.renderer.transport.audible_frame)
-	var key := "%s:%s:%d:%d:%s" % [selected_choice["proposal_id"],JSON.stringify(selected_choice["target"]),model.session.phrase_index,clock.renderer.transport.rendered_frames/period,on_grid]
+	var key := "%s:%d:%d:%s" % [JSON.stringify(choice),model.session.phrase_index,clock.renderer.transport.rendered_frames/period,on_grid]
 	if key == forecast_key: return
 	forecast_key = key
-	var expected := Preview.forecast(model.session,selected_choice,clock.renderer.transport.rendered_frames,clock.renderer.transport.audible_frame)
+	var expected := Preview.forecast(model.session,choice,clock.renderer.transport.rendered_frames,clock.renderer.transport.audible_frame)
+	forecast_available = bool(expected["accepted"])
+	confirm_button.disabled = not forecast_available or bool(model.session.lifecycle["ended"])
 	if expected["accepted"]:
 		forecast_summary.text = Presentation.summary(expected["result"])
 		prediction.text = Presentation.describe(expected["result"])["text"]
 	else:
-		forecast_summary.text = expected["reason"]
-		prediction.text = expected["reason"]
+		var reason: String = expected["reason"]
+		if city_view.tread_mode and Roads.blocked(model.session.road_marks,Vector2i(choice["start"][0],choice["start"][1]),Vector2i(choice["end"][0],choice["end"][1])): reason = "该边已成路，本局不可撤销。可选择另一条边。"
+		forecast_summary.text = reason
+		prediction.text = reason
 
 func _preview_down() -> void:
-	if selected_choice.is_empty() or black_screen or bool(model.session.lifecycle["ended"]):
+	if city_view.tread_mode or selected_choice.is_empty() or black_screen or bool(model.session.lifecycle["ended"]):
 		return
 	want_preview = true
 	_start_job()
@@ -489,7 +545,7 @@ func _process(_delta: float) -> void:
 	if condition_selection != _selected_id() or condition_phrase != model.session.phrase_index:
 		condition_selection = _selected_id()
 		condition_phrase = model.session.phrase_index
-		condition_text.text = Growth.describe(model.session.city,model.session.city[district_select.selected])
+		condition_text.text = Growth.describe(model.session.city,model.session.city[district_select.selected],model.session.road_marks)
 	if model.session.phrase_index != display_phrase:
 		display_phrase = model.session.phrase_index
 		if population != model.session.city.size(): _refresh_district_list()
@@ -501,13 +557,16 @@ func _process(_delta: float) -> void:
 			if model.session.refresh_cycle != display_cycle or not model.session.last_result.get("choice",{}).is_empty():
 				_rebuild_targets()
 				display_cycle = model.session.refresh_cycle
-		confirm_button.disabled = selected_choice.is_empty() or bool(model.session.lifecycle["ended"])
+		confirm_button.disabled = not forecast_available or bool(model.session.lifecycle["ended"])
 	if clock.underruns > 0 and not black_screen:
 		status.text = "音频下溢 %d 次：本次运行不用于正式听测。" % clock.underruns
 
 func _update_map_notice() -> void:
 	var text := ""
-	if release_armed:
+	city_view.get_node("MapNotice").offset_top = -176 if city_view.tread_mode else -136
+	if city_view.tread_mode:
+		text = forecast_summary.text+"\n划过先预览，确认才计数；累计3次成路，本局不可撤销。"
+	elif release_armed:
 		var cell := city_view.hover_cell
 		text = "释放 %s · 将鼠标移到地图格子上查看是否可放置。" % release_pitch.get_item_text(release_pitch.selected)
 		if city_view.pointer_inside:
@@ -517,13 +576,13 @@ func _update_map_notice() -> void:
 	else:
 		var district: Dictionary = model.session._district(_selected_id())
 		var kind := "住宅" if district["type"] == "residential" else ("商业" if district["type"] == "commercial" else "工业")
-		var details: PackedStringArray = Growth.describe(model.session.city,district).split("\n")
+		var details: PackedStringArray = Growth.describe(model.session.city,district,model.session.road_marks).split("\n")
 		text = "%s · %s · 活力 %.0f\n%s" % [kind,district.get("form","胚"),district["vitality"],"\n".join(details.slice(0,mini(2,details.size())))]
 	var pending: Dictionary = model.session.pending
 	if not pending.is_empty():
 		var wait := maxf(0.0,float(pending["frame"])-clock.renderer.transport.audible_frame)/clock.renderer.transport.sample_rate
 		var verb: String = pending.get("verb","")
-		var action := "调音" if verb == "retune" else ("迁移" if verb == "relocate" else ("引力带" if verb == "draft" else "共鸣点"))
+		var action := "调音" if verb == "retune" else ("迁移" if verb == "relocate" else ("引力带" if verb == "draft" else ("足迹" if verb == "tread" else "共鸣点")))
 		if verb == "release": action += " (%d,%d)" % [pending["target"][0],pending["target"][1]]
 		text += "\n待落定：%s · %.1f秒；可更换或取消。" % [action,wait]
 	map_notice.text = text
@@ -548,10 +607,11 @@ func _cancel_audition() -> void:
 	AudioServer.unlock()
 
 func _confirm() -> void:
-	if selected_choice.is_empty():
+	var choice: Dictionary = tread_choice if city_view.tread_mode else selected_choice
+	if choice.is_empty():
 		return
 	_cancel_audition()
-	var request := model.session.request(selected_choice,clock.renderer.transport.rendered_frames,clock.renderer.transport.audible_frame)
+	var request := model.session.request(choice,clock.renderer.transport.rendered_frames,clock.renderer.transport.audible_frame)
 	if request["accepted"]:
 		var prediction_copy := model.session.fork()
 		while prediction_copy.transport.phrase_frame(prediction_copy.phrase_index+1) <= int(request["frame"]):

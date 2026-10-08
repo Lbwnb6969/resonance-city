@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+P0_READY seed=4d786078ee95f306 districts=9
+TREAD_POLICY PASS canceled_and_overwritten_marks + exact_RV + independent_world_edges + family_disconnect + stable_mature_forms + snapshots
+DEMO_TREAD PASS actual_drag_preview_confirm + 1_2_keep_edge + third_cut + reverse_same_edge + fork_PCM + split_house_keeps_voices
+DEMO_SMOKE PASS entities=25 forms={ "胚": true, "共鸣点": true, "群": true, "腔": true } real_manifest_sprites=25

@@ -10,14 +10,14 @@ var next_boundary: int
 
 func _init(city_session: CityInterventions) -> void:
 	session = city_session
-	synth = Synth.new(session.city)
+	synth = Synth.new(session.city,session.road_marks)
 	synth.set_gray(bool(session.lifecycle["gray"]),session.transport.phrase_frame(session.phrase_index))
 	next_boundary = session.transport.phrase_frame(session.phrase_index+1)
 
 func _mix_frame(state: Dictionary, at: int, rate: int) -> Vector2:
 	if at == next_boundary:
 		session.settle(at)
-		synth.update_city(session.city,state)
+		synth.update_city(session.city,state,session.road_marks)
 		synth.set_gray(bool(session.lifecycle["gray"]),at)
 		synth.silent_until = session.silent_until.duplicate(true)
 		next_boundary = session.transport.phrase_frame(session.phrase_index+1)
@@ -29,7 +29,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 	while at < start+count:
 		if at == next_boundary:
 			session.settle(at)
-			synth.update_city(session.city,state)
+			synth.update_city(session.city,state,session.road_marks)
 			synth.set_gray(bool(session.lifecycle["gray"]),at)
 			synth.silent_until = session.silent_until.duplicate(true)
 			next_boundary = session.transport.phrase_frame(session.phrase_index+1)
@@ -64,6 +64,7 @@ func restore(saved: Dictionary) -> void:
 	synth.gray_change_at = int(saved["gray_change_at"])
 	synth.assist_enabled = bool(saved["assist_enabled"])
 	synth.device_mode = str(saved["device_mode"])
+	synth.road_marks = session.road_marks.duplicate(true)
 	synth._rebuild_assist_neighbors(session.city)
 
 func fork() -> CityAudioModel:

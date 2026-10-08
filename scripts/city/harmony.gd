@@ -4,6 +4,8 @@ extends RefCounted
 const Values = preload("res://scripts/spec_values.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
 
+const Roads = preload("res://scripts/city/city_roads.gd")
+var road_marks: Dictionary = {}
 var settings: Dictionary
 var space: Dictionary
 
@@ -69,7 +71,7 @@ func adjacency(city: Array) -> Array[Dictionary]:
 	for location in cells:
 		for direction in [Vector2i.RIGHT, Vector2i.DOWN]:
 			var neighbor: Vector2i = location + direction
-			if cells.has(neighbor):
+			if cells.has(neighbor) and not Roads.blocked(road_marks,location,neighbor):
 				result.append({"a": cells[location], "b": cells[neighbor], "shared_boundary_cells": 1})
 	return result
 

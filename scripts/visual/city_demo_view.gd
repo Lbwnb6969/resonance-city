@@ -1,11 +1,13 @@
 class_name CityDemoView
 extends Control
+const Roads = preload("res://scripts/city/city_roads.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
 const Values = preload("res://scripts/spec_values.gd")
 const GrowthMask = preload("res://scripts/visual/audio_growth_mask.gd")
 signal district_clicked(id: String)
 signal empty_clicked(cell: Vector2i)
 signal draft_requested(start: Vector2i, end: Vector2i)
+signal tread_selected(start: Vector2i, end: Vector2i)
 var session: CityInterventions
 var selected_id := ""
 var hover_cell := Vector2i(-1,-1)
@@ -14,6 +16,9 @@ var release_mode := false
 var release_midi := 48
 var pointer_position := Vector2.ZERO
 var pointer_inside := false
+var tread_mode := false
+var tread_start := Vector2i(-1,-1)
+var tread_candidate: Dictionary = {}
 var draft_mode := false
 var draft_start := Vector2i(-1,-1)
 var sprites: Dictionary = {}
@@ -140,6 +145,14 @@ func _gui_input(event: InputEvent) -> void:
 			if pan_active:
 				camera_age = float(camera_cfg["smooth_seconds"])
 				zoom_target = view_zoom
+				tread_start = Vector2i(-1,-1)
+				draft_start = Vector2i(-1,-1)
+			accept_event()
+			return
+		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and tread_start.x >= 0:
+			var end := cell_at(event.position)
+			if event.position.y >= float(camera_cfg["header_height"]) and Roads.valid(tread_start,end): tread_selected.emit(tread_start,end)
+			tread_start = Vector2i(-1,-1)
 			accept_event()
 			return
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and draft_start.x >= 0:
@@ -157,6 +170,10 @@ func _gui_input(event: InputEvent) -> void:
 			return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var cell := cell_at(event.position)
+		if tread_mode:
+			if cell.x >= 0 and cell.y >= 0 and cell.x < 16 and cell.y < 16: tread_start = cell
+			accept_event()
+			return
 		if draft_mode:
 			if cell.x >= 0 and cell.y >= 0 and cell.x < 16 and cell.y < 16: draft_start = cell
 			accept_event()
@@ -205,6 +222,19 @@ func _draw_band(start: Vector2i, end: Vector2i, color: Color) -> void:
 	draw_line(a,b,color,2.0,true)
 	draw_colored_polygon(PackedVector2Array([b,b-direction*12.0+side*6.0,b-direction*12.0-side*6.0]),color)
 	draw_arc(a,4.0*view_zoom,0,TAU,20,color,1.2,true)
+
+func _draw_tread_edge(a: Vector2i,b: Vector2i,count: int,color: Color) -> void:
+	var middle := (point(a)+point(b))*0.5
+	var half := Vector2(float(cfg["tile_half_width"]),float(cfg["tile_half_height"]))*view_zoom
+	var span := (Vector2(-half.x,half.y) if a.x != b.x else Vector2(half.x,half.y))*0.45
+	var formed := count >= int(Roads.settings()["tread"]["threshold"])
+	draw_line(middle-span,middle+span,Color("f5f0e6"),7.0*view_zoom,true)
+	draw_line(middle-span,middle+span,color,(4.0 if formed else 1.2)*view_zoom,true)
+	if not formed:
+		var total := int(Roads.settings()["tread"]["threshold"])
+		for i in range(total):
+			var position := (middle-span).lerp(middle+span,float(i+1)/float(total+1))
+			draw_circle(position,2.4*view_zoom,color if i < count else Color(color,0.22))
 
 func _draw() -> void:
 	if cfg == null: return
@@ -256,8 +286,18 @@ func _draw() -> void:
 		var cell := Schema.cell(d)
 		for direction in [Vector2i.RIGHT,Vector2i.DOWN]:
 			var neighbor: Vector2i = cell+direction
-			if occupied.has(neighbor) and occupied[neighbor].get("anchor_id","") == family:
+			if occupied.has(neighbor) and occupied[neighbor].get("anchor_id","") == family and not Roads.blocked(session.road_marks,cell,neighbor):
 				draw_line(point(cell),point(neighbor),Color("f5f0e6"),3.0*view_zoom,true)
+	var audible := float(get_node("/root/AudioClock").renderer.transport.audible_frame)
+	for mark in session.road_marks.values():
+		var count := int(mark["count"])-(1 if audible < int(mark["frame"]) else 0)
+		if count > 0: _draw_tread_edge(Vector2i(mark["start"][0],mark["start"][1]),Vector2i(mark["end"][0],mark["end"][1]),count,Color("8ca3af"))
+	var candidate: Dictionary = session.pending if session.pending.get("verb","") == "tread" else tread_candidate
+	if not candidate.is_empty():
+		var a := Vector2i(candidate["start"][0],candidate["start"][1])
+		var b := Vector2i(candidate["end"][0],candidate["end"][1])
+		if not Roads.blocked(session.road_marks,a,b): _draw_tread_edge(a,b,Roads.count(session.road_marks,a,b),Color("ba9673"))
+	if tread_start.x >= 0 and Roads.valid(tread_start,hover_cell): _draw_tread_edge(tread_start,hover_cell,0,Color("ba9673"))
 	# Highlight the estate perimeter once instead of drawing a ring around every house.
 	var edge_directions := [Vector2i.LEFT,Vector2i.UP,Vector2i.RIGHT,Vector2i.DOWN]
 	var edge_vertices := [Vector2(-half.x,0),Vector2(0,-half.y),Vector2(half.x,0),Vector2(0,half.y)]
@@ -269,7 +309,7 @@ func _draw() -> void:
 		var color := Color("88aab1") if estate_form == "腔" else (Color("ba9673") if estate_form == "央" else Color("f5f0e6"))
 		for i in range(4):
 			var neighbor: Vector2i = cell+edge_directions[i]
-			if not occupied.has(neighbor) or occupied[neighbor].get("anchor_id","") != family:
+			if not occupied.has(neighbor) or occupied[neighbor].get("anchor_id","") != family or Roads.blocked(session.road_marks,cell,neighbor):
 				draw_line(point(cell)+edge_vertices[i],point(cell)+edge_vertices[(i+1)%4],color,1.6,true)
 	for d in session.city:
 		var center := point(Schema.cell(d))

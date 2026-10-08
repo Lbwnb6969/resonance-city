@@ -40,6 +40,7 @@ func run_demo() -> void:
 	assert(main.model.synth.routing.size() == main.model.session.city.size())
 	assert(forms.has("群") and (forms.has("央") or forms.has("腔")))
 	assert(main.city_view.sprites.size() == main.model.session.city.size())
+	if "--tread" in OS.get_cmdline_user_args(): await _check_tread(main)
 	if "--community" in OS.get_cmdline_user_args():
 		var templates: Dictionary = {}
 		var pairs := 0
@@ -272,3 +273,129 @@ func _check_placement(main: Control, chosen: Vector2i) -> void:
 	await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
 	main.release_armed = true
 	print("DEMO_PLACEMENT PASS readonly_hover + zoom_cursor + actual_click + rejected_cell_preserves_pending + cancel + ended_guard")
+
+
+func _check_tread(main: Control) -> void:
+	_check_tread_policy()
+	var roads = load("res://scripts/city/city_roads.gd")
+	var owner: Dictionary = {}
+	for d in main.model.session.city:
+		if d.has("visual_partner"):
+			owner = d
+			break
+	assert(not owner.is_empty())
+	var other: Dictionary = main.model.session._district(owner["visual_partner"])
+	var a := Vector2i(owner["footprint"][0][0],owner["footprint"][0][1])
+	var b := Vector2i(other["footprint"][0][0],other["footprint"][0][1])
+	var owner_id: String = owner["district_id"]
+	var other_id: String = other["district_id"]
+	main.tread_button.button_pressed = true
+	main.city_view.zoom_at(main.city_view.point(a),2.3)
+	await create_timer(float(main.city_view.camera_cfg["smooth_seconds"])+0.05).timeout
+	for step in range(1,4):
+		_drag_band(main.city_view,b if step == 2 else a,a if step == 2 else b)
+		assert(main.model.session.pending.is_empty() and main.tread_choice.get("verb","") == "tread")
+		assert(main.forecast_summary.text.contains("%d/3" % step))
+		if step == 3:
+			assert(main.forecast_summary.text.contains("不可撤销"))
+			if DisplayServer.get_name() != "headless":
+				await process_frame
+				await RenderingServer.frame_post_draw
+				get_root().get_texture().get_image().save_png("res://验证记录/Demo/踩路径成路预览.png")
+		main.confirm_button.pressed.emit()
+		assert(main.model.session.pending.get("verb","") == "tread")
+		var at: int = main.model.next_boundary
+		var copy = main.model.fork()
+		var renderer = load("res://scripts/audio/sample_renderer.gd").new()
+		renderer.restore(main.clock.renderer.snapshot())
+		renderer.source = copy._mix_frame
+		renderer.transport.rendered_frames = at
+		main.clock.renderer.transport.rendered_frames = at
+		var actual: PackedVector2Array = main.clock.renderer.render(17)
+		assert(actual == renderer.render(17) and copy.session.road_marks == main.model.session.road_marks)
+		main.clock.renderer.transport.audible_frame = at+11042
+		await process_frame
+		await process_frame
+		assert(roads.count(main.model.session.road_marks,a,b) == step)
+		var edge_present := false
+		for edge in main.model.session.harmony.adjacency(main.model.session.city):
+			if (edge["a"] == owner_id and edge["b"] == other_id) or (edge["a"] == other_id and edge["b"] == owner_id): edge_present = true
+		assert(edge_present == (step < 3))
+		if DisplayServer.get_name() != "headless" and step >= 2:
+			await RenderingServer.frame_post_draw
+			get_root().get_texture().get_image().save_png("res://验证记录/Demo/踩路径%s.png" % ("足迹" if step == 2 else "成路"))
+	assert(not main.model.session._district(owner_id).has("visual_partner") and not main.model.session._district(other_id).has("visual_owner"))
+	assert(main.city_view.sprites[other_id].visible and main.model.synth.routing.size() == main.model.session.city.size())
+	assert(not main.model.synth.assist_neighbors[owner_id].has(other_id))
+	assert(not main.model.session.request_tread(b,a,main.clock.renderer.transport.rendered_frames,main.clock.renderer.transport.audible_frame)["accepted"])
+	main.tread_button.button_pressed = false
+	main.city_view.reset_view()
+	await create_timer(float(main.city_view.camera_cfg["smooth_seconds"])+0.05).timeout
+	print("DEMO_TREAD PASS actual_drag_preview_confirm + 1_2_keep_edge + third_cut + reverse_same_edge + fork_PCM + split_house_keeps_voices")
+
+func _check_tread_policy() -> void:
+	var schema = load("res://scripts/city/district_schema.gd")
+	var sessions = load("res://scripts/proposals/city_interventions.gd")
+	var roads = load("res://scripts/city/city_roads.gd")
+	var growth = load("res://scripts/city/city_growth.gd")
+	var fixture := [schema.create("home","residential",Vector2i(7,8)),schema.create("shop","commercial",Vector2i(6,8)),schema.create("factory","industrial",Vector2i(8,8))]
+	var city = sessions.new(fixture,"2026100800000001")
+	city.growth_enabled = true
+	var period: int = city.transport.phrase_frame(1)
+	assert(city.request_tread(Vector2i(7,8),Vector2i(8,8),0,0)["accepted"])
+	city.cancel_pending()
+	assert(city.road_marks.is_empty())
+	assert(not city.request_tread(Vector2i(7,8),Vector2i(8,9),0,0)["accepted"])
+	for step in range(1,4):
+		city.request_tread(Vector2i(7,8),Vector2i(8,8),(step-1)*period,0.5*period)
+		city.request_tread(Vector2i(8,8),Vector2i(7,8),(step-1)*period,0.5*period)
+		var saved: Dictionary = city.snapshot()
+		var expected = load("res://scripts/proposals/proposal_preview.gd").forecast(city,city.pending,(step-1)*period,0.5*period)
+		assert(city.snapshot() == saved)
+		var result: Dictionary = city.settle(step*period)
+		assert(expected["result"] == result and roads.count(city.road_marks,Vector2i(7,8),Vector2i(8,8)) == step)
+		assert(city.harmony.adjacency(city.city).size() == (2 if step < 3 else 1))
+		assert(is_equal_approx(result["after_r"],100.0*0.85/2.3 if step < 3 else 85.0))
+		assert(result["intervention_deltas"].is_empty() and city.city.size() == 3)
+	assert(city._district("home")["vitality"] == 51.0 and city._district("factory")["vitality"] == 36.0)
+	var road_before: Dictionary = city.road_marks.duplicate(true)
+	city.request({"proposal_id":"p0:0:home:relocate","target":[12,12]},3*period,3.5*period)
+	city.settle(4*period)
+	assert(city.road_marks == road_before and city._district("home")["footprint"] == [[12,12]])
+	var island: Dictionary = schema.create("island_anchor","residential",Vector2i(8,8))
+	island["is_anchor"] = true
+	island["anchor_id"] = "island_anchor"
+	var enclosed = sessions.new([island],"2026100800000001")
+	enclosed.growth_enabled = true
+	var open = enclosed.fork()
+	for direction in [Vector2i.LEFT,Vector2i.RIGHT,Vector2i.UP,Vector2i.DOWN]:
+		var a := Vector2i(8,8)
+		var b: Vector2i = a+direction
+		var ends: Array = roads.endpoints(a,b)
+		enclosed.road_marks[roads.key(a,b)] = {"start":ends[0],"end":ends[1],"count":3,"frame":0}
+	enclosed.settle(period)
+	open.settle(period)
+	assert(enclosed.city.size() == 1 and open.city.size() == 2)
+	var anchor: Dictionary = schema.create("anchor","residential",Vector2i(6,8))
+	anchor["is_anchor"] = true
+	anchor["anchor_id"] = "anchor"
+	var first: Dictionary = schema.create("first","residential",Vector2i(7,8))
+	var leaf: Dictionary = schema.create("leaf","residential",Vector2i(8,8))
+	for d in [first,leaf]:
+		d["anchor_id"] = "anchor"
+		d["form"] = "群"
+	var family := [anchor,first,leaf]
+	for i in range(24): family.append(schema.create("island_%d" % i,"industrial",Vector2i(i%16,i/16)))
+	city = sessions.new(family,"2026100800000001")
+	city.growth_enabled = true
+	growth.assign_assets(city.city)
+	assert(city._district("first").get("visual_partner","") == "leaf")
+	for step in range(1,4):
+		city.request_tread(Vector2i(7,8),Vector2i(8,8),(step-1)*period,0.5*period)
+		city.settle(step*period)
+	assert(not growth.connected(city.city,"anchor",city.road_marks).has("leaf"))
+	assert(not growth.conditions(city.city,city._district("leaf"),city.road_marks)["connected"])
+	assert(city._district("leaf")["form"] == "群" and not city._district("first").has("visual_partner"))
+	assert(city.last_result["choice"]["disconnected"] == ["leaf"] and city.city.size() == 27)
+	assert(city.fork().road_marks == city.road_marks and city.fork().harmony.adjacency(city.city) == city.harmony.adjacency(city.city))
+	print("TREAD_POLICY PASS canceled_and_overwritten_marks + exact_RV + independent_world_edges + family_disconnect + stable_mature_forms + snapshots")
