@@ -6,10 +6,6 @@
 	"case": "resonance",
 	"checks": [
 		{
-			"description": "Supported case: resonance",
-			"passed": true
-		},
-		{
 			"description": "H3 unison R=100 exactly",
 			"passed": true
 		},

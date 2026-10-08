@@ -25,7 +25,7 @@ func check(condition: bool, description: String) -> void:
 		failures += 1
 		push_error("%s: %s" % [rule_id, description])
 
-func finish(tree: SceneTree, scope: String = "") -> void:
+func finish(tree: SceneTree, scope: String = "", exit_tree: bool = true) -> void:
 	var evidence := "res://验证记录/P0/%s_%s.json" % [rule_id, case_name]
 	DirAccess.make_dir_recursive_absolute("res://验证记录/P0")
 	var result := {
@@ -45,4 +45,5 @@ func finish(tree: SceneTree, scope: String = "") -> void:
 		file.close()
 	print("%s %s checks=%d evidence=%s scope=%s" % [
 		rule_id, "PASS" if failures == 0 else "FAIL", checks.size(), evidence, scope])
-	tree.quit(0 if failures == 0 else 1)
+	if exit_tree:
+		tree.quit(0 if failures == 0 else 1)

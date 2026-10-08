@@ -93,3 +93,15 @@ func vitality(city: Array, edges: Array, current_resonance: float, intervention_
 		delta = clampf(delta, -float(settings["net_change_cap"]), float(settings["net_change_cap"]))
 		result[id] = clampf(float(by_id[id]["vitality"]) + delta, float(settings["minimum_vitality"]), float(settings["maximum_vitality"]))
 	return result
+
+func lifecycle(previous: Dictionary, current_resonance: float) -> Dictionary:
+	var result := previous.duplicate(true)
+	if bool(result["ended"]):
+		return result
+	if current_resonance < float(settings["gray_entry"]):
+		result["gray"] = true
+	elif current_resonance > float(settings["gray_exit"]):
+		result["gray"] = false
+	result["low_phrases"] = int(result["low_phrases"]) + 1 if current_resonance < float(settings["gray_entry"]) else 0
+	result["ended"] = int(result["low_phrases"]) >= int(settings["collapse_phrases"])
+	return result
