@@ -11,6 +11,9 @@ var selected_id := ""
 var hover_cell := Vector2i(-1,-1)
 var preview_cell := Vector2i(-1,-1)
 var release_mode := false
+var release_midi := 48
+var pointer_position := Vector2.ZERO
+var pointer_inside := false
 var draft_mode := false
 var draft_start := Vector2i(-1,-1)
 var sprites: Dictionary = {}
@@ -66,6 +69,9 @@ func _ready() -> void:
 			image.set_pixel(x,y,Color(0.85,0.7,0.46,pow(maxf(0.0,1.0-distance),2)*0.7))
 	point_texture = ImageTexture.create_from_image(image)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	mouse_exited.connect(func() -> void:
+		pointer_inside = false
+		hover_cell = Vector2i(-1,-1))
 
 func _view_origin() -> Vector2:
 	return Vector2(size.x*0.5,float(camera_cfg["origin_y"]))+view_pan
@@ -117,6 +123,10 @@ func _display_point(d: Dictionary) -> Vector2:
 	return center
 
 func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouse:
+		pointer_position = event.position
+		pointer_inside = event.position.y >= float(camera_cfg["header_height"]) and Rect2(Vector2.ZERO,size).has_point(event.position)
+		hover_cell = cell_at(pointer_position) if pointer_inside and not pan_active else Vector2i(-1,-1)
 	if event is InputEventMouseMotion:
 		if pan_active:
 			view_pan += event.relative
@@ -149,6 +159,10 @@ func _gui_input(event: InputEvent) -> void:
 		var cell := cell_at(event.position)
 		if draft_mode:
 			if cell.x >= 0 and cell.y >= 0 and cell.x < 16 and cell.y < 16: draft_start = cell
+			accept_event()
+			return
+		if release_mode:
+			empty_clicked.emit(cell)
 			accept_event()
 			return
 		if not release_mode:
@@ -207,11 +221,20 @@ func _draw() -> void:
 			if occupied.has(cell) and not str(occupied[cell].get("anchor_id","")).is_empty():
 				color = Color("dde2d6") if occupied[cell]["type"] == "residential" else Color("d8e3e7")
 				if occupied[cell].get("is_anchor",false): color = Color("e8ddc3")
-			if cell == hover_cell: color = Color("d3e0df")
+			if cell == hover_cell:
+				color = Color("d3e0df")
+				if release_mode and not session.release_feedback(release_midi,cell)["allowed"]: color = Color("dfc9c7")
 			if cell == preview_cell: color = Color("e8d4bb")
+			var pending_here: bool = session != null and session.pending.get("verb","") == "release" and session.pending["target"] == [cell.x,cell.y]
+			if pending_here: color = Color("e8d4bb")
 			draw_colored_polygon(vertices,color)
 			draw_polyline(PackedVector2Array([vertices[0],vertices[1],vertices[2],vertices[3],vertices[0]]),Color(1.0,1.0,1.0,0.38),0.6,true)
 	if session == null: return
+	if session.pending.get("verb","") == "release":
+		var target: Array = session.pending["target"]
+		var center := point(Vector2i(target[0],target[1]))
+		draw_circle(center,9.0*view_zoom,Color("d2af79"))
+		draw_arc(center,13.0*view_zoom,0,TAU,32,Color("ba9673"),1.5,true)
 	if not session.gravity_band.is_empty():
 		var band: Dictionary = session.gravity_band
 		_draw_band(Vector2i(band["start"][0],band["start"][1]),Vector2i(band["end"][0],band["end"][1]),Color("93ba9e") if band["bias"] == "residential" else Color("83b0c6"))
@@ -258,6 +281,7 @@ func _draw() -> void:
 func _process(delta: float) -> void:
 	if session == null or buildings == null: return
 	_sample_camera(delta)
+	hover_cell = cell_at(pointer_position) if pointer_inside and not pan_active else Vector2i(-1,-1)
 	if pan_active and not Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE): pan_active = false
 	var clock := get_node("/root/AudioClock")
 	var audible := float(clock.renderer.transport.audible_frame)

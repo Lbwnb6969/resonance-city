@@ -20,8 +20,12 @@ func run_demo() -> void:
 			chosen = Vector2i(cell[0],cell[1])
 			break
 	assert(chosen.x >= 0)
+	if "--placement" in OS.get_cmdline_user_args(): await _check_placement(main,chosen)
 	main._select_empty(chosen)
 	assert(main.model.session.pending.get("verb") == "release")
+	main.release_button.set_pressed_no_signal(false)
+	main.release_armed = false
+	main.city_view.release_mode = false
 	var forms: Dictionary = {}
 	for phrase in range(12):
 		var at: int = main.model.next_boundary
@@ -221,3 +225,50 @@ func _check_draft_policy() -> void:
 	assert(family.gravity_band == band and family.pending.is_empty())
 	assert(not family.request_draft(Vector2i(8,8),Vector2i(8,8),"residential",4*period,4*period)["accepted"])
 	print("DRAFT_POLICY PASS actual_position_change + same_type_pitch + no_stat_bonus + unchanged_rng + fork_pause + cancel")
+
+
+func _check_placement(main: Control, chosen: Vector2i) -> void:
+	main.release_button.button_pressed = true
+	var view: Control = main.city_view
+	var before: Dictionary = main.model.session.snapshot()
+	var motion := InputEventMouseMotion.new()
+	motion.position = view.point(chosen)
+	view._gui_input(motion)
+	view.zoom_at(motion.position,1.7)
+	await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
+	assert(view.hover_cell == chosen and main.model.session.snapshot() == before)
+	assert(main.model.session.release_feedback(48,chosen)["allowed"])
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	click.position = motion.position
+	view._gui_input(click)
+	await process_frame
+	await process_frame
+	assert(main.model.session.pending.get("verb","") == "release" and main.map_notice.text.contains("待落定"))
+	var pending: Dictionary = main.model.session.pending.duplicate(true)
+	var occupied := Vector2i(main.model.session.city[0]["footprint"][0][0],main.model.session.city[0]["footprint"][0][1])
+	click.position = view.point(occupied)
+	view._gui_input(click)
+	assert(main.model.session.pending == pending and main.status.text.contains("已有"))
+	assert(not main.model.session.release_feedback(48,Vector2i(-1,0))["allowed"])
+	assert(not main.model.session.release_feedback(49,chosen)["allowed"])
+	motion.position = view.point(chosen)
+	view._gui_input(motion)
+	await process_frame
+	await process_frame
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		get_root().get_texture().get_image().save_png("res://验证记录/Demo/释放位置反馈.png")
+	main.controls.get_node("Cancel").pressed.emit()
+	await process_frame
+	assert(main.model.session.pending.is_empty() and main.model.session.city == before["city"] and main.model.session.rng.snapshot() == before["rng"])
+	assert(not main.map_notice.text.contains("待落定"))
+	var fork = main.model.session.fork()
+	fork.lifecycle["ended"] = true
+	assert(not fork.release_feedback(48,chosen)["allowed"])
+	main.release_button.button_pressed = false
+	view.reset_view()
+	await create_timer(float(view.camera_cfg["smooth_seconds"])+0.05).timeout
+	main.release_armed = true
+	print("DEMO_PLACEMENT PASS readonly_hover + zoom_cursor + actual_click + rejected_cell_preserves_pending + cancel + ended_guard")

@@ -93,6 +93,18 @@ func proposal(id: String) -> Dictionary:
 			return item.duplicate(true)
 	return {}
 
+func release_feedback(midi: int, target: Vector2i) -> Dictionary:
+	if not growth_enabled: return {"allowed":false,"reason":"当前模式不开放共鸣点。"}
+	if bool(lifecycle["ended"]): return {"allowed":false,"reason":"本局已结束，可重新开始。"}
+	if target.x < 0 or target.y < 0 or target.x >= int(growth_values["city"]["width"]) or target.y >= int(growth_values["city"]["height"]):
+		return {"allowed":false,"reason":"请选择地图内的格子。"}
+	if not PackedInt32Array(settings["allowed_pitches"]).has(midi): return {"allowed":false,"reason":"请选择系统提供的音级。"}
+	for district in city:
+		if Schema.cell(district) == target: return {"allowed":false,"reason":"已有建筑或共鸣点，请选择空格。"}
+	if city.size() >= int(growth_values["growth"]["max_entities"])-1:
+		return {"allowed":false,"reason":"声音预算不足，需为新建筑保留一个声部。"}
+	return {"allowed":true,"reason":"可释放；城市会按和声条件回应。"}
+
 func request_release(midi: int, target: Vector2i, rendered_frames: int, audible_frame: float) -> Dictionary:
 	return request({"verb":"release","proposal_id":"release","midi":midi,"target":[target.x,target.y]},rendered_frames,audible_frame)
 
@@ -108,7 +120,9 @@ func _legal(choice: Dictionary) -> bool:
 			if int(cell[0]) < 0 or int(cell[0]) >= int(growth_values["city"]["width"]) or int(cell[1]) < 0 or int(cell[1]) >= int(growth_values["city"]["height"]): return false
 		return choice["start"] != choice["end"]
 	if choice.get("verb","") == "release":
-		return growth_enabled and city.size() < int(growth_values["growth"]["max_entities"])-1 and PackedInt32Array(settings["allowed_pitches"]).has(int(choice.get("midi",-1))) and _empty_cells().has(choice.get("target"))
+		var target: Variant = choice.get("target")
+		if not target is Array or target.size() != 2: return false
+		return _empty_cells().has(target) and bool(release_feedback(int(choice.get("midi",-1)),Vector2i(int(target[0]),int(target[1])))["allowed"])
 	var item := proposal(str(choice.get("proposal_id","")))
 	if item.is_empty() or _district(item["district_id"]).is_empty():
 		return false

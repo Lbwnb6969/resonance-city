@@ -36,6 +36,7 @@ var calibration: Dictionary = {}
 var city_view: CityDemoView
 var release_pitch: OptionButton
 var selected_empty := Vector2i(-1,-1)
+var map_notice: Label
 var city_summary: Label
 var condition_text: Label
 var beat_progress: ProgressBar
@@ -246,7 +247,8 @@ func _build_controls() -> void:
 		city_view.preview_cell = Vector2i(-1,-1)
 		city_view.draft_start = Vector2i(-1,-1)
 		_cancel_audition()
-		status.text = "已取消待提交介入。")
+		status.text = "已取消待提交介入。"
+		_update_map_notice())
 	_button("黑屏聆听（B）","Black").pressed.connect(func() -> void: set_black_screen(true))
 	var listening := _button("正式黑屏听测（6练习 + 10正式）","ListeningTest")
 	listening.visible = false
@@ -307,6 +309,26 @@ func _build_city_view() -> void:
 	hint.add_theme_font_size_override("font_size",15)
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	city_view.add_child(hint)
+	var notice_card := PanelContainer.new()
+	notice_card.name = "MapNotice"
+	notice_card.anchor_top = 1.0
+	notice_card.anchor_right = 1.0
+	notice_card.anchor_bottom = 1.0
+	notice_card.offset_left = 24
+	notice_card.offset_right = -24
+	notice_card.offset_top = -136
+	notice_card.offset_bottom = -18
+	var box := StyleBoxFlat.new()
+	box.bg_color = Color("f6f5f1")
+	box.set_corner_radius_all(8)
+	box.set_content_margin_all(14)
+	notice_card.add_theme_stylebox_override("panel",box)
+	city_view.add_child(notice_card)
+	map_notice = Label.new()
+	map_notice.name = "MapNoticeText"
+	map_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	map_notice.add_theme_font_size_override("font_size",15)
+	notice_card.add_child(map_notice)
 
 func _refresh_district_list() -> void:
 	var selected := _selected_id() if district_select.item_count > 0 and district_select.selected < model.session.city.size() else ""
@@ -329,12 +351,16 @@ func _select_district(id: String) -> void:
 
 func _select_empty(cell: Vector2i) -> void:
 	selected_empty = cell
-	city_view.preview_cell = cell
 	if release_armed:
+		var feedback := model.session.release_feedback(int(release_pitch.get_item_metadata(release_pitch.selected)),cell)
+		if not feedback["allowed"]:
+			status.text = feedback["reason"]
+			return
 		_cancel_audition()
 		var request := model.session.request_release(int(release_pitch.get_item_metadata(release_pitch.selected)),cell,clock.renderer.transport.rendered_frames,clock.renderer.transport.audible_frame)
 		status.text = "共鸣点已选 (%d,%d)，将在下一乐句落定；可点击另一空格替换。" % [cell.x,cell.y] if request["accepted"] else "该位置无法释放，或声音预算已满。"
 	elif verb_select.selected == 1:
+		city_view.preview_cell = cell
 		for index in range(target_select.item_count):
 			if target_select.get_item_metadata(index)["target"] == [cell.x,cell.y]:
 				target_select.select(index)
@@ -425,6 +451,8 @@ func _process(_delta: float) -> void:
 		elif want_preview:
 			status.text = result.get("reason","此方案已失效。")
 	city_view.selected_id = _selected_id()
+	city_view.release_midi = int(release_pitch.get_item_metadata(release_pitch.selected))
+	_update_map_notice()
 	var resonance := model.session.harmony.resonance(model.session.city,model.session.harmony.adjacency(model.session.city))
 	var bar := clock.renderer.transport.phrase_frame(1)
 	var remaining := float(bar)-fposmod(clock.renderer.transport.audible_frame,float(bar))
@@ -452,6 +480,29 @@ func _process(_delta: float) -> void:
 		confirm_button.disabled = selected_choice.is_empty() or bool(model.session.lifecycle["ended"])
 	if clock.underruns > 0 and not black_screen:
 		status.text = "音频下溢 %d 次：本次运行不用于正式听测。" % clock.underruns
+
+func _update_map_notice() -> void:
+	var text := ""
+	if release_armed:
+		var cell := city_view.hover_cell
+		text = "释放 %s · 将鼠标移到地图格子上查看是否可放置。" % release_pitch.get_item_text(release_pitch.selected)
+		if city_view.pointer_inside:
+			text = "释放 %s · (%d,%d)\n%s" % [release_pitch.get_item_text(release_pitch.selected),cell.x,cell.y,model.session.release_feedback(city_view.release_midi,cell)["reason"]]
+	elif city_view.draft_mode:
+		text = "划定引力：在地图内拖出方向箭头。偏向只影响合法扩张位置；重划暂停一乐句。"
+	else:
+		var district: Dictionary = model.session._district(_selected_id())
+		var kind := "住宅" if district["type"] == "residential" else ("商业" if district["type"] == "commercial" else "工业")
+		var details: PackedStringArray = Growth.describe(model.session.city,district).split("\n")
+		text = "%s · %s · 活力 %.0f\n%s" % [kind,district.get("form","胚"),district["vitality"],"\n".join(details.slice(0,mini(2,details.size())))]
+	var pending: Dictionary = model.session.pending
+	if not pending.is_empty():
+		var wait := maxf(0.0,float(pending["frame"])-clock.renderer.transport.audible_frame)/clock.renderer.transport.sample_rate
+		var verb: String = pending.get("verb","")
+		var action := "调音" if verb == "retune" else ("迁移" if verb == "relocate" else ("引力带" if verb == "draft" else "共鸣点"))
+		if verb == "release": action += " (%d,%d)" % [pending["target"][0],pending["target"][1]]
+		text += "\n待落定：%s · %.1f秒；可更换或取消。" % [action,wait]
+	map_notice.text = text
 
 func _audition_finished(skips: int) -> void:
 	preview_skips = skips
