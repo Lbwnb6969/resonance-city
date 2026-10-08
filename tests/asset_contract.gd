@@ -6,6 +6,12 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	if Contract.selected_case("import_scope") == "baked_sprite":
+		_baked()
+		return
+	if Contract.selected_case("import_scope") == "palette":
+		_palette()
+		return
 	if Contract.selected_case("import_scope") in ["license","packages"]:
 		_packages()
 		return
@@ -88,3 +94,63 @@ func _resource_files(path: String) -> Array[String]:
 	for child in directory.get_directories():
 		result.append_array(_resource_files(path.path_join(child)))
 	return result
+
+func _palette() -> void:
+	var test := Contract.new("ASSET-002","palette")
+	var palette: Array = JSON.parse_string(FileAccess.get_file_as_string("res://资源/P0城市/palette.json"))
+	var image := _png("res://资源/P0城市/palette.png")
+	test.check(palette.size() == 24 and image.get_size() == Vector2i(24,1),"One base palette has exactly 24 slots")
+	var matches := true
+	for slot in range(24):
+		matches = matches and int(palette[slot]["slot"]) == slot and image.get_pixel(slot,0).to_html(false).to_upper() == str(palette[slot]["hex"]).trim_prefix("#")
+	test.check(matches,"Every PNG palette pixel matches recorded sRGB slot")
+	var first_five := ["#F2EDE4","#D96B4F","#6B7B8C","#7FB069","#FFD98A"]
+	for slot in range(5):
+		test.check(palette[slot]["hex"] == first_five[slot],"Protected main color retained: "+str(slot))
+	test.details = {"slots":24,"runtime_palette_count":1,"day_season_palettes":"P1 not implemented"}
+	test.finish(self,"P0 one base palette; no runtime day/season claim")
+
+func _baked() -> void:
+	var test := Contract.new("ASSET-002","baked_sprite")
+	var deployed := FileAccess.get_file_as_string("res://资源/P0城市/manifest.json")
+	var production := FileAccess.get_file_as_string("res://资产/03_入库/P0城市/manifest.json")
+	var manifest: Dictionary = JSON.parse_string(deployed)
+	test.check(deployed == production,"Production and runtime manifests are byte-identical")
+	test.check(float(manifest["camera"]["azimuth"]) == 45.0 and float(manifest["camera"]["elevation"]) == 30.0 and manifest["camera"]["projection"] == "orthogonal","Fixed 45/30 orthographic camera")
+	var ids: Dictionary = {}
+	var counts: Dictionary = {}
+	var summaries: Array = []
+	for entry in manifest["entries"]:
+		var id: String = entry["id"]
+		var category: String = entry["category"]
+		counts[category] = int(counts.get(category,0))+1
+		test.check(not ids.has(id),"Unique asset ID: "+id)
+		ids[id] = true
+		var texture_path: String = "res://"+str(entry["texture"])
+		var texture: Texture2D = load(texture_path)
+		var image := _png(texture_path)
+		var preview := _png("res://"+str(entry["preview"]))
+		var indexed := _png("res://"+str(entry["indexed_master"]))
+		test.check(texture != null and maxf(texture.get_width(),texture.get_height()) >= 2048 and indexed.get_size() == image.get_size(),"One loadable HD colored master plus separate index: "+id)
+		test.check(maxi(preview.get_width(),preview.get_height()) == 512 and preview.get_size() != image.get_size(),"512 preview is distinct from HD master: "+id)
+		var imported := ConfigFile.new()
+		var parsed := imported.load(texture_path+".import") == OK
+		test.check(parsed and imported.get_value("params","mipmaps/generate",false) and imported.get_value("params","process/fix_alpha_border",false) and texture.get_image().has_mipmaps(),"Actual imported texture has mipmaps and alpha fix: "+id)
+		test.check(FileAccess.get_sha256(texture_path) == entry["texture_sha256"] and FileAccess.get_sha256("res://"+str(entry["indexed_master"])) == entry["indexed_master_sha256"],"Rendered master SHA hashes match manifest: "+id)
+		test.check(entry["license"] == "CC0-1.0" and FileAccess.file_exists("res://"+str(entry["license_file"])) and FileAccess.get_sha256("res://"+str(entry["source_model"])) == entry["source_model_sha256"],"Exact source and license traceable: "+id)
+		var slots: Array = entry["palette_slots"]
+		var valid := not slots.is_empty()
+		for slot in slots:
+			valid = valid and int(slot) >= 0 and int(slot) < 24
+		test.check(valid and (category != "industrial" or slots.has(2.0)) and (category != "tree" or slots.has(3.0)),"Valid discrete slots and category main color: "+id)
+		var origin: Array = entry["origin"]
+		test.check(origin.size() == 2 and float(origin[0]) >= 0 and float(origin[0]) <= image.get_width() and float(origin[1]) >= 0 and float(origin[1]) <= image.get_height() and float(entry["floor_height"]) > 0,"Usable ground origin and source bounds: "+id)
+		summaries.append({"id":id,"size":[image.get_width(),image.get_height()],"slots":slots,"texture":entry["texture"]})
+	test.check(counts == {"residential":3,"commercial":3,"industrial":3,"ground":2,"road":3,"tree":2,"decoration":4},"All S4 explicitly listed category items baked")
+	test.details = {"counts":counts,"entries":summaries,"count_prose_conflict":"20 from categories versus 21 prose; awaiting user","human_three_grid":"PENDING","runtime_deployment":"technical/performance candidates; art approval pending","uniform_windows":"verified separately by performance fixture"}
+	test.finish(self,"Technical bake of all explicitly listed S4 items; human art, count correction and full-city windows not claimed")
+
+func _png(path: String) -> Image:
+	var image := Image.new()
+	assert(image.load_png_from_buffer(FileAccess.get_file_as_bytes(path)) == OK)
+	return image

@@ -9,3 +9,6 @@
 Toolkit1.0.3从用户指定本地目录复制到`addons/godot_mcp_toolkit`，保留MIT/LICENSE与ATTRIBUTIONS。它是开发工具，不是游戏机制；导出剥离由插件提供，正式构建依赖审计尚未开始。
 
 当前机器路径：Godot`D:/GODOT/Godot_v4.7.2-stable_win64.exe`；MCP npm库`C:/Users/Administrator/.codex/tools/godot-mcp-server/node_modules/`。换机器应在工具中配置新的安装路径。
+
+
+P0 City Kit烘焙：`python tools/prepare_city_bake.py`复制白名单模型/纹理并生成24槽；有画面运行Godot `--audio-driver Dummy --path . --script res://tools/city_sprite_baker.gd`，再`python tools/finalize_city_bake.py`恢复GPU索引字节、透边RGB与生成许可/接触表。原件树忽略，不作为运行时依赖。新PNG首次导入后，将资源/P0城市/整图下所有PNG导入设置mipmaps/generate=true，editor_refresh后用asset_contract baked_sprite证明实际ctex含mips。候选人工观感待审，不自动获批。

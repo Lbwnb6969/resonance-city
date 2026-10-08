@@ -2,3 +2,5 @@
 * text=auto eol=lf
 资产/许可记录/CityKits/*/License.txt -text -diff
 资产/许可记录/CityKits/*/official-page.html -text -diff
+
+资产/03_入库/P0城市/许可/*/License.txt -text -diff

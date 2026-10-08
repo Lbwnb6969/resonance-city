@@ -1,0 +1,47 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/asset_contract.gd"
+	],
+	"case": "palette",
+	"checks": [
+		{
+			"description": "One base palette has exactly 24 slots",
+			"passed": true
+		},
+		{
+			"description": "Every PNG palette pixel matches recorded sRGB slot",
+			"passed": true
+		},
+		{
+			"description": "Protected main color retained: 0",
+			"passed": true
+		},
+		{
+			"description": "Protected main color retained: 1",
+			"passed": true
+		},
+		{
+			"description": "Protected main color retained: 2",
+			"passed": true
+		},
+		{
+			"description": "Protected main color retained: 3",
+			"passed": true
+		},
+		{
+			"description": "Protected main color retained: 4",
+			"passed": true
+		}
+	],
+	"details": {
+		"day_season_palettes": "P1 not implemented",
+		"runtime_palette_count": 1,
+		"slots": 24
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "ASSET-002",
+	"scope": "P0 one base palette; no runtime day/season claim",
+	"status": "PASS"
+}
