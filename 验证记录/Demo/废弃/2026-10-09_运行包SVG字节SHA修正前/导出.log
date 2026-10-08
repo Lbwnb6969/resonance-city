@@ -1,0 +1,186 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started 项目初始化 (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | 正在扫描文件结构……[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | 正在加载全局类名……[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | 正在校验 GDExtension……[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | 正在创建自动加载脚本……[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | 正在初始化插件……[39m[0m
+Godot MCP Toolkit v1.0.3 — by NPGameDev · npgamedev.com
+[MCPExtensions] Hot-reload watcher active
+[MCPServer] port: scanning 6550-6560 (default)
+[MCPServer] session token written to user://addons/godot_mcp_toolkit/project_instance_5fab213a1b05/mcp_token
+[MCPServer] listening on 127.0.0.1:6553
+[MCPRegistry] registered d:/godot/godotpro/共鸣之城 on port 6553
+[  83% ] [90m[1mfirst_scan_filesystem[22m | 正在启动文件扫描……[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1msavezip[22m | Started 打包中 (102 steps)[39m[0m
+[   1% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/residential_building_type_a_01_base.png-18b9a4e9a5818f3bb919778d8d45546e.ctex[39m[0m
+[   1% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/residential_building_type_a_01_base.png.import[39m[0m
+[   2% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/industrial_building_c_03_base.png-5e9de8b6320ad223d4e7291d1f1d2690.ctex[39m[0m
+[   2% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/industrial_building_c_03_base.png.import[39m[0m
+[   3% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/industrial_building_b_02_base.png-cb26b42bafa18831c1013594975a1fd2.ctex[39m[0m
+[   3% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/industrial_building_b_02_base.png.import[39m[0m
+[   4% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/industrial_building_a_01_base.png-ee62856da220687312decaa092436058.ctex[39m[0m
+[   4% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/industrial_building_a_01_base.png.import[39m[0m
+[   5% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/ground_tile_low_01_base.png-1ea765cd3d37595520456e416df15650.ctex[39m[0m
+[   5% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/ground_tile_low_01_base.png.import[39m[0m
+[   6% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/ground_tile_high_02_base.png-a5c4e0b10e5a055b836436d723190756.ctex[39m[0m
+[   6% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/ground_tile_high_02_base.png.import[39m[0m
+[   7% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/decoration_water_tower_03_base.png-c5f93fa7445adf3bd2f6fbd24a94a176.ctex[39m[0m
+[   7% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/decoration_water_tower_03_base.png.import[39m[0m
+[   9% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/decoration_planter_02_base.png-f4fe88c01dcee5662b2d602f5d555ae8.ctex[39m[0m
+[   9% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/decoration_planter_02_base.png.import[39m[0m
+[  10% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/decoration_light_square_04_base.png-4ebaef38d5332409a803e220886e4cbe.ctex[39m[0m
+[  10% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/decoration_light_square_04_base.png.import[39m[0m
+[  11% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/decoration_fence_01_base.png-f0a9eb111f0fcd35a13ffd7f0dee532c.ctex[39m[0m
+[  11% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/decoration_fence_01_base.png.import[39m[0m
+[  12% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/commercial_building_c_03_base.png-39b57df977b9ed9f76c7ee2e7676cb39.ctex[39m[0m
+[  12% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/commercial_building_c_03_base.png.import[39m[0m
+[  13% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/commercial_building_b_02_base.png-38d122aaaeb5f2bfdcbf800d05a2679f.ctex[39m[0m
+[  13% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/commercial_building_b_02_base.png.import[39m[0m
+[  14% ] [90m[1msavezip[22m | 正在保存文件： res://资源/风格小景/manifest.json[39m[0m
+[  15% ] [90m[1msavezip[22m | 正在保存文件： res://资源/风格小景/layout.json[39m[0m
+[  17% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/tree_tree_small_01_base.png-5618b79ad93eb4815bb57eb98be86d4b.ctex[39m[0m
+[  17% ] [90m[1msavezip[22m | 正在保存文件： res://资源/风格小景/整图/tree_tree_small_01_base.png.import[39m[0m
+[  18% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/tree_tree_large_02_base.png-d446768bb1b386788da0ce3006cb3677.ctex[39m[0m
+[  18% ] [90m[1msavezip[22m | 正在保存文件： res://资源/风格小景/整图/tree_tree_large_02_base.png.import[39m[0m
+[  19% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/residential_compound_terrace_01.png-c49ab39f3869840041c7b783c943c693.ctex[39m[0m
+[  19% ] [90m[1msavezip[22m | 正在保存文件： res://资源/风格小景/整图/residential_compound_terrace_01.png.import[39m[0m
+[  20% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/residential_compound_gable_01.png-5757fe1dff2ac4afa117e1430587da13.ctex[39m[0m
+[  20% ] [90m[1msavezip[22m | 正在保存文件： res://资源/风格小景/整图/residential_compound_gable_01.png.import[39m[0m
+[  21% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/residential_building_type_b_02_base.png-7b8f02ac3b80f0cb2981458ff2c6d237.ctex[39m[0m
+[  21% ] [90m[1msavezip[22m | 正在保存文件： res://资源/风格小景/整图/residential_building_type_b_02_base.png.import[39m[0m
+[  22% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/decoration_planter_02_base.png-6e6e13843ec8b622c4606f490327d92f.ctex[39m[0m
+[  22% ] [90m[1msavezip[22m | 正在保存文件： res://资源/风格小景/整图/decoration_planter_02_base.png.import[39m[0m
+[  23% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/decoration_light_square_04_base.png-2800caff9aa73a9b7394015e1d32a82a.ctex[39m[0m
+[  23% ] [90m[1msavezip[22m | 正在保存文件： res://资源/风格小景/整图/decoration_light_square_04_base.png.import[39m[0m
+[  25% ] [90m[1msavezip[22m | 正在保存文件： res://资源/着色器/音频一拍揭示.gdshader[39m[0m
+[  26% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/spec_values.gdc[39m[0m
+[  27% ] [90m[1msavezip[22m | 正在保存文件： res://资源/古典建筑候选/manifest.json[39m[0m
+[  28% ] [90m[1msavezip[22m | 正在保存文件： res://资源/古典建筑候选/layout.json[39m[0m
+[  29% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/historic_church_01.svg-e698ff3b22dd25e47ee618d42f5b2ddb.ctex[39m[0m
+[  29% ] [90m[1msavezip[22m | 正在保存文件： res://资源/古典建筑候选/SVG/historic_church_01.svg.import[39m[0m
+[  30% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/classical_temple_01.svg-99b770c7a630d53f9e3069d4f61c948d.ctex[39m[0m
+[  30% ] [90m[1msavezip[22m | 正在保存文件： res://资源/古典建筑候选/SVG/classical_temple_01.svg.import[39m[0m
+[  32% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/classical_civic_hall_01.svg-b7ecd5f24f732a889c0d56cad604c9ca.ctex[39m[0m
+[  32% ] [90m[1msavezip[22m | 正在保存文件： res://资源/古典建筑候选/SVG/classical_civic_hall_01.svg.import[39m[0m
+[  33% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/classical_amphitheater_01.svg-4a1d13e2a623e6ea355989189f3e5bf3.ctex[39m[0m
+[  33% ] [90m[1msavezip[22m | 正在保存文件： res://资源/古典建筑候选/SVG/classical_amphitheater_01.svg.import[39m[0m
+[  33% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/performance_windows.png-90b6588d008e243ac6e89ed5bdef62c1.ctex[39m[0m
+[  33% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/performance_windows.png.import[39m[0m
+[  34% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/performance_layout.json[39m[0m
+[  35% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/palette.png-495087ed6718e6286f6fa401ac9d097c.ctex[39m[0m
+[  35% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/palette.png.import[39m[0m
+[  36% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/palette.json[39m[0m
+[  37% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/manifest.json[39m[0m
+[  39% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/tree_tree_small_01_base.png-7bc18d80d5cc3f08c2d559b3a398c870.ctex[39m[0m
+[  39% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/tree_tree_small_01_base.png.import[39m[0m
+[  40% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/tree_tree_large_02_base.png-49137019deb392309ca9e97adf0de624.ctex[39m[0m
+[  40% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/tree_tree_large_02_base.png.import[39m[0m
+[  41% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/road_road_straight_01_base.png-83dd43b48b4e68bf295d84b95aee82c7.ctex[39m[0m
+[  41% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/road_road_straight_01_base.png.import[39m[0m
+[  42% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/road_road_crossroad_03_base.png-d5a6dbe06e63c9fc9cb31d4f5752a738.ctex[39m[0m
+[  42% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/road_road_crossroad_03_base.png.import[39m[0m
+[  43% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/road_road_bend_02_base.png-578e519986be0c194ca725ba1e4d6a6d.ctex[39m[0m
+[  43% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/road_road_bend_02_base.png.import[39m[0m
+[  44% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/residential_building_type_c_03_base.png-1f5fadcbad56b1aec89f7469dd6b2d4d.ctex[39m[0m
+[  44% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/residential_building_type_c_03_base.png.import[39m[0m
+[  45% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/residential_building_type_b_02_base.png-da44b5cb5d6115d0728a9abce9804081.ctex[39m[0m
+[  45% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/residential_building_type_b_02_base.png.import[39m[0m
+[  47% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/commercial_building_a_01_base.png-f534dca74b3ca0c9de250c39405b0a68.ctex[39m[0m
+[  47% ] [90m[1msavezip[22m | 正在保存文件： res://资源/P0城市/整图/commercial_building_a_01_base.png.import[39m[0m
+[  48% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/palette.json[39m[0m
+[  49% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/manifest.json[39m[0m
+[  50% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/residential_compound_terrace_01.png-83aa4d5086fa004a3551352e99ebd1d2.ctex[39m[0m
+[  50% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/整图/residential_compound_terrace_01.png.import[39m[0m
+[  51% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/residential_compound_gable_01.png-355c049da22cc0119e81589cb400742a.ctex[39m[0m
+[  51% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/整图/residential_compound_gable_01.png.import[39m[0m
+[  52% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/residential_building_type_c_03_base.png-7a69783e57f231f24fb71b20308bb4bf.ctex[39m[0m
+[  52% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/整图/residential_building_type_c_03_base.png.import[39m[0m
+[  54% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/residential_building_type_b_02_base.png-b4afefabb7651ab42fb7a90469892f99.ctex[39m[0m
+[  54% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/整图/residential_building_type_b_02_base.png.import[39m[0m
+[  55% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/residential_building_type_a_01_base.png-7dddb70d33b0deeab2b7d74a8a6cf9be.ctex[39m[0m
+[  55% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/整图/residential_building_type_a_01_base.png.import[39m[0m
+[  56% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/industrial_building_c_03_base.png-5866239416144560cdec2c93ead1a35b.ctex[39m[0m
+[  56% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/整图/industrial_building_c_03_base.png.import[39m[0m
+[  57% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/industrial_building_b_02_base.png-c147085b2a1494a57e156ad964a07c79.ctex[39m[0m
+[  57% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/整图/industrial_building_b_02_base.png.import[39m[0m
+[  58% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/industrial_building_a_01_base.png-798822cfbc3b1e50797a3b63f948d5e2.ctex[39m[0m
+[  58% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/整图/industrial_building_a_01_base.png.import[39m[0m
+[  59% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/commercial_building_c_03_base.png-510cd6884a72b7e20eefa8b84608b2b6.ctex[39m[0m
+[  59% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/整图/commercial_building_c_03_base.png.import[39m[0m
+[  60% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/commercial_building_b_02_base.png-b43a4fe96878e37c28c86c5e2655017e.ctex[39m[0m
+[  60% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/整图/commercial_building_b_02_base.png.import[39m[0m
+[  62% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/commercial_building_a_01_base.png-b82d47ef099d16d1a92d1eb3f9745790.ctex[39m[0m
+[  62% ] [90m[1msavezip[22m | 正在保存文件： res://资源/Demo城市/整图/commercial_building_a_01_base.png.import[39m[0m
+[  63% ] [90m[1msavezip[22m | 正在保存文件： res://数据/spec_values.json[39m[0m
+[  64% ] [90m[1msavezip[22m | 正在保存文件： res://数据/listening_fixtures.json[39m[0m
+[  65% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/visual/style_frame.gdc[39m[0m
+[  66% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/visual/city_performance_fixture.gdc[39m[0m
+[  66% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/visual/city_demo_view.gdc[39m[0m
+[  67% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/visual/boundary_diagnosis.gdc[39m[0m
+[  69% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/visual/audio_growth_mask.gdc[39m[0m
+[  70% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/district_schema.gdc[39m[0m
+[  71% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/ui/p0_main.gdc[39m[0m
+[  72% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/ui/listening_session.gdc[39m[0m
+[  73% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/proposals/proposal_preview.gdc[39m[0m
+[  74% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/proposals/city_interventions.gdc[39m[0m
+[  76% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/city_roads.gdc[39m[0m
+[  77% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/city_growth.gdc[39m[0m
+[  78% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/ui/proposal_presentation.gdc[39m[0m
+[  79% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/named_random.gdc[39m[0m
+[  80% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/harmony.gdc[39m[0m
+[  81% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/exported/133200997/export-4700bc9311760645234a891155d214a7-p0_main.scn[39m[0m
+[  82% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/exported/133200997/export-3f9a25f5364420c3328ae55fda10c4ce-listening_session.scn[39m[0m
+[  85% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex[39m[0m
+[  85% ] [90m[1msavezip[22m | 正在保存文件： res://icon.svg.import[39m[0m
+[  86% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/preview_audio_output.gdc[39m[0m
+[  87% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/loudness_calibration.gdc[39m[0m
+[  88% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/district_synth.gdc[39m[0m
+[  89% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/listening_fixtures.gdc[39m[0m
+[  90% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/sample_renderer.gdc[39m[0m
+[  92% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/city_audio_model.gdc[39m[0m
+[  93% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/audio_clock.gdc[39m[0m
+[  94% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/exported/133200997/export-e5b2d464ad58b76764762a9114348d3a-style_frame.scn[39m[0m
+[  95% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/exported/133200997/export-2a2d4009582824462b91bd93a0a17252-performance_fixture.scn[39m[0m
+[  96% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/city_generator.gdc[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/sample_transport.gdc[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/spec_values.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/visual/style_frame.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/visual/city_performance_fixture.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/visual/city_demo_view.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/visual/boundary_diagnosis.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/visual/audio_growth_mask.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/district_schema.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/ui/p0_main.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/ui/listening_session.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/proposals/proposal_preview.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/proposals/city_interventions.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/city_roads.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/city_growth.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/ui/proposal_presentation.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/named_random.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/harmony.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scenes/p0_main.tscn.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scenes/listening_session.tscn.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/preview_audio_output.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/loudness_calibration.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/district_synth.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/listening_fixtures.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/sample_renderer.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/city_audio_model.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/audio_clock.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scenes/style_frame.tscn.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scenes/performance_fixture.tscn.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/city/city_generator.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://scripts/audio/sample_transport.gd.remap[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/global_script_class_cache.cfg[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://icon.svg[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://.godot/uid_cache.bin[39m[0m
+[  97% ] [90m[1msavezip[22m | 正在保存文件： res://project.binary[39m[0m
+[92m[ DONE ][39m [1msavezip[22m
+[0m
+[MCPServer] stopped
+[MCPRegistry] deregistered d:/godot/godotpro/共鸣之城

@@ -1,0 +1,612 @@
+{
+  "rule_id": "ASSET-001",
+  "status": "PASS",
+  "source_commit": "c07cba134021b2ae12ec6292021102b30cbb09f9",
+  "build_inputs_sha256": {
+    "export_presets.cfg": "bf8a838d3f875c382fbc7bc8448f518c7dc66d2ae107f7fa5dc996399d8af6f0",
+    "数据/spec_values.json": "cd40cb9714feb9d4ec155ddd0a701632627abb6015ec140d57a3ccf13c614194",
+    "tools/build_demo_bundle.py": "e1b7aa0f270594d9f997b72869612f8e017a86a9560dfd4999eec1eb13411f9a",
+    "tests/demo_bundle_contract.gd": "f7c7698cd647b77f253c1cf9189ef58ba9c6ffd3b459e91488af91550a35fe4f"
+  },
+  "engine_version": "4.7.2-stable (official)",
+  "engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "pack_sha256": "0a90210274780fb1004ee3ab61da5afafe2a9e32a09c3356d42e2229e54fb940",
+  "pack_size_bytes": 6109900,
+  "engine_size_bytes": 180858888,
+  "output": "D:\\GODOT\\GODOTPRO\\共鸣之城\\交付\\共鸣之城Demo_2026-10-09_轮47",
+  "checks": [
+    {
+      "description": "Packed audio singleton without MCP server",
+      "passed": true
+    },
+    {
+      "description": "Source checkout, tests and production assets unavailable",
+      "passed": true
+    },
+    {
+      "description": "Packed manifest and all imported mipmapped textures: Demo城市",
+      "passed": true
+    },
+    {
+      "description": "Packed manifest and all imported mipmapped textures: 风格小景",
+      "passed": true
+    },
+    {
+      "description": "Packed manifest and all imported mipmapped textures: 古典建筑候选",
+      "passed": true
+    },
+    {
+      "description": "Packed main scene builds actual initial city",
+      "passed": true
+    },
+    {
+      "description": "Latest focus, map tools and diagnosis are present",
+      "passed": true
+    },
+    {
+      "description": "Packed release settles and grows visible routed city",
+      "passed": true
+    },
+    {
+      "description": "Packed selected building accepts focus",
+      "passed": true
+    },
+    {
+      "description": "Packed focus runs without changing city",
+      "passed": true
+    },
+    {
+      "description": "Packed historical SVG scene builds six placements",
+      "passed": true
+    }
+  ],
+  "files": [
+    ".godot/imported/residential_building_type_a_01_base.png-18b9a4e9a5818f3bb919778d8d45546e.ctex",
+    "资源/P0城市/整图/residential_building_type_a_01_base.png.import",
+    ".godot/imported/industrial_building_c_03_base.png-5e9de8b6320ad223d4e7291d1f1d2690.ctex",
+    "资源/P0城市/整图/industrial_building_c_03_base.png.import",
+    ".godot/imported/industrial_building_b_02_base.png-cb26b42bafa18831c1013594975a1fd2.ctex",
+    "资源/P0城市/整图/industrial_building_b_02_base.png.import",
+    ".godot/imported/industrial_building_a_01_base.png-ee62856da220687312decaa092436058.ctex",
+    "资源/P0城市/整图/industrial_building_a_01_base.png.import",
+    ".godot/imported/ground_tile_low_01_base.png-1ea765cd3d37595520456e416df15650.ctex",
+    "资源/P0城市/整图/ground_tile_low_01_base.png.import",
+    ".godot/imported/ground_tile_high_02_base.png-a5c4e0b10e5a055b836436d723190756.ctex",
+    "资源/P0城市/整图/ground_tile_high_02_base.png.import",
+    ".godot/imported/decoration_water_tower_03_base.png-c5f93fa7445adf3bd2f6fbd24a94a176.ctex",
+    "资源/P0城市/整图/decoration_water_tower_03_base.png.import",
+    ".godot/imported/decoration_planter_02_base.png-f4fe88c01dcee5662b2d602f5d555ae8.ctex",
+    "资源/P0城市/整图/decoration_planter_02_base.png.import",
+    ".godot/imported/decoration_light_square_04_base.png-4ebaef38d5332409a803e220886e4cbe.ctex",
+    "资源/P0城市/整图/decoration_light_square_04_base.png.import",
+    ".godot/imported/decoration_fence_01_base.png-f0a9eb111f0fcd35a13ffd7f0dee532c.ctex",
+    "资源/P0城市/整图/decoration_fence_01_base.png.import",
+    ".godot/imported/commercial_building_c_03_base.png-39b57df977b9ed9f76c7ee2e7676cb39.ctex",
+    "资源/P0城市/整图/commercial_building_c_03_base.png.import",
+    ".godot/imported/commercial_building_b_02_base.png-38d122aaaeb5f2bfdcbf800d05a2679f.ctex",
+    "资源/P0城市/整图/commercial_building_b_02_base.png.import",
+    "资源/风格小景/manifest.json",
+    "资源/风格小景/layout.json",
+    ".godot/imported/tree_tree_small_01_base.png-5618b79ad93eb4815bb57eb98be86d4b.ctex",
+    "资源/风格小景/整图/tree_tree_small_01_base.png.import",
+    ".godot/imported/tree_tree_large_02_base.png-d446768bb1b386788da0ce3006cb3677.ctex",
+    "资源/风格小景/整图/tree_tree_large_02_base.png.import",
+    ".godot/imported/residential_compound_terrace_01.png-c49ab39f3869840041c7b783c943c693.ctex",
+    "资源/风格小景/整图/residential_compound_terrace_01.png.import",
+    ".godot/imported/residential_compound_gable_01.png-5757fe1dff2ac4afa117e1430587da13.ctex",
+    "资源/风格小景/整图/residential_compound_gable_01.png.import",
+    ".godot/imported/residential_building_type_b_02_base.png-7b8f02ac3b80f0cb2981458ff2c6d237.ctex",
+    "资源/风格小景/整图/residential_building_type_b_02_base.png.import",
+    ".godot/imported/decoration_planter_02_base.png-6e6e13843ec8b622c4606f490327d92f.ctex",
+    "资源/风格小景/整图/decoration_planter_02_base.png.import",
+    ".godot/imported/decoration_light_square_04_base.png-2800caff9aa73a9b7394015e1d32a82a.ctex",
+    "资源/风格小景/整图/decoration_light_square_04_base.png.import",
+    "资源/着色器/音频一拍揭示.gdshader",
+    "scripts/spec_values.gdc",
+    "资源/古典建筑候选/manifest.json",
+    "资源/古典建筑候选/layout.json",
+    ".godot/imported/historic_church_01.svg-e698ff3b22dd25e47ee618d42f5b2ddb.ctex",
+    "资源/古典建筑候选/SVG/historic_church_01.svg.import",
+    ".godot/imported/classical_temple_01.svg-99b770c7a630d53f9e3069d4f61c948d.ctex",
+    "资源/古典建筑候选/SVG/classical_temple_01.svg.import",
+    ".godot/imported/classical_civic_hall_01.svg-b7ecd5f24f732a889c0d56cad604c9ca.ctex",
+    "资源/古典建筑候选/SVG/classical_civic_hall_01.svg.import",
+    ".godot/imported/classical_amphitheater_01.svg-4a1d13e2a623e6ea355989189f3e5bf3.ctex",
+    "资源/古典建筑候选/SVG/classical_amphitheater_01.svg.import",
+    ".godot/imported/performance_windows.png-90b6588d008e243ac6e89ed5bdef62c1.ctex",
+    "资源/P0城市/performance_windows.png.import",
+    "资源/P0城市/performance_layout.json",
+    ".godot/imported/palette.png-495087ed6718e6286f6fa401ac9d097c.ctex",
+    "资源/P0城市/palette.png.import",
+    "资源/P0城市/palette.json",
+    "资源/P0城市/manifest.json",
+    ".godot/imported/tree_tree_small_01_base.png-7bc18d80d5cc3f08c2d559b3a398c870.ctex",
+    "资源/P0城市/整图/tree_tree_small_01_base.png.import",
+    ".godot/imported/tree_tree_large_02_base.png-49137019deb392309ca9e97adf0de624.ctex",
+    "资源/P0城市/整图/tree_tree_large_02_base.png.import",
+    ".godot/imported/road_road_straight_01_base.png-83dd43b48b4e68bf295d84b95aee82c7.ctex",
+    "资源/P0城市/整图/road_road_straight_01_base.png.import",
+    ".godot/imported/road_road_crossroad_03_base.png-d5a6dbe06e63c9fc9cb31d4f5752a738.ctex",
+    "资源/P0城市/整图/road_road_crossroad_03_base.png.import",
+    ".godot/imported/road_road_bend_02_base.png-578e519986be0c194ca725ba1e4d6a6d.ctex",
+    "资源/P0城市/整图/road_road_bend_02_base.png.import",
+    ".godot/imported/residential_building_type_c_03_base.png-1f5fadcbad56b1aec89f7469dd6b2d4d.ctex",
+    "资源/P0城市/整图/residential_building_type_c_03_base.png.import",
+    ".godot/imported/residential_building_type_b_02_base.png-da44b5cb5d6115d0728a9abce9804081.ctex",
+    "资源/P0城市/整图/residential_building_type_b_02_base.png.import",
+    ".godot/imported/commercial_building_a_01_base.png-f534dca74b3ca0c9de250c39405b0a68.ctex",
+    "资源/P0城市/整图/commercial_building_a_01_base.png.import",
+    "资源/Demo城市/palette.json",
+    "资源/Demo城市/manifest.json",
+    ".godot/imported/residential_compound_terrace_01.png-83aa4d5086fa004a3551352e99ebd1d2.ctex",
+    "资源/Demo城市/整图/residential_compound_terrace_01.png.import",
+    ".godot/imported/residential_compound_gable_01.png-355c049da22cc0119e81589cb400742a.ctex",
+    "资源/Demo城市/整图/residential_compound_gable_01.png.import",
+    ".godot/imported/residential_building_type_c_03_base.png-7a69783e57f231f24fb71b20308bb4bf.ctex",
+    "资源/Demo城市/整图/residential_building_type_c_03_base.png.import",
+    ".godot/imported/residential_building_type_b_02_base.png-b4afefabb7651ab42fb7a90469892f99.ctex",
+    "资源/Demo城市/整图/residential_building_type_b_02_base.png.import",
+    ".godot/imported/residential_building_type_a_01_base.png-7dddb70d33b0deeab2b7d74a8a6cf9be.ctex",
+    "资源/Demo城市/整图/residential_building_type_a_01_base.png.import",
+    ".godot/imported/industrial_building_c_03_base.png-5866239416144560cdec2c93ead1a35b.ctex",
+    "资源/Demo城市/整图/industrial_building_c_03_base.png.import",
+    ".godot/imported/industrial_building_b_02_base.png-c147085b2a1494a57e156ad964a07c79.ctex",
+    "资源/Demo城市/整图/industrial_building_b_02_base.png.import",
+    ".godot/imported/industrial_building_a_01_base.png-798822cfbc3b1e50797a3b63f948d5e2.ctex",
+    "资源/Demo城市/整图/industrial_building_a_01_base.png.import",
+    ".godot/imported/commercial_building_c_03_base.png-510cd6884a72b7e20eefa8b84608b2b6.ctex",
+    "资源/Demo城市/整图/commercial_building_c_03_base.png.import",
+    ".godot/imported/commercial_building_b_02_base.png-b43a4fe96878e37c28c86c5e2655017e.ctex",
+    "资源/Demo城市/整图/commercial_building_b_02_base.png.import",
+    ".godot/imported/commercial_building_a_01_base.png-b82d47ef099d16d1a92d1eb3f9745790.ctex",
+    "资源/Demo城市/整图/commercial_building_a_01_base.png.import",
+    "数据/spec_values.json",
+    "数据/listening_fixtures.json",
+    "scripts/visual/style_frame.gdc",
+    "scripts/visual/city_performance_fixture.gdc",
+    "scripts/visual/city_demo_view.gdc",
+    "scripts/visual/boundary_diagnosis.gdc",
+    "scripts/visual/audio_growth_mask.gdc",
+    "scripts/city/district_schema.gdc",
+    "scripts/ui/p0_main.gdc",
+    "scripts/ui/listening_session.gdc",
+    "scripts/proposals/proposal_preview.gdc",
+    "scripts/proposals/city_interventions.gdc",
+    "scripts/city/city_roads.gdc",
+    "scripts/city/city_growth.gdc",
+    "scripts/ui/proposal_presentation.gdc",
+    "scripts/city/named_random.gdc",
+    "scripts/city/harmony.gdc",
+    ".godot/exported/133200997/export-4700bc9311760645234a891155d214a7-p0_main.scn",
+    ".godot/exported/133200997/export-3f9a25f5364420c3328ae55fda10c4ce-listening_session.scn",
+    ".godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex",
+    "icon.svg.import",
+    "scripts/audio/preview_audio_output.gdc",
+    "scripts/audio/loudness_calibration.gdc",
+    "scripts/audio/district_synth.gdc",
+    "scripts/audio/listening_fixtures.gdc",
+    "scripts/audio/sample_renderer.gdc",
+    "scripts/audio/city_audio_model.gdc",
+    "scripts/audio/audio_clock.gdc",
+    ".godot/exported/133200997/export-e5b2d464ad58b76764762a9114348d3a-style_frame.scn",
+    ".godot/exported/133200997/export-2a2d4009582824462b91bd93a0a17252-performance_fixture.scn",
+    "scripts/city/city_generator.gdc",
+    "scripts/audio/sample_transport.gdc",
+    "scripts/spec_values.gd.remap",
+    "scripts/visual/style_frame.gd.remap",
+    "scripts/visual/city_performance_fixture.gd.remap",
+    "scripts/visual/city_demo_view.gd.remap",
+    "scripts/visual/boundary_diagnosis.gd.remap",
+    "scripts/visual/audio_growth_mask.gd.remap",
+    "scripts/city/district_schema.gd.remap",
+    "scripts/ui/p0_main.gd.remap",
+    "scripts/ui/listening_session.gd.remap",
+    "scripts/proposals/proposal_preview.gd.remap",
+    "scripts/proposals/city_interventions.gd.remap",
+    "scripts/city/city_roads.gd.remap",
+    "scripts/city/city_growth.gd.remap",
+    "scripts/ui/proposal_presentation.gd.remap",
+    "scripts/city/named_random.gd.remap",
+    "scripts/city/harmony.gd.remap",
+    "scenes/p0_main.tscn.remap",
+    "scenes/listening_session.tscn.remap",
+    "scripts/audio/preview_audio_output.gd.remap",
+    "scripts/audio/loudness_calibration.gd.remap",
+    "scripts/audio/district_synth.gd.remap",
+    "scripts/audio/listening_fixtures.gd.remap",
+    "scripts/audio/sample_renderer.gd.remap",
+    "scripts/audio/city_audio_model.gd.remap",
+    "scripts/audio/audio_clock.gd.remap",
+    "scenes/style_frame.tscn.remap",
+    "scenes/performance_fixture.tscn.remap",
+    "scripts/city/city_generator.gd.remap",
+    "scripts/audio/sample_transport.gd.remap",
+    ".godot/global_script_class_cache.cfg",
+    "icon.svg",
+    ".godot/uid_cache.bin",
+    "project.binary"
+  ],
+  "textures": [
+    {
+      "id": "residential_building_type_a_01_base",
+      "path": "资源/P0城市/整图/residential_building_type_a_01_base.png",
+      "source_sha256": "f505029cf3ab762cb03d6da6ab0e8b0b3de364c627973872eb33e82c6f9914c7",
+      "packed_path": ".godot/imported/residential_building_type_a_01_base.png-18b9a4e9a5818f3bb919778d8d45546e.ctex",
+      "packed_sha256": "7e3a0bc3545100a949b4fae9154ea46229503b85d77d6848aa9799852bff553e",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "residential_building_type_b_02_base",
+      "path": "资源/P0城市/整图/residential_building_type_b_02_base.png",
+      "source_sha256": "213fc510669b27017cf927f845dfb4222ee149d11498416fde4df087e9807ff4",
+      "packed_path": ".godot/imported/residential_building_type_b_02_base.png-da44b5cb5d6115d0728a9abce9804081.ctex",
+      "packed_sha256": "70e9ea43ce3a3425ee95d68552b0ce968af356c8f868f2f47afca407128b1fe9",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "residential_building_type_c_03_base",
+      "path": "资源/P0城市/整图/residential_building_type_c_03_base.png",
+      "source_sha256": "2494cb810856a17e92b4681e6bdb20511322eb1a356412dc5bd44c4081a1e3e6",
+      "packed_path": ".godot/imported/residential_building_type_c_03_base.png-1f5fadcbad56b1aec89f7469dd6b2d4d.ctex",
+      "packed_sha256": "edf0442094d2b5cf9c09cb762f3a1a032294311ef0082ba492f16ffae9354828",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "commercial_building_a_01_base",
+      "path": "资源/P0城市/整图/commercial_building_a_01_base.png",
+      "source_sha256": "41caf87808eaf63657bd6e9bae6874a1120cbb10b27a33e62d5925521f48dd1e",
+      "packed_path": ".godot/imported/commercial_building_a_01_base.png-f534dca74b3ca0c9de250c39405b0a68.ctex",
+      "packed_sha256": "ec885d09da079dba35628fd6e73647f5a6b3daa196243aa63174f93ef643fac7",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "commercial_building_b_02_base",
+      "path": "资源/P0城市/整图/commercial_building_b_02_base.png",
+      "source_sha256": "7163cfadbdf1dcaed055a81a9f495690466e6f2cd0b716a21ac13c7b353c72ee",
+      "packed_path": ".godot/imported/commercial_building_b_02_base.png-38d122aaaeb5f2bfdcbf800d05a2679f.ctex",
+      "packed_sha256": "c56c75f923afce03308c5490d963ea574ca0accfaf41898e9426a5184acd12e6",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "commercial_building_c_03_base",
+      "path": "资源/P0城市/整图/commercial_building_c_03_base.png",
+      "source_sha256": "4b4e4afff7d2b22f19c714a4013d6cadfde5c42e071bcd80bb0f484efb999589",
+      "packed_path": ".godot/imported/commercial_building_c_03_base.png-39b57df977b9ed9f76c7ee2e7676cb39.ctex",
+      "packed_sha256": "ba65dfa9d33a0861347cf8fd7163227411a71ada24d4f1067847cb70d24adf86",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "industrial_building_a_01_base",
+      "path": "资源/P0城市/整图/industrial_building_a_01_base.png",
+      "source_sha256": "bb39f122ba9382488f32da2f46d26716f9d15cd9d8c98160d8532b98200f811b",
+      "packed_path": ".godot/imported/industrial_building_a_01_base.png-ee62856da220687312decaa092436058.ctex",
+      "packed_sha256": "beba5dd15b807d9e1cb52187d655a1aa1cc8f672db1e5c07a9f95c7000fb8878",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "industrial_building_b_02_base",
+      "path": "资源/P0城市/整图/industrial_building_b_02_base.png",
+      "source_sha256": "78ed4aa5f04a91b041df1e54e4547df65311f6826eca2d0d60b6e51f4c7f3a2a",
+      "packed_path": ".godot/imported/industrial_building_b_02_base.png-cb26b42bafa18831c1013594975a1fd2.ctex",
+      "packed_sha256": "85bf9cb4a0c4c73736d28a457651c855288dd623572a4fa2c55414f2b0eb93f7",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "industrial_building_c_03_base",
+      "path": "资源/P0城市/整图/industrial_building_c_03_base.png",
+      "source_sha256": "470b6c57413e875433bc0df1130bc62bf2dc67585a3b9088c12ee5296a4f5412",
+      "packed_path": ".godot/imported/industrial_building_c_03_base.png-5e9de8b6320ad223d4e7291d1f1d2690.ctex",
+      "packed_sha256": "73ecdb721d58d244fb1074648fb19059db5101db718ba5bfdff817d755a5d4d9",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "ground_tile_low_01_base",
+      "path": "资源/P0城市/整图/ground_tile_low_01_base.png",
+      "source_sha256": "83fa7350c0239f9a11bf69316c43568096748cb780987ac27da1de35399efee8",
+      "packed_path": ".godot/imported/ground_tile_low_01_base.png-1ea765cd3d37595520456e416df15650.ctex",
+      "packed_sha256": "f133a51c8d5ba1acbd97ccaed54ddfb5328b7ccfda35bd86984b335aee7dfba9",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "ground_tile_high_02_base",
+      "path": "资源/P0城市/整图/ground_tile_high_02_base.png",
+      "source_sha256": "8a7a63cebae21719e9cfaab9a1521e53e5580a2d4821f63262f197fda182ede2",
+      "packed_path": ".godot/imported/ground_tile_high_02_base.png-a5c4e0b10e5a055b836436d723190756.ctex",
+      "packed_sha256": "e7298c000ff1f6ef59f5af18496a9e109de99e04b776d00061c34649a1e974f5",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "road_road_straight_01_base",
+      "path": "资源/P0城市/整图/road_road_straight_01_base.png",
+      "source_sha256": "47d8d260de08895a9ed2834d09ffb49b235bc5a9c2c16f5d8d56ca1f11cf5e0b",
+      "packed_path": ".godot/imported/road_road_straight_01_base.png-83dd43b48b4e68bf295d84b95aee82c7.ctex",
+      "packed_sha256": "68c63c34517f2d4f7e2c08e7946d2b80d8ccf6a07c010ec99e6396f2539b98ef",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "road_road_bend_02_base",
+      "path": "资源/P0城市/整图/road_road_bend_02_base.png",
+      "source_sha256": "7faef8f4b6565682f60c154257dfbeaa34cfd23b0f623da30b25007cb23e9458",
+      "packed_path": ".godot/imported/road_road_bend_02_base.png-578e519986be0c194ca725ba1e4d6a6d.ctex",
+      "packed_sha256": "72cf052d79e9ae4fbc9f25d417fcf43cdc08b3e9b2390f48aabbf26209cae147",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "road_road_crossroad_03_base",
+      "path": "资源/P0城市/整图/road_road_crossroad_03_base.png",
+      "source_sha256": "1eec5697099d712ddf78128c491139b7c16439d87b243c03f608af0337705eed",
+      "packed_path": ".godot/imported/road_road_crossroad_03_base.png-d5a6dbe06e63c9fc9cb31d4f5752a738.ctex",
+      "packed_sha256": "99b753191db16ff4a48982b1be8bcd85adba849340e3cde603819e3e5b86fd7c",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "tree_tree_small_01_base",
+      "path": "资源/P0城市/整图/tree_tree_small_01_base.png",
+      "source_sha256": "4bff23cb56107b47b182d7955f01b98a829c7c8269449b2d02f3990e8221b20d",
+      "packed_path": ".godot/imported/tree_tree_small_01_base.png-7bc18d80d5cc3f08c2d559b3a398c870.ctex",
+      "packed_sha256": "750cc903287637a43894efdc4c6444095256fae307742dec327f204aba56e4ee",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "tree_tree_large_02_base",
+      "path": "资源/P0城市/整图/tree_tree_large_02_base.png",
+      "source_sha256": "6bb7f559f888054977cc5103c0248585e6daa39b2dfd96203c63e44593ea607e",
+      "packed_path": ".godot/imported/tree_tree_large_02_base.png-49137019deb392309ca9e97adf0de624.ctex",
+      "packed_sha256": "7ecb207d0f44724567c7d9682e6e348e98b13d8dcd0a89f785c02994ca326303",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "decoration_fence_01_base",
+      "path": "资源/P0城市/整图/decoration_fence_01_base.png",
+      "source_sha256": "15e0293c38b38b4927429b53dd0ee92336df2ac3e6aecb9567d47c4599a90b29",
+      "packed_path": ".godot/imported/decoration_fence_01_base.png-f0a9eb111f0fcd35a13ffd7f0dee532c.ctex",
+      "packed_sha256": "2390292e3d8b83bf60f9fd715632b2289ac2b4155cf4bcb99dc65651ccbaa31d",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "decoration_planter_02_base",
+      "path": "资源/P0城市/整图/decoration_planter_02_base.png",
+      "source_sha256": "11c63ab4524c4ac4f36ba884bb781fccb4bb470588cf4e22d4e55f14d86ca6e1",
+      "packed_path": ".godot/imported/decoration_planter_02_base.png-f4fe88c01dcee5662b2d602f5d555ae8.ctex",
+      "packed_sha256": "77f2c6757b818054ca1687aa4e994f397fe65347b549e663cbe163cfad9a2d03",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "decoration_water_tower_03_base",
+      "path": "资源/P0城市/整图/decoration_water_tower_03_base.png",
+      "source_sha256": "79f01ca3ae2f7c14d8a3d5a6abaeae3cfc679b1b5314db4e2edaac6abfd08bd9",
+      "packed_path": ".godot/imported/decoration_water_tower_03_base.png-c5f93fa7445adf3bd2f6fbd24a94a176.ctex",
+      "packed_sha256": "f5e35fab45b02879440993d8f7a5ffc64e66706d5a2e2ddadff9535a38031bb5",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "decoration_light_square_04_base",
+      "path": "资源/P0城市/整图/decoration_light_square_04_base.png",
+      "source_sha256": "d344190d81bda1eabee5d2aaa12b29ca03b7ee7d1f2454a4ea412a3aa319f036",
+      "packed_path": ".godot/imported/decoration_light_square_04_base.png-4ebaef38d5332409a803e220886e4cbe.ctex",
+      "packed_sha256": "e48cb1c677e257a61d506fcd5f7e6b65f6c364c3256d6afa886497379768fa6c",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "residential_building_type_a_01_base",
+      "path": "资源/Demo城市/整图/residential_building_type_a_01_base.png",
+      "source_sha256": "9aadea77f6d4cfd62102f0a681f8c616e11bf7413aa7416bc1715b696721b5a4",
+      "packed_path": ".godot/imported/residential_building_type_a_01_base.png-7dddb70d33b0deeab2b7d74a8a6cf9be.ctex",
+      "packed_sha256": "2c5b8d833dc61033a953d0ea92e074d3f15d6b930fa965449d9ab8b22c494105",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "residential_building_type_b_02_base",
+      "path": "资源/Demo城市/整图/residential_building_type_b_02_base.png",
+      "source_sha256": "374ed141c157eb753715210ca8523af75b6d8c932158d6782b59dd9ef591cb75",
+      "packed_path": ".godot/imported/residential_building_type_b_02_base.png-b4afefabb7651ab42fb7a90469892f99.ctex",
+      "packed_sha256": "431a8e8eda2e00cf327c480515c83d80bb6a065f62af5c8d92d7b7dbab87d805",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "residential_building_type_c_03_base",
+      "path": "资源/Demo城市/整图/residential_building_type_c_03_base.png",
+      "source_sha256": "b713787c9955c356cdecf30c0cd7bff79576d180bb1c166e4a0a53439ca67353",
+      "packed_path": ".godot/imported/residential_building_type_c_03_base.png-7a69783e57f231f24fb71b20308bb4bf.ctex",
+      "packed_sha256": "71828a2e60c074c4b9445a01a67ab065b5de2f1b78cd0d419d6f2964ca32e885",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "commercial_building_a_01_base",
+      "path": "资源/Demo城市/整图/commercial_building_a_01_base.png",
+      "source_sha256": "1dd6ec6a37fb7c24c8861335637f3d985e414fabf158defb9cdff286b11c668c",
+      "packed_path": ".godot/imported/commercial_building_a_01_base.png-b82d47ef099d16d1a92d1eb3f9745790.ctex",
+      "packed_sha256": "8b138e06ecbd8bff338c8a8d61a7702e6943500783dfad20c99d89fa1ed5c3fa",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "commercial_building_b_02_base",
+      "path": "资源/Demo城市/整图/commercial_building_b_02_base.png",
+      "source_sha256": "c588a4561d087bfcd829ec361fc4bda6e8aec01f20bd2d1c74786c305a5a90a4",
+      "packed_path": ".godot/imported/commercial_building_b_02_base.png-b43a4fe96878e37c28c86c5e2655017e.ctex",
+      "packed_sha256": "181ae71fda2716e49f040e8ccdaac1a316a655a5f033e4c33b575abd822a3d43",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "commercial_building_c_03_base",
+      "path": "资源/Demo城市/整图/commercial_building_c_03_base.png",
+      "source_sha256": "b3ae2f33a2eca9f53163a2a3ec8064c0e20851b489c8007c1b0abe16acdb9c90",
+      "packed_path": ".godot/imported/commercial_building_c_03_base.png-510cd6884a72b7e20eefa8b84608b2b6.ctex",
+      "packed_sha256": "991983a51b93bed883f31d76c7c5e238d9b0ea6a16904bd0f1ea47ae880ce0e6",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "industrial_building_a_01_base",
+      "path": "资源/Demo城市/整图/industrial_building_a_01_base.png",
+      "source_sha256": "bafd513739f8b383fdded576bccfea392231b89143d3505a8864523e3504a037",
+      "packed_path": ".godot/imported/industrial_building_a_01_base.png-798822cfbc3b1e50797a3b63f948d5e2.ctex",
+      "packed_sha256": "b7d6528a43213cb60c283c5905bc822ededc3e8f1483a32467f7cfac52e44a4d",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "industrial_building_b_02_base",
+      "path": "资源/Demo城市/整图/industrial_building_b_02_base.png",
+      "source_sha256": "bcef2160affaaea9379e176be75459c690036a6bf6d8fce9023c420f6b9465bb",
+      "packed_path": ".godot/imported/industrial_building_b_02_base.png-c147085b2a1494a57e156ad964a07c79.ctex",
+      "packed_sha256": "f2f274df3af76901668bf56ec12d65cd7bd9eba7aa550738ab318c73abc1fead",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "industrial_building_c_03_base",
+      "path": "资源/Demo城市/整图/industrial_building_c_03_base.png",
+      "source_sha256": "ae6c012934783bfb195d62e8f51533b4453077801286049feba68f839fb125a4",
+      "packed_path": ".godot/imported/industrial_building_c_03_base.png-5866239416144560cdec2c93ead1a35b.ctex",
+      "packed_sha256": "ee6260c383eca0e6394138417d6f4ef9e6b0a7e8b78be8a8477556142b92f7ba",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "residential_compound_gable_01",
+      "path": "资源/Demo城市/整图/residential_compound_gable_01.png",
+      "source_sha256": "a1e636bf36f0e00501db127177a210147517704e9c8bd5f7e2cebb752168a59f",
+      "packed_path": ".godot/imported/residential_compound_gable_01.png-355c049da22cc0119e81589cb400742a.ctex",
+      "packed_sha256": "3bbe77b9541b29ad8c81df150df70ddf665166ce24bdfd17e368cdd50cabc2a2",
+      "license": "Project-authored geometry"
+    },
+    {
+      "id": "residential_compound_terrace_01",
+      "path": "资源/Demo城市/整图/residential_compound_terrace_01.png",
+      "source_sha256": "66a02153cc2c2544447e1ca33354c40cc1cc7b19ff6731070c50d82cf6220da6",
+      "packed_path": ".godot/imported/residential_compound_terrace_01.png-83aa4d5086fa004a3551352e99ebd1d2.ctex",
+      "packed_sha256": "fcfbc0c29594bf573e16a165d9f8bcc1784ce22bf70e0f61fe67aeed2c15b897",
+      "license": "Project-authored geometry"
+    },
+    {
+      "id": "residential_building_type_b_02_base",
+      "path": "资源/风格小景/整图/residential_building_type_b_02_base.png",
+      "source_sha256": "374ed141c157eb753715210ca8523af75b6d8c932158d6782b59dd9ef591cb75",
+      "packed_path": ".godot/imported/residential_building_type_b_02_base.png-7b8f02ac3b80f0cb2981458ff2c6d237.ctex",
+      "packed_sha256": "431a8e8eda2e00cf327c480515c83d80bb6a065f62af5c8d92d7b7dbab87d805",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "residential_compound_gable_01",
+      "path": "资源/风格小景/整图/residential_compound_gable_01.png",
+      "source_sha256": "a1e636bf36f0e00501db127177a210147517704e9c8bd5f7e2cebb752168a59f",
+      "packed_path": ".godot/imported/residential_compound_gable_01.png-5757fe1dff2ac4afa117e1430587da13.ctex",
+      "packed_sha256": "3bbe77b9541b29ad8c81df150df70ddf665166ce24bdfd17e368cdd50cabc2a2",
+      "license": "Project-authored geometry"
+    },
+    {
+      "id": "residential_compound_terrace_01",
+      "path": "资源/风格小景/整图/residential_compound_terrace_01.png",
+      "source_sha256": "66a02153cc2c2544447e1ca33354c40cc1cc7b19ff6731070c50d82cf6220da6",
+      "packed_path": ".godot/imported/residential_compound_terrace_01.png-c49ab39f3869840041c7b783c943c693.ctex",
+      "packed_sha256": "fcfbc0c29594bf573e16a165d9f8bcc1784ce22bf70e0f61fe67aeed2c15b897",
+      "license": "Project-authored geometry"
+    },
+    {
+      "id": "tree_tree_small_01_base",
+      "path": "资源/风格小景/整图/tree_tree_small_01_base.png",
+      "source_sha256": "b2f6b88d0a84b599791ee7a4729fd644b653064fb5b4f16bc5dc81583660018b",
+      "packed_path": ".godot/imported/tree_tree_small_01_base.png-5618b79ad93eb4815bb57eb98be86d4b.ctex",
+      "packed_sha256": "ced79c38576691386c88205e01de45dcba48d461a3202546e67f54692284706e",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "tree_tree_large_02_base",
+      "path": "资源/风格小景/整图/tree_tree_large_02_base.png",
+      "source_sha256": "14be9c5552cf5b2c30033da68223172a1b2b0e627e3cd2b54dd7b0b756157459",
+      "packed_path": ".godot/imported/tree_tree_large_02_base.png-d446768bb1b386788da0ce3006cb3677.ctex",
+      "packed_sha256": "7124219af472380b669db4259c69f9b1e88af3358b531926aa2da85637352a5c",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "decoration_planter_02_base",
+      "path": "资源/风格小景/整图/decoration_planter_02_base.png",
+      "source_sha256": "5f028402529204815112fc6b7113237bcbc83f68f82f59e38c31228a0d0f0732",
+      "packed_path": ".godot/imported/decoration_planter_02_base.png-6e6e13843ec8b622c4606f490327d92f.ctex",
+      "packed_sha256": "e8c94f9f119c30414de6bdf241278c42d49500bdf8a7e7030c7bd98cdbe27173",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "decoration_light_square_04_base",
+      "path": "资源/风格小景/整图/decoration_light_square_04_base.png",
+      "source_sha256": "352361539b2c2445c3e7b998dbfff03b400528437d63d4f55071d1e62ae84cbb",
+      "packed_path": ".godot/imported/decoration_light_square_04_base.png-2800caff9aa73a9b7394015e1d32a82a.ctex",
+      "packed_sha256": "e06c3bd7bddf4bcf0bae3c970ce6ade79501cca6648f72f5a76ce7020b55c7f3",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "classical_temple_01",
+      "path": "资源/古典建筑候选/SVG/classical_temple_01.svg",
+      "source_sha256": "050b6e9114bb9f00d92f76c5411736db748c326c8611ca599ef3a5e2ac31b3a9",
+      "packed_path": ".godot/imported/classical_temple_01.svg-99b770c7a630d53f9e3069d4f61c948d.ctex",
+      "packed_sha256": "703da77940087a06ed704f3ae2b5855ae924b0b43eadda8522cab751f675d823",
+      "license": "Project-authored geometry"
+    },
+    {
+      "id": "historic_church_01",
+      "path": "资源/古典建筑候选/SVG/historic_church_01.svg",
+      "source_sha256": "f42fd7cb4d26439fb95baeb53e6e22882852900e3a683ed437134e6606e4efac",
+      "packed_path": ".godot/imported/historic_church_01.svg-e698ff3b22dd25e47ee618d42f5b2ddb.ctex",
+      "packed_sha256": "c0cfc6493474543ef5b92f198819b2630d6ccef160533ccdc17a729bbb5fe366",
+      "license": "Project-authored geometry"
+    },
+    {
+      "id": "classical_civic_hall_01",
+      "path": "资源/古典建筑候选/SVG/classical_civic_hall_01.svg",
+      "source_sha256": "0bfbbb1bb058b8732375a615f214c29a1615371556ab2cf7988b7d518107b3d0",
+      "packed_path": ".godot/imported/classical_civic_hall_01.svg-b7ecd5f24f732a889c0d56cad604c9ca.ctex",
+      "packed_sha256": "2ee613d6a8ceccabd44173bab149669c8485bfeec81030a6d958be35ef583060",
+      "license": "Project-authored geometry"
+    },
+    {
+      "id": "classical_amphitheater_01",
+      "path": "资源/古典建筑候选/SVG/classical_amphitheater_01.svg",
+      "source_sha256": "01e9d11ab9e1b4c7ac6ffdb9da7724f21ee3fb66314afc2df9a4deb7e1e56722",
+      "packed_path": ".godot/imported/classical_amphitheater_01.svg-4a1d13e2a623e6ea355989189f3e5bf3.ctex",
+      "packed_sha256": "00cc022aaefa4389873dff582bd72ebffaec3783581e6f31261104af9a4b80db",
+      "license": "Project-authored geometry"
+    },
+    {
+      "id": "tree_tree_small_01_base",
+      "path": "资源/风格小景/整图/tree_tree_small_01_base.png",
+      "source_sha256": "b2f6b88d0a84b599791ee7a4729fd644b653064fb5b4f16bc5dc81583660018b",
+      "packed_path": ".godot/imported/tree_tree_small_01_base.png-5618b79ad93eb4815bb57eb98be86d4b.ctex",
+      "packed_sha256": "ced79c38576691386c88205e01de45dcba48d461a3202546e67f54692284706e",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "tree_tree_large_02_base",
+      "path": "资源/风格小景/整图/tree_tree_large_02_base.png",
+      "source_sha256": "14be9c5552cf5b2c30033da68223172a1b2b0e627e3cd2b54dd7b0b756157459",
+      "packed_path": ".godot/imported/tree_tree_large_02_base.png-d446768bb1b386788da0ce3006cb3677.ctex",
+      "packed_sha256": "7124219af472380b669db4259c69f9b1e88af3358b531926aa2da85637352a5c",
+      "license": "CC0-1.0"
+    }
+  ],
+  "forbidden": [],
+  "script_sources_sha256": {
+    "scripts/audio/audio_clock.gd": "f9c97cdba64ef5f7b1febaf94957f544742686fb45c6aee89822432c3f59e214",
+    "scripts/audio/city_audio_model.gd": "a32e8bf1868461ec4657433b450c9255aa9720b7371978c5aee910d2e51f7b5b",
+    "scripts/audio/district_synth.gd": "b97e1836d1fc5151b281e8a584727119c49f8780067d47ea499bccbc57534656",
+    "scripts/audio/listening_fixtures.gd": "ba8ff1d2627eb7a3d931dba26747731226f3d61bb8459eeb823e8bb0b0955d4b",
+    "scripts/audio/loudness_calibration.gd": "eaebe9d83e530f763e695cf186e41999cc9211950b7331fae78a233a3c4b1dd4",
+    "scripts/audio/preview_audio_output.gd": "d46cdd9ebfaceb077a5dbc4efb6dec83204d94da755f921b68f038d6b9f76682",
+    "scripts/audio/sample_renderer.gd": "6097349ff1f71d0bbe8217d89fabdc8432165e78d148e4fb0aa737e0f8949e7e",
+    "scripts/audio/sample_transport.gd": "46663ce215af87af54e96f02ff60ae91641c8799c9d5833493d73e79f1ea7bb9",
+    "scripts/city/city_generator.gd": "0358029bc20fd1ea991ba9fd0412b5f9ed369a1e1e80ddf796fad1cf21cc0ab6",
+    "scripts/city/city_growth.gd": "f591f65243d759725f8479fc595edbc16b32898b71a59e2d25a0b0055ba1fb3b",
+    "scripts/city/city_roads.gd": "94997d6958f9865ec7c5ec9e62a09ae04bf8ef695b2781965a87132f8d2b0b37",
+    "scripts/city/district_schema.gd": "02eff517250ad6ea2d0d38066c99239b70481d60e05ec6e4d5a43d73e9209302",
+    "scripts/city/harmony.gd": "3ccf3390198105ab427277e6b34ea93dabcf9aafab7b6d7c6e06be5c71b75fec",
+    "scripts/city/named_random.gd": "67817fdc4ea53f6de0f02d96621e4056bdd909c73c02dee002d2ab0f0b936678",
+    "scripts/proposals/city_interventions.gd": "b4b4a9846fe096aa8cde630cd750abccb10e0a1205fe8433cae63c2d0d33e503",
+    "scripts/proposals/proposal_preview.gd": "a2966d75aa83607e7d220fb7dec430251f10993a7425209078daa39b1e5dd10f",
+    "scripts/spec_values.gd": "ed339c9c735a6cfcdc50eb12be80ee257f09e63efc0c95bb3715d1cf438823f1",
+    "scripts/ui/listening_session.gd": "b2b660ce28e8fc0595bb274b7e985b1a8077500605753b55b542ae5b448b1d4d",
+    "scripts/ui/p0_main.gd": "6a68918175a81e978af355c840df90a34fcb0d2fa24fdf193ae095da2ac5add6",
+    "scripts/ui/proposal_presentation.gd": "f2e5b6f1643e64c5f0de09c855b80e21c762f8e35d77245974454a13aeecbc6c",
+    "scripts/visual/audio_growth_mask.gd": "3a80d045d18de61e118d91eabedb6ab5d45a1b1dc28e6a34fe0122ed5c104cce",
+    "scripts/visual/boundary_diagnosis.gd": "99c1c3d2ccc881cfde24416f5d6f9a2b7a7e201ab61e6f79c3af09f87e5f5b37",
+    "scripts/visual/city_demo_view.gd": "6b4bb406e38022c7980da73981db71542c0e3e16106556e7557ba016b7b87056",
+    "scripts/visual/city_performance_fixture.gd": "ecba4a6f8c2a480bfc623d1975b40a96528211637b1fb552ff3f6f990abfcab2",
+    "scripts/visual/style_frame.gd": "b5ae503a56888a4faabcae9579633a73339fa00fa783517710211978f476e8fe"
+  },
+  "scope": "Local portable engine + resource pack; actual GPU isolated scenes and default entry; Dummy, not human listening or long stress"
+}

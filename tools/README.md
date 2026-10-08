@@ -25,3 +25,5 @@ P0 City Kit烘焙：`python tools/prepare_city_bake.py`复制白名单模型/纹
 风格小景：`python tools/prepare_style_frame.py`从保留Demo/P0索引加工独立7件副本，读取明确SELECTED/manifest，不覆盖Demo manifest。PNG导入保持mipmaps/generate=true；`scenes/style_frame.tscn -- --capture-style-frame`用实际Compatibility生成有/无网格及推近图，当前只作候选艺术审阅。
 
 历史SVG：`python tools/build_classical_svg.py`生成四件项目原创、可编辑SVG与独立manifest；依赖现有风格小景manifest中的两件树。运行图在资源/古典建筑候选，生产副本资产/03_入库/古典建筑候选；通过项目MCP刷新，SVG导入mipmaps/generate=true。`scenes/style_frame.tscn -- --classical-frame --capture-style-frame`实际GPU截图；不覆盖Demo或风格小景图片。
+
+可携带Demo：`python tools/build_demo_bundle.py --engine <现有Godot.exe> --output <新目录> --evidence <新证据目录>`。复制现有引擎与实际导出ZIP、相对路径启动器/许可，不依赖导出模板；旧目录拒绝覆盖。44项SHA审计与空目录GPU场景11检查、真实主/风格入口检查在一次构建中完成。交付二进制忽略、工具/证据入Git，细节见文档/Demo本地运行包.md。原创SVG生成器必须newline=LF，使真实源字节与manifest SHA一致。

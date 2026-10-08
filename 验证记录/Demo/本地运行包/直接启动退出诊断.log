@@ -1,0 +1,64 @@
+WorkerThreadPool: 32 threads, 9 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Accessibility: AccessKit driver loaded.
+Native OpenGL API detected: 3.3: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+NVAPI: Init OK!
+NVAPI: Disabled OpenGL threaded optimization successfully
+NVAPI: Disabled G-SYNC for windowed mode successfully
+Accessibility: window 0 adapter created.
+SDL: Init OK!
+Using "winink" pen tablet driver...
+Shader 'CanvasSdfShaderGLES3' SHA256: 46bb98635ecd9131fa8ded421e7741c5440f6b3dbc732686c5c153de7d3efd82
+Shader 'SkeletonShaderGLES3' SHA256: 166dccba0f83c5a30ad94a4f1a43b7ce55dd59b9b14b1540c4c1c19f514b6f6b
+Shader 'ParticlesShaderGLES3' SHA256: 0e31394100795c688379311f34f4004f6e95a4b814a63e3c4b84db0b38d6a671
+Shader 'ParticlesCopyShaderGLES3' SHA256: 50fec05910490cceeec7914a37ad1b36a7014f0bc1bd154975c66d42f1100e72
+Shader 'CopyShaderGLES3' SHA256: 914bf6dfa9ac7b26cee4ed0baea1762193f5e28c1626ba04261460af96c3733e
+Shader 'CubemapFilterShaderGLES3' SHA256: 859e2350ffb96bc7b0977be022a29a457629101e57a39ea7386e7fce223d87bb
+Shader 'GlowShaderGLES3' SHA256: babdc82df7e26044583b323364d4cfd9ea815783a326a53f2fa768d85e7b95d0
+Shader 'PostShaderGLES3' SHA256: 8356a1808f18c07d2f1232061e0acb25bed2ebabe0e7fa6f0eb8f99168b9a2a2
+Shader 'FeedShaderGLES3' SHA256: fe1a7f4f8569ffea6a8daff8c0b0cb9e8932fa0344001f9acc231d0dc60711ed
+Shader 'CanvasShaderGLES3' SHA256: 40dc4eee940f9716dc20cc0aa2d0cf8739ead9dae90e10013767e6dd253a37a6
+Shader 'CanvasOcclusionShaderGLES3' SHA256: da7cd9e5ac73369d0d23318717b579a9acfd53f76571c9281d359c308aaa89fc
+Shader 'SceneShaderGLES3' SHA256: 9e9dc7be7894c5b3297ae1ebc64fc0796cd94f1b566c52c3b4f780523e4fb54f
+Shader 'SkyShaderGLES3' SHA256: b5d54eccbfd0e372fe0acd6f84819399d9c8cca6b429ffd38f331470ab8cf85a
+Shader 'TexBlitShaderGLES3' SHA256: d3a7b4a5aa05e41baec30eb818317d32f5e29b23d80514c39e6277eeea0f4041
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+SceneTreeFTI: traversal method DEFAULT
+Loading resource: res://scripts/audio/audio_clock.gdc remapped: res://scripts/audio/audio_clock.gdc
+Completed load for: 'res://scripts/audio/audio_clock.gd' remapped 'res://scripts/audio/audio_clock.gdc' at thread -1
+Loaded system CA certificates
+Loading resource: res://.godot/exported/133200997/export-4700bc9311760645234a891155d214a7-p0_main.scn remapped: res://.godot/exported/133200997/export-4700bc9311760645234a891155d214a7-p0_main.scn
+Loading resource: res://scripts/ui/p0_main.gdc remapped: res://scripts/ui/p0_main.gdc
+Completed load for: 'res://scripts/ui/p0_main.gd' remapped 'res://scripts/ui/p0_main.gdc' at thread -1
+Completed load for: 'res://scenes/p0_main.tscn' remapped 'res://.godot/exported/133200997/export-4700bc9311760645234a891155d214a7-p0_main.scn' at thread -1
+P0_READY seed=4d786078ee95f306 districts=9
+Loading resource: res://资源/着色器/音频一拍揭示.gdshader remapped: res://资源/着色器/音频一拍揭示.gdshader
+Completed load for: 'res://资源/着色器/音频一拍揭示.gdshader' remapped 'res://资源/着色器/音频一拍揭示.gdshader' at thread -1
+Loading resource: res://资源/Demo城市/整图/residential_building_type_a_01_base.png remapped: res://资源/Demo城市/整图/residential_building_type_a_01_base.png
+Loading resource: res://.godot/imported/residential_building_type_a_01_base.png-7dddb70d33b0deeab2b7d74a8a6cf9be.ctex remapped: res://.godot/imported/residential_building_type_a_01_base.png-7dddb70d33b0deeab2b7d74a8a6cf9be.ctex
+Completed load for: 'res://资源/Demo城市/整图/residential_building_type_a_01_base.png' remapped 'res://资源/Demo城市/整图/residential_building_type_a_01_base.png' at thread -1
+Loading resource: res://资源/Demo城市/整图/commercial_building_b_02_base.png remapped: res://资源/Demo城市/整图/commercial_building_b_02_base.png
+Loading resource: res://.godot/imported/commercial_building_b_02_base.png-b43a4fe96878e37c28c86c5e2655017e.ctex remapped: res://.godot/imported/commercial_building_b_02_base.png-b43a4fe96878e37c28c86c5e2655017e.ctex
+Completed load for: 'res://资源/Demo城市/整图/commercial_building_b_02_base.png' remapped 'res://资源/Demo城市/整图/commercial_building_b_02_base.png' at thread -1
+Loading resource: res://资源/Demo城市/整图/commercial_building_a_01_base.png remapped: res://资源/Demo城市/整图/commercial_building_a_01_base.png
+Loading resource: res://.godot/imported/commercial_building_a_01_base.png-b82d47ef099d16d1a92d1eb3f9745790.ctex remapped: res://.godot/imported/commercial_building_a_01_base.png-b82d47ef099d16d1a92d1eb3f9745790.ctex
+Completed load for: 'res://资源/Demo城市/整图/commercial_building_a_01_base.png' remapped 'res://资源/Demo城市/整图/commercial_building_a_01_base.png' at thread -1
+Loading resource: res://资源/Demo城市/整图/industrial_building_a_01_base.png remapped: res://资源/Demo城市/整图/industrial_building_a_01_base.png
+Loading resource: res://.godot/imported/industrial_building_a_01_base.png-798822cfbc3b1e50797a3b63f948d5e2.ctex remapped: res://.godot/imported/industrial_building_a_01_base.png-798822cfbc3b1e50797a3b63f948d5e2.ctex
+Completed load for: 'res://资源/Demo城市/整图/industrial_building_a_01_base.png' remapped 'res://资源/Demo城市/整图/industrial_building_a_01_base.png' at thread -1
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Accessibility: window 0 adapter destroyed.
+Leaked instance: AudioStreamGeneratorPlayback:9223372082203592148 - Reference count: 1
+Hint: Leaked instances typically happen when nodes are removed from the scene tree (with `remove_child()`) but not freed (with `free()` or `queue_free()`).
+Orphan StringName: Master (static: 0, total: 3)
+StringName: 1 unclaimed string names at exit.
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

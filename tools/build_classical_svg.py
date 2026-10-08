@@ -228,7 +228,7 @@ def build(identifier, label, geometry):
     content='\n'.join(parts)+'\n'
     for base in (RUNTIME,PRODUCTION):
         (base/'SVG').mkdir(parents=True,exist_ok=True)
-        (base/'SVG'/f'{identifier}.svg').write_text(content,encoding='utf-8')
+        (base/'SVG'/f'{identifier}.svg').write_text(content,encoding='utf-8',newline='\n')
     xs=[p[0] for _,v,_ in geometry for p in v]
     ys=[p[1] for _,v,_ in geometry for p in v]
     zs=[p[2] for _,v,_ in geometry for p in v]

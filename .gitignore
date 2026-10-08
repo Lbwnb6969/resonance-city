@@ -8,3 +8,6 @@
 /资产/01_原始素材/CC0_ambientCG/
 /资产/01_原始素材/OFL_Fonts/
 /资产/2.5D素材/
+
+# Reproducible local Demo bundles; retain build evidence and source in Git.
+/交付/

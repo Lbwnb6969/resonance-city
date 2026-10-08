@@ -1,0 +1,52 @@
+{
+	"checks": [
+		{
+			"description": "Packed audio singleton without MCP server",
+			"passed": true
+		},
+		{
+			"description": "Source checkout, tests and production assets unavailable",
+			"passed": true
+		},
+		{
+			"description": "Packed manifest and all imported mipmapped textures: Demo城市",
+			"passed": true
+		},
+		{
+			"description": "Packed manifest and all imported mipmapped textures: 风格小景",
+			"passed": true
+		},
+		{
+			"description": "Packed manifest and all imported mipmapped textures: 古典建筑候选",
+			"passed": true
+		},
+		{
+			"description": "Packed main scene builds actual initial city",
+			"passed": true
+		},
+		{
+			"description": "Latest focus, map tools and diagnosis are present",
+			"passed": true
+		},
+		{
+			"description": "Packed release settles and grows visible routed city",
+			"passed": true
+		},
+		{
+			"description": "Packed selected building accepts focus",
+			"passed": true
+		},
+		{
+			"description": "Packed focus runs without changing city",
+			"passed": true
+		},
+		{
+			"description": "Packed historical SVG scene builds six placements",
+			"passed": true
+		}
+	],
+	"engine": "4.7.2-stable (official)",
+	"rule_id": "ASSET-001",
+	"scope": "Actual portable engine, exported pack and GPU scenes from isolated directory; simulated boundary/Dummy, no physical listening or long stress",
+	"status": "PASS"
+}
