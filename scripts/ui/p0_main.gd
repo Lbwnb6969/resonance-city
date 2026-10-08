@@ -146,6 +146,8 @@ func _build_controls() -> void:
 		_cancel_audition()
 		status.text = "已取消待提交介入。")
 	_button("黑屏聆听（B）","Black").pressed.connect(func() -> void: set_black_screen(true))
+	_button("正式黑屏听测（6练习 + 10正式）","ListeningTest").pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/listening_session.tscn"))
 	status = _label("城市正在响着。","Status")
 	prediction = _label("选择方案并长按试听，查看同一副本的收益与代价。","Prediction")
 

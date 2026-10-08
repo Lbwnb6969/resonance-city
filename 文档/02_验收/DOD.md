@@ -164,7 +164,7 @@ ACOUSTIC-001/002/003对应AUDIO-001。辅助OFF、无律动/装饰、同相位�
 | HUMAN-IDENTITY | 单独播放街区声部，听音指图，记录街区类型与实际音色 | 原文未给正确率阈值，待U12；不可写为自动PASS |
 | HUMAN-ART | 壁纸/30秒放置/作品/过渡猎手/三格测试；留原方法并存观察记录 | 主观结果逐条登记，不假装“好看/好听”有自动证明 |
 
-答题前是否训练、布局难度/题型平衡、方位分区、播放时长和随机题是否固定还未裁定（U03/U05）。P0可以收集探索性数据，但正式≥70%验收须先锁协议。P0用显式fixture注入小二度，不偷偷加入完整叛离机制。
+用户已批准6题练习/固定种子随机10题/抖刺各5/左右中均衡/每题8秒/标准辅助OFF，耳机与内置扬声器分别记录；技术落实锁定spec.audio A11。P0用显式fixture注入小二度，不加入完整叛离机制。正式记录必须无下溢、human来源、条件一致；辅助ON窄带作为单独补充条件，不混入标准成绩。
 
 记录文件计划：`验证记录/P0/闭眼定位.csv`、`狼牙音箱.csv`、`验证记录/P1/视觉优先.csv`。字段：tester_id、trial_id、seed、layout_id、device、assist_state、truth_direction、truth_type、answer_direction、answer_type、correct、notes。correct仅在方位和类型同时正确时为真。
 
@@ -213,3 +213,5 @@ PERF-001计划入口：
 AUDIO-004初始响度使用spec.audio A9固定gain口径：`& D:/GODOT/Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/loudness_contract.gd`。独立FFmpeg输入测量初始−16±0.10LUFS、所有已定义对照真峰值≤−3dBTP；后续状态报告响度，不再次归一化。该命令当前已实现，证据见PROJECT；不足时的RMS补偿与HUMAN-SPEAKER单独验收，技术PASS不能替代真人。
 
 AUDIO-004不足时补偿入口：`& D:/GODOT/Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/rms_guard_contract.gd`，按A10稳态/完整8秒RMS≥25%，不复活mute/不改变peer PCM，跨窗块与快照一致。实际最坏辅助供音另用`tests/live_audio_contract.gd -- --case assist_stress`，显式WASAPI，0skips才可用于正式听测供音门槛。
+
+正式真人听测已可从F5按钮进入；操作与命令见`../P0真人听测操作.md`，协议A11。技术工具合约`tests/listening_contract.gd`只验fixture/8秒PCM/黑屏/记录隔离。真人统计使用`python tools/grade_listening.py <同条件3份真人CSV> --condition headphones_standard|speaker_standard|speaker_narrowband`；自动来源、下溢、缺题、重复/混条件会拒绝，不以工具PASS代替HUMAN-AUDIO/SPEAKER。

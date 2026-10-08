@@ -44,6 +44,7 @@ def generate():
     a8 = dict(table(audio, '## 表 A8'))
     a9 = dict(table(audio, '## 表 A9'))
     a10 = dict(table(audio, '## 表 A10'))
+    a11 = dict(table(audio, '## 表 A11'))
     musical = numbers(a2['BPM / 拍号 / 小节 / 乐句'])
     assert len(musical) == 6, musical
     voices = {}
@@ -146,6 +147,21 @@ def generate():
         'energy_low_hz': numbers(a6['高频能量参考'])[1], 'energy_high_hz': numbers(a6['高频能量参考'])[2],
     }
     generation = dict(table(city, '## 表 D2'))
+    protocol, seed = a11['协议版本 / 固定种子'].split('；',1)[0].split(' / ')
+    cases = numbers(a11['题型与方位计数'])[:6]
+    result['listening'] = {
+        'version': protocol, 'seed': seed,
+        'practice_count': int(numbers(a11['练习 / 正式 / 每题'])[0]),
+        'formal_count': int(numbers(a11['练习 / 正式 / 每题'])[1]),
+        'duration_seconds': numbers(a11['练习 / 正式 / 每题'])[3],
+        'case_counts': {'minor': [int(x) for x in cases[:3]], 'tritone': [int(x) for x in cases[3:]]},
+        'base_midi': int(numbers(a11['城市声部'])[2]),
+        'minor_midi': int(numbers(a11['城市声部'])[4]),
+        'tritone_midi': int(numbers(a11['城市声部'])[5]),
+        'fade_beats': numbers(a11['进出淡化'])[0],
+        'tester_count': int(numbers(a11['人数 / 判定'])[0]),
+        'required_correct': int(numbers(a11['人数 / 判定'])[-2]),
+    }
     result['rms_guard'] = {
         'window_seconds': numbers(a10['统计窗'])[0]/1000,
         'minimum_ratio': numbers(a10['最低比例 / 补偿目标'])[0]/100,
