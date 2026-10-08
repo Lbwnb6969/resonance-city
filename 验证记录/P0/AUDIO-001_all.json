@@ -62,9 +62,9 @@
 		],
 		"measurement": "验证记录/P0/声学/measurement.json",
 		"render_ms": {
-			"minor_second": 2352,
-			"perfect_fifth": 2983,
-			"tritone": 3363
+			"minor_second": 804,
+			"perfect_fifth": 798,
+			"tritone": 784
 		}
 	},
 	"engine": "4.7.2-stable (official)",

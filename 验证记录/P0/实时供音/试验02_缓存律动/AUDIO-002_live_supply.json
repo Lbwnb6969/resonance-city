@@ -1,0 +1,45 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/live_audio_contract.gd"
+	],
+	"case": "live_supply",
+	"checks": [
+		{
+			"description": "Production nine-district fixture",
+			"passed": true
+		},
+		{
+			"description": "One second PCM renders faster than real time",
+			"passed": true
+		},
+		{
+			"description": "Real AudioStreamGenerator remains active",
+			"passed": true
+		},
+		{
+			"description": "No runtime generator underruns",
+			"passed": false
+		},
+		{
+			"description": "Audible clock progresses within generated PCM",
+			"passed": true
+		}
+	],
+	"details": {
+		"audible_frame": 346466.695554929,
+		"capacity": 4095,
+		"district_count": 9,
+		"driver": "WASAPI",
+		"hardware_latency": 0.00999999977648258,
+		"one_second_render_ms": 569.06,
+		"rendered_frames": 350591,
+		"skips": 1,
+		"wall_ms": 15719
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 1,
+	"rule_id": "AUDIO-002",
+	"scope": "Actual output device; nine voices with rhythm, one phrase; excludes human audibility",
+	"status": "FAIL"
+}

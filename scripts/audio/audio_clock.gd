@@ -32,12 +32,17 @@ func start_output(source: Callable, initial_state: Dictionary) -> void:
 	renderer = Renderer.new()
 	renderer.source = source
 	renderer.state = initial_state.duplicate(true)
+	# Prime while the mixer is locked, so it never consumes an empty new stream.
+	AudioServer.lock()
 	player.play()
+	player.stream_paused = true
 	playback = player.get_stream_playback()
 	capacity = playback.get_frames_available()
 	underruns = 0
 	active = true
 	_fill_buffer()
+	player.stream_paused = false
+	AudioServer.unlock()
 	set_process(true)
 	output_started.emit()
 

@@ -15,9 +15,18 @@ var solo_id := ""
 var muted: Dictionary = {}
 var silent_until: Dictionary = {}
 var frequencies: Dictionary = {}
+var envelopes: Dictionary = {}
+var drone_gain: float
+var rhythm_gain: float
+var rhythm_multiplier: float
+var highpass_alpha: Dictionary = {}
 
 func _init(city: Array) -> void:
 	values = Values.load_values()
+	drone_gain = float(values["synthesis"]["drone_gain"])
+	rhythm_gain = float(values["synthesis"]["rhythm_gain"])
+	rhythm_multiplier = pow(2.0, float(values["synthesis"]["rhythm_octave"]) / 12.0)
+	_prepare_envelopes(int(values["timing"]["sample_rate"]))
 	districts = city.duplicate(true)
 	for midi in values["frequencies"]:
 		frequencies[int(midi)] = float(values["frequencies"][midi])
@@ -50,7 +59,8 @@ func _init(city: Array) -> void:
 func frequency(midi: int) -> float:
 	if frequencies.has(midi):
 		return float(frequencies[midi])
-	return 440.0 * pow(2.0, (midi - 69.0) / 12.0)
+	frequencies[midi] = 440.0 * pow(2.0, (midi - 69.0) / 12.0)
+	return float(frequencies[midi])
 
 func initial_state() -> Dictionary:
 	var state: Dictionary = {}
@@ -59,43 +69,61 @@ func initial_state() -> Dictionary:
 	return state
 
 func _wave(type: String, phase: float) -> float:
-	var table: PackedFloat32Array = tables[type]
+	return _table_wave(tables[type], phase)
+
+func _table_wave(table: PackedFloat32Array, phase: float) -> float:
 	var position := fposmod(phase, 1.0) * table.size()
 	var index := int(position)
 	return lerpf(table[index], table[(index + 1) % table.size()], position - index)
 
-func _rhythm(route: Dictionary, phase: float, at: int, rate: int, state: Dictionary) -> float:
+func _prepare_envelopes(rate: int) -> void:
+	if envelopes.has(rate):
+		return
 	var settings: Dictionary = values["synthesis"]
 	var step_frames := 60.0 * rate / float(values["timing"]["bpm"]) / 4.0
-	var current_step := int(floor(at / step_frames))
+	var bar_frames := roundi(step_frames * 16)
 	var tail := float(settings["rhythm_tail_seconds"])
-	var pulse := 0.0
-	for back in range(int(ceil(tail * rate / step_frames)) + 1):
-		var step := current_step - back
-		if step < 0 or not route["rhythm_steps"].has(step % 16):
-			continue
-		var seconds := float(at - roundi(step * step_frames)) / rate
-		if seconds < 0.0 or seconds > tail:
-			continue
-		var attack := float(settings["rhythm_attack_seconds"])
-		var envelope := minf(1.0, seconds / attack) * exp(-seconds / float(settings["rhythm_decay_seconds"]))
-		envelope *= clampf((tail - seconds) / attack, 0.0, 1.0)
-		pulse += _wave(route["type"], phase * pow(2.0, float(settings["rhythm_octave"]) / 12.0)) * envelope
+	var attack := float(settings["rhythm_attack_seconds"])
+	var decay := float(settings["rhythm_decay_seconds"])
+	var by_type: Dictionary = {}
+	for type in values["voices"]:
+		var steps := PackedInt32Array(values["voices"][type]["rhythm_steps"])
+		var envelope := PackedFloat32Array()
+		envelope.resize(bar_frames)
+		for at in range(bar_frames):
+			var current_step := int(floor(at / step_frames))
+			var sum := 0.0
+			for back in range(int(ceil(tail * rate / step_frames)) + 1):
+				var step := current_step - back
+				if not steps.has(posmod(step, 16)):
+					continue
+				var seconds := float(at - roundi(step * step_frames)) / rate
+				if seconds < 0.0 or seconds > tail:
+					continue
+				sum += minf(1.0, seconds / attack) * exp(-seconds / decay) * clampf((tail - seconds) / attack, 0.0, 1.0)
+			envelope[at] = sum
+		by_type[type] = envelope
+	envelopes[rate] = by_type
+	var rc := 1.0 / (TAU * float(settings["industrial_highpass_hz"]))
+	highpass_alpha[rate] = rc / (rc + 1.0 / rate)
+
+func _rhythm(route: Dictionary, phase: float, at: int, rate: int, state: Dictionary) -> float:
+	_prepare_envelopes(rate)
+	var envelope: PackedFloat32Array = envelopes[rate][route["type"]]
+	var pulse := _table_wave(route["table"], phase * rhythm_multiplier) * envelope[at % envelope.size()]
 	if route["type"] == "industrial":
 		var key: String = route["highpass_key"]
 		var previous: Vector2 = state.get(key, Vector2.ZERO)
-		var rc := 1.0 / (TAU * float(settings["industrial_highpass_hz"]))
-		var alpha := rc / (rc + 1.0 / rate)
-		var output := alpha * (previous.y + pulse - previous.x)
+		var output := float(highpass_alpha[rate]) * (previous.y + pulse - previous.x)
 		state[key] = Vector2(pulse, output)
 		pulse = output
-	return pulse * float(settings["rhythm_gain"])
+	return pulse * rhythm_gain
 
 func _voice_layers(route: Dictionary, state: Dictionary, at: int, rate: int) -> Vector2:
 	var phase_key: String = route["phase_key"]
 	var phase := float(state.get(phase_key, 0.0))
 	var midi := int(state.get(route["id"], route["base_midi"]))
-	var drone := _wave(route["type"], phase) * float(values["synthesis"]["drone_gain"])
+	var drone := _table_wave(route["table"], phase) * drone_gain
 	var rhythm := _rhythm(route, phase, at, rate, state) if active_layers.has("rhythm") else 0.0
 	state[phase_key] = fposmod(phase + frequency(midi) / rate, 1.0)
 	if not active_layers.has("drone"):
