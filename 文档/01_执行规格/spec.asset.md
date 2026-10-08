@@ -175,3 +175,10 @@ Ghostscript是EPS导入依赖，不是CC0低模生产线的前置依赖。禁止
 本轮选择Godot离线工具，批处理场景由工具构建；模型读取参考[GLTFDocument](https://docs.godotengine.org/en/stable/classes/class_gltfdocument.html)，离屏参考[SubViewport](https://docs.godotengine.org/en/stable/classes/class_subviewport.html)。三格观感需另存人工记录；自动尺寸/颜色/许可通过不等于艺术验收通过。
 
 加工类别映射：住宅屋顶/窗使用槽1/4；工业主墙/结构使用槽2/14；树冠/树干使用槽3/12；花坛叶片也为槽3。仅工作纹理调整，不改源UV或原GLB。首次树冠灰色/工业沙色的输出存资产/废弃/2026-10-08_首次映射偏色。当前资源/候选仅用于技术与性能验证，人工三格获批状态仍PENDING。
+
+
+## 表 S7 · 当前批次质量证据
+
+当前明确类别项20件，数量正文21的冲突另待裁定。技术检查覆盖每件主图长边/预览区别、索引离散字节/alpha一致、透明RGB零、原件SHA/只读、许可SHA；透边用Pillow/NumPy像素检验与黑白底alpha加权缩放图，等价技术用途，无需EPS工具链。固定抽检住宅a和tree-small两件，占当前批次10%。运行时缩放导入设置由baked_sprite合约核验。
+
+三格图逐件生成，目标与两件不同同库对照按相同世界单位缩放、地面origin对齐；记录在验证记录/P0/素材审查/三格人工记录.csv。每项保留主图SHA/同伴ID，人工填写approved或rejected、真实审查者与具体观察。未经填写或主图SHA已改变，quality结果必须PENDING；技术检查不能代替人工观感。艺术拒绝后修改工作副本，旧成品移废弃目录，原件不改。

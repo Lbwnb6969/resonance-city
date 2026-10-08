@@ -6,6 +6,9 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	if Contract.selected_case("import_scope") == "quality":
+		_quality()
+		return
 	if Contract.selected_case("import_scope") == "baked_sprite":
 		_baked()
 		return
@@ -154,3 +157,48 @@ func _png(path: String) -> Image:
 	var image := Image.new()
 	assert(image.load_png_from_buffer(FileAccess.get_file_as_bytes(path)) == OK)
 	return image
+
+func _quality() -> void:
+	var test := Contract.new("ASSET-004","quality")
+	var report: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://验证记录/P0/素材审查/technical.json"))
+	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://资源/P0城市/manifest.json"))
+	var by_id: Dictionary = {}
+	for entry in manifest["entries"]:
+		by_id[entry["id"]] = entry
+	test.check(report["checks"].size() == by_id.size(),"Technical quality evidence covers every current candidate")
+	for check in report["checks"]:
+		var id: String = check["id"]
+		test.check(check["technical_pass"] and by_id.has(id) and FileAccess.get_sha256("res://"+str(by_id[id]["texture"])) == check["main_sha256"],"Pixel/index/alpha/source/license evidence matches current PNG: "+id)
+	test.check(float(report["sample_fraction"]) >= 0.10,"Countable 10 percent edge audit boards exist")
+	var csv := FileAccess.open("res://"+str(report["human_review_file"]),FileAccess.READ)
+	var reviewed: Dictionary = {}
+	var approved := true
+	if csv != null:
+		csv.get_csv_line()
+		while not csv.eof_reached():
+			var row := csv.get_csv_line()
+			if row.size() == 1 and row[0].is_empty():
+				continue
+			if row.size() != 7:
+				approved = false
+				continue
+			var id := row[0]
+			var valid: bool = by_id.has(id) and not reviewed.has(id) and row[4] == "approved" and not row[5].strip_edges().is_empty() and not row[6].strip_edges().is_empty()
+			if by_id.has(id):
+				valid = valid and row[1] == by_id[id]["texture_sha256"] and by_id.has(row[2]) and by_id.has(row[3]) and row[2] != id and row[3] != id and row[2] != row[3]
+			reviewed[id] = {"status":row[4],"reviewer":row[5],"notes":row[6]}
+			approved = approved and valid
+		csv.close()
+	else:
+		approved = false
+	approved = approved and reviewed.size() == by_id.size()
+	if not approved:
+		var result := {"rule_id":"ASSET-004","case":"quality","status":"PENDING","technical_status":"PASS" if test.failures == 0 else "FAIL","checks":test.checks,"details":{"review":reviewed,"human_three_grid":"PENDING; do not invent human approval","source_report":report["human_review_file"]}}
+		var file := FileAccess.open("res://验证记录/P0/ASSET-004_quality.json",FileAccess.WRITE)
+		file.store_string(JSON.stringify(result,"\t")+"\n")
+		file.close()
+		print("ASSET-004 PENDING technical_checks=%d failures=%d; human three-grid required" % [test.checks.size(),test.failures])
+		quit(2 if test.failures == 0 else 1)
+		return
+	test.details = {"review":reviewed,"technical_report":"验证记录/P0/素材审查/technical.json"}
+	test.finish(self,"Technical quality and recorded manual three-grid approval of current PNG hashes")
