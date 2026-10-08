@@ -42,7 +42,7 @@
         "elevation": 30,
         "projection": "orthogonal"
       },
-      "texture_sha256": "6e7d0ba0281490ba0b710a51b1d1b3d72c99e6445715716e81b3b4187c2bc70b"
+      "texture_sha256": "050b6e9114bb9f00d92f76c5411736db748c326c8611ca599ef3a5e2ac31b3a9"
     },
     {
       "id": "historic_church_01",
@@ -85,7 +85,7 @@
         "elevation": 30,
         "projection": "orthogonal"
       },
-      "texture_sha256": "b143e1c9d1483ef0d84364a426eb05a23200ffd9643e7e938de225fc07cbff46"
+      "texture_sha256": "f42fd7cb4d26439fb95baeb53e6e22882852900e3a683ed437134e6606e4efac"
     },
     {
       "id": "classical_civic_hall_01",
@@ -128,7 +128,7 @@
         "elevation": 30,
         "projection": "orthogonal"
       },
-      "texture_sha256": "985403be6120b8920a550ae87ee0d86693c67867bcb9fc444f5119a985a0d4b0"
+      "texture_sha256": "0bfbbb1bb058b8732375a615f214c29a1615371556ab2cf7988b7d518107b3d0"
     },
     {
       "id": "classical_amphitheater_01",
@@ -171,7 +171,7 @@
         "elevation": 30,
         "projection": "orthogonal"
       },
-      "texture_sha256": "c29a11770fb98bd2d807da5bdfdc0882614869d771bedaf7238fed1e0829e304"
+      "texture_sha256": "01e9d11ab9e1b4c7ac6ffdb9da7724f21ee3fb66314afc2df9a4deb7e1e56722"
     },
     {
       "attribution": "Kenney (optional)",

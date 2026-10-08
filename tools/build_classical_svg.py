@@ -1,6 +1,7 @@
 """Project-authored historical building candidates, drawn as editable SVG facets."""
 from pathlib import Path
 import hashlib
+import itertools
 import json
 import math
 
@@ -213,9 +214,16 @@ def build(identifier, label, geometry):
     ppu=2048/max(width,height)
     w,h=round(width*ppu),round(height*ppu)
     parts=[f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="{left:.6f} {top:.6f} {width:.6f} {height:.6f}">',f'<title>{label}</title>']
-    for _,vertices,color in painter_order(geometry):
-        coords=' '.join(f'{project(p)[0]:.6f},{project(p)[1]:.6f}' for p in vertices)
-        parts.append(f'<polygon points="{coords}" fill="{color}"/>')
+    # A compound path fills adjacent same-color fragments in one rasterizer pass.
+    # Normalize winding so overlaps form a union rather than cancelling holes.
+    for color,items in itertools.groupby(painter_order(geometry),key=lambda item:item[2]):
+        contours=[]
+        for _,vertices,_ in items:
+            projected=[project(p) for p in vertices]
+            area=sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(projected,projected[1:]+projected[:1]))
+            if area<0: projected.reverse()
+            contours.append('M'+' L'.join(f'{x:.6f},{y:.6f}' for x,y in projected)+' Z')
+        parts.append(f'<path d="{" ".join(contours)}" fill="{color}" fill-rule="nonzero"/>')
     parts.append('</svg>')
     content='\n'.join(parts)+'\n'
     for base in (RUNTIME,PRODUCTION):
