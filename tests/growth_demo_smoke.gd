@@ -40,6 +40,7 @@ func run_demo() -> void:
 	assert(main.model.synth.routing.size() == main.model.session.city.size())
 	assert(forms.has("群") and (forms.has("央") or forms.has("腔")))
 	assert(main.city_view.sprites.size() == main.model.session.city.size())
+	if "--conditions" in OS.get_cmdline_user_args(): await _check_conditions(main)
 	if "--tread" in OS.get_cmdline_user_args(): await _check_tread(main)
 	if "--community" in OS.get_cmdline_user_args():
 		var templates: Dictionary = {}
@@ -168,7 +169,7 @@ func run_demo() -> void:
 	if DisplayServer.get_name() != "headless":
 		await RenderingServer.frame_post_draw
 		DirAccess.make_dir_recursive_absolute("res://验证记录/Demo")
-		get_root().get_texture().get_image().save_png("res://验证记录/Demo/城市生长.png")
+		get_root().get_texture().get_image().save_png("res://验证记录/Demo/条件城市.png" if "--conditions" in OS.get_cmdline_user_args() else "res://验证记录/Demo/城市生长.png")
 	print("DEMO_SMOKE PASS entities=",main.model.session.city.size()," forms=",forms," real_manifest_sprites=",main.city_view.sprites.size())
 	main.queue_free()
 	await process_frame
@@ -399,3 +400,77 @@ func _check_tread_policy() -> void:
 	assert(city.last_result["choice"]["disconnected"] == ["leaf"] and city.city.size() == 27)
 	assert(city.fork().road_marks == city.road_marks and city.fork().harmony.adjacency(city.city) == city.harmony.adjacency(city.city))
 	print("TREAD_POLICY PASS canceled_and_overwritten_marks + exact_RV + independent_world_edges + family_disconnect + stable_mature_forms + snapshots")
+
+func _check_conditions(main: Control) -> void:
+	var schema = load("res://scripts/city/district_schema.gd")
+	var sessions = load("res://scripts/proposals/city_interventions.gd")
+	var growth = load("res://scripts/city/city_growth.gd")
+	var roads = load("res://scripts/city/city_roads.gd")
+	var anchor: Dictionary = schema.create("gap_anchor","residential",Vector2i(8,8))
+	anchor["is_anchor"] = true
+	anchor["anchor_id"] = "gap_anchor"
+	var home: Dictionary = schema.create("gap_home","residential",Vector2i(9,8))
+	home["anchor_id"] = "gap_anchor"
+	var fixture := [anchor,home]
+	for i in range(25): fixture.append(schema.create("budget_%d" % i,"industrial",Vector2i(i%16,i/16)))
+	var city = sessions.new(fixture,"2026100800000001")
+	city.growth_enabled = true
+	var period: int = city.transport.phrase_frame(1)
+	city.settle(period)
+	var d: Dictionary = city._district("gap_home")
+	assert(d["growth_stalled_phrases"] == 1 and not growth.describe(city.city,d,city.road_marks).contains("已等待"))
+	city.settle(2*period)
+	d = city._district("gap_home")
+	var saved: Dictionary = city.snapshot()
+	var message: String = growth.describe(city.city,d,city.road_marks)
+	assert(message.contains("已等待2乐句") and message.contains("缺1个协和邻居") and message.contains("缺2栋同类"))
+	assert(city.snapshot() == saved and city.fork().snapshot() == saved)
+	var ends: Array = roads.endpoints(Vector2i(8,8),Vector2i(9,8))
+	city.road_marks[roads.key(Vector2i(8,8),Vector2i(9,8))] = {"start":ends[0],"end":ends[1],"count":3,"frame":0}
+	assert(growth.describe(city.city,d,city.road_marks).contains("家族断连"))
+	d["form"] = "央"
+	city.settle(3*period)
+	message = growth.describe(city.city,d,city.road_marks)
+	assert(d["growth_stalled_phrases"] == 0 and message.contains("已成熟") and not message.contains("已等待"))
+	var advancing := fixture.duplicate(true)
+	advancing[1]["form"] = "胚"
+	advancing[1]["growth_counts"] = [0,0,0,0]
+	advancing[1]["growth_stalled_phrases"] = 0
+	advancing[2] = schema.create("harmony_neighbor","residential",Vector2i(10,8))
+	advancing[3] = schema.create("density_neighbor","residential",Vector2i(10,9))
+	city = sessions.new(advancing,"2026100800000001")
+	city.growth_enabled = true
+	city.settle(period)
+	d = city._district("gap_home")
+	assert(d["growth_counts"][1] == 1 and d["growth_stalled_phrases"] == 0)
+	assert(growth.describe(city.city,d,city.road_marks).contains("条件已满足") and not growth.describe(city.city,d,city.road_marks).contains("已等待"))
+	city.settle(2*period)
+	assert(d["form"] == "群" and d["growth_stalled_phrases"] == 0)
+	var frozen: Array = advancing.duplicate(true)
+	frozen[2] = schema.create("dissonance_neighbor","industrial",Vector2i(10,8))
+	var frozen_city = sessions.new(frozen,"2026100800000001")
+	frozen_city.growth_enabled = true
+	frozen_city.settle(period)
+	var text: String = growth.describe(frozen_city.city,frozen_city._district("gap_home"),frozen_city.road_marks)
+	assert(text.contains("失谐邻接") and text.contains("局部R还差"))
+	var newborn_city = sessions.new([anchor],"2026100800000001")
+	newborn_city.growth_enabled = true
+	newborn_city.settle(period)
+	assert(newborn_city.city.size() == 2 and newborn_city.city[1]["growth_stalled_phrases"] == 0)
+	var selected: Dictionary = {}
+	for item in main.model.session.city:
+		if item.get("growth_stalled_phrases",0) >= growth.config()["stall_phrases"] and item.get("form","胚") in ["胚","群"]:
+			selected = item
+			break
+	assert(not selected.is_empty())
+	main._select_district(selected["district_id"])
+	await process_frame
+	assert(main.condition_text.text.contains("已等待") and main.map_notice.text.contains("已等待"))
+	assert(main.map_notice.text.contains("等待群") or main.map_notice.text.contains("等待央"))
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		get_root().get_texture().get_image().save_png("res://验证记录/Demo/生长缺口提示.png")
+	main.set_black_screen(true)
+	assert(not main.city_view.visible and not main.panel.visible)
+	main.set_black_screen(false)
+	print("DEMO_CONDITIONS PASS actual_gaps + two_complete_phrases + readonly_and_snapshot + no_false_progress_warning + upgrade_reset + mature_excluded + road_disconnect + frozen + newborn_excluded + selected_map_card + black_screen")

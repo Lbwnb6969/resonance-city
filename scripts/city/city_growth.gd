@@ -64,6 +64,13 @@ static func conditions(city: Array, d: Dictionary, road_marks: Dictionary = {}) 
 	return {"neighbors":neighbors,"consonant":consonant,"embryo_neighbors":embryo,"unison":unison,
 		"density_group":density_group,"density_center":density_center,"local_r":local_r,"connected":linked,"frozen":frozen}
 
+static func stage_valid(info: Dictionary) -> Array:
+	var cfg: Dictionary = config()
+	return [info["embryo_neighbors"] >= 1,
+		info["consonant"] >= cfg["group_neighbors"] and info["local_r"] >= cfg["group_local_r"] and info["density_group"] >= cfg["group_count"],
+		info["consonant"] >= cfg["center_neighbors"] and info["unison"] >= 1 and info["density_center"] >= cfg["center_count"],
+		info["neighbors"] >= cfg["chamber_neighbors"] and info["consonant"] == info["neighbors"]]
+
 static func assign_assets(city: Array, road_marks: Dictionary = {}) -> void:
 	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://资源/Demo城市/manifest.json"))
 	var groups: Dictionary = {}
@@ -142,6 +149,7 @@ static func draft_priority(cell: Vector2i, kind: String, band: Dictionary) -> Ve
 
 static func advance(session: Object, at: int) -> Array[Dictionary]:
 	var events: Array[Dictionary] = []
+	var newborn: Dictionary = {}
 	var cfg: Dictionary = config()
 	var harmony := Harmony.new()
 	var anchors: Array = session.city.filter(func(d: Dictionary) -> bool: return d.get("is_anchor",false))
@@ -193,6 +201,8 @@ static func advance(session: Object, at: int) -> Array[Dictionary]:
 		grown["voice_level"] = cfg["new_voice_level"]
 		grown["form"] = "胚"
 		grown["growth_counts"] = [0,0,0,0]
+		grown["growth_stalled_phrases"] = 0
+		newborn[grown["district_id"]] = true
 		session.city.append(grown)
 		events.append({"district_id":grown["district_id"],"kind":"birth","frame":at+session.transport.beat_frame(1),"form":"胚"})
 	for d in session.city:
@@ -200,11 +210,9 @@ static func advance(session: Object, at: int) -> Array[Dictionary]:
 			continue
 		var info := conditions(session.city,d,session.road_marks)
 		d["growth_conditions"] = info
-		var valid: Array = [info["embryo_neighbors"] >= 1,
-			info["consonant"] >= cfg["group_neighbors"] and info["local_r"] >= cfg["group_local_r"] and info["density_group"] >= cfg["group_count"],
-			info["consonant"] >= cfg["center_neighbors"] and info["unison"] >= 1 and info["density_center"] >= cfg["center_count"],
-			info["neighbors"] >= cfg["chamber_neighbors"] and info["consonant"] == info["neighbors"]]
+		var valid: Array = stage_valid(info)
 		var counts: Array = d.get("growth_counts",[0,0,0,0])
+		var before_counts: Array = counts.duplicate()
 		for index in range(4):
 			counts[index] = int(counts[index])+1 if valid[index] and info["connected"] and not info["frozen"] else 0
 		d["growth_counts"] = counts
@@ -215,20 +223,57 @@ static func advance(session: Object, at: int) -> Array[Dictionary]:
 			if counts[2] >= cfg["stage_phrases"][2]: next = "央"
 			elif counts[3] >= cfg["stage_phrases"][3]: next = "腔"
 		d["form"] = next
+		var progressing: bool = counts[1] > before_counts[1] if old == "胚" else (counts[2] > before_counts[2] or counts[3] > before_counts[3])
+		if next != old or progressing or next in ["央","腔"] or newborn.has(d["district_id"]):
+			d["growth_stalled_phrases"] = 0
+		else:
+			d["growth_stalled_phrases"] = int(d.get("growth_stalled_phrases",0))+1
 		if next != old:
 			events.append({"district_id":d["district_id"],"kind":"upgrade","frame":at+session.transport.beat_frame(1),"form":next})
 	assign_assets(session.city,session.road_marks)
 	return events
 
+static func stage_gaps(info: Dictionary, index: int) -> PackedStringArray:
+	var cfg: Dictionary = config()
+	var gaps: PackedStringArray = []
+	if info["frozen"]: gaps.append("失谐邻接仍在，升级暂停")
+	if not info["connected"]: gaps.append("家族断连")
+	var neighbors_needed: int = cfg["group_neighbors"] if index == 1 else (cfg["center_neighbors"] if index == 2 else cfg["chamber_neighbors"])
+	var actual: int = info["neighbors"] if index == 3 else info["consonant"]
+	if actual < neighbors_needed: gaps.append("缺%d个%s邻居" % [neighbors_needed-actual,"相邻" if index == 3 else "协和"])
+	if index == 1:
+		if float(info["local_r"]) < float(cfg["group_local_r"]): gaps.append("局部R还差%.1f" % (float(cfg["group_local_r"])-float(info["local_r"])))
+		if int(info["density_group"]) < int(cfg["group_count"]): gaps.append("%d格内缺%d栋同类" % [cfg["group_radius"],int(cfg["group_count"])-int(info["density_group"])])
+	elif index == 2:
+		if int(info["unison"]) < 1: gaps.append("缺1个共鸣邻居")
+		if int(info["density_center"]) < int(cfg["center_count"]): gaps.append("%d格内缺%d栋同类" % [cfg["center_radius"],int(cfg["center_count"])-int(info["density_center"])])
+	elif int(info["consonant"]) < int(info["neighbors"]):
+		gaps.append("%d个邻居尚未协和" % (int(info["neighbors"])-int(info["consonant"])))
+	return gaps
+
 static func describe(city: Array,d: Dictionary, road_marks: Dictionary = {}) -> String:
 	if d["type"] == "industrial":
 		return "工业保留失谐题面，不会自动生长。可调音或迁移。"
-	if d.get("is_anchor",false):
-		var info := conditions(city,d,road_marks)
-		return "共鸣点：持续发声，每乐句吸引一栋建筑。\n%s" % ("附近有失谐的碴：先调音或迁移，保留已有建筑。" if info["frozen"] else ("声音预算已满：保留现有城市，可继续调音。" if city.size() >= int(config()["max_entities"]) else "从家族连通边界，优先聚合且避开失谐邻居。"))
 	var cfg: Dictionary = config()
 	var c := conditions(city,d,road_marks)
+	if d.get("is_anchor",false):
+		return "共鸣点：持续发声，每乐句尝试扩张。\n%s" % ("附近有失谐的碴：该格暂停向外生长，已有建筑保留。" if c["frozen"] else ("声音预算已满：保留现有城市，可继续调音。" if city.size() >= int(cfg["max_entities"]) else "只从连通家族的合法边界扩张；道路和失谐可能挡住位置。"))
+	var form: String = d.get("form","胚")
+	if form in ["央","腔"]:
+		return "已成熟：%s，保留现有形态。\n%s · 局部R %.1f" % [form,"家族断连，暂停向外扩张" if not c["connected"] else ("失谐冻结，暂停向外扩张" if c["frozen"] else "家族连通，仍按合法位置尝试扩张"),c["local_r"]]
 	var counts: Array = d.get("growth_counts",[0,0,0,0])
-	var progress := "胚→群 %d/%d；群→央 %d/%d；群→腔 %d/%d" % [counts[1],cfg["stage_phrases"][1],counts[2],cfg["stage_phrases"][2],counts[3],cfg["stage_phrases"][3]]
-	return "%s%s · 局部R %.0f\n协和邻居 %d；共鸣邻居 %d；密度 群%d/%d / 央%d/%d\n%s\n群需要2协和邻居和R≥60；央需要3协和邻居与1共鸣；腔需要全部≥3邻居协和。" % [
-		"碴：暂停生长" if c["frozen"] else "可继续生长"," · 家族断连" if not c["connected"] else "",c["local_r"],c["consonant"],c["unison"],c["density_group"],cfg["group_count"],c["density_center"],cfg["center_count"],progress]
+	var lines: PackedStringArray = []
+	var stalled := int(d.get("growth_stalled_phrases",0))
+	if stalled >= int(cfg["stall_phrases"]): lines.append("已等待%d乐句 · 当前缺口如下" % stalled)
+	var stages: Array = [1] if form == "胚" else [2,3]
+	var names := ["胚","群","央","腔"]
+	for index in stages:
+		var gaps := stage_gaps(c,index)
+		var progress := "%d/%d乐句" % [counts[index],cfg["stage_phrases"][index]]
+		if gaps.is_empty():
+			lines.append("等待%s：条件已满足，连续%s" % [names[index],progress])
+		else:
+			lines.append("等待%s：%s；连续%s" % [names[index],"；".join(gaps),progress])
+	lines.append("协和邻居%d/%d · 共鸣%d · 局部R %.1f" % [c["consonant"],c["neighbors"],c["unison"],c["local_r"]])
+	lines.append("同类密度：%d格内%d/%d，%d格内%d/%d（含自己、不含共鸣点）" % [cfg["group_radius"],c["density_group"],cfg["group_count"],cfg["center_radius"],c["density_center"],cfg["center_count"]])
+	return "\n".join(lines)

@@ -404,7 +404,8 @@
     "new_voice_level": 0.2,
     "tile_half_width": 28.0,
     "tile_half_height": 14.0,
-    "plot_coverage": 0.66
+    "plot_coverage": 0.66,
+    "stall_phrases": 2
   },
   "draft": {
     "maximum_bands": 1,
@@ -428,7 +429,7 @@
   },
   "sources": {
     "spec.audio.md": "d64268ff1e77ead40288c02cb446d0b28fa7df71635871dfb6b9e08e1fe9082d",
-    "spec.city.md": "f31a1b5eef3e93c04e6f28141b6ef26ddde5f8ab43633fe97e17eea0bfc52e3d",
+    "spec.city.md": "9a1758bbe75438ce19dbe3767d9c89b622425682c3cf1be4f1197d481632de9e",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "0c5b5b93e7c99c82d6e1384f0aa552b3d61db938f3b786bbc8d44e2e624bb74a",
     "spec.ui.md": "128e46b5afe2f518df342cd512540d512aa12e5b32dc714eb850aabd2a0785e7"

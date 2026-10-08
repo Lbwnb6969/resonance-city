@@ -221,6 +221,8 @@ def generate():
         'tile_half_height': numbers(growth['Demo显示'])[3],
         'plot_coverage': numbers(growth['地面占地与缩放'])[0],
     }
+    gaps = dict(table(city, '## 表 E4 ·'))
+    result['growth']['stall_phrases'] = int(numbers(gaps['停滞阈值'])[0])
     draft = dict(table(proposal, '## 表 P5 ·'))
     result['draft'] = {
         'maximum_bands': int(numbers(draft['同时上限'])[0]),
