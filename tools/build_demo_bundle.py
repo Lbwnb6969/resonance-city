@@ -81,7 +81,7 @@ def build(engine, output, evidence):
     probe = ROOT / 'tests/demo_bundle_contract.gd'
     result_path = evidence / '隔离结果.json'
     run([packaged_engine, '--audio-driver', 'Dummy', '--path', isolated, '--main-pack', pack,
-         '--script', probe, '--', '--classical-frame', '--result=' + str(result_path)],
+         '--script', probe, '--', '--classical-frame', '--seed=2026100800000001', '--result=' + str(result_path)],
         evidence / '隔离运行.log', isolated)
     result = json.loads(result_path.read_text(encoding='utf-8'))
     if result['status'] != 'PASS':

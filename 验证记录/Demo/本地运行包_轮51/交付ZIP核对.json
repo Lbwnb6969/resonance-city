@@ -1,0 +1,17 @@
+{
+  "rule_id": "ASSET-001",
+  "status": "PASS",
+  "portable": "交付/共鸣之城Demo_2026-10-09_轮51.zip",
+  "size_bytes": 93826709,
+  "sha256": "03d42737d3216c5f9b22b08bde9ac5a3f1ad0d01f944070b5ff08ab3883611bf",
+  "shipping_files": 15,
+  "launchers": [
+    "共鸣之城Demo_2026-10-09_轮51/启动Demo.cmd",
+    "共鸣之城Demo_2026-10-09_轮51/启动古典小景.cmd",
+    "共鸣之城Demo_2026-10-09_轮51/启动风格小景.cmd"
+  ],
+  "crc_verified": true,
+  "relative_launchers_verified": true,
+  "pack_sha256": "87a8be06f75a80ae78a1a6e4df4a34c7e3629b7a910b8bf630fffa15439507a1",
+  "scope": "Local ZIP identity and launcher paths; scene evidence in isolation report; no public publishing or physical listening"
+}
