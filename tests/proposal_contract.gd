@@ -6,6 +6,7 @@ const Session = preload("res://scripts/proposals/city_interventions.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
 const Model = preload("res://scripts/audio/city_audio_model.gd")
 const Renderer = preload("res://scripts/audio/sample_renderer.gd")
+const ProposalPreview = preload("res://scripts/proposals/proposal_preview.gd")
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -17,6 +18,9 @@ func fixture() -> Array:
 
 func _run() -> void:
 	var selected := Contract.selected_case("verbs")
+	if selected == "preview_pcm":
+		_preview_contract()
+		return
 	var test := Contract.new("PROPOSAL-001", selected)
 	test.check(selected == "verbs", "Supported case: verbs")
 	var city := Session.new(fixture(),"2026100800000001")
@@ -86,3 +90,46 @@ func _run() -> void:
 	test.details = {"retune_v":retuned["after"][1]["vitality"],"relocation_end_frame":period*2,
 		"full_error_gameplay":"PENDING P1 U06","boundary_order":"restore, commit, R, V+cost, cap, clamp"}
 	test.finish(self, "P0 approved exact choices and optional landing only; no P1 pitch-error mechanics")
+
+func _preview_contract() -> void:
+	var test := Contract.new("PROPOSAL-002","preview_pcm")
+	var model := Model.new(Session.new(fixture(),"2026100800000001"))
+	var renderer := Renderer.new()
+	renderer.source = model._mix_frame
+	renderer.state = model.synth.initial_state()
+	var period := model.session.transport.phrase_frame(1)
+	# Prime real phases and filter memory, then test the event seam directly.
+	renderer.render(1024)
+	renderer.transport.rendered_frames = period-1
+	var model_saved := model.snapshot()
+	var renderer_saved := renderer.snapshot()
+	var choices: Array = [
+		{"proposal_id":"p0:0:factory:retune","target":55},
+		{"proposal_id":"p0:0:factory:relocate","target":[12,12]}]
+	for choice in choices:
+		var preview: Dictionary = ProposalPreview.build(model_saved,renderer_saved,choice,period-2000.0)
+		test.check(preview.get("accepted",false), "Snapshot preview accepted: "+str(choice["target"]))
+		if not preview.get("accepted",false):
+			continue
+		var committed := ProposalPreview.model_from_snapshot(model_saved)
+		var confirmed := Renderer.new()
+		confirmed.restore(renderer_saved)
+		confirmed.source = committed._mix_frame
+		committed.session.request(choice,confirmed.transport.rendered_frames,period-2000.0)
+		confirmed.render(period-confirmed.transport.rendered_frames)
+		var expected := confirmed.render(preview["pcm"].size())
+		test.check(expected == preview["pcm"], "Preview exactly matches committed PCM at identical phase/gain")
+		test.check(committed.session.last_result == preview["result"], "Preview and commit share all R/V/cost/edge settlement")
+		var original := ProposalPreview.model_from_snapshot(model_saved)
+		var dry := Renderer.new()
+		dry.restore(renderer_saved)
+		dry.source = original._mix_frame
+		dry.render(period-dry.transport.rendered_frames)
+		var old_pcm := dry.render(expected.size())
+		test.check(old_pcm != preview["pcm"], "Audition really changes the old mix")
+		test.check(expected.size() == roundi(3.0*confirmed.transport.sample_rate), "Audition contains exactly approved three seconds")
+		test.check(model.snapshot() == model_saved and renderer.snapshot() == renderer_saved, "Cancel/discard cannot change live city, five RNG streams, phase, filters or pending events")
+	test.details = {"standard_gain":true,"emphasis":false,"comparison":"float32 stereo sample-for-sample",
+		"future_simulation":"same CityAudioModel from rendered snapshot to unrendered phrase"}
+	test.finish(self,"Retune and relocate share actual future event/mix path; no listener emphasis")
+

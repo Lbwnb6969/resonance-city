@@ -1,0 +1,68 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/proposal_contract.gd"
+	],
+	"case": "preview_pcm",
+	"checks": [
+		{
+			"description": "Snapshot preview accepted: 55",
+			"passed": true
+		},
+		{
+			"description": "Preview exactly matches committed PCM at identical phase/gain",
+			"passed": true
+		},
+		{
+			"description": "Preview and commit share all R/V/cost/edge settlement",
+			"passed": true
+		},
+		{
+			"description": "Audition really changes the old mix",
+			"passed": true
+		},
+		{
+			"description": "Audition contains exactly approved three seconds",
+			"passed": true
+		},
+		{
+			"description": "Cancel/discard cannot change live city, five RNG streams, phase, filters or pending events",
+			"passed": true
+		},
+		{
+			"description": "Snapshot preview accepted: [12, 12]",
+			"passed": true
+		},
+		{
+			"description": "Preview exactly matches committed PCM at identical phase/gain",
+			"passed": true
+		},
+		{
+			"description": "Preview and commit share all R/V/cost/edge settlement",
+			"passed": true
+		},
+		{
+			"description": "Audition really changes the old mix",
+			"passed": true
+		},
+		{
+			"description": "Audition contains exactly approved three seconds",
+			"passed": true
+		},
+		{
+			"description": "Cancel/discard cannot change live city, five RNG streams, phase, filters or pending events",
+			"passed": true
+		}
+	],
+	"details": {
+		"comparison": "float32 stereo sample-for-sample",
+		"emphasis": false,
+		"future_simulation": "same CityAudioModel from rendered snapshot to unrendered phrase",
+		"standard_gain": true
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "PROPOSAL-002",
+	"scope": "Retune and relocate share actual future event/mix path; no listener emphasis",
+	"status": "PASS"
+}
