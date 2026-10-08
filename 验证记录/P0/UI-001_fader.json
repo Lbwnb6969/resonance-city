@@ -1,0 +1,76 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/mix_contract.gd"
+	],
+	"case": "fader",
+	"checks": [
+		{
+			"description": "Supported case: fader",
+			"passed": true
+		},
+		{
+			"description": "Mute targets a specific district",
+			"passed": true
+		},
+		{
+			"description": "Muted district all layers have exact zero output",
+			"passed": true
+		},
+		{
+			"description": "Other districts including same-type peer remain PCM-identical",
+			"passed": true
+		},
+		{
+			"description": "Muted voices keep identical oscillator/filter progression",
+			"passed": true
+		},
+		{
+			"description": "Single solo accepted",
+			"passed": true
+		},
+		{
+			"description": "Mute takes priority over solo without compensation",
+			"passed": true
+		},
+		{
+			"description": "Unmuted solo target is audible",
+			"passed": true
+		},
+		{
+			"description": "Solo isolates exactly one district",
+			"passed": true
+		},
+		{
+			"description": "Second solo replaces the previous single solo",
+			"passed": true
+		},
+		{
+			"description": "Invalid solo cannot change current selection",
+			"passed": true
+		},
+		{
+			"description": "Unmute restores exact continuous phase, not a restarted note",
+			"passed": true
+		},
+		{
+			"description": "Faders never change city R/V/state inputs",
+			"passed": true
+		},
+		{
+			"description": "Playback fast path exactly equals separate bus sum",
+			"passed": true
+		}
+	],
+	"details": {
+		"mute_energy": 0,
+		"other_tracks": "sample-for-sample equal",
+		"phase": "continuous",
+		"solo": "single; mute priority"
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "UI-001",
+	"scope": "Per-district layers isolated with exact PCM and state preservation; no automatic compensation",
+	"status": "PASS"
+}
