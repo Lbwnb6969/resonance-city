@@ -1,0 +1,34 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/block_audio_contract.gd"
+	],
+	"case": "block_pcm",
+	"checks": [
+		{
+			"description": "Nine-voice batched PCM and phase/filter state exactly equal canonical samples",
+			"passed": true
+		},
+		{
+			"description": "Mute/solo block path preserves sample values and running hidden voices",
+			"passed": true
+		},
+		{
+			"description": "Block straddling phrase commits and migration silence is sample-identical",
+			"passed": true
+		},
+		{
+			"description": "Batched path actually submits moved city",
+			"passed": true
+		}
+	],
+	"details": {
+		"canonical": "DistrictSynth._mix_frame and CityAudioModel._mix_frame",
+		"comparison": "exact float32 PCM and double phase/filter state"
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "AUDIO-002",
+	"scope": "Block optimization preserves canonical synthesis, faders and phrase transaction semantics",
+	"status": "PASS"
+}

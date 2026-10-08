@@ -21,6 +21,20 @@ func _mix_frame(state: Dictionary, at: int, rate: int) -> Vector2:
 		next_boundary = session.transport.phrase_frame(session.phrase_index+1)
 	return synth._mix_frame(state,at,rate)
 
+func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
+	var result := PackedVector2Array()
+	var at := start
+	while at < start+count:
+		if at == next_boundary:
+			session.settle(at)
+			synth.update_city(session.city,state)
+			synth.silent_until = session.silent_until.duplicate(true)
+			next_boundary = session.transport.phrase_frame(session.phrase_index+1)
+		var amount := mini(start+count-at,next_boundary-at)
+		result.append_array(synth.render_block(state,at,amount,rate))
+		at += amount
+	return result
+
 func snapshot() -> Dictionary:
 	return {"session":session.snapshot(),"next_boundary":next_boundary,
 		"active_layers":synth.active_layers.duplicate(),"gain":synth.gain,

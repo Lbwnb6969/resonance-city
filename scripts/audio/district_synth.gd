@@ -152,6 +152,52 @@ func _mix_frame(state: Dictionary, at: int, rate: int) -> Vector2:
 	return sample
 
 
+func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
+	_prepare_envelopes(rate)
+	var block := PackedVector2Array()
+	block.resize(count)
+	var drone_enabled := active_layers.has("drone")
+	var rhythm_enabled := active_layers.has("rhythm")
+	for route in routing:
+		var id: String = route["id"]
+		var phase_key: String = route["phase_key"]
+		var phase := float(state.get(phase_key,0.0))
+		var increment := frequency(int(state.get(id,route["base_midi"]))) / rate
+		var table: PackedFloat32Array = route["table"]
+		var size := table.size()
+		var stereo: Vector2 = route["stereo"]
+		var envelope: PackedFloat32Array = envelopes[rate][route["type"]]
+		var envelope_count := envelope.size()
+		var industrial: bool = route["type"] == "industrial"
+		var previous: Vector2 = state.get(route["highpass_key"],Vector2.ZERO)
+		var alpha := float(highpass_alpha[rate])
+		var disabled := bool(muted.get(id,false)) or (not solo_id.is_empty() and solo_id != id)
+		var silence_end := int(silent_until.get(id,0))
+		for offset in range(count):
+			var at := start+offset
+			var position := fposmod(phase,1.0)*size
+			var index := int(position)
+			var drone := lerpf(table[index],table[(index+1)%size],position-index)*drone_gain if drone_enabled else 0.0
+			var rhythm := 0.0
+			if rhythm_enabled:
+				position = fposmod(phase*rhythm_multiplier,1.0)*size
+				index = int(position)
+				var pulse := lerpf(table[index],table[(index+1)%size],position-index)*envelope[at%envelope_count]
+				if industrial:
+					var output := alpha*(previous.y+pulse-previous.x)
+					previous = Vector2(pulse,output)
+					pulse = output
+				rhythm = pulse*rhythm_gain
+			phase = fposmod(phase+increment,1.0)
+			if not disabled and at >= silence_end:
+				var layers := Vector2(drone,rhythm)*gain
+				block[offset] += layers.x*stereo
+				block[offset] += layers.y*stereo
+		state[phase_key] = phase
+		if industrial and rhythm_enabled:
+			state[route["highpass_key"]] = previous
+	return block
+
 func update_city(city: Array, state: Dictionary) -> void:
 	districts = city.duplicate(true)
 	for district in city:

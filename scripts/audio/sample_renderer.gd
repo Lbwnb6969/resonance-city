@@ -12,6 +12,19 @@ func _init(rate: int = 0) -> void:
 	transport = Transport.new(rate)
 
 func render(count: int) -> PackedVector2Array:
+	var provider: Object = source.get_object() if source.is_valid() else null
+	if is_instance_valid(provider) and provider.has_method("render_block"):
+		var result := PackedVector2Array()
+		while result.size() < count:
+			var at := transport.rendered_frames
+			for event in transport.take_events(at):
+				state[str(event["district_id"])] = int(event["midi"])
+			var amount := count-result.size()
+			if not transport.pending.is_empty():
+				amount = mini(amount,int(transport.pending[0]["frame"])-at)
+			result.append_array(provider.render_block(state,at,amount,transport.sample_rate))
+			transport.rendered_frames += amount
+		return result
 	var block := PackedVector2Array()
 	block.resize(count)
 	for offset in range(count):

@@ -31,15 +31,15 @@
 		}
 	],
 	"details": {
-		"audible_frame": 353126.399954929,
+		"audible_frame": 353193.056604929,
 		"capacity": 4095,
 		"district_count": 9,
 		"driver": "WASAPI",
 		"hardware_latency": 0.00999999977648258,
-		"one_second_render_ms": 690.764,
+		"one_second_render_ms": 85.596,
 		"rendered_frames": 357247,
 		"skips": 0,
-		"wall_ms": 16004
+		"wall_ms": 16003
 	},
 	"engine": "4.7.2-stable (official)",
 	"exit_code": 0,
