@@ -258,6 +258,12 @@ def generate():
         'rim_width_px': numbers(atmosphere['岛台边沿'])[0],
         'rim_color': colors(atmosphere['岛台边沿'])[0],
     }
+    rebellion = dict(table(city, '## 表 C2 ·'))
+    result['rebellion_fixture'] = {
+        'pitch_offset': int(numbers(rebellion['音高偏移'])[0]),
+        'minimum_deviation': numbers(rebellion['律动偏移'])[0]/100,
+        'maximum_deviation': numbers(rebellion['律动偏移'])[1]/100,
+    }
     landscape = dict(table(ui, '## 表 U13 ·'))
     result['landscape'] = {
         'per_family': int(numbers(landscape['数量'])[0]),

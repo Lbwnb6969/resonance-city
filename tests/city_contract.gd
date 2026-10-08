@@ -10,6 +10,10 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	if Contract.selected_case("layers") == "rebellion_fixture":
+		var fixture = load("res://tests/rebellion_fixture_checks.gd")
+		fixture.run(self)
+		return
 	if Contract.selected_case("layers") == "initial_r":
 		var checks = load("res://tests/generation_checks.gd")
 		quit(0 if checks.city(self) == 0 else 1)

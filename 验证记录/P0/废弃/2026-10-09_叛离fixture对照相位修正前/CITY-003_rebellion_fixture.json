@@ -1,0 +1,350 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/city_contract.gd"
+	],
+	"case": "rebellion_fixture",
+	"checks": [
+		{
+			"description": "Invalid fixture injection is rejected without state mutation",
+			"passed": true
+		},
+		{
+			"description": "Explicit +1 pitch and shifted rhythm start without oscillator reset",
+			"passed": true
+		},
+		{
+			"description": "Rate drift leaves same-pitch drone and all unrelated tracks sample-identical",
+			"passed": true
+		},
+		{
+			"description": "Actual shifted rhythm differs over two bars and remains audible",
+			"passed": true
+		},
+		{
+			"description": "Drifting fixture block and scalar PCM/state match exactly",
+			"passed": true
+		},
+		{
+			"description": "PCM snapshot resumes exact drifting rhythm and pitch phase",
+			"passed": true
+		},
+		{
+			"description": "Explicit legal-boundary restoration removes drift and restores pitch without phase reset",
+			"passed": true
+		},
+		{
+			"description": "Returned rhythm and drone are exact ordinary paths at the same live phase",
+			"passed": true
+		},
+		{
+			"description": "Invalid fixture injection is rejected without state mutation",
+			"passed": true
+		},
+		{
+			"description": "Explicit +1 pitch and shifted rhythm start without oscillator reset",
+			"passed": true
+		},
+		{
+			"description": "Rate drift leaves same-pitch drone and all unrelated tracks sample-identical",
+			"passed": true
+		},
+		{
+			"description": "Actual shifted rhythm differs over two bars and remains audible",
+			"passed": true
+		},
+		{
+			"description": "Drifting fixture block and scalar PCM/state match exactly",
+			"passed": true
+		},
+		{
+			"description": "PCM snapshot resumes exact drifting rhythm and pitch phase",
+			"passed": true
+		},
+		{
+			"description": "Explicit legal-boundary restoration removes drift and restores pitch without phase reset",
+			"passed": true
+		},
+		{
+			"description": "Returned rhythm and drone are exact ordinary paths at the same live phase",
+			"passed": true
+		},
+		{
+			"description": "Invalid fixture injection is rejected without state mutation",
+			"passed": true
+		},
+		{
+			"description": "Explicit +1 pitch and shifted rhythm start without oscillator reset",
+			"passed": true
+		},
+		{
+			"description": "Rate drift leaves same-pitch drone and all unrelated tracks sample-identical",
+			"passed": true
+		},
+		{
+			"description": "Actual shifted rhythm differs over two bars and remains audible",
+			"passed": true
+		},
+		{
+			"description": "Drifting fixture block and scalar PCM/state match exactly",
+			"passed": true
+		},
+		{
+			"description": "PCM snapshot resumes exact drifting rhythm and pitch phase",
+			"passed": true
+		},
+		{
+			"description": "Explicit legal-boundary restoration removes drift and restores pitch without phase reset",
+			"passed": true
+		},
+		{
+			"description": "Returned rhythm and drone are exact ordinary paths at the same live phase",
+			"passed": true
+		},
+		{
+			"description": "Invalid fixture injection is rejected without state mutation",
+			"passed": true
+		},
+		{
+			"description": "Explicit +1 pitch and shifted rhythm start without oscillator reset",
+			"passed": true
+		},
+		{
+			"description": "Rate drift leaves same-pitch drone and all unrelated tracks sample-identical",
+			"passed": true
+		},
+		{
+			"description": "Actual shifted rhythm differs over two bars and remains audible",
+			"passed": true
+		},
+		{
+			"description": "Drifting fixture block and scalar PCM/state match exactly",
+			"passed": true
+		},
+		{
+			"description": "PCM snapshot resumes exact drifting rhythm and pitch phase",
+			"passed": true
+		},
+		{
+			"description": "Explicit legal-boundary restoration removes drift and restores pitch without phase reset",
+			"passed": true
+		},
+		{
+			"description": "Returned rhythm and drone are exact ordinary paths at the same live phase",
+			"passed": true
+		},
+		{
+			"description": "Invalid fixture injection is rejected without state mutation",
+			"passed": true
+		},
+		{
+			"description": "Explicit +1 pitch and shifted rhythm start without oscillator reset",
+			"passed": true
+		},
+		{
+			"description": "Rate drift leaves same-pitch drone and all unrelated tracks sample-identical",
+			"passed": true
+		},
+		{
+			"description": "Actual shifted rhythm differs over two bars and remains audible",
+			"passed": true
+		},
+		{
+			"description": "Drifting fixture block and scalar PCM/state match exactly",
+			"passed": true
+		},
+		{
+			"description": "PCM snapshot resumes exact drifting rhythm and pitch phase",
+			"passed": true
+		},
+		{
+			"description": "Explicit legal-boundary restoration removes drift and restores pitch without phase reset",
+			"passed": true
+		},
+		{
+			"description": "Returned rhythm and drone are exact ordinary paths at the same live phase",
+			"passed": true
+		},
+		{
+			"description": "Invalid fixture injection is rejected without state mutation",
+			"passed": true
+		},
+		{
+			"description": "Explicit +1 pitch and shifted rhythm start without oscillator reset",
+			"passed": true
+		},
+		{
+			"description": "Rate drift leaves same-pitch drone and all unrelated tracks sample-identical",
+			"passed": true
+		},
+		{
+			"description": "Actual shifted rhythm differs over two bars and remains audible",
+			"passed": true
+		},
+		{
+			"description": "Drifting fixture block and scalar PCM/state match exactly",
+			"passed": true
+		},
+		{
+			"description": "PCM snapshot resumes exact drifting rhythm and pitch phase",
+			"passed": true
+		},
+		{
+			"description": "Explicit legal-boundary restoration removes drift and restores pitch without phase reset",
+			"passed": true
+		},
+		{
+			"description": "Returned rhythm and drone are exact ordinary paths at the same live phase",
+			"passed": true
+		},
+		{
+			"description": "Invalid fixture injection is rejected without state mutation",
+			"passed": true
+		},
+		{
+			"description": "Explicit +1 pitch and shifted rhythm start without oscillator reset",
+			"passed": true
+		},
+		{
+			"description": "Rate drift leaves same-pitch drone and all unrelated tracks sample-identical",
+			"passed": true
+		},
+		{
+			"description": "Actual shifted rhythm differs over two bars and remains audible",
+			"passed": true
+		},
+		{
+			"description": "Drifting fixture block and scalar PCM/state match exactly",
+			"passed": true
+		},
+		{
+			"description": "PCM snapshot resumes exact drifting rhythm and pitch phase",
+			"passed": true
+		},
+		{
+			"description": "Explicit legal-boundary restoration removes drift and restores pitch without phase reset",
+			"passed": true
+		},
+		{
+			"description": "Returned rhythm and drone are exact ordinary paths at the same live phase",
+			"passed": true
+		},
+		{
+			"description": "Invalid fixture injection is rejected without state mutation",
+			"passed": true
+		},
+		{
+			"description": "Explicit +1 pitch and shifted rhythm start without oscillator reset",
+			"passed": true
+		},
+		{
+			"description": "Rate drift leaves same-pitch drone and all unrelated tracks sample-identical",
+			"passed": true
+		},
+		{
+			"description": "Actual shifted rhythm differs over two bars and remains audible",
+			"passed": true
+		},
+		{
+			"description": "Drifting fixture block and scalar PCM/state match exactly",
+			"passed": true
+		},
+		{
+			"description": "PCM snapshot resumes exact drifting rhythm and pitch phase",
+			"passed": true
+		},
+		{
+			"description": "Explicit legal-boundary restoration removes drift and restores pitch without phase reset",
+			"passed": true
+		},
+		{
+			"description": "Returned rhythm and drone are exact ordinary paths at the same live phase",
+			"passed": true
+		}
+	],
+	"details": {
+		"actual_pcm_source": "DistrictSynth production scalar/block paths with explicit test state",
+		"automated_rebellion": false,
+		"capture_enclosure": false,
+		"drone_comparison": "same shifted pitch with drift on/off; +1 pitch itself intentionally changes frequency",
+		"fixtures": [
+			{
+				"boundary": 352800,
+				"deviation": -0.12,
+				"restore_at": 705600,
+				"rhythm_difference_energy": 3.93493432566151,
+				"rhythm_energy": 1.61354653493962,
+				"sample_rate": 22050,
+				"speed": 0.88
+			},
+			{
+				"boundary": 352800,
+				"deviation": -0.05,
+				"restore_at": 705600,
+				"rhythm_difference_energy": 4.27069882806336,
+				"rhythm_energy": 1.62599998418682,
+				"sample_rate": 22050,
+				"speed": 0.95
+			},
+			{
+				"boundary": 352800,
+				"deviation": 0.05,
+				"restore_at": 705600,
+				"rhythm_difference_energy": 4.28420017793226,
+				"rhythm_energy": 1.65458205889718,
+				"sample_rate": 22050,
+				"speed": 1.05
+			},
+			{
+				"boundary": 352800,
+				"deviation": 0.12,
+				"restore_at": 705600,
+				"rhythm_difference_energy": 3.86508325273804,
+				"rhythm_energy": 1.55142919387426,
+				"sample_rate": 22050,
+				"speed": 1.12
+			},
+			{
+				"boundary": 705600,
+				"deviation": -0.12,
+				"restore_at": 1411200,
+				"rhythm_difference_energy": 5.9152734574584,
+				"rhythm_energy": 3.23293888671914,
+				"sample_rate": 44100,
+				"speed": 0.88
+			},
+			{
+				"boundary": 705600,
+				"deviation": -0.05,
+				"restore_at": 1411200,
+				"rhythm_difference_energy": 5.7641504610352,
+				"rhythm_energy": 3.2517793700609,
+				"sample_rate": 44100,
+				"speed": 0.95
+			},
+			{
+				"boundary": 705600,
+				"deviation": 0.05,
+				"restore_at": 1411200,
+				"rhythm_difference_energy": 5.82477908431176,
+				"rhythm_energy": 3.30430190892037,
+				"sample_rate": 44100,
+				"speed": 1.05
+			},
+			{
+				"boundary": 705600,
+				"deviation": 0.12,
+				"restore_at": 1411200,
+				"rhythm_difference_energy": 5.78943527323844,
+				"rhythm_energy": 3.10294331924368,
+				"sample_rate": 44100,
+				"speed": 1.12
+			}
+		]
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "CITY-003",
+	"scope": "P0 explicit injection/restore only; +1 semitone, +/-5 and +/-12% rhythm-envelope drift, unchanged same-pitch drone/unrelated tracks, scalar/block/snapshot equality; excludes automatic trigger, enclosure/capture gameplay, human listening and main-scene feature activation",
+	"status": "PASS"
+}

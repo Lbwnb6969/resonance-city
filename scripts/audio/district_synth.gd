@@ -144,10 +144,15 @@ func _prepare_envelopes(rate: int) -> void:
 	var rc := 1.0 / (TAU * float(settings["industrial_highpass_hz"]))
 	highpass_alpha[rate] = rc / (rc + 1.0 / rate)
 
+func _fixture_rhythm_index(fixture: Dictionary, at: int, length: int) -> int:
+	return posmod(floori(float(fixture["start_grid_frame"])+float(at-int(fixture["start_frame"]))*float(fixture["speed"])),length)
+
 func _rhythm(route: Dictionary, phase: float, at: int, rate: int, state: Dictionary) -> float:
 	_prepare_envelopes(rate)
 	var envelope: PackedFloat32Array = envelopes[rate][route["type"]]
-	var pulse := _table_wave(route["table"], phase * rhythm_multiplier) * envelope[at % envelope.size()]
+	var fixture: Dictionary = state.get("_rhythm_fixture_"+str(route["id"]),{})
+	var envelope_index := at % envelope.size() if fixture.is_empty() else _fixture_rhythm_index(fixture,at,envelope.size())
+	var pulse := _table_wave(route["table"], phase * rhythm_multiplier) * envelope[envelope_index]
 	if route["type"] == "industrial":
 		var key: String = route["highpass_key"]
 		var previous: Vector2 = state.get(key, Vector2.ZERO)
@@ -421,6 +426,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var stereo: Vector2 = route["stereo"]
 		var envelope: PackedFloat32Array = envelopes[rate][route["type"]]
 		var envelope_count := envelope.size()
+		var fixture: Dictionary = state.get("_rhythm_fixture_"+id,{})
 		var industrial: bool = route["type"] == "industrial"
 		var previous: Vector2 = state.get(route["highpass_key"],Vector2.ZERO)
 		var alpha := float(highpass_alpha[rate])
@@ -440,7 +446,8 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			if rhythm_enabled and not is_anchor:
 				position = fposmod(phase*rhythm_multiplier,1.0)*size
 				index = int(position)
-				var pulse := lerpf(table[index],table[(index+1)%size],position-index)*envelope[at%envelope_count]
+				var envelope_index := at%envelope_count if fixture.is_empty() else _fixture_rhythm_index(fixture,at,envelope_count)
+				var pulse := lerpf(table[index],table[(index+1)%size],position-index)*envelope[envelope_index]
 				if industrial:
 					var output := alpha*(previous.y+pulse-previous.x)
 					previous = Vector2(pulse,output)

@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+CITY-003 PASS checks=65 evidence=res://验证记录/P0/CITY-003_rebellion_fixture.json scope=P0 explicit injection/restore only; +1 semitone, +/-5 and +/-12% rhythm-envelope drift, unchanged same-pitch drone/unrelated tracks, scalar/block/snapshot equality; excludes automatic trigger, enclosure/capture gameplay, human listening and main-scene feature activation

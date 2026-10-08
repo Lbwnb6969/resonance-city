@@ -444,6 +444,11 @@
     "rim_width_px": 1.2,
     "rim_color": "#F3EEE4"
   },
+  "rebellion_fixture": {
+    "pitch_offset": 1,
+    "minimum_deviation": 0.05,
+    "maximum_deviation": 0.12
+  },
   "landscape": {
     "per_family": 2,
     "maximum": 6,
@@ -475,7 +480,7 @@
   },
   "sources": {
     "spec.audio.md": "9ce964ba3926c51648f39cd060cd327baf3b8aab4cb7064c79bd2dc6832cae5b",
-    "spec.city.md": "7b4fc0eec1d466254cfbd2e592600f9badfe864145a5b509a8c106b158e8062b",
+    "spec.city.md": "ae39cdf0a6a25fbc913418544b8cd6f7709492d2bc6ec055d5072a9f8a9c4872",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "ba7bf2df7f767ba597d333edce9ea32f1d7c08fe4659680c76de2d9b76cdbfe7",
     "spec.ui.md": "012a1b0e4c576b7644ddd20c9dfec996cae8e3faa98e34fbe7eb3884af4ab568"
