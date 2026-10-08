@@ -1,3 +1,9 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Original packages stay on disk; retain textual licensing evidence separately.
+/资产/01_原始素材/CC0_Kenney/
+/资产/01_原始素材/CC0_ambientCG/
+/资产/01_原始素材/OFL_Fonts/
+/资产/2.5D素材/
