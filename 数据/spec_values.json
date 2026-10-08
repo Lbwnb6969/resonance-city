@@ -1,0 +1,50 @@
+{
+  "timing": {
+    "bpm": 120.0,
+    "beats_per_bar": 4,
+    "bars_per_phrase": 8,
+    "preview_seconds": 3.0,
+    "beat_assist_window_ms": 80.0,
+    "sample_rate": 22050,
+    "buffer_seconds": 0.12
+  },
+  "voices": {
+    "residential": {
+      "base_midi": 48,
+      "frequency_hz": 130.81,
+      "layers": [
+        "drone",
+        "rhythm",
+        "ornament"
+      ],
+      "drone_timbre": "木琴/拨弦 pad 化，暖",
+      "rhythm_signature": "稳定 4/4 中速"
+    },
+    "commercial": {
+      "base_midi": 52,
+      "frequency_hz": 164.82,
+      "layers": [
+        "drone",
+        "rhythm",
+        "ornament"
+      ],
+      "drone_timbre": "明亮键盘/铃铛",
+      "rhythm_signature": "十六分律动"
+    },
+    "industrial": {
+      "base_midi": 54,
+      "frequency_hz": 185.0,
+      "layers": [
+        "drone",
+        "rhythm",
+        "ornament"
+      ],
+      "drone_timbre": "锯齿脉冲，保留185Hz基音",
+      "rhythm_signature": "不规则切分；300Hz高通仅律动层"
+    }
+  },
+  "sources": {
+    "spec.audio.md": "0034fab472ef5b4841f5dcce7a7cd2920447b861c3e5396bc963f539053d1a96",
+    "spec.city.md": "0533b5bdd9c6b304d9469350cda0ffe26b6da69bcbaf8ce8e387b27f6baad707"
+  }
+}

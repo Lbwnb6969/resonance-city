@@ -65,6 +65,22 @@ beat_assist 对参与失谐的两条 drone 在上方一个八度复制一对伴�
 
 反例：遗产 STEP_FRAMES=5513是八分音符，不是一拍；不得直接沿用其四舍五入步长造成长期漂移，不得按画面delta累计声音。
 
+## 表 A4 · P0时钟实现参数（本次工程轮）
+
+用户已授权补齐P0音频技术方案。以下是实现参数，不修改A2的音乐时间单位。
+
+| 参数 | 值 / 规则 |
+|---|---|
+| PCM采样率 | 22050 Hz；显式CUSTOM模式，所有时间换算使用实际生成率 |
+| 生成缓冲长度 | 0.12 s；占用帧数使用启动后实际get_frames_available容量，不假定等于秒数乘采样率 |
+| 边界帧 | round(单位序号 × 每单位拍数 × 60 × 采样率 / BPM)，不得累加取整后的单拍长度 |
+| 可听帧 | rendered_frames − queued_frames + (time_since_last_mix − output_latency) × 采样率；限制在0…rendered_frames并保持单调 |
+| 未渲染区 | rendered_frames是首个可写样本；它恰在乐句边界可落定，否则排到下个边界 |
+| 下溢 | 记录AudioStreamGeneratorPlayback.get_skips；发生下溢的运行不能作为同步或真人正式验收证据 |
+
+采样率选择依据Godot官方AudioStreamGenerator文档对GDScript的建议；只借用遗产PCM调度范式，不移植其乐理池/步长/混音参数。
+来源：[AudioStreamGenerator](https://docs.godotengine.org/en/stable/classes/class_audiostreamgenerator.html)、[Playback容量/下溢](https://docs.godotengine.org/en/stable/classes/class_audiostreamgeneratorplayback.html)、[硬件混音时钟](https://docs.godotengine.org/en/stable/tutorials/audio/sync_with_audio.html)。
+
 ### [AUDIO-003] ducking 与持续 drone
 
 状态：部分待裁定U04。

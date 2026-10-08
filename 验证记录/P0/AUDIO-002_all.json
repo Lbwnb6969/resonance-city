@@ -1,0 +1,157 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/audio_contract.gd"
+	],
+	"case": "all",
+	"checks": [
+		{
+			"description": "Supported case: all",
+			"passed": true
+		},
+		{
+			"description": "2-second bar at rate 22050",
+			"passed": true
+		},
+		{
+			"description": "16-second phrase at rate 22050",
+			"passed": true
+		},
+		{
+			"description": "No accumulated rounded-step drift",
+			"passed": true
+		},
+		{
+			"description": "Unwritten boundary is legal",
+			"passed": true
+		},
+		{
+			"description": "Rendered boundary is never overwritten",
+			"passed": true
+		},
+		{
+			"description": "2-second bar at rate 44100",
+			"passed": true
+		},
+		{
+			"description": "16-second phrase at rate 44100",
+			"passed": true
+		},
+		{
+			"description": "No accumulated rounded-step drift",
+			"passed": true
+		},
+		{
+			"description": "Unwritten boundary is legal",
+			"passed": true
+		},
+		{
+			"description": "Rendered boundary is never overwritten",
+			"passed": true
+		},
+		{
+			"description": "2-second bar at rate 47999",
+			"passed": true
+		},
+		{
+			"description": "16-second phrase at rate 47999",
+			"passed": true
+		},
+		{
+			"description": "No accumulated rounded-step drift",
+			"passed": true
+		},
+		{
+			"description": "Unwritten boundary is legal",
+			"passed": true
+		},
+		{
+			"description": "Rendered boundary is never overwritten",
+			"passed": true
+		},
+		{
+			"description": "Queued PCM and hardware output latency both compensated",
+			"passed": true
+		},
+		{
+			"description": "Audible estimate never moves backwards",
+			"passed": true
+		},
+		{
+			"description": "Industrial F-sharp remains valid",
+			"passed": true
+		},
+		{
+			"description": "Explicit C-sharp rebellion fixture remains valid",
+			"passed": true
+		},
+		{
+			"description": "Normal initial pitch is protected",
+			"passed": true
+		},
+		{
+			"description": "Approved industrial retune is accepted",
+			"passed": true
+		},
+		{
+			"description": "Another district cannot borrow proposal permission",
+			"passed": true
+		},
+		{
+			"description": "Pitch outside approved proposal is rejected",
+			"passed": true
+		},
+		{
+			"description": "Initial authorized event starts on first writable phrase",
+			"passed": true
+		},
+		{
+			"description": "Input after frame zero waits for phrase boundary",
+			"passed": true
+		},
+		{
+			"description": "State cannot change before phrase boundary",
+			"passed": true
+		},
+		{
+			"description": "State commits before mixing the boundary sample",
+			"passed": true
+		},
+		{
+			"description": "Live chunked PCM equals offline contiguous PCM sample for sample",
+			"passed": true
+		},
+		{
+			"description": "PCM16 export uses identical renderer output",
+			"passed": true
+		},
+		{
+			"description": "Fixture is non-silent stereo with expected length",
+			"passed": true
+		},
+		{
+			"description": "WAV evidence written",
+			"passed": true
+		},
+		{
+			"description": "Saved WAV PCM exactly matches live PCM",
+			"passed": true
+		}
+	],
+	"details": {
+		"fixture": "Transport-only synthetic deterministic source; not production timbre",
+		"pcm_bytes": 1411200,
+		"pcm_frames": 352800,
+		"rates_tested": [
+			22050,
+			44100,
+			47999
+		],
+		"wav": "res://验证记录/P0/时钟fixture.wav"
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "AUDIO-002",
+	"scope": "Clock, future quantization, pitch authorization and shared PCM renderer; hardware audible accuracy pending live probe",
+	"status": "PASS"
+}
