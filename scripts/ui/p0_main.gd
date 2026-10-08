@@ -59,6 +59,8 @@ var mute: CheckButton
 var preview_button: Button
 var confirm_button: Button
 var status: Label
+var forecast_summary: Label
+var forecast_key := ""
 var prediction: Label
 
 func _ready() -> void:
@@ -237,6 +239,8 @@ func _build_controls() -> void:
 	target_select.name = "Target"
 	target_select.item_selected.connect(func(_index: int) -> void: _choice_changed())
 	controls.add_child(target_select)
+	forecast_summary = _label("选择方案可查看收益和代价。","ForecastSummary")
+	forecast_summary.add_theme_font_size_override("font_size",14)
 	preview_button = _button("长按试听 3 秒（或按住空格）","Preview")
 	preview_button.button_down.connect(_preview_down)
 	preview_button.button_up.connect(_preview_up)
@@ -405,6 +409,25 @@ func _choice_changed() -> void:
 	preview_button.disabled = selected_choice.is_empty()
 	confirm_button.disabled = selected_choice.is_empty()
 	prediction.text = "该街区暂无此类合法提案。" if selected_choice.is_empty() else "长按试听可听未来；确认只在下一乐句生效。"
+	forecast_key = ""
+	_refresh_prediction()
+
+func _refresh_prediction() -> void:
+	if selected_choice.is_empty():
+		forecast_summary.text = "该街区暂无此类合法提案。"
+		return
+	var period := clock.renderer.transport.phrase_frame(1)
+	var on_grid := model.session.is_on_grid(clock.renderer.transport.audible_frame)
+	var key := "%s:%s:%d:%d:%s" % [selected_choice["proposal_id"],JSON.stringify(selected_choice["target"]),model.session.phrase_index,clock.renderer.transport.rendered_frames/period,on_grid]
+	if key == forecast_key: return
+	forecast_key = key
+	var expected := Preview.forecast(model.session,selected_choice,clock.renderer.transport.rendered_frames,clock.renderer.transport.audible_frame)
+	if expected["accepted"]:
+		forecast_summary.text = Presentation.summary(expected["result"])
+		prediction.text = Presentation.describe(expected["result"])["text"]
+	else:
+		forecast_summary.text = expected["reason"]
+		prediction.text = expected["reason"]
 
 func _preview_down() -> void:
 	if selected_choice.is_empty() or black_screen or bool(model.session.lifecycle["ended"]):
@@ -450,6 +473,7 @@ func _process(_delta: float) -> void:
 			status.text = "试听中：真实城市继续计时，松开恢复原混音。"
 		elif want_preview:
 			status.text = result.get("reason","此方案已失效。")
+	if not want_preview and not preview_clock.active: _refresh_prediction()
 	city_view.selected_id = _selected_id()
 	city_view.release_midi = int(release_pitch.get_item_metadata(release_pitch.selected))
 	_update_map_notice()
@@ -533,6 +557,7 @@ func _confirm() -> void:
 		while prediction_copy.transport.phrase_frame(prediction_copy.phrase_index+1) <= int(request["frame"]):
 			prediction_copy.settle(prediction_copy.transport.phrase_frame(prediction_copy.phrase_index+1))
 		prediction.text = Presentation.describe(prediction_copy.last_result)["text"]
+		forecast_summary.text = Presentation.summary(prediction_copy.last_result)
 		status.text = "已确认，将在 %.2f 秒音频处落定；边界前可更换或取消。" % (float(request["frame"])/clock.renderer.transport.sample_rate)
 	else:
 		status.text = request["reason"]

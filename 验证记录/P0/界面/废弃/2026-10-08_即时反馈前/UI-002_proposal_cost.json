@@ -1,0 +1,61 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/ui_contract.gd"
+	],
+	"case": "proposal_cost",
+	"checks": [
+		{
+			"description": "Supported case: proposal_cost",
+			"passed": true
+		},
+		{
+			"description": "Displayed R reflects both actual neighbor edges",
+			"passed": true
+		},
+		{
+			"description": "Existing industrial/home relation is a tritone",
+			"passed": true
+		},
+		{
+			"description": "Retuned relation reflects the actual fifth",
+			"passed": true
+		},
+		{
+			"description": "Cost and both interval changes are visible together",
+			"passed": true
+		},
+		{
+			"description": "Negative net vitality is not hidden",
+			"passed": true
+		},
+		{
+			"description": "All lost original neighbor relations displayed",
+			"passed": true
+		},
+		{
+			"description": "One-phrase silence and lost relationships are explicit",
+			"passed": true
+		},
+		{
+			"description": "Black screen hides every operation control; cursor requires a display driver",
+			"passed": true
+		},
+		{
+			"description": "Return restores minimal operation controls",
+			"passed": true
+		}
+	],
+	"details": {
+		"human_black_screen": "PENDING",
+		"migration_text": "预期 R：15.00 → 100.00\n代价：该街区静音 1 乐句（16 秒）；原邻居失去相应关系\n下个乐句活力：home：50.0 → 51.0；factory：50.0 → 51.0；shop：50.0 → 51.0\n失去邻接 factory / home：三全音（每方活力 -8.0）\n失去邻接 factory / shop：大二 / 小七（每方活力 -3.0）",
+		"retune_after_r": 75.0,
+		"retune_before_r": 15.0,
+		"text": "预期 R：15.00 → 75.00\n代价：改造 -10 活力\n下个乐句活力：home：50.0 → 56.0；factory：50.0 → 46.0；shop：50.0 → 51.0\n音程变化 factory / home：三全音 → 纯五 / 纯四（每方活力 -8.0 → +5.0）\n音程变化 factory / shop：大二 / 小七 → 小三 / 小六（每方活力 -3.0 → +0.0）"
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "UI-002",
+	"scope": "Actual preview presenter plus real main-scene black-screen toggles; no full P1 HUD",
+	"status": "PASS"
+}

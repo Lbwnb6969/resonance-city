@@ -10,6 +10,14 @@
 			"passed": true
 		},
 		{
+			"description": "Immediate forecast does not consume real state or RNG",
+			"passed": true
+		},
+		{
+			"description": "Immediate forecast exactly matches the actual transaction",
+			"passed": true
+		},
+		{
 			"description": "Displayed R reflects both actual neighbor edges",
 			"passed": true
 		},
@@ -35,6 +43,14 @@
 		},
 		{
 			"description": "One-phrase silence and lost relationships are explicit",
+			"passed": true
+		},
+		{
+			"description": "Actual selected target shows gains and negative costs before listening or confirming",
+			"passed": true
+		},
+		{
+			"description": "Reading live proposal feedback does not start PCM preview or mutate the city",
 			"passed": true
 		},
 		{

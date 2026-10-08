@@ -15,6 +15,17 @@ static func model_from_snapshot(saved: Dictionary) -> CityAudioModel:
 	model.restore(saved)
 	return model
 
+static func forecast(session: CityInterventions, choice: Dictionary, rendered_frames: int, requested_audio_frame: float) -> Dictionary:
+	var copy := session.fork()
+	var request := copy.request(choice,rendered_frames,requested_audio_frame)
+	if not request["accepted"]: return request
+	var boundary := int(request["frame"])
+	while copy.transport.phrase_frame(copy.phrase_index+1) <= boundary:
+		copy.settle(copy.transport.phrase_frame(copy.phrase_index+1))
+	if copy.last_result.get("choice",{}).get("proposal_id","") != choice.get("proposal_id",""):
+		return {"accepted":false,"reason":"该方案在落定前会失效，请更换目标。"}
+	return {"accepted":true,"commit_boundary":boundary,"result":copy.last_result.duplicate(true)}
+
 static func build(model_saved: Dictionary, renderer_saved: Dictionary, choice: Dictionary, requested_audio_frame: float, listening: bool = false) -> Dictionary:
 	var model := model_from_snapshot(model_saved)
 	var output := Renderer.new()

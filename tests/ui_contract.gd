@@ -5,6 +5,7 @@ const Contract = preload("res://tests/contract_support.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
 const Session = preload("res://scripts/proposals/city_interventions.gd")
 const Presenter = preload("res://scripts/ui/proposal_presentation.gd")
+const Preview = preload("res://scripts/proposals/proposal_preview.gd")
 const Values = preload("res://scripts/spec_values.gd")
 
 func _initialize() -> void:
@@ -20,8 +21,12 @@ func _run() -> void:
 	test.check(test.case_name == "proposal_cost","Supported case: proposal_cost")
 	var city := Session.new(fixture(),"2026100800000001")
 	var period := city.transport.phrase_frame(1)
+	var untouched: Dictionary = city.snapshot()
+	var expected := Preview.forecast(city,{"proposal_id":"p0:0:factory:retune","target":55},period-1,0.5*period)
+	test.check(expected["accepted"] and city.snapshot() == untouched,"Immediate forecast does not consume real state or RNG")
 	city.request({"proposal_id":"p0:0:factory:retune","target":55},period-1,0.5*period)
 	var result := city.settle(period)
+	test.check(expected["result"] == result,"Immediate forecast exactly matches the actual transaction")
 	var text := Presenter.describe(result)
 	var epsilon: float = Values.load_values()["city"]["comparison_tolerance"]
 	test.check(absf(float(text["before_r"])-15.0) <= epsilon and absf(float(text["after_r"])-75.0) <= epsilon,"Displayed R reflects both actual neighbor edges")
@@ -39,6 +44,29 @@ func _run() -> void:
 	main.start_audio_on_ready = false
 	root.add_child(main)
 	await process_frame
+	main.model = load("res://scripts/audio/city_audio_model.gd").new(Session.new(fixture(),"2026100800000001"))
+	load("res://scripts/city/city_growth.gd").assign_assets(main.model.session.city)
+	for sprite in main.city_view.sprites.values(): sprite.queue_free()
+	for label in main.city_view.labels.values(): label.queue_free()
+	for field in [main.city_view.sprites,main.city_view.labels,main.city_view.forms,main.city_view.appearance,main.city_view.base_scales]: field.clear()
+	main.city_view.session = main.model.session
+	main.clock.renderer.source = main.model._mix_frame
+	main.clock.renderer.state = main.model.synth.initial_state()
+	main.clock.renderer.transport.rendered_frames = period-1
+	main.clock.renderer.transport.audible_frame = 0.5*period
+	main._select_district("factory")
+	var saved: Dictionary = main.model.session.snapshot()
+	for index in range(main.target_select.item_count):
+		if main.target_select.get_item_metadata(index)["target"] == 55:
+			main.target_select.select(index)
+			main._choice_changed()
+			break
+	test.check(main.forecast_summary.text.contains("15.00 → 75.00") and main.forecast_summary.text.contains("50.0 → 46.0") and main.forecast_summary.text.contains("改造 -10 活力"),"Actual selected target shows gains and negative costs before listening or confirming")
+	test.check(not main.want_preview and not main.preview_clock.active and main.model.session.snapshot() == saved,"Reading live proposal feedback does not start PCM preview or mutate the city")
+	if DisplayServer.get_name() != "headless":
+		await process_frame
+		await RenderingServer.frame_post_draw
+		get_root().get_texture().get_image().save_png("res://验证记录/Demo/提案收益代价.png")
 	main.set_black_screen(true)
 	test.check(not main.panel.visible,"Black screen hides every operation control; cursor requires a display driver")
 	main.set_black_screen(false)

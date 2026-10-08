@@ -49,5 +49,25 @@ static func describe(result: Dictionary) -> Dictionary:
 	var text := "预期 R：%.2f → %.2f\n代价：%s\n下个乐句活力：%s\n%s" % [
 		result["before_r"],result["after_r"],cost,"；".join(vitality),
 		"\n".join(changed) if not changed.is_empty() else "邻接不变"]
-	return {"text":text,"before_r":result["before_r"],"after_r":result["after_r"],
+	return {"text":text,"cost":cost,"before_r":result["before_r"],"after_r":result["after_r"],
 		"old_edges":old,"new_edges":next,"changes":changed,"vitality":vitality,"choice":choice.duplicate(true)}
+
+
+static func summary(result: Dictionary) -> String:
+	var full := describe(result)
+	var id: String = result["choice"].get("district_id","")
+	var before_v := 0.0
+	var after_v := 0.0
+	for d in result["before"]:
+		if d["district_id"] == id: before_v = float(d["vitality"])
+	for d in result["after"]:
+		if d["district_id"] == id: after_v = float(d["vitality"])
+	var lost := 0
+	var added := 0
+	var changed := 0
+	for key in full["old_edges"]:
+		if not full["new_edges"].has(key): lost += 1
+		elif full["old_edges"][key] != full["new_edges"][key]: changed += 1
+	for key in full["new_edges"]:
+		if not full["old_edges"].has(key): added += 1
+	return "预期谐振度：%.2f → %.2f\n所选活力：%.1f → %.1f\n代价：%s\n邻接新增%d / 失去%d / 音程改变%d；明细见下方。" % [result["before_r"],result["after_r"],before_v,after_v,full["cost"],added,lost,changed]
