@@ -48,7 +48,7 @@ beat_assist 对参与失谐的两条 drone 在上方一个八度复制一对伴�
 
 数据：spec.harmony.md 表 H2；表 A1；DOD ACOUSTIC-001/002/003原样标准。
 
-验收：`& "D:\GODOT\Godot_v4.7.2-stable_win64.exe" --headless --path . --script res://tests/acoustic_contract.gd`；标准路径合成8秒，RMS包络50 Hz→FFT。测量定义U05未定，不能宣布全项自动验收可执行。
+验收：`& "D:\GODOT\Godot_v4.7.2-stable_win64.exe" --headless --path . --script res://tests/acoustic_contract.gd`；标准路径合成8秒，RMS包络50 Hz→FFT。P0测量定义已按用户授权补齐，见A6；自动合约仅证明技术信号，真人可闻性须另按A11记录。
 
 反例：禁止独立警报音、滤波LFO或 beat_assist 伪造原路径拍频；关辅助后追踪 `_mix_frame()`。
 
@@ -129,7 +129,7 @@ beat_assist 对参与失谐的两条 drone 在上方一个八度复制一对伴�
 
 ### [AUDIO-003] ducking 与持续 drone
 
-状态：部分待裁定U04。
+状态：P0已裁定并实现，监听参数见A7；环境/UI声层及完整形态演出不属于本切片。
 
 意图：在试听方案时保护诊断信号。
 
@@ -143,15 +143,15 @@ beat_assist 对参与失谐的两条 drone 在上方一个八度复制一对伴�
 
 ### [AUDIO-004] 小扬声器辅助与响度
 
-状态：部分待裁定U04、U05。
+状态：P0辅助、初始校准与测量技术已裁定，见A6、A8–A10；设备上的真人可闻性仍待实际记录。
 
 意图：在窄带设备上保留可用信息。
 
-规则：按A2/A3提供辅助与手动窄带模式；标准声学合约OFF，小扬声器测试记录ON与窄带电平。整体−16LUFS、真峰值余量3dB，drone RMS比例≥25%；明确静音例外不能误触补偿。
+规则：按A2/A3提供辅助与手动窄带模式；标准声学合约OFF，小扬声器测试记录ON与窄带电平。按A9仅初始完整混音校准到−16LUFS，后续固定公共增益并报告实际响度；真峰值余量3dB，drone RMS比例≥25%；明确静音例外不能误触补偿。
 
 数据：表 A2、A3。
 
-验收：DOD AUDIO-004：`& "D:\GODOT\Godot_v4.7.2-stable_win64.exe" --headless --path . --script res://tests/mix_contract.gd -- --case beat_assist`；真人狼牙音箱测试存档；响度报告待测量细节裁定。
+验收：DOD AUDIO-004：`& "D:\GODOT\Godot_v4.7.2-stable_win64.exe" --headless --path . --script res://tests/mix_contract.gd -- --case beat_assist`；真人狼牙音箱测试存档仍待用户组织；技术响度/保护报告见mix_contract的loudness与guard用例，不以自动报告代替人测。
 
 反例：不得把上方八度的15.56Hz自然拍频误认作原7.78Hz；不得开启自动补偿使玩家 mute 失效。
 

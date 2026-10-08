@@ -88,7 +88,7 @@ N整数化、精度定义、加成目标、标记/撤销/重连后的债务归�
 
 ### [RUN-002] 随机隔离与每日一城
 
-状态：部分待裁定U02。
+状态：P0五子流、每日种子与生成记录已裁定，见表R2a；完整Run的选择事件重放、祝福与图鉴仍待对应机制定义。
 
 意图：让种子加选择序列可靠复现。
 
@@ -96,7 +96,7 @@ N整数化、精度定义、加成目标、标记/撤销/重连后的债务归�
 
 数据：表R2；CITY-002。
 
-验收：DOD RUN-002：`& "D:\GODOT\Godot_v4.7.2-stable_win64.exe" --headless --path . --script res://tests/run_contract.gd -- --case rng_replay`；重复重放逐事件一致、消耗events不能改变terrain/boons。
+验收：DOD RUN-002：`& "D:\GODOT\Godot_v4.7.2-stable_win64.exe" --headless --path . --script res://tests/run_contract.gd -- --case rng_replay`；P0仅检验固定种子/生成记录可复现、消耗events不改变terrain/boons；不宣称完整Run逐选择事件重放已实现。
 
 反例：不得用系统当前时间/全局randomize替代；不得用本地日期；不能移植旧工程随机状态后破坏City DNA。
 

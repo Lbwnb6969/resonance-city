@@ -462,10 +462,10 @@
     "rough_color": "#B38F87"
   },
   "sources": {
-    "spec.audio.md": "d64268ff1e77ead40288c02cb446d0b28fa7df71635871dfb6b9e08e1fe9082d",
-    "spec.city.md": "9a1758bbe75438ce19dbe3767d9c89b622425682c3cf1be4f1197d481632de9e",
+    "spec.audio.md": "9ce964ba3926c51648f39cd060cd327baf3b8aab4cb7064c79bd2dc6832cae5b",
+    "spec.city.md": "7b4fc0eec1d466254cfbd2e592600f9badfe864145a5b509a8c106b158e8062b",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
-    "spec.proposal.md": "0c5b5b93e7c99c82d6e1384f0aa552b3d61db938f3b786bbc8d44e2e624bb74a",
-    "spec.ui.md": "052076b330d815207e4bb7835f7104d9830bf0cfab491dfe18c760816e64edd3"
+    "spec.proposal.md": "ba7bf2df7f767ba597d333edce9ea32f1d7c08fe4659680c76de2d9b76cdbfe7",
+    "spec.ui.md": "96e7af429aa7f4c037f5e4162df01f6b97c715ded7990186d619b94f3141e673"
   }
 }

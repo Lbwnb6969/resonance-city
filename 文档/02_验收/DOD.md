@@ -255,3 +255,5 @@ UI-004手动聚焦：复用实际GPU入口`tests/picking_contract.gd -- --focus`
 ASSET-001本地可携带Demo：`python tools/build_demo_bundle.py --engine <现有Godot.exe> --output <新运行目录> --evidence <新证据目录>`；旧目录拒绝覆盖。实际ZIP核对manifest/数据、源纹理SHA及ctex SHA、排除开发树；复制引擎从空目录挂载ZIP运行包外demo_bundle_contract.gd，检查AudioClock无MCP、三组全部纹理mips、最新控件、释放可见落定、聚焦只读、古典摆放。实际默认主入口/风格入口启动与日志错误检查、交付ZIP CRC及相对路径启动器另验。当前11隔离检查/44清单项通过，两PNG查看；--quit-after/Dummy的AudioStreamGeneratorPlayback残留警告单独保留定位，不称无警告或物理退出通过。证据本地运行包/构建记录.json，便携包不等同模板发行EXE、人测或长期压力。
 
 UI-004完整柔和岛台：复用实际GPU入口`tests/growth_demo_smoke.gd -- --community --camera --terrain`；现有真实生长/配对/镜头/独立点选与城市不变检查，独立保存柔和岛台_全景/房群/推近.png。新增一次实际全屏黑屏RGB8字节全零检查和黑屏PNG，防止背景shader绕过B；最终日志须无Assertion/脚本/着色器错误且exit0。画面审阅完整地面承托、浅侧面/薄影、淡白网格和控件可读；不以本次模拟乐句证明长期性能/真人体验，不要求重复700栋/频谱/导出。
+
+AUDIO-002满城Demo短时供音：`tests/demo_audio_supply.gd -- --seed=2026100800000001`配合实际GPU/WASAPI。合法release与17模拟乐句自然生成27实体后仅重置测试时钟，沿用初始9的固定校准gain。检查27路由/实际城市视图、一完整可听乐句、0下溢、真实边界落定与HUD第2乐句；最后等待自然绘制并正常释放主场景。最终9项PASS、exit0/日志无脚本错误或残留警告，证据AUDIO-002_demo_supply.json与满城连续播放运行检查.log/PNG。首次8项记录保留废弃，缩图字形误读原因已更正；不宣称生产HUD缺陷。此证据不覆盖长期实时生长、满城窄带辅助、人测或700栋性能，不要求重复其它全套检查。完整批准/未决/旧测试实际支持边界见Demo主线核对-第49轮.md。

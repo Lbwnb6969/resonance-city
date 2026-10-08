@@ -1,0 +1,76 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/demo_audio_supply.gd"
+	],
+	"case": "demo_supply",
+	"checks": [
+		{
+			"description": "Production release queued on a legal cell",
+			"passed": true
+		},
+		{
+			"description": "Real release/growth rules reach the approved 27-entity budget",
+			"passed": true
+		},
+		{
+			"description": "Actual city viewport, not headless supply",
+			"passed": true
+		},
+		{
+			"description": "Production view and audio routes both contain 27 entities",
+			"passed": true
+		},
+		{
+			"description": "Physical WASAPI output",
+			"passed": true
+		},
+		{
+			"description": "No generator underruns during the physical full-city phrase",
+			"passed": true
+		},
+		{
+			"description": "One complete audible phrase, bounded by generated PCM",
+			"passed": true
+		},
+		{
+			"description": "Actual boundary settles and presents the full city",
+			"passed": true
+		},
+		{
+			"description": "Final HUD shows the new audible session, not preparation frames",
+			"passed": true
+		}
+	],
+	"details": {
+		"audible_frame": 352996.217004929,
+		"capacity": 4095,
+		"display": "Windows",
+		"district_count": 27,
+		"driver": "WASAPI",
+		"gain": 0.881190818909579,
+		"hardware_latency": 0.00999999977648258,
+		"hud_summary": "R 100 · 27/27 声部 · 第2乐句\n下一次回应 16.0 秒",
+		"initial_calibration": {
+			"blocks": 77,
+			"calibration_ms": 650.918,
+			"duration_seconds": 8.0,
+			"gain": 0.881190818909579,
+			"initial_lufs": -14.9013992721239,
+			"sample_rate": 22050,
+			"target_lufs": -16.0
+		},
+		"initial_entities": 9,
+		"preparation_simulated_phrases": 17,
+		"rendered_frames": 356863,
+		"renderer": "gl_compatibility",
+		"seed": "2026100800000001",
+		"skips": 0,
+		"wall_ms": 15995
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "AUDIO-002",
+	"scope": "Actual main scene, 27 naturally generated entities, one WASAPI audible phrase with fixed initial gain; preparation uses simulated boundaries, not a full real-time growth run; excludes human listening, long-run performance and narrowband assistance",
+	"status": "PASS"
+}
