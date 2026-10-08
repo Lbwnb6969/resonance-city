@@ -24,6 +24,8 @@ var last_result: Dictionary = {}
 var growth_enabled := false
 var growth_serial := 0
 var growth_values: Dictionary = {}
+var gravity_band: Dictionary = {}
+var draft_pause_until := 0
 
 func _init(initial_city: Array, seed: String, random_state: Dictionary = {}) -> void:
 	city = initial_city.duplicate(true)
@@ -94,7 +96,17 @@ func proposal(id: String) -> Dictionary:
 func request_release(midi: int, target: Vector2i, rendered_frames: int, audible_frame: float) -> Dictionary:
 	return request({"verb":"release","proposal_id":"release","midi":midi,"target":[target.x,target.y]},rendered_frames,audible_frame)
 
+func request_draft(start: Vector2i, end: Vector2i, bias: String, rendered_frames: int, audible_frame: float) -> Dictionary:
+	return request({"verb":"draft","proposal_id":"draft","start":[start.x,start.y],"end":[end.x,end.y],"bias":bias},rendered_frames,audible_frame)
+
 func _legal(choice: Dictionary) -> bool:
+	if choice.get("verb","") == "draft":
+		if not growth_enabled or choice.get("bias","") not in growth_values["draft"]["allowed_biases"]: return false
+		for key in ["start","end"]:
+			var cell: Variant = choice.get(key)
+			if not cell is Array or cell.size() != 2: return false
+			if int(cell[0]) < 0 or int(cell[0]) >= int(growth_values["city"]["width"]) or int(cell[1]) < 0 or int(cell[1]) >= int(growth_values["city"]["height"]): return false
+		return choice["start"] != choice["end"]
 	if choice.get("verb","") == "release":
 		return growth_enabled and city.size() < int(growth_values["growth"]["max_entities"])-1 and PackedInt32Array(settings["allowed_pitches"]).has(int(choice.get("midi",-1))) and _empty_cells().has(choice.get("target"))
 	var item := proposal(str(choice.get("proposal_id","")))
@@ -141,29 +153,36 @@ func settle(at: int) -> Dictionary:
 	if not pending.is_empty() and int(pending["frame"]) == at:
 		if _legal(pending):
 			applied = pending.duplicate(true)
-			var item := proposal(applied["proposal_id"])
-			if applied.get("verb","") == "release":
-				growth_serial += 1
-				var point := Schema.create("anchor_%03d" % growth_serial,"commercial" if int(applied["midi"]) == 52 else "residential",Vector2i(int(applied["target"][0]),int(applied["target"][1])))
-				point["current_midi"] = int(applied["midi"])
-				point["is_anchor"] = true
-				point["anchor_id"] = point["district_id"]
-				point["voice_level"] = growth_values["growth"]["new_voice_level"]
-				point["form"] = "共鸣点"
-				city.append(point)
-				applied["district_id"] = point["district_id"]
-				item = {"verb":"release","district_id":point["district_id"]}
-			var district := _district(item["district_id"])
-			applied["verb"] = item["verb"]
-			applied["district_id"] = item["district_id"]
-			if item["verb"] == "retune":
-				district["current_midi"] = int(applied["target"])
-				costs[item["district_id"]] = float(settings["retune_cost"])
-			elif item["verb"] == "relocate":
-				district["footprint"] = [applied["target"].duplicate()]
-				silent_until[item["district_id"]] = transport.phrase_frame(phrase_index + int(settings["relocate_silent_phrases"]))
-			if item["verb"] != "release" and bool(applied["on_grid"]):
-				costs[item["district_id"]] = float(costs.get(item["district_id"],0.0)) + float(settings["landing_bonus"])
+			if applied.get("verb","") == "draft":
+				var next := {"start":applied["start"].duplicate(),"end":applied["end"].duplicate(),"bias":applied["bias"]}
+				applied["redrawn"] = not gravity_band.is_empty() and gravity_band != next
+				if applied["redrawn"]:
+					draft_pause_until = at+transport.phrase_frame(int(growth_values["draft"]["redraw_pause_phrases"]))
+				gravity_band = next
+			else:
+				var item := proposal(applied["proposal_id"])
+				if applied.get("verb","") == "release":
+					growth_serial += 1
+					var point := Schema.create("anchor_%03d" % growth_serial,"commercial" if int(applied["midi"]) == 52 else "residential",Vector2i(int(applied["target"][0]),int(applied["target"][1])))
+					point["current_midi"] = int(applied["midi"])
+					point["is_anchor"] = true
+					point["anchor_id"] = point["district_id"]
+					point["voice_level"] = growth_values["growth"]["new_voice_level"]
+					point["form"] = "共鸣点"
+					city.append(point)
+					applied["district_id"] = point["district_id"]
+					item = {"verb":"release","district_id":point["district_id"]}
+				var district := _district(item["district_id"])
+				applied["verb"] = item["verb"]
+				applied["district_id"] = item["district_id"]
+				if item["verb"] == "retune":
+					district["current_midi"] = int(applied["target"])
+					costs[item["district_id"]] = float(settings["retune_cost"])
+				elif item["verb"] == "relocate":
+					district["footprint"] = [applied["target"].duplicate()]
+					silent_until[item["district_id"]] = transport.phrase_frame(phrase_index + int(settings["relocate_silent_phrases"]))
+				if item["verb"] != "release" and bool(applied["on_grid"]):
+					costs[item["district_id"]] = float(costs.get(item["district_id"],0.0)) + float(settings["landing_bonus"])
 		pending.clear()
 	var growth_events: Array[Dictionary] = []
 	if growth_enabled:
@@ -187,7 +206,7 @@ func settle(at: int) -> Dictionary:
 
 func snapshot() -> Dictionary:
 	return {"city":city.duplicate(true),"rng":rng.snapshot(),"phrase_index":phrase_index,
-		"growth_enabled":growth_enabled,"growth_serial":growth_serial,"refresh_cycle":refresh_cycle,"catalog":catalog.duplicate(true),"pending":pending.duplicate(true),
+		"growth_enabled":growth_enabled,"growth_serial":growth_serial,"gravity_band":gravity_band.duplicate(true),"draft_pause_until":draft_pause_until,"refresh_cycle":refresh_cycle,"catalog":catalog.duplicate(true),"pending":pending.duplicate(true),
 		"silent_until":silent_until.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_result":last_result.duplicate(true)}
 
 func restore(saved: Dictionary) -> void:
@@ -196,6 +215,8 @@ func restore(saved: Dictionary) -> void:
 	phrase_index = int(saved["phrase_index"])
 	growth_enabled = bool(saved.get("growth_enabled",false))
 	growth_serial = int(saved.get("growth_serial",0))
+	gravity_band = saved.get("gravity_band",{}).duplicate(true)
+	draft_pause_until = int(saved.get("draft_pause_until",0))
 	refresh_cycle = int(saved["refresh_cycle"])
 	catalog.assign(saved["catalog"].duplicate(true))
 	pending = saved["pending"].duplicate(true)

@@ -221,6 +221,12 @@ def generate():
         'tile_half_height': numbers(growth['Demo显示'])[3],
         'plot_coverage': numbers(growth['地面占地与缩放'])[0],
     }
+    draft = dict(table(proposal, '## 表 P5 ·'))
+    result['draft'] = {
+        'maximum_bands': int(numbers(draft['同时上限'])[0]),
+        'redraw_pause_phrases': int(numbers(draft['重划代价'])[0]),
+        'allowed_biases': ['residential', 'commercial'],
+    }
     camera = dict(table(ui, '## 表 U7 ·'))
     result['camera'] = {
         'default_zoom': numbers(camera['缩放'])[0],

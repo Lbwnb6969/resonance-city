@@ -5,11 +5,14 @@ const Values = preload("res://scripts/spec_values.gd")
 const GrowthMask = preload("res://scripts/visual/audio_growth_mask.gd")
 signal district_clicked(id: String)
 signal empty_clicked(cell: Vector2i)
+signal draft_requested(start: Vector2i, end: Vector2i)
 var session: CityInterventions
 var selected_id := ""
 var hover_cell := Vector2i(-1,-1)
 var preview_cell := Vector2i(-1,-1)
 var release_mode := false
+var draft_mode := false
+var draft_start := Vector2i(-1,-1)
 var sprites: Dictionary = {}
 var textures: Dictionary = {}
 var entries: Dictionary = {}
@@ -94,6 +97,13 @@ func _gui_input(event: InputEvent) -> void:
 			pan_active = event.pressed and event.position.y >= float(camera_cfg["header_height"])
 			accept_event()
 			return
+		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and draft_start.x >= 0:
+			var end := cell_at(event.position)
+			if event.position.y >= float(camera_cfg["header_height"]) and end.x >= 0 and end.y >= 0 and end.x < 16 and end.y < 16 and end != draft_start:
+				draft_requested.emit(draft_start,end)
+			draft_start = Vector2i(-1,-1)
+			accept_event()
+			return
 		if event.position.y < float(camera_cfg["header_height"]): return
 		if event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
 			var factor := float(camera_cfg["wheel_multiplier"])
@@ -102,6 +112,10 @@ func _gui_input(event: InputEvent) -> void:
 			return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var cell := cell_at(event.position)
+		if draft_mode:
+			if cell.x >= 0 and cell.y >= 0 and cell.x < 16 and cell.y < 16: draft_start = cell
+			accept_event()
+			return
 		if not release_mode:
 			var ordered: Array = session.city.duplicate()
 			ordered.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return point(Schema.cell(a)).y > point(Schema.cell(b)).y)
@@ -129,6 +143,17 @@ func _gui_input(event: InputEvent) -> void:
 		empty_clicked.emit(cell)
 		accept_event()
 
+func _draw_band(start: Vector2i, end: Vector2i, color: Color) -> void:
+	var a := point(start)
+	var b := point(end)
+	if a.is_equal_approx(b): return
+	var direction := (b-a).normalized()
+	var side := Vector2(-direction.y,direction.x)
+	draw_line(a,b,Color(color,0.13),12.0*view_zoom,true)
+	draw_line(a,b,color,2.0,true)
+	draw_colored_polygon(PackedVector2Array([b,b-direction*12.0+side*6.0,b-direction*12.0-side*6.0]),color)
+	draw_arc(a,4.0*view_zoom,0,TAU,20,color,1.2,true)
+
 func _draw() -> void:
 	if cfg == null: return
 	var half := Vector2(float(cfg["tile_half_width"]),float(cfg["tile_half_height"]))*view_zoom
@@ -149,6 +174,14 @@ func _draw() -> void:
 			draw_colored_polygon(vertices,color)
 			draw_polyline(PackedVector2Array([vertices[0],vertices[1],vertices[2],vertices[3],vertices[0]]),Color("495158"),0.6,true)
 	if session == null: return
+	if not session.gravity_band.is_empty():
+		var band: Dictionary = session.gravity_band
+		_draw_band(Vector2i(band["start"][0],band["start"][1]),Vector2i(band["end"][0],band["end"][1]),Color("93ba9e") if band["bias"] == "residential" else Color("83b0c6"))
+	if session.pending.get("verb","") == "draft":
+		var band: Dictionary = session.pending
+		_draw_band(Vector2i(band["start"][0],band["start"][1]),Vector2i(band["end"][0],band["end"][1]),Color("ffd98a"))
+	if draft_start.x >= 0 and hover_cell.x >= 0 and hover_cell.y >= 0 and hover_cell.x < 16 and hover_cell.y < 16:
+		_draw_band(draft_start,hover_cell,Color("ffd98a"))
 	var estate_forms: Dictionary = {}
 	var rank := {"胚":0,"群":1,"腔":2,"央":3}
 	for d in session.city:

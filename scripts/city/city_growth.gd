@@ -91,12 +91,21 @@ static func assign_assets(city: Array) -> void:
 			index = 2 if adjacent > 0 and front else posmod(cell.x+cell.y,2)
 		d["manifest_id"] = groups[d["type"]][mini(index,groups[d["type"]].size()-1)]
 
+static func draft_priority(cell: Vector2i, kind: String, band: Dictionary) -> Vector2:
+	if band.is_empty() or band["bias"] != kind: return Vector2.ZERO
+	var start := Vector2(band["start"][0],band["start"][1])
+	var direction := Vector2(band["end"][0],band["end"][1])-start
+	var along := (Vector2(cell)-start).dot(direction)/direction.length_squared()
+	var closest := start+direction*clampf(along,0.0,1.0)
+	return Vector2(Vector2(cell).distance_squared_to(closest),along)
+
 static func advance(session: Object, at: int) -> Array[Dictionary]:
 	var events: Array[Dictionary] = []
 	var cfg: Dictionary = config()
 	var harmony := Harmony.new()
 	var anchors: Array = session.city.filter(func(d: Dictionary) -> bool: return d.get("is_anchor",false))
 	for anchor in anchors:
+		if at < int(session.draft_pause_until): break
 		if session.city.size() >= int(cfg["max_entities"]):
 			break
 		var family := connected(session.city,anchor["district_id"])
@@ -124,9 +133,12 @@ static func advance(session: Object, at: int) -> Array[Dictionary]:
 				if rejected or not compatible:
 					continue
 				var origin := Schema.cell(anchor)
-				candidates[cell] = {"cell":cell,"neighbors":family_neighbors,"distance":absi(cell.x-origin.x)+absi(cell.y-origin.y)}
+				var priority := draft_priority(cell,anchor["type"],session.gravity_band)
+				candidates[cell] = {"cell":cell,"draft_distance":priority.x,"draft_forward":priority.y,"neighbors":family_neighbors,"distance":absi(cell.x-origin.x)+absi(cell.y-origin.y)}
 		var sorted := candidates.values()
 		sorted.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+			if not is_equal_approx(a["draft_distance"],b["draft_distance"]): return a["draft_distance"] < b["draft_distance"]
+			if not is_equal_approx(a["draft_forward"],b["draft_forward"]): return a["draft_forward"] > b["draft_forward"]
 			if a["neighbors"] != b["neighbors"]: return a["neighbors"] > b["neighbors"]
 			if a["distance"] != b["distance"]: return a["distance"] < b["distance"]
 			if a["cell"].y != b["cell"].y: return a["cell"].y < b["cell"].y

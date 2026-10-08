@@ -227,3 +227,5 @@ UI-004 visual_clock_contract.gd入口已实现：headless验证可听音频帧/�
 本次用户批准城市生长P1-α且要求减少检测。`& "D:/GODOT/Godot_v4.7.2-stable_win64_console.exe" --audio-driver Dummy --path . --script res://tests/growth_demo_smoke.gd` 只证明实际场景/合法release/乐句扩张与形态/声音路由/黑屏恢复可运行，不是人工体验或实时压力验收。F5/启动Demo.cmd直接游玩；操作见../Demo快速开始.md。draft/tread与稀有命名形态等未批准项继续待裁定。
 
 UI-004镜头操作复用上述场景入口追加`-- --camera`：实际放大→拖动→点选正确房屋→复位，城市状态不变；GPU截图留镜头推近.png。这只证明镜头/点击共用变换，不代替视觉优先等价性或压力验收。
+
+PROPOSAL-004引力带：复用Demo入口追加`-- --draft`，受控位置变化/类别与音级不变/无直接R/V加成、快照/取消，以及实际地图拖动→边界生效→重划暂停1乐句→恢复/路由同步，截图引力带.png。不是踩路径或正式视觉优先验收。

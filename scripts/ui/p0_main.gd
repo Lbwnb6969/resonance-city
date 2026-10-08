@@ -41,6 +41,10 @@ var condition_text: Label
 var beat_progress: ProgressBar
 var population := 0
 var release_armed := false
+var release_button: CheckButton
+var draft_button: CheckButton
+var draft_bias: OptionButton
+var draft_state: Label
 var condition_selection := ""
 var condition_phrase := -1
 
@@ -112,12 +116,16 @@ func _build_controls() -> void:
 	beat_progress.custom_minimum_size.y = 8
 	controls.add_child(beat_progress)
 	_button("复位视角（Home）","ResetView").pressed.connect(func() -> void: city_view.reset_view())
-	var release_button := CheckButton.new()
+	release_button = CheckButton.new()
 	release_button.name = "ReleaseMode"
 	release_button.text = "释放共鸣点：开启后点击地图空格"
 	release_button.toggled.connect(func(enabled: bool) -> void:
 		release_armed = enabled
-		city_view.release_mode = enabled)
+		city_view.release_mode = enabled
+		if enabled and is_instance_valid(draft_button):
+			draft_button.set_pressed_no_signal(false)
+			city_view.draft_mode = false
+			city_view.draft_start = Vector2i(-1,-1))
 	controls.add_child(release_button)
 	release_pitch = OptionButton.new()
 	release_pitch.name = "ReleasePitch"
@@ -126,8 +134,25 @@ func _build_controls() -> void:
 		release_pitch.add_item(names[index])
 		release_pitch.set_item_metadata(index,model.session.settings["allowed_pitches"][index])
 	controls.add_child(release_pitch)
+	draft_button = CheckButton.new()
+	draft_button.name = "DraftMode"
+	draft_button.text = "划定引力：拖动地图画方向箭头"
+	draft_button.toggled.connect(func(enabled: bool) -> void:
+		city_view.draft_mode = enabled
+		city_view.draft_start = Vector2i(-1,-1)
+		if enabled:
+			release_button.set_pressed_no_signal(false)
+			release_armed = false
+			city_view.release_mode = false)
+	controls.add_child(draft_button)
+	draft_bias = OptionButton.new()
+	draft_bias.name = "DraftBias"
+	draft_bias.add_item("引力偏向 · 住宅")
+	draft_bias.add_item("引力偏向 · 商业")
+	controls.add_child(draft_bias)
+	draft_state = _label("暂无引力带；首次划线不暂停扩张。","DraftState")
 	_button("重新开始这座城市","Restart").pressed.connect(func() -> void: get_tree().reload_current_scene())
-	_label("点击建筑选中；释放共鸣点后城市每16秒回应。迁移模式可点空格。B黑屏，Esc返回。","Instructions")
+	_label("释放：点空格。引力：拖动划线。迁移：选迁移后点空格。B黑屏，Esc返回。","Instructions")
 	district_select = OptionButton.new()
 	district_select.name = "District"
 	_refresh_district_list()
@@ -158,6 +183,7 @@ func _build_controls() -> void:
 		_cancel_audition()
 		model.synth.assist_enabled = enabled)
 	controls.add_child(assist)
+	assist.visible = false
 	var device := OptionButton.new()
 	device.name = "DeviceMode"
 	device.add_item("标准设备模式 · 辅助不激活")
@@ -166,6 +192,7 @@ func _build_controls() -> void:
 		_cancel_audition()
 		model.synth.device_mode = "narrowband" if index == 1 else "standard")
 	controls.add_child(device)
+	device.visible = false
 	verb_select = OptionButton.new()
 	verb_select.name = "Verb"
 	verb_select.add_item("retune · 调音")
@@ -184,11 +211,20 @@ func _build_controls() -> void:
 	_button("取消待提交介入 / 试听","Cancel").pressed.connect(func() -> void:
 		model.session.cancel_pending()
 		city_view.preview_cell = Vector2i(-1,-1)
+		city_view.draft_start = Vector2i(-1,-1)
 		_cancel_audition()
 		status.text = "已取消待提交介入。")
 	_button("黑屏聆听（B）","Black").pressed.connect(func() -> void: set_black_screen(true))
-	_button("正式黑屏听测（6练习 + 10正式）","ListeningTest").pressed.connect(func() -> void:
+	var listening := _button("正式黑屏听测（6练习 + 10正式）","ListeningTest")
+	listening.visible = false
+	listening.pressed.connect(func() -> void:
 		get_tree().change_scene_to_file("res://scenes/listening_session.tscn"))
+	var advanced := _button("聆听设置 / 正式听测","AdvancedListening")
+	advanced.toggle_mode = true
+	advanced.toggled.connect(func(enabled: bool) -> void:
+		assist.visible = enabled
+		device.visible = enabled
+		listening.visible = enabled)
 	status = _label("开启释放模式，选择一个音级，然后点击地图空格。","Status")
 	condition_text = _label("点击建筑查看它等待的生长条件。","Conditions")
 	prediction = _label("选择方案并长按试听，查看同一副本的收益与代价。","Prediction")
@@ -218,6 +254,7 @@ func _build_city_view() -> void:
 	move_child(city_view,1)
 	city_view.district_clicked.connect(_select_district)
 	city_view.empty_clicked.connect(_select_empty)
+	city_view.draft_requested.connect(_submit_draft)
 	var header := ColorRect.new()
 	header.name = "MapHeader"
 	header.color = Color("252c33")
@@ -248,6 +285,7 @@ func _refresh_district_list() -> void:
 	population = model.session.city.size()
 
 func _select_district(id: String) -> void:
+	if population != model.session.city.size(): _refresh_district_list()
 	for index in range(model.session.city.size()):
 		if model.session.city[index]["district_id"] == id:
 			district_select.select(index)
@@ -272,6 +310,15 @@ func _select_empty(cell: Vector2i) -> void:
 				return
 	else:
 		status.text = "这是空格。开启释放模式，或选迁移后点击。"
+
+func _submit_draft(start: Vector2i, end: Vector2i) -> void:
+	_cancel_audition()
+	var bias := "residential" if draft_bias.selected == 0 else "commercial"
+	var request := model.session.request_draft(start,end,bias,clock.renderer.transport.rendered_frames,clock.renderer.transport.audible_frame)
+	if request["accepted"]:
+		status.text = "引力箭头已提交，下个乐句生效；重划会暂停扩张一个乐句。"
+	else:
+		status.text = "引力线未提交：请在地图内拖动到不同格子。"
 
 func diagnostic_state() -> Dictionary:
 	return {"guard_factor":clock.renderer.state.get("_guard_factor",1.0),"calibration":calibration.duplicate(true),"gain":model.synth.gain,"assist_enabled":model.synth.assist_enabled,"device_mode":model.synth.device_mode,"skips":clock.underruns,"preview_skips":preview_skips,"phase":model.session.phrase_index,
@@ -349,6 +396,10 @@ func _process(_delta: float) -> void:
 	var bar := clock.renderer.transport.phrase_frame(1)
 	var remaining := float(bar)-fposmod(clock.renderer.transport.audible_frame,float(bar))
 	city_summary.text = "R %.0f · %d/%d 声部 · 第%d乐句\n下一次回应 %.1f 秒" % [resonance,model.session.city.size(),model.session.growth_values["growth"]["max_entities"],model.session.phrase_index+1,remaining/clock.renderer.transport.sample_rate]
+	if not model.session.gravity_band.is_empty():
+		var band: Dictionary = model.session.gravity_band
+		var paused := maxf(0.0,float(model.session.draft_pause_until)-clock.renderer.transport.audible_frame)/clock.renderer.transport.sample_rate
+		draft_state.text = "%s引力 (%d,%d)→(%d,%d)%s" % ["住宅" if band["bias"] == "residential" else "商业",band["start"][0],band["start"][1],band["end"][0],band["end"][1]," · 扩张暂停 %.1f秒" % paused if paused > 0.0 else ""]
 	beat_progress.value = fposmod(clock.renderer.transport.audible_frame,float(clock.renderer.transport.beat_frame(1)))/clock.renderer.transport.beat_frame(1)*100.0
 	if condition_selection != _selected_id() or condition_phrase != model.session.phrase_index:
 		condition_selection = _selected_id()
@@ -360,6 +411,8 @@ func _process(_delta: float) -> void:
 		city_view.preview_cell = Vector2i(-1,-1)
 		if display_phrase > 0:
 			status.text = "第 %d 乐句已落定%s" % [display_phrase,"；本局已崩盘，重新运行可重试。" if model.session.lifecycle["ended"] else ""]
+			if model.session.last_result.get("choice",{}).get("verb","") == "draft":
+				status.text = "引力已生效；扩张暂停一个乐句，声音与已有建筑继续。" if model.session.last_result["choice"].get("redrawn",false) else "引力已生效；城市继续按和声条件生长。"
 			if model.session.refresh_cycle != display_cycle or not model.session.last_result.get("choice",{}).is_empty():
 				_rebuild_targets()
 				display_cycle = model.session.refresh_cycle

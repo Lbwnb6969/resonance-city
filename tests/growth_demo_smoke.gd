@@ -82,6 +82,41 @@ func run_demo() -> void:
 		assert(view.view_zoom == 1.0 and view.view_pan == Vector2.ZERO)
 		assert(view.cell_at(view.point(chosen)) == chosen and main.model.session.city == before)
 		print("DEMO_CAMERA PASS wheel_anchor + pan + clicked_building + reset + unchanged_city")
+	if "--draft" in OS.get_cmdline_user_args():
+		_check_draft_policy()
+		main.draft_button.button_pressed = true
+		var end := chosen+Vector2i(4,0)
+		_drag_band(main.city_view,chosen,end)
+		assert(main.model.session.pending.get("verb","") == "draft")
+		var at: int = main.model.next_boundary
+		main.clock.renderer.transport.rendered_frames = at
+		main.clock.renderer.render(17)
+		main.clock.renderer.transport.audible_frame = at+11042
+		await process_frame
+		assert(main.model.session.gravity_band["end"] == [end.x,end.y])
+		var count: int = main.model.session.city.size()
+		_drag_band(main.city_view,chosen,chosen+Vector2i(0,4))
+		at = main.model.next_boundary
+		main.clock.renderer.transport.rendered_frames = at
+		main.clock.renderer.render(17)
+		main.clock.renderer.transport.audible_frame = at+11042
+		await process_frame
+		assert(main.model.session.city.size() == count)
+		assert(main.model.session.draft_pause_until == at+main.clock.renderer.transport.phrase_frame(1))
+		if DisplayServer.get_name() != "headless":
+			main.city_view.zoom_at(main.city_view.point(chosen),1.8)
+			await process_frame
+			await RenderingServer.frame_post_draw
+			get_root().get_texture().get_image().save_png("res://验证记录/Demo/引力带.png")
+		at = main.model.next_boundary
+		main.clock.renderer.transport.rendered_frames = at
+		main.clock.renderer.render(17)
+		main.clock.renderer.transport.audible_frame = at+11042
+		await process_frame
+		assert(main.model.session.city.size() == count+1)
+		assert(main.model.synth.routing.size() == main.model.session.city.size())
+		main.city_view.reset_view()
+		print("DEMO_DRAFT PASS actual_drag + boundary_commit + redraw_one_phrase + resumed_routes")
 	main.set_black_screen(true)
 	assert(not main.city_view.visible and not main.panel.visible)
 	main.set_black_screen(false)
@@ -96,3 +131,56 @@ func run_demo() -> void:
 	main.queue_free()
 	await process_frame
 	quit()
+
+func _drag_band(view: Control, start: Vector2i, end: Vector2i) -> void:
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = true
+	event.position = view.point(start)
+	view._gui_input(event)
+	var motion := InputEventMouseMotion.new()
+	motion.position = view.point(end)
+	view._gui_input(motion)
+	event.position = motion.position
+	event.pressed = false
+	view._gui_input(event)
+
+func _check_draft_policy() -> void:
+	var schema = load("res://scripts/city/district_schema.gd")
+	var sessions = load("res://scripts/proposals/city_interventions.gd")
+	var fixture := [schema.create("home","residential",Vector2i(2,2)),schema.create("shop","commercial",Vector2i(3,2)),schema.create("factory","industrial",Vector2i(12,12))]
+	var city = sessions.new(fixture,"2026100800000001")
+	city.growth_enabled = true
+	var period: int = city.transport.phrase_frame(1)
+	var neutral = city.fork()
+	assert(city.request_draft(Vector2i(8,8),Vector2i(12,8),"residential",0,0)["accepted"])
+	var draft_result: Dictionary = city.settle(period)
+	var neutral_result: Dictionary = neutral.settle(period)
+	assert(city.city == neutral.city and draft_result["after_r"] == neutral_result["after_r"])
+	assert(city.rng.snapshot() == neutral.rng.snapshot())
+	# A small controlled family proves direction changes the next legal position, not the building type.
+	var family = sessions.new(fixture,"2026100800000001")
+	family.growth_enabled = true
+	family.request_release(48,Vector2i(8,8),0,0)
+	family.settle(period)
+	neutral = family.fork()
+	family.request_draft(Vector2i(8,8),Vector2i(12,8),"residential",period,period)
+	family.settle(2*period)
+	neutral.settle(2*period)
+	assert(family.city.back()["footprint"] == [[9,8]] and neutral.city.back()["footprint"] == [[7,8]])
+	assert(family.city.back()["type"] == "residential" and family.city.back()["current_midi"] == 48)
+	var band: Dictionary = family.gravity_band.duplicate(true)
+	family.request_draft(Vector2i(8,8),Vector2i(8,12),"residential",2*period,2*period)
+	var fork = family.fork()
+	var count: int = family.city.size()
+	family.settle(3*period)
+	fork.settle(3*period)
+	assert(family.city.size() == count and family.city == fork.city and family.gravity_band == fork.gravity_band and family.draft_pause_until == fork.draft_pause_until)
+	family.settle(4*period)
+	assert(family.city.size() == count+1)
+	band = family.gravity_band.duplicate(true)
+	family.request_draft(Vector2i(8,8),Vector2i(12,8),"commercial",4*period,4*period)
+	family.cancel_pending()
+	assert(family.gravity_band == band and family.pending.is_empty())
+	assert(not family.request_draft(Vector2i(8,8),Vector2i(8,8),"residential",4*period,4*period)["accepted"])
+	print("DRAFT_POLICY PASS actual_position_change + same_type_pitch + no_stat_bonus + unchanged_rng + fork_pause + cancel")
