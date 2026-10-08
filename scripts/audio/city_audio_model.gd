@@ -7,6 +7,10 @@ const Synth = preload("res://scripts/audio/district_synth.gd")
 var session: CityInterventions
 var synth: DistrictSynth
 var next_boundary: int
+# Pre-render commits wait here until playback reaches their frame.
+var presentation_history: Array[Dictionary] = []
+var presentation_copy: CityInterventions
+var presentation_copy_frame := -1
 
 func _init(city_session: CityInterventions) -> void:
 	session = city_session
@@ -16,11 +20,7 @@ func _init(city_session: CityInterventions) -> void:
 
 func _mix_frame(state: Dictionary, at: int, rate: int) -> Vector2:
 	if at == next_boundary:
-		session.settle(at)
-		synth.update_city(session.city,state,session.road_marks)
-		synth.set_gray(bool(session.lifecycle["gray"]),at)
-		synth.silent_until = session.silent_until.duplicate(true)
-		next_boundary = session.transport.phrase_frame(session.phrase_index+1)
+		_settle_for_render(state,at)
 	return synth._mix_frame(state,at,rate)
 
 func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
@@ -28,18 +28,40 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 	var at := start
 	while at < start+count:
 		if at == next_boundary:
-			session.settle(at)
-			synth.update_city(session.city,state,session.road_marks)
-			synth.set_gray(bool(session.lifecycle["gray"]),at)
-			synth.silent_until = session.silent_until.duplicate(true)
-			next_boundary = session.transport.phrase_frame(session.phrase_index+1)
+			_settle_for_render(state,at)
 		var amount := mini(start+count-at,next_boundary-at)
 		result.append_array(synth.render_block(state,at,amount,rate))
 		at += amount
 	return result
 
+func _settle_for_render(state: Dictionary, at: int) -> void:
+	presentation_history.append({"frame":at,"before":session.snapshot()})
+	session.settle(at)
+	synth.update_city(session.city,state,session.road_marks)
+	synth.set_gray(bool(session.lifecycle["gray"]),at)
+	synth.silent_until = session.silent_until.duplicate(true)
+	next_boundary = session.transport.phrase_frame(session.phrase_index+1)
+
+func presentation_session(audible_frame: float) -> CityInterventions:
+	while not presentation_history.is_empty() and int(presentation_history[0]["frame"]) <= audible_frame:
+		presentation_history.pop_front()
+	if presentation_history.is_empty():
+		presentation_copy = null
+		presentation_copy_frame = -1
+		return session
+	var entry: Dictionary = presentation_history[0]
+	if presentation_copy == null or presentation_copy_frame != int(entry["frame"]):
+		presentation_copy = Session.new(entry["before"]["city"],session.rng.seed_hex)
+		presentation_copy.restore(entry["before"])
+		presentation_copy_frame = int(entry["frame"])
+	# A newly submitted next intervention is intentionally visible as a preview.
+	var prior: Dictionary = entry["before"]["pending"]
+	presentation_copy.pending = (session.pending if not session.pending.is_empty() else (prior if int(prior.get("frame",-1)) == int(entry["frame"]) else {})).duplicate(true)
+	return presentation_copy
+
 func snapshot() -> Dictionary:
 	return {"session":session.snapshot(),"next_boundary":next_boundary,
+		"presentation_history":presentation_history.duplicate(true),
 		"active_layers":synth.active_layers.duplicate(),"gain":synth.gain,
 		"solo_id":synth.solo_id,"muted":synth.muted.duplicate(true),
 		"silent_until":synth.silent_until.duplicate(true),"ducking":synth.ducking,
@@ -49,6 +71,9 @@ func snapshot() -> Dictionary:
 
 func restore(saved: Dictionary) -> void:
 	session.restore(saved["session"])
+	presentation_history.assign(saved.get("presentation_history",[]).duplicate(true))
+	presentation_copy = null
+	presentation_copy_frame = -1
 	next_boundary = int(saved["next_boundary"])
 	synth.active_layers.assign(saved["active_layers"])
 	synth.gain = float(saved["gain"])

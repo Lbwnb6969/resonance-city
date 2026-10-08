@@ -372,19 +372,25 @@ func _build_city_view() -> void:
 	map_notice.add_theme_font_size_override("font_size",15)
 	notice_card.add_child(map_notice)
 
+func _audible_session() -> CityInterventions:
+	return model.presentation_session(clock.renderer.transport.audible_frame)
+
 func _refresh_district_list() -> void:
-	var selected := _selected_id() if district_select.item_count > 0 and district_select.selected < model.session.city.size() else ""
+	var shown := _audible_session()
+	var selected := _selected_id() if district_select.item_count > 0 and district_select.selected < shown.city.size() else ""
 	district_select.clear()
-	for d in model.session.city:
+	for d in shown.city:
 		var type_name := "住宅" if d["type"] == "residential" else ("商业" if d["type"] == "commercial" else "工业")
 		district_select.add_item("%s · %s · MIDI %d · (%d,%d)" % [type_name,d["district_id"],d["current_midi"],Schema.cell(d).x,Schema.cell(d).y])
+		district_select.set_item_metadata(district_select.item_count-1,d["district_id"])
 		if d["district_id"] == selected: district_select.select(district_select.item_count-1)
-	population = model.session.city.size()
+	population = shown.city.size()
 
 func _select_district(id: String) -> void:
-	if population != model.session.city.size(): _refresh_district_list()
-	for index in range(model.session.city.size()):
-		if model.session.city[index]["district_id"] == id:
+	var shown := _audible_session()
+	if population != shown.city.size(): _refresh_district_list()
+	for index in range(shown.city.size()):
+		if shown.city[index]["district_id"] == id:
 			district_select.select(index)
 			solo.set_pressed_no_signal(model.synth.solo_id == id)
 			mute.set_pressed_no_signal(model.synth.muted.get(id,false))
@@ -437,7 +443,7 @@ func diagnostic_state() -> Dictionary:
 		"preview_ready":not preview_data.is_empty(),"pending":model.session.pending.duplicate(true)}
 
 func _selected_id() -> String:
-	return str(model.session.city[district_select.selected]["district_id"])
+	return str(district_select.get_item_metadata(district_select.selected))
 
 func _rebuild_targets() -> void:
 	_cancel_audition()
@@ -512,6 +518,7 @@ func _start_job() -> void:
 func _process(_delta: float) -> void:
 	if model == null or closed:
 		return
+	var shown := _audible_session()
 	if worker != null and not worker.is_alive():
 		var result: Dictionary = worker.wait_to_finish()
 		worker = null
@@ -530,38 +537,40 @@ func _process(_delta: float) -> void:
 		elif want_preview:
 			status.text = result.get("reason","此方案已失效。")
 	if not want_preview and not preview_clock.active: _refresh_prediction()
+	city_view.session = shown
 	city_view.selected_id = _selected_id()
 	city_view.release_midi = int(release_pitch.get_item_metadata(release_pitch.selected))
 	_update_map_notice()
-	var resonance := model.session.harmony.resonance(model.session.city,model.session.harmony.adjacency(model.session.city))
+	var resonance := shown.harmony.resonance(shown.city,shown.harmony.adjacency(shown.city))
 	var bar := clock.renderer.transport.phrase_frame(1)
 	var remaining := float(bar)-fposmod(clock.renderer.transport.audible_frame,float(bar))
-	city_summary.text = "R %.0f · %d/%d 声部 · 第%d乐句\n下一次回应 %.1f 秒" % [resonance,model.session.city.size(),model.session.growth_values["growth"]["max_entities"],model.session.phrase_index+1,remaining/clock.renderer.transport.sample_rate]
-	if not model.session.gravity_band.is_empty():
-		var band: Dictionary = model.session.gravity_band
-		var paused := maxf(0.0,float(model.session.draft_pause_until)-clock.renderer.transport.audible_frame)/clock.renderer.transport.sample_rate
+	city_summary.text = "R %.0f · %d/%d 声部 · 第%d乐句\n下一次回应 %.1f 秒" % [resonance,shown.city.size(),model.session.growth_values["growth"]["max_entities"],shown.phrase_index+1,remaining/clock.renderer.transport.sample_rate]
+	if not shown.gravity_band.is_empty():
+		var band: Dictionary = shown.gravity_band
+		var paused := maxf(0.0,float(shown.draft_pause_until)-clock.renderer.transport.audible_frame)/clock.renderer.transport.sample_rate
 		draft_state.text = "%s引力 (%d,%d)→(%d,%d)%s" % ["住宅" if band["bias"] == "residential" else "商业",band["start"][0],band["start"][1],band["end"][0],band["end"][1]," · 扩张暂停 %.1f秒" % paused if paused > 0.0 else ""]
 	beat_progress.value = fposmod(clock.renderer.transport.audible_frame,float(clock.renderer.transport.beat_frame(1)))/clock.renderer.transport.beat_frame(1)*100.0
-	if condition_selection != _selected_id() or condition_phrase != model.session.phrase_index:
+	if condition_selection != _selected_id() or condition_phrase != shown.phrase_index:
 		condition_selection = _selected_id()
-		condition_phrase = model.session.phrase_index
-		condition_text.text = Growth.describe(model.session.city,model.session.city[district_select.selected],model.session.road_marks)
-	if model.session.phrase_index != display_phrase:
-		display_phrase = model.session.phrase_index
-		if population != model.session.city.size(): _refresh_district_list()
+		condition_phrase = shown.phrase_index
+		condition_text.text = Growth.describe(shown.city,shown._district(_selected_id()),shown.road_marks)
+	if shown.phrase_index != display_phrase:
+		display_phrase = shown.phrase_index
+		_refresh_district_list()
 		city_view.preview_cell = Vector2i(-1,-1)
 		if display_phrase > 0:
-			status.text = "第 %d 乐句已落定%s" % [display_phrase,"；本局已崩盘，重新运行可重试。" if model.session.lifecycle["ended"] else ""]
-			if model.session.last_result.get("choice",{}).get("verb","") == "draft":
-				status.text = "引力已生效；扩张暂停一个乐句，声音与已有建筑继续。" if model.session.last_result["choice"].get("redrawn",false) else "引力已生效；城市继续按和声条件生长。"
-			if model.session.refresh_cycle != display_cycle or not model.session.last_result.get("choice",{}).is_empty():
+			status.text = "第 %d 乐句已落定%s" % [display_phrase,"；本局已崩盘，重新运行可重试。" if shown.lifecycle["ended"] else ""]
+			if shown.last_result.get("choice",{}).get("verb","") == "draft":
+				status.text = "引力已生效；扩张暂停一个乐句，声音与已有建筑继续。" if shown.last_result["choice"].get("redrawn",false) else "引力已生效；城市继续按和声条件生长。"
+			if shown.refresh_cycle != display_cycle or not shown.last_result.get("choice",{}).is_empty():
 				_rebuild_targets()
-				display_cycle = model.session.refresh_cycle
-		confirm_button.disabled = not forecast_available or bool(model.session.lifecycle["ended"])
+				display_cycle = shown.refresh_cycle
+		confirm_button.disabled = not forecast_available or bool(shown.lifecycle["ended"])
 	if clock.underruns > 0 and not black_screen:
 		status.text = "音频下溢 %d 次：本次运行不用于正式听测。" % clock.underruns
 
 func _update_map_notice() -> void:
+	var shown := _audible_session()
 	var text := ""
 	city_view.get_node("MapNotice").offset_top = -176 if city_view.tread_mode else -136
 	if city_view.tread_mode:
@@ -574,17 +583,20 @@ func _update_map_notice() -> void:
 	elif city_view.draft_mode:
 		text = "划定引力：在地图内拖出方向箭头。偏向只影响合法扩张位置；重划暂停一乐句。"
 	else:
-		var district: Dictionary = model.session._district(_selected_id())
+		var district: Dictionary = shown._district(_selected_id())
 		var kind := "住宅" if district["type"] == "residential" else ("商业" if district["type"] == "commercial" else "工业")
-		var details: PackedStringArray = Growth.describe(model.session.city,district,model.session.road_marks).split("\n")
+		var details: PackedStringArray = Growth.describe(shown.city,district,shown.road_marks).split("\n")
 		text = "%s · %s · 活力 %.0f\n%s" % [kind,district.get("form","胚"),district["vitality"],"\n".join(details.slice(0,mini(2,details.size())))]
-	var pending: Dictionary = model.session.pending
+	var pending: Dictionary = shown.pending
 	if not pending.is_empty():
 		var wait := maxf(0.0,float(pending["frame"])-clock.renderer.transport.audible_frame)/clock.renderer.transport.sample_rate
-		var verb: String = pending.get("verb","")
+		var item: Dictionary = shown.proposal(str(pending.get("proposal_id","")))
+		if item.is_empty(): item = model.session.proposal(str(pending.get("proposal_id","")))
+		var verb: String = pending.get("verb",item.get("verb",""))
 		var action := "调音" if verb == "retune" else ("迁移" if verb == "relocate" else ("引力带" if verb == "draft" else ("足迹" if verb == "tread" else "共鸣点")))
 		if verb == "release": action += " (%d,%d)" % [pending["target"][0],pending["target"][1]]
-		text += "\n待落定：%s · %.1f秒；可更换或取消。" % [action,wait]
+		var baked: bool = int(pending["frame"]) < clock.renderer.transport.rendered_frames
+		text += "\n已排入声音：%s · %.1f秒后可听；可提交下一次介入。" % [action,wait] if baked else "\n待落定：%s · %.1f秒；可更换或取消。" % [action,wait]
 	map_notice.text = text
 
 func _audition_finished(skips: int) -> void:

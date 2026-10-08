@@ -241,3 +241,5 @@ CITY-004/U17条件提示：复用实际GPU Demo入口追加`-- --conditions`。�
 UI-004风格小景：独立scenes/style_frame.tscn -- --capture-style-frame，实际GPU生成白网格/净画面/推近图，检查日志无Assertion/脚本错误且exit0；镜头鼠标定点、中键、Home及实际mips同场景检查。人工阅图另评接地/比例/遮挡/留白/整体色彩，不将技术运行当成v3-U21视觉冻结或全项目艺术批准。操作见../风格小景审阅.md。
 
 ASSET-004历史SVG候选：style_frame.tscn -- --classical-frame --capture-style-frame实际Compatibility运行，检查四件SVG存在并加载、6纹理/6摆放、mipmaps、定点缩放/中键/Home，三图人工查看尺度/接地/遮挡；日志无Assertion/脚本错误且exit0。截图古典建筑小景_白网格/净画面/推近.png，日志古典建筑运行检查.log。此处技术/实现者画面检查不等于用户艺术定稿或时代音乐获批；轻微分面AA细线记录为待优化。
+
+UI-004可听城市：真实GPU入口tests/audible_city_contract.gd，预填已结算而audible_frame<边界时保留旧地图/形态/列表/HUD/道路，到达精确边界后更新；核验下一拍一拍揭示、迁移/静音恢复、多预填历史、fork/只读/PCM一致、新pending取消、已生成PCM不可撤回提示与B黑屏。日志可听城市同步运行检查.log无Assertion/脚本错误且exit0；边界前/落定后两PNG人工查看。此入口不代替长期声音/性能或人工美感。
