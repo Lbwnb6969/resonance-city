@@ -23,3 +23,5 @@ P0 City Kit烘焙：`python tools/prepare_city_bake.py`复制白名单模型/纹
 `tests/gray_listening_probe.gd` 生成同一初始gain的8秒九声部normal/gray PCM；`python tools/analyze_gray_audio.py` 独立测截止以上能量、降采样镜像与整城FFmpeg响度/真峰值，并生成未再归一化WAV。人工听评说明在`验证记录/P0/声音褪色/说明.md`。此技术PASS不等于作品听感或诊断遮蔽已获批准。
 
 风格小景：`python tools/prepare_style_frame.py`从保留Demo/P0索引加工独立7件副本，读取明确SELECTED/manifest，不覆盖Demo manifest。PNG导入保持mipmaps/generate=true；`scenes/style_frame.tscn -- --capture-style-frame`用实际Compatibility生成有/无网格及推近图，当前只作候选艺术审阅。
+
+历史SVG：`python tools/build_classical_svg.py`生成四件项目原创、可编辑SVG与独立manifest；依赖现有风格小景manifest中的两件树。运行图在资源/古典建筑候选，生产副本资产/03_入库/古典建筑候选；通过项目MCP刷新，SVG导入mipmaps/generate=true。`scenes/style_frame.tscn -- --classical-frame --capture-style-frame`实际GPU截图；不覆盖Demo或风格小景图片。

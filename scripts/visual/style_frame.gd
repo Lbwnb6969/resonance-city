@@ -18,13 +18,17 @@ var camera_age := 1.0
 var resetting := false
 var panning := false
 var show_grid := true
+var capture_prefix := "风格小景"
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	layout = JSON.parse_string(FileAccess.get_file_as_string("res://资源/风格小景/layout.json"))
+	var classical := "--classical-frame" in OS.get_cmdline_user_args()
+	var layout_path := "res://资源/古典建筑候选/layout.json" if classical else "res://资源/风格小景/layout.json"
+	capture_prefix = "古典建筑小景" if classical else "风格小景"
+	layout = JSON.parse_string(FileAccess.get_file_as_string(layout_path))
 	camera_cfg = Values.load_values()["camera"]
 	camera_age = float(camera_cfg["smooth_seconds"])
-	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://资源/风格小景/manifest.json"))
+	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(layout.get("manifest","res://资源/风格小景/manifest.json")))
 	for entry in manifest["entries"]:
 		entries[entry["id"]] = entry
 		textures[entry["id"]] = load("res://"+str(entry["texture"]))
@@ -164,11 +168,11 @@ func _capture() -> void:
 	assert(DisplayServer.get_name() != "headless","Review capture needs actual rendering")
 	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png("res://验证记录/Demo/风格小景_白网格.png")
+	get_viewport().get_texture().get_image().save_png("res://验证记录/Demo/%s_白网格.png" % capture_prefix)
 	show_grid = false
 	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png("res://验证记录/Demo/风格小景_净画面.png")
+	get_viewport().get_texture().get_image().save_png("res://验证记录/Demo/%s_净画面.png" % capture_prefix)
 	var cell := Vector2(2.5,2.5)
 	var cursor := point(cell)
 	var wheel := InputEventMouseButton.new()
@@ -191,7 +195,7 @@ func _capture() -> void:
 	_gui_input(middle)
 	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png("res://验证记录/Demo/风格小景_推近.png")
+	get_viewport().get_texture().get_image().save_png("res://验证记录/Demo/%s_推近.png" % capture_prefix)
 	var home := InputEventKey.new()
 	home.pressed = true
 	home.keycode = KEY_HOME

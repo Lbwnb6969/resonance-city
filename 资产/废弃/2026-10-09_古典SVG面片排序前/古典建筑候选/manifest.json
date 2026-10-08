@@ -1,0 +1,371 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "classical_temple_01",
+      "display_name": "神殿",
+      "category": "historical_building_candidate",
+      "texture": "资源/古典建筑候选/SVG/classical_temple_01.svg",
+      "origin": [
+        1024.0,
+        1222.7318202138435
+      ],
+      "image_bounds": {
+        "width": 2048,
+        "height": 1745,
+        "crop": [
+          0,
+          0,
+          2048,
+          1745
+        ]
+      },
+      "pixels_per_world": 791.1877311289174,
+      "model_bounds": {
+        "position": [
+          -0.97,
+          0.0,
+          -0.825
+        ],
+        "size": [
+          1.94,
+          1.3900000000000001,
+          1.65
+        ]
+      },
+      "source": "tools/build_classical_svg.py; original project geometry",
+      "license": "Project-authored geometry",
+      "source_url": "",
+      "availability": "visual_review_candidate; not_a_gameplay_unlock",
+      "camera": {
+        "azimuth": 45,
+        "elevation": 30,
+        "projection": "orthogonal"
+      },
+      "texture_sha256": "5688147b0c1de07ddec8f78a0e220645b2063087f1c077894643ed6b7e972af8"
+    },
+    {
+      "id": "historic_church_01",
+      "display_name": "教堂",
+      "category": "historical_building_candidate",
+      "texture": "资源/古典建筑候选/SVG/historic_church_01.svg",
+      "origin": [
+        1024.0,
+        1525.419699683512
+      ],
+      "image_bounds": {
+        "width": 2048,
+        "height": 2048,
+        "crop": [
+          0,
+          0,
+          2048,
+          2048
+        ]
+      },
+      "pixels_per_world": 824.9923281323183,
+      "model_bounds": {
+        "position": [
+          -0.74,
+          0.0,
+          -0.98
+        ],
+        "size": [
+          1.48,
+          1.8,
+          1.96
+        ]
+      },
+      "source": "tools/build_classical_svg.py; original project geometry",
+      "license": "Project-authored geometry",
+      "source_url": "",
+      "availability": "visual_review_candidate; not_a_gameplay_unlock",
+      "camera": {
+        "azimuth": 45,
+        "elevation": 30,
+        "projection": "orthogonal"
+      },
+      "texture_sha256": "3f13257ca5de93ff06ac731846543a398d9da1dc05d5afec8b16002d995240e4"
+    },
+    {
+      "id": "classical_civic_hall_01",
+      "display_name": "古典公共建筑",
+      "category": "historical_building_candidate",
+      "texture": "资源/古典建筑候选/SVG/classical_civic_hall_01.svg",
+      "origin": [
+        1024.0,
+        1114.7403181542632
+      ],
+      "image_bounds": {
+        "width": 2048,
+        "height": 1637,
+        "crop": [
+          0,
+          0,
+          2048,
+          1637
+        ]
+      },
+      "pixels_per_world": 791.1877311289174,
+      "model_bounds": {
+        "position": [
+          -1.01,
+          0.0,
+          -0.785
+        ],
+        "size": [
+          2.02,
+          1.21,
+          1.585
+        ]
+      },
+      "source": "tools/build_classical_svg.py; original project geometry",
+      "license": "Project-authored geometry",
+      "source_url": "",
+      "availability": "visual_review_candidate; not_a_gameplay_unlock",
+      "camera": {
+        "azimuth": 45,
+        "elevation": 30,
+        "projection": "orthogonal"
+      },
+      "texture_sha256": "7b5e3be95144b8fe367632ac14edecd16c17e8c83ad5cf0acf2c6c523d5bda5b"
+    },
+    {
+      "id": "classical_amphitheater_01",
+      "display_name": "斗兽场",
+      "category": "historical_building_candidate",
+      "texture": "资源/古典建筑候选/SVG/classical_amphitheater_01.svg",
+      "origin": [
+        1024.0,
+        1081.5722186502894
+      ],
+      "image_bounds": {
+        "width": 2048,
+        "height": 1597,
+        "crop": [
+          0,
+          0,
+          2048,
+          1597
+        ]
+      },
+      "pixels_per_world": 837.5221363064301,
+      "model_bounds": {
+        "position": [
+          -1.3860000000000001,
+          0,
+          -0.976
+        ],
+        "size": [
+          2.7720000000000002,
+          0.78,
+          1.952
+        ]
+      },
+      "source": "tools/build_classical_svg.py; original project geometry",
+      "license": "Project-authored geometry",
+      "source_url": "",
+      "availability": "visual_review_candidate; not_a_gameplay_unlock",
+      "camera": {
+        "azimuth": 45,
+        "elevation": 30,
+        "projection": "orthogonal"
+      },
+      "texture_sha256": "6db03fa9fe2f28da5a311598a67954cf9d4cca504b529254f64a3f157eccbadf"
+    },
+    {
+      "attribution": "Kenney (optional)",
+      "availability": "visual_review_candidate; not_a_frozen_style_standard",
+      "category": "tree",
+      "downloaded_at": "2026-10-08T11:30:39.022079+00:00",
+      "floor_height": 0.567000031471252,
+      "footprint_tiles": [
+        1,
+        1
+      ],
+      "id": "tree_tree_small_01_base",
+      "image_bounds": {
+        "crop": [
+          689,
+          266,
+          670,
+          1512
+        ],
+        "height": 2048,
+        "origin": [
+          453.756613756614,
+          1977.27579365079
+        ],
+        "width": 908
+      },
+      "index_bounds": {
+        "crop": [
+          689,
+          266,
+          670,
+          1512
+        ],
+        "height": 2048,
+        "origin": [
+          453.756613756614,
+          1977.27579365079
+        ],
+        "width": 908
+      },
+      "indexed_master": "资产/03_入库/P0城市/索引/tree_tree_small_01_base.png",
+      "license": "CC0-1.0",
+      "license_file": "资产/03_入库/P0城市/许可/suburban/License.txt",
+      "model": "资产/02_加工中/P0_CityKits/suburban/tree-small.glb",
+      "model_bounds": {
+        "position": [
+          -0.105222091078758,
+          0.0,
+          -0.121499992907047
+        ],
+        "size": [
+          0.210444182157516,
+          0.567000031471252,
+          0.242999985814095
+        ]
+      },
+      "origin": [
+        453.756613756614,
+        1977.27579365079
+      ],
+      "package": "suburban",
+      "package_version": "2.0",
+      "palette_slots": [
+        3,
+        12
+      ],
+      "preview": "资产/04_预览索引/P0城市/tree_tree_small_01_base.png",
+      "preview_bounds": {
+        "crop": [
+          172,
+          67,
+          168,
+          377
+        ],
+        "height": 512,
+        "origin": [
+          114.079575596817,
+          494.951094164456
+        ],
+        "width": 228
+      },
+      "source_model": "资产/01_原始素材/CC0_Kenney/city-kit-suburban/Models/GLB format/tree-small.glb",
+      "source_model_sha256": "5f63359e5f392609d7617cc98070855ca1ffd4f4b4bc3978a5ff56ece88a58d6",
+      "source_url": "https://kenney.nl/assets/city-kit-suburban",
+      "texture": "资源/风格小景/整图/tree_tree_small_01_base.png",
+      "variant": "base",
+      "voice_tag": "non_voice",
+      "indexed_master_sha256": "4613baebead816436c4648c499a5ef3ae05a2e54d6bcbd4f07d706e75391c913",
+      "texture_sha256": "b2f6b88d0a84b599791ee7a4729fd644b653064fb5b4f16bc5dc81583660018b",
+      "slot_encoding": "grayscale: 8+10*slot; GPU transfer canonicalized; alpha=silhouette",
+      "alpha_border": "transparent RGB zero; runtime fix_alpha_border + mipmaps",
+      "source_license_file": "资产/许可记录/CityKits/suburban/License.txt",
+      "license_sha256": "d778fa769a89a7d9f167bc337fdf8fc2144e47d9abb0c35eb6ad897c0ee24d0a",
+      "source_texture": "资源/P0城市/整图/tree_tree_small_01_base.png",
+      "source_texture_sha256": "4bff23cb56107b47b182d7955f01b98a829c7c8269449b2d02f3990e8221b20d",
+      "processing": "Retained Demo building, or P0 indexed slot -> same pastel palette; alpha/origin retained"
+    },
+    {
+      "attribution": "Kenney (optional)",
+      "availability": "visual_review_candidate; not_a_frozen_style_standard",
+      "category": "tree",
+      "downloaded_at": "2026-10-08T11:30:39.022079+00:00",
+      "floor_height": 0.766999959945679,
+      "footprint_tiles": [
+        1,
+        1
+      ],
+      "id": "tree_tree_large_02_base",
+      "image_bounds": {
+        "crop": [
+          759,
+          230,
+          530,
+          1585
+        ],
+        "height": 2048,
+        "origin": [
+          342.410094637224,
+          1994.91246056782
+        ],
+        "width": 685
+      },
+      "index_bounds": {
+        "crop": [
+          759,
+          230,
+          530,
+          1585
+        ],
+        "height": 2048,
+        "origin": [
+          342.410094637224,
+          1994.91246056782
+        ],
+        "width": 685
+      },
+      "indexed_master": "资产/03_入库/P0城市/索引/tree_tree_large_02_base.png",
+      "license": "CC0-1.0",
+      "license_file": "资产/03_入库/P0城市/许可/suburban/License.txt",
+      "model": "资产/02_加工中/P0_CityKits/suburban/tree-large.glb",
+      "model_bounds": {
+        "position": [
+          -0.105222091078758,
+          0.0,
+          -0.121499992907047
+        ],
+        "size": [
+          0.210444182157516,
+          0.766999959945679,
+          0.242999985814095
+        ]
+      },
+      "origin": [
+        342.410094637224,
+        1994.91246056782
+      ],
+      "package": "suburban",
+      "package_version": "2.0",
+      "palette_slots": [
+        3,
+        12
+      ],
+      "preview": "资产/04_预览索引/P0城市/tree_tree_large_02_base.png",
+      "preview_bounds": {
+        "crop": [
+          190,
+          58,
+          132,
+          396
+        ],
+        "height": 512,
+        "origin": [
+          85.3333333333333,
+          498.396504103535
+        ],
+        "width": 171
+      },
+      "source_model": "资产/01_原始素材/CC0_Kenney/city-kit-suburban/Models/GLB format/tree-large.glb",
+      "source_model_sha256": "16d1f95c149bc727a953a473cf20bf21de9bf1a88747c4f9d2eeb4ac7d43e291",
+      "source_url": "https://kenney.nl/assets/city-kit-suburban",
+      "texture": "资源/风格小景/整图/tree_tree_large_02_base.png",
+      "variant": "base",
+      "voice_tag": "non_voice",
+      "indexed_master_sha256": "81175ca77773e2d9c8bab0d92c84555578cb2e3eb1e157e981080a532ef4a7d1",
+      "texture_sha256": "14be9c5552cf5b2c30033da68223172a1b2b0e627e3cd2b54dd7b0b756157459",
+      "slot_encoding": "grayscale: 8+10*slot; GPU transfer canonicalized; alpha=silhouette",
+      "alpha_border": "transparent RGB zero; runtime fix_alpha_border + mipmaps",
+      "source_license_file": "资产/许可记录/CityKits/suburban/License.txt",
+      "license_sha256": "d778fa769a89a7d9f167bc337fdf8fc2144e47d9abb0c35eb6ad897c0ee24d0a",
+      "source_texture": "资源/P0城市/整图/tree_tree_large_02_base.png",
+      "source_texture_sha256": "6bb7f559f888054977cc5103c0248585e6daa39b2dfd96203c63e44593ea607e",
+      "processing": "Retained Demo building, or P0 indexed slot -> same pastel palette; alpha/origin retained"
+    }
+  ],
+  "human_art": "PENDING",
+  "purpose": "Historical SVG art candidates; era grammar is not implemented"
+}

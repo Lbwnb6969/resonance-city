@@ -239,3 +239,5 @@ PROPOSAL-005踩路径：复用实际GPU Demo入口追加`-- --tread`。必须验
 CITY-004/U17条件提示：复用实际GPU Demo入口追加`-- --conditions`。检验1乐句不强调/连续2乐句强调、只读真实缺口/快照、正常阶段计数推进不误报、升级清零、成熟和出生当乐句不计、道路断连/失谐说明、实际选中地图卡和B黑屏隐藏。日志条件缺口运行检查.log必须无Assertion/脚本错误且exit0，截图生长缺口提示.png/条件城市.png。仅证明这项场景行为，不替代真人体验或声音/压力验收。
 
 UI-004风格小景：独立scenes/style_frame.tscn -- --capture-style-frame，实际GPU生成白网格/净画面/推近图，检查日志无Assertion/脚本错误且exit0；镜头鼠标定点、中键、Home及实际mips同场景检查。人工阅图另评接地/比例/遮挡/留白/整体色彩，不将技术运行当成v3-U21视觉冻结或全项目艺术批准。操作见../风格小景审阅.md。
+
+ASSET-004历史SVG候选：style_frame.tscn -- --classical-frame --capture-style-frame实际Compatibility运行，检查四件SVG存在并加载、6纹理/6摆放、mipmaps、定点缩放/中键/Home，三图人工查看尺度/接地/遮挡；日志无Assertion/脚本错误且exit0。截图古典建筑小景_白网格/净画面/推近.png，日志古典建筑运行检查.log。此处技术/实现者画面检查不等于用户艺术定稿或时代音乐获批；轻微分面AA细线记录为待优化。
