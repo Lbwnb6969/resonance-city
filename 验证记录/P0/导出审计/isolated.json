@@ -1,0 +1,134 @@
+{
+	"checks": [
+		{
+			"description": "Pack isolation: tests and production/source trees are unavailable",
+			"passed": true
+		},
+		{
+			"description": "Audio singleton works and development server is absent",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: residential_building_type_a_01_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: residential_building_type_b_02_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: residential_building_type_c_03_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: commercial_building_a_01_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: commercial_building_b_02_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: commercial_building_c_03_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: industrial_building_a_01_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: industrial_building_b_02_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: industrial_building_c_03_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: ground_tile_low_01_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: ground_tile_high_02_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: road_road_straight_01_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: road_road_bend_02_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: road_road_crossroad_03_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: tree_tree_small_01_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: tree_tree_large_02_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: decoration_fence_01_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: decoration_planter_02_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: decoration_water_tower_03_base",
+			"passed": true
+		},
+		{
+			"description": "Packed imported master loads with HD dimensions and mipmaps: decoration_light_square_04_base",
+			"passed": true
+		},
+		{
+			"description": "Packed 24 slot base palette loads",
+			"passed": true
+		},
+		{
+			"description": "Packed main scene constructs nine districts without source checkout",
+			"passed": true
+		},
+		{
+			"description": "Packed listening scene and protocol load",
+			"passed": true
+		},
+		{
+			"description": "Packed performance scene instantiates 700 sprites and unified window layer",
+			"passed": true
+		}
+	],
+	"engine": "4.7.2-stable (official)",
+	"rule_id": "ASSET-001",
+	"scope": "Actual exported audit pack, isolated resource and scene dependency closure; art approval/release template not claimed",
+	"status": "PASS",
+	"textures": [
+		"资源/P0城市/整图/residential_building_type_a_01_base.png",
+		"资源/P0城市/整图/residential_building_type_b_02_base.png",
+		"资源/P0城市/整图/residential_building_type_c_03_base.png",
+		"资源/P0城市/整图/commercial_building_a_01_base.png",
+		"资源/P0城市/整图/commercial_building_b_02_base.png",
+		"资源/P0城市/整图/commercial_building_c_03_base.png",
+		"资源/P0城市/整图/industrial_building_a_01_base.png",
+		"资源/P0城市/整图/industrial_building_b_02_base.png",
+		"资源/P0城市/整图/industrial_building_c_03_base.png",
+		"资源/P0城市/整图/ground_tile_low_01_base.png",
+		"资源/P0城市/整图/ground_tile_high_02_base.png",
+		"资源/P0城市/整图/road_road_straight_01_base.png",
+		"资源/P0城市/整图/road_road_bend_02_base.png",
+		"资源/P0城市/整图/road_road_crossroad_03_base.png",
+		"资源/P0城市/整图/tree_tree_small_01_base.png",
+		"资源/P0城市/整图/tree_tree_large_02_base.png",
+		"资源/P0城市/整图/decoration_fence_01_base.png",
+		"资源/P0城市/整图/decoration_planter_02_base.png",
+		"资源/P0城市/整图/decoration_water_tower_03_base.png",
+		"资源/P0城市/整图/decoration_light_square_04_base.png"
+	]
+}

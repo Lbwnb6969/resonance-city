@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P0_READY seed=4d786078ee95f306 districts=9
+PERF_READY buildings=700 textures=9 warmup=10s measure=60s
+EXPORT_ISOLATED PASS checks=26 failures=0
