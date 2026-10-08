@@ -1,0 +1,10 @@
+[
+  {
+    "Name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "DriverVersion": "32.0.16.1714"
+  },
+  {
+    "Name": "Intel(R) UHD Graphics",
+    "DriverVersion": "32.0.101.6733"
+  }
+]

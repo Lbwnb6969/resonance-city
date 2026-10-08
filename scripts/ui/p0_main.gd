@@ -43,6 +43,9 @@ var status: Label
 var prediction: Label
 
 func _ready() -> void:
+	if "--performance-fixture=700" in OS.get_cmdline_user_args():
+		get_tree().change_scene_to_file.call_deferred("res://scenes/performance_fixture.tscn")
+		return
 	var seed := RandomStreams.current_daily_seed()
 	var daily := true
 	for arg in OS.get_cmdline_user_args():

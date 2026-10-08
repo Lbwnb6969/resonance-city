@@ -215,3 +215,6 @@ AUDIO-004初始响度使用spec.audio A9固定gain口径：`& D:/GODOT/Godot_v4.
 AUDIO-004不足时补偿入口：`& D:/GODOT/Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/rms_guard_contract.gd`，按A10稳态/完整8秒RMS≥25%，不复活mute/不改变peer PCM，跨窗块与快照一致。实际最坏辅助供音另用`tests/live_audio_contract.gd -- --case assist_stress`，显式WASAPI，0skips才可用于正式听测供音门槛。
 
 正式真人听测已可从F5按钮进入；操作与命令见`../P0真人听测操作.md`，协议A11。技术工具合约`tests/listening_contract.gd`只验fixture/8秒PCM/黑屏/记录隔离。真人统计使用`python tools/grade_listening.py <同条件3份真人CSV> --condition headphones_standard|speaker_standard|speaker_narrowband`；自动来源、下溢、缺题、重复/混条件会拒绝，不以工具PASS代替HUMAN-AUDIO/SPEAKER。
+
+
+PERF-001入口已实现，P0固定条件以spec.ui U6为准：主场景 `-- --performance-fixture=700`，Compatibility实际1440×900、vsync禁用、35×20/700个单整图、9纹理种类、一个全屏additive窗光；预热10s后测60s、平均≥60fps并p95≤16.67ms。原每帧CSV/截图/硬件/驱动/JSON按日期写验证记录/P0/性能，最新汇总PERF-001_700.json。提前Esc/无真实显示/少实例/阈值不满足不能PASS。固定静态压力成绩不证明未来动态生长或完整声画同时运行。

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://blcah77lanbo5"]
+
+[ext_resource type="Script" uid="uid://nm8c6g1p4abs" path="res://scripts/visual/city_performance_fixture.gd" id="1_8f4po"]
+
+[node name="performance_fixture" type="Node2D" unique_id=454533294]
+script = ExtResource("1_8f4po")

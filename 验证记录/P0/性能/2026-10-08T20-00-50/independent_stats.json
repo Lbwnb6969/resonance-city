@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "source": "independent Python csv recomputation",
+  "rows": 31200,
+  "average_fps": 519.9915674700809,
+  "p95_ms": 2.655,
+  "duration_seconds": 60.000972999999995,
+  "csv_sha256": "1501cb58b22dc8a884c138c89f106803729ab4bb4b15e107f159cdca98f129e3"
+}

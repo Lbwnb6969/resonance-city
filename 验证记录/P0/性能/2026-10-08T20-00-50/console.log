@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+PERF_READY buildings=700 textures=9 warmup=10s measure=60s
+PERF_MEASURING
+PERF-001 PASS frames=31200 seconds=60.001 average=519.992fps p95=2.655ms evidence=res://验证记录/P0/性能/2026-10-08T20-00-50
