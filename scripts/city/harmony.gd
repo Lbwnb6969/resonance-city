@@ -72,3 +72,24 @@ func adjacency(city: Array) -> Array[Dictionary]:
 			if cells.has(neighbor):
 				result.append({"a": cells[location], "b": cells[neighbor], "shared_boundary_cells": 1})
 	return result
+
+func vitality(city: Array, edges: Array, current_resonance: float, intervention_deltas: Dictionary = {}) -> Dictionary:
+	assert(graph_error(city, edges).is_empty())
+	var by_id: Dictionary = {}
+	var deltas: Dictionary = {}
+	for district in city:
+		var id := str(district["district_id"])
+		by_id[id] = district
+		deltas[id] = float(settings["base_growth"]) - (float(settings["decay"]) if current_resonance < float(settings["decay_threshold"]) else 0.0)
+	for edge in edges:
+		var a := str(edge["a"])
+		var b := str(edge["b"])
+		var delta := float(interval(int(by_id[a]["current_midi"]), int(by_id[b]["current_midi"]))["vitality_delta"])
+		deltas[a] += delta
+		deltas[b] += delta
+	var result: Dictionary = {}
+	for id in by_id:
+		var delta := float(deltas[id]) + float(intervention_deltas.get(id, 0.0))
+		delta = clampf(delta, -float(settings["net_change_cap"]), float(settings["net_change_cap"]))
+		result[id] = clampf(float(by_id[id]["vitality"]) + delta, float(settings["minimum_vitality"]), float(settings["maximum_vitality"]))
+	return result

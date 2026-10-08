@@ -9,6 +9,9 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	if Contract.selected_case("resonance") == "vitality":
+		_vitality()
+		return
 	var test := Contract.new("HARM-001", Contract.selected_case("resonance"))
 	test.check(test.case_name == "resonance", "Supported case: resonance")
 	var harmony := Harmony.new()
@@ -54,3 +57,43 @@ func _run() -> void:
 	test.details = {"mixed_graph_resonance": actual, "deterministic_fixture_tolerance": 0,
 		"multiedge_tolerance": harmony.space["comparison_tolerance"]}
 	test.finish(self, "Pure R, direct graph fixtures, weights and P0 single-cell four-way adjacency")
+
+func _vitality() -> void:
+	var test := Contract.new("HARM-002", "vitality")
+	var harmony := Harmony.new()
+	var home := Schema.create("a", "residential", Vector2i(0, 0))
+	var peer := Schema.create("b", "residential", Vector2i(1, 0))
+	var shop := Schema.create("b", "commercial", Vector2i(1, 0))
+	var industry := Schema.create("b", "industrial", Vector2i(1, 0))
+	var edge: Array = [{"a":"a","b":"b","shared_boundary_cells":1}]
+	test.check(harmony.vitality([home, peer], edge, 100) == {"a":59.0, "b":59.0}, "H3 unison V=59 exactly")
+	test.check(harmony.vitality([home, shop], edge, 85) == {"a":56.0, "b":56.0}, "H3 major third V=56 exactly")
+	test.check(harmony.vitality([home, industry], edge, 0) == {"a":42.5, "b":42.5}, "H3 tritone V=42.5 exactly")
+	var others: Array = [home, peer.duplicate(true)]
+	var edges: Array = edge.duplicate(true)
+	for id in ["c", "d"]:
+		var district := peer.duplicate(true)
+		district["district_id"] = id
+		others.append(district)
+		edges.append({"a":"a","b":id,"shared_boundary_cells":1})
+	test.check(harmony.vitality(others, edges, 100) == {"a":62.0,"b":59.0,"c":59.0,"d":59.0}, "H3 central net growth capped at +12")
+	for district in others.slice(1):
+		district["current_midi"] = 49
+	test.check(harmony.vitality(others, edges, 0)["a"] == 38, "Net loss capped at -12 across all neighbors")
+	test.check(harmony.vitality([home], [], 60)["a"] == 51, "R=60 does not decay")
+	test.check(harmony.vitality([home], [], 59)["a"] == 50.5, "R<60 decays by half point")
+	var high := home.duplicate(true)
+	high["vitality"] = 99
+	test.check(harmony.vitality([high, peer], edge, 100)["a"] == 100, "Final vitality clamped to 100")
+	var low := home.duplicate(true)
+	low["vitality"] = 1
+	test.check(harmony.vitality([low, industry], edge, 0)["a"] == 0, "Final vitality clamped to zero")
+	test.check(home["vitality"] == 50 and peer["vitality"] == 50, "Pure calculation never mutates input city")
+	test.check(harmony.vitality([home, industry], edge, 0, {"a":-10.0})["a"] == 38, "Proposal cost belongs inside total -12 cap")
+	var fifth := peer.duplicate(true)
+	fifth["current_midi"] = 55
+	test.check(harmony.vitality([home, fifth], edge, 90, {"b":-10.0})["b"] == 46, "New-edge growth and retune cost are absolute points")
+	test.check(harmony.vitality([home, peer], edge, 100, {"a":5.0})["a"] == 62, "Optional beat bonus included before total +12 cap")
+	test.details = {"fixture_tolerance":0,"order":"neighbor/base/decay + intervention deltas, net cap, vitality cap"}
+	test.finish(self, "Pure per-phrase V with H3 fixtures, R=60 boundary and total absolute-point cap")
+
