@@ -10,6 +10,10 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	if Contract.selected_case("layers") == "initial_r":
+		var checks = load("res://tests/generation_checks.gd")
+		quit(0 if checks.city(self) == 0 else 1)
+		return
 	var test := Contract.new("CITY-001", Contract.selected_case("layers"))
 	test.check(test.case_name == "layers", "Supported case: layers")
 	var city: Array = [Schema.create("home", "residential", Vector2i(2, 8)),

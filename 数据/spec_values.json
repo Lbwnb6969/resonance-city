@@ -105,7 +105,52 @@
     "empty_resonance": 100.0,
     "comparison_tolerance": 1e-06,
     "minimum_initial_resonance": 65.0,
-    "resample_limit": 8
+    "resample_limit": 8,
+    "initial_count": 9,
+    "safe_cells": {
+      "residential": [
+        [
+          2,
+          6
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          12,
+          8
+        ]
+      ],
+      "commercial": [
+        [
+          3,
+          6
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          13,
+          8
+        ]
+      ],
+      "industrial": [
+        [
+          2,
+          10
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          12,
+          12
+        ]
+      ]
+    }
   },
   "harmony": {
     "initial_vitality": 50.0,
@@ -227,7 +272,7 @@
   },
   "sources": {
     "spec.audio.md": "7e7625368cc4444769a418e7ba3fb09b7ffd911ef2371c9204abef082e4699cd",
-    "spec.city.md": "0533b5bdd9c6b304d9469350cda0ffe26b6da69bcbaf8ce8e387b27f6baad707",
+    "spec.city.md": "cf5bbf22a2184c9f8672648fb3e964449a1b970a6dd180182b0e7a88678f566d",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2"
   }
 }

@@ -22,7 +22,22 @@ City DNA = { seed: uint64, mode: string, charter_id: string,
 seed = hash("daily:" + UTC日期 + 版本号)
 ```
 
-禁止无子流来源的`randi()`。地形及初始布局使用terrain；调式/音源/宪章使用mode；祝福用boons；命名形态用form；提案及城市记忆事件用events。hash算法、文本编码、版本号来源、UTC日期格式、子流推进、决策中音级/输入时刻的序列化见U02。每日一城无后端服务，也不暗含排行榜、账户或云存档。
+禁止无子流来源的`randi()`。地形及初始布局使用terrain；调式/音源/宪章使用mode；祝福用boons；命名形态用form；提案及城市记忆事件用events。2026-10-08用户批准P0 U02方案，执行定义见R2a；每日一城无后端，不暗含排行榜、账户或云存档。
+
+## 表 R2a · P0种子执行方案（用户批准U02）
+
+| 项 | 规则 |
+|---|---|
+| 根种子 | 16位小写hex文本，表示原uint64位串，避免JSON整数精度/有符号转换损失 |
+| 子流派生 | SHA256(根seedhex+":"+子流名)，UTF-8，五条命名子流各自独立 |
+| 随机字 | SHA256(子流hashhex+":"+计数器十进制)前8位hex作为uint32；计数器从0递增 |
+| 有界取样 | uint32拒绝采样，丢弃≥floor(2^32/上界)×上界的字，再取模，不引入模偏差 |
+| 快照 | 根seed与五子流计数器；试听只深拷贝不推进真子流 |
+| daily | SHA256("daily:"+UTC YYYY-MM-DD+ProjectSettings application/config/version)前16位hex |
+| P0版本 | p0-1（执行方案版本，写project.godot）；改变生成/子流语义必须升版本 |
+| P0决策 | 保留原bar/proposal_id/target/choice；追加verb、district_id、输入requested_audio_frame与commit_phrase_frame；音级/格子来自系统选项，不丢失输入时刻 |
+
+P0只实现种子/生成/选择可追溯接口；完整Run、祝福、图鉴重放内容仍不进入P0。daily失败固定原种子安全布局见CITY-002 D2。
 
 ## 表 R3 · 终止式与祝福
 

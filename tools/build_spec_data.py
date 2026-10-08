@@ -105,6 +105,12 @@ def generate():
                                       [int(pan_numbers[2]), int(pan_numbers[3]), pan_numbers[7]],
                                       [int(pan_numbers[4]), int(pan_numbers[5]), pan_numbers[8]]]},
     }
+    result['city']['initial_count'] = int(numbers(city_space['P0 初始街区数'])[0])
+    generation = dict(table(city, '## 表 D2'))
+    result['city']['safe_cells'] = {}
+    for kind, label in [('residential', '住宅'), ('commercial', '商业'), ('industrial', '工业')]:
+        coords = numbers(generation['安全fixture' + label])
+        result['city']['safe_cells'][kind] = [[int(coords[i]), int(coords[i+1])] for i in range(0, len(coords), 2)]
     result['sources'] = {name: hashlib.sha256(read(name).encode()).hexdigest()
                          for name in ['spec.audio.md', 'spec.city.md', 'spec.harmony.md']}
     return json.dumps(result, ensure_ascii=False, indent=2) + '\n'
