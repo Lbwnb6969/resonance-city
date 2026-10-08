@@ -270,8 +270,28 @@
       ]
     ]
   },
+  "acoustic_measurement": {
+    "duration_seconds": 8.0,
+    "trim_seconds": 1.0,
+    "envelope_rate": 50.0,
+    "rms_window_seconds": 0.02,
+    "lowpass_hz": 20.0,
+    "kaiser_beta": 8.6,
+    "neighbor_inner_hz": 0.5,
+    "neighbor_outer_hz": 2.0,
+    "amplitude_floor_ratio": 1e-06,
+    "target_hz": 7.78,
+    "target_tolerance_hz": 0.5,
+    "minor_peak_db": 6.0,
+    "slow_low_hz": 3.0,
+    "slow_high_hz": 16.0,
+    "no_peak_db": 3.0,
+    "consonant_variation_db": 1.5,
+    "energy_low_hz": 200.0,
+    "energy_high_hz": 2000.0
+  },
   "sources": {
-    "spec.audio.md": "7e7625368cc4444769a418e7ba3fb09b7ffd911ef2371c9204abef082e4699cd",
+    "spec.audio.md": "ab1264959d759b6cf0ca7ddba3a66928765fc55a64e47892285a45f849570d1e",
     "spec.city.md": "cf5bbf22a2184c9f8672648fb3e964449a1b970a6dd180182b0e7a88678f566d",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2"
   }

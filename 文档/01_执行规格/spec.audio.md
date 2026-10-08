@@ -39,7 +39,7 @@ beat_assist 对参与失谐的两条 drone 在上方一个八度复制一对伴�
 
 ### [AUDIO-001] 「抖」与「刺」的可闻性
 
-状态：实验目标；测量细节待裁定U04、U05。
+状态：实验目标；本次用户授权补齐P0技术协议，见A6；真人可闻性仍须实际记录。
 
 意图：让玩家区分张力性质，而不是只听到一个警报音。
 
@@ -102,6 +102,29 @@ beat_assist 对参与失谐的两条 drone 在上方一个八度复制一对伴�
 | 移调 | MIDI每12半音频率倍增；不改变街区类型或权重 |
 
 这些是可复现音色起点，尚需HUMAN-IDENTITY与声学测试，不把合成存在等同于音色观感通过。
+
+## 表 A6 · P0声学测量协议（授权技术方案U05）
+
+固定8秒PCM，仅两个居中drone，rhythm/ornament/beat_assist/ducking/监听强调全部关闭；三对分别C3–C♯3（两住宅）、C3–F♯3（住宅+工业）、C3–G3（两住宅，协和能量参考）。相位从0开始，信号由真实_mix_frame叠加。
+
+| 参数 | 值 / 方法 |
+|---|---|
+| 原PCM / 包络采样率 | 22050 / 50 Hz；测量使用AudioStreamGenerator实际接收的float32双声道PCM，PCM16 WAV仅作试听/量化对照 |
+| 合成长度 / 稳态裁剪 | 8 s；抗混叠滤波两端各裁1 s，分析中间6 s；原波形8 s留证 |
+| RMS功率窗 | 20 ms矩形均值；之后在功率域低通，再开平方 |
+| 抗混叠滤波 | 20Hz低通，Kaiser窗beta=8.6；奇数FIR长度2×采样率+1；FFT线性卷积，中心对齐，之后插值到50Hz |
+| 包络频谱 | 去均值，Hann窗，rFFT；记录完整频轴/幅度，分辨率约1/6Hz |
+| 显著峰邻域 | 峰两侧距离0.5–2Hz的幅度均值；峰值幅度/邻域幅度转20log10(dB) |
+| 噪底 | 幅度低于包络均值的1e-6（−120dB）的bin不判显著峰；邻域至少此噪底 |
+| 小二目标 | 7.78±0.5Hz峰高≥6dB，保留DOD原阈值 |
+| 无慢峰 | 3–16Hz有效bin最大显著度<3dB，保留DOD原阈值；没有高于噪底bin记无峰 |
+| 协和RMS波动 | 稳态包络最大/最小转20log10，<1.5dB，保留DOD原阈值 |
+| 高频能量参考 | 8s原波形200–2000Hz FFT能量，C–F♯须高于C–G住宅对；报告比值dB，不能单凭此证明听觉粗糙度 |
+
+这个协议先公开定义再执行，不按实验结果更改阈值。与正式HUMAN-AUDIO分开；若某音色失败，保留失败证据并继续分析，不把辅助或测量混叠当通过。
+抗混叠原则参考[Scipy resample_poly](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.resample_poly.html)的低通再抽样描述；FFT接口参考[NumPy rfft](https://numpy.org/doc/stable/reference/generated/numpy.fft.rfft.html)。本项目直接用NumPy实现线性FIR卷积，无需安装Scipy。
+
+测量输入澄清：试验01用PCM16导出产生约1.8e-7包络谱量化噪声，超过原1e-6×包络均值噪底，造成两个无峰case失败。试验02改测同一实时PackedVector2Array的原始float32字节；原6/3/1.5dB及1e-6噪底不变，PCM16失败报告保存在验证记录/P0/声学/试验01_PCM16/。正式WAV听感仍需独立人测。
 
 ### [AUDIO-003] ducking 与持续 drone
 

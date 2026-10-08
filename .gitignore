@@ -1,6 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+.mcp.json
 
 # Original packages stay on disk; retain textual licensing evidence separately.
 /资产/01_原始素材/CC0_Kenney/

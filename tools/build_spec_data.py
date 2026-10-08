@@ -38,6 +38,7 @@ def generate():
     partials = {row[0]: {'partials': numbers(row[1]), 'rhythm_steps': [int(x) for x in numbers(row[2])]}
                 for row in a5_rows if row[0] in ['residential', 'commercial', 'industrial']}
     a5 = {row[0]: row[1] for row in a5_rows if len(row) == 2}
+    a6 = dict(table(audio, '## 表 A6'))
     musical = numbers(a2['BPM / 拍号 / 小节 / 乐句'])
     assert len(musical) == 6, musical
     voices = {}
@@ -106,6 +107,20 @@ def generate():
                                       [int(pan_numbers[4]), int(pan_numbers[5]), pan_numbers[8]]]},
     }
     result['city']['initial_count'] = int(numbers(city_space['P0 初始街区数'])[0])
+    result['acoustic_measurement'] = {
+        'duration_seconds': numbers(a6['合成长度 / 稳态裁剪'])[0],
+        'trim_seconds': numbers(a6['合成长度 / 稳态裁剪'])[1],
+        'envelope_rate': numbers(a6['原PCM / 包络采样率'])[1],
+        'rms_window_seconds': numbers(a6['RMS功率窗'])[0] / 1000,
+        'lowpass_hz': numbers(a6['抗混叠滤波'])[0], 'kaiser_beta': numbers(a6['抗混叠滤波'])[1],
+        'neighbor_inner_hz': numbers(a6['显著峰邻域'])[0], 'neighbor_outer_hz': numbers(a6['显著峰邻域'])[1],
+        'amplitude_floor_ratio': numbers(a6['噪底'])[0],
+        'target_hz': numbers(a6['小二目标'])[0], 'target_tolerance_hz': numbers(a6['小二目标'])[1],
+        'minor_peak_db': numbers(a6['小二目标'])[2],
+        'slow_low_hz': numbers(a6['无慢峰'])[0], 'slow_high_hz': numbers(a6['无慢峰'])[1],
+        'no_peak_db': numbers(a6['无慢峰'])[2], 'consonant_variation_db': numbers(a6['协和RMS波动'])[-1],
+        'energy_low_hz': numbers(a6['高频能量参考'])[1], 'energy_high_hz': numbers(a6['高频能量参考'])[2],
+    }
     generation = dict(table(city, '## 表 D2'))
     result['city']['safe_cells'] = {}
     for kind, label in [('residential', '住宅'), ('commercial', '商业'), ('industrial', '工业')]:

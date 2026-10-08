@@ -1,0 +1,63 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/acoustic_contract.gd"
+	],
+	"case": "all",
+	"checks": [
+		{
+			"description": "Supported case: all",
+			"passed": true
+		},
+		{
+			"description": "Rendered actual drone WAV: minor_second",
+			"passed": true
+		},
+		{
+			"description": "Rendered actual drone WAV: tritone",
+			"passed": true
+		},
+		{
+			"description": "Rendered actual drone WAV: perfect_fifth",
+			"passed": true
+		},
+		{
+			"description": "Declared acoustic protocol passed without assists",
+			"passed": false
+		},
+		{
+			"description": "Measurement report exists",
+			"passed": true
+		},
+		{
+			"description": "Original threshold: ACOUSTIC-001",
+			"passed": true
+		},
+		{
+			"description": "Original threshold: ACOUSTIC-002",
+			"passed": false
+		},
+		{
+			"description": "Original threshold: ACOUSTIC-003",
+			"passed": false
+		}
+	],
+	"details": {
+		"assist": "OFF",
+		"human": "PENDING",
+		"layers": [
+			"drone"
+		],
+		"measurement": "验证记录/P0/声学/measurement.json",
+		"render_ms": {
+			"minor_second": 2177,
+			"perfect_fifth": 2935,
+			"tritone": 2961
+		}
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 1,
+	"rule_id": "AUDIO-001",
+	"scope": "Actual production drone mixer, published A6 antialiasing protocol, original acoustic thresholds; no human audibility claim",
+	"status": "FAIL"
+}
