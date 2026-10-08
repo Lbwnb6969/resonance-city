@@ -1,0 +1,170 @@
+{
+  "basis_commit": "f48aad0",
+  "goal_complete": false,
+  "spec_rules": 30,
+  "human_csv_present": {
+    "验证记录/P0/闭眼定位.csv": false,
+    "验证记录/P0/狼牙音箱.csv": false,
+    "验证记录/P1/视觉优先.csv": false
+  },
+  "art_review_rows": 20,
+  "art_review_status_counts": {
+    "PENDING": 20
+  },
+  "portable_sha_matches": true,
+  "portable_sha256": "03d42737d3216c5f9b22b08bde9ac5a3f1ad0d01f944070b5ff08ab3883611bf",
+  "production_tests_rerun": false,
+  "current_reentry": "pending v2-U18/v2-U19 responses; other candidate rules remain undefined",
+  "rules": [
+    {
+      "id": "ASSET-001",
+      "assessment": "来源/授权与本地交付有证据",
+      "source": "验证记录/P0/ASSET-001_packages.json"
+    },
+    {
+      "id": "ASSET-002",
+      "assessment": "P0技术切片有证据",
+      "source": "验证记录/P0/ASSET-002_baked_sprite.json"
+    },
+    {
+      "id": "ASSET-003",
+      "assessment": "导入隔离有证据",
+      "source": "验证记录/P0/ASSET-003_import_scope.json"
+    },
+    {
+      "id": "ASSET-004",
+      "assessment": "未完整验收",
+      "source": "验证记录/P0/ASSET-004_quality.json"
+    },
+    {
+      "id": "AUDIO-001",
+      "assessment": "技术有证据，真人缺失",
+      "source": "验证记录/P0/AUDIO-001_all.json"
+    },
+    {
+      "id": "AUDIO-002",
+      "assessment": "时钟/PCM与短时供音有证据",
+      "source": "验证记录/P0/AUDIO-002_demo_supply.json"
+    },
+    {
+      "id": "AUDIO-003",
+      "assessment": "P0混音有证据",
+      "source": "验证记录/P0/AUDIO-003_ducking.json"
+    },
+    {
+      "id": "AUDIO-004",
+      "assessment": "技术有证据，真人缺失",
+      "source": "验证记录/P0/AUDIO-004_loudness.json"
+    },
+    {
+      "id": "AUDIO-005",
+      "assessment": "技术有证据，主观未验",
+      "source": "验证记录/P0/AUDIO-005_signal_protection.json"
+    },
+    {
+      "id": "CITY-001",
+      "assessment": "实现可查，当前单独JSON不可作新签核",
+      "source": "scripts/city/district_schema.gd"
+    },
+    {
+      "id": "CITY-002",
+      "assessment": "P0生成有证据",
+      "source": "验证记录/P0/CITY-002_initial_r.json"
+    },
+    {
+      "id": "CITY-003",
+      "assessment": "人工fixture已补，正式机制未实现",
+      "source": "验证记录/P0/CITY-003_rebellion_fixture.json"
+    },
+    {
+      "id": "CITY-004",
+      "assessment": "获批Demo切片有证据",
+      "source": "验证记录/Demo/社区绿化运行检查.log"
+    },
+    {
+      "id": "HARM-001",
+      "assessment": "P0公式有证据",
+      "source": "验证记录/P0/HARM-001_resonance.json"
+    },
+    {
+      "id": "HARM-002",
+      "assessment": "当前公式有证据",
+      "source": "验证记录/P0/HARM-002_vitality.json"
+    },
+    {
+      "id": "HARM-003",
+      "assessment": "数值与Demo结束有证据",
+      "source": "验证记录/P0/HARM-003_hysteresis.json"
+    },
+    {
+      "id": "PROPOSAL-001",
+      "assessment": "P0提案有证据，P1公园未实现",
+      "source": "验证记录/P0/PROPOSAL-001_verbs.json"
+    },
+    {
+      "id": "PROPOSAL-002",
+      "assessment": "同源试听有证据",
+      "source": "验证记录/P0/PROPOSAL-002_preview_pcm.json"
+    },
+    {
+      "id": "PROPOSAL-003",
+      "assessment": "完整项未实现",
+      "source": "tests/proposal_contract.gd"
+    },
+    {
+      "id": "PROPOSAL-004",
+      "assessment": "获批引力带有实现/切片证据",
+      "source": "scripts/proposals/city_interventions.gd"
+    },
+    {
+      "id": "PROPOSAL-005",
+      "assessment": "获批道路有实现/切片证据",
+      "source": "scripts/city/city_roads.gd"
+    },
+    {
+      "id": "RUN-001",
+      "assessment": "未实现，待U08",
+      "source": "文档/01_执行规格/spec.run.md"
+    },
+    {
+      "id": "RUN-002",
+      "assessment": "P0随机有证据，完整DNA未实现",
+      "source": "验证记录/P0/RUN-002_rng_replay.json"
+    },
+    {
+      "id": "RUN-003",
+      "assessment": "未实现，待U09与v2-U21",
+      "source": "tests/run_contract.gd"
+    },
+    {
+      "id": "RUN-004",
+      "assessment": "未实现，待U10",
+      "source": "文档/01_执行规格/spec.run.md"
+    },
+    {
+      "id": "RUN-005",
+      "assessment": "未实现，待U09/U12",
+      "source": "文档/01_执行规格/spec.run.md"
+    },
+    {
+      "id": "UI-001",
+      "assessment": "P0控制有证据",
+      "source": "验证记录/P0/UI-001_fader.json"
+    },
+    {
+      "id": "UI-002",
+      "assessment": "P0收益代价有证据",
+      "source": "验证记录/P0/UI-002_proposal_cost.json"
+    },
+    {
+      "id": "UI-003",
+      "assessment": "获批边界切片有证据，完整未验",
+      "source": "验证记录/Demo/边界诊断运行检查.log"
+    },
+    {
+      "id": "UI-004",
+      "assessment": "获批表现切片有证据，完整艺术/动态未验",
+      "source": "验证记录/P0/PERF-001_700.json"
+    }
+  ]
+}
