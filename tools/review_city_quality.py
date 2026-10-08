@@ -30,10 +30,12 @@ def main():
         assert result['technical_pass'],result
         checks.append(result)
         companions=[entries[(n+7)%len(entries)],entries[(n+13)%len(entries)]]
-        board=Image.new('RGB',(1080,500),'#e4dfd2');draw=ImageDraw.Draw(board)
-        draw.text((18,12),f"三格审查 {n+1}/{len(entries)} · 左：待审项；右：同库对照 · 同世界缩放 · 未人工批准",font=font,fill='#343943')
+        board=Image.new('RGB',(1080,860),'#e4dfd2');draw=ImageDraw.Draw(board)
+        draw.text((18,12),f"三格审查 {n+1}/{len(entries)} · 上：材质近看；下：同世界缩放比例 · 左待审项、右同库对照 · 未人工批准",font=font,fill='#343943')
         for c,item in enumerate([e]+companions):
             art=Image.open(ROOT/item['texture']).convert('RGBA')
+            close=art.copy();close.thumbnail((324,330),Image.Resampling.LANCZOS)
+            board.paste(close,(c*360+(360-close.width)//2,375-close.height),close)
             sx,sy,sz=item['model_bounds']['size']
             horizontal=(sx+sz)/math.sqrt(2)
             camera_size=max(horizontal,sy*math.cos(math.pi/6)+horizontal*.5)*1.1
@@ -41,9 +43,9 @@ def main():
             pixels_per_world=2048*2048/(camera_size*max(crop[2:]))
             factor=90/pixels_per_world
             art=art.resize((round(art.width*factor),round(art.height*factor)),Image.Resampling.LANCZOS)
-            x=round(c*360+180-item['origin'][0]*factor);y=round(375-item['origin'][1]*factor)
+            x=round(c*360+180-item['origin'][0]*factor);y=round(770-item['origin'][1]*factor)
             board.paste(art,(x,y),art)
-            label=item['id'];draw.text((c*360+16,423),label[:32],font=font,fill='#343943');draw.text((c*360+16,446),label[32:],font=font,fill='#343943')
+            label=item['id'];draw.text((c*360+16,802),label[:32],font=font,fill='#343943');draw.text((c*360+16,825),label[32:],font=font,fill='#343943')
         board.save(OUT/(e['id']+'.png'))
         review.append({'asset_id':e['id'],'main_sha256':result['main_sha256'],'companion_1':companions[0]['id'],'companion_2':companions[1]['id'],
                        'status':'PENDING','reviewer':'','notes':''})
