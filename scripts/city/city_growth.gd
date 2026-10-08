@@ -73,8 +73,22 @@ static func assign_assets(city: Array) -> void:
 	for list in groups.values(): list.sort()
 	for d in city:
 		if d.get("is_anchor",false): continue
-		var form: String = d.get("form","胚")
-		var index := 0 if form == "胚" else (1 if form == "群" else 2)
+		var cell := Schema.cell(d)
+		var adjacent := 0
+		var front := true
+		for other in city:
+			if other["type"] != d["type"] or other.get("is_anchor",false): continue
+			var oc := Schema.cell(other)
+			if (cell-oc).length_squared() == 1:
+				adjacent += 1
+				front = front and cell.x+cell.y >= oc.x+oc.y
+		var index := 0
+		if d["type"] == "residential":
+			# Dense interiors use compact roofs; detached perimeter plots may show side wings.
+			index = 0 if adjacent >= 2 else posmod(cell.x*31+cell.y*17,3)
+		elif d["type"] == "commercial":
+			# A lower front row lets the rear buildings retain readable facades.
+			index = 2 if adjacent > 0 and front else posmod(cell.x+cell.y,2)
 		d["manifest_id"] = groups[d["type"]][mini(index,groups[d["type"]].size()-1)]
 
 static func advance(session: Object, at: int) -> Array[Dictionary]:

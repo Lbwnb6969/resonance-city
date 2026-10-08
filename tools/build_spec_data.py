@@ -218,6 +218,7 @@ def generate():
         'new_voice_level': numbers(growth['Demo声音预算'])[2],
         'tile_half_width': numbers(growth['Demo显示'])[2],
         'tile_half_height': numbers(growth['Demo显示'])[3],
+        'plot_coverage': numbers(growth['地面占地与缩放'])[0],
     }
     result['sources'] = {name: hashlib.sha256(read(name).encode()).hexdigest()
                          for name in ['spec.audio.md', 'spec.city.md', 'spec.harmony.md', 'spec.proposal.md']}

@@ -403,11 +403,12 @@
     "max_entities": 27,
     "new_voice_level": 0.2,
     "tile_half_width": 28.0,
-    "tile_half_height": 14.0
+    "tile_half_height": 14.0,
+    "plot_coverage": 0.66
   },
   "sources": {
     "spec.audio.md": "d64268ff1e77ead40288c02cb446d0b28fa7df71635871dfb6b9e08e1fe9082d",
-    "spec.city.md": "f77a894e0cbe29cf889f51db8010dc014003a47ab0b9b1931304e72ffa250d3e",
+    "spec.city.md": "e9f38737f2c8a0fb0eea92b03fb76ac535a6d0e40e06cb0b5cf906fd3cc68d07",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "19619120e957945fee0d12d371882fb63f18fe0757cd5453466c4fc2be534753"
   }

@@ -17,6 +17,7 @@ var by_type: Dictionary = {}
 var labels: Dictionary = {}
 var event_seen: Dictionary = {}
 var forms: Dictionary = {}
+var appearance: Dictionary = {}
 var cfg: Dictionary
 var buildings: Node2D
 var label_layer: Control
@@ -74,8 +75,7 @@ func _gui_input(event: InputEvent) -> void:
 						return
 				else:
 					var entry: Dictionary = entries[sprite.get_meta("asset_id")]
-					var crop: Array = entry["image_bounds"]["crop"]
-					var rect := Rect2(sprite.position+(sprite.offset+Vector2(crop[0],crop[1]))*sprite.scale,Vector2(crop[2]-crop[0],crop[3]-crop[1])*sprite.scale)
+					var rect := Rect2(sprite.position+sprite.offset*sprite.scale,sprite.texture.get_size()*sprite.scale)
 					if rect.has_point(event.position):
 						district_clicked.emit(id)
 						accept_event()
@@ -91,23 +91,55 @@ func _gui_input(event: InputEvent) -> void:
 func _draw() -> void:
 	if cfg == null: return
 	var half := Vector2(float(cfg["tile_half_width"]),float(cfg["tile_half_height"]))
+	var occupied: Dictionary = {}
+	if session != null:
+		for d in session.city: occupied[Schema.cell(d)] = d
 	for y in range(16):
 		for x in range(16):
 			var cell := Vector2i(x,y)
 			var center := point(cell)
 			var vertices := PackedVector2Array([center+Vector2(-half.x,0),center+Vector2(0,-half.y),center+Vector2(half.x,0),center+Vector2(0,half.y)])
 			var color := Color("353e45") if (x+y)%2 == 0 else Color("323a41")
+			if occupied.has(cell) and not str(occupied[cell].get("anchor_id","")).is_empty():
+				color = Color("555a51") if occupied[cell]["type"] == "residential" else Color("4f5960")
+				if occupied[cell].get("is_anchor",false): color = Color("757361")
 			if cell == hover_cell: color = Color("54655e")
 			if cell == preview_cell: color = Color("8b7149")
 			draw_colored_polygon(vertices,color)
 			draw_polyline(PackedVector2Array([vertices[0],vertices[1],vertices[2],vertices[3],vertices[0]]),Color("495158"),0.6,true)
 	if session == null: return
+	var estate_forms: Dictionary = {}
+	var rank := {"胚":0,"群":1,"腔":2,"央":3}
+	for d in session.city:
+		var family: String = d.get("anchor_id","")
+		if not family.is_empty() and rank.get(d.get("form","胚"),0) > rank.get(estate_forms.get(family,"胚"),0):
+			estate_forms[family] = d["form"]
+	# The shared paths are visual estate spacing, not logical road cells that cut adjacency.
+	for d in session.city:
+		var family: String = d.get("anchor_id","")
+		if family.is_empty(): continue
+		var cell := Schema.cell(d)
+		for direction in [Vector2i.RIGHT,Vector2i.DOWN]:
+			var neighbor: Vector2i = cell+direction
+			if occupied.has(neighbor) and occupied[neighbor].get("anchor_id","") == family:
+				draw_line(point(cell),point(neighbor),Color("aaa592"),3.0,true)
+	# Highlight the estate perimeter once instead of drawing a ring around every house.
+	var edge_directions := [Vector2i.LEFT,Vector2i.UP,Vector2i.RIGHT,Vector2i.DOWN]
+	var edge_vertices := [Vector2(-half.x,0),Vector2(0,-half.y),Vector2(half.x,0),Vector2(0,half.y)]
+	for d in session.city:
+		var family: String = d.get("anchor_id","")
+		var estate_form: String = estate_forms.get(family,"胚")
+		if family.is_empty() or estate_form == "胚": continue
+		var cell := Schema.cell(d)
+		var color := Color("7fb8c3") if estate_form == "腔" else (Color("ffd98a") if estate_form == "央" else Color("aaa592"))
+		for i in range(4):
+			var neighbor: Vector2i = cell+edge_directions[i]
+			if not occupied.has(neighbor) or occupied[neighbor].get("anchor_id","") != family:
+				draw_line(point(cell)+edge_vertices[i],point(cell)+edge_vertices[(i+1)%4],color,1.6,true)
 	for d in session.city:
 		var center := point(Schema.cell(d))
 		if d["district_id"] == selected_id:
 			draw_polyline(PackedVector2Array([center+Vector2(-half.x,0),center+Vector2(0,-half.y),center+Vector2(half.x,0),center+Vector2(0,half.y),center+Vector2(-half.x,0)]),Color("ffd98a"),2.5,true)
-		if d.get("form","") == "腔":
-			draw_arc(center,23,0,TAU,32,Color("7fb8c3"),1.2,true)
 		if d.get("is_anchor",false):
 			draw_arc(center,11,0,TAU,32,Color("ffd98a"),1.5,true)
 
@@ -138,7 +170,9 @@ func _process(_delta: float) -> void:
 			if not events.has(id):
 				sprite.progress = 1.0
 				sprite.material.set_shader_parameter("growth_progress",1.0)
-		if forms.get(id,"") != form:
+		var asset_id: String = d.get("manifest_id","")
+		if forms.get(id,"") != form or appearance.get(id,"") != asset_id:
+			appearance[id] = asset_id
 			forms[id] = form
 			var sprite: Sprite2D = sprites[id]
 			if d.get("is_anchor",false):
@@ -153,8 +187,15 @@ func _process(_delta: float) -> void:
 				if not textures.has(path): textures[path] = load(path)
 				sprite.texture = textures[path]
 				sprite.offset = -Vector2(float(entry["origin"][0]),float(entry["origin"][1]))
-				var width := float(entry["image_bounds"]["crop"][2])-float(entry["image_bounds"]["crop"][0])
-				sprite.scale = Vector2.ONE*(48.0 if form == "胚" else (58.0 if form == "群" else 58.0))/width
+				# Reconstruct the baker's per-world-pixel factor, then fit the actual ground plot.
+				var bounds: Array = entry["model_bounds"]["size"]
+				var horizontal := (float(bounds[0])+float(bounds[2]))/sqrt(2.0)
+				var camera_span := maxf(horizontal,float(bounds[1])*cos(PI/6.0)+horizontal*0.5)*1.1
+				var crop: Array = entry["image_bounds"]["crop"]
+				var pixels_per_world := 2048.0*2048.0/(camera_span*maxf(float(crop[2]),float(crop[3])))
+				var fit := float(cfg["plot_coverage"])/maxf(float(bounds[0]),float(bounds[2]))
+				var world_to_screen := float(cfg["tile_half_width"])*sqrt(2.0)
+				sprite.scale = Vector2.ONE*world_to_screen*fit/pixels_per_world
 				sprite.set_meta("asset_id",entry["id"])
 		if events.has(id) and event_seen.get(id,-1) != events[id]["frame"]:
 			event_seen[id] = events[id]["frame"]
