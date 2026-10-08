@@ -43,6 +43,7 @@ def generate():
     a6 = dict(table(audio, '## 表 A6'))
     a8 = dict(table(audio, '## 表 A8'))
     a9 = dict(table(audio, '## 表 A9'))
+    a10 = dict(table(audio, '## 表 A10'))
     musical = numbers(a2['BPM / 拍号 / 小节 / 乐句'])
     assert len(musical) == 6, musical
     voices = {}
@@ -145,6 +146,11 @@ def generate():
         'energy_low_hz': numbers(a6['高频能量参考'])[1], 'energy_high_hz': numbers(a6['高频能量参考'])[2],
     }
     generation = dict(table(city, '## 表 D2'))
+    result['rms_guard'] = {
+        'window_seconds': numbers(a10['统计窗'])[0]/1000,
+        'minimum_ratio': numbers(a10['最低比例 / 补偿目标'])[0]/100,
+        'target_ratio': numbers(a10['最低比例 / 补偿目标'])[1]/100,
+    }
     fc, q, g, exponent = numbers(a9['K-weighting高架'])
     k = math.tan(math.pi * fc / result['timing']['sample_rate'])
     vh = 10**(g/20); vb = vh**exponent; den = 1+k/q+k*k

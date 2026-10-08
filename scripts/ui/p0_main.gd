@@ -51,6 +51,7 @@ func _ready() -> void:
 			daily = false
 	generation = Generator.new().generate(seed,daily)
 	model = Model.new(Session.new(generation["city"],generation["seed"],generation["rng"]))
+	model.synth.guard_enabled = true
 	clock = get_node("/root/AudioClock")
 	preview_clock = PreviewOutput.new()
 	preview_clock.name = "PreviewClock"
@@ -149,7 +150,7 @@ func _build_controls() -> void:
 	prediction = _label("选择方案并长按试听，查看同一副本的收益与代价。","Prediction")
 
 func diagnostic_state() -> Dictionary:
-	return {"calibration":calibration.duplicate(true),"gain":model.synth.gain,"assist_enabled":model.synth.assist_enabled,"device_mode":model.synth.device_mode,"skips":clock.underruns,"preview_skips":preview_skips,"phase":model.session.phrase_index,
+	return {"guard_factor":clock.renderer.state.get("_guard_factor",1.0),"calibration":calibration.duplicate(true),"gain":model.synth.gain,"assist_enabled":model.synth.assist_enabled,"device_mode":model.synth.device_mode,"skips":clock.underruns,"preview_skips":preview_skips,"phase":model.session.phrase_index,
 		"black":black_screen,"panel":panel.visible,"mouse_mode":Input.mouse_mode,
 		"preview_active":preview_clock.active,"want_preview":want_preview,"worker_alive":worker != null and worker.is_alive(),
 		"preview_ready":not preview_data.is_empty(),"pending":model.session.pending.duplicate(true)}

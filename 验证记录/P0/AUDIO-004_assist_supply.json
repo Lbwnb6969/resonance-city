@@ -36,16 +36,17 @@
 	],
 	"details": {
 		"assist_routes": 2,
-		"audible_frame": 353003.890154929,
+		"audible_frame": 353013.724454929,
 		"capacity": 4095,
 		"device_mode": "narrowband",
 		"district_count": 9,
 		"driver": "WASAPI",
+		"guard_factor": 1.0,
 		"hardware_latency": 0.00999999977648258,
-		"one_second_render_ms": 284.379,
+		"one_second_render_ms": 518.203,
 		"rendered_frames": 357119,
 		"skips": 0,
-		"wall_ms": 16000
+		"wall_ms": 16003
 	},
 	"engine": "4.7.2-stable (official)",
 	"exit_code": 0,

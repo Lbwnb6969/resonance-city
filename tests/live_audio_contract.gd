@@ -11,8 +11,9 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	var assisted := Contract.selected_case("live_supply") == "assist_supply"
-	var test := Contract.new("AUDIO-004" if assisted else "AUDIO-002","assist_supply" if assisted else "live_supply")
+	var mode := Contract.selected_case("live_supply")
+	var assisted := mode == "assist_supply" or mode == "assist_stress"
+	var test := Contract.new("AUDIO-004" if assisted else "AUDIO-002",mode)
 	var city: Array = Generator.new().generate("2026100800000001")["city"]
 	if assisted:
 		for index in range(city.size()):
@@ -21,10 +22,16 @@ func _run() -> void:
 		city[1]["footprint"] = [[8,7]]
 		city[0]["current_midi"] = 48
 		city[1]["current_midi"] = 49
+	if mode == "assist_stress":
+		for index in range(city.size()):
+			var row := floori(index/3.0)
+			city[index]["footprint"] = [[6+index%3,6+row]]
+			city[index]["current_midi"] = 48+(index%3+row)%2
 	var synth := Synth.new(city)
+	synth.guard_enabled = true
 	if assisted:
 		synth.device_mode = "narrowband"
-		test.check(synth.assist_routes(synth.initial_state()).size() >= 2,"Physical fixture contains active slow-beat helpers")
+		test.check(synth.assist_routes(synth.initial_state()).size() == 9 if mode == "assist_stress" else synth.assist_routes(synth.initial_state()).size() >= 2,"Physical fixture contains requested active slow-beat helpers")
 	var offline := Renderer.new()
 	offline.source = synth._mix_frame
 	offline.state = synth.initial_state()
@@ -51,6 +58,6 @@ func _run() -> void:
 	test.details = {"district_count":city.size(),"one_second_render_ms":render_ms,
 		"wall_ms":Time.get_ticks_msec()-wall_start,"audible_frame":audible,
 		"rendered_frames":rendered,"capacity":clock.capacity,"skips":measured_skips,
-		"assist_routes":synth.assist_routes(synth.initial_state()).size(),"device_mode":synth.device_mode,"driver":AudioServer.get_driver_name(),"hardware_latency":clock.output_latency}
+		"assist_routes":synth.assist_routes(synth.initial_state()).size(),"guard_factor":clock.renderer.state.get("_guard_factor",1.0),"device_mode":synth.device_mode,"driver":AudioServer.get_driver_name(),"hardware_latency":clock.output_latency}
 	clock.stop_output()
 	test.finish(self, "Actual output device; nine voices with rhythm, one phrase; excludes human audibility")

@@ -28,6 +28,8 @@ var emphasis_level: float
 var assist_enabled := true
 var device_mode := "standard"
 var assist_neighbors: Dictionary = {}
+var guard_enabled := false
+var _last_raw_layers := Vector2.ZERO
 
 func _init(city: Array) -> void:
 	values = Values.load_values()
@@ -138,6 +140,8 @@ func _voice_layers(route: Dictionary, state: Dictionary, at: int, rate: int) -> 
 	var midi := int(state.get(route["id"], route["base_midi"]))
 	var drone := _table_wave(route["table"], phase) * drone_gain
 	var rhythm := _rhythm(route, phase, at, rate, state) if active_layers.has("rhythm") else 0.0
+	if guard_enabled:
+		_last_raw_layers = Vector2(drone if active_layers.has("drone") else 0.0,rhythm)*gain
 	rhythm *= rhythm_level(at,rate)*(emphasis_level if emphasized_id == route["id"] else 1.0)
 	state[phase_key] = fposmod(phase + frequency(midi) / rate, 1.0)
 	if not active_layers.has("drone"):
@@ -147,26 +151,78 @@ func _voice_layers(route: Dictionary, state: Dictionary, at: int, rate: int) -> 
 	return Vector2(drone, rhythm) * gain
 
 func render_tracks(state: Dictionary, at: int, rate: int) -> Dictionary:
-	var helpers := _assist_tracks(state,at,assist_routes(state))
+	var routes := assist_routes(state)
+	var helpers := _assist_tracks(state,at,routes)
+	var raw_drone := Vector2.ZERO
+	var raw_other := Vector2.ZERO
+	var raw_helpers := _assist_sum(_assist_tracks(state,at,routes,true)) if guard_enabled else Vector2.ZERO
+	var factor := float(state.get("_guard_factor",1.0)) if guard_enabled else 1.0
 	var tracks: Dictionary = {}
 	for route in routing:
-		var layers := _voice_layers(route, state, at, rate)
+		var layers := _voice_layers(route,state,at,rate)
 		var id: String = route["id"]
-		tracks["District_%s_Drone" % id] = layers.x * route["stereo"]
-		tracks["District_%s_Rhythm" % id] = layers.y * route["stereo"]
+		tracks["District_%s_Drone" % id] = layers.x*route["stereo"]*factor
+		tracks["District_%s_Rhythm" % id] = layers.y*route["stereo"]
 		tracks["District_%s_Ornament" % id] = Vector2.ZERO
+		if guard_enabled:
+			raw_drone += _last_raw_layers.x*route["stereo"]
+			raw_other += _last_raw_layers.y*route["stereo"]
 	tracks.merge(helpers)
+	if guard_enabled:
+		raw_other += raw_helpers
+		_guard_step(state,raw_drone,raw_other,rate)
 	return tracks
 
 func _mix_frame(state: Dictionary, at: int, rate: int) -> Vector2:
-	# Playback bypasses per-sample bus dictionary construction.
-	var helpers := _assist_sum(_assist_tracks(state,at,assist_routes(state))) if assist_enabled and device_mode == "narrowband" else Vector2.ZERO
+	var routes := assist_routes(state)
+	var helpers := _assist_sum(_assist_tracks(state,at,routes)) if not routes.is_empty() else Vector2.ZERO
+	var raw_drone := Vector2.ZERO
+	var raw_other := Vector2.ZERO
+	var raw_helpers := _assist_sum(_assist_tracks(state,at,routes,true)) if guard_enabled else Vector2.ZERO
+	var controlled_drone := Vector2.ZERO
 	var sample := Vector2.ZERO
 	for route in routing:
-		var layers := _voice_layers(route, state, at, rate)
-		sample += layers.x * route["stereo"]
-		sample += layers.y * route["stereo"]
-	return sample+helpers if assist_enabled and device_mode == "narrowband" else sample
+		var layers := _voice_layers(route,state,at,rate)
+		sample += layers.x*route["stereo"]
+		sample += layers.y*route["stereo"]
+		if guard_enabled:
+			raw_drone += _last_raw_layers.x*route["stereo"]
+			raw_other += _last_raw_layers.y*route["stereo"]
+			controlled_drone += layers.x*route["stereo"]
+	if not routes.is_empty():
+		sample += helpers
+	if guard_enabled:
+		raw_other += raw_helpers
+		var factor := float(state.get("_guard_factor",1.0))
+		if factor != 1.0:
+			sample += controlled_drone*(factor-1.0)
+		_guard_step(state,raw_drone,raw_other,rate)
+	return sample
+
+func _guard_step(state: Dictionary, drone: Vector2, other: Vector2, rate: int) -> void:
+	var count := int(state.get("_guard_count",0))+1
+	var d := float(state.get("_guard_D",0.0))+drone.length_squared()
+	var n := float(state.get("_guard_N",0.0))+other.length_squared()
+	var c := float(state.get("_guard_C",0.0))+drone.dot(other)
+	var window := roundi(float(values["rms_guard"]["window_seconds"])*rate)
+	if count < window:
+		state["_guard_count"] = count
+		state["_guard_D"] = d
+		state["_guard_N"] = n
+		state["_guard_C"] = c
+		return
+	var ratio := float(values["rms_guard"]["target_ratio"])
+	var r2 := ratio*ratio
+	var required := 1.0
+	if d > 0.0:
+		required = maxf(1.0,(r2*c+sqrt(maxf(0.0,r2*r2*c*c+r2*(1.0-r2)*d*n)))/((1.0-r2)*d))
+	state["_guard_factor"] = maxf(float(state.get("_guard_factor",1.0)),required)
+	state["_guard_count"] = 0
+	state["_guard_D"] = 0.0
+	state["_guard_N"] = 0.0
+	state["_guard_C"] = 0.0
+	state["_guard_last_uncompensated_ratio"] = sqrt(d/(d+2.0*c+n)) if d+2.0*c+n > 0.0 else 0.0
+	state["_guard_unavailable"] = d == 0.0
 
 
 func _rebuild_assist_neighbors(city: Array) -> void:
@@ -201,7 +257,7 @@ func assist_envelope(phase_difference: float) -> float:
 	var depth := float(values["assist"]["depth"])
 	return (1.0+depth*cos(TAU*phase_difference))/(1.0+depth)
 
-func _assist_tracks(state: Dictionary, at: int, routes: Array[Dictionary]) -> Dictionary:
+func _assist_tracks(state: Dictionary, at: int, routes: Array[Dictionary], ignore_faders: bool = false) -> Dictionary:
 	var tracks: Dictionary = {}
 	var multiplier := float(values["assist"]["octave_multiplier"])
 	var level := pow(10.0,float(values["assist"]["level_db"])/20.0)
@@ -211,7 +267,7 @@ func _assist_tracks(state: Dictionary, at: int, routes: Array[Dictionary]) -> Di
 		var phase := float(state.get(route["phase_key"],0.0))
 		var other_phase := float(state.get("_phase_"+str(item["neighbor"]),0.0))
 		var sample := _table_wave(route["table"],phase*multiplier)*drone_gain*level*assist_envelope(phase-other_phase)*gain
-		if muted.get(id,false) or (not solo_id.is_empty() and solo_id != id) or at < int(silent_until.get(id,0)):
+		if not ignore_faders and (muted.get(id,false) or (not solo_id.is_empty() and solo_id != id) or at < int(silent_until.get(id,0))):
 			sample = 0.0
 		tracks["District_"+id+"_Assist"] = sample*route["stereo"]
 	return tracks
@@ -222,17 +278,36 @@ func _assist_sum(tracks: Dictionary) -> Vector2:
 		result += sample
 	return result
 
-func _assist_block(state: Dictionary, start: int, count: int, rate: int, routes: Array[Dictionary]) -> PackedVector2Array:
+func _assist_block(state: Dictionary, start: int, count: int, rate: int, routes: Array[Dictionary], ignore_faders: bool = false) -> PackedVector2Array:
 	var result := PackedVector2Array()
 	result.resize(count)
-	var phases := state.duplicate()
-	var increments: Dictionary = {}
-	for route in routing:
-		increments[route["phase_key"]] = frequency(int(state.get(route["id"],route["base_midi"])))/rate
-	for offset in range(count):
-		result[offset] = _assist_sum(_assist_tracks(phases,start+offset,routes))
-		for key in increments:
-			phases[key] = fposmod(float(phases.get(key,0.0))+float(increments[key]),1.0)
+	var multiplier := float(values["assist"]["octave_multiplier"])
+	var level := pow(10.0,float(values["assist"]["level_db"])/20.0)
+	var depth := float(values["assist"]["depth"])
+	for item in routes:
+		var route: Dictionary = item["route"]
+		var id: String = route["id"]
+		var neighbor: String = item["neighbor"]
+		var phase := float(state.get(route["phase_key"],0.0))
+		var other := float(state.get("_phase_"+neighbor,0.0))
+		var increment := frequency(int(state.get(id,route["base_midi"])))/rate
+		var other_increment := frequency(int(state[neighbor]))/rate
+		var table: PackedFloat32Array = route["table"]
+		var size := table.size()
+		var stereo: Vector2 = route["stereo"]
+		var disabled := not ignore_faders and (bool(muted.get(id,false)) or (not solo_id.is_empty() and solo_id != id))
+		var silence_end := 0 if ignore_faders else int(silent_until.get(id,0))
+		for offset in range(count):
+			var position := fposmod(phase*multiplier,1.0)*size
+			var index := int(position)
+			var wave := lerpf(table[index],table[(index+1)%size],position-index)
+			var envelope := (1.0+depth*cos(TAU*(phase-other)))/(1.0+depth)
+			var sample := wave*drone_gain*level*envelope*gain
+			if disabled or start+offset < silence_end:
+				sample = 0.0
+			result[offset] += sample*stereo
+			phase = fposmod(phase+increment,1.0)
+			other = fposmod(other+other_increment,1.0)
 	return result
 
 func begin_duck() -> void:
@@ -255,11 +330,21 @@ func rhythm_level(at: int, rate: int) -> float:
 func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
 	_prepare_envelopes(rate)
 	var helpers := PackedVector2Array()
+	var raw_helpers := PackedVector2Array()
 	var routes := assist_routes(state)
 	if not routes.is_empty():
 		helpers = _assist_block(state,start,count,rate,routes)
+		if guard_enabled:
+			raw_helpers = _assist_block(state,start,count,rate,routes,true)
 	var block := PackedVector2Array()
 	block.resize(count)
+	var raw_drone := PackedVector2Array()
+	var raw_other := PackedVector2Array()
+	var controlled_drone := PackedVector2Array()
+	if guard_enabled:
+		raw_drone.resize(count)
+		raw_other.resize(count)
+		controlled_drone.resize(count)
 	var drone_enabled := active_layers.has("drone")
 	var rhythm_enabled := active_layers.has("rhythm")
 	var levels := PackedFloat64Array()
@@ -297,18 +382,33 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 					previous = Vector2(pulse,output)
 					pulse = output
 				rhythm = pulse*rhythm_gain
+			if guard_enabled:
+				var dry_layers := Vector2(drone,rhythm)*gain
+				raw_drone[offset] += dry_layers.x*stereo
+				raw_other[offset] += dry_layers.y*stereo
 			rhythm *= levels[offset]*emphasis
 			phase = fposmod(phase+increment,1.0)
 			if not disabled and at >= silence_end:
 				var layers := Vector2(drone,rhythm)*gain
 				block[offset] += layers.x*stereo
 				block[offset] += layers.y*stereo
+				if guard_enabled:
+					controlled_drone[offset] += layers.x*stereo
 		state[phase_key] = phase
 		if industrial and rhythm_enabled:
 			state[route["highpass_key"]] = previous
 	if not helpers.is_empty():
 		for offset in range(count):
 			block[offset] += helpers[offset]
+	if guard_enabled:
+		if not raw_helpers.is_empty():
+			for offset in range(count):
+				raw_other[offset] += raw_helpers[offset]
+		for offset in range(count):
+			var factor := float(state.get("_guard_factor",1.0))
+			if factor != 1.0:
+				block[offset] += controlled_drone[offset]*(factor-1.0)
+			_guard_step(state,raw_drone[offset],raw_other[offset],rate)
 	return block
 
 func update_city(city: Array, state: Dictionary) -> void:

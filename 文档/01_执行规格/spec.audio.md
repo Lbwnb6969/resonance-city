@@ -217,3 +217,18 @@ AUDIO-003验收仍为`tests/mix_contract.gd -- --case ducking`，检查Drone逐�
 | 对照状态 | 同一公共gain下的初始、工业全部C、九声部同音、真实小二窄带辅助；后续只验峰值并报告LUFS，不强行再次−16 |
 
 游戏内无FFmpeg/Python依赖；GDScript双精度滤波和积分完成初始校准。开发验收用FFmpeg独立仪表，保存命令和原始JSON。算法参考作者源文件[DeMan系数](https://github.com/csteinmetz1/pyloudnorm/blob/master/pyloudnorm/iirfilter.py)、[BS.1770积分与门控](https://github.com/csteinmetz1/pyloudnorm/blob/master/pyloudnorm/meter.py)；独立仪表参考[FFmpeg loudnorm](https://ffmpeg.org/ffmpeg-filters.html#loudnorm)。本轮只完成响度校准，不将其等同于RMS自动补偿或真人可闻性。
+
+## 表 A10 · P0 Drone RMS保护（授权技术补齐）
+
+| 参数 | 值 / 方法 |
+|---|---|
+| 统计窗 | 400 ms、不重叠，按音频样本；启动第一窗为测量预热，验收稳态及完整8秒报告 |
+| 参考分母 | 当前完整城市、正常rhythm及Assist；忽略玩家mute/solo/迁移临时静音和监听duck/强调，避免控制推子改变其他轨补偿；无声层不编造信号 |
+| 最低比例 / 补偿目标 | 最低25%，补偿目标30%作反应余量；标准声音不触发时输出逐样本不变 |
+| 求解 | D=mean(drone平方)，N=mean(其他平方)，C=mean(drone·其他)；解f使f²D/(f²D+2fC+N)=0.30²，f至少1 |
+| 曲线 | 每窗结束即时提升全体drone系数；本局保持已需最大值，不因试听或玩家推子下降/泵动；公共校准gain不重算 |
+| 状态 | 累计计数、D/N/C、补偿factor保存在PCM渲染状态；快照/分块/取消预览须精确保持 |
+| 静音例外 | 实际输出先按玩家推子/迁移归零，再乘保护系数；所有声部mute时严格零，不用另生drone恢复分子 |
+| Drone不存在 | D=0时不补偿、不合成替代警报；报告不可补偿，不能据此声称达标 |
+
+这是有400ms反应时间的RMS保护，不是逐样本限幅器。现有生产声音完整8秒比例约0.97、不触发补偿；压力合约以显式提高律动/降低drone验证不足时触发、稳态≥25%、玩家控制不反向影响其他轨、ducking不改变参考、真实相位与块PCM一致。校准/辅助/人测保持各自独立验收。

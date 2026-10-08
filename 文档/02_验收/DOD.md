@@ -211,3 +211,5 @@ PERF-001计划入口：
 ## 7. 后续用户裁定与已实现验收补充
 
 AUDIO-004初始响度使用spec.audio A9固定gain口径：`& D:/GODOT/Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/loudness_contract.gd`。独立FFmpeg输入测量初始−16±0.10LUFS、所有已定义对照真峰值≤−3dBTP；后续状态报告响度，不再次归一化。该命令当前已实现，证据见PROJECT；不足时的RMS补偿与HUMAN-SPEAKER单独验收，技术PASS不能替代真人。
+
+AUDIO-004不足时补偿入口：`& D:/GODOT/Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/rms_guard_contract.gd`，按A10稳态/完整8秒RMS≥25%，不复活mute/不改变peer PCM，跨窗块与快照一致。实际最坏辅助供音另用`tests/live_audio_contract.gd -- --case assist_stress`，显式WASAPI，0skips才可用于正式听测供音门槛。

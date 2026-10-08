@@ -41,7 +41,7 @@ func snapshot() -> Dictionary:
 		"solo_id":synth.solo_id,"muted":synth.muted.duplicate(true),
 		"silent_until":synth.silent_until.duplicate(true),"ducking":synth.ducking,
 		"duck_release_at":synth.duck_release_at,"emphasized_id":synth.emphasized_id,
-		"assist_enabled":synth.assist_enabled,"device_mode":synth.device_mode}
+		"assist_enabled":synth.assist_enabled,"device_mode":synth.device_mode,"guard_enabled":synth.guard_enabled}
 
 func restore(saved: Dictionary) -> void:
 	session.restore(saved["session"])
@@ -54,6 +54,7 @@ func restore(saved: Dictionary) -> void:
 	synth.ducking = bool(saved["ducking"])
 	synth.duck_release_at = int(saved["duck_release_at"])
 	synth.emphasized_id = saved["emphasized_id"]
+	synth.guard_enabled = bool(saved["guard_enabled"])
 	synth.assist_enabled = bool(saved["assist_enabled"])
 	synth.device_mode = str(saved["device_mode"])
 	synth._rebuild_assist_neighbors(session.city)

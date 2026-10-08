@@ -312,6 +312,11 @@
     "energy_low_hz": 200.0,
     "energy_high_hz": 2000.0
   },
+  "rms_guard": {
+    "window_seconds": 0.4,
+    "minimum_ratio": 0.25,
+    "target_ratio": 0.3
+  },
   "loudness": {
     "duration_seconds": 8.0,
     "shelf": [
@@ -345,7 +350,7 @@
     "octave_multiplier": 2.0
   },
   "sources": {
-    "spec.audio.md": "0884bc1f501451f8698ac56c438f8755abbb977d62ccc896c6b590284f256305",
+    "spec.audio.md": "3097aa6d90d57cb8d4e7af9219c908e5c0ac974119056276de372b72778c9a97",
     "spec.city.md": "cf5bbf22a2184c9f8672648fb3e964449a1b970a6dd180182b0e7a88678f566d",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "19619120e957945fee0d12d371882fb63f18fe0757cd5453466c4fc2be534753"
