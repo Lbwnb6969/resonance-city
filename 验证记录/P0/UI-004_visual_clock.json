@@ -1,0 +1,94 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/visual_clock_contract.gd"
+	],
+	"case": "visual_clock",
+	"checks": [
+		{
+			"description": "STEP_FRAMES is one beat, not legacy eighth note",
+			"passed": true
+		},
+		{
+			"description": "Before/start mask is closed",
+			"passed": true
+		},
+		{
+			"description": "Half beat reveals half the UV height",
+			"passed": true
+		},
+		{
+			"description": "Exact endpoint and later frames fully revealed",
+			"passed": true
+		},
+		{
+			"description": "Frame rate/delta do not change audio endpoint: 15",
+			"passed": true
+		},
+		{
+			"description": "Frame rate/delta do not change audio endpoint: 30",
+			"passed": true
+		},
+		{
+			"description": "Frame rate/delta do not change audio endpoint: 60",
+			"passed": true
+		},
+		{
+			"description": "Frame rate/delta do not change audio endpoint: 144",
+			"passed": true
+		},
+		{
+			"description": "Reads audible frame; queued/rendered future and delta are ignored",
+			"passed": true
+		},
+		{
+			"description": "Per-sprite masks have independent shader uniforms",
+			"passed": true
+		},
+		{
+			"description": "Mask keeps one Sprite2D per building",
+			"passed": true
+		},
+		{
+			"description": "Real GPU alpha mask renders closed/partial/full",
+			"passed": true
+		}
+	],
+	"details": {
+		"beat_frames": 11025,
+		"frame_rate_cases": [
+			{
+				"scheduled_end_frame": 41025,
+				"visual_fps": 15
+			},
+			{
+				"scheduled_end_frame": 41025,
+				"visual_fps": 30
+			},
+			{
+				"scheduled_end_frame": 41025,
+				"visual_fps": 60
+			},
+			{
+				"scheduled_end_frame": 41025,
+				"visual_fps": 144
+			}
+		],
+		"rendered": {
+			"screenshot": "验证记录/P0/视觉时钟/0_半拍_一拍.png",
+			"status": "real Compatibility rendered",
+			"visible_pixels": [
+				0,
+				25790,
+				53207
+			]
+		},
+		"sample_rate": 22050,
+		"scope": "Timing primitive only, no CITY-004 mechanics; visible updates still have one display-frame sampling delay"
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "UI-004",
+	"scope": "Audible-frame driven one-beat shader mask; no Tween or city growth triggers",
+	"status": "PASS"
+}

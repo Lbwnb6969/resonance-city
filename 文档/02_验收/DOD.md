@@ -218,3 +218,6 @@ AUDIO-004不足时补偿入口：`& D:/GODOT/Godot_v4.7.2-stable_win64_console.e
 
 
 PERF-001入口已实现，P0固定条件以spec.ui U6为准：主场景 `-- --performance-fixture=700`，Compatibility实际1440×900、vsync禁用、35×20/700个单整图、9纹理种类、一个全屏additive窗光；预热10s后测60s、平均≥60fps并p95≤16.67ms。原每帧CSV/截图/硬件/驱动/JSON按日期写验证记录/P0/性能，最新汇总PERF-001_700.json。提前Esc/无真实显示/少实例/阈值不满足不能PASS。固定静态压力成绩不证明未来动态生长或完整声画同时运行。
+
+
+UI-004 visual_clock_contract.gd入口已实现：headless验证可听音频帧/一拍11025帧/不同画面帧率/单Sprite结构；同脚本以有画面Compatibility运行另验真实shader alpha，并存闭合/半拍/一拍截图。它是显示原语的证据，不证明CITY-004城市生长玩法已获批或完成。
