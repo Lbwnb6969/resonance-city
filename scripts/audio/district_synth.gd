@@ -25,9 +25,15 @@ var duck_release_at := -1
 var emphasized_id := ""
 var duck_level: float
 var emphasis_level: float
+var assist_enabled := true
+var device_mode := "standard"
+var assist_neighbors: Dictionary = {}
 
 func _init(city: Array) -> void:
 	values = Values.load_values()
+	assist_enabled = bool(values["assist"]["default_enabled"])
+	device_mode = str(values["assist"]["default_mode"])
+	_rebuild_assist_neighbors(city)
 	duck_level = pow(10.0,float(values["mixing"]["duck_db"])/20.0)
 	emphasis_level = pow(10.0,float(values["mixing"]["emphasis_db"])/20.0)
 	drone_gain = float(values["synthesis"]["drone_gain"])
@@ -141,6 +147,7 @@ func _voice_layers(route: Dictionary, state: Dictionary, at: int, rate: int) -> 
 	return Vector2(drone, rhythm) * gain
 
 func render_tracks(state: Dictionary, at: int, rate: int) -> Dictionary:
+	var helpers := _assist_tracks(state,at,assist_routes(state))
 	var tracks: Dictionary = {}
 	for route in routing:
 		var layers := _voice_layers(route, state, at, rate)
@@ -148,17 +155,85 @@ func render_tracks(state: Dictionary, at: int, rate: int) -> Dictionary:
 		tracks["District_%s_Drone" % id] = layers.x * route["stereo"]
 		tracks["District_%s_Rhythm" % id] = layers.y * route["stereo"]
 		tracks["District_%s_Ornament" % id] = Vector2.ZERO
+	tracks.merge(helpers)
 	return tracks
 
 func _mix_frame(state: Dictionary, at: int, rate: int) -> Vector2:
 	# Playback bypasses per-sample bus dictionary construction.
+	var helpers := _assist_sum(_assist_tracks(state,at,assist_routes(state))) if assist_enabled and device_mode == "narrowband" else Vector2.ZERO
 	var sample := Vector2.ZERO
 	for route in routing:
 		var layers := _voice_layers(route, state, at, rate)
 		sample += layers.x * route["stereo"]
 		sample += layers.y * route["stereo"]
-	return sample
+	return sample+helpers if assist_enabled and device_mode == "narrowband" else sample
 
+
+func _rebuild_assist_neighbors(city: Array) -> void:
+	assist_neighbors.clear()
+	for district in city:
+		var id: String = district["district_id"]
+		var neighbors: Array[String] = []
+		for other in city:
+			if (Schema.cell(district)-Schema.cell(other)).length_squared() == 1:
+				neighbors.append(str(other["district_id"]))
+		neighbors.sort()
+		assist_neighbors[id] = neighbors
+
+func assist_routes(state: Dictionary) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if not assist_enabled or device_mode != "narrowband" or not active_layers.has("drone"):
+		return result
+	var settings: Dictionary = values["assist"]
+	for route in routing:
+		var id: String = route["id"]
+		var midi := int(state.get(id,route["base_midi"]))
+		for neighbor in assist_neighbors[id]:
+			var other := int(state[neighbor])
+			var distance := absi(midi-other)%12
+			var difference := absf(frequency(midi)-frequency(other))
+			if (distance == 1 or distance == 11) and difference >= float(settings["minimum_difference_hz"]) and difference <= float(settings["maximum_difference_hz"]):
+				result.append({"route":route,"neighbor":neighbor})
+				break
+	return result
+
+func assist_envelope(phase_difference: float) -> float:
+	var depth := float(values["assist"]["depth"])
+	return (1.0+depth*cos(TAU*phase_difference))/(1.0+depth)
+
+func _assist_tracks(state: Dictionary, at: int, routes: Array[Dictionary]) -> Dictionary:
+	var tracks: Dictionary = {}
+	var multiplier := float(values["assist"]["octave_multiplier"])
+	var level := pow(10.0,float(values["assist"]["level_db"])/20.0)
+	for item in routes:
+		var route: Dictionary = item["route"]
+		var id: String = route["id"]
+		var phase := float(state.get(route["phase_key"],0.0))
+		var other_phase := float(state.get("_phase_"+str(item["neighbor"]),0.0))
+		var sample := _table_wave(route["table"],phase*multiplier)*drone_gain*level*assist_envelope(phase-other_phase)*gain
+		if muted.get(id,false) or (not solo_id.is_empty() and solo_id != id) or at < int(silent_until.get(id,0)):
+			sample = 0.0
+		tracks["District_"+id+"_Assist"] = sample*route["stereo"]
+	return tracks
+
+func _assist_sum(tracks: Dictionary) -> Vector2:
+	var result := Vector2.ZERO
+	for sample in tracks.values():
+		result += sample
+	return result
+
+func _assist_block(state: Dictionary, start: int, count: int, rate: int, routes: Array[Dictionary]) -> PackedVector2Array:
+	var result := PackedVector2Array()
+	result.resize(count)
+	var phases := state.duplicate()
+	var increments: Dictionary = {}
+	for route in routing:
+		increments[route["phase_key"]] = frequency(int(state.get(route["id"],route["base_midi"])))/rate
+	for offset in range(count):
+		result[offset] = _assist_sum(_assist_tracks(phases,start+offset,routes))
+		for key in increments:
+			phases[key] = fposmod(float(phases.get(key,0.0))+float(increments[key]),1.0)
+	return result
 
 func begin_duck() -> void:
 	ducking = true
@@ -179,6 +254,10 @@ func rhythm_level(at: int, rate: int) -> float:
 
 func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
 	_prepare_envelopes(rate)
+	var helpers := PackedVector2Array()
+	var routes := assist_routes(state)
+	if not routes.is_empty():
+		helpers = _assist_block(state,start,count,rate,routes)
 	var block := PackedVector2Array()
 	block.resize(count)
 	var drone_enabled := active_layers.has("drone")
@@ -227,10 +306,14 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		state[phase_key] = phase
 		if industrial and rhythm_enabled:
 			state[route["highpass_key"]] = previous
+	if not helpers.is_empty():
+		for offset in range(count):
+			block[offset] += helpers[offset]
 	return block
 
 func update_city(city: Array, state: Dictionary) -> void:
 	districts = city.duplicate(true)
+	_rebuild_assist_neighbors(city)
 	for district in city:
 		var id: String = district["district_id"]
 		state[id] = int(district["current_midi"])

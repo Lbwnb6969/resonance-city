@@ -40,7 +40,8 @@ func snapshot() -> Dictionary:
 		"active_layers":synth.active_layers.duplicate(),"gain":synth.gain,
 		"solo_id":synth.solo_id,"muted":synth.muted.duplicate(true),
 		"silent_until":synth.silent_until.duplicate(true),"ducking":synth.ducking,
-		"duck_release_at":synth.duck_release_at,"emphasized_id":synth.emphasized_id}
+		"duck_release_at":synth.duck_release_at,"emphasized_id":synth.emphasized_id,
+		"assist_enabled":synth.assist_enabled,"device_mode":synth.device_mode}
 
 func restore(saved: Dictionary) -> void:
 	session.restore(saved["session"])
@@ -53,6 +54,9 @@ func restore(saved: Dictionary) -> void:
 	synth.ducking = bool(saved["ducking"])
 	synth.duck_release_at = int(saved["duck_release_at"])
 	synth.emphasized_id = saved["emphasized_id"]
+	synth.assist_enabled = bool(saved["assist_enabled"])
+	synth.device_mode = str(saved["device_mode"])
+	synth._rebuild_assist_neighbors(session.city)
 
 func fork() -> CityAudioModel:
 	var copy := CityAudioModel.new(session.fork())

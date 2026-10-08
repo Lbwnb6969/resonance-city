@@ -312,8 +312,17 @@
     "energy_low_hz": 200.0,
     "energy_high_hz": 2000.0
   },
+  "assist": {
+    "default_enabled": true,
+    "default_mode": "standard",
+    "level_db": -6.0,
+    "depth": 0.5,
+    "minimum_difference_hz": 3.0,
+    "maximum_difference_hz": 16.0,
+    "octave_multiplier": 2.0
+  },
   "sources": {
-    "spec.audio.md": "714bdc8bdb8e7f78f68708323e501be9ad4237140eacd2f55c022b1eb7b99bf5",
+    "spec.audio.md": "6f9d352aef1dfa8a0f5cb6e9f3bc9dadbd8bbff953e72ec739e8d4387d36506f",
     "spec.city.md": "cf5bbf22a2184c9f8672648fb3e964449a1b970a6dd180182b0e7a88678f566d",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "19619120e957945fee0d12d371882fb63f18fe0757cd5453466c4fc2be534753"

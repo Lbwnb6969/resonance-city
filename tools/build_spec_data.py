@@ -40,6 +40,7 @@ def generate():
                 for row in a5_rows if row[0] in ['residential', 'commercial', 'industrial']}
     a5 = {row[0]: row[1] for row in a5_rows if len(row) == 2}
     a6 = dict(table(audio, '## 表 A6'))
+    a8 = dict(table(audio, '## 表 A8'))
     musical = numbers(a2['BPM / 拍号 / 小节 / 乐句'])
     assert len(musical) == 6, musical
     voices = {}
@@ -127,6 +128,7 @@ def generate():
         'drone_ratio': numbers(a2['drone 技术下限'])[0] / 100,
     }
     result['acoustic_measurement'] = {
+        # A8 parameters are kept separately from the standard acoustic path.
         'duration_seconds': numbers(a6['合成长度 / 稳态裁剪'])[0],
         'trim_seconds': numbers(a6['合成长度 / 稳态裁剪'])[1],
         'envelope_rate': numbers(a6['原PCM / 包络采样率'])[1],
@@ -141,6 +143,13 @@ def generate():
         'energy_low_hz': numbers(a6['高频能量参考'])[1], 'energy_high_hz': numbers(a6['高频能量参考'])[2],
     }
     generation = dict(table(city, '## 表 D2'))
+    result['assist'] = {
+        'default_enabled': True, 'default_mode': 'standard',
+        'level_db': numbers(a8['伴音'])[-1], 'depth': numbers(a8['调制深度'])[0],
+        'minimum_difference_hz': numbers(a8['合法音对'])[-2],
+        'maximum_difference_hz': numbers(a8['合法音对'])[-1],
+        'octave_multiplier': numbers(a8['伴音'])[0],
+    }
     result['city']['safe_cells'] = {}
     for kind, label in [('residential', '住宅'), ('commercial', '商业'), ('industrial', '工业')]:
         coords = numbers(generation['安全fixture' + label])

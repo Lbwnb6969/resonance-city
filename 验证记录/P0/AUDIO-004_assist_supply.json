@@ -1,0 +1,55 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/live_audio_contract.gd"
+	],
+	"case": "assist_supply",
+	"checks": [
+		{
+			"description": "Physical fixture contains active slow-beat helpers",
+			"passed": true
+		},
+		{
+			"description": "Production nine-district fixture",
+			"passed": true
+		},
+		{
+			"description": "One second PCM renders faster than real time",
+			"passed": true
+		},
+		{
+			"description": "Physical audio driver, not dummy headless output",
+			"passed": true
+		},
+		{
+			"description": "Real AudioStreamGenerator remains active",
+			"passed": true
+		},
+		{
+			"description": "No runtime generator underruns",
+			"passed": true
+		},
+		{
+			"description": "Audible clock progresses within generated PCM",
+			"passed": true
+		}
+	],
+	"details": {
+		"assist_routes": 2,
+		"audible_frame": 353003.890154929,
+		"capacity": 4095,
+		"device_mode": "narrowband",
+		"district_count": 9,
+		"driver": "WASAPI",
+		"hardware_latency": 0.00999999977648258,
+		"one_second_render_ms": 284.379,
+		"rendered_frames": 357119,
+		"skips": 0,
+		"wall_ms": 16000
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "AUDIO-004",
+	"scope": "Actual output device; nine voices with rhythm, one phrase; excludes human audibility",
+	"status": "PASS"
+}

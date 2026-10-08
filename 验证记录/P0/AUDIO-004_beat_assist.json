@@ -1,0 +1,73 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/mix_contract.gd"
+	],
+	"case": "beat_assist",
+	"checks": [
+		{
+			"description": "Default switch ON but standard mode produces no helpers",
+			"passed": true
+		},
+		{
+			"description": "Default output is exactly OFF PCM",
+			"passed": true
+		},
+		{
+			"description": "Adjacent real slow minor second gets exactly one companion per district",
+			"passed": true
+		},
+		{
+			"description": "Original pair difference is 7.78Hz, not high-octave 15.56Hz",
+			"passed": true
+		},
+		{
+			"description": "AM half/full original beat period gives the declared depth extrema",
+			"passed": true
+		},
+		{
+			"description": "Actual companion is high-octave source at -6dB with original-phase AM",
+			"passed": true
+		},
+		{
+			"description": "Derived helper does not consume or reset phase state",
+			"passed": true
+		},
+		{
+			"description": "Mute zeros own companion while other PCM and phases remain equal",
+			"passed": true
+		},
+		{
+			"description": "Mute priority still holds with helper enabled",
+			"passed": true
+		},
+		{
+			"description": "Assisted block path is sample-identical to canonical source",
+			"passed": true
+		},
+		{
+			"description": "Tritone cannot produce a counterfeit slow AM helper",
+			"passed": true
+		},
+		{
+			"description": "Relocation immediately removes nonadjacent helper pairs",
+			"passed": true
+		},
+		{
+			"description": "Preview fork preserves both switch and manual device mode",
+			"passed": true
+		}
+	],
+	"details": {
+		"companion_level_db": -6,
+		"depth": 0.5,
+		"human_speaker": "PENDING",
+		"original_difference_hz": 7.78,
+		"standard": "exact OFF PCM"
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "AUDIO-004",
+	"scope": "Technical helper routing passes; loudness/RMS and human speaker evidence are separate",
+	"status": "PASS"
+}

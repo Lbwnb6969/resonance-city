@@ -9,6 +9,9 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	if Contract.selected_case("fader") == "beat_assist":
+		_assist_contract()
+		return
 	if Contract.selected_case("fader") == "ducking":
 		_ducking_contract()
 		return
@@ -110,3 +113,76 @@ func _ducking_contract() -> void:
 	test.details = {"drone":"exact PCM unchanged","other_rhythm_ratio":wet_energy["b"]/dry_energy["b"],
 		"selected_rhythm_ratio":wet_energy["a"]/dry_energy["a"],"release_frames":release_frames}
 	test.finish(self,"White-list and emphasis processing; Environment/UI absent in P0")
+
+func _assist_contract() -> void:
+	var test := Contract.new("AUDIO-004","beat_assist")
+	var city: Array = [Schema.create("a","residential",Vector2i(8,6)),Schema.create("b","residential",Vector2i(8,7))]
+	city[1]["current_midi"] = 49
+	var standard := Synth.new(city)
+	var off := Synth.new(city)
+	off.assist_enabled = false
+	var standard_state := standard.initial_state()
+	var off_state := off.initial_state()
+	var rate := int(standard.values["timing"]["sample_rate"])
+	test.check(standard.assist_enabled and standard.device_mode == "standard","Default switch ON but standard mode produces no helpers")
+	test.check(standard.render_block(standard_state,0,2048,rate) == off.render_block(off_state,0,2048,rate),"Default output is exactly OFF PCM")
+	var narrow := Synth.new(city)
+	narrow.device_mode = "narrowband"
+	var state := narrow.initial_state()
+	var routes := narrow.assist_routes(state)
+	test.check(routes.size() == 2,"Adjacent real slow minor second gets exactly one companion per district")
+	var delta := narrow.frequency(49)-narrow.frequency(48)
+	test.check(absf(delta-7.78) < 0.01,"Original pair difference is 7.78Hz, not high-octave 15.56Hz")
+	var phase_difference := delta*0.5/delta
+	test.check(absf(narrow.assist_envelope(phase_difference)-1.0/3.0) < 1e-12 and narrow.assist_envelope(delta/delta) == 1.0,"AM half/full original beat period gives the declared depth extrema")
+	state["_phase_a"] = 0.173
+	state["_phase_b"] = 0.319
+	var saved := state.duplicate(true)
+	var actual := narrow._assist_tracks(state,100,routes)
+	var level := pow(10.0,-6.0/20.0)
+	var expected := narrow._wave("residential",0.173*2.0)*narrow.drone_gain*level*(1.0+0.5*cos(TAU*(0.173-0.319)))/1.5
+	test.check(actual["District_a_Assist"] == expected*narrow.routing[0]["stereo"],"Actual companion is high-octave source at -6dB with original-phase AM")
+	test.check(state == saved,"Derived helper does not consume or reset phase state")
+	var muted := Synth.new(city)
+	muted.device_mode = "narrowband"
+	muted.set_mute("a",true)
+	var clean_state := narrow.initial_state()
+	var muted_state := muted.initial_state()
+	var peer_equal := true
+	var muted_zero := true
+	for at in range(1024):
+		var clean_tracks := narrow.render_tracks(clean_state,at,rate)
+		var mute_tracks := muted.render_tracks(muted_state,at,rate)
+		peer_equal = peer_equal and clean_tracks["District_b_Assist"] == mute_tracks["District_b_Assist"]
+		muted_zero = muted_zero and mute_tracks["District_a_Assist"] == Vector2.ZERO
+	test.check(peer_equal and muted_zero and clean_state == muted_state,"Mute zeros own companion while other PCM and phases remain equal")
+	muted.set_solo("a")
+	test.check(muted.render_tracks(muted_state,1024,rate).values().all(func(value: Vector2) -> bool: return value == Vector2.ZERO),"Mute priority still holds with helper enabled")
+	var canonical := Synth.new(city)
+	var blocked := Synth.new(city)
+	canonical.device_mode = "narrowband"
+	blocked.device_mode = "narrowband"
+	var canonical_state := canonical.initial_state()
+	var block_state := blocked.initial_state()
+	var block := blocked.render_block(block_state,0,2048,rate)
+	var equal_pcm := true
+	for at in range(block.size()):
+		equal_pcm = equal_pcm and block[at] == canonical._mix_frame(canonical_state,at,rate)
+	test.check(equal_pcm and canonical_state == block_state,"Assisted block path is sample-identical to canonical source")
+	city[1]["current_midi"] = 54
+	var tritone := Synth.new(city)
+	tritone.device_mode = "narrowband"
+	test.check(tritone.assist_routes(tritone.initial_state()).is_empty(),"Tritone cannot produce a counterfeit slow AM helper")
+	city[1]["current_midi"] = 49
+	city[1]["footprint"] = [[8,9]]
+	narrow.update_city(city,state)
+	test.check(narrow.assist_routes(state).is_empty(),"Relocation immediately removes nonadjacent helper pairs")
+	var Session = load("res://scripts/proposals/city_interventions.gd")
+	var Model = load("res://scripts/audio/city_audio_model.gd")
+	var model = Model.new(Session.new(city,"0000000000000001"))
+	model.synth.device_mode = "narrowband"
+	model.synth.assist_enabled = false
+	var copy = model.fork()
+	test.check(copy.snapshot() == model.snapshot(),"Preview fork preserves both switch and manual device mode")
+	test.details = {"original_difference_hz":delta,"companion_level_db":-6,"depth":0.5,"standard":"exact OFF PCM","human_speaker":"PENDING"}
+	test.finish(self,"Technical helper routing passes; loudness/RMS and human speaker evidence are separate")

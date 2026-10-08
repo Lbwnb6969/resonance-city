@@ -11,9 +11,20 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	var test := Contract.new("AUDIO-002", "live_supply")
+	var assisted := Contract.selected_case("live_supply") == "assist_supply"
+	var test := Contract.new("AUDIO-004" if assisted else "AUDIO-002","assist_supply" if assisted else "live_supply")
 	var city: Array = Generator.new().generate("2026100800000001")["city"]
+	if assisted:
+		for index in range(city.size()):
+			city[index]["footprint"] = [[(index%8)*2,(index/8)*2]]
+		city[0]["footprint"] = [[8,6]]
+		city[1]["footprint"] = [[8,7]]
+		city[0]["current_midi"] = 48
+		city[1]["current_midi"] = 49
 	var synth := Synth.new(city)
+	if assisted:
+		synth.device_mode = "narrowband"
+		test.check(synth.assist_routes(synth.initial_state()).size() >= 2,"Physical fixture contains active slow-beat helpers")
 	var offline := Renderer.new()
 	offline.source = synth._mix_frame
 	offline.state = synth.initial_state()
@@ -40,6 +51,6 @@ func _run() -> void:
 	test.details = {"district_count":city.size(),"one_second_render_ms":render_ms,
 		"wall_ms":Time.get_ticks_msec()-wall_start,"audible_frame":audible,
 		"rendered_frames":rendered,"capacity":clock.capacity,"skips":measured_skips,
-		"driver":AudioServer.get_driver_name(),"hardware_latency":clock.output_latency}
+		"assist_routes":synth.assist_routes(synth.initial_state()).size(),"device_mode":synth.device_mode,"driver":AudioServer.get_driver_name(),"hardware_latency":clock.output_latency}
 	clock.stop_output()
 	test.finish(self, "Actual output device; nine voices with rhythm, one phrase; excludes human audibility")

@@ -105,6 +105,22 @@ func _build_controls() -> void:
 		model.synth.set_mute(_selected_id(),enabled)
 		_cancel_audition())
 	controls.add_child(mute)
+	var assist := CheckButton.new()
+	assist.name = "BeatAssist"
+	assist.text = "窄带拍频辅助（只在窄带模式激活）"
+	assist.set_pressed_no_signal(model.synth.assist_enabled)
+	assist.toggled.connect(func(enabled: bool) -> void:
+		_cancel_audition()
+		model.synth.assist_enabled = enabled)
+	controls.add_child(assist)
+	var device := OptionButton.new()
+	device.name = "DeviceMode"
+	device.add_item("标准设备模式 · 辅助不激活")
+	device.add_item("手动窄带设备 · 伴音 −6 dB")
+	device.item_selected.connect(func(index: int) -> void:
+		_cancel_audition()
+		model.synth.device_mode = "narrowband" if index == 1 else "standard")
+	controls.add_child(device)
 	verb_select = OptionButton.new()
 	verb_select.name = "Verb"
 	verb_select.add_item("retune · 调音")
@@ -129,7 +145,7 @@ func _build_controls() -> void:
 	prediction = _label("选择方案并长按试听，查看同一副本的收益与代价。","Prediction")
 
 func diagnostic_state() -> Dictionary:
-	return {"skips":clock.underruns,"preview_skips":preview_skips,"phase":model.session.phrase_index,
+	return {"assist_enabled":model.synth.assist_enabled,"device_mode":model.synth.device_mode,"skips":clock.underruns,"preview_skips":preview_skips,"phase":model.session.phrase_index,
 		"black":black_screen,"panel":panel.visible,"mouse_mode":Input.mouse_mode,
 		"preview_active":preview_clock.active,"want_preview":want_preview,"worker_alive":worker != null and worker.is_alive(),
 		"preview_ready":not preview_data.is_empty(),"pending":model.session.pending.duplicate(true)}
