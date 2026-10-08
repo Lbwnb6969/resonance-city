@@ -24,7 +24,7 @@
 | 试听长度 | 3 s，至少完整一个3–16 Hz周期，且≥300 ms有效信号 |
 | 副轨卡拍窗口 | 距可听乐句边界≤±80 ms；成功+5活力 |
 | ducking 白名单 | Rhythm / Environment / UI；非 drone 目标−6 dB，300 ms回弹 |
-| 试听被改动声部强调 | +3 dB；与“drone保持不变”的适用范围冲突，U04待定 |
+| 试听被改动声部强调 | +3 dB，仅非drone（本次用户裁定U04）；标准PCM对照关闭强调 |
 | 总混音 | −16 LUFS，真峰值余量3 dB |
 | drone 技术下限 | drone RMS ≥ 总混音 RMS 的25%；不足自动补偿 |
 | 进出淡化 | equal-power，2–4拍；试听状态比较是否去强调见 U04 |
@@ -81,13 +81,35 @@ beat_assist 对参与失谐的两条 drone 在上方一个八度复制一对伴�
 采样率选择依据Godot官方AudioStreamGenerator文档对GDScript的建议；只借用遗产PCM调度范式，不移植其乐理池/步长/混音参数。
 来源：[AudioStreamGenerator](https://docs.godotengine.org/en/stable/classes/class_audiostreamgenerator.html)、[Playback容量/下溢](https://docs.godotengine.org/en/stable/classes/class_audiostreamgeneratorplayback.html)、[硬件混音时钟](https://docs.godotengine.org/en/stable/tutorials/audio/sync_with_audio.html)。
 
+## 表 A5 · P0持续音色与空间实现（授权技术方案）
+
+固定drone无LFO/警报/随机失谐，叠加真实波形。三谐波加法合成后按权重和归一化；住宅为暖拨弦pad、商业为明亮键盘、工业为截断锯齿pad。相位逐样本连续累积，改音高不重置相位。装饰接口保留，P0默认不触发事件。
+
+| 类型 | drone谐波权重（基音/二次/三次） | 16格小节律动落点（0起） |
+|---|---|---|
+| residential | 1.0,0.08,0.03 | 0,4,8,12 |
+| commercial | 1.0,0.12,0.06 | 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 |
+| industrial | 1.0,0.20,0.10 | 0,3,6,10,13 |
+
+| 参数 | 值 / 规则 |
+|---|---|
+| 波表大小 | 4096，周期线性插值；第n谐波为sin(n×phase) |
+| 标准drone / rhythm增益 | 0.07 / 0.025；后续响度校准使用固定公共标量，不随mute/solo重算 |
+| rhythm音高 | drone上方12半音；工业单极高通300Hz |
+| rhythm起振 / 尾音 / 衰减常数 | 0.005 s / 0.25 s / 0.075 s；尾音末0.005s收束 |
+| 方位 | 地图x列0–4左、5–10中、11–15右，pan为−0.6/0/+0.6；equal-power，每个声部仍同时存在双声道 |
+| 初始/参考音高 | MIDI48/49/50/52/54/55使用C3/C♯3/D3/E3/F♯3/G3参考频率；其他音级按A4=440Hz十二平均律 |
+| 移调 | MIDI每12半音频率倍增；不改变街区类型或权重 |
+
+这些是可复现音色起点，尚需HUMAN-IDENTITY与声学测试，不把合成存在等同于音色观感通过。
+
 ### [AUDIO-003] ducking 与持续 drone
 
 状态：部分待裁定U04。
 
 意图：在试听方案时保护诊断信号。
 
-规则：白名单只含律动/环境/UI；drone不 ducking，形态演出全城淡出为表现例外。drone只能由玩家推子或迁移临时静音；迁移静音1乐句后恢复。试听+3dB范围与持续层“不变”冲突待裁定。
+规则：白名单只含律动/环境/UI；drone不ducking，形态演出全城淡出为表现例外。drone只能由玩家推子或迁移临时静音；迁移静音1乐句后恢复。本次用户裁定试听+3dB仅强调非drone，工业300Hz高通仅律动；P0单solo、mute优先且不被补偿抵消。
 
 数据：表 A1、A2；spec.proposal.md 表 P2；用户2026-10-08后续裁定。
 

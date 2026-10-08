@@ -18,7 +18,18 @@
         "ornament"
       ],
       "drone_timbre": "木琴/拨弦 pad 化，暖",
-      "rhythm_signature": "稳定 4/4 中速"
+      "rhythm_signature": "稳定 4/4 中速",
+      "partials": [
+        1.0,
+        0.08,
+        0.03
+      ],
+      "rhythm_steps": [
+        0,
+        4,
+        8,
+        12
+      ]
     },
     "commercial": {
       "base_midi": 52,
@@ -29,7 +40,30 @@
         "ornament"
       ],
       "drone_timbre": "明亮键盘/铃铛",
-      "rhythm_signature": "十六分律动"
+      "rhythm_signature": "十六分律动",
+      "partials": [
+        1.0,
+        0.12,
+        0.06
+      ],
+      "rhythm_steps": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
     },
     "industrial": {
       "base_midi": 54,
@@ -40,11 +74,64 @@
         "ornament"
       ],
       "drone_timbre": "锯齿脉冲，保留185Hz基音",
-      "rhythm_signature": "不规则切分；300Hz高通仅律动层"
+      "rhythm_signature": "不规则切分；300Hz高通仅律动层",
+      "partials": [
+        1.0,
+        0.2,
+        0.1
+      ],
+      "rhythm_steps": [
+        0,
+        3,
+        6,
+        10,
+        13
+      ]
     }
   },
+  "frequencies": {
+    "48": 130.81,
+    "52": 164.82,
+    "54": 185.0,
+    "55": 196.0,
+    "50": 146.83,
+    "38": 73.42,
+    "49": 138.59,
+    "37": 69.3
+  },
+  "harmony": {
+    "initial_vitality": 50.0
+  },
+  "synthesis": {
+    "wavetable_size": 4096,
+    "drone_gain": 0.07,
+    "rhythm_gain": 0.025,
+    "rhythm_octave": 12,
+    "industrial_highpass_hz": 300.0,
+    "rhythm_attack_seconds": 0.005,
+    "rhythm_tail_seconds": 0.25,
+    "rhythm_decay_seconds": 0.075,
+    "pan_regions": [
+      [
+        0,
+        4,
+        -0.6
+      ],
+      [
+        5,
+        10,
+        0.0
+      ],
+      [
+        11,
+        15,
+        0.6
+      ]
+    ]
+  },
   "sources": {
-    "spec.audio.md": "0034fab472ef5b4841f5dcce7a7cd2920447b861c3e5396bc963f539053d1a96",
-    "spec.city.md": "0533b5bdd9c6b304d9469350cda0ffe26b6da69bcbaf8ce8e387b27f6baad707"
+    "spec.audio.md": "7e7625368cc4444769a418e7ba3fb09b7ffd911ef2371c9204abef082e4699cd",
+    "spec.city.md": "0533b5bdd9c6b304d9469350cda0ffe26b6da69bcbaf8ce8e387b27f6baad707",
+    "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2"
   }
 }
