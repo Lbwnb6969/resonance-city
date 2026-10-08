@@ -8,6 +8,7 @@ const Model = preload("res://scripts/audio/city_audio_model.gd")
 const Preview = preload("res://scripts/proposals/proposal_preview.gd")
 const Presentation = preload("res://scripts/ui/proposal_presentation.gd")
 const PreviewOutput = preload("res://scripts/audio/preview_audio_output.gd")
+const Calibration = preload("res://scripts/audio/loudness_calibration.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
 
 @export var start_audio_on_ready := true
@@ -27,6 +28,7 @@ var display_cycle := 0
 var generation: Dictionary
 var preview_skips := 0
 var closed := false
+var calibration: Dictionary = {}
 
 @onready var panel: MarginContainer = $Panel
 @onready var controls: VBoxContainer = $Panel/Controls
@@ -56,6 +58,8 @@ func _ready() -> void:
 	preview_clock.audition_finished.connect(_audition_finished)
 	_build_controls()
 	if start_audio_on_ready:
+		calibration = Calibration.for_city(model.session.city)
+		model.synth.gain = float(calibration["gain"])
 		clock.start_output(model._mix_frame,model.synth.initial_state())
 	else:
 		clock.renderer.source = model._mix_frame
@@ -145,7 +149,7 @@ func _build_controls() -> void:
 	prediction = _label("选择方案并长按试听，查看同一副本的收益与代价。","Prediction")
 
 func diagnostic_state() -> Dictionary:
-	return {"assist_enabled":model.synth.assist_enabled,"device_mode":model.synth.device_mode,"skips":clock.underruns,"preview_skips":preview_skips,"phase":model.session.phrase_index,
+	return {"calibration":calibration.duplicate(true),"gain":model.synth.gain,"assist_enabled":model.synth.assist_enabled,"device_mode":model.synth.device_mode,"skips":clock.underruns,"preview_skips":preview_skips,"phase":model.session.phrase_index,
 		"black":black_screen,"panel":panel.visible,"mouse_mode":Input.mouse_mode,
 		"preview_active":preview_clock.active,"want_preview":want_preview,"worker_alive":worker != null and worker.is_alive(),
 		"preview_ready":not preview_data.is_empty(),"pending":model.session.pending.duplicate(true)}

@@ -1,0 +1,193 @@
+{
+	"calibration": {
+		"blocks": 77,
+		"calibration_ms": 755.209,
+		"duration_seconds": 8.0,
+		"gain": 0.866917478949111,
+		"initial_lufs": -14.7595551872935,
+		"sample_rate": 22050,
+		"target_lufs": -16.0
+	},
+	"compensation": "PENDING insufficient-input guard",
+	"game_meter": {
+		"all_unison": {
+			"blocks": 77,
+			"gated_blocks": 77,
+			"lufs": -11.4757143262286,
+			"relative_gate": -21.4757143262286
+		},
+		"industrial_to_C": {
+			"blocks": 77,
+			"gated_blocks": 77,
+			"lufs": -14.0122150313074,
+			"relative_gate": -24.0122150313074
+		},
+		"initial": {
+			"blocks": 77,
+			"gated_blocks": 77,
+			"lufs": -15.9999998719035,
+			"relative_gate": -25.9999998719035
+		},
+		"narrowband_minor": {
+			"blocks": 77,
+			"gated_blocks": 77,
+			"lufs": -12.2625461389141,
+			"relative_gate": -22.2625461389141
+		}
+	},
+	"human": "PENDING",
+	"independent": {
+		"all_unison": {
+			"command": [
+				"D:\\GODOT\\GODOTPRO\\共鸣之城\\.git\\工具依赖\\响度\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+				"-hide_banner",
+				"-nostats",
+				"-f",
+				"f32le",
+				"-ar",
+				"22050",
+				"-ac",
+				"2",
+				"-i",
+				"D:\\GODOT\\GODOTPRO\\共鸣之城\\验证记录\\P0\\响度校准\\all_unison.f32",
+				"-af",
+				"loudnorm=I=-16.0:TP=-3.0:print_format=json",
+				"-f",
+				"null",
+				"-"
+			],
+			"drone_rms_ratio": 0.98282743340203,
+			"ffmpeg_json": {
+				"input_i": "-11.56",
+				"input_lra": "0.00",
+				"input_thresh": "-21.56",
+				"input_tp": "-8.70",
+				"normalization_type": "dynamic",
+				"output_i": "-16.00",
+				"output_lra": "0.00",
+				"output_thresh": "-26.00",
+				"output_tp": "-13.14",
+				"target_offset": "0.00"
+			},
+			"gate_lufs": -21.56,
+			"integrated_lufs": -11.56,
+			"loudness_range": 0.0,
+			"sample_peak": 0.367204129695892,
+			"true_peak_dbtp": -8.7
+		},
+		"industrial_to_C": {
+			"command": [
+				"D:\\GODOT\\GODOTPRO\\共鸣之城\\.git\\工具依赖\\响度\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+				"-hide_banner",
+				"-nostats",
+				"-f",
+				"f32le",
+				"-ar",
+				"22050",
+				"-ac",
+				"2",
+				"-i",
+				"D:\\GODOT\\GODOTPRO\\共鸣之城\\验证记录\\P0\\响度校准\\industrial_to_C.f32",
+				"-af",
+				"loudnorm=I=-16.0:TP=-3.0:print_format=json",
+				"-f",
+				"null",
+				"-"
+			],
+			"drone_rms_ratio": 0.985004377892457,
+			"ffmpeg_json": {
+				"input_i": "-14.11",
+				"input_lra": "0.00",
+				"input_thresh": "-24.11",
+				"input_tp": "-9.17",
+				"normalization_type": "dynamic",
+				"output_i": "-16.01",
+				"output_lra": "0.00",
+				"output_thresh": "-26.01",
+				"output_tp": "-11.07",
+				"target_offset": "0.01"
+			},
+			"gate_lufs": -24.11,
+			"integrated_lufs": -14.11,
+			"loudness_range": 0.0,
+			"sample_peak": 0.347932189702988,
+			"true_peak_dbtp": -9.17
+		},
+		"initial": {
+			"command": [
+				"D:\\GODOT\\GODOTPRO\\共鸣之城\\.git\\工具依赖\\响度\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+				"-hide_banner",
+				"-nostats",
+				"-f",
+				"f32le",
+				"-ar",
+				"22050",
+				"-ac",
+				"2",
+				"-i",
+				"D:\\GODOT\\GODOTPRO\\共鸣之城\\验证记录\\P0\\响度校准\\initial.f32",
+				"-af",
+				"loudnorm=I=-16.0:TP=-3.0:print_format=json",
+				"-f",
+				"null",
+				"-"
+			],
+			"drone_rms_ratio": 0.978842549951794,
+			"ffmpeg_json": {
+				"input_i": "-16.08",
+				"input_lra": "0.00",
+				"input_thresh": "-26.08",
+				"input_tp": "-9.38",
+				"normalization_type": "dynamic",
+				"output_i": "-16.00",
+				"output_lra": "0.10",
+				"output_thresh": "-26.00",
+				"output_tp": "-9.29",
+				"target_offset": "-0.00"
+			},
+			"gate_lufs": -26.08,
+			"integrated_lufs": -16.08,
+			"loudness_range": 0.0,
+			"sample_peak": 0.33967998623848,
+			"true_peak_dbtp": -9.38
+		},
+		"narrowband_minor": {
+			"command": [
+				"D:\\GODOT\\GODOTPRO\\共鸣之城\\.git\\工具依赖\\响度\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+				"-hide_banner",
+				"-nostats",
+				"-f",
+				"f32le",
+				"-ar",
+				"22050",
+				"-ac",
+				"2",
+				"-i",
+				"D:\\GODOT\\GODOTPRO\\共鸣之城\\验证记录\\P0\\响度校准\\narrowband_minor.f32",
+				"-af",
+				"loudnorm=I=-16.0:TP=-3.0:print_format=json",
+				"-f",
+				"null",
+				"-"
+			],
+			"drone_rms_ratio": 0.967714709793848,
+			"ffmpeg_json": {
+				"input_i": "-12.34",
+				"input_lra": "0.00",
+				"input_thresh": "-22.34",
+				"input_tp": "-7.47",
+				"normalization_type": "dynamic",
+				"output_i": "-16.01",
+				"output_lra": "0.10",
+				"output_thresh": "-26.01",
+				"output_tp": "-11.13",
+				"target_offset": "0.01"
+			},
+			"gate_lufs": -22.34,
+			"integrated_lufs": -12.34,
+			"loudness_range": 0.0,
+			"sample_peak": 0.42329341173172,
+			"true_peak_dbtp": -7.47
+		}
+	}
+}

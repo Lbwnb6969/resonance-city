@@ -6,6 +6,7 @@ import re
 import shutil
 import subprocess
 import sys
+import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -40,7 +41,19 @@ if __name__ == '__main__':
     args = parser.parse_args()
     directory = ROOT / args.directory
     rate = json.loads((ROOT/'数据/spec_values.json').read_text(encoding='utf-8'))['timing']['sample_rate']
-    report = {path.stem:measure(path,rate) for path in sorted(directory.glob('*.f32'))}
+    report = {}
+    for path in sorted(directory.glob('*.f32')):
+        if path.stem.endswith('__drone'):
+            continue
+        values = measure(path,rate)
+        pcm = np.fromfile(path,dtype='<f4').reshape(-1,2).astype(np.float64)
+        values['sample_peak'] = float(np.max(np.abs(pcm)))
+        drone_path = path.with_name(path.stem+'__drone.f32')
+        if drone_path.is_file():
+            drone = np.fromfile(drone_path,dtype='<f4').reshape(-1,2).astype(np.float64)
+            assert drone.shape == pcm.shape
+            values['drone_rms_ratio'] = float(np.sqrt(np.sum(drone**2)/np.sum(pcm**2)))
+        report[path.stem] = values
     (directory/'measurement.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     for name, values in report.items():
         print(name, values['integrated_lufs'], 'LUFS', values['true_peak_dbtp'], 'dBTP')

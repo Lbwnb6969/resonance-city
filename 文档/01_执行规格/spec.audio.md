@@ -26,13 +26,13 @@
 | 副轨卡拍窗口 | 距可听乐句边界≤±80 ms；成功+5活力 |
 | ducking 白名单 | Rhythm / Environment / UI；非 drone 目标−6 dB，300 ms回弹 |
 | 试听被改动声部强调 | +3 dB，仅非drone（本次用户裁定U04）；标准PCM对照关闭强调 |
-| 总混音 | −16 LUFS，真峰值余量3 dB |
+| 总混音 | 初始完整混音校准−16 LUFS后固定公共增益；后续报告实际响度，真峰值余量3 dB；见A9用户裁定 |
 | drone 技术下限 | drone RMS ≥ 总混音 RMS 的25%；不足自动补偿 |
 | 进出淡化 | equal-power，2–4拍；试听状态比较是否去强调见 U04 |
 | 诊断标准路径 | beat_assist OFF；真实持续波形叠加 |
 | beat_assist 开关 | 默认开；仅手动窄带模式实际激活，伴音−6 dB；其他模式无伴音；设备自动探测不做 |
 
-RMS统计窗、LUFS测量时段、补偿曲线、静音例外期间分母处理未给出（U04）。禁止执行 AI 自定默认值。
+响度冲突已由用户裁定，LUFS测量与固定校准见A9；RMS补偿窗与曲线仍待技术补齐，不宣称已完成。
 
 ## 表 A3 · 拍频辅助
 
@@ -201,3 +201,19 @@ AUDIO-003验收仍为`tests/mix_contract.gd -- --case ducking`，检查Drone逐�
 | 快照 | 开关、设备模式进入模型快照；相位沿用原PCM状态，不另启LFO时钟 |
 
 辅助关闭或非窄带模式时，主混音与原路径逐样本一致；辅助轨不进入Drone RMS分子。自动合约验证开关、原频差AM、高八度波表、三全音排除、推子隔离与分块PCM，真人扬声器可闻性仍PENDING。
+
+## 表 A9 · P0初始响度校准（用户裁定与授权技术补齐）
+
+2026-10-08用户选择：初始完整混音校准到−16 LUFS后固定公共增益；改调/迁移后的实际响度允许变化，报告其值并验证真峰值余量≥3dB。静音/solo、辅助、试听不能重算公共增益。原始测量−14.85→−12.85 LUFS证明两个状态不能同时服从同一−16标量；证据保留响度探针目录。
+
+| 参数 | 值 / 方法 |
+|---|---|
+| 校准输入 | 初始完整城市、drone+rhythm、8 s float32 stereo；相位0、standard、辅助OFF、无duck/强调/推子；在实际声音启动前离线计算 |
+| K-weighting高架 | fc=1681.9744509555319Hz，Q=0.7071752369554193，G=3.99984385397dB，Vb指数0.499666774155；DeMan双二阶系数按实际采样率计算 |
+| K-weighting高通 | fc=38.13547087613982Hz，Q=0.5003270373253953；DeMan，b=[1,−2,1] |
+| 积分门控 | 400 ms块、75%重叠；绝对门−70 LUFS，相对门−10 LU；偏移−0.691，两声道能量权重均1 |
+| 公共校准 | gain=10^((−16−测得LUFS)/20)，仅初始计算一次；保存实际LUFS、gain、时长与种子，快照携带gain |
+| 独立验收 | FFmpeg loudnorm的input_i/input_tp（读取输入，丢弃滤镜输出）；初始目标允许测量差±0.10 LU，真峰值≤−3 dBTP |
+| 对照状态 | 同一公共gain下的初始、工业全部C、九声部同音、真实小二窄带辅助；后续只验峰值并报告LUFS，不强行再次−16 |
+
+游戏内无FFmpeg/Python依赖；GDScript双精度滤波和积分完成初始校准。开发验收用FFmpeg独立仪表，保存命令和原始JSON。算法参考作者源文件[DeMan系数](https://github.com/csteinmetz1/pyloudnorm/blob/master/pyloudnorm/iirfilter.py)、[BS.1770积分与门控](https://github.com/csteinmetz1/pyloudnorm/blob/master/pyloudnorm/meter.py)；独立仪表参考[FFmpeg loudnorm](https://ffmpeg.org/ffmpeg-filters.html#loudnorm)。本轮只完成响度校准，不将其等同于RMS自动补偿或真人可闻性。

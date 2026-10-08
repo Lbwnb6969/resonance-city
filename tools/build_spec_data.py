@@ -3,6 +3,7 @@ from pathlib import Path
 import argparse
 import hashlib
 import json
+import math
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +42,7 @@ def generate():
     a5 = {row[0]: row[1] for row in a5_rows if len(row) == 2}
     a6 = dict(table(audio, '## 表 A6'))
     a8 = dict(table(audio, '## 表 A8'))
+    a9 = dict(table(audio, '## 表 A9'))
     musical = numbers(a2['BPM / 拍号 / 小节 / 乐句'])
     assert len(musical) == 6, musical
     voices = {}
@@ -143,6 +145,21 @@ def generate():
         'energy_low_hz': numbers(a6['高频能量参考'])[1], 'energy_high_hz': numbers(a6['高频能量参考'])[2],
     }
     generation = dict(table(city, '## 表 D2'))
+    fc, q, g, exponent = numbers(a9['K-weighting高架'])
+    k = math.tan(math.pi * fc / result['timing']['sample_rate'])
+    vh = 10**(g/20); vb = vh**exponent; den = 1+k/q+k*k
+    shelf = [(vh+vb*k/q+k*k)/den, 2*(k*k-vh)/den, (vh-vb*k/q+k*k)/den,
+             2*(k*k-1)/den, (1-k/q+k*k)/den]
+    fc, q = numbers(a9['K-weighting高通'])[:2]
+    k = math.tan(math.pi * fc / result['timing']['sample_rate']); den = 1+k/q+k*k
+    gate = numbers(a9['积分门控'])
+    result['loudness'] = {
+        'duration_seconds': numbers(a9['校准输入'])[0],
+        'shelf': shelf, 'highpass': [1,-2,1,2*(k*k-1)/den,(1-k/q+k*k)/den],
+        'block_seconds': gate[0]/1000, 'overlap': gate[1]/100,
+        'absolute_gate_lufs': gate[2], 'relative_gate_lu': gate[3], 'offset': gate[4],
+        'tolerance_lu': numbers(a9['独立验收'])[0],
+    }
     result['assist'] = {
         'default_enabled': True, 'default_mode': 'standard',
         'level_db': numbers(a8['伴音'])[-1], 'depth': numbers(a8['调制深度'])[0],

@@ -207,3 +207,7 @@ PERF-001计划入口：
 ## 6. 通过与停工记录
 
 每次执行：规格ID、实际命令、退出码、stdout摘要、证据路径、未确定项。测试文件尚不存在记PENDING；规格待裁定记BLOCKED并指Uxx；只有真实执行满足判定才记PASS。不改变评审数字来迎合测试结果，也不把有冲突的规则自动忽略。
+
+## 7. 后续用户裁定与已实现验收补充
+
+AUDIO-004初始响度使用spec.audio A9固定gain口径：`& D:/GODOT/Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/loudness_contract.gd`。独立FFmpeg输入测量初始−16±0.10LUFS、所有已定义对照真峰值≤−3dBTP；后续状态报告响度，不再次归一化。该命令当前已实现，证据见PROJECT；不足时的RMS补偿与HUMAN-SPEAKER单独验收，技术PASS不能替代真人。

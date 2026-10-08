@@ -312,6 +312,29 @@
     "energy_low_hz": 200.0,
     "energy_high_hz": 2000.0
   },
+  "loudness": {
+    "duration_seconds": 8.0,
+    "shelf": [
+      1.4798253509773172,
+      -2.1707286128559597,
+      0.8608424847261111,
+      -1.3383053360661337,
+      0.508244558913602
+    ],
+    "highpass": [
+      1,
+      -2,
+      1,
+      -1.9783976025901189,
+      0.9785144195032511
+    ],
+    "block_seconds": 0.4,
+    "overlap": 0.75,
+    "absolute_gate_lufs": -70.0,
+    "relative_gate_lu": -10.0,
+    "offset": -0.691,
+    "tolerance_lu": 0.1
+  },
   "assist": {
     "default_enabled": true,
     "default_mode": "standard",
@@ -322,7 +345,7 @@
     "octave_multiplier": 2.0
   },
   "sources": {
-    "spec.audio.md": "6f9d352aef1dfa8a0f5cb6e9f3bc9dadbd8bbff953e72ec739e8d4387d36506f",
+    "spec.audio.md": "0884bc1f501451f8698ac56c438f8755abbb977d62ccc896c6b590284f256305",
     "spec.city.md": "cf5bbf22a2184c9f8672648fb3e964449a1b970a6dd180182b0e7a88678f566d",
     "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
     "spec.proposal.md": "19619120e957945fee0d12d371882fb63f18fe0757cd5453466c4fc2be534753"
