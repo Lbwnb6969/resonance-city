@@ -24,17 +24,21 @@ func _ready() -> void:
 	renderer = Renderer.new()
 	player = AudioStreamPlayer.new()
 	add_child(player)
+	player.stream = _new_generator()
+	output_latency = AudioServer.get_output_latency()
+	set_process(false)
+
+func _new_generator() -> AudioStreamGenerator:
 	var generator := AudioStreamGenerator.new()
 	generator.mix_rate_mode = AudioStreamGenerator.MIX_RATE_CUSTOM
 	generator.mix_rate = renderer.transport.sample_rate
 	generator.buffer_length = maxf(float(Values.load_values()["timing"]["buffer_seconds"]),LIVE_BUFFER_FLOOR_SECONDS)
-	player.stream = generator
-	output_latency = AudioServer.get_output_latency()
-	set_process(false)
+	return generator
 
 func start_output(source: Callable, initial_state: Dictionary, saved_renderer: Dictionary = {}) -> void:
 	stop_output()
 	renderer = Renderer.new()
+	if player.stream == null: player.stream = _new_generator()
 	renderer.source = source
 	renderer.state = initial_state.duplicate(true)
 	resume_fade_left = 0
@@ -86,6 +90,7 @@ func stop_output() -> void:
 	set_process(false)
 	if is_instance_valid(player):
 		player.stop()
+		player.stream = null
 	playback = null
 	output_stopped.emit()
 
