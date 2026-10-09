@@ -82,6 +82,15 @@ static func export_dna(city: Dictionary, directory: String = DIRECTORY+"/exports
 			"rhythms":mix.get("rhythms",[]),
 			"gain":model.get("gain",1.0)
 		},
+		"audio_plan":{
+			"schema":"resonance_audio_plan_v1",
+			"phrase_frames":world.get("settings",{}).get("timing",{}).get("phrase_frames",0),
+			"sample_rate":world.get("settings",{}).get("timing",{}).get("sample_rate",0),
+			"world_events":world.get("events",[]),
+			"decisions":model.get("decisions",[]),
+			"sound_events":model.get("sound_events",[]),
+			"sound_trace":model.get("sound_trace",[])
+		},
 		"view":city.get("view",{})
 	}
 	var path := "%s/%012d_%016d.dna.json" % [directory,stamp,Time.get_ticks_usec()]

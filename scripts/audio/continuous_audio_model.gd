@@ -183,6 +183,7 @@ func freeze() -> ContinuousAudioModel:
 	copy.transition_remaining = transition_remaining
 	copy.transition_total = transition_total
 	copy.sound_events.assign(sound_events.duplicate(true))
+	copy.sound_trace.assign(sound_trace.duplicate(true))
 	copy.sound_overrides = sound_overrides.duplicate(true)
 	copy.decisions.assign(decisions.duplicate(true))
 	copy.synth.listener_community = synth.listener_community
@@ -201,7 +202,7 @@ func capture_state() -> Dictionary:
 	var mix: Dictionary = {}
 	for field in SAVED_SYNTH_FIELDS: mix[field] = synth.get(field)
 	return {"world":world.snapshot(),"gain":synth.gain,"next_boundary":next_boundary,"rendered_until":rendered_until,
-		"event_cursor":event_cursor,"sound_events":sound_events.duplicate(true),"sound_overrides":sound_overrides.duplicate(true),
+		"event_cursor":event_cursor,"sound_events":sound_events.duplicate(true),"sound_trace":sound_trace.duplicate(true),"sound_overrides":sound_overrides.duplicate(true),
 		"decisions":decisions.duplicate(true),"presentation_history":presentation_history.duplicate(true),
 		"last_sample":last_sample,"transition_offset":transition_offset,"transition_remaining":transition_remaining,
 		"transition_total":transition_total,"mix":mix.duplicate(true)}
@@ -214,6 +215,7 @@ static func from_state(saved: Dictionary) -> ContinuousAudioModel:
 	copy.rendered_until = int(saved["rendered_until"])
 	copy.event_cursor = int(saved["event_cursor"])
 	copy.sound_events.assign(saved["sound_events"].duplicate(true))
+	copy.sound_trace.assign(saved.get("sound_trace",[]).duplicate(true))
 	copy.sound_overrides = saved["sound_overrides"].duplicate(true)
 	copy.decisions.assign(saved["decisions"].duplicate(true))
 	copy.presentation_history.assign(saved["presentation_history"].duplicate(true))
