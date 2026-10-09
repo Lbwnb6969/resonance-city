@@ -74,7 +74,14 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
 	var candidates: Array[String] = []
 	for cid in world.communities:
 		if world.communities[cid]["members"].size() >= 3: candidates.append(cid)
-	candidates.sort()
+	candidates.sort_custom(func(a: String,b: String) -> bool:
+		var ar := current_world.center_rank(a)
+		var br := current_world.center_rank(b)
+		if ar != br: return ar < br
+		var ao := current_world.center_order(a)
+		var bo := current_world.center_order(b)
+		if ao != bo: return ao < bo
+		return a < b)
 	rhythms.clear()
 	for cid in candidates:
 		var chosen: Dictionary = {}
@@ -97,7 +104,7 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
 	var first: Dictionary = world.by_id[world.communities[selected]["members"][0]]
 	var has_park := world.public_sites.any(func(site: Dictionary) -> bool: return site["kind"] == "park" and site["active"] and site["community_id"] == selected)
 	var has_civic := world.public_sites.any(func(site: Dictionary) -> bool: return site["kind"] == "civic" and site["active"] and site["community_id"] == selected)
-	theme = {"cid":selected,"notes":notes,"expression":first["expression"],"park":has_park,"civic":has_civic,"stereo":_stereo_for(first)}
+	theme = {"cid":selected,"notes":notes,"expression":first["expression"],"park":has_park,"civic":has_civic,"center":current_world.center_for(selected).duplicate(true),"stereo":_stereo_for(first)}
 	if world.bridge:
 		for cid in candidates:
 			if world.communities[cid]["bank"] == world.communities[selected]["bank"]: continue

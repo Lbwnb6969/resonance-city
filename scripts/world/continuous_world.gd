@@ -25,6 +25,7 @@ var pending: Dictionary = {}
 var pending_actions: Array[Dictionary] = []
 var blocks: Array[Dictionary] = []
 var green_corridors: Array[Dictionary] = []
+var centers: Array[Dictionary] = []
 var public_sites: Array[Dictionary] = []
 var network: CityRoadNetwork
 var transit: Dictionary = {}
@@ -52,6 +53,7 @@ func _init(seed_hex: String = "2026100900000062", generate_plan: bool = true, te
 	if generate_plan:
 		_plan()
 		NeighborhoodPlan.populate(self)
+		_refresh_centers()
 	network = CityRoadNetwork.new()
 	_refresh_public_network()
 	refresh_fabric()
@@ -95,6 +97,44 @@ func _plan() -> void:
 				var entrance := Vector2(road_x,center.y)
 				lots.append({"id":"%s-lot-%d-%d" % [prefix,i,side],"center":[center.x,center.y],"polygon":polygon,
 					"entrance":[entrance.x,entrance.y],"use":"commercial" if absf(py-bridge_y) < 4.1 and side == bank else "residential","community_id":"%s-%d" % [prefix,region+1],"bank":bank,"occupant":""})
+
+func _refresh_centers() -> void:
+	centers.clear()
+	for bank: int in [-1,1]:
+		var prefix := "west" if bank < 0 else "east"
+		if nodes.has(prefix+"-2") and communities.has(prefix+"-2"):
+			var main: Array = nodes[prefix+"-2"]
+			centers.append({"id":prefix+"-primary-center","level":"primary","community_id":prefix+"-2","node_id":prefix+"-2","position":[main[0],main[1]],"active":true})
+		if nodes.has(prefix+"-garden-2") and communities.has(prefix+"-garden-1"):
+			var garden: Array = nodes[prefix+"-garden-2"]
+			centers.append({"id":prefix+"-secondary-center","level":"secondary","community_id":prefix+"-garden-1","node_id":prefix+"-garden-2","position":[garden[0],garden[1]],"active":true})
+		for index in range(1,9):
+			var terrace_id := "%s-terrace-%d" % [prefix,index]
+			var node_id := "%s-terrace-node-%d" % [prefix,index]
+			if not nodes.has(node_id) or not communities.has(terrace_id): continue
+			var terrace: Array = nodes[node_id]
+			centers.append({"id":"%s-center" % terrace_id,"level":"terrace","community_id":terrace_id,"node_id":node_id,"position":[terrace[0],terrace[1]],"active":expanded_plan})
+	for center in centers:
+		var cid := str(center["community_id"])
+		if communities.has(cid):
+			communities[cid]["center_id"] = center["id"]
+			communities[cid]["center_level"] = center["level"]
+
+func center_rank(cid: String) -> int:
+	for center in centers:
+		if str(center["community_id"]) != cid: continue
+		return {"primary":0,"secondary":1,"terrace":2}.get(str(center["level"]),3)
+	return 3
+
+func center_for(cid: String) -> Dictionary:
+	for center in centers:
+		if str(center["community_id"]) == cid: return center
+	return {}
+
+func center_order(cid: String) -> int:
+	for index in range(centers.size()):
+		if str(centers[index]["community_id"]) == cid: return index
+	return 999
 
 func road_environment(a: Vector2,b: Vector2) -> Dictionary:
 	var key := Vector4(a.x,a.y,b.x,b.y)
@@ -439,7 +479,7 @@ func _update_forms(frame: int) -> void:
 func snapshot() -> Dictionary:
 	return {"schema_version":2,"generation_version":65,"settings":cfg.duplicate(true),
 		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase,"family":terrain.family},
-		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"green_corridors":green_corridors.duplicate(true),"communities":communities.duplicate(true)},
+		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"green_corridors":green_corridors.duplicate(true),"centers":centers.duplicate(true),"communities":communities.duplicate(true)},
 		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
 		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,"expanded_plan":expanded_plan,
 		"next_id":next_id,"families":families.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_reason":last_reason}
@@ -456,6 +496,7 @@ func restore(saved: Dictionary) -> void:
 		nodes = plan["nodes"].duplicate(true)
 		blocks.assign(plan["blocks"].duplicate(true))
 		green_corridors.assign(plan.get("green_corridors",[]).duplicate(true))
+		centers.assign(plan.get("centers",[]).duplicate(true))
 		communities = plan["communities"].duplicate(true)
 		transit = saved["transit"].duplicate(true)
 		transit_lines.assign(saved.get("transit_lines",[]).duplicate(true))
@@ -489,6 +530,7 @@ func restore(saved: Dictionary) -> void:
 	phrase_index = int(saved["phrase_index"])
 	era = int(saved.get("era",era_for_phrase(phrase_index)))
 	expanded_plan = bool(saved.get("expanded_plan",false))
+	if centers.is_empty(): _refresh_centers()
 	next_id = int(saved["next_id"])
 	lifecycle = saved["lifecycle"].duplicate(true)
 	last_reason = saved["last_reason"]
@@ -583,6 +625,7 @@ func expand_plan() -> void:
 	if expanded_plan: return
 	Terrace.populate(self)
 	expanded_plan = true
+	_refresh_centers()
 	network.rebuild(nodes,roads,terrain)
 	_refresh_public_network()
 	refresh_fabric()
