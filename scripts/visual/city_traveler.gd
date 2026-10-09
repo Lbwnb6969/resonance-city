@@ -22,6 +22,9 @@ var walk_target := Vector2.ZERO
 var stop_id := ""
 var passenger_load := 0
 var passenger_capacity := 12
+# Physical state is kept separate from the route's cruise speed so starts,
+# stops and bends read as motion instead of frame-to-frame teleportation.
+var motion_speed := 0.0
 
 func _init(agent_kind: String = "walker", index: int = 0) -> void:
 	kind = agent_kind
@@ -31,6 +34,7 @@ func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dict
 	if kind == "car" and city.era < 5: return {}
 	if _is_vehicle() and _line(city).is_empty(): return {}
 	if kind == "walker" and city.buildings.is_empty(): return {}
+	var previous_direction := direction
 	if not initialized:
 		if _is_vehicle():
 			var line := _line(city)
@@ -45,30 +49,39 @@ func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dict
 			position = walk_target
 			_next_walk(city)
 		initialized = true
-		last_seconds = seconds
-	var elapsed := maxf(0.0,seconds-last_seconds)
+	var elapsed := maxf(0.0,seconds-last_seconds) if last_seconds >= 0.0 else 0.0
+	var frame_delta := elapsed
 	last_seconds = seconds
-	var speed := _speed(city) if _is_vehicle() else 0.48
+	var cruise_speed := _speed(city) if _is_vehicle() else 0.48
+	var target_speed := 0.0 if wait > 0.0 else cruise_speed
+	motion_speed = move_toward(motion_speed,target_speed,_acceleration()*maxf(elapsed,0.016))
 	while elapsed > 0.000001:
 		if wait > 0.0:
 			var pause := minf(elapsed,wait)
 			wait -= pause
 			elapsed -= pause
 			continue
+		var speed := maxf(motion_speed,0.05)
 		var desired: float = minf(elapsed,maxf(0.0,total-distance)/speed)
 		var allowed: float = _traffic_distance(city,desired,traffic)
 		if desired > 0.000001 and allowed <= 0.000001:
 			# Higher-priority traffic keeps moving; the follower yields for a short visible pause.
 			wait = maxf(wait,minf(elapsed,0.08))
+			motion_speed = move_toward(motion_speed,0.0,_acceleration()*maxf(elapsed,0.016))
 			continue
 		var travel := minf(desired,allowed/maxf(speed,0.00001))
 		distance += travel*speed
 		elapsed -= travel
-		_sample()
+		_sample(frame_delta)
 		if distance >= total-0.00001:
 			if _is_vehicle(): _next_bus(city)
 			else: _next_walk(city)
 			if total < 0.00001: break
+	if previous_direction.length_squared() > 0.00001 and direction.length_squared() > 0.00001:
+		var output_angle := previous_direction.angle_to(direction)
+		var output_limit := _turn_rate()*maxf(frame_delta,0.016)
+		if absf(output_angle) > output_limit:
+			direction = previous_direction.rotated(signf(output_angle)*output_limit).normalized()
 	return {"position":position,"direction":direction,"stopped":wait > 0.0,"destination":destination,
 		"stop_id":stop_id,"passengers":passenger_load,"capacity":passenger_capacity,"priority":_priority()}
 
@@ -100,6 +113,20 @@ func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array) -> f
 		elif not same_way and gap < 0.48 and int(other.get("priority",0)) < _priority():
 			return 0.0
 	return desired
+
+func _acceleration() -> float:
+	if kind == "car": return 3.8
+	if kind == "bus": return 2.4
+	if kind == "tram": return 2.8
+	if kind == "carriage": return 1.9
+	return 2.2
+
+func _turn_rate() -> float:
+	if kind == "car": return 4.6
+	if kind == "bus": return 3.6
+	if kind == "tram": return 3.2
+	if kind == "carriage": return 2.8
+	return 5.2
 
 func _speed(city: ContinuousWorld) -> float:
 	var city_cfg: Dictionary = city.cfg["city"]
@@ -227,7 +254,7 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 func snapshot() -> Dictionary:
 	var saved: Dictionary = {}
 	for field in ["kind","ordinal","position","direction","path","lengths","distance","total","last_seconds","wait",
-		"destination","line_key","line_index","leg_index","initialized","trip","walk_target","stop_id","passenger_load","passenger_capacity"]: saved[field] = get(field)
+		"destination","line_key","line_index","leg_index","initialized","trip","walk_target","stop_id","passenger_load","passenger_capacity","motion_speed"]: saved[field] = get(field)
 	return saved.duplicate(true)
 
 func _saved_vector(value: Variant) -> Vector2:
@@ -253,11 +280,18 @@ func restore(saved: Dictionary) -> void:
 			"lengths": lengths = _saved_lengths(saved[field])
 			_: set(field,saved[field])
 
-func _sample() -> void:
+func _sample(delta_seconds: float = 0.0) -> void:
 	var remaining := distance
 	for i in range(lengths.size()):
 		if remaining <= lengths[i] or i == lengths.size()-1:
 			position = path[i].lerp(path[i+1],clampf(remaining/maxf(lengths[i],0.00001),0.0,1.0))
-			if lengths[i] > 0.00001: direction = (path[i+1]-path[i]).normalized()
+			if lengths[i] > 0.00001:
+				var tangent := (path[i+1]-path[i]).normalized()
+				var max_turn := _turn_rate()*maxf(delta_seconds,0.016)
+				var angle := direction.angle_to(tangent)
+				if absf(angle) > max_turn:
+					direction = direction.rotated(signf(angle)*max_turn).normalized()
+				else:
+					direction = tangent
 			return
 		remaining -= lengths[i]
