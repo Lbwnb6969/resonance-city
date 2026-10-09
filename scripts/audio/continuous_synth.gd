@@ -19,6 +19,15 @@ var population: Dictionary = {}
 var last_voice_count := 0
 var max_voice_count := 0
 
+func begin_continuous_era_transition(frame: int,target_era: int,rate: int) -> void:
+	var duration := maxi(1,roundi(4.0*60.0*float(rate)/120.0))
+	for route in routing:
+		if bool(route.get("landmark",false)): continue
+		if route.has("era_change"): route["table"] = route["era_table"]
+		route["era_change"] = {"frame":frame,"duration":duration,"era":target_era}
+		route["era_table"] = EraVoice.table(str(route["type"]),target_era,int(values["synthesis"]["wavetable_size"]))
+		route["tone"] = target_era
+
 func _pan_for(district: Dictionary) -> float:
 	var p: Array = district["position"]
 	var config: Dictionary = WorldConfig.load_values()["space"]

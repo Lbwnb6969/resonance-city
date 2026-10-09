@@ -93,7 +93,7 @@ func _init(city: Array, marks: Dictionary = {}) -> void:
 		routing.append({"id": id, "type": district["type"], "base_midi": district["current_midi"],
 			"rhythm_steps": PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
 			"phase_key": "_phase_" + id, "highpass_key": "_highpass_" + id,
-			"ring":{},"tone":int(district.get("era",0)),"stage":Stage.initial(district),"table": _era_table(district),"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
+			"ring":{},"tone":int(district.get("era",0)),"stage":Stage.initial(district),"table": _era_table(district),"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),"landmark":bool(district.get("landmark",false)),
 			"stereo": _stereo_for(district)})
 
 func _append_district(district: Dictionary) -> void:
@@ -101,13 +101,15 @@ func _append_district(district: Dictionary) -> void:
 	routing.append({"id":id,"type":district["type"],"base_midi":district["current_midi"],
 		"rhythm_steps":PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
 		"phase_key":"_phase_"+id,"highpass_key":"_highpass_"+id,
-		"ring":{},"tone":int(district.get("era",0)),"stage":Stage.initial(district),"table":_era_table(district),"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
+		"ring":{},"tone":int(district.get("era",0)),"stage":Stage.initial(district),"table":_era_table(district),"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),"landmark":bool(district.get("landmark",false)),
 		"stereo":_stereo_for(district)})
 
 func _era_table(district: Dictionary) -> PackedFloat32Array:
-	return EraVoice.table(str(district["type"]),2,int(values["synthesis"]["wavetable_size"])) if int(district.get("era",0)) == 2 else tables[district["type"]]
+	var era := int(district.get("era",1))
+	return tables[district["type"]] if era <= 1 else EraVoice.table(str(district["type"]),era,int(values["synthesis"]["wavetable_size"]))
 
 func begin_era_transition(transition: Dictionary, transport: Object) -> void:
+	var target_era := int(transition.get("era",2))
 	var motif: Array = []
 	for d in districts:
 		if d["type"] != "industrial" and motif.size() < 4: motif.append({"id":d["district_id"],"midi":d["current_midi"]})
@@ -117,8 +119,8 @@ func begin_era_transition(transition: Dictionary, transport: Object) -> void:
 		for d in districts:
 			if d["district_id"] == route["id"]: district = d
 		if district.get("landmark",false): continue
-		route["era_change"] = {"frame":Era.wave_frame(district,transition,transport),"duration":transport.beat_frame(4),"era":2}
-		route["era_table"] = EraVoice.table(str(route["type"]),2,int(values["synthesis"]["wavetable_size"]))
+		route["era_change"] = {"frame":Era.wave_frame(district,transition,transport),"duration":transport.beat_frame(4),"era":target_era}
+		route["era_table"] = EraVoice.table(str(route["type"]),target_era,int(values["synthesis"]["wavetable_size"]))
 
 func era_snapshot() -> Dictionary:
 	var result: Dictionary = {}
@@ -132,7 +134,8 @@ func restore_eras(saved: Dictionary) -> void:
 		route["era_change"] = saved[route["id"]].duplicate(true)
 		route["table"] = tables[route["type"]]
 		route["tone"] = 1
-		route["era_table"] = EraVoice.table(str(route["type"]),2,int(values["synthesis"]["wavetable_size"]))
+		var target_era := int(route["era_change"].get("era",2))
+		route["era_table"] = EraVoice.table(str(route["type"]),target_era,int(values["synthesis"]["wavetable_size"]))
 
 func _route_wave(route: Dictionary, phase: float, at: int) -> float:
 	if not route.has("era_change"): return _table_wave(route["table"],phase)

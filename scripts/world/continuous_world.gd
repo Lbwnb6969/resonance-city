@@ -530,7 +530,7 @@ func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int) -> St
 		"current_midi":midi,"base_midi":midi,"type":type,"vitality":cfg["harmony"]["initial_vitality"],
 		"community_id":check["community_id"],"lot_id":check["lot_id"],"placement_tier":str(check.get("tier","L1")),
 		"fabric_frontage":int(check.get("frontage",0)),"family_id":family,"anchor_id":family,
-		"expression":str(families.get(family,{}).get("expression",profile)),"family_anchor":root,"is_anchor":false,"era":1,"form":"胚","form_count":0,"birth_frame":frame,"voice_level":0.2}
+		"expression":str(families.get(family,{}).get("expression",profile)),"family_anchor":root,"is_anchor":false,"era":era,"form":"胚","form_count":0,"birth_frame":frame,"voice_level":0.2}
 	buildings.append(building)
 	by_id[id] = building
 	for lot in lots:

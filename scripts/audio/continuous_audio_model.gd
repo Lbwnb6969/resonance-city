@@ -142,6 +142,10 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			transition_total = maxi(1,roundi(seam_seconds*rate))
 			transition_remaining = transition_total
 			synth.update_city(audio_city(),state,{},recent)
+			var era_events: Array = recent.filter(func(event: Dictionary) -> bool: return str(event.get("kind","")) == "era")
+			if not era_events.is_empty():
+				var era_event: Dictionary = era_events[-1]
+				synth.begin_continuous_era_transition(int(era_event.get("frame",at)),int(era_event.get("era",world.era)),rate)
 			synth.configure_score(world,sound_overrides)
 			synth.set_gray(bool(world.lifecycle["gray"]),at)
 		var until := next_boundary
@@ -208,6 +212,7 @@ func freeze() -> ContinuousAudioModel:
 	copy.synth.musical_nodes = synth.musical_nodes.duplicate(true)
 	copy.synth.update_city(copy.audio_city(),{}, {},[])
 	copy.synth.configure_score(copy.world,copy.sound_overrides)
+	copy.synth.restore_eras(synth.era_snapshot())
 	return copy
 
 const SAVED_SYNTH_FIELDS = ["pad_groups","population","rhythm_nodes","musical_nodes","theme","response","rhythms",
@@ -235,7 +240,7 @@ func capture_state() -> Dictionary:
 		"event_cursor":event_cursor,"sound_events":sound_events.duplicate(true),"sound_trace":sound_trace.duplicate(true),"sound_overrides":sound_overrides.duplicate(true),
 		"decisions":decisions.duplicate(true),"presentation_history":presentation_history.duplicate(true),
 		"last_sample":last_sample,"transition_offset":transition_offset,"transition_remaining":transition_remaining,
-		"transition_total":transition_total,"mix":mix.duplicate(true)}
+		"transition_total":transition_total,"era_changes":synth.era_snapshot(),"mix":mix.duplicate(true)}
 
 static func from_state(saved: Dictionary) -> ContinuousAudioModel:
 	var city := World.new(saved["world"]["seed_hex"],false)
@@ -256,6 +261,7 @@ static func from_state(saved: Dictionary) -> ContinuousAudioModel:
 	copy.transition_remaining = int(saved["transition_remaining"])
 	copy.transition_total = int(saved["transition_total"])
 	for field in SAVED_SYNTH_FIELDS: copy.synth.set(field,saved["mix"][field])
+	copy.synth.restore_eras(saved.get("era_changes",{}))
 	copy.synth.pad_groups = _hydrate_stereo(copy.synth.pad_groups)
 	copy.synth.rhythm_nodes = _hydrate_stereo(copy.synth.rhythm_nodes)
 	copy.synth.musical_nodes = _hydrate_stereo(copy.synth.musical_nodes)
