@@ -38,10 +38,10 @@ func _initialize() -> void:
 				isolated_check = result
 	check(tier_counts["L2"] > 0,"legal side street land previews L2")
 	check(not isolated_check.is_empty() and str(isolated_check["preview"]).contains("孤屋"),"legal open land previews L3 instead of being rejected")
-	world.cfg["city"]["playable_building_budget"] = 81
+	var before_seed := world.buildings.size()
 	var seed := world.request({"kind":"seed","position":[isolated.x,isolated.y],"midi":48},9000)
 	world.settle(9000)
-	check(seed["accepted"] and world.buildings.size() == 81 and str(world.buildings.back().get("placement_tier","")) == "L3","L3 seed commits and remains an independent building")
+	check(seed["accepted"] and world.buildings.size() == before_seed+1 and str(world.buildings.back().get("placement_tier","")) == "L3","L3 seed commits and remains an independent building without a global size cap")
 	var a := {"district_id":"a","position":[0.0,0.0],"radius":0.45,"type":"residential"}
 	var b := {"district_id":"b","position":[1.0,0.0],"radius":0.45,"type":"residential"}
 	var c := {"district_id":"c","position":[1.01,0.0],"radius":0.45,"type":"residential"}

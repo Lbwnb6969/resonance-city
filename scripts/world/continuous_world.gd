@@ -43,9 +43,9 @@ var lifecycle := {"gray":false,"low_phrases":0,"ended":false}
 var fabric_cache: Dictionary = {"shared_walls":[],"rows":[],"courtyards":[],"community_wall":{}}
 var last_reason := "在河边选择一块临街空地，播下第一段声音"
 
-func _init(seed_hex: String = "2026100900000062", generate_plan: bool = true) -> void:
+func _init(seed_hex: String = "2026100900000062", generate_plan: bool = true, terrain_family: String = "river_valley") -> void:
 	rng = RandomStreams.new(seed_hex)
-	terrain.configure(rng.bounded("terrain",2147483647),float(rng.next_u32("terrain"))/4294967296.0*TAU)
+	terrain.configure(rng.bounded("terrain",2147483647),float(rng.next_u32("terrain"))/4294967296.0*TAU,terrain_family)
 	if generate_plan:
 		_plan()
 		NeighborhoodPlan.populate(self)
@@ -193,8 +193,6 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 	if lifecycle["ended"]: return {"accepted":false,"reason":"这一段已结束，按R重新播种"}
 	var kind := str(operation.get("kind",""))
 	if kind == "seed":
-		var seed_count := pending_actions.filter(func(op: Dictionary) -> bool: return op["kind"] == "seed").size()
-		if buildings.size()+seed_count >= int(cfg["city"]["playable_building_budget"]): return {"accepted":false,"reason":"这片河谷已经长满，调音或改编让它继续演奏"}
 		var check := placement(Vector2(float(operation["position"][0]),float(operation["position"][1])))
 		if not check["allowed"]: return {"accepted":false,"reason":check["reason"]}
 		for op in pending_actions:
@@ -311,9 +309,6 @@ func settle(frame: int) -> void:
 	refresh_fabric()
 
 func _grow(family: String, frame: int) -> void:
-	if buildings.size() >= int(cfg["city"]["playable_building_budget"]):
-		last_reason = "这片河谷已长满；用调音、公园与文化设施继续改编它"
-		return
 	if phrase_index < int(families[family].get("next_growth_phrase",0)):
 		return
 	var root: Dictionary = by_id[families[family]["root"]]
@@ -439,7 +434,7 @@ func _update_forms(frame: int) -> void:
 
 func snapshot() -> Dictionary:
 	return {"schema_version":2,"generation_version":65,"settings":cfg.duplicate(true),
-		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase},
+		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase,"family":terrain.family},
 		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"communities":communities.duplicate(true)},
 		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
 		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,
@@ -450,7 +445,7 @@ func restore(saved: Dictionary) -> void:
 	if saved.has("plan"):
 		cfg = saved["settings"].duplicate(true)
 		terrain.cfg = cfg["terrain"]
-		terrain.configure(int(saved["terrain_state"]["noise_seed"]),float(saved["terrain_state"]["river_phase"]))
+		terrain.configure(int(saved["terrain_state"]["noise_seed"]),float(saved["terrain_state"]["river_phase"]),str(saved["terrain_state"].get("family","river_valley")))
 		var plan: Dictionary = saved["plan"]
 		lots.assign(plan["lots"].duplicate(true))
 		roads.assign(plan["roads"].duplicate(true))
@@ -509,6 +504,9 @@ func era_for_phrase(value: int) -> int:
 
 func era_title() -> String:
 	return ["古典","中世纪","文艺复兴","工业","现代"][clampi(era,1,5)-1]
+
+func terrain_title() -> String:
+	return terrain.family_title(terrain.family)
 
 func vehicle_kind() -> String:
 	return "carriage" if era <= 3 else ("tram" if era == 4 else "bus")
@@ -583,10 +581,9 @@ func build_town() -> void:
 		roots[cid] = {"midi":tones[index%tones.size()],"count":0,"family":"town-"+cid}
 		families["town-"+cid] = {"root":"","created_phrase":0,"expression":"deep" if cid.contains("garden") else "bright"}
 	var progressed := true
-	while buildings.size() < int(cfg["city"]["playable_building_budget"]) and progressed:
+	while progressed:
 		progressed = false
 		for cid in ids:
-			if buildings.size() >= int(cfg["city"]["playable_building_budget"]): break
 			if candidates[cid].is_empty(): continue
 			var lot: Dictionary = candidates[cid].pop_front()
 			var p := Vector2(lot["center"][0],lot["center"][1])

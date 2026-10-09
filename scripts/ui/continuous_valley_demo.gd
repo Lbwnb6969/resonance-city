@@ -12,6 +12,7 @@ var scenery := ValleyScenery.new()
 var expression := "bright"
 var starter := true
 var town_starter := false
+var terrain_family := "river_valley"
 @export var session_persistence := true
 var archive_directory := CityArchive.DIRECTORY
 var last_saved_event_count := -1
@@ -50,7 +51,7 @@ var pan := Vector2.ZERO
 var pan_target := Vector2.ZERO
 var dragging := false
 var black := false
-var notice := "点击房屋改编 · 空地播种 · G连接两岸 · H看全城 · N空白开局 · V深流慢板"
+var notice := "点击房屋改编 · 空地播种 · G连接两岸 · Y切换地形 · H看全城 · N空白开局"
 var notice_seconds := 10.0
 var last_hover_lot := ""
 var hover_seconds := 0.0
@@ -114,7 +115,7 @@ func _start_world(saved: Dictionary = {}) -> void:
 	for sprite in sprites.values(): sprite.queue_free()
 	sprites.clear()
 	if saved.is_empty():
-		var world := World.new()
+		var world := World.new("2026100900000062",true,terrain_family)
 		if town_starter: world.build_town()
 		elif starter: world.build_starter(expression)
 		model = Model.new(world,fixed_gain)
@@ -123,6 +124,7 @@ func _start_world(saved: Dictionary = {}) -> void:
 		expression = str(saved["view"]["expression"])
 		starter = bool(saved["view"]["starter"])
 		town_starter = bool(saved["view"].get("town_starter",false))
+		terrain_family = str(model.world.terrain.family)
 		fixed_gain = model.synth.gain
 	shown_world = model.world
 	selected_id = ""
@@ -143,7 +145,7 @@ func _start_world(saved: Dictionary = {}) -> void:
 		scenery.restore(saved["view"]["travelers"])
 	last_saved_event_count = model.world.events.size()
 	last_checkpoint_phrase = model.world.phrase_index
-	_message("林荫交响 · 80栋制作示例，十个社区轮换与应答" if town_starter else ("晴岸合奏 · 18栋制作示例，可从这里继续改编" if starter and expression == "bright" else ("深流慢板 · 低音与留白，可从这里继续改编" if starter else "空地开局 · 点击街边播下第一段声音")))
+	_message("%s · %d栋 · %d个社区" % [shown_world.terrain_title(),shown_world.buildings.size(),shown_world.communities.size()] if not saved.is_empty() else ("%s · 林荫交响 · 完整河谷起点，可继续生长" % shown_world.terrain_title() if town_starter else ("%s · 晴岸合奏 · 18栋制作示例" % shown_world.terrain_title() if starter and expression == "bright" else ("%s · 深流慢板 · 低音与留白" % shown_world.terrain_title() if starter else "%s · 空地开局 · 点击街边播下第一段声音" % shown_world.terrain_title()))))
 
 func _make_menu() -> void:
 	menu = PanelContainer.new()
@@ -208,11 +210,28 @@ func _make_menu() -> void:
 	box.add_child(archive_row)
 	var town_button := Button.new()
 	town_button.text = "林荫交响 · T"
-	town_button.tooltip_text = "切换到80栋制作示例；当前作品先保存"
+	town_button.tooltip_text = "切换到完整河谷起点；当前作品先保存，之后仍可继续生长"
 	town_button.pressed.connect(_start_town)
 	box.add_child(town_button)
+	var terrain_button := Button.new()
+	terrain_button.text = "切换地形族 · Y"
+	terrain_button.tooltip_text = "河谷、湖盆、林岭、海湾平原共享连续城市操作"
+	terrain_button.pressed.connect(_cycle_terrain)
+	box.add_child(terrain_button)
 	add_child(menu)
 	menu.hide()
+
+func _cycle_terrain() -> void:
+	_save_before_switch()
+	var families: Array[String] = ValleyTerrain.family_ids()
+	var index := families.find(terrain_family)
+	terrain_family = families[posmod(index+1,families.size())]
+	town_starter = true
+	starter = true
+	expression = "bright"
+	_start_world()
+	clock.start_output(model._mix_frame,{})
+	_message("已切换到"+shown_world.terrain_title()+" · 规划、声音与时代交通保留")
 
 func _save_before_switch() -> void:
 	if session_persistence and model != null and clock.active: save_city("切换前保存")
@@ -417,7 +436,7 @@ func _input(event: InputEvent) -> void:
 		load_city()
 		get_viewport().set_input_as_handled()
 		return
-	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T]: get_viewport().set_input_as_handled()
+	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y]: get_viewport().set_input_as_handled()
 	if event.keycode == KEY_SPACE and not event.pressed:
 		preview_requested = false
 		preview_player.stop()
@@ -437,6 +456,7 @@ func _input(event: InputEvent) -> void:
 			zoom_target = 0.88
 			pan_target = Vector2(0,70)
 		KEY_T: _start_town()
+		KEY_Y: _cycle_terrain()
 		KEY_N:
 			_save_before_switch()
 			town_starter = false
@@ -547,7 +567,7 @@ func _process(delta: float) -> void:
 		var site := shown_world.public_at(p)
 		if not site.is_empty():
 			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路服务%d栋\n公园为主题留白，文化设施让主题更清楚" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
-		else: tooltip.text = "合法陆地都能播种；靠近道路会长得更快\n滚轮缩放 · 中键移动 · G建桥 · H全城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
+		else: tooltip.text = "合法陆地都能播种；靠近道路会长得更快\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
 	if menu.visible and pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()
@@ -586,9 +606,13 @@ func _draw() -> void:
 		return
 	if shown_world == null: return
 	var sea := PackedVector2Array([Vector2(-8,-8),Vector2(40,-8),Vector2(40,40),Vector2(-8,40)])
+	var family := shown_world.terrain.family
+	var water_color := Color("78a4ad") if family == "river_valley" else (Color("719ca8") if family == "lake_basin" else (Color("82aab0") if family == "coastal_plain" else Color("6e9c9a")))
+	var left_color := Color("e9e1cb") if family != "forest_ridge" else Color("b7c8a4")
+	var right_color := Color("e0e5d6") if family != "coastal_plain" else Color("e5d9bd")
 	draw_colored_polygon(_project_polygon(sea,0.0),Color("9bbcc0"))
-	draw_colored_polygon(_project_polygon(shown_world.terrain.left_bank),Color("e9e1cb"))
-	draw_colored_polygon(_project_polygon(shown_world.terrain.right_bank),Color("e0e5d6"))
+	draw_colored_polygon(_project_polygon(shown_world.terrain.left_bank),left_color)
+	draw_colored_polygon(_project_polygon(shown_world.terrain.right_bank),right_color)
 	_draw_ground_details()
 	# Contours show the seeded hill without introducing a second terrain model.
 	for radius: float in [3.0,5.0,7.0,9.0]:
@@ -597,12 +621,17 @@ func _draw() -> void:
 			var p := Vector2(4,2)+Vector2.from_angle(TAU*step/64.0)*radius
 			if shown_world.terrain.land_at(p): contour.append(point(p))
 		if contour.size() > 2: draw_polyline(contour,Color(0.54,0.64,0.49,0.16),1.0,true)
-	draw_colored_polygon(_project_polygon(shown_world.terrain.water,0.0),Color("78a4ad"))
+	draw_colored_polygon(_project_polygon(shown_world.terrain.water,0.0),water_color)
 	var flow := float(clock.renderer.transport.audible_frame)/float(clock.renderer.transport.sample_rate)
 	for i in range(18):
 		var y := -3.0+fposmod(float(i)*2.1+flow*0.35,38.0)
 		var x := shown_world.terrain.river_x(y)
-		draw_line(point(Vector2(x-0.3,y),0.0),point(Vector2(x+0.4,y+0.12),0.0),Color(0.8,0.91,0.9,0.28),1.0*view_zoom,true)
+		var span := 0.4 if family != "lake_basin" else 0.8
+		draw_line(point(Vector2(x-span,y),0.0),point(Vector2(x+span,y+0.12),0.0),Color(0.8,0.91,0.9,0.28),1.0*view_zoom,true)
+	if family == "lake_basin":
+		for i in range(6):
+			var ripple := Vector2(shown_world.terrain.river_x(10.0+i*3.2),10.0+i*3.2)
+			draw_arc(point(ripple,0.01),0.38+0.08*sin(flow*2.0+i),0,TAU,20,Color(0.86,0.93,0.9,0.22),0.8*view_zoom,true)
 	for road in shown_world.roads:
 		var width := 0.55 if road["bridge"] else (float(shown_world.cfg["city"]["branch_road_half_width"]) if road.get("kind","") == "branch" else float(shown_world.cfg["terrain"]["template_road_half_width"]))
 		for polygon in Geometry2D.offset_polyline(road["path"],width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):
@@ -631,12 +660,12 @@ func _draw() -> void:
 		draw_arc(point(Coupling.position_of(shown_world.by_id[hover_id])),18*view_zoom,0,TAU,48,Color(0.62,0.72,0.5,0.8),1.5,true)
 	var font := ThemeDB.fallback_font
 	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("4b6561"))
-	draw_string(font,Vector2(47,67),"河谷 · 晴岸合奏" if expression == "bright" else "河谷 · 深流慢板",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("758c85"))
+	draw_string(font,Vector2(47,67),shown_world.terrain_title()+" · 晴岸合奏" if expression == "bright" else shown_world.terrain_title()+" · 深流慢板",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("758c85"))
 	if pointer.y > size.y-60 and pointer_inside:
 		var score: Dictionary = model.synth.score_snapshot()
 		var lead := str(score["theme"].get("cid",""))
 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
-		draw_string(font,Vector2(size.x-500,size.y-64),"时代 · "+shown_world.era_title()+"   "+shown_world.vehicle_label()+"   主题 · "+name+"   "+str(shown_world.buildings.size())+"栋   "+str(model.world.pending_actions.size())+"段等待下一句",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("607974"))
+		draw_string(font,Vector2(size.x-500,size.y-64),"时代 · "+shown_world.era_title()+"   "+shown_world.vehicle_label()+"   "+shown_world.terrain_title()+"   主题 · "+name+"   "+str(shown_world.buildings.size())+"栋   "+str(model.world.pending_actions.size())+"段等待下一句",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("607974"))
 	var duration := float(model.phrase_frames)
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
@@ -647,7 +676,7 @@ func diagnostics() -> Dictionary:
 		"lots":shown_world.lots.size(),"resonance":shown_world.resonance,"phrase":shown_world.phrase_index,
 		"skips":clock.underruns,"audible_frame":clock.renderer.transport.audible_frame,"pending":model.world.pending.duplicate(true),
 		"preview_started":preview_started,"seed_hex":model.world.rng.seed_hex,"blocks":shown_world.blocks.size(),
-		"public_sites":shown_world.public_sites.duplicate(true),"transit":shown_world.transit_lines.map(func(line: Dictionary) -> String: return line["name"]),"era":shown_world.era,"era_title":shown_world.era_title(),"vehicle":shown_world.vehicle_kind(),"score":model.synth.score_snapshot(),"sound_trace":model.sound_trace.duplicate(true)}
+		"public_sites":shown_world.public_sites.duplicate(true),"transit":shown_world.transit_lines.map(func(line: Dictionary) -> String: return line["name"]),"terrain_family":shown_world.terrain.family,"terrain_title":shown_world.terrain_title(),"era":shown_world.era,"era_title":shown_world.era_title(),"vehicle":shown_world.vehicle_kind(),"score":model.synth.score_snapshot(),"sound_trace":model.sound_trace.duplicate(true)}
 
 func _exit_tree() -> void:
 	if session_persistence and model != null and is_instance_valid(clock) and clock.active: save_city("离开时保存")

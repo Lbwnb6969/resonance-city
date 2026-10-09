@@ -61,7 +61,6 @@
     "tram_speed": 2.2,
     "bus_speed": 1.8,
     "bus_dwell_beats": 2.0,
-    "playable_building_budget": 80.0,
     "starter_buildings_per_region": 6.0,
     "starter_region_count": 3.0
   },
@@ -170,13 +169,13 @@
   "sources": {
     "spec.asset.md": "fce93d7410eb7254727245a6dab4ec8b1490e95dddd7887bbab9fbc7ddca5e6b",
     "spec.audio.md": "1fb6baff1f9bc641e8dea8281d27e830239ffc39341d3674e303253327fb3a97",
-    "spec.city.md": "a63078c360053136ab992fad9929773f50ec9722706eeffc23752cf4134f9737",
+    "spec.city.md": "1a68643f136b6b63899d4fb066c094c6d60574da405387d369a99aa775626553",
     "spec.fabric.md": "48f04e0475ec35515195292f74e6bff8b71809a992f2683247866832f0fb5595",
     "spec.harmony.md": "ee0cee446c42d4eb155a4fd37c55effedbee7ae9db53c4de68780957978eedc8",
     "spec.proposal.md": "c4e70940feb2623731f52cd3e5899e36563c8988bb4460218f47c40a71263b2f",
     "spec.run.md": "0be98259cf0acdbe0e7337e622b88ac03f4079455756e960983a49609d7809c8",
     "spec.space.md": "563daee61013c3a81834e14ba0a0f9331c707d1b7b9c5b2520696c079bcfbc24",
-    "spec.terrain.md": "d2650767e342e15804499e674bdc097ae3eb02346de582163d1b79ac1f099c33",
+    "spec.terrain.md": "a2c8c7607faf396a89ed2c240526690b8c3e684019ba2c0459e5531f6431076b",
     "spec.ui.md": "1666b250eb2ed4ab592ab30fcb6ee6ed94b0e692a97d65a70076153bd8a6f1ee"
   },
   "distance_reference": {

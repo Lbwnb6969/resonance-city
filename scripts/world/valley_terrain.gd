@@ -1,18 +1,26 @@
 class_name ValleyTerrain
 extends RefCounted
-## Controlled first slice: continuous shores and a seeded four-octave height field.
+## Controlled terrain slice with several playable terrain families sharing the same continuous-world contract.
 const Config = preload("res://scripts/world/world_values.gd")
 var cfg: Dictionary = Config.load_values()["terrain"]
 var noise := FastNoiseLite.new()
 var noise_seed := 0
 var river_phase := 0.0
+var family := "river_valley"
 var water := PackedVector2Array()
 var left_bank := PackedVector2Array()
 var right_bank := PackedVector2Array()
 
-func configure(seed_value: int, phase: float) -> void:
+static func family_ids() -> Array[String]:
+	return ["river_valley","lake_basin","forest_ridge","coastal_plain"]
+
+static func family_title(value: String) -> String:
+	return {"river_valley":"河谷","lake_basin":"湖盆","forest_ridge":"林岭","coastal_plain":"海湾平原"}.get(value,"河谷")
+
+func configure(seed_value: int, phase: float, terrain_family: String = "river_valley") -> void:
 	noise_seed = seed_value
 	river_phase = phase
+	family = terrain_family if family_ids().has(terrain_family) else "river_valley"
 	noise.seed = noise_seed
 	noise.noise_type = FastNoiseLite.TYPE_VALUE
 	noise.fractal_type = FastNoiseLite.FRACTAL_FBM
@@ -37,14 +45,38 @@ func configure(seed_value: int, phase: float) -> void:
 	for i in range(shore_right.size()-1,-1,-1): right_bank.append(shore_right[i])
 
 func river_x(y: float) -> float:
-	return float(cfg["template_river_center"])+0.8*sin(y*0.19+river_phase)+0.24*sin(y*0.53+river_phase)
+	var base := float(cfg["template_river_center"])
+	if family == "coastal_plain":
+		base -= 1.1
+	return base+0.8*sin(y*0.19+river_phase)+0.24*sin(y*0.53+river_phase)
 
 func river_width(y: float) -> float:
-	return float(cfg["template_river_base_half_width"])+(y-float(cfg["template_land_min"]))*float(cfg["template_river_widening"])
+	var base := float(cfg["template_river_base_half_width"])
+	match family:
+		"lake_basin":
+			return 2.45+0.55*sin((y-5.0)*0.24+river_phase)+0.22*sin(y*0.61)
+		"forest_ridge":
+			return base*0.78+0.12*sin(y*0.31+river_phase)
+		"coastal_plain":
+			return base*1.35+0.22*sin(y*0.27+river_phase)
+		_:
+			return base+(y-float(cfg["template_land_min"]))*float(cfg["template_river_widening"])
 
 func height_at(p: Vector2) -> float:
-	var hill := 1.8*exp(-p.distance_squared_to(Vector2(4,2))/60.0)
-	return maxf(0.0,0.28+0.18*noise.get_noise_2dv(p)+hill)
+	var hill_gain := 1.8
+	var ridge := 0.0
+	match family:
+		"lake_basin":
+			hill_gain = 1.35
+			ridge = 0.22*cos(p.y*0.26+river_phase)
+		"forest_ridge":
+			hill_gain = 3.0
+			ridge = 0.55*sin(p.y*0.21+river_phase)+0.28*cos(p.x*0.17)
+		"coastal_plain":
+			hill_gain = 0.75
+			ridge = 0.08*sin(p.y*0.33)
+	var hill := hill_gain*exp(-p.distance_squared_to(Vector2(4,2))/60.0)
+	return maxf(0.0,0.28+0.18*noise.get_noise_2dv(p)+hill+ridge)
 
 func land_at(p: Vector2) -> bool:
 	var low := float(cfg["template_land_min"])
@@ -54,7 +86,6 @@ func land_at(p: Vector2) -> bool:
 func valid_footprint(polygon: PackedVector2Array) -> bool:
 	for p in polygon:
 		if not land_at(p): return false
-	# A thin river can cut a polygon whose corners are all on dry land.
 	return Geometry2D.intersect_polygons(polygon,water).is_empty()
 
 func environment(a: Vector2,b: Vector2,bridge: bool) -> Dictionary:
@@ -65,7 +96,12 @@ func environment(a: Vector2,b: Vector2,bridge: bool) -> Dictionary:
 		for line in crossing:
 			for p in line:
 				if absf(p.y-float(cfg["template_bridge_y"])) > 0.55: open = false
-	return {"occlusion":1.0 if open else 0.0,"terrain_factor":float(Config.load_values()["space"]["water_factor"]) if not crossing.is_empty() and open else 1.0,
+	var terrain_factor := 1.0
+	if family == "forest_ridge" and crossing.is_empty():
+		terrain_factor = float(Config.load_values()["space"]["forest_factor"])
+	elif not crossing.is_empty() and open:
+		terrain_factor = float(Config.load_values()["space"]["water_factor"])
+	return {"occlusion":1.0 if open else 0.0,"terrain_factor":terrain_factor,
 		"sigma_a":1.0+height_at(a)/8.0,"sigma_b":1.0+height_at(b)/8.0}
 
 func buildable_ratio() -> float:
