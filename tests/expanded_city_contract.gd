@@ -30,6 +30,8 @@ func _initialize() -> void:
 	check(world.green_corridors.all(func(corridor: Dictionary) -> bool: return bool(corridor["active"]) and corridor["path"].size() >= 8),"green corridors connect the terrace communities")
 	check(world.centers.size() == 20,"expanded city has primary, secondary and terrace centers")
 	check(world.center_rank("west-2") == 0 and world.center_rank("west-garden-1") == 1 and world.center_rank("west-terrace-1") == 2,"center hierarchy drives stable ranks")
+	check(world.fabric_cache.get("courtyards",[]).size() >= 16,"expanded city forms readable courtyards")
+	check(world.fabric_cache.get("courtyards",[]).all(func(court: Dictionary) -> bool: return court.get("polygon",PackedVector2Array()).size() >= 3 and float(court.get("clear_diameter",0.0)) >= 0.8),"courtyard geometry keeps the approved clear diameter")
 	check(world.public_sites.all(func(site: Dictionary) -> bool: return bool(site["active"]) and site.has("covered")),"expanded public facilities have active service coverage")
 	var terrace_members := 0
 	for cid in world.communities:
@@ -39,5 +41,5 @@ func _initialize() -> void:
 	var restored := World.new("2026101000000068",false,"river_valley")
 	restored.restore(saved)
 	check(restored.expanded_plan and restored.communities.size() == world.communities.size() and restored.buildings.size() == world.buildings.size() and restored.green_corridors.size() == world.green_corridors.size() and restored.centers.size() == world.centers.size(),"expanded plan survives snapshot")
-	print("EXPANDED_CITY ",JSON.stringify({"checks":checks,"failures":failures,"authored_buildings":authored_buildings,"buildings":world.buildings.size(),"lots":world.lots.size(),"roads":world.roads.size(),"communities":world.communities.size(),"public_sites":world.public_sites.size(),"terrace_members":terrace_members}))
+	print("EXPANDED_CITY ",JSON.stringify({"checks":checks,"failures":failures,"authored_buildings":authored_buildings,"buildings":world.buildings.size(),"lots":world.lots.size(),"roads":world.roads.size(),"communities":world.communities.size(),"public_sites":world.public_sites.size(),"courtyards":world.fabric_cache.get("courtyards",[]).size(),"terrace_members":terrace_members}))
 	quit(0 if failures.is_empty() else 1)

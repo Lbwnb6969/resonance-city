@@ -168,8 +168,35 @@ static func rebuild(world: RefCounted) -> Dictionary:
 				var key := ":".join(members)
 				if seen_courts.has(key): continue
 				seen_courts[key] = true
-				courts.append({"members":members,"center":[center.x,center.y]})
-	return {"shared_walls":shared,"rows":rows,"courtyards":courts,"community_wall":community_wall_stats(world)}
+				courts.append({"id":"courtyard:"+key,"members":members,"center":[center.x,center.y],"polygon":hull,"clear_diameter":minf(bounds.size.x,bounds.size.y)})
+	return {"shared_walls":shared,"rows":rows,"courtyards":_select_courtyards(world,courts),"community_wall":community_wall_stats(world)}
+
+static func _select_courtyards(world: RefCounted, candidates: Array) -> Array:
+	# Many adjacent triples describe the same open court. Keep the clearest two
+	# per community and reject near-duplicate centers so the visual layer stays legible.
+	candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+		if float(a.get("clear_diameter",0.0)) != float(b.get("clear_diameter",0.0)):
+			return float(a.get("clear_diameter",0.0)) > float(b.get("clear_diameter",0.0))
+		return str(a.get("id","")) < str(b.get("id","")))
+	var selected: Array = []
+	var counts: Dictionary = {}
+	for candidate in candidates:
+		var members: Array = candidate.get("members",[])
+		if members.is_empty() or not world.by_id.has(members[0]): continue
+		var community_id := str(world.by_id[members[0]].get("community_id",""))
+		if int(counts.get(community_id,0)) >= 2: continue
+		var center := Vector2(float(candidate["center"][0]),float(candidate["center"][1]))
+		var duplicate := false
+		for prior in selected:
+			var prior_center := Vector2(float(prior["center"][0]),float(prior["center"][1]))
+			if center.distance_to(prior_center) < 0.72:
+				duplicate = true
+				break
+		if duplicate: continue
+		candidate["community_id"] = community_id
+		selected.append(candidate)
+		counts[community_id] = int(counts.get(community_id,0))+1
+	return selected
 
 static func community_wall_stats(world: RefCounted) -> Dictionary:
 	var result: Dictionary = {}

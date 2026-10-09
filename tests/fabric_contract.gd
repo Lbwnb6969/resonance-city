@@ -14,6 +14,7 @@ func _initialize() -> void:
 	var world := World.new("2026101000000066")
 	world.build_town()
 	check(world.fabric_cache.has("shared_walls") and world.fabric_cache.has("rows") and world.fabric_cache.has("courtyards"),"fabric cache is derived and present")
+	check(world.fabric_cache.get("courtyards",[]).all(func(court: Dictionary) -> bool: return court.get("polygon",PackedVector2Array()).size() >= 3 and float(court.get("clear_diameter",0.0)) >= 0.8),"courtyard cache stores readable geometry")
 	check(world.fabric_cache.get("community_wall",{}).size() == world.communities.size(),"community wall tiers cover planned communities")
 	var placement_world := World.new("2026101000000066")
 	var all_tiered := true

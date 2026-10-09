@@ -772,9 +772,14 @@ func _draw_fabric_overlay() -> void:
 	var cache: Dictionary = shown_world.fabric_cache
 	for courtyard in cache.get("courtyards",[]):
 		var center := Vector2(float(courtyard["center"][0]),float(courtyard["center"][1]))
-		var diamond := PackedVector2Array([center+Vector2(-0.58,0),center+Vector2(0,-0.42),center+Vector2(0.58,0),center+Vector2(0,0.42)])
-		draw_colored_polygon(_project_polygon(diamond,0.01),Color(0.82,0.78,0.60,0.22))
-		draw_polyline(_project_polygon(PackedVector2Array([diamond[0],diamond[1],diamond[2],diamond[3],diamond[0]]),0.015),Color(0.74,0.66,0.48,0.42),1.0*view_zoom,true)
+		var polygon: PackedVector2Array = courtyard.get("polygon",PackedVector2Array())
+		if polygon.size() < 3:
+			polygon = PackedVector2Array([center+Vector2(-0.58,0),center+Vector2(0,-0.42),center+Vector2(0.58,0),center+Vector2(0,0.42)])
+		var closed := polygon.duplicate()
+		closed.append(closed[0])
+		draw_colored_polygon(_project_polygon(polygon,0.01),Color(0.82,0.78,0.60,0.18))
+		draw_polyline(_project_polygon(closed,0.015),Color(0.74,0.66,0.48,0.50),1.1*view_zoom,true)
+		draw_circle(point(center,0.025),2.0*view_zoom,Color(0.88,0.80,0.52,0.56))
 	for relation in cache.get("shared_walls",[]):
 		if not shown_world.by_id.has(relation["a"]) or not shown_world.by_id.has(relation["b"]): continue
 		var a := point(Coupling.position_of(shown_world.by_id[relation["a"]]),shown_world.terrain.height_at(Coupling.position_of(shown_world.by_id[relation["a"]]))+0.04)
