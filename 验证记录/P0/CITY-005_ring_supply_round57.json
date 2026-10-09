@@ -1,0 +1,4801 @@
+{
+	"arguments": [
+		"--script",
+		"tests/ring_audio_supply.gd"
+	],
+	"case": "ring_supply_round57",
+	"checks": [
+		{
+			"description": "Actual city viewport, not headless supply",
+			"passed": true
+		},
+		{
+			"description": "Production view and audio routes both contain 27 entities",
+			"passed": true
+		},
+		{
+			"description": "Physical WASAPI output",
+			"passed": true
+		},
+		{
+			"description": "No generator underruns during the physical full-city phrase",
+			"passed": true
+		},
+		{
+			"description": "One complete audible phrase, bounded by generated PCM",
+			"passed": true
+		},
+		{
+			"description": "Actual boundary retains both rings and presents the full city",
+			"passed": true
+		},
+		{
+			"description": "Final HUD shows the new audible session, not preparation frames",
+			"passed": true
+		}
+	],
+	"details": {
+		"audible_frame": 352948.434654929,
+		"capacity": 4095,
+		"display": "Windows",
+		"district_count": 27,
+		"driver": "WASAPI",
+		"fills": [
+			{
+				"count": 4095,
+				"start": 0,
+				"usec": 119451
+			},
+			{
+				"count": 384,
+				"start": 4095,
+				"usec": 11832
+			},
+			{
+				"count": 256,
+				"start": 4479,
+				"usec": 8011
+			},
+			{
+				"count": 512,
+				"start": 4735,
+				"usec": 15430
+			},
+			{
+				"count": 384,
+				"start": 5247,
+				"usec": 11667
+			},
+			{
+				"count": 768,
+				"start": 5631,
+				"usec": 22911
+			},
+			{
+				"count": 640,
+				"start": 6399,
+				"usec": 19149
+			},
+			{
+				"count": 768,
+				"start": 7039,
+				"usec": 23315
+			},
+			{
+				"count": 512,
+				"start": 7807,
+				"usec": 15188
+			},
+			{
+				"count": 640,
+				"start": 8319,
+				"usec": 18254
+			},
+			{
+				"count": 768,
+				"start": 8959,
+				"usec": 21680
+			},
+			{
+				"count": 640,
+				"start": 9727,
+				"usec": 18325
+			},
+			{
+				"count": 768,
+				"start": 10367,
+				"usec": 21585
+			},
+			{
+				"count": 384,
+				"start": 11135,
+				"usec": 10740
+			},
+			{
+				"count": 512,
+				"start": 11519,
+				"usec": 15409
+			},
+			{
+				"count": 640,
+				"start": 12031,
+				"usec": 18950
+			},
+			{
+				"count": 768,
+				"start": 12671,
+				"usec": 21683
+			},
+			{
+				"count": 768,
+				"start": 13439,
+				"usec": 22387
+			},
+			{
+				"count": 640,
+				"start": 14207,
+				"usec": 18712
+			},
+			{
+				"count": 512,
+				"start": 14847,
+				"usec": 15293
+			},
+			{
+				"count": 640,
+				"start": 15359,
+				"usec": 18885
+			},
+			{
+				"count": 768,
+				"start": 15999,
+				"usec": 22764
+			},
+			{
+				"count": 640,
+				"start": 16767,
+				"usec": 18000
+			},
+			{
+				"count": 768,
+				"start": 17407,
+				"usec": 21320
+			},
+			{
+				"count": 384,
+				"start": 18175,
+				"usec": 10436
+			},
+			{
+				"count": 512,
+				"start": 18559,
+				"usec": 14249
+			},
+			{
+				"count": 768,
+				"start": 19071,
+				"usec": 22684
+			},
+			{
+				"count": 640,
+				"start": 19839,
+				"usec": 18209
+			},
+			{
+				"count": 768,
+				"start": 20479,
+				"usec": 21700
+			},
+			{
+				"count": 640,
+				"start": 21247,
+				"usec": 18288
+			},
+			{
+				"count": 512,
+				"start": 21887,
+				"usec": 15162
+			},
+			{
+				"count": 640,
+				"start": 22399,
+				"usec": 19146
+			},
+			{
+				"count": 768,
+				"start": 23039,
+				"usec": 22087
+			},
+			{
+				"count": 640,
+				"start": 23807,
+				"usec": 18265
+			},
+			{
+				"count": 768,
+				"start": 24447,
+				"usec": 21669
+			},
+			{
+				"count": 512,
+				"start": 25215,
+				"usec": 14467
+			},
+			{
+				"count": 640,
+				"start": 25727,
+				"usec": 17906
+			},
+			{
+				"count": 768,
+				"start": 26367,
+				"usec": 22170
+			},
+			{
+				"count": 640,
+				"start": 27135,
+				"usec": 18692
+			},
+			{
+				"count": 768,
+				"start": 27775,
+				"usec": 21602
+			},
+			{
+				"count": 640,
+				"start": 28543,
+				"usec": 18296
+			},
+			{
+				"count": 512,
+				"start": 29183,
+				"usec": 14385
+			},
+			{
+				"count": 384,
+				"start": 29695,
+				"usec": 10639
+			},
+			{
+				"count": 512,
+				"start": 30079,
+				"usec": 14596
+			},
+			{
+				"count": 768,
+				"start": 30591,
+				"usec": 22147
+			},
+			{
+				"count": 640,
+				"start": 31359,
+				"usec": 17573
+			},
+			{
+				"count": 768,
+				"start": 31999,
+				"usec": 21559
+			},
+			{
+				"count": 384,
+				"start": 32767,
+				"usec": 10870
+			},
+			{
+				"count": 512,
+				"start": 33151,
+				"usec": 14420
+			},
+			{
+				"count": 768,
+				"start": 33663,
+				"usec": 21073
+			},
+			{
+				"count": 640,
+				"start": 34431,
+				"usec": 18128
+			},
+			{
+				"count": 768,
+				"start": 35071,
+				"usec": 21146
+			},
+			{
+				"count": 384,
+				"start": 35839,
+				"usec": 10679
+			},
+			{
+				"count": 512,
+				"start": 36223,
+				"usec": 15097
+			},
+			{
+				"count": 640,
+				"start": 36735,
+				"usec": 17970
+			},
+			{
+				"count": 768,
+				"start": 37375,
+				"usec": 22494
+			},
+			{
+				"count": 640,
+				"start": 38143,
+				"usec": 17073
+			},
+			{
+				"count": 768,
+				"start": 38783,
+				"usec": 21373
+			},
+			{
+				"count": 512,
+				"start": 39551,
+				"usec": 14318
+			},
+			{
+				"count": 640,
+				"start": 40063,
+				"usec": 17881
+			},
+			{
+				"count": 512,
+				"start": 40703,
+				"usec": 14338
+			},
+			{
+				"count": 640,
+				"start": 41215,
+				"usec": 17852
+			},
+			{
+				"count": 768,
+				"start": 41855,
+				"usec": 21918
+			},
+			{
+				"count": 640,
+				"start": 42623,
+				"usec": 18825
+			},
+			{
+				"count": 512,
+				"start": 43263,
+				"usec": 14397
+			},
+			{
+				"count": 512,
+				"start": 43775,
+				"usec": 14832
+			},
+			{
+				"count": 640,
+				"start": 44287,
+				"usec": 10619
+			},
+			{
+				"count": 512,
+				"start": 44927,
+				"usec": 8411
+			},
+			{
+				"count": 512,
+				"start": 45439,
+				"usec": 8719
+			},
+			{
+				"count": 384,
+				"start": 45951,
+				"usec": 6549
+			},
+			{
+				"count": 256,
+				"start": 46335,
+				"usec": 4510
+			},
+			{
+				"count": 256,
+				"start": 46591,
+				"usec": 4398
+			},
+			{
+				"count": 256,
+				"start": 46847,
+				"usec": 4425
+			},
+			{
+				"count": 384,
+				"start": 47103,
+				"usec": 6272
+			},
+			{
+				"count": 256,
+				"start": 47487,
+				"usec": 4351
+			},
+			{
+				"count": 512,
+				"start": 47743,
+				"usec": 8534
+			},
+			{
+				"count": 512,
+				"start": 48255,
+				"usec": 8749
+			},
+			{
+				"count": 384,
+				"start": 48767,
+				"usec": 6486
+			},
+			{
+				"count": 256,
+				"start": 49151,
+				"usec": 4450
+			},
+			{
+				"count": 512,
+				"start": 49407,
+				"usec": 8437
+			},
+			{
+				"count": 384,
+				"start": 49919,
+				"usec": 6641
+			},
+			{
+				"count": 256,
+				"start": 50303,
+				"usec": 4408
+			},
+			{
+				"count": 512,
+				"start": 50559,
+				"usec": 8356
+			},
+			{
+				"count": 512,
+				"start": 51071,
+				"usec": 8693
+			},
+			{
+				"count": 384,
+				"start": 51583,
+				"usec": 6493
+			},
+			{
+				"count": 256,
+				"start": 51967,
+				"usec": 4245
+			},
+			{
+				"count": 512,
+				"start": 52223,
+				"usec": 8372
+			},
+			{
+				"count": 512,
+				"start": 52735,
+				"usec": 8485
+			},
+			{
+				"count": 384,
+				"start": 53247,
+				"usec": 6533
+			},
+			{
+				"count": 256,
+				"start": 53631,
+				"usec": 4524
+			},
+			{
+				"count": 256,
+				"start": 53887,
+				"usec": 4343
+			},
+			{
+				"count": 256,
+				"start": 54143,
+				"usec": 4584
+			},
+			{
+				"count": 384,
+				"start": 54399,
+				"usec": 6802
+			},
+			{
+				"count": 256,
+				"start": 54783,
+				"usec": 5074
+			},
+			{
+				"count": 512,
+				"start": 55039,
+				"usec": 8343
+			},
+			{
+				"count": 512,
+				"start": 55551,
+				"usec": 8642
+			},
+			{
+				"count": 384,
+				"start": 56063,
+				"usec": 6699
+			},
+			{
+				"count": 512,
+				"start": 56447,
+				"usec": 8303
+			},
+			{
+				"count": 256,
+				"start": 56959,
+				"usec": 4844
+			},
+			{
+				"count": 256,
+				"start": 57215,
+				"usec": 4142
+			},
+			{
+				"count": 128,
+				"start": 57471,
+				"usec": 2274
+			},
+			{
+				"count": 512,
+				"start": 57599,
+				"usec": 8410
+			},
+			{
+				"count": 256,
+				"start": 58111,
+				"usec": 4317
+			},
+			{
+				"count": 512,
+				"start": 58367,
+				"usec": 8234
+			},
+			{
+				"count": 384,
+				"start": 58879,
+				"usec": 6523
+			},
+			{
+				"count": 256,
+				"start": 59263,
+				"usec": 4373
+			},
+			{
+				"count": 512,
+				"start": 59519,
+				"usec": 8549
+			},
+			{
+				"count": 384,
+				"start": 60031,
+				"usec": 7034
+			},
+			{
+				"count": 256,
+				"start": 60415,
+				"usec": 4600
+			},
+			{
+				"count": 256,
+				"start": 60671,
+				"usec": 4391
+			},
+			{
+				"count": 256,
+				"start": 60927,
+				"usec": 4418
+			},
+			{
+				"count": 512,
+				"start": 61183,
+				"usec": 9111
+			},
+			{
+				"count": 384,
+				"start": 61695,
+				"usec": 7017
+			},
+			{
+				"count": 512,
+				"start": 62079,
+				"usec": 8867
+			},
+			{
+				"count": 256,
+				"start": 62591,
+				"usec": 4463
+			},
+			{
+				"count": 512,
+				"start": 62847,
+				"usec": 8281
+			},
+			{
+				"count": 384,
+				"start": 63359,
+				"usec": 6456
+			},
+			{
+				"count": 512,
+				"start": 63743,
+				"usec": 8755
+			},
+			{
+				"count": 256,
+				"start": 64255,
+				"usec": 4672
+			},
+			{
+				"count": 256,
+				"start": 64511,
+				"usec": 4388
+			},
+			{
+				"count": 128,
+				"start": 64767,
+				"usec": 2368
+			},
+			{
+				"count": 512,
+				"start": 64895,
+				"usec": 8514
+			},
+			{
+				"count": 512,
+				"start": 65407,
+				"usec": 8775
+			},
+			{
+				"count": 384,
+				"start": 65919,
+				"usec": 6715
+			},
+			{
+				"count": 256,
+				"start": 66303,
+				"usec": 4080
+			},
+			{
+				"count": 512,
+				"start": 66559,
+				"usec": 8178
+			},
+			{
+				"count": 512,
+				"start": 67071,
+				"usec": 8315
+			},
+			{
+				"count": 128,
+				"start": 67583,
+				"usec": 2282
+			},
+			{
+				"count": 256,
+				"start": 67711,
+				"usec": 4344
+			},
+			{
+				"count": 256,
+				"start": 67967,
+				"usec": 4624
+			},
+			{
+				"count": 256,
+				"start": 68223,
+				"usec": 4030
+			},
+			{
+				"count": 512,
+				"start": 68479,
+				"usec": 8403
+			},
+			{
+				"count": 384,
+				"start": 68991,
+				"usec": 6442
+			},
+			{
+				"count": 256,
+				"start": 69375,
+				"usec": 4296
+			},
+			{
+				"count": 512,
+				"start": 69631,
+				"usec": 8432
+			},
+			{
+				"count": 512,
+				"start": 70143,
+				"usec": 8473
+			},
+			{
+				"count": 128,
+				"start": 70655,
+				"usec": 2331
+			},
+			{
+				"count": 512,
+				"start": 70783,
+				"usec": 8331
+			},
+			{
+				"count": 256,
+				"start": 71295,
+				"usec": 4261
+			},
+			{
+				"count": 256,
+				"start": 71551,
+				"usec": 4102
+			},
+			{
+				"count": 384,
+				"start": 71807,
+				"usec": 6224
+			},
+			{
+				"count": 256,
+				"start": 72191,
+				"usec": 4312
+			},
+			{
+				"count": 512,
+				"start": 72447,
+				"usec": 8319
+			},
+			{
+				"count": 256,
+				"start": 72959,
+				"usec": 4256
+			},
+			{
+				"count": 384,
+				"start": 73215,
+				"usec": 6425
+			},
+			{
+				"count": 512,
+				"start": 73599,
+				"usec": 8418
+			},
+			{
+				"count": 512,
+				"start": 74111,
+				"usec": 8527
+			},
+			{
+				"count": 256,
+				"start": 74623,
+				"usec": 4479
+			},
+			{
+				"count": 128,
+				"start": 74879,
+				"usec": 2312
+			},
+			{
+				"count": 256,
+				"start": 75007,
+				"usec": 4366
+			},
+			{
+				"count": 512,
+				"start": 75263,
+				"usec": 8557
+			},
+			{
+				"count": 512,
+				"start": 75775,
+				"usec": 8409
+			},
+			{
+				"count": 128,
+				"start": 76287,
+				"usec": 2279
+			},
+			{
+				"count": 512,
+				"start": 76415,
+				"usec": 8492
+			},
+			{
+				"count": 512,
+				"start": 76927,
+				"usec": 8674
+			},
+			{
+				"count": 256,
+				"start": 77439,
+				"usec": 4515
+			},
+			{
+				"count": 384,
+				"start": 77695,
+				"usec": 7192
+			},
+			{
+				"count": 512,
+				"start": 78079,
+				"usec": 8354
+			},
+			{
+				"count": 256,
+				"start": 78591,
+				"usec": 4288
+			},
+			{
+				"count": 256,
+				"start": 78847,
+				"usec": 4226
+			},
+			{
+				"count": 128,
+				"start": 79103,
+				"usec": 2168
+			},
+			{
+				"count": 512,
+				"start": 79231,
+				"usec": 8156
+			},
+			{
+				"count": 256,
+				"start": 79743,
+				"usec": 4557
+			},
+			{
+				"count": 512,
+				"start": 79999,
+				"usec": 8332
+			},
+			{
+				"count": 384,
+				"start": 80511,
+				"usec": 6428
+			},
+			{
+				"count": 256,
+				"start": 80895,
+				"usec": 4151
+			},
+			{
+				"count": 512,
+				"start": 81151,
+				"usec": 7925
+			},
+			{
+				"count": 512,
+				"start": 81663,
+				"usec": 8408
+			},
+			{
+				"count": 384,
+				"start": 82175,
+				"usec": 6354
+			},
+			{
+				"count": 256,
+				"start": 82559,
+				"usec": 4353
+			},
+			{
+				"count": 512,
+				"start": 82815,
+				"usec": 8434
+			},
+			{
+				"count": 256,
+				"start": 83327,
+				"usec": 4412
+			},
+			{
+				"count": 384,
+				"start": 83583,
+				"usec": 6248
+			},
+			{
+				"count": 256,
+				"start": 83967,
+				"usec": 4422
+			},
+			{
+				"count": 512,
+				"start": 84223,
+				"usec": 8561
+			},
+			{
+				"count": 384,
+				"start": 84735,
+				"usec": 6360
+			},
+			{
+				"count": 512,
+				"start": 85119,
+				"usec": 8188
+			},
+			{
+				"count": 256,
+				"start": 85631,
+				"usec": 4233
+			},
+			{
+				"count": 512,
+				"start": 85887,
+				"usec": 8334
+			},
+			{
+				"count": 384,
+				"start": 86399,
+				"usec": 6129
+			},
+			{
+				"count": 256,
+				"start": 86783,
+				"usec": 4337
+			},
+			{
+				"count": 512,
+				"start": 87039,
+				"usec": 8398
+			},
+			{
+				"count": 384,
+				"start": 87551,
+				"usec": 6537
+			},
+			{
+				"count": 256,
+				"start": 87935,
+				"usec": 3973
+			},
+			{
+				"count": 512,
+				"start": 88191,
+				"usec": 9921
+			},
+			{
+				"count": 512,
+				"start": 88703,
+				"usec": 8575
+			},
+			{
+				"count": 128,
+				"start": 89215,
+				"usec": 2518
+			},
+			{
+				"count": 256,
+				"start": 89343,
+				"usec": 4484
+			},
+			{
+				"count": 256,
+				"start": 89599,
+				"usec": 4638
+			},
+			{
+				"count": 512,
+				"start": 89855,
+				"usec": 9406
+			},
+			{
+				"count": 512,
+				"start": 90367,
+				"usec": 9869
+			},
+			{
+				"count": 384,
+				"start": 90879,
+				"usec": 6544
+			},
+			{
+				"count": 256,
+				"start": 91263,
+				"usec": 4421
+			},
+			{
+				"count": 512,
+				"start": 91519,
+				"usec": 8770
+			},
+			{
+				"count": 384,
+				"start": 92031,
+				"usec": 6746
+			},
+			{
+				"count": 256,
+				"start": 92415,
+				"usec": 4790
+			},
+			{
+				"count": 256,
+				"start": 92671,
+				"usec": 5144
+			},
+			{
+				"count": 256,
+				"start": 92927,
+				"usec": 4691
+			},
+			{
+				"count": 512,
+				"start": 93183,
+				"usec": 9457
+			},
+			{
+				"count": 384,
+				"start": 93695,
+				"usec": 6904
+			},
+			{
+				"count": 256,
+				"start": 94079,
+				"usec": 4320
+			},
+			{
+				"count": 512,
+				"start": 94335,
+				"usec": 8819
+			},
+			{
+				"count": 384,
+				"start": 94847,
+				"usec": 6066
+			},
+			{
+				"count": 256,
+				"start": 95231,
+				"usec": 4101
+			},
+			{
+				"count": 256,
+				"start": 95487,
+				"usec": 4364
+			},
+			{
+				"count": 512,
+				"start": 95743,
+				"usec": 8547
+			},
+			{
+				"count": 256,
+				"start": 96255,
+				"usec": 4402
+			},
+			{
+				"count": 128,
+				"start": 96511,
+				"usec": 2334
+			},
+			{
+				"count": 256,
+				"start": 96639,
+				"usec": 4249
+			},
+			{
+				"count": 512,
+				"start": 96895,
+				"usec": 8539
+			},
+			{
+				"count": 512,
+				"start": 97407,
+				"usec": 8353
+			},
+			{
+				"count": 384,
+				"start": 97919,
+				"usec": 6485
+			},
+			{
+				"count": 512,
+				"start": 98303,
+				"usec": 8330
+			},
+			{
+				"count": 256,
+				"start": 98815,
+				"usec": 4301
+			},
+			{
+				"count": 512,
+				"start": 99071,
+				"usec": 8559
+			},
+			{
+				"count": 128,
+				"start": 99583,
+				"usec": 2311
+			},
+			{
+				"count": 256,
+				"start": 99711,
+				"usec": 4275
+			},
+			{
+				"count": 256,
+				"start": 99967,
+				"usec": 4202
+			},
+			{
+				"count": 512,
+				"start": 100223,
+				"usec": 8467
+			},
+			{
+				"count": 384,
+				"start": 100735,
+				"usec": 6443
+			},
+			{
+				"count": 256,
+				"start": 101119,
+				"usec": 4495
+			},
+			{
+				"count": 512,
+				"start": 101375,
+				"usec": 8356
+			},
+			{
+				"count": 512,
+				"start": 101887,
+				"usec": 9874
+			},
+			{
+				"count": 384,
+				"start": 102399,
+				"usec": 6479
+			},
+			{
+				"count": 512,
+				"start": 102783,
+				"usec": 8575
+			},
+			{
+				"count": 256,
+				"start": 103295,
+				"usec": 4376
+			},
+			{
+				"count": 384,
+				"start": 103551,
+				"usec": 6381
+			},
+			{
+				"count": 512,
+				"start": 103935,
+				"usec": 8578
+			},
+			{
+				"count": 256,
+				"start": 104447,
+				"usec": 4398
+			},
+			{
+				"count": 512,
+				"start": 104703,
+				"usec": 8291
+			},
+			{
+				"count": 384,
+				"start": 105215,
+				"usec": 6395
+			},
+			{
+				"count": 256,
+				"start": 105599,
+				"usec": 4387
+			},
+			{
+				"count": 512,
+				"start": 105855,
+				"usec": 8471
+			},
+			{
+				"count": 384,
+				"start": 106367,
+				"usec": 6374
+			},
+			{
+				"count": 256,
+				"start": 106751,
+				"usec": 4207
+			},
+			{
+				"count": 512,
+				"start": 107007,
+				"usec": 8330
+			},
+			{
+				"count": 512,
+				"start": 107519,
+				"usec": 8606
+			},
+			{
+				"count": 384,
+				"start": 108031,
+				"usec": 6219
+			},
+			{
+				"count": 256,
+				"start": 108415,
+				"usec": 4354
+			},
+			{
+				"count": 256,
+				"start": 108671,
+				"usec": 4177
+			},
+			{
+				"count": 512,
+				"start": 108927,
+				"usec": 8022
+			},
+			{
+				"count": 384,
+				"start": 109439,
+				"usec": 6294
+			},
+			{
+				"count": 512,
+				"start": 109823,
+				"usec": 8974
+			},
+			{
+				"count": 256,
+				"start": 110335,
+				"usec": 4889
+			},
+			{
+				"count": 256,
+				"start": 110591,
+				"usec": 4081
+			},
+			{
+				"count": 256,
+				"start": 110847,
+				"usec": 4271
+			},
+			{
+				"count": 384,
+				"start": 111103,
+				"usec": 6598
+			},
+			{
+				"count": 256,
+				"start": 111487,
+				"usec": 4354
+			},
+			{
+				"count": 512,
+				"start": 111743,
+				"usec": 8326
+			},
+			{
+				"count": 384,
+				"start": 112255,
+				"usec": 6377
+			},
+			{
+				"count": 256,
+				"start": 112639,
+				"usec": 4368
+			},
+			{
+				"count": 512,
+				"start": 112895,
+				"usec": 8385
+			},
+			{
+				"count": 512,
+				"start": 113407,
+				"usec": 8204
+			},
+			{
+				"count": 128,
+				"start": 113919,
+				"usec": 2338
+			},
+			{
+				"count": 256,
+				"start": 114047,
+				"usec": 4283
+			},
+			{
+				"count": 256,
+				"start": 114303,
+				"usec": 4224
+			},
+			{
+				"count": 512,
+				"start": 114559,
+				"usec": 8191
+			},
+			{
+				"count": 384,
+				"start": 115071,
+				"usec": 6274
+			},
+			{
+				"count": 256,
+				"start": 115455,
+				"usec": 4376
+			},
+			{
+				"count": 512,
+				"start": 115711,
+				"usec": 8363
+			},
+			{
+				"count": 512,
+				"start": 116223,
+				"usec": 8222
+			},
+			{
+				"count": 128,
+				"start": 116735,
+				"usec": 2323
+			},
+			{
+				"count": 512,
+				"start": 116863,
+				"usec": 8517
+			},
+			{
+				"count": 256,
+				"start": 117375,
+				"usec": 4355
+			},
+			{
+				"count": 256,
+				"start": 117631,
+				"usec": 4268
+			},
+			{
+				"count": 256,
+				"start": 117887,
+				"usec": 4286
+			},
+			{
+				"count": 384,
+				"start": 118143,
+				"usec": 6516
+			},
+			{
+				"count": 512,
+				"start": 118527,
+				"usec": 8317
+			},
+			{
+				"count": 256,
+				"start": 119039,
+				"usec": 4394
+			},
+			{
+				"count": 512,
+				"start": 119295,
+				"usec": 8214
+			},
+			{
+				"count": 384,
+				"start": 119807,
+				"usec": 6411
+			},
+			{
+				"count": 256,
+				"start": 120191,
+				"usec": 4286
+			},
+			{
+				"count": 512,
+				"start": 120447,
+				"usec": 8084
+			},
+			{
+				"count": 256,
+				"start": 120959,
+				"usec": 4840
+			},
+			{
+				"count": 128,
+				"start": 121215,
+				"usec": 2100
+			},
+			{
+				"count": 256,
+				"start": 121343,
+				"usec": 3965
+			},
+			{
+				"count": 512,
+				"start": 121599,
+				"usec": 8404
+			},
+			{
+				"count": 256,
+				"start": 122111,
+				"usec": 5513
+			},
+			{
+				"count": 384,
+				"start": 122367,
+				"usec": 6108
+			},
+			{
+				"count": 512,
+				"start": 122751,
+				"usec": 8779
+			},
+			{
+				"count": 512,
+				"start": 123263,
+				"usec": 7829
+			},
+			{
+				"count": 256,
+				"start": 123775,
+				"usec": 3891
+			},
+			{
+				"count": 384,
+				"start": 124031,
+				"usec": 6371
+			},
+			{
+				"count": 256,
+				"start": 124415,
+				"usec": 4764
+			},
+			{
+				"count": 512,
+				"start": 124671,
+				"usec": 8845
+			},
+			{
+				"count": 384,
+				"start": 125183,
+				"usec": 6431
+			},
+			{
+				"count": 512,
+				"start": 125567,
+				"usec": 8314
+			},
+			{
+				"count": 256,
+				"start": 126079,
+				"usec": 4366
+			},
+			{
+				"count": 512,
+				"start": 126335,
+				"usec": 8678
+			},
+			{
+				"count": 384,
+				"start": 126847,
+				"usec": 6711
+			},
+			{
+				"count": 256,
+				"start": 127231,
+				"usec": 4494
+			},
+			{
+				"count": 512,
+				"start": 127487,
+				"usec": 7759
+			},
+			{
+				"count": 256,
+				"start": 127999,
+				"usec": 4157
+			},
+			{
+				"count": 256,
+				"start": 128255,
+				"usec": 4088
+			},
+			{
+				"count": 128,
+				"start": 128511,
+				"usec": 2262
+			},
+			{
+				"count": 512,
+				"start": 128639,
+				"usec": 8270
+			},
+			{
+				"count": 512,
+				"start": 129151,
+				"usec": 8289
+			},
+			{
+				"count": 256,
+				"start": 129663,
+				"usec": 4235
+			},
+			{
+				"count": 384,
+				"start": 129919,
+				"usec": 6207
+			},
+			{
+				"count": 256,
+				"start": 130303,
+				"usec": 4241
+			},
+			{
+				"count": 512,
+				"start": 130559,
+				"usec": 8380
+			},
+			{
+				"count": 384,
+				"start": 131071,
+				"usec": 6775
+			},
+			{
+				"count": 256,
+				"start": 131455,
+				"usec": 3988
+			},
+			{
+				"count": 512,
+				"start": 131711,
+				"usec": 8146
+			},
+			{
+				"count": 512,
+				"start": 132223,
+				"usec": 8389
+			},
+			{
+				"count": 128,
+				"start": 132735,
+				"usec": 2174
+			},
+			{
+				"count": 256,
+				"start": 132863,
+				"usec": 4124
+			},
+			{
+				"count": 512,
+				"start": 133119,
+				"usec": 8364
+			},
+			{
+				"count": 512,
+				"start": 133631,
+				"usec": 8416
+			},
+			{
+				"count": 384,
+				"start": 134143,
+				"usec": 6272
+			},
+			{
+				"count": 256,
+				"start": 134527,
+				"usec": 4140
+			},
+			{
+				"count": 256,
+				"start": 134783,
+				"usec": 4284
+			},
+			{
+				"count": 256,
+				"start": 135039,
+				"usec": 4275
+			},
+			{
+				"count": 256,
+				"start": 135295,
+				"usec": 4296
+			},
+			{
+				"count": 384,
+				"start": 135551,
+				"usec": 6334
+			},
+			{
+				"count": 256,
+				"start": 135935,
+				"usec": 4109
+			},
+			{
+				"count": 512,
+				"start": 136191,
+				"usec": 7796
+			},
+			{
+				"count": 512,
+				"start": 136703,
+				"usec": 8121
+			},
+			{
+				"count": 128,
+				"start": 137215,
+				"usec": 2193
+			},
+			{
+				"count": 512,
+				"start": 137343,
+				"usec": 8235
+			},
+			{
+				"count": 512,
+				"start": 137855,
+				"usec": 8370
+			},
+			{
+				"count": 256,
+				"start": 138367,
+				"usec": 4264
+			},
+			{
+				"count": 128,
+				"start": 138623,
+				"usec": 2306
+			},
+			{
+				"count": 256,
+				"start": 138751,
+				"usec": 4298
+			},
+			{
+				"count": 256,
+				"start": 139007,
+				"usec": 4005
+			},
+			{
+				"count": 512,
+				"start": 139263,
+				"usec": 7854
+			},
+			{
+				"count": 384,
+				"start": 139775,
+				"usec": 6134
+			},
+			{
+				"count": 256,
+				"start": 140159,
+				"usec": 3985
+			},
+			{
+				"count": 512,
+				"start": 140415,
+				"usec": 8190
+			},
+			{
+				"count": 256,
+				"start": 140927,
+				"usec": 4254
+			},
+			{
+				"count": 384,
+				"start": 141183,
+				"usec": 6154
+			},
+			{
+				"count": 256,
+				"start": 141567,
+				"usec": 4274
+			},
+			{
+				"count": 256,
+				"start": 141823,
+				"usec": 4259
+			},
+			{
+				"count": 256,
+				"start": 142079,
+				"usec": 4348
+			},
+			{
+				"count": 512,
+				"start": 142335,
+				"usec": 7935
+			},
+			{
+				"count": 384,
+				"start": 142847,
+				"usec": 6306
+			},
+			{
+				"count": 256,
+				"start": 143231,
+				"usec": 4301
+			},
+			{
+				"count": 512,
+				"start": 143487,
+				"usec": 7799
+			},
+			{
+				"count": 256,
+				"start": 143999,
+				"usec": 4247
+			},
+			{
+				"count": 384,
+				"start": 144255,
+				"usec": 6225
+			},
+			{
+				"count": 256,
+				"start": 144639,
+				"usec": 4165
+			},
+			{
+				"count": 512,
+				"start": 144895,
+				"usec": 8037
+			},
+			{
+				"count": 256,
+				"start": 145407,
+				"usec": 4643
+			},
+			{
+				"count": 128,
+				"start": 145663,
+				"usec": 2261
+			},
+			{
+				"count": 256,
+				"start": 145791,
+				"usec": 4180
+			},
+			{
+				"count": 512,
+				"start": 146047,
+				"usec": 8102
+			},
+			{
+				"count": 512,
+				"start": 146559,
+				"usec": 7713
+			},
+			{
+				"count": 256,
+				"start": 147071,
+				"usec": 4237
+			},
+			{
+				"count": 384,
+				"start": 147327,
+				"usec": 6168
+			},
+			{
+				"count": 256,
+				"start": 147711,
+				"usec": 3997
+			},
+			{
+				"count": 512,
+				"start": 147967,
+				"usec": 7742
+			},
+			{
+				"count": 384,
+				"start": 148479,
+				"usec": 7291
+			},
+			{
+				"count": 256,
+				"start": 148863,
+				"usec": 4420
+			},
+			{
+				"count": 256,
+				"start": 149119,
+				"usec": 4348
+			},
+			{
+				"count": 256,
+				"start": 149375,
+				"usec": 4367
+			},
+			{
+				"count": 512,
+				"start": 149631,
+				"usec": 8493
+			},
+			{
+				"count": 384,
+				"start": 150143,
+				"usec": 6587
+			},
+			{
+				"count": 256,
+				"start": 150527,
+				"usec": 3920
+			},
+			{
+				"count": 512,
+				"start": 150783,
+				"usec": 8543
+			},
+			{
+				"count": 384,
+				"start": 151295,
+				"usec": 6441
+			},
+			{
+				"count": 256,
+				"start": 151679,
+				"usec": 4344
+			},
+			{
+				"count": 512,
+				"start": 151935,
+				"usec": 8255
+			},
+			{
+				"count": 256,
+				"start": 152447,
+				"usec": 4447
+			},
+			{
+				"count": 256,
+				"start": 152703,
+				"usec": 4347
+			},
+			{
+				"count": 128,
+				"start": 152959,
+				"usec": 2448
+			},
+			{
+				"count": 512,
+				"start": 153087,
+				"usec": 8302
+			},
+			{
+				"count": 256,
+				"start": 153599,
+				"usec": 4584
+			},
+			{
+				"count": 512,
+				"start": 153855,
+				"usec": 8209
+			},
+			{
+				"count": 384,
+				"start": 154367,
+				"usec": 6642
+			},
+			{
+				"count": 256,
+				"start": 154751,
+				"usec": 4641
+			},
+			{
+				"count": 512,
+				"start": 155007,
+				"usec": 8599
+			},
+			{
+				"count": 512,
+				"start": 155519,
+				"usec": 8824
+			},
+			{
+				"count": 128,
+				"start": 156031,
+				"usec": 2541
+			},
+			{
+				"count": 256,
+				"start": 156159,
+				"usec": 4553
+			},
+			{
+				"count": 256,
+				"start": 156415,
+				"usec": 4486
+			},
+			{
+				"count": 512,
+				"start": 156671,
+				"usec": 8667
+			},
+			{
+				"count": 384,
+				"start": 157183,
+				"usec": 5948
+			},
+			{
+				"count": 256,
+				"start": 157567,
+				"usec": 3865
+			},
+			{
+				"count": 512,
+				"start": 157823,
+				"usec": 8747
+			},
+			{
+				"count": 512,
+				"start": 158335,
+				"usec": 9115
+			},
+			{
+				"count": 384,
+				"start": 158847,
+				"usec": 6056
+			},
+			{
+				"count": 256,
+				"start": 159231,
+				"usec": 4676
+			},
+			{
+				"count": 256,
+				"start": 159487,
+				"usec": 4459
+			},
+			{
+				"count": 256,
+				"start": 159743,
+				"usec": 4497
+			},
+			{
+				"count": 384,
+				"start": 159999,
+				"usec": 6825
+			},
+			{
+				"count": 512,
+				"start": 160383,
+				"usec": 8827
+			},
+			{
+				"count": 512,
+				"start": 160895,
+				"usec": 8650
+			},
+			{
+				"count": 256,
+				"start": 161407,
+				"usec": 4519
+			},
+			{
+				"count": 384,
+				"start": 161663,
+				"usec": 6431
+			},
+			{
+				"count": 512,
+				"start": 162047,
+				"usec": 8892
+			},
+			{
+				"count": 512,
+				"start": 162559,
+				"usec": 9140
+			},
+			{
+				"count": 128,
+				"start": 163071,
+				"usec": 2337
+			},
+			{
+				"count": 256,
+				"start": 163199,
+				"usec": 4492
+			},
+			{
+				"count": 256,
+				"start": 163455,
+				"usec": 4525
+			},
+			{
+				"count": 512,
+				"start": 163711,
+				"usec": 8465
+			},
+			{
+				"count": 384,
+				"start": 164223,
+				"usec": 6164
+			},
+			{
+				"count": 256,
+				"start": 164607,
+				"usec": 5363
+			},
+			{
+				"count": 512,
+				"start": 164863,
+				"usec": 8615
+			},
+			{
+				"count": 512,
+				"start": 165375,
+				"usec": 8836
+			},
+			{
+				"count": 384,
+				"start": 165887,
+				"usec": 6396
+			},
+			{
+				"count": 256,
+				"start": 166271,
+				"usec": 4708
+			},
+			{
+				"count": 256,
+				"start": 166527,
+				"usec": 4422
+			},
+			{
+				"count": 256,
+				"start": 166783,
+				"usec": 4012
+			},
+			{
+				"count": 512,
+				"start": 167039,
+				"usec": 8165
+			},
+			{
+				"count": 128,
+				"start": 167551,
+				"usec": 2295
+			},
+			{
+				"count": 512,
+				"start": 167679,
+				"usec": 8098
+			},
+			{
+				"count": 256,
+				"start": 168191,
+				"usec": 4312
+			},
+			{
+				"count": 512,
+				"start": 168447,
+				"usec": 8332
+			},
+			{
+				"count": 384,
+				"start": 168959,
+				"usec": 6317
+			},
+			{
+				"count": 256,
+				"start": 169343,
+				"usec": 4177
+			},
+			{
+				"count": 512,
+				"start": 169599,
+				"usec": 8344
+			},
+			{
+				"count": 256,
+				"start": 170111,
+				"usec": 4353
+			},
+			{
+				"count": 128,
+				"start": 170367,
+				"usec": 2257
+			},
+			{
+				"count": 256,
+				"start": 170495,
+				"usec": 4159
+			},
+			{
+				"count": 512,
+				"start": 170751,
+				"usec": 7794
+			},
+			{
+				"count": 256,
+				"start": 171263,
+				"usec": 4113
+			},
+			{
+				"count": 384,
+				"start": 171519,
+				"usec": 6259
+			},
+			{
+				"count": 256,
+				"start": 171903,
+				"usec": 4409
+			},
+			{
+				"count": 512,
+				"start": 172159,
+				"usec": 7811
+			},
+			{
+				"count": 512,
+				"start": 172671,
+				"usec": 8112
+			},
+			{
+				"count": 384,
+				"start": 173183,
+				"usec": 6237
+			},
+			{
+				"count": 256,
+				"start": 173567,
+				"usec": 4178
+			},
+			{
+				"count": 256,
+				"start": 173823,
+				"usec": 4163
+			},
+			{
+				"count": 256,
+				"start": 174079,
+				"usec": 4156
+			},
+			{
+				"count": 256,
+				"start": 174335,
+				"usec": 4260
+			},
+			{
+				"count": 384,
+				"start": 174591,
+				"usec": 6148
+			},
+			{
+				"count": 256,
+				"start": 174975,
+				"usec": 4159
+			},
+			{
+				"count": 512,
+				"start": 175231,
+				"usec": 8452
+			},
+			{
+				"count": 512,
+				"start": 175743,
+				"usec": 8479
+			},
+			{
+				"count": 128,
+				"start": 176255,
+				"usec": 2466
+			},
+			{
+				"count": 512,
+				"start": 176383,
+				"usec": 8744
+			},
+			{
+				"count": 512,
+				"start": 176895,
+				"usec": 8584
+			},
+			{
+				"count": 256,
+				"start": 177407,
+				"usec": 4383
+			},
+			{
+				"count": 384,
+				"start": 177663,
+				"usec": 6245
+			},
+			{
+				"count": 256,
+				"start": 178047,
+				"usec": 4616
+			},
+			{
+				"count": 512,
+				"start": 178303,
+				"usec": 8425
+			},
+			{
+				"count": 384,
+				"start": 178815,
+				"usec": 6235
+			},
+			{
+				"count": 256,
+				"start": 179199,
+				"usec": 4490
+			},
+			{
+				"count": 512,
+				"start": 179455,
+				"usec": 8836
+			},
+			{
+				"count": 512,
+				"start": 179967,
+				"usec": 9055
+			},
+			{
+				"count": 384,
+				"start": 180479,
+				"usec": 7065
+			},
+			{
+				"count": 256,
+				"start": 180863,
+				"usec": 4727
+			},
+			{
+				"count": 512,
+				"start": 181119,
+				"usec": 8528
+			},
+			{
+				"count": 384,
+				"start": 181631,
+				"usec": 6650
+			},
+			{
+				"count": 256,
+				"start": 182015,
+				"usec": 4893
+			},
+			{
+				"count": 512,
+				"start": 182271,
+				"usec": 8300
+			},
+			{
+				"count": 512,
+				"start": 182783,
+				"usec": 8550
+			},
+			{
+				"count": 128,
+				"start": 183295,
+				"usec": 2293
+			},
+			{
+				"count": 512,
+				"start": 183423,
+				"usec": 8394
+			},
+			{
+				"count": 512,
+				"start": 183935,
+				"usec": 8226
+			},
+			{
+				"count": 256,
+				"start": 184447,
+				"usec": 4275
+			},
+			{
+				"count": 256,
+				"start": 184703,
+				"usec": 4143
+			},
+			{
+				"count": 128,
+				"start": 184959,
+				"usec": 2156
+			},
+			{
+				"count": 256,
+				"start": 185087,
+				"usec": 4283
+			},
+			{
+				"count": 512,
+				"start": 185343,
+				"usec": 8488
+			},
+			{
+				"count": 512,
+				"start": 185855,
+				"usec": 9034
+			},
+			{
+				"count": 384,
+				"start": 186367,
+				"usec": 6208
+			},
+			{
+				"count": 256,
+				"start": 186751,
+				"usec": 4304
+			},
+			{
+				"count": 512,
+				"start": 187007,
+				"usec": 8437
+			},
+			{
+				"count": 384,
+				"start": 187519,
+				"usec": 5948
+			},
+			{
+				"count": 256,
+				"start": 187903,
+				"usec": 4177
+			},
+			{
+				"count": 512,
+				"start": 188159,
+				"usec": 8261
+			},
+			{
+				"count": 256,
+				"start": 188671,
+				"usec": 4199
+			},
+			{
+				"count": 384,
+				"start": 188927,
+				"usec": 6024
+			},
+			{
+				"count": 512,
+				"start": 189311,
+				"usec": 8324
+			},
+			{
+				"count": 256,
+				"start": 189823,
+				"usec": 4417
+			},
+			{
+				"count": 512,
+				"start": 190079,
+				"usec": 8322
+			},
+			{
+				"count": 384,
+				"start": 190591,
+				"usec": 6324
+			},
+			{
+				"count": 256,
+				"start": 190975,
+				"usec": 4326
+			},
+			{
+				"count": 256,
+				"start": 191231,
+				"usec": 4290
+			},
+			{
+				"count": 256,
+				"start": 191487,
+				"usec": 4295
+			},
+			{
+				"count": 384,
+				"start": 191743,
+				"usec": 6422
+			},
+			{
+				"count": 256,
+				"start": 192127,
+				"usec": 4332
+			},
+			{
+				"count": 512,
+				"start": 192383,
+				"usec": 8390
+			},
+			{
+				"count": 512,
+				"start": 192895,
+				"usec": 8850
+			},
+			{
+				"count": 384,
+				"start": 193407,
+				"usec": 5876
+			},
+			{
+				"count": 256,
+				"start": 193791,
+				"usec": 4852
+			},
+			{
+				"count": 512,
+				"start": 194047,
+				"usec": 8216
+			},
+			{
+				"count": 512,
+				"start": 194559,
+				"usec": 8170
+			},
+			{
+				"count": 128,
+				"start": 195071,
+				"usec": 2219
+			},
+			{
+				"count": 256,
+				"start": 195199,
+				"usec": 4149
+			},
+			{
+				"count": 256,
+				"start": 195455,
+				"usec": 4183
+			},
+			{
+				"count": 512,
+				"start": 195711,
+				"usec": 8224
+			},
+			{
+				"count": 256,
+				"start": 196223,
+				"usec": 4501
+			},
+			{
+				"count": 384,
+				"start": 196479,
+				"usec": 6198
+			},
+			{
+				"count": 256,
+				"start": 196863,
+				"usec": 4467
+			},
+			{
+				"count": 512,
+				"start": 197119,
+				"usec": 8251
+			},
+			{
+				"count": 384,
+				"start": 197631,
+				"usec": 10926
+			},
+			{
+				"count": 512,
+				"start": 198015,
+				"usec": 8712
+			},
+			{
+				"count": 256,
+				"start": 198527,
+				"usec": 4476
+			},
+			{
+				"count": 512,
+				"start": 198783,
+				"usec": 8247
+			},
+			{
+				"count": 384,
+				"start": 199295,
+				"usec": 6593
+			},
+			{
+				"count": 256,
+				"start": 199679,
+				"usec": 4293
+			},
+			{
+				"count": 512,
+				"start": 199935,
+				"usec": 8148
+			},
+			{
+				"count": 384,
+				"start": 200447,
+				"usec": 6310
+			},
+			{
+				"count": 256,
+				"start": 200831,
+				"usec": 4335
+			},
+			{
+				"count": 512,
+				"start": 201087,
+				"usec": 8340
+			},
+			{
+				"count": 512,
+				"start": 201599,
+				"usec": 8394
+			},
+			{
+				"count": 128,
+				"start": 202111,
+				"usec": 2225
+			},
+			{
+				"count": 512,
+				"start": 202239,
+				"usec": 8178
+			},
+			{
+				"count": 256,
+				"start": 202751,
+				"usec": 4857
+			},
+			{
+				"count": 512,
+				"start": 203007,
+				"usec": 8261
+			},
+			{
+				"count": 384,
+				"start": 203519,
+				"usec": 6301
+			},
+			{
+				"count": 512,
+				"start": 203903,
+				"usec": 8214
+			},
+			{
+				"count": 256,
+				"start": 204415,
+				"usec": 4402
+			},
+			{
+				"count": 512,
+				"start": 204671,
+				"usec": 8426
+			},
+			{
+				"count": 384,
+				"start": 205183,
+				"usec": 6451
+			},
+			{
+				"count": 256,
+				"start": 205567,
+				"usec": 4085
+			},
+			{
+				"count": 512,
+				"start": 205823,
+				"usec": 8051
+			},
+			{
+				"count": 256,
+				"start": 206335,
+				"usec": 4235
+			},
+			{
+				"count": 384,
+				"start": 206591,
+				"usec": 6281
+			},
+			{
+				"count": 256,
+				"start": 206975,
+				"usec": 4170
+			},
+			{
+				"count": 512,
+				"start": 207231,
+				"usec": 8418
+			},
+			{
+				"count": 384,
+				"start": 207743,
+				"usec": 6431
+			},
+			{
+				"count": 256,
+				"start": 208127,
+				"usec": 4276
+			},
+			{
+				"count": 512,
+				"start": 208383,
+				"usec": 8376
+			},
+			{
+				"count": 256,
+				"start": 208895,
+				"usec": 4513
+			},
+			{
+				"count": 256,
+				"start": 209151,
+				"usec": 4334
+			},
+			{
+				"count": 384,
+				"start": 209407,
+				"usec": 6170
+			},
+			{
+				"count": 256,
+				"start": 209791,
+				"usec": 4270
+			},
+			{
+				"count": 512,
+				"start": 210047,
+				"usec": 8192
+			},
+			{
+				"count": 384,
+				"start": 210559,
+				"usec": 6864
+			},
+			{
+				"count": 256,
+				"start": 210943,
+				"usec": 4315
+			},
+			{
+				"count": 512,
+				"start": 211199,
+				"usec": 8318
+			},
+			{
+				"count": 512,
+				"start": 211711,
+				"usec": 8363
+			},
+			{
+				"count": 128,
+				"start": 212223,
+				"usec": 2271
+			},
+			{
+				"count": 256,
+				"start": 212351,
+				"usec": 4165
+			},
+			{
+				"count": 256,
+				"start": 212607,
+				"usec": 4125
+			},
+			{
+				"count": 512,
+				"start": 212863,
+				"usec": 8000
+			},
+			{
+				"count": 512,
+				"start": 213375,
+				"usec": 8270
+			},
+			{
+				"count": 384,
+				"start": 213887,
+				"usec": 6346
+			},
+			{
+				"count": 256,
+				"start": 214271,
+				"usec": 4316
+			},
+			{
+				"count": 512,
+				"start": 214527,
+				"usec": 8410
+			},
+			{
+				"count": 256,
+				"start": 215039,
+				"usec": 4623
+			},
+			{
+				"count": 384,
+				"start": 215295,
+				"usec": 6391
+			},
+			{
+				"count": 512,
+				"start": 215679,
+				"usec": 8702
+			},
+			{
+				"count": 256,
+				"start": 216191,
+				"usec": 4378
+			},
+			{
+				"count": 384,
+				"start": 216447,
+				"usec": 9456
+			},
+			{
+				"count": 512,
+				"start": 216831,
+				"usec": 9289
+			},
+			{
+				"count": 768,
+				"start": 217343,
+				"usec": 16358
+			},
+			{
+				"count": 384,
+				"start": 218111,
+				"usec": 6972
+			},
+			{
+				"count": 512,
+				"start": 218495,
+				"usec": 8215
+			},
+			{
+				"count": 512,
+				"start": 219007,
+				"usec": 8151
+			},
+			{
+				"count": 128,
+				"start": 219519,
+				"usec": 2281
+			},
+			{
+				"count": 256,
+				"start": 219647,
+				"usec": 4161
+			},
+			{
+				"count": 256,
+				"start": 219903,
+				"usec": 4042
+			},
+			{
+				"count": 512,
+				"start": 220159,
+				"usec": 8280
+			},
+			{
+				"count": 384,
+				"start": 220671,
+				"usec": 6346
+			},
+			{
+				"count": 256,
+				"start": 221055,
+				"usec": 4249
+			},
+			{
+				"count": 512,
+				"start": 221311,
+				"usec": 10098
+			},
+			{
+				"count": 512,
+				"start": 221823,
+				"usec": 8333
+			},
+			{
+				"count": 384,
+				"start": 222335,
+				"usec": 6255
+			},
+			{
+				"count": 256,
+				"start": 222719,
+				"usec": 4171
+			},
+			{
+				"count": 256,
+				"start": 222975,
+				"usec": 4300
+			},
+			{
+				"count": 256,
+				"start": 223231,
+				"usec": 4360
+			},
+			{
+				"count": 256,
+				"start": 223487,
+				"usec": 4419
+			},
+			{
+				"count": 384,
+				"start": 223743,
+				"usec": 7014
+			},
+			{
+				"count": 512,
+				"start": 224127,
+				"usec": 8278
+			},
+			{
+				"count": 256,
+				"start": 224639,
+				"usec": 4885
+			},
+			{
+				"count": 512,
+				"start": 224895,
+				"usec": 8322
+			},
+			{
+				"count": 384,
+				"start": 225407,
+				"usec": 6104
+			},
+			{
+				"count": 512,
+				"start": 225791,
+				"usec": 8303
+			},
+			{
+				"count": 256,
+				"start": 226303,
+				"usec": 4277
+			},
+			{
+				"count": 256,
+				"start": 226559,
+				"usec": 4202
+			},
+			{
+				"count": 128,
+				"start": 226815,
+				"usec": 2285
+			},
+			{
+				"count": 256,
+				"start": 226943,
+				"usec": 4414
+			},
+			{
+				"count": 512,
+				"start": 227199,
+				"usec": 8136
+			},
+			{
+				"count": 512,
+				"start": 227711,
+				"usec": 8480
+			},
+			{
+				"count": 384,
+				"start": 228223,
+				"usec": 6213
+			},
+			{
+				"count": 256,
+				"start": 228607,
+				"usec": 4217
+			},
+			{
+				"count": 512,
+				"start": 228863,
+				"usec": 8333
+			},
+			{
+				"count": 384,
+				"start": 229375,
+				"usec": 6256
+			},
+			{
+				"count": 256,
+				"start": 229759,
+				"usec": 4340
+			},
+			{
+				"count": 256,
+				"start": 230015,
+				"usec": 4236
+			},
+			{
+				"count": 256,
+				"start": 230271,
+				"usec": 4063
+			},
+			{
+				"count": 256,
+				"start": 230527,
+				"usec": 4211
+			},
+			{
+				"count": 384,
+				"start": 230783,
+				"usec": 6131
+			},
+			{
+				"count": 512,
+				"start": 231167,
+				"usec": 8928
+			},
+			{
+				"count": 512,
+				"start": 231679,
+				"usec": 8594
+			},
+			{
+				"count": 512,
+				"start": 232191,
+				"usec": 8782
+			},
+			{
+				"count": 384,
+				"start": 232703,
+				"usec": 6358
+			},
+			{
+				"count": 256,
+				"start": 233087,
+				"usec": 4224
+			},
+			{
+				"count": 512,
+				"start": 233343,
+				"usec": 8157
+			},
+			{
+				"count": 384,
+				"start": 233855,
+				"usec": 5964
+			},
+			{
+				"count": 256,
+				"start": 234239,
+				"usec": 4143
+			},
+			{
+				"count": 256,
+				"start": 234495,
+				"usec": 4190
+			},
+			{
+				"count": 512,
+				"start": 234751,
+				"usec": 8490
+			},
+			{
+				"count": 384,
+				"start": 235263,
+				"usec": 6509
+			},
+			{
+				"count": 512,
+				"start": 235647,
+				"usec": 8662
+			},
+			{
+				"count": 256,
+				"start": 236159,
+				"usec": 4503
+			},
+			{
+				"count": 512,
+				"start": 236415,
+				"usec": 8469
+			},
+			{
+				"count": 384,
+				"start": 236927,
+				"usec": 6887
+			},
+			{
+				"count": 256,
+				"start": 237311,
+				"usec": 4493
+			},
+			{
+				"count": 256,
+				"start": 237567,
+				"usec": 4464
+			},
+			{
+				"count": 256,
+				"start": 237823,
+				"usec": 4322
+			},
+			{
+				"count": 384,
+				"start": 238079,
+				"usec": 6223
+			},
+			{
+				"count": 512,
+				"start": 238463,
+				"usec": 8219
+			},
+			{
+				"count": 256,
+				"start": 238975,
+				"usec": 6307
+			},
+			{
+				"count": 512,
+				"start": 239231,
+				"usec": 8302
+			},
+			{
+				"count": 384,
+				"start": 239743,
+				"usec": 6253
+			},
+			{
+				"count": 512,
+				"start": 240127,
+				"usec": 8335
+			},
+			{
+				"count": 256,
+				"start": 240639,
+				"usec": 4338
+			},
+			{
+				"count": 256,
+				"start": 240895,
+				"usec": 4274
+			},
+			{
+				"count": 384,
+				"start": 241151,
+				"usec": 6166
+			},
+			{
+				"count": 512,
+				"start": 241535,
+				"usec": 8427
+			},
+			{
+				"count": 256,
+				"start": 242047,
+				"usec": 4767
+			},
+			{
+				"count": 512,
+				"start": 242303,
+				"usec": 8398
+			},
+			{
+				"count": 384,
+				"start": 242815,
+				"usec": 6339
+			},
+			{
+				"count": 256,
+				"start": 243199,
+				"usec": 4681
+			},
+			{
+				"count": 512,
+				"start": 243455,
+				"usec": 8406
+			},
+			{
+				"count": 384,
+				"start": 243967,
+				"usec": 6193
+			},
+			{
+				"count": 256,
+				"start": 244351,
+				"usec": 4322
+			},
+			{
+				"count": 512,
+				"start": 244607,
+				"usec": 13638
+			},
+			{
+				"count": 512,
+				"start": 245119,
+				"usec": 8718
+			},
+			{
+				"count": 384,
+				"start": 245631,
+				"usec": 6302
+			},
+			{
+				"count": 512,
+				"start": 246015,
+				"usec": 10196
+			},
+			{
+				"count": 512,
+				"start": 246527,
+				"usec": 8582
+			},
+			{
+				"count": 384,
+				"start": 247039,
+				"usec": 6656
+			},
+			{
+				"count": 512,
+				"start": 247423,
+				"usec": 9009
+			},
+			{
+				"count": 256,
+				"start": 247935,
+				"usec": 4304
+			},
+			{
+				"count": 256,
+				"start": 248191,
+				"usec": 4435
+			},
+			{
+				"count": 384,
+				"start": 248447,
+				"usec": 6372
+			},
+			{
+				"count": 512,
+				"start": 248831,
+				"usec": 9478
+			},
+			{
+				"count": 512,
+				"start": 249343,
+				"usec": 8433
+			},
+			{
+				"count": 128,
+				"start": 249855,
+				"usec": 2340
+			},
+			{
+				"count": 512,
+				"start": 249983,
+				"usec": 8351
+			},
+			{
+				"count": 512,
+				"start": 250495,
+				"usec": 8509
+			},
+			{
+				"count": 512,
+				"start": 251007,
+				"usec": 8618
+			},
+			{
+				"count": 128,
+				"start": 251519,
+				"usec": 2371
+			},
+			{
+				"count": 256,
+				"start": 251647,
+				"usec": 4398
+			},
+			{
+				"count": 256,
+				"start": 251903,
+				"usec": 4338
+			},
+			{
+				"count": 512,
+				"start": 252159,
+				"usec": 8508
+			},
+			{
+				"count": 384,
+				"start": 252671,
+				"usec": 6358
+			},
+			{
+				"count": 256,
+				"start": 253055,
+				"usec": 4325
+			},
+			{
+				"count": 512,
+				"start": 253311,
+				"usec": 8688
+			},
+			{
+				"count": 512,
+				"start": 253823,
+				"usec": 8722
+			},
+			{
+				"count": 384,
+				"start": 254335,
+				"usec": 6495
+			},
+			{
+				"count": 256,
+				"start": 254719,
+				"usec": 4665
+			},
+			{
+				"count": 256,
+				"start": 254975,
+				"usec": 4327
+			},
+			{
+				"count": 512,
+				"start": 255231,
+				"usec": 8385
+			},
+			{
+				"count": 384,
+				"start": 255743,
+				"usec": 6343
+			},
+			{
+				"count": 256,
+				"start": 256127,
+				"usec": 4345
+			},
+			{
+				"count": 512,
+				"start": 256383,
+				"usec": 8325
+			},
+			{
+				"count": 384,
+				"start": 256895,
+				"usec": 6339
+			},
+			{
+				"count": 256,
+				"start": 257279,
+				"usec": 4284
+			},
+			{
+				"count": 512,
+				"start": 257535,
+				"usec": 8568
+			},
+			{
+				"count": 512,
+				"start": 258047,
+				"usec": 8694
+			},
+			{
+				"count": 128,
+				"start": 258559,
+				"usec": 2438
+			},
+			{
+				"count": 256,
+				"start": 258687,
+				"usec": 4326
+			},
+			{
+				"count": 512,
+				"start": 258943,
+				"usec": 8943
+			},
+			{
+				"count": 512,
+				"start": 259455,
+				"usec": 9225
+			},
+			{
+				"count": 384,
+				"start": 259967,
+				"usec": 6683
+			},
+			{
+				"count": 256,
+				"start": 260351,
+				"usec": 4511
+			},
+			{
+				"count": 512,
+				"start": 260607,
+				"usec": 8788
+			},
+			{
+				"count": 512,
+				"start": 261119,
+				"usec": 8690
+			},
+			{
+				"count": 384,
+				"start": 261631,
+				"usec": 6415
+			},
+			{
+				"count": 256,
+				"start": 262015,
+				"usec": 4353
+			},
+			{
+				"count": 512,
+				"start": 262271,
+				"usec": 9712
+			},
+			{
+				"count": 384,
+				"start": 262783,
+				"usec": 6546
+			},
+			{
+				"count": 512,
+				"start": 263167,
+				"usec": 8277
+			},
+			{
+				"count": 512,
+				"start": 263679,
+				"usec": 9323
+			},
+			{
+				"count": 384,
+				"start": 264191,
+				"usec": 6485
+			},
+			{
+				"count": 512,
+				"start": 264575,
+				"usec": 9109
+			},
+			{
+				"count": 512,
+				"start": 265087,
+				"usec": 8964
+			},
+			{
+				"count": 256,
+				"start": 265599,
+				"usec": 4955
+			},
+			{
+				"count": 384,
+				"start": 265855,
+				"usec": 6877
+			},
+			{
+				"count": 256,
+				"start": 266239,
+				"usec": 4802
+			},
+			{
+				"count": 512,
+				"start": 266495,
+				"usec": 9070
+			},
+			{
+				"count": 384,
+				"start": 267007,
+				"usec": 7042
+			},
+			{
+				"count": 512,
+				"start": 267391,
+				"usec": 15274
+			},
+			{
+				"count": 512,
+				"start": 267903,
+				"usec": 9195
+			},
+			{
+				"count": 384,
+				"start": 268415,
+				"usec": 6910
+			},
+			{
+				"count": 256,
+				"start": 268799,
+				"usec": 4687
+			},
+			{
+				"count": 512,
+				"start": 269055,
+				"usec": 9119
+			},
+			{
+				"count": 256,
+				"start": 269567,
+				"usec": 4903
+			},
+			{
+				"count": 512,
+				"start": 269823,
+				"usec": 9064
+			},
+			{
+				"count": 384,
+				"start": 270335,
+				"usec": 10829
+			},
+			{
+				"count": 512,
+				"start": 270719,
+				"usec": 8628
+			},
+			{
+				"count": 512,
+				"start": 271231,
+				"usec": 8822
+			},
+			{
+				"count": 384,
+				"start": 271743,
+				"usec": 6784
+			},
+			{
+				"count": 512,
+				"start": 272127,
+				"usec": 8485
+			},
+			{
+				"count": 256,
+				"start": 272639,
+				"usec": 4665
+			},
+			{
+				"count": 256,
+				"start": 272895,
+				"usec": 4485
+			},
+			{
+				"count": 384,
+				"start": 273151,
+				"usec": 6789
+			},
+			{
+				"count": 512,
+				"start": 273535,
+				"usec": 8689
+			},
+			{
+				"count": 512,
+				"start": 274047,
+				"usec": 8539
+			},
+			{
+				"count": 384,
+				"start": 274559,
+				"usec": 6419
+			},
+			{
+				"count": 512,
+				"start": 274943,
+				"usec": 8464
+			},
+			{
+				"count": 512,
+				"start": 275455,
+				"usec": 8685
+			},
+			{
+				"count": 128,
+				"start": 275967,
+				"usec": 2311
+			},
+			{
+				"count": 256,
+				"start": 276095,
+				"usec": 4378
+			},
+			{
+				"count": 512,
+				"start": 276351,
+				"usec": 8698
+			},
+			{
+				"count": 512,
+				"start": 276863,
+				"usec": 8796
+			},
+			{
+				"count": 384,
+				"start": 277375,
+				"usec": 6569
+			},
+			{
+				"count": 256,
+				"start": 277759,
+				"usec": 4388
+			},
+			{
+				"count": 512,
+				"start": 278015,
+				"usec": 8360
+			},
+			{
+				"count": 384,
+				"start": 278527,
+				"usec": 6594
+			},
+			{
+				"count": 512,
+				"start": 278911,
+				"usec": 10048
+			},
+			{
+				"count": 256,
+				"start": 279423,
+				"usec": 4510
+			},
+			{
+				"count": 256,
+				"start": 279679,
+				"usec": 4314
+			},
+			{
+				"count": 512,
+				"start": 279935,
+				"usec": 8380
+			},
+			{
+				"count": 384,
+				"start": 280447,
+				"usec": 6778
+			},
+			{
+				"count": 256,
+				"start": 280831,
+				"usec": 4340
+			},
+			{
+				"count": 512,
+				"start": 281087,
+				"usec": 8178
+			},
+			{
+				"count": 384,
+				"start": 281599,
+				"usec": 6271
+			},
+			{
+				"count": 256,
+				"start": 281983,
+				"usec": 4383
+			},
+			{
+				"count": 512,
+				"start": 282239,
+				"usec": 8354
+			},
+			{
+				"count": 512,
+				"start": 282751,
+				"usec": 8472
+			},
+			{
+				"count": 128,
+				"start": 283263,
+				"usec": 2472
+			},
+			{
+				"count": 256,
+				"start": 283391,
+				"usec": 4303
+			},
+			{
+				"count": 256,
+				"start": 283647,
+				"usec": 4538
+			},
+			{
+				"count": 512,
+				"start": 283903,
+				"usec": 8318
+			},
+			{
+				"count": 384,
+				"start": 284415,
+				"usec": 6454
+			},
+			{
+				"count": 512,
+				"start": 284799,
+				"usec": 8762
+			},
+			{
+				"count": 256,
+				"start": 285311,
+				"usec": 4473
+			},
+			{
+				"count": 512,
+				"start": 285567,
+				"usec": 8443
+			},
+			{
+				"count": 384,
+				"start": 286079,
+				"usec": 8752
+			},
+			{
+				"count": 256,
+				"start": 286463,
+				"usec": 4439
+			},
+			{
+				"count": 512,
+				"start": 286719,
+				"usec": 8443
+			},
+			{
+				"count": 384,
+				"start": 287231,
+				"usec": 6495
+			},
+			{
+				"count": 256,
+				"start": 287615,
+				"usec": 4436
+			},
+			{
+				"count": 512,
+				"start": 287871,
+				"usec": 8302
+			},
+			{
+				"count": 512,
+				"start": 288383,
+				"usec": 8687
+			},
+			{
+				"count": 384,
+				"start": 288895,
+				"usec": 6615
+			},
+			{
+				"count": 256,
+				"start": 289279,
+				"usec": 4342
+			},
+			{
+				"count": 512,
+				"start": 289535,
+				"usec": 8643
+			},
+			{
+				"count": 256,
+				"start": 290047,
+				"usec": 4323
+			},
+			{
+				"count": 256,
+				"start": 290303,
+				"usec": 5445
+			},
+			{
+				"count": 384,
+				"start": 290559,
+				"usec": 9257
+			},
+			{
+				"count": 512,
+				"start": 290943,
+				"usec": 8508
+			},
+			{
+				"count": 256,
+				"start": 291455,
+				"usec": 4351
+			},
+			{
+				"count": 384,
+				"start": 291711,
+				"usec": 6116
+			},
+			{
+				"count": 512,
+				"start": 292095,
+				"usec": 8711
+			},
+			{
+				"count": 512,
+				"start": 292607,
+				"usec": 8711
+			},
+			{
+				"count": 384,
+				"start": 293119,
+				"usec": 10408
+			},
+			{
+				"count": 256,
+				"start": 293503,
+				"usec": 4293
+			},
+			{
+				"count": 512,
+				"start": 293759,
+				"usec": 8150
+			},
+			{
+				"count": 256,
+				"start": 294271,
+				"usec": 4236
+			},
+			{
+				"count": 384,
+				"start": 294527,
+				"usec": 6169
+			},
+			{
+				"count": 256,
+				"start": 294911,
+				"usec": 4314
+			},
+			{
+				"count": 512,
+				"start": 295167,
+				"usec": 8423
+			},
+			{
+				"count": 512,
+				"start": 295679,
+				"usec": 8527
+			},
+			{
+				"count": 384,
+				"start": 296191,
+				"usec": 6705
+			},
+			{
+				"count": 256,
+				"start": 296575,
+				"usec": 4199
+			},
+			{
+				"count": 512,
+				"start": 296831,
+				"usec": 8147
+			},
+			{
+				"count": 256,
+				"start": 297343,
+				"usec": 4299
+			},
+			{
+				"count": 128,
+				"start": 297599,
+				"usec": 2247
+			},
+			{
+				"count": 256,
+				"start": 297727,
+				"usec": 4224
+			},
+			{
+				"count": 512,
+				"start": 297983,
+				"usec": 8227
+			},
+			{
+				"count": 512,
+				"start": 298495,
+				"usec": 8418
+			},
+			{
+				"count": 384,
+				"start": 299007,
+				"usec": 6289
+			},
+			{
+				"count": 256,
+				"start": 299391,
+				"usec": 4277
+			},
+			{
+				"count": 512,
+				"start": 299647,
+				"usec": 7864
+			},
+			{
+				"count": 512,
+				"start": 300159,
+				"usec": 8415
+			},
+			{
+				"count": 128,
+				"start": 300671,
+				"usec": 2265
+			},
+			{
+				"count": 256,
+				"start": 300799,
+				"usec": 4171
+			},
+			{
+				"count": 256,
+				"start": 301055,
+				"usec": 4298
+			},
+			{
+				"count": 512,
+				"start": 301311,
+				"usec": 8391
+			},
+			{
+				"count": 256,
+				"start": 301823,
+				"usec": 4303
+			},
+			{
+				"count": 384,
+				"start": 302079,
+				"usec": 6130
+			},
+			{
+				"count": 256,
+				"start": 302463,
+				"usec": 4264
+			},
+			{
+				"count": 512,
+				"start": 302719,
+				"usec": 8178
+			},
+			{
+				"count": 384,
+				"start": 303231,
+				"usec": 6115
+			},
+			{
+				"count": 256,
+				"start": 303615,
+				"usec": 4151
+			},
+			{
+				"count": 512,
+				"start": 303871,
+				"usec": 7877
+			},
+			{
+				"count": 256,
+				"start": 304383,
+				"usec": 4363
+			},
+			{
+				"count": 256,
+				"start": 304639,
+				"usec": 4171
+			},
+			{
+				"count": 384,
+				"start": 304895,
+				"usec": 6121
+			},
+			{
+				"count": 256,
+				"start": 305279,
+				"usec": 4259
+			},
+			{
+				"count": 512,
+				"start": 305535,
+				"usec": 8342
+			},
+			{
+				"count": 384,
+				"start": 306047,
+				"usec": 6217
+			},
+			{
+				"count": 256,
+				"start": 306431,
+				"usec": 4327
+			},
+			{
+				"count": 512,
+				"start": 306687,
+				"usec": 8547
+			},
+			{
+				"count": 512,
+				"start": 307199,
+				"usec": 8453
+			},
+			{
+				"count": 256,
+				"start": 307711,
+				"usec": 4393
+			},
+			{
+				"count": 384,
+				"start": 307967,
+				"usec": 6154
+			},
+			{
+				"count": 256,
+				"start": 308351,
+				"usec": 4035
+			},
+			{
+				"count": 512,
+				"start": 308607,
+				"usec": 8566
+			},
+			{
+				"count": 384,
+				"start": 309119,
+				"usec": 6502
+			},
+			{
+				"count": 256,
+				"start": 309503,
+				"usec": 4368
+			},
+			{
+				"count": 512,
+				"start": 309759,
+				"usec": 8545
+			},
+			{
+				"count": 512,
+				"start": 310271,
+				"usec": 8196
+			},
+			{
+				"count": 384,
+				"start": 310783,
+				"usec": 6273
+			},
+			{
+				"count": 256,
+				"start": 311167,
+				"usec": 4301
+			},
+			{
+				"count": 256,
+				"start": 311423,
+				"usec": 4258
+			},
+			{
+				"count": 256,
+				"start": 311679,
+				"usec": 4171
+			},
+			{
+				"count": 256,
+				"start": 311935,
+				"usec": 4233
+			},
+			{
+				"count": 384,
+				"start": 312191,
+				"usec": 6236
+			},
+			{
+				"count": 512,
+				"start": 312575,
+				"usec": 8403
+			},
+			{
+				"count": 512,
+				"start": 313087,
+				"usec": 8432
+			},
+			{
+				"count": 128,
+				"start": 313599,
+				"usec": 2399
+			},
+			{
+				"count": 512,
+				"start": 313727,
+				"usec": 8448
+			},
+			{
+				"count": 512,
+				"start": 314239,
+				"usec": 8431
+			},
+			{
+				"count": 256,
+				"start": 314751,
+				"usec": 4229
+			},
+			{
+				"count": 128,
+				"start": 315007,
+				"usec": 2326
+			},
+			{
+				"count": 256,
+				"start": 315135,
+				"usec": 4380
+			},
+			{
+				"count": 512,
+				"start": 315391,
+				"usec": 8262
+			},
+			{
+				"count": 512,
+				"start": 315903,
+				"usec": 8792
+			},
+			{
+				"count": 384,
+				"start": 316415,
+				"usec": 6134
+			},
+			{
+				"count": 256,
+				"start": 316799,
+				"usec": 4385
+			},
+			{
+				"count": 512,
+				"start": 317055,
+				"usec": 8321
+			},
+			{
+				"count": 512,
+				"start": 317567,
+				"usec": 8387
+			},
+			{
+				"count": 384,
+				"start": 318079,
+				"usec": 6338
+			},
+			{
+				"count": 256,
+				"start": 318463,
+				"usec": 4010
+			},
+			{
+				"count": 512,
+				"start": 318719,
+				"usec": 8327
+			},
+			{
+				"count": 384,
+				"start": 319231,
+				"usec": 6203
+			},
+			{
+				"count": 256,
+				"start": 319615,
+				"usec": 4384
+			},
+			{
+				"count": 512,
+				"start": 319871,
+				"usec": 8403
+			},
+			{
+				"count": 512,
+				"start": 320383,
+				"usec": 8028
+			},
+			{
+				"count": 128,
+				"start": 320895,
+				"usec": 2201
+			},
+			{
+				"count": 512,
+				"start": 321023,
+				"usec": 8122
+			},
+			{
+				"count": 256,
+				"start": 321535,
+				"usec": 4202
+			},
+			{
+				"count": 256,
+				"start": 321791,
+				"usec": 4148
+			},
+			{
+				"count": 256,
+				"start": 322047,
+				"usec": 4186
+			},
+			{
+				"count": 384,
+				"start": 322303,
+				"usec": 6097
+			},
+			{
+				"count": 256,
+				"start": 322687,
+				"usec": 4255
+			},
+			{
+				"count": 512,
+				"start": 322943,
+				"usec": 8320
+			},
+			{
+				"count": 256,
+				"start": 323455,
+				"usec": 4361
+			},
+			{
+				"count": 384,
+				"start": 323711,
+				"usec": 6072
+			},
+			{
+				"count": 512,
+				"start": 324095,
+				"usec": 8091
+			},
+			{
+				"count": 256,
+				"start": 324607,
+				"usec": 4249
+			},
+			{
+				"count": 384,
+				"start": 324863,
+				"usec": 6011
+			},
+			{
+				"count": 256,
+				"start": 325247,
+				"usec": 4169
+			},
+			{
+				"count": 256,
+				"start": 325503,
+				"usec": 4118
+			},
+			{
+				"count": 256,
+				"start": 325759,
+				"usec": 4220
+			},
+			{
+				"count": 512,
+				"start": 326015,
+				"usec": 8102
+			},
+			{
+				"count": 128,
+				"start": 326527,
+				"usec": 2392
+			},
+			{
+				"count": 512,
+				"start": 326655,
+				"usec": 8113
+			},
+			{
+				"count": 256,
+				"start": 327167,
+				"usec": 4338
+			},
+			{
+				"count": 512,
+				"start": 327423,
+				"usec": 8220
+			},
+			{
+				"count": 384,
+				"start": 327935,
+				"usec": 6047
+			},
+			{
+				"count": 512,
+				"start": 328319,
+				"usec": 8326
+			},
+			{
+				"count": 256,
+				"start": 328831,
+				"usec": 4518
+			},
+			{
+				"count": 256,
+				"start": 329087,
+				"usec": 4393
+			},
+			{
+				"count": 256,
+				"start": 329343,
+				"usec": 4204
+			},
+			{
+				"count": 384,
+				"start": 329599,
+				"usec": 6349
+			},
+			{
+				"count": 512,
+				"start": 329983,
+				"usec": 11821
+			},
+			{
+				"count": 512,
+				"start": 330495,
+				"usec": 8002
+			},
+			{
+				"count": 384,
+				"start": 331007,
+				"usec": 6131
+			},
+			{
+				"count": 256,
+				"start": 331391,
+				"usec": 4320
+			},
+			{
+				"count": 512,
+				"start": 331647,
+				"usec": 8288
+			},
+			{
+				"count": 384,
+				"start": 332159,
+				"usec": 6455
+			},
+			{
+				"count": 256,
+				"start": 332543,
+				"usec": 4223
+			},
+			{
+				"count": 512,
+				"start": 332799,
+				"usec": 8359
+			},
+			{
+				"count": 512,
+				"start": 333311,
+				"usec": 8791
+			},
+			{
+				"count": 384,
+				"start": 333823,
+				"usec": 6149
+			},
+			{
+				"count": 256,
+				"start": 334207,
+				"usec": 4519
+			},
+			{
+				"count": 512,
+				"start": 334463,
+				"usec": 8126
+			},
+			{
+				"count": 384,
+				"start": 334975,
+				"usec": 6441
+			},
+			{
+				"count": 256,
+				"start": 335359,
+				"usec": 4263
+			},
+			{
+				"count": 512,
+				"start": 335615,
+				"usec": 8107
+			},
+			{
+				"count": 256,
+				"start": 336127,
+				"usec": 4245
+			},
+			{
+				"count": 256,
+				"start": 336383,
+				"usec": 4151
+			},
+			{
+				"count": 384,
+				"start": 336639,
+				"usec": 6720
+			},
+			{
+				"count": 256,
+				"start": 337023,
+				"usec": 4329
+			},
+			{
+				"count": 512,
+				"start": 337279,
+				"usec": 8244
+			},
+			{
+				"count": 512,
+				"start": 337791,
+				"usec": 9004
+			},
+			{
+				"count": 384,
+				"start": 338303,
+				"usec": 6395
+			},
+			{
+				"count": 512,
+				"start": 338687,
+				"usec": 8053
+			},
+			{
+				"count": 512,
+				"start": 339199,
+				"usec": 8213
+			},
+			{
+				"count": 128,
+				"start": 339711,
+				"usec": 2173
+			},
+			{
+				"count": 512,
+				"start": 339839,
+				"usec": 8198
+			},
+			{
+				"count": 256,
+				"start": 340351,
+				"usec": 4374
+			},
+			{
+				"count": 512,
+				"start": 340607,
+				"usec": 8115
+			},
+			{
+				"count": 384,
+				"start": 341119,
+				"usec": 6158
+			},
+			{
+				"count": 256,
+				"start": 341503,
+				"usec": 4174
+			},
+			{
+				"count": 512,
+				"start": 341759,
+				"usec": 8334
+			},
+			{
+				"count": 384,
+				"start": 342271,
+				"usec": 6297
+			},
+			{
+				"count": 256,
+				"start": 342655,
+				"usec": 4473
+			},
+			{
+				"count": 256,
+				"start": 342911,
+				"usec": 4290
+			},
+			{
+				"count": 256,
+				"start": 343167,
+				"usec": 4221
+			},
+			{
+				"count": 512,
+				"start": 343423,
+				"usec": 8220
+			},
+			{
+				"count": 384,
+				"start": 343935,
+				"usec": 6379
+			},
+			{
+				"count": 256,
+				"start": 344319,
+				"usec": 4438
+			},
+			{
+				"count": 512,
+				"start": 344575,
+				"usec": 8695
+			},
+			{
+				"count": 384,
+				"start": 345087,
+				"usec": 6847
+			},
+			{
+				"count": 512,
+				"start": 345471,
+				"usec": 8324
+			},
+			{
+				"count": 256,
+				"start": 345983,
+				"usec": 4266
+			},
+			{
+				"count": 512,
+				"start": 346239,
+				"usec": 8375
+			},
+			{
+				"count": 256,
+				"start": 346751,
+				"usec": 4366
+			},
+			{
+				"count": 384,
+				"start": 347007,
+				"usec": 6862
+			},
+			{
+				"count": 256,
+				"start": 347391,
+				"usec": 4602
+			},
+			{
+				"count": 512,
+				"start": 347647,
+				"usec": 8418
+			},
+			{
+				"count": 384,
+				"start": 348159,
+				"usec": 6422
+			},
+			{
+				"count": 512,
+				"start": 348543,
+				"usec": 8385
+			},
+			{
+				"count": 256,
+				"start": 349055,
+				"usec": 4279
+			},
+			{
+				"count": 512,
+				"start": 349311,
+				"usec": 8200
+			},
+			{
+				"count": 384,
+				"start": 349823,
+				"usec": 6151
+			},
+			{
+				"count": 256,
+				"start": 350207,
+				"usec": 4137
+			},
+			{
+				"count": 512,
+				"start": 350463,
+				"usec": 8329
+			},
+			{
+				"count": 384,
+				"start": 350975,
+				"usec": 6044
+			},
+			{
+				"count": 256,
+				"start": 351359,
+				"usec": 4234
+			},
+			{
+				"count": 512,
+				"start": 351615,
+				"usec": 8291
+			},
+			{
+				"count": 256,
+				"start": 352127,
+				"usec": 4358
+			},
+			{
+				"count": 384,
+				"start": 352383,
+				"usec": 6437
+			},
+			{
+				"count": 512,
+				"start": 352767,
+				"usec": 43419
+			},
+			{
+				"count": 1408,
+				"start": 353279,
+				"usec": 34160
+			},
+			{
+				"count": 1152,
+				"start": 354687,
+				"usec": 19969
+			},
+			{
+				"count": 768,
+				"start": 355839,
+				"usec": 13018
+			},
+			{
+				"count": 512,
+				"start": 356607,
+				"usec": 10509
+			},
+			{
+				"count": 384,
+				"start": 357119,
+				"usec": 6515
+			},
+			{
+				"count": 512,
+				"start": 357503,
+				"usec": 9138
+			}
+		],
+		"gain": 0.866917478949111,
+		"hardware_latency": 0.00999999977648258,
+		"hud_summary": "R 90 · 27/27 声部 · 第2乐句\n下一次回应 16.0 秒",
+		"initial_calibration": {
+			"blocks": 77.0,
+			"calibration_ms": 1060.161,
+			"duration_seconds": 8.0,
+			"gain": 0.866917478949111,
+			"initial_lufs": -14.7595551872935,
+			"sample_rate": 22050.0,
+			"target_lufs": -16.0
+		},
+		"initial_entities": 9,
+		"preparation_simulated_phrases": 0,
+		"rendered_frames": 356607,
+		"renderer": "gl_compatibility",
+		"seed": "bf3f90214cfba646",
+		"skip_changes": [],
+		"skips": 0,
+		"slow_frames": [
+			{
+				"audible": 2810.81800492856,
+				"usec": 33274
+			},
+			{
+				"audible": 4215.92970492856,
+				"usec": 34798
+			},
+			{
+				"audible": 6180.05150492856,
+				"usec": 32867
+			},
+			{
+				"audible": 7356.35060492856,
+				"usec": 31658
+			},
+			{
+				"audible": 10039.6980549286,
+				"usec": 32824
+			},
+			{
+				"audible": 10744.4148049286,
+				"usec": 33385
+			},
+			{
+				"audible": 11292.5327049286,
+				"usec": 30569
+			},
+			{
+				"audible": 13292.7724049286,
+				"usec": 34010
+			},
+			{
+				"audible": 14446.8010049286,
+				"usec": 31050
+			},
+			{
+				"audible": 16306.7588549286,
+				"usec": 33151
+			},
+			{
+				"audible": 17744.5925049286,
+				"usec": 33090
+			},
+			{
+				"audible": 19547.6393049286,
+				"usec": 30685
+			},
+			{
+				"audible": 20290.0174549286,
+				"usec": 32629
+			},
+			{
+				"audible": 21597.8225049286,
+				"usec": 33038
+			},
+			{
+				"audible": 23534.9110049286,
+				"usec": 32621
+			},
+			{
+				"audible": 24986.5920549286,
+				"usec": 32219
+			},
+			{
+				"audible": 27836.7916049286,
+				"usec": 32612
+			},
+			{
+				"audible": 29002.3303049286,
+				"usec": 32057
+			},
+			{
+				"audible": 30897.8548049286,
+				"usec": 31980
+			},
+			{
+				"audible": 32028.7309049286,
+				"usec": 30982
+			},
+			{
+				"audible": 34608.7082049286,
+				"usec": 33936
+			},
+			{
+				"audible": 35881.6301549286,
+				"usec": 31784
+			},
+			{
+				"audible": 39064.7619049286,
+				"usec": 32989
+			},
+			{
+				"audible": 350514.935254929,
+				"usec": 74094
+			},
+			{
+				"audible": 351576.133354929,
+				"usec": 46105
+			},
+			{
+				"audible": 352342.810354929,
+				"usec": 30304
+			}
+		],
+		"stage_routes": {
+			"east_0": {
+				"change_frame": -1,
+				"form": "群",
+				"pattern": 572,
+				"previous": "群",
+				"rhythm_start": -1
+			},
+			"east_1": {
+				"change_frame": -1,
+				"form": "央",
+				"pattern": 573,
+				"previous": "央",
+				"rhythm_start": -1
+			},
+			"east_2": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 574,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"east_3": {
+				"change_frame": -1,
+				"form": "群",
+				"pattern": 575,
+				"previous": "群",
+				"rhythm_start": -1
+			},
+			"east_4": {
+				"change_frame": -1,
+				"form": "央",
+				"pattern": 576,
+				"previous": "央",
+				"rhythm_start": -1
+			},
+			"east_5": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 577,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"east_6": {
+				"change_frame": -1,
+				"form": "群",
+				"pattern": 578,
+				"previous": "群",
+				"rhythm_start": -1
+			},
+			"east_7": {
+				"change_frame": -1,
+				"form": "央",
+				"pattern": 579,
+				"previous": "央",
+				"rhythm_start": -1
+			},
+			"west_0": {
+				"change_frame": -1,
+				"form": "群",
+				"pattern": 594,
+				"previous": "群",
+				"rhythm_start": -1
+			},
+			"west_1": {
+				"change_frame": -1,
+				"form": "央",
+				"pattern": 595,
+				"previous": "央",
+				"rhythm_start": -1
+			},
+			"west_2": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 596,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"west_3": {
+				"change_frame": -1,
+				"form": "群",
+				"pattern": 597,
+				"previous": "群",
+				"rhythm_start": -1
+			},
+			"west_4": {
+				"change_frame": -1,
+				"form": "央",
+				"pattern": 598,
+				"previous": "央",
+				"rhythm_start": -1
+			},
+			"west_5": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 599,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"west_6": {
+				"change_frame": -1,
+				"form": "群",
+				"pattern": 600,
+				"previous": "群",
+				"rhythm_start": -1
+			},
+			"west_7": {
+				"change_frame": -1,
+				"form": "央",
+				"pattern": 601,
+				"previous": "央",
+				"rhythm_start": -1
+			}
+		},
+		"wall_ms": 15995
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "CITY-005",
+	"scope": "Actual main scene, controlled 27 with two independent rings and their one-bar entry, one complete WASAPI audible phrase with unchanged initial-nine gain; not a natural growth run, human listening, long-run performance or narrowband assistance",
+	"status": "PASS"
+}

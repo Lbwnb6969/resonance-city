@@ -1,6 +1,7 @@
 class_name P0Main
 extends Control
 
+const Ring = preload("res://scripts/city/city_ring.gd")
 const Notice = preload("res://scripts/ui/formation_notice.gd")
 const Roads = preload("res://scripts/city/city_roads.gd")
 const CityView = preload("res://scripts/visual/city_demo_view.gd")
@@ -623,7 +624,7 @@ func _process(_delta: float) -> void:
 	if model == null or closed:
 		return
 	var shown := _audible_session()
-	formation_notice.consume(model.growth_history,clock.renderer.transport.audible_frame)
+	formation_notice.consume(model.growth_history+model.ring_history,clock.renderer.transport.audible_frame)
 	formation_notice.tick(_delta,clock.renderer.transport.audible_frame,shown,black_screen,city_view.reduced_motion)
 	if worker != null and not worker.is_alive():
 		var result: Dictionary = worker.wait_to_finish()
@@ -693,6 +694,10 @@ func _update_map_notice() -> void:
 		var kind := "住宅" if district["type"] == "residential" else ("商业" if district["type"] == "commercial" else "工业")
 		var details: PackedStringArray = Growth.describe(shown.city,district,shown.road_marks).split("\n")
 		text = "%s · %s · 活力 %.0f\n%s" % [kind,district.get("form","胚"),district["vitality"],"\n".join(details.slice(0,mini(2,details.size())))]
+		var ring_text := Ring.describe(shown.rings,_selected_id(),model.synth.muted,model.synth.solo_id,shown.silent_until,clock.renderer.transport.audible_frame)
+		if not ring_text.is_empty():
+			text += "\n"+ring_text
+			city_view.get_node("MapNotice").offset_top = -292 if city_view.diagnosis_enabled else -228
 		if city_view.diagnosis_enabled:
 			var rows: Array[Dictionary] = city_view.diagnosis.edges(shown,model.synth,clock.renderer.transport.audible_frame)
 			text += "\n"+city_view.diagnosis.describe(rows,_selected_id())

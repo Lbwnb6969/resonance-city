@@ -10,6 +10,7 @@ var next_boundary: int
 # Pre-render commits wait here until playback reaches their frame.
 var presentation_history: Array[Dictionary] = []
 var growth_history: Array[Dictionary] = []
+var ring_history: Array[Dictionary] = []
 var presentation_copy: CityInterventions
 var presentation_copy_frame := -1
 
@@ -40,6 +41,9 @@ func _settle_for_render(state: Dictionary, at: int) -> void:
 	session.settle(at)
 	var events: Array = session.last_result.get("growth_events",[])
 	synth.update_city(session.city,state,session.road_marks,events)
+	synth.sync_rings(session.rings,at)
+	for event in session.last_result.get("ring_events",[]):
+		ring_history.append({"event":event.duplicate(true),"district":session._district(str(event["district_id"])).duplicate(true),"anchor_midi":session._district(str(event["district_id"]))["current_midi"],"stage_voice":false})
 	for event in events:
 		if event.get("kind","") != "upgrade": continue
 		var district: Dictionary = session._district(str(event["district_id"]))
@@ -70,7 +74,7 @@ func presentation_session(audible_frame: float) -> CityInterventions:
 func snapshot() -> Dictionary:
 	return {"session":session.snapshot(),"next_boundary":next_boundary,
 		"presentation_history":presentation_history.duplicate(true),
-		"growth_history":growth_history.duplicate(true),"stage_routes":synth.stage_snapshot(),
+		"growth_history":growth_history.duplicate(true),"ring_history":ring_history.duplicate(true),"ring_routes":synth.ring_snapshot(),"stage_routes":synth.stage_snapshot(),
 		"active_layers":synth.active_layers.duplicate(),"gain":synth.gain,
 		"solo_id":synth.solo_id,"muted":synth.muted.duplicate(true),
 		"silent_until":synth.silent_until.duplicate(true),"ducking":synth.ducking,
@@ -82,8 +86,10 @@ func restore(saved: Dictionary) -> void:
 	session.restore(saved["session"])
 	presentation_history.assign(saved.get("presentation_history",[]).duplicate(true))
 	growth_history.assign(saved.get("growth_history",[]).duplicate(true))
+	ring_history.assign(saved.get("ring_history",[]).duplicate(true))
 	synth = Synth.new(session.city,session.road_marks)
 	synth.restore_stages(saved.get("stage_routes",{}))
+	synth.restore_rings(saved.get("ring_routes",{}))
 	presentation_copy = null
 	presentation_copy_frame = -1
 	next_boundary = int(saved["next_boundary"])

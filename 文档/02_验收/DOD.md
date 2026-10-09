@@ -290,3 +290,7 @@ CITY-003第53轮人工叛离fixture：原计划`tests/city_contract.gd -- --case
 
 
 第56轮AUDIO-006/UI-005：tests/stage_audio_contract.gd（headless/Dummy，34项）、tools/check_stage_audio.py（原输入FFmpeg真峰值和每400ms/10ms-hop实际受保护drone比例）、tests/formation_notice_contract.gd（实际GPU/Dummy，31项）、tests/stage_audio_supply.gd（实际GPU/WASAPI，9项）。最终均PASS/exit0且日志无脚本错误；固定初始gain，natural27/mature27真峰值−6.24/−6.21dBTP、最差窗比例97.90/97.46%；最终27实体16秒0skips。首次失败供音与卡片布局证据保留废弃；缓存优化前后16份PCM字节相同。入口、范围和命令见../阶段声音与成形通知-第56轮.md；短时供音不是长期/窄带/真人，通知组件目前仅L1。
+
+## 第57轮CITY-005第二版证据
+
+tests/ring_contract.gd（headless/Dummy）77项、tests/ring_demo_contract.gd（GPU/Dummy）27项、tests/ring_audio_supply.gd（GPU/WASAPI）7项PASS，最终日志无脚本错误/Assertion/WARNING。tools/check_ring_audio.py独立PCM八个起音与FFT高八度正确；受控双环27实体固定初始gain稳态/交叉均−6.83dBTP，最差400ms长音比例98.09%；实际可听一完整16秒0skips。黑屏1440×900全部RGB零，四图已查看。命令与受控布局、失败探针边界、完整证据见[环形合唱城-第57轮](../环形合唱城-第57轮.md)。本次实际迁移/成员调音/中心调音/永久道路失去身份均验证；原9三类PCM前后相同，不改正式听测协议。真人好听、自然玩家整局与长期性能仍PENDING。

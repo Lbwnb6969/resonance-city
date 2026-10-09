@@ -52,12 +52,15 @@ static func describe(result: Dictionary) -> Dictionary:
 	var text := "预期 R：%.2f → %.2f\n代价：%s\n下个乐句活力：%s\n%s" % [
 		result["before_r"],result["after_r"],cost,"；".join(vitality),
 		"\n".join(changed) if not changed.is_empty() else "邻接不变"]
-	return {"text":text,"cost":cost,"before_r":result["before_r"],"after_r":result["after_r"],
+	var ring_messages: PackedStringArray = result.get("ring_messages",PackedStringArray())
+	if not ring_messages.is_empty(): text += "\n"+"\n".join(ring_messages)
+	return {"text":text,"ring_text":"；".join(ring_messages),"cost":cost,"before_r":result["before_r"],"after_r":result["after_r"],
 		"old_edges":old,"new_edges":next,"changes":changed,"vitality":vitality,"choice":choice.duplicate(true)}
 
 
 static func summary(result: Dictionary) -> String:
 	var full := describe(result)
+	var ring_text := "\n"+str(full["ring_text"]) if not str(full["ring_text"]).is_empty() else ""
 	var id: String = result["choice"].get("district_id","")
 	var before_v := 0.0
 	var after_v := 0.0
@@ -74,5 +77,5 @@ static func summary(result: Dictionary) -> String:
 	for key in full["new_edges"]:
 		if not full["old_edges"].has(key): added += 1
 	if result["choice"].get("verb","") == "tread":
-		return "预期谐振度：%.2f → %.2f\n%s\n失去%d条邻接；其他活力变化见下方明细。" % [result["before_r"],result["after_r"],full["cost"],lost]
-	return "预期谐振度：%.2f → %.2f\n所选活力：%.1f → %.1f\n代价：%s\n邻接新增%d / 失去%d / 音程改变%d；明细见下方。" % [result["before_r"],result["after_r"],before_v,after_v,full["cost"],added,lost,changed]
+		return "预期谐振度：%.2f → %.2f\n%s\n失去%d条邻接；其他活力变化见下方明细。" % [result["before_r"],result["after_r"],full["cost"],lost]+ring_text
+	return "预期谐振度：%.2f → %.2f\n所选活力：%.1f → %.1f\n代价：%s\n邻接新增%d / 失去%d / 音程改变%d；明细见下方。" % [result["before_r"],result["after_r"],before_v,after_v,full["cost"],added,lost,changed]+ring_text

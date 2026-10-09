@@ -1,0 +1,163 @@
+{
+  "status": "PASS",
+  "rate": 22050,
+  "sequence": [
+    {
+      "member": 0,
+      "onset_frame": 1,
+      "last_frame": 5512,
+      "source_midi": 48,
+      "expected_rhythm_midi": 60,
+      "fft_fundamental_hz": 261.5947723388672,
+      "measured_midi": 59.997962241906606
+    },
+    {
+      "member": 1,
+      "onset_frame": 11026,
+      "last_frame": 16537,
+      "source_midi": 52,
+      "expected_rhythm_midi": 64,
+      "fft_fundamental_hz": 329.64305877685547,
+      "measured_midi": 64.00081415291754
+    },
+    {
+      "member": 2,
+      "onset_frame": 22051,
+      "last_frame": 27562,
+      "source_midi": 48,
+      "expected_rhythm_midi": 60,
+      "fft_fundamental_hz": 261.5947723388672,
+      "measured_midi": 59.997962241906606
+    },
+    {
+      "member": 3,
+      "onset_frame": 33076,
+      "last_frame": 38587,
+      "source_midi": 55,
+      "expected_rhythm_midi": 67,
+      "fft_fundamental_hz": 391.9715881347656,
+      "measured_midi": 66.99894673619073
+    },
+    {
+      "member": 4,
+      "onset_frame": 44101,
+      "last_frame": 49612,
+      "source_midi": 48,
+      "expected_rhythm_midi": 60,
+      "fft_fundamental_hz": 261.5947723388672,
+      "measured_midi": 59.997962241906606
+    },
+    {
+      "member": 5,
+      "onset_frame": 55126,
+      "last_frame": 60637,
+      "source_midi": 57,
+      "expected_rhythm_midi": 69,
+      "fft_fundamental_hz": 440.00072479248047,
+      "measured_midi": 69.00002851782698
+    },
+    {
+      "member": 6,
+      "onset_frame": 66151,
+      "last_frame": 71662,
+      "source_midi": 48,
+      "expected_rhythm_midi": 60,
+      "fft_fundamental_hz": 261.5947723388672,
+      "measured_midi": 59.997962241906606
+    },
+    {
+      "member": 7,
+      "onset_frame": 77176,
+      "last_frame": 82687,
+      "source_midi": 48,
+      "expected_rhythm_midi": 60,
+      "fft_fundamental_hz": 261.5947723388672,
+      "measured_midi": 59.997962241906606
+    }
+  ],
+  "mixes": {
+    "steady27": {
+      "integrated_lufs": -13.37,
+      "true_peak_dbtp": -6.83,
+      "loudness_range": 0.0,
+      "gate_lufs": -23.37,
+      "command": [
+        "D:\\GODOT\\GODOTPRO\\共鸣之城\\.git\\工具依赖\\响度\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+        "-hide_banner",
+        "-nostats",
+        "-f",
+        "f32le",
+        "-ar",
+        "22050",
+        "-ac",
+        "2",
+        "-i",
+        "D:\\GODOT\\GODOTPRO\\共鸣之城\\验证记录\\Demo\\CITY-005_第57轮\\steady27.f32",
+        "-af",
+        "loudnorm=I=-16.0:TP=-3.0:print_format=json",
+        "-f",
+        "null",
+        "-"
+      ],
+      "ffmpeg_json": {
+        "input_i": "-13.37",
+        "input_tp": "-6.83",
+        "input_lra": "0.00",
+        "input_thresh": "-23.37",
+        "output_i": "-16.00",
+        "output_tp": "-9.45",
+        "output_lra": "0.10",
+        "output_thresh": "-26.00",
+        "normalization_type": "dynamic",
+        "target_offset": "0.00"
+      },
+      "minimum_drone_rms_ratio": 0.9833294553719962,
+      "worst_window_seconds": 10.007256235827665,
+      "windows": 1564,
+      "window_seconds": 0.4,
+      "hop_seconds": 0.009977324263038548
+    },
+    "entry_exit27": {
+      "integrated_lufs": -13.36,
+      "true_peak_dbtp": -6.83,
+      "loudness_range": 0.0,
+      "gate_lufs": -23.36,
+      "command": [
+        "D:\\GODOT\\GODOTPRO\\共鸣之城\\.git\\工具依赖\\响度\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+        "-hide_banner",
+        "-nostats",
+        "-f",
+        "f32le",
+        "-ar",
+        "22050",
+        "-ac",
+        "2",
+        "-i",
+        "D:\\GODOT\\GODOTPRO\\共鸣之城\\验证记录\\Demo\\CITY-005_第57轮\\entry_exit27.f32",
+        "-af",
+        "loudnorm=I=-16.0:TP=-3.0:print_format=json",
+        "-f",
+        "null",
+        "-"
+      ],
+      "ffmpeg_json": {
+        "input_i": "-13.36",
+        "input_tp": "-6.83",
+        "input_lra": "0.00",
+        "input_thresh": "-23.36",
+        "output_i": "-16.00",
+        "output_tp": "-9.46",
+        "output_lra": "0.10",
+        "output_thresh": "-26.00",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.00"
+      },
+      "minimum_drone_rms_ratio": 0.9808615445864386,
+      "worst_window_seconds": 10.007256235827665,
+      "windows": 1564,
+      "window_seconds": 0.4,
+      "hop_seconds": 0.009977324263038548
+    }
+  },
+  "scope": "Actual isolated member Rhythm PCM; unchanged initial-nine gain, controlled 27 with two rings. Independent input true peak and protected-drone window ratio; no human audibility claim."
+}

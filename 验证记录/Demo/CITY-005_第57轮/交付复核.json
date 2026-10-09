@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "contracts": [
+    {
+      "path": "验证记录\\P0\\CITY-005_ring_round57.json",
+      "checks": 77,
+      "status": "PASS"
+    },
+    {
+      "path": "验证记录\\P0\\CITY-005_ring_demo_round57.json",
+      "checks": 27,
+      "status": "PASS"
+    },
+    {
+      "path": "验证记录\\P0\\CITY-005_ring_supply_round57.json",
+      "checks": 7,
+      "status": "PASS"
+    }
+  ],
+  "clean_success_logs": 3,
+  "black_rgb_nonzero": 0,
+  "black_pixels": 1296000,
+  "original_zip_sha_verified": 15,
+  "old_runtime_parameters_unchanged": true,
+  "external_name_status_retained": 118,
+  "scope": "This round final evidence and backup checks, excluding archived failed logs; no human listening or long-run claims."
+}

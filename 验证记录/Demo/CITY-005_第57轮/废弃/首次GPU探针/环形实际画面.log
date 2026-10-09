@@ -1,0 +1,32 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+P0_READY seed=bf3f90214cfba646 districts=9
+SCRIPT ERROR: Invalid access to property or key of type 'String' on a base object of type 'Dictionary'.
+   at: CityDemoView._process (res://scripts/visual/city_demo_view.gd:550)
+   GDScript backtrace (most recent call first):
+       [0] _process (res://scripts/visual/city_demo_view.gd:550)
+SCRIPT ERROR: Invalid access to property or key 'ring_0' on a base object of type 'Dictionary'.
+   at: CityDemoView._process (res://scripts/visual/city_demo_view.gd:574)
+   GDScript backtrace (most recent call first):
+       [0] _process (res://scripts/visual/city_demo_view.gd:574)
+SCRIPT ERROR: Invalid access to property or key 'ring_0' on a base object of type 'Dictionary'.
+   at: CityDemoView._process (res://scripts/visual/city_demo_view.gd:574)
+   GDScript backtrace (most recent call first):
+       [0] _process (res://scripts/visual/city_demo_view.gd:574)
+ERROR: CITY-005: Second real mixed boundary names ring through unified notice rail
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/contract_support.gd:26)
+       [1] run_check (res://tests/ring_demo_contract.gd:79)
+       [2] draw_save (res://tests/ring_demo_contract.gd:23)
+ERROR: CITY-005: Only two ring discoveries and no automatic camera focus
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/contract_support.gd:26)
+       [1] run_check (res://tests/ring_demo_contract.gd:80)
+       [2] draw_save (res://tests/ring_demo_contract.gd:23)
+CITY-005 FAIL checks=27 evidence=res://验证记录/P0/CITY-005_ring_demo_round57.json scope=Actual production GPU, audible prototype/formed/dot gates, ordered conditions/notices, camera/reduced motion/B, actual relocation forecast and loss

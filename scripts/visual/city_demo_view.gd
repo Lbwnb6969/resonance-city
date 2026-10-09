@@ -1,5 +1,6 @@
 class_name CityDemoView
 extends Control
+const RingOverlay = preload("res://scripts/visual/ring_overlay.gd")
 const Landscape = preload("res://scripts/visual/community_landscape.gd")
 const Diagnosis = preload("res://scripts/visual/boundary_diagnosis.gd")
 const Roads = preload("res://scripts/city/city_roads.gd")
@@ -62,6 +63,7 @@ var shadow_layer: CityShadowLayer
 var buildings: Node2D
 var label_layer: Control
 var point_texture: Texture2D
+var ring_overlay: Control
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -90,6 +92,10 @@ func _ready() -> void:
 	buildings.y_sort_enabled = true
 	buildings.name = "CityBuildings"
 	add_child(buildings)
+	ring_overlay = RingOverlay.new()
+	ring_overlay.name = "RingOverlay"
+	ring_overlay.view = self
+	add_child(ring_overlay)
 	label_layer = Control.new()
 	label_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(label_layer)

@@ -83,7 +83,7 @@ func _init(city: Array, marks: Dictionary = {}) -> void:
 		routing.append({"id": id, "type": district["type"], "base_midi": district["current_midi"],
 			"rhythm_steps": PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
 			"phase_key": "_phase_" + id, "highpass_key": "_highpass_" + id,
-			"stage":Stage.initial(district),"table": tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
+			"ring":{},"stage":Stage.initial(district),"table": tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
 			"stereo": Vector2(cos((pan + 1.0) * PI / 4.0), sin((pan + 1.0) * PI / 4.0))})
 
 func _append_district(district: Dictionary) -> void:
@@ -95,7 +95,7 @@ func _append_district(district: Dictionary) -> void:
 	routing.append({"id":id,"type":district["type"],"base_midi":district["current_midi"],
 		"rhythm_steps":PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
 		"phase_key":"_phase_"+id,"highpass_key":"_highpass_"+id,
-		"stage":Stage.initial(district),"table":tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
+		"ring":{},"stage":Stage.initial(district),"table":tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
 		"stereo":Vector2(cos((pan+1.0)*PI/4.0),sin((pan+1.0)*PI/4.0))})
 
 func frequency(midi: int) -> float:
@@ -145,6 +145,18 @@ func _prepare_envelopes(rate: int) -> void:
 				sum += minf(1.0, seconds / attack) * exp(-seconds / decay) * clampf((tail - seconds) / attack, 0.0, 1.0)
 			envelope[at] = sum
 		by_type[type] = envelope
+	var ring_length := roundi(60.0*rate/float(values["timing"]["bpm"])*int(values["ring"]["beats"]))
+	var ring_tables: Array[PackedFloat32Array] = []
+	for member in range(int(values["ring"]["beats"])):
+		var envelope := PackedFloat32Array()
+		envelope.resize(ring_length)
+		var onset := roundi(member*60.0*rate/float(values["timing"]["bpm"]))
+		for at in range(onset,mini(ring_length,onset+ceili(float(values["ring"]["tail"])*rate))):
+			var seconds := float(at-onset)/rate
+			var ring_attack := float(values["ring"]["attack"])
+			envelope[at] = minf(1.0,seconds/ring_attack)*exp(-seconds/float(values["ring"]["decay"]))*clampf((float(values["ring"]["tail"])-seconds)/ring_attack,0.0,1.0)*float(values["ring"]["gain"])
+		ring_tables.append(envelope)
+	by_type["_ring"] = ring_tables
 	envelopes[rate] = by_type
 	gray_alpha[rate] = 1.0-exp(-TAU*float(values["gray_audio"]["lowpass_hz"])/rate)
 	gray_hold_frames[rate] = maxi(1,roundi(rate/float(values["gray_audio"]["hold_rate"])))
@@ -166,6 +178,13 @@ func _rhythm(route: Dictionary, phase: float, at: int, rate: int, state: Diction
 		var output := float(highpass_alpha[rate]) * (previous.y + pulse - previous.x)
 		state[key] = Vector2(pulse, output)
 		pulse = output
+	var ring: Dictionary = route["ring"]
+	if not ring.is_empty():
+		var blend := ring_level(ring,at,rate)
+		if blend > 0.0:
+			var table: PackedFloat32Array = envelopes[rate]["_ring"][int(ring["index"])]
+			var ring_pulse := _table_wave(route["table"],phase*rhythm_multiplier)*table[posmod(at,table.size())]
+			pulse = pulse*(cos(PI*blend/2.0) if blend < 1.0 else 0.0)+ring_pulse*(sin(PI*blend/2.0) if blend < 1.0 else 1.0)
 	return pulse * rhythm_gain
 
 func gray_level(at: int, rate: int) -> float:
@@ -450,6 +469,17 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var emphasis := emphasis_level if emphasized_id == id else 1.0
 		var voice_level := float(route["level"])
 		var is_anchor := bool(route["anchor"])
+		var ring: Dictionary = route["ring"]
+		var ring_envelope := PackedFloat32Array()
+		var ring_blends := PackedFloat64Array()
+		var ring_blend := 0.0
+		if not ring.is_empty():
+			ring_envelope = envelopes[rate]["_ring"][int(ring["index"])]
+			ring_blend = ring_level(ring,start,rate)
+			var duration := float(values["ring"]["crossfade_bars"])*int(values["timing"]["beats_per_bar"])*60.0*rate/float(values["timing"]["bpm"])
+			if start < int(ring["frame"])+duration:
+				ring_blends.resize(count)
+				for offset in range(count): ring_blends[offset] = ring_level(ring,start+offset,rate)
 		var stage: Dictionary = route["stage"]
 		var fade := PackedFloat64Array()
 		var stage_level := Stage.rhythm_level(stage,start,rate,values)
@@ -468,7 +498,12 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 				position = fposmod(phase*rhythm_multiplier,1.0)*size
 				index = int(position)
 				var envelope_index := at%envelope_count if fixture.is_empty() else _fixture_rhythm_index(fixture,at,envelope_count)
-				var pulse := lerpf(table[index],table[(index+1)%size],position-index)*envelope[envelope_index]
+				var wave := lerpf(table[index],table[(index+1)%size],position-index)
+				var pulse := wave*envelope[envelope_index]
+				var blend := ring_blend if ring_blends.is_empty() else ring_blends[offset]
+				if blend > 0.0:
+					var ring_pulse := wave*ring_envelope[posmod(at,ring_envelope.size())]
+					pulse = pulse*(cos(PI*blend/2.0) if blend < 1.0 else 0.0)+ring_pulse*(sin(PI*blend/2.0) if blend < 1.0 else 1.0)
 				if industrial:
 					var output := alpha*(previous.y+pulse-previous.x)
 					previous = Vector2(pulse,output)
@@ -558,3 +593,30 @@ func stage_snapshot() -> Dictionary:
 func restore_stages(saved: Dictionary) -> void:
 	for route in routing:
 		if saved.has(route["id"]): route["stage"] = saved[route["id"]].duplicate(true)
+
+func ring_level(ring: Dictionary, at: int, rate: int) -> float:
+	var duration := float(values["ring"]["crossfade_bars"])*int(values["timing"]["beats_per_bar"])*60.0*rate/float(values["timing"]["bpm"])
+	return lerpf(float(ring["from"]),float(ring["target"]),clampf(float(at-int(ring["frame"]))/duration,0.0,1.0))
+
+func sync_rings(rings: Dictionary, at: int) -> void:
+	var members: Dictionary = {}
+	for record in rings.values():
+		if record["status"] != "formed": continue
+		for index in range(record["members"].size()): members[record["members"][index]] = index
+	for route in routing:
+		var id: String = route["id"]
+		var target := 1.0 if members.has(id) else 0.0
+		var ring: Dictionary = route["ring"]
+		if ring.is_empty() and target == 0.0: continue
+		if not ring.is_empty() and float(ring["target"]) == target and (target == 0.0 or int(ring["index"]) == int(members[id])): continue
+		var from := ring_level(ring,at,int(values["timing"]["sample_rate"])) if not ring.is_empty() else 0.0
+		route["ring"] = {"index":int(members.get(id,ring.get("index",0))),"frame":at,"from":from,"target":target,"phase_origin":0}
+
+func ring_snapshot() -> Dictionary:
+	var result: Dictionary = {}
+	for route in routing:
+		if not route["ring"].is_empty(): result[route["id"]] = route["ring"].duplicate(true)
+	return result
+
+func restore_rings(saved: Dictionary) -> void:
+	for route in routing: route["ring"] = saved.get(route["id"],{}).duplicate(true)

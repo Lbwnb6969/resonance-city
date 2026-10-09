@@ -107,7 +107,7 @@ func consume(history: Array[Dictionary], audible: float) -> void:
 		if int(event["frame"]) <= audible and str(event["form"]) not in first_seen: eligible.append(fact)
 	eligible.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
 		if a["event"]["frame"] != b["event"]["frame"]: return a["event"]["frame"] < b["event"]["frame"]
-		var rank := ["群","央","腔"]
+		var rank := ["群","央","腔","环形雏形","环形合唱城"]
 		if a["event"]["form"] != b["event"]["form"]: return rank.find(a["event"]["form"]) < rank.find(b["event"]["form"])
 		return str(a["event"]["district_id"]) < str(b["event"]["district_id"]))
 	for fact in eligible:
@@ -127,6 +127,16 @@ func _show_fact(fact: Dictionary, session: CityInterventions, reduced: bool) -> 
 	read_remaining = float(cfg["read_seconds"])
 	entry_remaining = 0.0 if reduced else float(cfg["entry_seconds"])
 	var form: String = fact["event"]["form"]
+	if str(fact["event"].get("kind","")).begins_with("ring_"):
+		title.text = "第一次发现「"+form+"」"
+		var notes: PackedStringArray = []
+		var note_names := ["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"]
+		for midi in fact["event"]["notes"]: notes.append(note_names[posmod(int(midi),12)])
+		happened.text = "同一源点的八栋成熟住宅围成了环："+" → ".join(notes)
+		meaning.text = "这一圈还在齐唱；让一栋住宅唱出协和的另一个音" if form == "环形雏形" else "至少两个音级、12条邻接协和，已连续满足两个乐句；现在每拍一栋轮唱"
+		_refresh_gap(session)
+		card.show()
+		return
 	var badges := ""
 	for step in ["胚","群","央","腔"]:
 		badges += ("[bgcolor=#b9ceb3][color=#293d30] " + step + " [/color][/bgcolor]" if step == form else "[color=#687367] " + step + " [/color]")
@@ -144,6 +154,13 @@ func _show_fact(fact: Dictionary, session: CityInterventions, reduced: bool) -> 
 func _refresh_gap(session: CityInterventions) -> void:
 	if current.is_empty() or gap_phrase == session.phrase_index: return
 	gap_phrase = session.phrase_index
+	if str(current["event"].get("kind","")).begins_with("ring_"):
+		var record: Dictionary = session.rings.get(str(current["event"]["district_id"]),{})
+		if record.get("status","") == "formed": next_step.text = "继续调音，改变环上的旋律；保持邻接协和"
+		elif record.get("status","") == "candidate": next_step.text = "合唱条件连续%d/2；等待下一次真实回应" % record["count"]
+		elif record.get("status","") == "unison": next_step.text = "用现有调音谱出自己的旋律，不需要搬走成熟房子"
+		else: next_step.text = str(record.get("reason","环已离开当前城市"))
+		return
 	if current["event"]["form"] in ["央","腔"]:
 		next_step.text = "央与腔都是成熟形态"
 		return

@@ -321,6 +321,20 @@ def generate():
         'entry_px': numbers(notice['滑入时长 / 距离'])[1],
         'delay_beats': int(numbers(notice['揭示后等待'])[0]),
     }
+    ring = dict(table(city, '## 表 E5a ·'))
+    offsets = numbers(ring['环偏移'].split('；')[0])
+    timing = numbers(ring['周期 / 音程 / 振幅 / 交叉'])
+    envelope = numbers(ring['起振 / 尾音 / 衰减'])
+    visual = numbers(re.sub(r'#[0-9A-Fa-f]{6}', '', ring['环线 / 雏形 / 光点']))
+    result['ring'] = {
+        'offsets': [[int(offsets[i]), int(offsets[i+1])] for i in range(0, len(offsets), 2)],
+        'required_boundaries': int(numbers(ring['连续 / 协和'])[0]),
+        'minimum_score': numbers(ring['连续 / 协和'])[1],
+        'beats': int(timing[0]), 'octave': int(timing[1]), 'gain': timing[2], 'crossfade_bars': timing[3],
+        'attack': envelope[0], 'tail': envelope[1], 'decay': envelope[2],
+        'color': colors(ring['环线 / 雏形 / 光点'])[0], 'line_width': visual[0],
+        'active_alpha': visual[1], 'embryo_alpha': visual[2], 'dot_radius': visual[3], 'glow_radius': visual[4],
+    }
     diagnosis = table(ui, '## 表 U10')
     result['visual_diagnosis'] = {key: (value if value.startswith('#') else numbers(value)[0])
                                   for key, value, _ in diagnosis}

@@ -515,6 +515,57 @@
     "entry_px": 12.0,
     "delay_beats": 2
   },
+  "ring": {
+    "offsets": [
+      [
+        -1,
+        -1
+      ],
+      [
+        0,
+        -1
+      ],
+      [
+        1,
+        -1
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        -1,
+        1
+      ],
+      [
+        -1,
+        0
+      ]
+    ],
+    "required_boundaries": 2,
+    "minimum_score": 0.85,
+    "beats": 8,
+    "octave": 12,
+    "gain": 2.0,
+    "crossfade_bars": 1.0,
+    "attack": 0.005,
+    "tail": 0.25,
+    "decay": 0.075,
+    "color": "#B99356",
+    "line_width": 1.5,
+    "active_alpha": 0.8,
+    "embryo_alpha": 0.4,
+    "dot_radius": 4.0,
+    "glow_radius": 8.0
+  },
   "visual_diagnosis": {
     "slow_min_hz": 3.0,
     "slow_max_hz": 16.0,
@@ -533,8 +584,8 @@
     "rough_color": "#B38F87"
   },
   "sources": {
-    "spec.audio.md": "6ea03aa9fe855c933f37c3fbc95ed78a37afe037a92b84660b1b5634e4d0872e",
-    "spec.city.md": "689bffd3a3288580779edab4ee1a254609ec691952a1e36f5505c73166144252",
+    "spec.audio.md": "1e15ed29f44bb5d3f606ed4c325819eb86fb8ab61934f70f80204dba07dd71c5",
+    "spec.city.md": "60d918d1393758d6442b3f3f8690396a117771f15683f0c21ef78ace39132fe8",
     "spec.harmony.md": "f5f6959c25ddcdca89de081ade88d4337281896d7a867efe85deb1a22bebb89f",
     "spec.proposal.md": "e3a3d0ecd7a4e99ee66e49ab0cf098f4d952c906d896255ee3c42c9c1acbdcbc",
     "spec.ui.md": "915b93665055fe69849489c532d2b3587dcfd0bd955ea4435a15750673a0a663"

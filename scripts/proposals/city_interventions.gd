@@ -2,6 +2,7 @@ class_name CityInterventions
 extends RefCounted
 ## Pure city transaction used by playback and preview forks.
 
+const Ring = preload("res://scripts/city/city_ring.gd")
 const Roads = preload("res://scripts/city/city_roads.gd")
 const Growth = preload("res://scripts/city/city_growth.gd")
 const Values = preload("res://scripts/spec_values.gd")
@@ -26,6 +27,7 @@ var growth_enabled := false
 var growth_serial := 0
 var growth_values: Dictionary = {}
 var road_marks: Dictionary = {}
+var rings: Dictionary = {}
 var gravity_band: Dictionary = {}
 var draft_pause_until := 0
 
@@ -231,6 +233,8 @@ func settle(at: int) -> Dictionary:
 			var family: String = d.get("anchor_id","")
 			if not family.is_empty() and Growth.connected(before,family,old_roads).has(d["district_id"]) and not Growth.connected(city,family,road_marks).has(d["district_id"]):
 				applied["disconnected"].append(d["district_id"])
+	var ring_result := Ring.advance(city,road_marks,rings,at,growth_values) if growth_enabled else {"rings":{},"events":[],"messages":PackedStringArray()}
+	rings = ring_result["rings"]
 	var edges := harmony.adjacency(city)
 	var resonance := harmony.resonance(city,edges)
 	var next_v := harmony.vitality(city,edges,resonance,costs)
@@ -243,16 +247,17 @@ func settle(at: int) -> Dictionary:
 		_refresh_catalog()
 	last_result = {"frame":at,"choice":applied,"before":before,"after":city.duplicate(true),
 		"before_edges":old_edges,"after_edges":edges,"before_r":harmony.resonance(before,old_edges),
-		"after_r":resonance,"growth_events":growth_events,"intervention_deltas":costs.duplicate(true),"silent_until":silent_until.duplicate(true)}
+		"after_r":resonance,"growth_events":growth_events,"ring_events":ring_result["events"],"ring_messages":ring_result["messages"],"intervention_deltas":costs.duplicate(true),"silent_until":silent_until.duplicate(true)}
 	return last_result.duplicate(true)
 
 func snapshot() -> Dictionary:
 	return {"city":city.duplicate(true),"rng":rng.snapshot(),"phrase_index":phrase_index,
-		"growth_enabled":growth_enabled,"growth_serial":growth_serial,"road_marks":road_marks.duplicate(true),"gravity_band":gravity_band.duplicate(true),"draft_pause_until":draft_pause_until,"refresh_cycle":refresh_cycle,"catalog":catalog.duplicate(true),"pending":pending.duplicate(true),
+		"rings":rings.duplicate(true),"growth_enabled":growth_enabled,"growth_serial":growth_serial,"road_marks":road_marks.duplicate(true),"gravity_band":gravity_band.duplicate(true),"draft_pause_until":draft_pause_until,"refresh_cycle":refresh_cycle,"catalog":catalog.duplicate(true),"pending":pending.duplicate(true),
 		"silent_until":silent_until.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_result":last_result.duplicate(true)}
 
 func restore(saved: Dictionary) -> void:
 	city = saved["city"].duplicate(true)
+	rings = saved.get("rings",{}).duplicate(true)
 	road_marks = saved.get("road_marks",{}).duplicate(true)
 	harmony.road_marks = road_marks
 	rng.restore(saved["rng"])
