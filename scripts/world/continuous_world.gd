@@ -366,7 +366,10 @@ func settle(frame: int) -> void:
 	lifecycle["low_phrases"] = int(lifecycle["low_phrases"])+1 if resonance < float(cfg["harmony"]["gray_entry"]) else 0
 	lifecycle["ended"] = mode != "free" and int(lifecycle["low_phrases"]) >= int(cfg["harmony"]["collapse_phrases"])
 	_refresh_public_network(frame)
-	refresh_fabric()
+	# Courtyard geometry is a derived visual cache. Rebuilding every phrase made
+	# long growth quadratic; explicit structural actions stay immediate, while
+	# organic growth refreshes on alternating phrases.
+	if forms_dirty and (not committed.is_empty() or phrase_index % 2 == 0): refresh_fabric()
 
 func _grow(family: String, frame: int) -> void:
 	if str(families[family].get("root","")).is_empty() or not by_id.has(str(families[family].get("root",""))): return

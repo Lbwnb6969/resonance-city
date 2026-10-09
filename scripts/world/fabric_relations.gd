@@ -146,7 +146,7 @@ static func rebuild(world: RefCounted) -> Dictionary:
 	for component in _connected_components(adjacency.keys(),adjacency):
 		var cursor := 0
 		while cursor < component.size():
-			var segment: Array = component.slice(cursor,min(6,component.size()-cursor))
+			var segment: Array = component.slice(cursor,min(component.size(),cursor+6))
 			rows.append({"members":segment,"split_gap":0.3 if cursor > 0 else 0.0})
 			cursor += 6
 	var courts: Array = []
