@@ -720,11 +720,12 @@ func _draw() -> void:
 	var font := ThemeDB.fallback_font
 	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("4b6561"))
 	draw_string(font,Vector2(47,67),shown_world.terrain_title()+" · 晴岸合奏" if expression == "bright" else shown_world.terrain_title()+" · 深流慢板",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("758c85"))
-	if pointer.y > size.y-60 and pointer_inside:
+	if not black:
 		var score: Dictionary = model.synth.score_snapshot()
 		var lead := str(score["theme"].get("cid",""))
 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
-		draw_string(font,Vector2(size.x-500,size.y-64),"时代 · "+shown_world.era_title()+"   "+shown_world.vehicle_label()+"   "+shown_world.terrain_title()+"   主题 · "+name+"   "+str(shown_world.buildings.size())+"栋   "+str(model.world.pending_actions.size())+"段等待下一句",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("607974"))
+		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d条线路 · %d处公共 · %d段待播 · 主题%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.communities.size(),shown_world.transit_lines.size(),shown_world.public_sites.size(),model.world.pending_actions.size(),name]
+		draw_string(font,Vector2(size.x-650,size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("607974"))
 	var duration := float(model.phrase_frames)
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
