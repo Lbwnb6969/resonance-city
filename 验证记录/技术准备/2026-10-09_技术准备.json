@@ -1,0 +1,30 @@
+{
+  "command": "& 'D:/GODOT/Godot_v4.7.2-stable_win64_console.exe' --headless --path . --script tests/world_foundation_probe.gd",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "exit_code": 0,
+  "probe": {
+    "checks": 43,
+    "failures": [],
+    "scope": "continuous projection, footprint queries and deterministic drainage; no playable integration or scale claim"
+  },
+  "source_files": 78,
+  "source_hashes_verified": 78,
+  "archive_hashes_verified": 78,
+  "reading_anchors_verified": 39,
+  "formula_counterexamples": {
+    "A3": 0.1243530480442327,
+    "A4": 0.014333950075224816,
+    "star_C_E_Fsharp": 80.02436325567872,
+    "star_C_E_G": 85.29268451437184,
+    "phase_coherent_original_power_k4": 16,
+    "phase_sqrtk_power_k4": 4,
+    "equalpower_same_signal_mid_db": 3.0102999566398125,
+    "plain_neighbors_square_lattice": 68
+  },
+  "scope": "Independent modules only. No main Demo migration, GPU/audio supply, city-scale benchmark, or human playability claim.",
+  "existing_spec_generator_check": {
+    "command": "python tools/build_spec_data.py --check",
+    "exit_code": 1,
+    "result": "TypeError: missing legacy w_i formula at generate / weight_base. New space/terrain output not implemented; existing runtime data preserved."
+  }
+}
