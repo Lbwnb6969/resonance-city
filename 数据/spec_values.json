@@ -479,10 +479,10 @@
     "rough_color": "#B38F87"
   },
   "sources": {
-    "spec.audio.md": "9ce964ba3926c51648f39cd060cd327baf3b8aab4cb7064c79bd2dc6832cae5b",
-    "spec.city.md": "ae39cdf0a6a25fbc913418544b8cd6f7709492d2bc6ec055d5072a9f8a9c4872",
-    "spec.harmony.md": "271229aac6b30d27bd6588c0f44564dd2dc3aae8328ab4ab1b0d67230435dff2",
-    "spec.proposal.md": "ba7bf2df7f767ba597d333edce9ea32f1d7c08fe4659680c76de2d9b76cdbfe7",
-    "spec.ui.md": "012a1b0e4c576b7644ddd20c9dfec996cae8e3faa98e34fbe7eb3884af4ab568"
+    "spec.audio.md": "132f747edfdb088129c391a48f6cc470f84b74cf020f14a7af721e79a341974f",
+    "spec.city.md": "689bffd3a3288580779edab4ee1a254609ec691952a1e36f5505c73166144252",
+    "spec.harmony.md": "f5f6959c25ddcdca89de081ade88d4337281896d7a867efe85deb1a22bebb89f",
+    "spec.proposal.md": "e3a3d0ecd7a4e99ee66e49ab0cf098f4d952c906d896255ee3c42c9c1acbdcbc",
+    "spec.ui.md": "3c6cccfe48b58d57836002dcc5c7386cbfadaea11f7271a995b79d991251364e"
   }
 }
