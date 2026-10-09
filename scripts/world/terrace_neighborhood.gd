@@ -105,17 +105,17 @@ static func populate(world: RefCounted) -> void:
 				world.blocks.append({"id":"%s-terrace-block-%d" % [prefix,index],"polygon":polygon_block,"community_id":cid})
 		var site_y := float(ys[3])
 		var site_x: float = world.terrain.river_x(site_y)+float(bank)*offset
-		var park_name := "湖光台地公园" if world.terrain.family == "lake_basin" else ("林脊听风园" if world.terrain.family == "forest_ridge" else ("潮汐绿湾" if world.terrain.family == "coastal_plain" else "回声台地公园"))
+		var park_name := "湖光台地公园" if world.terrain.family == "lake_basin" else ("林脊听风园" if world.terrain.family == "forest_ridge" else ("潮汐绿湾" if world.terrain.family == "coastal_plain" else ("峡谷回声公园" if world.terrain.family == "highland_pass" else "回声台地公园")))
 		_append_site(world,Vector2(site_x,site_y),Vector2(0.9,0.82),
 			[Vector2(bank*2.1,0.0),Vector2(bank*2.8,0.4),Vector2(bank*1.9,1.5),Vector2(bank*3.2,-1.2)],
 			prefix+"-terrace-park","park",park_name,prefix+"-terrace-4")
-		var civic_name := "湖心共鸣屋" if world.terrain.family == "lake_basin" else ("林岭声部所" if world.terrain.family == "forest_ridge" else ("海湾潮声站" if world.terrain.family == "coastal_plain" else "台地音乐亭"))
+		var civic_name := "湖心共鸣屋" if world.terrain.family == "lake_basin" else ("林岭声部所" if world.terrain.family == "forest_ridge" else ("海湾潮声站" if world.terrain.family == "coastal_plain" else ("高地关隘声部所" if world.terrain.family == "highland_pass" else "台地音乐亭")))
 		_append_site(world,Vector2(site_x,site_y+3.45),Vector2(0.58,0.62),
 			[Vector2(bank*2.1,0.0),Vector2(bank*2.8,-0.3),Vector2(bank*1.9,1.25),Vector2(bank*3.2,1.8)],
 			prefix+"-terrace-civic","civic",civic_name,prefix+"-terrace-5")
 		var pocket_y := float(ys[9])
 		var pocket_x: float = world.terrain.river_x(pocket_y)+float(bank)*offset
-		var pocket_name := "林间口袋公园" if world.terrain.family == "forest_ridge" else ("潮汐小园" if world.terrain.family == "coastal_plain" else ("湖畔口袋园" if world.terrain.family == "lake_basin" else "台地口袋园"))
+		var pocket_name := "林间口袋公园" if world.terrain.family == "forest_ridge" else ("潮汐小园" if world.terrain.family == "coastal_plain" else ("湖畔口袋园" if world.terrain.family == "lake_basin" else ("砾坡风穴园" if world.terrain.family == "highland_pass" else "台地口袋园")))
 		_append_site(world,Vector2(pocket_x,pocket_y),Vector2(0.72,0.60),
 			[Vector2(bank*2.1,0.0),Vector2(bank*2.8,0.4),Vector2(bank*1.9,1.15),Vector2(bank*3.2,-0.9)],
 			prefix+"-terrace-pocket-park","park",pocket_name,prefix+"-terrace-10")

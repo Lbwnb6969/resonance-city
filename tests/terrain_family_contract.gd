@@ -13,6 +13,7 @@ func _initialize() -> void:
 	var families := Terrain.family_ids()
 	var widths: Dictionary = {}
 	var terrace_x: Dictionary = {}
+	var facility_signatures: Dictionary = {}
 	for family in families:
 		var world := World.new("2026101000000067",true,family)
 		check(world.terrain.family == family,"family selected: "+family)
@@ -22,6 +23,10 @@ func _initialize() -> void:
 		expanded.expand_plan()
 		check(expanded.communities.size() == 48 and expanded.roads.size() >= 120,"expanded road plan survives: "+family)
 		check(expanded.green_corridors.size() == 2 and expanded.green_corridors.all(func(corridor: Dictionary) -> bool: return corridor["path"].size() >= 8),"greenways survive terrain family: "+family)
+		var facility_signature := ""
+		for site in expanded.public_sites:
+			if str(site["kind"]) in ["park","civic"]: facility_signature += str(site["name"])+"|"
+		facility_signatures[family] = facility_signature
 		terrace_x[family] = float(expanded.nodes["west-terrace-node-4"][0])
 		var sample := world.terrain.river_width(14.0)
 		widths[family] = sample
@@ -31,5 +36,8 @@ func _initialize() -> void:
 		check(restored.terrain.family == family and restored.snapshot()["terrain_state"]["family"] == family,"snapshot restores family: "+family)
 	check(widths["lake_basin"] > widths["river_valley"] and widths["forest_ridge"] < widths["river_valley"] and widths["highland_pass"] < widths["river_valley"],"families change water geometry")
 	check(terrace_x["lake_basin"] != terrace_x["river_valley"] and terrace_x["forest_ridge"] != terrace_x["river_valley"] and terrace_x["coastal_plain"] != terrace_x["river_valley"] and terrace_x["highland_pass"] != terrace_x["river_valley"],"families change terrace road geometry")
-	print("TERRAIN_FAMILY ",JSON.stringify({"checks":checks,"failures":failures,"widths":widths}))
+	var unique_facility_signatures: Dictionary = {}
+	for signature in facility_signatures.values(): unique_facility_signatures[signature] = true
+	check(unique_facility_signatures.size() == families.size(),"families change public facility composition")
+	print("TERRAIN_FAMILY ",JSON.stringify({"checks":checks,"failures":failures,"widths":widths,"facility_signatures":facility_signatures}))
 	quit(0 if failures.is_empty() else 1)

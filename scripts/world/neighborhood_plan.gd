@@ -36,13 +36,25 @@ static func populate(world: RefCounted) -> void:
 			world.blocks.append({"id":"%s-block-%d" % [prefix,i-1],"polygon":polygon,"community_id":"%s-%d" % [prefix,i]})
 		var park_y := 10.9 if bank < 0 else 17.1
 		var park_center := Vector2(world.terrain.river_x(park_y)+bank*(float(t["template_road_bank_offset"])+depth*0.5),park_y)
-		var park := {"id":prefix+"-park","kind":"park","name":"松影公园" if bank < 0 else "晴岸花园","position":[park_center.x,park_center.y],
+		var park_names: Dictionary = {
+			"river_valley":["松影公园","晴岸花园"],
+			"lake_basin":["镜湖湿地园","月湾水庭"],
+			"forest_ridge":["林下听风园","松岚花园"],
+			"coastal_plain":["潮线绿湾","晴沙风园"],
+			"highland_pass":["峡谷回声园","高地风口园"]}
+		var park := {"id":prefix+"-park","kind":"park","name":park_names.get(world.terrain.family,["松影公园","晴岸花园"])[0 if bank < 0 else 1],"position":[park_center.x,park_center.y],
 			"polygon":box(park_center,Vector2(cfg["park_half_width"],cfg["park_half_length"])),"entrance":[park_center.x-bank*float(cfg["park_half_width"]),park_y],
 			"community_id":prefix+"-2","active":false,"frame":0}
 		world.public_sites.append(park)
 		var node: Array = world.nodes[prefix+"-outer-2"]
 		var center := Vector2(float(node[0])+bank*1.8,float(node[1]))
-		world.public_sites.append({"id":prefix+"-civic","kind":"civic","name":"河谷图书馆" if bank < 0 else "晴岸音乐亭","position":[center.x,center.y],
+		var civic_names: Dictionary = {
+			"river_valley":["河谷图书馆","晴岸音乐亭"],
+			"lake_basin":["湖心藏谱屋","月湾水声亭"],
+			"forest_ridge":["林岭声部所","松岚木琴亭"],
+			"coastal_plain":["潮汐资料馆","晴沙潮声站"],
+			"highland_pass":["关隘回响所","峡口风琴亭"]}
+		world.public_sites.append({"id":prefix+"-civic","kind":"civic","name":civic_names.get(world.terrain.family,["河谷图书馆","晴岸音乐亭"])[0 if bank < 0 else 1],"position":[center.x,center.y],
 			"polygon":box(center,Vector2(cfg["civic_half_width"],cfg["civic_half_length"])),"entrance":node.duplicate(),
 			"community_id":prefix+"-2","active":false,"frame":0})
 		for row in range(7):
