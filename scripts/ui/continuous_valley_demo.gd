@@ -211,6 +211,11 @@ func _make_menu() -> void:
 			menu.hide())
 		archive_row.add_child(button)
 	box.add_child(archive_row)
+	var export_button := Button.new()
+	export_button.text = "导出城市DNA · Ctrl+Shift+E"
+	export_button.tooltip_text = "导出可读的城市、地形、道路、设施、交通与音乐编曲 JSON"
+	export_button.pressed.connect(export_dna)
+	box.add_child(export_button)
 	var town_button := Button.new()
 	town_button.text = "林荫交响 · T"
 	town_button.tooltip_text = "切换到完整河谷起点；当前作品先保存，之后仍可继续生长"
@@ -281,6 +286,12 @@ func save_city(reason: String = "手动保存") -> Dictionary:
 	if result["ok"]:
 		last_saved_event_count = model.world.events.size()
 		if reason == "手动保存": _message("这一版城市已保存 · F9继续上次，旧版本保留")
+	else: _message(result["reason"])
+	return result
+
+func export_dna() -> Dictionary:
+	var result := CityArchive.export_dna(capture_city())
+	if result["ok"]: _message("城市DNA已导出 · "+str(result["path"]))
 	else: _message(result["reason"])
 	return result
 
@@ -449,6 +460,10 @@ func _input(event: InputEvent) -> void:
 	if not event is InputEventKey or event.echo: return
 	if event.pressed and event.ctrl_pressed and event.keycode == KEY_S:
 		save_city()
+		get_viewport().set_input_as_handled()
+		return
+	if event.pressed and event.ctrl_pressed and event.shift_pressed and event.keycode == KEY_E:
+		export_dna()
 		get_viewport().set_input_as_handled()
 		return
 	if event.pressed and event.keycode == KEY_F9:

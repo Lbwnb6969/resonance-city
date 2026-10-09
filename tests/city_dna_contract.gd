@@ -1,0 +1,30 @@
+extends SceneTree
+const World = preload("res://scripts/world/continuous_world.gd")
+const Model = preload("res://scripts/audio/continuous_audio_model.gd")
+const Archive = preload("res://scripts/world/city_archive.gd")
+
+var failures: Array[String] = []
+
+func check(ok: bool, label: String) -> void:
+	if not ok: failures.append(label)
+
+func _initialize() -> void:
+	var world := World.new("2026101000000084",true,"highland_pass")
+	world.build_expanded_town()
+	var model := Model.new(world)
+	var directory := "user://resonance_dna_contract"
+	var result := Archive.export_dna({"model":model.capture_state(),"view":{"expression":"bright"}},directory)
+	check(bool(result.get("ok",false)),"DNA export writes a complete file")
+	if bool(result.get("ok",false)):
+		var payload: Variant = JSON.parse_string(FileAccess.get_file_as_string(str(result["path"])))
+		check(payload is Dictionary and payload.get("schema","") == "resonance_city_dna_v1","DNA has a stable schema")
+		check(str(payload.get("seed_hex","")) == "2026101000000084","DNA preserves the world seed")
+		check(str(payload.get("terrain",{}).get("family","")) == "highland_pass","DNA preserves terrain family")
+		check(payload.get("buildings",[]).size() == world.buildings.size(),"DNA preserves building identities")
+		check(payload.get("plan",{}).get("roads",[]).size() >= 120,"DNA preserves expanded roads")
+		check(payload.get("plan",{}).get("public_sites",[]).size() >= 16,"DNA preserves public facilities")
+		check(payload.get("music",{}).get("theme",{}).get("terrain","") == "highland_pass","DNA preserves terrain music identity")
+		DirAccess.remove_absolute(str(result["path"]))
+	DirAccess.remove_absolute(directory)
+	print("CITY_DNA ",JSON.stringify({"failures":failures,"bytes":result.get("bytes",0),"buildings":world.buildings.size(),"roads":world.roads.size()}))
+	quit(0 if failures.is_empty() else 1)

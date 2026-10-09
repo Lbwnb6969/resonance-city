@@ -29,6 +29,72 @@ static func save(city: Dictionary, reason: String = "手动保存", directory: S
 	if DirAccess.rename_absolute(path+".tmp",path) != OK: return {"ok":false,"reason":"作品版本未完成；旧版本仍保留"}
 	return {"ok":true,"path":path,"bytes":payload.size(),"saved_at":stamp}
 
+static func _json_value(value: Variant) -> Variant:
+	if value is Vector2:
+		return [value.x,value.y]
+	if value is PackedVector2Array:
+		var points: Array = []
+		for point in value: points.append([point.x,point.y])
+		return points
+	if value is PackedFloat32Array:
+		var floats: Array = []
+		for number in value: floats.append(number)
+		return floats
+	if value is Dictionary:
+		var converted: Dictionary = {}
+		for key in value: converted[str(key)] = _json_value(value[key])
+		return converted
+	if value is Array:
+		var converted_array: Array = []
+		for item in value: converted_array.append(_json_value(item))
+		return converted_array
+	return value
+
+static func export_dna(city: Dictionary, directory: String = DIRECTORY+"/exports") -> Dictionary:
+	var error := DirAccess.make_dir_recursive_absolute(directory)
+	if error != OK: return {"ok":false,"reason":"无法创建DNA导出目录"}
+	var stamp := int(Time.get_unix_time_from_system())
+	var model: Dictionary = city.get("model",{})
+	var world: Dictionary = model.get("world",{})
+	var plan: Dictionary = world.get("plan",{})
+	var mix: Dictionary = model.get("mix",{})
+	var dna := {
+		"schema":"resonance_city_dna_v1",
+		"saved_at":stamp,
+		"seed_hex":world.get("seed_hex",""),
+		"terrain":world.get("terrain_state",{}),
+		"era":world.get("era",1),
+		"phrase_index":world.get("phrase_index",0),
+		"buildings":world.get("buildings",[]),
+		"families":world.get("families",{}),
+		"plan":{
+			"roads":plan.get("roads",[]),
+			"lots":plan.get("lots",[]),
+			"communities":plan.get("communities",{}),
+			"green_corridors":plan.get("green_corridors",[]),
+			"centers":plan.get("centers",[]),
+			"public_sites":world.get("public_sites",[]),
+			"transit_lines":world.get("transit_lines",[])
+		},
+		"music":{
+			"theme":mix.get("theme",{}),
+			"response":mix.get("response",{}),
+			"rhythms":mix.get("rhythms",[]),
+			"gain":model.get("gain",1.0)
+		},
+		"view":city.get("view",{})
+	}
+	var path := "%s/%012d_%016d.dna.json" % [directory,stamp,Time.get_ticks_usec()]
+	var file := FileAccess.open(path+".tmp",FileAccess.WRITE)
+	if file == null: return {"ok":false,"reason":"DNA文件写入失败"}
+	file.store_string(JSON.stringify(_json_value(dna),"\t")+"\n")
+	file.flush()
+	var write_error := file.get_error()
+	file.close()
+	if write_error != OK: return {"ok":false,"reason":"DNA文件未写完"}
+	if DirAccess.rename_absolute(path+".tmp",path) != OK: return {"ok":false,"reason":"DNA版本未完成"}
+	return {"ok":true,"path":path,"bytes":FileAccess.get_file_as_bytes(path).size(),"saved_at":stamp}
+
 static func read(path: String) -> Dictionary:
 	var file := FileAccess.open(path,FileAccess.READ)
 	if file == null: return {"ok":false,"reason":"无法读取作品"}
