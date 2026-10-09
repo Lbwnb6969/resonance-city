@@ -130,11 +130,17 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			changed = true
 			next_boundary += phrase_frames
 		if changed:
-			# Remove the residual step for 40 ms. Musical layers continue their own two-beat fades.
-			transition_total = maxi(1,roundi(float(world.cfg["score"]["pitch_glide_seconds"])*rate))
-			transition_remaining = transition_total
 			var recent: Array = world.events.slice(event_cursor)
 			event_cursor = world.events.size()
+			# Structural births/upgrades add layers at a phrase boundary. Give the
+			# complete bus an 80 ms seam so the new event joins under the old sample
+			# instead of sounding like a click, while ordinary retunes keep the
+			# shorter pitch glide.
+			var structural_change := recent.any(func(event: Dictionary) -> bool:
+				return str(event.get("kind","")) in ["birth","upgrade","landmark","park","civic","bridge","era"])
+			var seam_seconds := 0.08 if structural_change else float(world.cfg["score"]["pitch_glide_seconds"])
+			transition_total = maxi(1,roundi(seam_seconds*rate))
+			transition_remaining = transition_total
 			synth.update_city(audio_city(),state,{},recent)
 			synth.configure_score(world,sound_overrides)
 			synth.set_gray(bool(world.lifecycle["gray"]),at)

@@ -154,9 +154,11 @@ func _next_bus(city: ContinuousWorld) -> void:
 	if line.is_empty(): return
 	var legs: Array = line["legs"]
 	if legs.is_empty(): return
-	var next_key := str(line["id"])
+	var next_key := str(line["id"])+":"+str(line.get("edges",[]))
 	if line_key != next_key:
 		# Reroute only at the next completed stop; reconnect physically if it left the new line.
+		# The edge signature changes when a bridge, branch, or era network rebuilds,
+		# while the stable line id alone would silently keep an obsolete route.
 		line_key = next_key
 		var match_index := -1
 		for i in range(legs.size()):
@@ -243,6 +245,9 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 			var t := float(step)/4.0
 			path.append(enter.lerp(shifted[i],t).lerp(shifted[i].lerp(leave,t),t))
 	path.append(shifted[-1])
+	if not initialized and path.size() > 1:
+		var initial_tangent := (path[1]-path[0]).normalized()
+		if initial_tangent.length_squared() > 0.00001: direction = initial_tangent
 	lengths.clear()
 	total = 0.0
 	for i in range(path.size()-1):
