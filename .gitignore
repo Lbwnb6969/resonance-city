@@ -11,3 +11,6 @@
 
 # Reproducible local Demo bundles; retain build evidence and source in Git.
 /交付/
+
+# Local Python bytecode from evidence tooling.
+/tools/__pycache__/

@@ -18,7 +18,8 @@ func distance_weight(gap: float, sigma_multiplier: float = 1.0) -> float:
 func coefficient(a: Dictionary, b: Dictionary, environment: Dictionary = {}) -> float:
 	var gap := position_of(a).distance_to(position_of(b))-float(a["radius"])-float(b["radius"])
 	var industrial := float(space["industrial_factor"]) if a["type"] == "industrial" or b["type"] == "industrial" else 1.0
-	var sigma := maxf(float(environment.get("sigma_a",1.0)),float(environment.get("sigma_b",1.0)))
+	var sigma_multiplier := 0.9 if str(a.get("placement_tier","")) == "L3" or str(b.get("placement_tier","")) == "L3" else 1.0
+	var sigma := maxf(float(environment.get("sigma_a",1.0)),float(environment.get("sigma_b",1.0)))*sigma_multiplier
 	return distance_weight(gap,sigma)*float(environment.get("occlusion",1.0))*float(environment.get("terrain_factor",1.0))*industrial
 
 func interval(first: int, second: int) -> Dictionary:

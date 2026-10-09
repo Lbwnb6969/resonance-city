@@ -1,5 +1,6 @@
 class_name CityTraveler
 extends RefCounted
+const Coupling = preload("res://scripts/world/world_coupling.gd")
 ## Persistent journeys: finish a leg before adopting a changed line.
 var kind := "walker"
 var ordinal := 0
@@ -110,6 +111,9 @@ func _walk_destinations(city: ContinuousWorld) -> Array[Vector2]:
 	for lot in city.lots:
 		if lot["occupant"] != "":
 			destinations.append(Vector2(lot["entrance"][0],lot["entrance"][1]))
+	for building in city.buildings:
+		if str(building.get("lot_id","")).is_empty():
+			destinations.append(Coupling.position_of(building))
 	for site in city.public_sites:
 		if site["active"]:
 			destinations.append(Vector2(site["entrance"][0],site["entrance"][1]))

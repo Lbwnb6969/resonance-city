@@ -6,6 +6,7 @@ const Coupling = preload("res://scripts/world/world_coupling.gd")
 const Index = preload("res://scripts/world/world_spatial_index.gd")
 const RandomStreams = preload("res://scripts/city/named_random.gd")
 const Legacy = preload("res://scripts/spec_values.gd")
+const Fabric = preload("res://scripts/world/fabric_relations.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -38,6 +39,8 @@ var era := 1
 var next_id := 1
 var resonance := 100.0
 var lifecycle := {"gray":false,"low_phrases":0,"ended":false}
+# Derived visual relationships; never part of acoustic state.
+var fabric_cache: Dictionary = {"shared_walls":[],"rows":[],"courtyards":[],"community_wall":{}}
 var last_reason := "在河边选择一块临街空地，播下第一段声音"
 
 func _init(seed_hex: String = "2026100900000062", generate_plan: bool = true) -> void:
@@ -48,6 +51,7 @@ func _init(seed_hex: String = "2026100900000062", generate_plan: bool = true) ->
 		NeighborhoodPlan.populate(self)
 	network = CityRoadNetwork.new()
 	_refresh_public_network()
+	refresh_fabric()
 
 func _plan() -> void:
 	var t: Dictionary = cfg["terrain"]
@@ -128,6 +132,9 @@ func rebuild_graph() -> void:
 	edge_cache.clear()
 	for building in buildings: _cache_entity(building["district_id"])
 
+func refresh_fabric() -> void:
+	fabric_cache = Fabric.rebuild(self)
+
 func musicality() -> Dictionary:
 	var result: Dictionary = {}
 	for id in by_id:
@@ -159,6 +166,10 @@ func placement(p: Vector2) -> Dictionary:
 	var polygon := building_polygon(p)
 	if not terrain.valid_footprint(polygon): return {"allowed":false,"reason":"这里是水域或岸线，房子需要完整的陆地占地"}
 	var radius := float(cfg["space"]["residential_radius"])
+	if Fabric.on_road(self,p,radius): return {"allowed":false,"reason":"这里是成路，留出道路的连续通行面"}
+	if Fabric.reserved(self,p): return {"allowed":false,"reason":"这里是公园或公共设施保留地"}
+	for site in public_sites:
+		if not Geometry2D.intersect_polygons(polygon,site["polygon"]).is_empty(): return {"allowed":false,"reason":"建筑占地不能压进公共保留地"}
 	for id in index.query_circle(p,radius):
 		if p.distance_to(Coupling.position_of(by_id[id])) < radius+float(by_id[id]["radius"])-1e-6:
 			return {"allowed":false,"reason":"与已有建筑太近，留一点呼吸的空隙"}
@@ -167,8 +178,16 @@ func placement(p: Vector2) -> Dictionary:
 		var contained := true
 		for corner in polygon:
 			if not Geometry2D.is_point_in_polygon(corner,lot["polygon"]): contained = false
-		if contained: return {"allowed":true,"lot_id":lot["id"],"community_id":lot["community_id"],"reason":"临街地块，可在下一乐句落定"}
-	return {"allowed":false,"reason":"靠近岸边街道旁的空地；道路和岸线需要留空"}
+		if contained:
+			var tier := Fabric.tier_for(self,p,str(lot["id"]),str(lot["community_id"]))
+			tier["allowed"] = true
+			tier["reason"] = str(tier["preview"])+"；下一乐句落定"
+			return tier
+	var tier := Fabric.tier_for(self,p)
+	tier["allowed"] = true
+	tier["lot_id"] = ""
+	tier["reason"] = str(tier["preview"])+"；任意合法陆地都能播种"
+	return tier
 
 func request(operation: Dictionary, frame: int) -> Dictionary:
 	if lifecycle["ended"]: return {"accepted":false,"reason":"这一段已结束，按R重新播种"}
@@ -179,9 +198,14 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		var check := placement(Vector2(float(operation["position"][0]),float(operation["position"][1])))
 		if not check["allowed"]: return {"accepted":false,"reason":check["reason"]}
 		for op in pending_actions:
-			if op["kind"] == "seed" and op["lot_id"] == check["lot_id"]: return {"accepted":false,"reason":"这块地已经播下声音，下一句会长出来"}
+			if op["kind"] != "seed": continue
+			if not str(check["lot_id"]).is_empty() and op.get("lot_id","") == check["lot_id"]:
+				return {"accepted":false,"reason":"这块地已经播下声音，下一句会长出来"}
+			if str(check["lot_id"]).is_empty() and Vector2(float(op["position"][0]),float(op["position"][1])).distance_to(Vector2(float(operation["position"][0]),float(operation["position"][1]))) < 0.9:
+				return {"accepted":false,"reason":"附近已经播下声音，给孤屋留一点呼吸"}
 		operation = operation.duplicate(true)
 		operation["lot_id"] = check["lot_id"]
+		operation["placement_tier"] = check["tier"]
 	elif kind == "retune":
 		if not by_id.has(operation.get("id","")): return {"accepted":false,"reason":"请选择一栋建筑"}
 	elif kind == "bridge":
@@ -216,7 +240,8 @@ func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int) -> St
 		if lot["id"] == check["lot_id"]: type = str(lot["use"])
 	var building := {"district_id":id,"position":[p.x,p.y],"footprint":[[p.x,p.y]],"radius":cfg["space"]["residential_radius"],
 		"current_midi":midi,"base_midi":midi,"type":type,"vitality":cfg["harmony"]["initial_vitality"],
-		"community_id":check["community_id"],"lot_id":check["lot_id"],"family_id":family,"anchor_id":family,
+		"community_id":check["community_id"],"lot_id":check["lot_id"],"placement_tier":str(check.get("tier","L1")),
+		"fabric_frontage":int(check.get("frontage",0)),"family_id":family,"anchor_id":family,
 		"expression":str(families.get(family,{}).get("expression",profile)),"family_anchor":root,"is_anchor":false,"era":1,"form":"胚","form_count":0,"birth_frame":frame,"voice_level":0.2}
 	buildings.append(building)
 	by_id[id] = building
@@ -248,6 +273,8 @@ func settle(frame: int) -> void:
 				families[family] = {"root":"","created_phrase":phrase_index,"expression":op.get("expression",profile)}
 				var root := _birth(p,int(op["midi"]),family,true,frame)
 				families[family]["root"] = root
+				var root_tier := str(by_id[root].get("placement_tier","L1"))
+				families[family]["next_growth_phrase"] = phrase_index+(2 if root_tier != "L1" else 1)
 			"retune":
 				by_id[op["id"]]["current_midi"] = int(op["midi"])
 				costs[op["id"]] = float(Legacy.load_values()["proposals"]["retune_cost"])
@@ -281,28 +308,51 @@ func settle(frame: int) -> void:
 	lifecycle["low_phrases"] = int(lifecycle["low_phrases"])+1 if resonance < float(cfg["harmony"]["gray_entry"]) else 0
 	lifecycle["ended"] = mode != "free" and int(lifecycle["low_phrases"]) >= int(cfg["harmony"]["collapse_phrases"])
 	_refresh_public_network(frame)
+	refresh_fabric()
 
 func _grow(family: String, frame: int) -> void:
 	if buildings.size() >= int(cfg["city"]["playable_building_budget"]):
 		last_reason = "这片河谷已长满；用调音、公园与文化设施继续改编它"
 		return
+	if phrase_index < int(families[family].get("next_growth_phrase",0)):
+		return
 	var root: Dictionary = by_id[families[family]["root"]]
 	var origin := Coupling.position_of(root)
-	var best: Dictionary = {}
-	var best_distance := INF
+	var candidates: Array[Dictionary] = []
 	for lot in lots:
 		if not str(lot["occupant"]).is_empty(): continue
-		var p := Vector2(float(lot["center"][0]),float(lot["center"][1]))
-		if not placement(p)["allowed"]: continue
+		candidates.append({"position":Vector2(float(lot["center"][0]),float(lot["center"][1])),"use":str(lot["use"])})
+	# L3 candidates make the city grow into open land instead of exhausting a parcel grid.
+	var owned_positions: Array[Vector2] = []
+	for owned in buildings:
+		if str(owned["family_id"]) == family: owned_positions.append(Coupling.position_of(owned))
+	for origin_point in owned_positions:
+		for radius: float in [1.05,1.55,2.05,2.35]:
+			for step in range(12):
+				var angle := TAU*float(step)/12.0+float(posmod(origin_point.x*37.0+origin_point.y*19.0,1.0))*0.22
+				var p := origin_point+Vector2.from_angle(angle)*radius
+				var duplicate := false
+				for candidate in candidates:
+					if p.distance_to(candidate["position"]) < 0.78: duplicate = true; break
+				if not duplicate: candidates.append({"position":p,"use":"residential"})
+	var best: Dictionary = {}
+	var best_check: Dictionary = {}
+	var best_distance := INF
+	var best_rank := -1
+	for candidate in candidates:
+		var p: Vector2 = Vector2(candidate["position"])
+		var check := placement(p)
+		if not check["allowed"]: continue
 		var connected := false
 		for owned in buildings:
 			if owned["family_id"] != family: continue
 			var op := Coupling.position_of(owned)
-			if p.distance_to(op) <= 2.4 and float(road_environment(p,op)["occlusion"]) > 0.0 and not frozen(owned["district_id"]): connected = true
+			if p.distance_to(op) <= 2.4 and float(road_environment(p,op)["occlusion"]) > 0.0 and not frozen(owned["district_id"]):
+				connected = true
 		if not connected: continue
 		var clashes := false
 		var ranked: Array = []
-		var probe := {"position":[p.x,p.y],"radius":cfg["space"]["residential_radius"],"type":lot["use"],"current_midi":root["current_midi"]}
+		var probe := {"position":[p.x,p.y],"radius":cfg["space"]["residential_radius"],"type":candidate["use"],"current_midi":root["current_midi"],"placement_tier":check["tier"]}
 		for other_id in index.query_circle(p,float(probe["radius"])+float(cfg["space"]["gap_cutoff"])):
 			var other: Dictionary = by_id[other_id]
 			var weight := coupling.coefficient(probe,other,road_environment(p,Coupling.position_of(other)))
@@ -314,15 +364,19 @@ func _grow(family: String, frame: int) -> void:
 		for neighbor in ranked.slice(0,int(cfg["space"]["near_neighbour_count"])):
 			if float(coupling.interval(int(root["current_midi"]),int(by_id[neighbor["id"]]["current_midi"]))["score"]) <= 0.05: clashes = true
 		if clashes: continue
+		var tier_rank := 3 if check["tier"] == "L1" else (2 if check["tier"] == "L2" else 1)
 		var distance := p.distance_squared_to(origin)
-		if distance < best_distance:
+		if tier_rank > best_rank or (tier_rank == best_rank and distance < best_distance):
+			best_rank = tier_rank
 			best_distance = distance
-			best = lot
+			best = {"position":p}
+			best_check = check
 	if best.is_empty():
-		last_reason = "这一家族暂缺可达临街空地；可以在另一侧播种新主题"
+		last_reason = "这一家族暂缺可达空地；可以在另一侧播种新主题"
 		return
-	var p := Vector2(float(best["center"][0]),float(best["center"][1]))
+	var p: Vector2 = best["position"]
 	_birth(p,int(root["current_midi"]),family,false,frame)
+	families[family]["next_growth_phrase"] = phrase_index+int(best_check.get("growth_delay",1))
 
 func incident_edges(id: String) -> Array:
 	var nearby: Array = []
@@ -372,7 +426,7 @@ func _update_forms(frame: int) -> void:
 		var target := ""
 		var duration := 2
 		if building["form"] == "胚" and good >= 2 and near >= 3 and coupling.resonance(buildings,local_edges) >= 60.0: target = "群"
-		elif building["form"] == "群":
+		elif building["form"] == "群" and str(building.get("placement_tier","L1")) != "L3":
 			if good >= 3 and scores.has(1.0) and near >= 6:
 				target = "央"
 				duration = 3
@@ -384,7 +438,7 @@ func _update_forms(frame: int) -> void:
 			events.append({"kind":"upgrade","district_id":building["district_id"],"frame":frame,"form":target})
 
 func snapshot() -> Dictionary:
-	return {"schema_version":2,"generation_version":64,"settings":cfg.duplicate(true),
+	return {"schema_version":2,"generation_version":65,"settings":cfg.duplicate(true),
 		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase},
 		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"communities":communities.duplicate(true)},
 		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
@@ -441,6 +495,7 @@ func restore(saved: Dictionary) -> void:
 	rebuild_graph()
 	resonance = coupling.resonance(buildings,musical_edges(musicality()))
 	_refresh_public_network()
+	refresh_fabric()
 
 func fork() -> RefCounted:
 	var copy: RefCounted = get_script().new(rng.seed_hex,false)
@@ -479,7 +534,7 @@ func _refresh_public_network(frame: int = 0) -> void:
 				var lot: Dictionary = {}
 				for candidate in lots:
 					if candidate["id"] == building["lot_id"]: lot = candidate
-				var p := Vector2(lot["entrance"][0],lot["entrance"][1])
+				var p := Coupling.position_of(building) if lot.is_empty() else Vector2(lot["entrance"][0],lot["entrance"][1])
 				if network.walking_distance(entrance,p) <= float(cfg["city"]["service_walk_radius"]): covered.append(building["district_id"])
 		site["covered"] = covered
 	var lines: Array[Dictionary] = []
@@ -550,6 +605,7 @@ func build_town() -> void:
 	_update_forms(-int(cfg["timing"]["sample_rate"])*2)
 	_update_forms(-int(cfg["timing"]["sample_rate"]))
 	_refresh_public_network()
+	refresh_fabric()
 	resonance = coupling.resonance(buildings,musical_edges(musicality()))
 
 func build_starter(expression: String = "bright") -> void:
@@ -579,6 +635,7 @@ func build_starter(expression: String = "bright") -> void:
 	_update_forms(-int(cfg["timing"]["sample_rate"])*2)
 	_update_forms(-int(cfg["timing"]["sample_rate"]))
 	_refresh_public_network()
+	refresh_fabric()
 	resonance = coupling.resonance(buildings,musical_edges(musicality()))
 
 func community_theme(cid: String, pitches: Dictionary = {}) -> Array:

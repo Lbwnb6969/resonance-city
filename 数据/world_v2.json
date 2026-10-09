@@ -169,14 +169,14 @@
   "legacy_audio_contract_sha256": "1c4968251b745260ddd91f5b9d00a3fb14ad4f0e530b66cfd2b5199629b647e7",
   "sources": {
     "spec.asset.md": "fce93d7410eb7254727245a6dab4ec8b1490e95dddd7887bbab9fbc7ddca5e6b",
-    "spec.audio.md": "bf2dcb617f697e9467c74b9abf72925c2c85045bca526d921361ed5043d5cb9a",
-    "spec.city.md": "ef8d192e4770c8875c3b47c1faeb6ac1f63dc961b7f274426f0864d758e5f811",
-    "spec.fabric.md": "65e3bc8616e042aa91127208a34fda65d4c473b2a27186cdc4361e80d90a0dce",
+    "spec.audio.md": "1fb6baff1f9bc641e8dea8281d27e830239ffc39341d3674e303253327fb3a97",
+    "spec.city.md": "a63078c360053136ab992fad9929773f50ec9722706eeffc23752cf4134f9737",
+    "spec.fabric.md": "48f04e0475ec35515195292f74e6bff8b71809a992f2683247866832f0fb5595",
     "spec.harmony.md": "ee0cee446c42d4eb155a4fd37c55effedbee7ae9db53c4de68780957978eedc8",
     "spec.proposal.md": "c4e70940feb2623731f52cd3e5899e36563c8988bb4460218f47c40a71263b2f",
-    "spec.run.md": "90f858660ba0a6a4b0b7deeb7c08dab1e373289e3b9b8d046e7160fb3c016a54",
+    "spec.run.md": "0be98259cf0acdbe0e7337e622b88ac03f4079455756e960983a49609d7809c8",
     "spec.space.md": "563daee61013c3a81834e14ba0a0f9331c707d1b7b9c5b2520696c079bcfbc24",
-    "spec.terrain.md": "b40a7d8b72390f9bee12744f7205a95439622a6f6ec664d490f0b8fbb89dc26e",
+    "spec.terrain.md": "d2650767e342e15804499e674bdc097ae3eb02346de582163d1b79ac1f099c33",
     "spec.ui.md": "1666b250eb2ed4ab592ab30fcb6ee6ed94b0e692a97d65a70076153bd8a6f1ee"
   },
   "distance_reference": {

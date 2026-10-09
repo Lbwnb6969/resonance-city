@@ -356,7 +356,7 @@ func _gui_input(event: InputEvent) -> void:
 					return
 				selected_id = ""
 				context = {"kind":"seed","position":[p.x,p.y]}
-				menu_info.text = "播下一段声音 · 用途由临街地块决定"
+				menu_info.text = "播下一段声音 · "+str(check["preview"])+" · 用途由地块决定"
 			menu.position = Vector2(clampf(pointer.x-100,12,size.x-460),clampf(pointer.y+22,70,size.y-290))
 			menu.show()
 
@@ -538,7 +538,7 @@ func _process(delta: float) -> void:
 		var b: Dictionary = shown_world.by_id[hover_id]
 		tooltip.text = "%s · %s · %s\n%s  ·  活力 %.0f\n点击选音   Tab独听社区   F聚焦" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),b["form"],shown_world.communities[b["community_id"]]["name"],b["vitality"]]
 	elif check["allowed"]:
-		tooltip.text = "%s · 街道旁的一段新声音\n点击选音；Shift低八度；按住空格试听" % note_name(midi)
+		tooltip.text = "%s\n%s\n点击选音；Shift低八度；按住空格试听" % [str(check["preview"]),note_name(midi)]
 		var lot: String = check["lot_id"]
 		hover_seconds = hover_seconds+delta if lot == last_hover_lot else 0.0
 		if lot != last_hover_lot: last_hover_lot = lot
@@ -547,7 +547,7 @@ func _process(delta: float) -> void:
 		var site := shown_world.public_at(p)
 		if not site.is_empty():
 			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路服务%d栋\n公园为主题留白，文化设施让主题更清楚" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
-		else: tooltip.text = "街道旁的空地可以播种\n滚轮缩放 · 中键移动 · G建桥 · H全城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
+		else: tooltip.text = "合法陆地都能播种；靠近道路会长得更快\n滚轮缩放 · 中键移动 · G建桥 · H全城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
 	if menu.visible and pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()
@@ -614,6 +614,7 @@ func _draw() -> void:
 			draw_colored_polygon(_project_polygon(lot["polygon"]),Color(0.68,0.73,0.57,0.2))
 		elif pointer_inside and center.distance_to(world_at(pointer)) < 1.0:
 			draw_colored_polygon(_project_polygon(lot["polygon"]),Color(0.9,0.94,0.8,0.5))
+	_draw_fabric_overlay()
 	if shown_world.buildings.is_empty():
 		var target: Dictionary = shown_world.lots[mini(18,shown_world.lots.size()-1)]
 		var p := Vector2(target["center"][0],target["center"][1])
@@ -687,6 +688,26 @@ func _draw_public_space() -> void:
 			var at := point(Vector2(p[0],p[1]))
 			draw_circle(at,3.5*view_zoom,Color("e9d4a0"))
 			draw_arc(at,4.2*view_zoom,0,TAU,16,Color("899d87"),1.0,true)
+
+func _draw_fabric_overlay() -> void:
+	var cache: Dictionary = shown_world.fabric_cache
+	for courtyard in cache.get("courtyards",[]):
+		var center := Vector2(float(courtyard["center"][0]),float(courtyard["center"][1]))
+		var diamond := PackedVector2Array([center+Vector2(-0.58,0),center+Vector2(0,-0.42),center+Vector2(0.58,0),center+Vector2(0,0.42)])
+		draw_colored_polygon(_project_polygon(diamond,0.01),Color(0.82,0.78,0.60,0.22))
+		draw_polyline(_project_polygon(PackedVector2Array([diamond[0],diamond[1],diamond[2],diamond[3],diamond[0]]),0.015),Color(0.74,0.66,0.48,0.42),1.0*view_zoom,true)
+	for relation in cache.get("shared_walls",[]):
+		if not shown_world.by_id.has(relation["a"]) or not shown_world.by_id.has(relation["b"]): continue
+		var a := point(Coupling.position_of(shown_world.by_id[relation["a"]]),shown_world.terrain.height_at(Coupling.position_of(shown_world.by_id[relation["a"]]))+0.04)
+		var b := point(Coupling.position_of(shown_world.by_id[relation["b"]]),shown_world.terrain.height_at(Coupling.position_of(shown_world.by_id[relation["b"]]))+0.04)
+		draw_line(a,b,Color(0.74,0.52,0.31,0.72),2.1*view_zoom,true)
+	for row in cache.get("rows",[]):
+		var members: Array = row["members"]
+		for i in range(members.size()-1):
+			if not shown_world.by_id.has(members[i]) or not shown_world.by_id.has(members[i+1]): continue
+			var a := point(Coupling.position_of(shown_world.by_id[members[i]]),0.05)
+			var b := point(Coupling.position_of(shown_world.by_id[members[i+1]]),0.05)
+			draw_line(a,b,Color(0.62,0.67,0.49,0.42),1.4*view_zoom,true)
 
 func _draw_ground_details() -> void:
 	# Broad patches and terraces keep the hill legible without raster tiles.
