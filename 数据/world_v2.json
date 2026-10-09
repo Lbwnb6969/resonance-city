@@ -169,7 +169,7 @@
   "legacy_audio_contract_sha256": "1c4968251b745260ddd91f5b9d00a3fb14ad4f0e530b66cfd2b5199629b647e7",
   "sources": {
     "spec.asset.md": "fce93d7410eb7254727245a6dab4ec8b1490e95dddd7887bbab9fbc7ddca5e6b",
-    "spec.audio.md": "0057ce21058d9462113fe7809e96a0572fadc7f140d1cc0c971a43a4d1432eba",
+    "spec.audio.md": "85e7a9e8e06b9c331d284db94dc8de18de779eb4ea3f0220fc4f0fb40ed42be3",
     "spec.city.md": "0cae88b6b6eb93732369e7b9338d2f2e589d09cd20f8c9144438726ed87bb8ae",
     "spec.fabric.md": "a61e0369b0db0005d2a0c3c281a1e2fdb7c658cfbfd0cf0b7d5ea3e764665957",
     "spec.harmony.md": "ee0cee446c42d4eb155a4fd37c55effedbee7ae9db53c4de68780957978eedc8",
