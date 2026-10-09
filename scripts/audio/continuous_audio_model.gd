@@ -17,14 +17,17 @@ var sound_events: Array[Dictionary] = []
 var sound_overrides: Dictionary = {}
 var sound_trace: Array[Dictionary] = []
 var last_sample := Vector2.ZERO
-var transition_from := Vector2.ZERO
+var transition_offset := Vector2.ZERO
 var transition_remaining := 0
 var transition_total := 0
+var max_render_ms := 0.0
+var max_settle_ms := 0.0
 var bed_table := PackedFloat32Array()
 
 func _init(city_world: ContinuousWorld, fixed_gain: float = 1.0) -> void:
 	world = city_world
 	synth = Synth.new(world.buildings)
+	synth.warm_score()
 	synth.assist_enabled = false
 	synth.gain = fixed_gain
 	phrase_frames = int(Config.load_values()["timing"]["phrase_frames"])
@@ -40,6 +43,8 @@ func _init(city_world: ContinuousWorld, fixed_gain: float = 1.0) -> void:
 		value = (1664525*value+1013904223)&0xffffffff
 		filtered = lerpf(filtered,float(value)/4294967296.0*2.0-1.0,0.08)
 		bed_table[i] = filtered
+	var seam := float(bed_table[-1])
+	for i in range(64): bed_table[i] = lerpf(seam,bed_table[i],smoothstep(0.0,1.0,float(i)/63.0))
 
 func submit(operation: Dictionary) -> Dictionary:
 	var kind := str(operation.get("kind",""))
@@ -94,6 +99,7 @@ func _apply_sound(event: Dictionary) -> void:
 	if sound_trace.size() > 64: sound_trace.pop_front()
 
 func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
+	var started_us := Time.get_ticks_usec()
 	var output := PackedVector2Array()
 	var at := start
 	rendered_until = maxi(rendered_until,start)
@@ -105,15 +111,15 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			changed = true
 		if at == next_boundary:
 			_record_presentation(at)
+			var settle_us := Time.get_ticks_usec()
 			world.settle(at)
+			max_settle_ms = maxf(max_settle_ms,float(Time.get_ticks_usec()-settle_us)/1000.0)
 			changed = true
 			next_boundary += phrase_frames
 		if changed:
-			# Any structural or pitch change gets a sample-accurate equal-power handoff.
-			# The previous PCM sample is the anchor; no newly born oscillator may start at a discontinuity.
-			transition_from = last_sample
-			transition_total = maxi(1,roundi(float(world.cfg["score"]["control_fade_beats"])*60.0*rate/float(world.cfg["timing"]["bpm"])))
-			transition_remaining = maxi(transition_remaining,transition_total)
+			# Remove the residual step for 40 ms. Musical layers continue their own two-beat fades.
+			transition_total = maxi(1,roundi(float(world.cfg["score"]["pitch_glide_seconds"])*rate))
+			transition_remaining = transition_total
 			var recent: Array = world.events.slice(event_cursor)
 			event_cursor = world.events.size()
 			synth.update_city(audio_city(),state,{},recent)
@@ -128,15 +134,22 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			var frame := at+i
 			var breath := 0.004*sin(TAU*130.81*float(frame)/rate) if world.buildings.is_empty() else 0.0
 			var stream := float(bed_table[frame%bed_table.size()])*bed_gain
-			block[i] += Vector2.ONE*(breath+stream)*(synth.duck_level if synth.ducking else 1.0)
+			block[i] += Vector2.ONE*(breath+stream)
+			var duck_target := synth.duck_level if synth.ducking else 1.0
+			var duck_seconds := float(world.cfg["score"]["pitch_glide_seconds"]) if synth.ducking else float(synth.values["mixing"]["duck_release_seconds"])
+			var duck := move_toward(float(state.get("_score_duck",1.0)),duck_target,1.0/(duck_seconds*rate))
+			state["_score_duck"] = duck
+			block[i] *= duck
 			if transition_remaining > 0:
-				var progress := 1.0-float(transition_remaining)/float(transition_total)
-				block[i] = transition_from.lerp(block[i],smoothstep(0.0,1.0,progress))
+				if transition_remaining == transition_total: transition_offset = last_sample-block[i]
+				var remaining := float(transition_remaining)/float(transition_total)
+				block[i] += transition_offset*remaining*remaining*remaining
 				transition_remaining -= 1
 			last_sample = block[i]
 		output.append_array(block)
 		at += amount
 	rendered_until = maxi(rendered_until,start+count)
+	max_render_ms = maxf(max_render_ms,float(Time.get_ticks_usec()-started_us)/1000.0)
 	return output
 
 func presentation_world(audible_frame: float) -> ContinuousWorld:
@@ -161,11 +174,17 @@ func freeze() -> ContinuousAudioModel:
 	copy.next_boundary = next_boundary
 	copy.rendered_until = rendered_until
 	copy.event_cursor = event_cursor
+	copy.last_sample = last_sample
+	copy.transition_offset = transition_offset
+	copy.transition_remaining = transition_remaining
+	copy.transition_total = transition_total
 	copy.sound_events.assign(sound_events.duplicate(true))
 	copy.sound_overrides = sound_overrides.duplicate(true)
 	copy.synth.listener_community = synth.listener_community
 	copy.synth.muted_communities = synth.muted_communities.duplicate(true)
 	copy.synth.pad_groups = synth.pad_groups.duplicate(true)
+	copy.synth.rhythm_nodes = synth.rhythm_nodes.duplicate(true)
+	copy.synth.musical_nodes = synth.musical_nodes.duplicate(true)
 	copy.synth.update_city(copy.audio_city(),{}, {},[])
 	copy.synth.configure_score(copy.world,copy.sound_overrides)
 	return copy

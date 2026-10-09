@@ -145,7 +145,7 @@ func run_checks() -> void:
 	check(is_finite(float(calibration["gain"])) and float(calibration["gain"]) > 0.0,"finite fixed reference calibration")
 	calibration["reference"] = "24 coherent C3 sources at planned lot centers, chamber layers; not a playable-city completion claim"
 	calibration["contract_sha256"] = FileAccess.get_file_as_string("res://数据/spec_values.json").sha256_text()
-	var calibration_file := FileAccess.open("res://数据/valley_audio_calibration.json",FileAccess.WRITE)
+	var calibration_file := FileAccess.open("res://验证记录/连续河谷/旧合成器fixture标定.json",FileAccess.WRITE)
 	calibration_file.store_string(JSON.stringify(calibration,"\t")+"\n")
 	calibration_file.close()
 	DirAccess.make_dir_recursive_absolute("res://验证记录/连续河谷")

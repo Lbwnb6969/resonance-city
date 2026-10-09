@@ -1,0 +1,76 @@
+{
+  "bright": {
+    "integrated_lufs": -16.07,
+    "true_peak_dbtp": -7.71,
+    "loudness_range": 0.1,
+    "gate_lufs": -26.07,
+    "command": [
+      "D:\\GODOT\\GODOTPRO\\共鸣之城\\.git\\工具依赖\\响度\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+      "-hide_banner",
+      "-nostats",
+      "-f",
+      "f32le",
+      "-ar",
+      "22050",
+      "-ac",
+      "2",
+      "-i",
+      "D:\\GODOT\\GODOTPRO\\共鸣之城\\验证记录\\连续河谷\\社区合奏响度\\bright.f32",
+      "-af",
+      "loudnorm=I=-16.0:TP=-3.0:print_format=json",
+      "-f",
+      "null",
+      "-"
+    ],
+    "ffmpeg_json": {
+      "input_i": "-16.07",
+      "input_tp": "-7.71",
+      "input_lra": "0.10",
+      "input_thresh": "-26.07",
+      "output_i": "-15.86",
+      "output_tp": "-7.20",
+      "output_lra": "0.30",
+      "output_thresh": "-25.86",
+      "normalization_type": "dynamic",
+      "target_offset": "-0.14"
+    },
+    "sample_peak": 0.4114854037761688
+  },
+  "deep": {
+    "integrated_lufs": -18.99,
+    "true_peak_dbtp": -10.82,
+    "loudness_range": 0.1,
+    "gate_lufs": -28.99,
+    "command": [
+      "D:\\GODOT\\GODOTPRO\\共鸣之城\\.git\\工具依赖\\响度\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+      "-hide_banner",
+      "-nostats",
+      "-f",
+      "f32le",
+      "-ar",
+      "22050",
+      "-ac",
+      "2",
+      "-i",
+      "D:\\GODOT\\GODOTPRO\\共鸣之城\\验证记录\\连续河谷\\社区合奏响度\\deep.f32",
+      "-af",
+      "loudnorm=I=-16.0:TP=-3.0:print_format=json",
+      "-f",
+      "null",
+      "-"
+    ],
+    "ffmpeg_json": {
+      "input_i": "-18.99",
+      "input_tp": "-10.82",
+      "input_lra": "0.10",
+      "input_thresh": "-28.99",
+      "output_i": "-15.81",
+      "output_tp": "-7.55",
+      "output_lra": "0.30",
+      "output_thresh": "-25.81",
+      "normalization_type": "dynamic",
+      "target_offset": "-0.19"
+    },
+    "sample_peak": 0.2875789701938629
+  }
+}

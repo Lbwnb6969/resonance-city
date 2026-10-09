@@ -7,6 +7,9 @@ var direction := Vector2.RIGHT
 var active := true
 var reveal := 1.0
 
+func _project(p: Vector2) -> Vector2:
+	return Vector2((p.x-p.y)*28.0,(p.x+p.y)*14.0)
+
 func _draw() -> void:
 	modulate.a = reveal
 	if kind == "tree":
@@ -36,23 +39,40 @@ func _draw() -> void:
 			draw_colored_polygon(PackedVector2Array([Vector2(x,-15-x*0.48),Vector2(x+4,-17-x*0.48),Vector2(x+4,-7-x*0.48),Vector2(x,-5-x*0.48)]),Color("829b9a"))
 		draw_line(Vector2(-12,6),Vector2(4,14),Color("ede4cb"),2,true)
 	elif kind == "bus":
-		var forward := direction.normalized()*9.0
-		var side := Vector2(-direction.y,direction.x)*4.0
-		var floor := PackedVector2Array([-forward-side,forward-side,forward+side,-forward+side])
+		var forward := direction.normalized()*0.38
+		var side := Vector2(-direction.y,direction.x)*0.105
+		var floor := PackedVector2Array()
+		for p in [-forward-side,forward-side,forward+side,-forward+side]: floor.append(_project(p))
 		var roof := PackedVector2Array()
-		for p in floor: roof.append(p-Vector2(0,7))
-		draw_colored_polygon(floor,Color("7f9590"))
+		for p in floor: roof.append(p-Vector2(0,8))
+		draw_set_transform(Vector2(2,2),0,Vector2(1.0,0.5))
+		draw_circle(Vector2.ZERO,11,Color(0.29,0.38,0.34,0.15))
+		draw_set_transform(Vector2.ZERO)
 		for i in range(4):
 			var j := (i+1)%4
-			draw_colored_polygon(PackedVector2Array([floor[i],floor[j],roof[j],roof[i]]),Color("c3aa7f") if i%2 == 0 else Color("a59679"))
-		draw_colored_polygon(roof,Color("ead9b7"))
-		draw_line(-forward-side*0.92-Vector2(0,4),forward-side*0.92-Vector2(0,4),Color("5d797a"),2,true)
-		draw_circle(-forward*0.6+side,1.8,Color("687a75"))
-		draw_circle(forward*0.6+side,1.8,Color("687a75"))
+			var shade := Color("a9bfb3") if (floor[i]+floor[j]).y > 0 else Color("becfc0")
+			draw_colored_polygon(PackedVector2Array([floor[i],floor[j],roof[j],roof[i]]),shade)
+		for sign_side in [-1.0,1.0]:
+			for t in [-0.65,-0.15,0.35]:
+				var a := _project(forward*t+side*sign_side)-Vector2(0,6.6)
+				var b := _project(forward*(t+0.35)+side*sign_side)-Vector2(0,6.6)
+				draw_colored_polygon(PackedVector2Array([a,b,b+Vector2(0,2.6),a+Vector2(0,2.6)]),Color("698783"))
+			for wheel in [-0.62,0.62]:
+				draw_circle(_project(forward*wheel+side*sign_side)+Vector2(0,-0.3),1.6,Color("596f6a"))
+		draw_colored_polygon(roof,Color("e9deba"))
+		draw_line(_project(-forward*0.7)-Vector2(0,8),_project(forward*0.7)-Vector2(0,8),Color("f4eccf"),1.2,true)
+		draw_line(_project(forward-side*0.6)-Vector2(0,5.5),_project(forward+side*0.6)-Vector2(0,5.5),Color("62817c"),2.2,true)
+		for sign_side in [-1,1]:
+			draw_circle(_project(forward+side*sign_side*0.7)-Vector2(0,2),0.85,Color("f8e8b5"))
 	elif kind == "walker":
+		var stride := sin(motion*2.7+tone)*0.8 if active else 0.0
+		var facing := _project(direction*0.035)
 		draw_circle(Vector2(1,1),2,Color(0.35,0.40,0.35,0.15))
-		draw_line(Vector2.ZERO,Vector2(0,-4),Color("9a8870") if tone%2 == 0 else Color("728b85"),1.7,true)
-		draw_circle(Vector2(0,-5.0+0.3*sin(motion)),1.4,Color("d8c5a3"))
+		draw_line(Vector2(-0.5,-2.5),Vector2(-0.8-stride,0),Color("727c71"),1.0,true)
+		draw_line(Vector2(0.5,-2.5),Vector2(0.8+stride,0),Color("727c71"),1.0,true)
+		draw_line(Vector2(0,-2.5),Vector2(0,-5.0),Color("ab8d6e") if tone%2 == 0 else Color("73968c"),2.4,true)
+		draw_line(Vector2(0,-4),facing+Vector2(stride,-3),Color("c6ad86"),1.0,true)
+		draw_circle(facing*0.3+Vector2(0,-6.4),1.4,Color("dfcba4"))
 	elif kind == "lamp":
 		draw_line(Vector2.ZERO,Vector2(0,-13),Color("829585"),1.3,true)
 		draw_circle(Vector2(0,-13),2.3,Color("e4d6a6"))

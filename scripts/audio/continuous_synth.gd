@@ -8,6 +8,9 @@ var listener_community := ""
 var muted_communities: Dictionary = {}
 var pad_groups: Dictionary = {}
 var rhythms: Array[Dictionary] = []
+var rhythm_nodes: Dictionary = {}
+var musical_nodes: Dictionary = {}
+static var theme_waves: Dictionary = {}
 var theme: Dictionary = {}
 var response: Dictionary = {}
 var current_world: ContinuousWorld
@@ -83,9 +86,12 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
 		if not chosen.is_empty():
 			rhythms.append({"cid":cid,"midi":int(overrides.get(chosen["district_id"],chosen["current_midi"])),"stereo":_stereo_for(chosen),"expression":chosen["expression"]})
 		if rhythms.size() >= int(score["rhythm_slot_limit"]): break
+	_sync_rhythm_nodes()
 	theme.clear()
 	response.clear()
-	if candidates.is_empty() or (world.phrase_index+1)%int(score["theme_rest_phrases"]) == 0: return
+	if candidates.is_empty() or (world.phrase_index+1)%int(score["theme_rest_phrases"]) == 0:
+		_sync_musical_nodes()
+		return
 	var selected := candidates[(world.phrase_index/int(score["theme_rotate_phrases"]))%candidates.size()]
 	var notes := world.community_theme(selected,overrides)
 	var first: Dictionary = world.by_id[world.communities[selected]["members"][0]]
@@ -100,41 +106,82 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
 			var other: Dictionary = world.by_id[world.communities[cid]["members"][0]]
 			response = {"cid":cid,"notes":other_notes,"stereo":_stereo_for(other),"source":selected}
 			break
+	_sync_musical_nodes()
 
 func _audibility(cid: String) -> float:
 	if muted_communities.get(cid,false): return 0.0
 	if listener_community.is_empty() or cid == listener_community: return 1.0
 	return float(score["background_gain"])
 
-func _theme_sample(at: int, rate: int, answer: bool = false) -> Vector2:
-	if theme.is_empty() or (answer and response.is_empty()): return Vector2.ZERO
-	var beat := roundi(60.0*rate/120.0)
-	var phrase := beat*32
-	var elapsed := posmod(at-(beat*2 if answer else 0),phrase)
-	var steps: Array = [0,8,16,24] if theme["expression"] == "deep" else [0,3,6,10,16,19,22,27]
-	if theme["park"]: steps = steps.slice(0,steps.size()-2)
-	var note_index := -1
-	var onset := 0
-	for i in range(steps.size()):
-		if elapsed >= int(steps[i])*beat:
-			note_index = i
-			onset = int(steps[i])*beat
-	if note_index < 0: return Vector2.ZERO
-	var seconds := float(elapsed-onset)/rate
-	var tail := 0.95 if theme["expression"] == "deep" else 0.65
-	if seconds >= tail: return Vector2.ZERO
-	var part: Dictionary = response if answer else theme
-	var notes: Array = part["notes"]
-	var pitch := int(notes[note_index%notes.size()])
-	pitch += 24 if pitch < 48 else 12
-	if note_index%4 == 3: pitch += 12
+func _sync_rhythm_nodes() -> void:
+	for node in rhythm_nodes.values(): node["active"] = false
+	for part in rhythms:
+		var key := "%s:%d:%s" % [part["cid"],part["midi"],part["expression"]]
+		if not rhythm_nodes.has(key):
+			rhythm_nodes[key] = part.duplicate(true)
+			rhythm_nodes[key]["key"] = key
+		rhythm_nodes[key]["active"] = true
+
+func _sync_musical_nodes() -> void:
+	for node in musical_nodes.values(): node["active"] = false
+	if theme.is_empty(): return
+	_register_musical_node(theme,theme,false)
+	if not response.is_empty(): _register_musical_node(response,theme,true)
+
+func _register_musical_node(part: Dictionary, pattern: Dictionary, answer: bool) -> void:
+	var key := JSON.stringify([part["cid"],part["notes"],pattern["expression"],pattern["park"],pattern["civic"],answer])
+	if not musical_nodes.has(key):
+		musical_nodes[key] = {"key":key,"part":part.duplicate(true),"pattern":pattern.duplicate(true),"answer":answer}
+	musical_nodes[key]["active"] = true
+	# Warm immutable event waves before the output clock starts.
+	for note in part["notes"]:
+		var pitch := int(note)+(24 if int(note) < 48 else 12)
+		_event_wave(pitch,str(pattern["expression"]),int(values["timing"]["sample_rate"]))
+		_event_wave(pitch+12,str(pattern["expression"]),int(values["timing"]["sample_rate"]))
+
+func warm_score() -> void:
+	var rate := int(values["timing"]["sample_rate"])
+	for expression in ["bright","deep"]:
+		for pitch in [60,62,64,67,69,72,74,76,79,81]: _event_wave(pitch,expression,rate)
+
+func _event_wave(pitch: int, expression: String, rate: int) -> PackedFloat32Array:
+	var key := "%d:%s:%d" % [pitch,expression,rate]
+	if theme_waves.has(key): return theme_waves[key]
+	var tail := 0.95 if expression == "deep" else 0.65
+	var wave := PackedFloat32Array()
+	wave.resize(ceili(tail*rate))
 	var hz := frequency(pitch)
-	var envelope := minf(1.0,seconds/0.012)*exp(-seconds/(0.35 if theme["expression"] == "deep" else 0.20))*clampf((tail-seconds)/0.03,0.0,1.0)
-	var sample := (sin(TAU*hz*seconds)+0.18*sin(TAU*hz*seconds*2.0))/1.18
-	var level := float(score["response_gain"] if answer else score["theme_gain"])
-	if not answer and theme["civic"]: level *= 1.15
-	var duck := duck_level if ducking else 1.0
-	return sample*envelope*level*gain*_audibility(part["cid"])*part["stereo"]*duck
+	for at in range(wave.size()):
+		var seconds := float(at)/rate
+		var envelope := minf(1.0,seconds/0.012)*exp(-seconds/(0.35 if expression == "deep" else 0.20))*clampf((tail-seconds)/0.03,0.0,1.0)
+		wave[at] = (sin(TAU*hz*seconds)+0.18*sin(TAU*hz*seconds*2.0))/1.18*envelope
+	theme_waves[key] = wave
+	return wave
+
+func _musical_block(node: Dictionary, start: int, count: int, rate: int) -> PackedFloat32Array:
+	var output := PackedFloat32Array()
+	output.resize(count)
+	var pattern: Dictionary = node["pattern"]
+	var part: Dictionary = node["part"]
+	var beat := roundi(rate*0.5)
+	var period := beat*32
+	var delay := beat*2 if node["answer"] else 0
+	var steps: Array = [0,8,16,24] if pattern["expression"] == "deep" else [0,3,6,10,16,19,22,27]
+	if pattern["park"]: steps = steps.slice(0,steps.size()-2)
+	var first_cycle := floori(float(start-delay)/period)-1
+	var last_cycle := floori(float(start+count-delay)/period)
+	for cycle in range(first_cycle,last_cycle+1):
+		for index in range(steps.size()):
+			var onset := cycle*period+int(steps[index])*beat+delay
+			var notes: Array = part["notes"]
+			var pitch := int(notes[index%notes.size()])
+			pitch += 24 if pitch < 48 else 12
+			if index%4 == 3: pitch += 12
+			var wave := _event_wave(pitch,pattern["expression"],rate)
+			var begin := maxi(start,onset)
+			var finish := mini(start+count,onset+wave.size())
+			for at in range(begin,finish): output[at-start] += wave[at-onset]
+	return output
 
 func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
 	if current_world == null and pad_groups.is_empty():
@@ -153,17 +200,20 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var level := float(state.get("_pad_level_"+key,group["level"]))
 		var phase := float(state.get("_pad_phase_"+key,group["phase"]))
 		var hz := frequency(int(group["midi"]))
-		var stereo: Vector2 = group.get("stereo",Vector2.ONE*sqrt(0.5))
+		var target_stereo: Vector2 = group.get("stereo",Vector2.ONE*sqrt(0.5))
+		var stereo: Vector2 = state.get("_pad_stereo_"+key,target_stereo)
 		var table: PackedFloat32Array = tables[group["type"]]
 		if level > 0.00001 or target > 0.0: active_count += 1
 		# Linear amplitude ramps with continuous oscillator phase; no replayed PCM.
 		var step := float(score["pad_gain"])/fade_frames
 		for i in range(count):
 			level = move_toward(level,target,step)
+			stereo = stereo.lerp(target_stereo,1.0/(float(score["pitch_glide_seconds"])*rate))
 			var sample := _table_wave(table,phase)*level*gain*stereo
 			output[i] += sample
 			if capture_drone: captured_drone[i] += sample
 			phase = fposmod(phase+hz/rate,1.0)
+		state["_pad_stereo_"+key] = stereo
 		state["_pad_level_"+key] = level
 		state["_pad_phase_"+key] = phase
 		group["level"] = level
@@ -171,11 +221,14 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			for id in group["members"]: state["_phase_"+id] = phase
 		elif level <= 0.00001: retired.append(key)
 	for key in retired: pad_groups.erase(key)
-	for rhythm in rhythms:
+	var retiring_rhythms: Array = []
+	var pulse_count := 0
+	for rhythm in rhythm_nodes.values():
 		var cid: String = rhythm["cid"]
-		var level_key := "_pulse_level_"+cid
+		var level_key := "_pulse_level_"+str(rhythm["key"])
 		var level := float(state.get(level_key,0.0))
-		var target := _audibility(cid)
+		var target := _audibility(cid) if rhythm["active"] else 0.0
+		if level > 0.00001 or target > 0.0: pulse_count += 1
 		var beat := roundi(rate*0.5)
 		var spacing := beat*4 if rhythm["expression"] == "deep" else beat
 		var hz := frequency(int(rhythm["midi"])+12)
@@ -186,15 +239,37 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			var seconds := float(elapsed)/rate
 			if seconds >= 0.24: continue
 			var envelope := minf(1.0,seconds/0.006)*exp(-seconds/0.075)*clampf((0.24-seconds)/0.01,0.0,1.0)
-			output[i] += sin(TAU*hz*seconds)*envelope*float(score["rhythm_gain"])*level*gain*rhythm["stereo"]*(duck_level if ducking else 1.0)
+			output[i] += sin(TAU*hz*seconds)*envelope*float(score["rhythm_gain"])*level*gain*rhythm["stereo"]
 		state[level_key] = level
+		if not rhythm["active"] and level < 0.00001: retiring_rhythms.append(rhythm["key"])
+	for key in retiring_rhythms: rhythm_nodes.erase(key)
 	if duck_release_at >= 0 and start >= duck_release_at: ducking = false
-	for i in range(count):
-		output[i] += _theme_sample(start+i,rate)+_theme_sample(start+i,rate,true)
-	last_voice_count = active_count+rhythms.size()+(0 if theme.is_empty() else 1)+(0 if response.is_empty() else 1)+1
+	var theme_count := 0
+	var response_count := 0
+	var retiring_musical: Array = []
+	for node in musical_nodes.values():
+		var part: Dictionary = node["part"]
+		var pattern: Dictionary = node["pattern"]
+		var key: String = node["key"]
+		var level := float(state.get("_theme_level_"+key,0.0))
+		var target := _audibility(part["cid"]) if node["active"] else 0.0
+		if level > 0.00001 or target > 0.0:
+			if node["answer"]: response_count += 1
+			else: theme_count += 1
+		var wave := _musical_block(node,start,count,rate)
+		var amplitude := float(score["response_gain"] if node["answer"] else score["theme_gain"])*gain
+		if not node["answer"] and pattern["civic"]: amplitude *= 1.15
+		var stereo: Vector2 = part["stereo"]
+		for i in range(count):
+			level = move_toward(level,target,1.0/fade_frames)
+			output[i] += wave[i]*level*amplitude*stereo
+		state["_theme_level_"+key] = level
+		if not node["active"] and level < 0.00001: retiring_musical.append(key)
+	for key in retiring_musical: musical_nodes.erase(key)
+	last_voice_count = active_count+pulse_count+theme_count+response_count+1
 	max_voice_count = maxi(max_voice_count,last_voice_count)
 	assert(last_voice_count <= int(score["render_voice_limit"]))
-	voice_group_stats = {"entities":districts.size(),"pad_nodes":active_count,"rhythm_nodes":rhythms.size(),"theme_nodes":0 if theme.is_empty() else 1,"response_nodes":0 if response.is_empty() else 1,"environment_nodes":1,"render_voices":last_voice_count,"max_render_voices":max_voice_count}
+	voice_group_stats = {"entities":districts.size(),"pad_nodes":active_count,"rhythm_nodes":pulse_count,"theme_nodes":theme_count,"response_nodes":response_count,"environment_nodes":1,"render_voices":last_voice_count,"max_render_voices":max_voice_count}
 	return output
 
 func score_snapshot() -> Dictionary:

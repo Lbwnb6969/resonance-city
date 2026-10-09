@@ -95,7 +95,7 @@ func _ready() -> void:
 	add_child(light_player)
 	preview_player = AudioStreamPlayer.new()
 	add_child(preview_player)
-	var calibration: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://数据/valley_audio_calibration.json"))
+	var calibration: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://数据/valley_score_calibration.json"))
 	fixed_gain = float(calibration["gain"])
 	clock = get_node("/root/AudioClock") as AudibleAudioClock
 	_start_world()
@@ -461,12 +461,12 @@ func _sync_buildings() -> void:
 			sprite.centered = false
 			sprite.offset = -Vector2(entry["origin"][0],entry["origin"][1])
 			buildings_layer.add_child(sprite)
-			sprite.begin_at(int(building["birth_frame"]))
+			sprite.begin_at(maxi(0,int(building["birth_frame"])))
 			sprites[id] = sprite
 		var sprite: AudioGrowthMask = sprites[id]
 		sprite.position = point(Coupling.position_of(building))
 		sprite.scale = Vector2.ONE*scale_factor*view_zoom
-		sprite.sample_frame(clock.renderer.transport.audible_frame)
+		sprite.sample_frame(clock.renderer.transport.audible_frame-minf(0.0,float(building["birth_frame"])))
 		var played := int(model.audible_pitches().get(id,building["current_midi"]))
 		var warmth := 0.03*sin(TAU*float(clock.renderer.transport.audible_frame)/float(clock.renderer.transport.sample_rate)/4.0)
 		sprite.modulate = Color(0.96+warmth,1.0,0.92 if played < 48 else 0.97,1.0)

@@ -1,9 +1,23 @@
 {
-	"after": "(0.023596, 0.045284)",
-	"before": "(0.023596, 0.045284)",
+	"birth_jump": 0.0,
 	"boundary": 352800,
-	"jump": 0.000133482462842949,
-	"peak_after": 0.0519085787236691,
-	"peak_before": 0.0513615235686302,
-	"retune_jump": 0.0
+	"dc": "(-0.00002, -0.00001)",
+	"max_adjacent_delta": 0.0208368301391602,
+	"max_render_ms": 107.632,
+	"max_settle_ms": 12.546,
+	"passed": true,
+	"peak": 0.332030564546585,
+	"preview_duck_start_difference": 0.000155142188305035,
+	"retune_jump": 0.0,
+	"rms": 0.134438093729473,
+	"voices": {
+		"entities": 22,
+		"environment_nodes": 1,
+		"max_render_voices": 17,
+		"pad_nodes": 12,
+		"render_voices": 17,
+		"response_nodes": 0,
+		"rhythm_nodes": 3,
+		"theme_nodes": 1
+	}
 }

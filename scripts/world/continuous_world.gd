@@ -447,35 +447,6 @@ func _refresh_public_network(frame: int = 0) -> void:
 	var started := int(transit.get("frame",frame))
 	transit = {"id":"valley-line","name":"河谷环线" if not bridge else "两岸联奏线","legs":legs,"path":path,"edges":edge_ids,"frame":started,"stops":itinerary.slice(0,-1)}
 
-func bus_position(seconds: float, offset: float = 0.0) -> Dictionary:
-	if transit.is_empty(): return {}
-	var speed := float(cfg["city"]["bus_speed"])
-	var dwell := float(cfg["city"]["bus_dwell_beats"])*60.0/float(cfg["timing"]["bpm"])
-	var duration := 0.0
-	for leg in transit["legs"]: duration += float(leg["length"])/speed+dwell
-	var phase := fposmod(seconds-float(transit["frame"])/float(cfg["timing"]["sample_rate"])+offset,duration)
-	for leg in transit["legs"]:
-		var path: PackedVector2Array = leg["path"]
-		if path.size() < 2: continue
-		if phase < dwell:
-			var stopped_direction := (path[1]-path[0]).normalized()
-			return {"position":path[0]+_lane_offset(stopped_direction,0.10),"direction":stopped_direction,"stopped":true,"stop":leg["from"]}
-		phase -= dwell
-		var distance := phase*speed
-		if distance <= float(leg["length"]):
-			var remaining := distance
-			for i in range(path.size()-1):
-				var segment := path[i].distance_to(path[i+1])
-				if remaining <= segment:
-					var direction := (path[i+1]-path[i]).normalized()
-					return {"position":path[i].lerp(path[i+1],remaining/maxf(segment,0.0001))+_lane_offset(direction,0.10),"direction":direction,"stopped":false,"stop":leg["from"]}
-				remaining -= segment
-		phase -= float(leg["length"])/speed
-	return {}
-
-func _lane_offset(direction: Vector2, width: float) -> Vector2:
-	return Vector2(-direction.y,direction.x)*width
-
 func public_at(p: Vector2) -> Dictionary:
 	for site in public_sites:
 		if Geometry2D.is_point_in_polygon(p,site["polygon"]): return site
