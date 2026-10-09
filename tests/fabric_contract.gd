@@ -15,14 +15,15 @@ func _initialize() -> void:
 	world.build_town()
 	check(world.fabric_cache.has("shared_walls") and world.fabric_cache.has("rows") and world.fabric_cache.has("courtyards"),"fabric cache is derived and present")
 	check(world.fabric_cache.get("community_wall",{}).size() == world.communities.size(),"community wall tiers cover planned communities")
+	var placement_world := World.new("2026101000000066")
 	var all_tiered := true
 	for building in world.buildings:
 		all_tiered = all_tiered and str(building.get("placement_tier","")).begins_with("L")
 	check(all_tiered,"every building stores a placement tier without changing identity")
 	var lot: Dictionary = {}
-	for candidate in world.lots:
+	for candidate in placement_world.lots:
 		if str(candidate["occupant"]).is_empty(): lot = candidate; break
-	var lot_check := world.placement(Vector2(lot["center"][0],lot["center"][1])) if not lot.is_empty() else {}
+	var lot_check := placement_world.placement(Vector2(lot["center"][0],lot["center"][1])) if not lot.is_empty() else {}
 	check(not lot_check.is_empty() and lot_check["allowed"] and lot_check["tier"] == "L1" and str(lot_check["preview"]).contains("沿街"),"street frontage previews L1")
 	var isolated := Vector2.ZERO
 	var isolated_check: Dictionary = {}
@@ -30,7 +31,7 @@ func _initialize() -> void:
 	for y in range(-6,38):
 		for x in range(-6,39):
 			var candidate := Vector2(float(x)+0.37,float(y)+0.41)
-			var result := world.placement(candidate)
+			var result := placement_world.placement(candidate)
 			if result["allowed"]:
 				tier_counts[result["tier"]] = int(tier_counts.get(result["tier"],0))+1
 			if result["allowed"] and result["tier"] == "L3" and isolated_check.is_empty():
@@ -38,10 +39,10 @@ func _initialize() -> void:
 				isolated_check = result
 	check(tier_counts["L2"] > 0,"legal side street land previews L2")
 	check(not isolated_check.is_empty() and str(isolated_check["preview"]).contains("孤屋"),"legal open land previews L3 instead of being rejected")
-	var before_seed := world.buildings.size()
-	var seed := world.request({"kind":"seed","position":[isolated.x,isolated.y],"midi":48},9000)
-	world.settle(9000)
-	check(seed["accepted"] and world.buildings.size() == before_seed+1 and str(world.buildings.back().get("placement_tier","")) == "L3","L3 seed commits and remains an independent building without a global size cap")
+	var before_seed := placement_world.buildings.size()
+	var seed := placement_world.request({"kind":"seed","position":[isolated.x,isolated.y],"midi":48},9000)
+	placement_world.settle(9000)
+	check(seed["accepted"] and placement_world.buildings.size() == before_seed+1 and str(placement_world.buildings.back().get("placement_tier","")) == "L3","L3 seed commits and remains an independent building without a global size cap")
 	var a := {"district_id":"a","position":[0.0,0.0],"radius":0.45,"type":"residential"}
 	var b := {"district_id":"b","position":[1.0,0.0],"radius":0.45,"type":"residential"}
 	var c := {"district_id":"c","position":[1.01,0.0],"radius":0.45,"type":"residential"}

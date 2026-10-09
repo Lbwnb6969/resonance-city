@@ -12,6 +12,7 @@ var scenery := ValleyScenery.new()
 var expression := "bright"
 var starter := true
 var town_starter := false
+var expanded_town_starter := false
 var terrain_family := "river_valley"
 @export var session_persistence := true
 var archive_directory := CityArchive.DIRECTORY
@@ -116,7 +117,8 @@ func _start_world(saved: Dictionary = {}) -> void:
 	sprites.clear()
 	if saved.is_empty():
 		var world := World.new("2026100900000062",true,terrain_family)
-		if town_starter: world.build_town()
+		if expanded_town_starter: world.build_expanded_town()
+		elif town_starter: world.build_town()
 		elif starter: world.build_starter(expression)
 		model = Model.new(world,fixed_gain)
 	else:
@@ -124,6 +126,7 @@ func _start_world(saved: Dictionary = {}) -> void:
 		expression = str(saved["view"]["expression"])
 		starter = bool(saved["view"]["starter"])
 		town_starter = bool(saved["view"].get("town_starter",false))
+		expanded_town_starter = bool(model.world.expanded_plan)
 		terrain_family = str(model.world.terrain.family)
 		fixed_gain = model.synth.gain
 	shown_world = model.world
@@ -213,6 +216,11 @@ func _make_menu() -> void:
 	town_button.tooltip_text = "切换到完整河谷起点；当前作品先保存，之后仍可继续生长"
 	town_button.pressed.connect(_start_town)
 	box.add_child(town_button)
+	var expanded_button := Button.new()
+	expanded_button.text = "多中心街坊 · E"
+	expanded_button.tooltip_text = "26个规划社区、台地支路与90栋以上制作起点"
+	expanded_button.pressed.connect(_start_expanded_town)
+	box.add_child(expanded_button)
 	var terrain_button := Button.new()
 	terrain_button.text = "切换地形族 · Y"
 	terrain_button.tooltip_text = "河谷、湖盆、林岭、海湾平原共享连续城市操作"
@@ -236,10 +244,21 @@ func _cycle_terrain() -> void:
 func _save_before_switch() -> void:
 	if session_persistence and model != null and clock.active: save_city("切换前保存")
 
+func _start_expanded_town() -> void:
+	_save_before_switch()
+	starter = true
+	town_starter = true
+	expanded_town_starter = true
+	expression = "bright"
+	_start_world()
+	clock.start_output(model._mix_frame,{})
+	_message("多中心街坊 · "+str(shown_world.communities.size())+"个社区 · "+str(shown_world.buildings.size())+"栋起点")
+
 func _start_town() -> void:
 	_save_before_switch()
 	starter = true
 	town_starter = true
+	expanded_town_starter = false
 	expression = "bright"
 	_start_world()
 	clock.start_output(model._mix_frame,{})
@@ -436,7 +455,7 @@ func _input(event: InputEvent) -> void:
 		load_city()
 		get_viewport().set_input_as_handled()
 		return
-	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y]: get_viewport().set_input_as_handled()
+	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y,KEY_E]: get_viewport().set_input_as_handled()
 	if event.keycode == KEY_SPACE and not event.pressed:
 		preview_requested = false
 		preview_player.stop()
@@ -457,15 +476,18 @@ func _input(event: InputEvent) -> void:
 			pan_target = Vector2(0,70)
 		KEY_T: _start_town()
 		KEY_Y: _cycle_terrain()
+		KEY_E: _start_expanded_town()
 		KEY_N:
 			_save_before_switch()
 			town_starter = false
+			expanded_town_starter = false
 			starter = false
 			_start_world()
 			clock.start_output(model._mix_frame,{})
 		KEY_V:
 			_save_before_switch()
 			town_starter = false
+			expanded_town_starter = false
 			starter = true
 			expression = "deep"
 			_start_world()
@@ -473,6 +495,7 @@ func _input(event: InputEvent) -> void:
 		KEY_R:
 			_save_before_switch()
 			town_starter = false
+			expanded_town_starter = false
 			starter = true
 			expression = "bright"
 			_start_world()
@@ -567,7 +590,7 @@ func _process(delta: float) -> void:
 		var site := shown_world.public_at(p)
 		if not site.is_empty():
 			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路服务%d栋\n公园为主题留白，文化设施让主题更清楚" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
-		else: tooltip.text = "合法陆地都能播种；靠近道路会长得更快\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
+		else: tooltip.text = "合法陆地都能播种；靠近道路会长得更快\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形 · E扩展城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
 	if menu.visible and pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()

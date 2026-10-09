@@ -7,6 +7,7 @@ const Index = preload("res://scripts/world/world_spatial_index.gd")
 const RandomStreams = preload("res://scripts/city/named_random.gd")
 const Legacy = preload("res://scripts/spec_values.gd")
 const Fabric = preload("res://scripts/world/fabric_relations.gd")
+const Terrace = preload("res://scripts/world/terrace_neighborhood.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -41,6 +42,7 @@ var resonance := 100.0
 var lifecycle := {"gray":false,"low_phrases":0,"ended":false}
 # Derived visual relationships; never part of acoustic state.
 var fabric_cache: Dictionary = {"shared_walls":[],"rows":[],"courtyards":[],"community_wall":{}}
+var expanded_plan := false
 var last_reason := "在河边选择一块临街空地，播下第一段声音"
 
 func _init(seed_hex: String = "2026100900000062", generate_plan: bool = true, terrain_family: String = "river_valley") -> void:
@@ -309,6 +311,7 @@ func settle(frame: int) -> void:
 	refresh_fabric()
 
 func _grow(family: String, frame: int) -> void:
+	if str(families[family].get("root","")).is_empty() or not by_id.has(str(families[family].get("root",""))): return
 	if phrase_index < int(families[family].get("next_growth_phrase",0)):
 		return
 	var root: Dictionary = by_id[families[family]["root"]]
@@ -437,7 +440,7 @@ func snapshot() -> Dictionary:
 		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase,"family":terrain.family},
 		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"communities":communities.duplicate(true)},
 		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
-		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,
+		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,"expanded_plan":expanded_plan,
 		"next_id":next_id,"families":families.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_reason":last_reason}
 
 func restore(saved: Dictionary) -> void:
@@ -483,6 +486,7 @@ func restore(saved: Dictionary) -> void:
 	elif not bridge: roads = roads.filter(func(r: Dictionary) -> bool: return not r["bridge"])
 	phrase_index = int(saved["phrase_index"])
 	era = int(saved.get("era",era_for_phrase(phrase_index)))
+	expanded_plan = bool(saved.get("expanded_plan",false))
 	next_id = int(saved["next_id"])
 	lifecycle = saved["lifecycle"].duplicate(true)
 	last_reason = saved["last_reason"]
@@ -565,6 +569,18 @@ func public_at(p: Vector2) -> Dictionary:
 	for site in public_sites:
 		if Geometry2D.is_point_in_polygon(p,site["polygon"]): return site
 	return {}
+
+func expand_plan() -> void:
+	if expanded_plan: return
+	Terrace.populate(self)
+	expanded_plan = true
+	network.rebuild(nodes,roads,terrain)
+	_refresh_public_network()
+	refresh_fabric()
+
+func build_expanded_town() -> void:
+	expand_plan()
+	build_town()
 
 func build_town() -> void:
 	profile = "bright"
