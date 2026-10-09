@@ -20,7 +20,7 @@ func _initialize() -> void:
 		check(world.lots.size() >= 50 and world.communities.size() == 10,"playable planned city survives: "+family)
 		var expanded := World.new("2026101000000067",true,family)
 		expanded.expand_plan()
-		check(expanded.communities.size() == 26 and expanded.roads.size() >= 50,"expanded road plan survives: "+family)
+		check(expanded.communities.size() == 36 and expanded.roads.size() >= 90,"expanded road plan survives: "+family)
 		check(expanded.green_corridors.size() == 2 and expanded.green_corridors.all(func(corridor: Dictionary) -> bool: return corridor["path"].size() >= 8),"greenways survive terrain family: "+family)
 		terrace_x[family] = float(expanded.nodes["west-terrace-node-4"][0])
 		var sample := world.terrain.river_width(14.0)

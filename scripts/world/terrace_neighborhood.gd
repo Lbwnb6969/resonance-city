@@ -27,24 +27,24 @@ static func populate(world: RefCounted) -> void:
 	var cfg: Dictionary = world.cfg["city"]
 	var t: Dictionary = world.cfg["terrain"]
 	var offset: float = float(t["template_road_bank_offset"])+float(cfg["neighborhood_depth"])*0.72
-	var ys: Array = [1.2,4.65,8.1,11.55,15.0,18.45,21.9,25.35]
+	var ys: Array = [0.8,3.55,6.3,9.05,11.8,14.55,17.3,20.05,22.8,25.55,28.3,31.0,33.7]
 	var bend := 0.0
 	match world.terrain.family:
 		"lake_basin":
 			offset += 0.85
-			ys = [1.2,4.5,7.8,11.1,14.4,17.7,21.0,24.3]
+			ys = [0.8,3.5,6.2,8.9,11.6,14.3,17.0,19.7,22.4,25.1,27.8,30.5,33.2]
 			bend = -0.32
 		"forest_ridge":
 			offset += 1.15
-			ys = [0.9,4.35,7.8,11.25,14.7,18.15,21.6,25.05]
+			ys = [0.6,3.35,6.1,8.85,11.6,14.35,17.1,19.85,22.6,25.35,28.1,30.85,33.6]
 			bend = 0.42
 		"coastal_plain":
 			offset += 0.25
-			ys = [1.4,4.8,8.2,11.6,15.0,18.4,21.8,25.2]
+			ys = [1.0,3.75,6.5,9.25,12.0,14.75,17.5,20.25,23.0,25.75,28.5,31.2,33.9]
 			bend = 0.18
 	for bank: int in [-1,1]:
 		var prefix := "west" if bank < 0 else "east"
-		var names := ["苔阶","回声坡","石榴台","云栈","风铃坡","溪上台","白栎坡","月桂台"] if bank < 0 else ["晴岬","晚潮台","芦灯坡","映泉台","长风台","浅湾坡","金穗台","望星坡"]
+		var names := ["苔阶","回声坡","石榴台","云栈","风铃坡","溪上台","白栎坡","月桂台","松风台","望潮台","青禾坡","听雨台","琥珀台"] if bank < 0 else ["晴岬","晚潮台","芦灯坡","映泉台","长风台","浅湾坡","金穗台","望星坡","潮汐台","远帆坡","芦花台","星汀坡","海棠台"]
 		for index in range(ys.size()):
 			var cid := "%s-terrace-%d" % [prefix,index+1]
 			world.communities[cid] = {"id":cid,"bank":bank,"name":names[index],"members":[],"parent_id":prefix+"-2"}
@@ -109,6 +109,17 @@ static func populate(world: RefCounted) -> void:
 		_append_site(world,Vector2(site_x,site_y+3.45),Vector2(0.58,0.62),
 			[Vector2(bank*2.1,0.0),Vector2(bank*2.8,-0.3),Vector2(bank*1.9,1.25),Vector2(bank*3.2,1.8)],
 			prefix+"-terrace-civic","civic",civic_name,prefix+"-terrace-5")
+		var pocket_y := float(ys[9])
+		var pocket_x: float = world.terrain.river_x(pocket_y)+float(bank)*offset
+		var pocket_name := "林间口袋公园" if world.terrain.family == "forest_ridge" else ("潮汐小园" if world.terrain.family == "coastal_plain" else ("湖畔口袋园" if world.terrain.family == "lake_basin" else "台地口袋园"))
+		_append_site(world,Vector2(pocket_x,pocket_y),Vector2(0.72,0.60),
+			[Vector2(bank*2.1,0.0),Vector2(bank*2.8,0.4),Vector2(bank*1.9,1.15),Vector2(bank*3.2,-0.9)],
+			prefix+"-terrace-pocket-park","park",pocket_name,prefix+"-terrace-10")
+		var view_y := float(ys[11])
+		var view_x: float = world.terrain.river_x(view_y)+float(bank)*offset
+		_append_site(world,Vector2(view_x,view_y),Vector2(0.50,0.52),
+			[Vector2(bank*2.1,0.0),Vector2(bank*2.8,-0.3),Vector2(bank*1.9,1.0),Vector2(bank*3.2,1.6)],
+			prefix+"-terrace-view-civic","civic","远台公共节点",prefix+"-terrace-12")
 	for bank: int in [-1,1]:
 		var prefix := "west" if bank < 0 else "east"
 		var corridor_path := PackedVector2Array()

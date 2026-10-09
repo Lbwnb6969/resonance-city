@@ -108,12 +108,14 @@ func _refresh_centers() -> void:
 		if nodes.has(prefix+"-garden-2") and communities.has(prefix+"-garden-1"):
 			var garden: Array = nodes[prefix+"-garden-2"]
 			centers.append({"id":prefix+"-secondary-center","level":"secondary","community_id":prefix+"-garden-1","node_id":prefix+"-garden-2","position":[garden[0],garden[1]],"active":true})
-		for index in range(1,9):
+		var index := 1
+		while true:
 			var terrace_id := "%s-terrace-%d" % [prefix,index]
 			var node_id := "%s-terrace-node-%d" % [prefix,index]
-			if not nodes.has(node_id) or not communities.has(terrace_id): continue
+			if not nodes.has(node_id) or not communities.has(terrace_id): break
 			var terrace: Array = nodes[node_id]
 			centers.append({"id":"%s-center" % terrace_id,"level":"terrace","community_id":terrace_id,"node_id":node_id,"position":[terrace[0],terrace[1]],"active":expanded_plan})
+			index += 1
 	for center in centers:
 		var cid := str(center["community_id"])
 		if communities.has(cid):
@@ -604,8 +606,10 @@ func _refresh_public_network(frame: int = 0) -> void:
 		lines.append(_make_transit_line("garden-line","林荫支线",itinerary,frame))
 	if expanded_plan and public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "west-civic" and site["active"]):
 		var terrace_itinerary: Array = ["west-1"]
-		for index in range(1,9):
-			if nodes.has("west-terrace-node-%d" % index): terrace_itinerary.append("west-terrace-node-%d" % index)
+		var index := 1
+		while nodes.has("west-terrace-node-%d" % index):
+			terrace_itinerary.append("west-terrace-node-%d" % index)
+			index += 1
 		terrace_itinerary.append("west-1")
 		if terrace_itinerary.size() > 2:
 			lines.append(_make_transit_line("terrace-line","台地回声线",terrace_itinerary,frame))

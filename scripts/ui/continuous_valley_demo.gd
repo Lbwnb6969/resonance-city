@@ -218,7 +218,7 @@ func _make_menu() -> void:
 	box.add_child(town_button)
 	var expanded_button := Button.new()
 	expanded_button.text = "多中心街坊 · E"
-	expanded_button.tooltip_text = "26个规划社区、台地支路与90栋以上制作起点"
+	expanded_button.tooltip_text = "36个规划社区、台地支路、绿廊与140栋以上制作起点"
 	expanded_button.pressed.connect(_start_expanded_town)
 	box.add_child(expanded_button)
 	var terrain_button := Button.new()
