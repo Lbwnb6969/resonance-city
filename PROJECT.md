@@ -38,7 +38,7 @@
 - 首次第63轮实跑发现预置房屋负出生帧被动画判为未开始，导致房屋不可见且点击调音失败；已修复显示与点击并复跑通过。首次记录在验证记录/连续河谷/废弃/第63轮首次实跑/。第62轮旧UI首次失败记录也保留，不把历史结果套作当前合奏证据。
 - tests/round63_audio_pop.gd：生长/调音事件首样本台阶均0，过渡期间波形继续振动，DC约0.00002；试听压低开始相对原信号差0.000155。tests/round63_routes.gd：模拟120秒并在行驶中开桥，公交/行人无瞬移，公交距道路中心最多0.101单位，无桥时不入水。
 - tests/round64_era.gd：时代快照与交通切换10项通过；tests/round64_live.gd：实际RTX5070Ti/OpenGL，80栋/10社区/87地块，存档恢复、桥接应答、马车路线与实供音 **9项通过，skips=0**；本次最高渲染133.50ms、最高结算127.46ms，运行队列增至240ms吸收单次大城结算。
-- tests/fabric_contract.gd：**10项通过、0失败**；覆盖 L1/L3 预览、合法孤屋落定、共享山墙 0.10 阈值、L3 声学衰减、身份独立和派生缓存。连续河谷合同与时代回归在 fabric 接入后仍通过。
+- tests/fabric_contract.gd：**11项通过、0失败**；覆盖 L1/L2/L3 预览、合法孤屋落定、共享山墙 0.10 阈值、L3 声学衰减、身份独立和派生缓存。连续河谷合同与时代回归在 fabric 接入后仍通过。
 - 实际开场PCM由FFmpeg测量：晴岸-16.07 LUFS/-7.71 dBTP，深流-18.99 LUFS/-10.82 dBTP；证据在验证记录/连续河谷/社区合奏响度/。这是18栋开场，不是600栋/满70声部或长时运行证明。
 - 第64轮80栋实供音由FFmpeg测量为 -15.4 LUFS / -8.5 dBTP；这是制作示例的合奏响度，不能代替最终400–600栋混音标定。
 - 真人听感、好玩、两种表达路线是否可辨仍需试玩；当前美术/布局是制作首片，不代表最终城市外观。
@@ -63,6 +63,8 @@
 Godot4.7.2官方ed1daf0bf，1440×900 Compatibility。GD/场景改动经本项目Godot MCP，valid:false先修；技能路径C:/Users/Administrator/Desktop/mIDDLEFILE/godot_mcp_toolkit/CompanionSkills/godot-mcp-toolkit/SKILL.md。提交用明确路径，不git add -A；外部CITY-001_layers.json、示意图.import和Python缓存不混入。
 
 第63轮前快照refs/backups/before-playable-city-round63（843ee85）与分支codex/backup-before-playable-city-round63保留；旧脚本/规格/生成器分别存scripts/废弃/2026-10-09_第63轮前/、文档/废弃/2026-10-09_第63轮前/、tools/废弃/2026-10-09_第63轮前/。本轮651efc6及后续声音/路线修订入Git；失败证据移存专用废弃目录。
+
+第65轮 fabric 实现提交19495d3，备份引用 refs/backups/round65-fabric；L3 空地/连片关系的旧实现不覆盖现行连续世界数据。
 
 此前提交17da033及设计快照codex/backup-tech-final-docs-20261009保留。第62轮前备份分支codex/backup-before-continuous-valley-round62；原文在文档/废弃/2026-10-09_连续河谷前/与2026-10-09_第62轮吸收前/。完整bundle保存在.git/任务备份/技术准备_2026-10-09/Git备份/与.git/任务备份/连续河谷_2026-10-09/Git备份/。
 
