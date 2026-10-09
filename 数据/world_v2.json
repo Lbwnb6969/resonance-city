@@ -1,0 +1,154 @@
+{
+  "schema_version": 2,
+  "world_model": "continuous",
+  "space": {
+    "schema_version": 2.0,
+    "world_min": -8.0,
+    "world_max": 40.0,
+    "residential_radius": 0.45,
+    "base_coupling": 2.0,
+    "distance_sigma": 1.8,
+    "gap_cutoff": 4.0,
+    "near_neighbour_count": 12.0,
+    "industrial_factor": 1.3,
+    "partial_occlusion": 0.7,
+    "forest_factor": 0.85,
+    "water_factor": 1.15,
+    "homogeneity_threshold": 0.4,
+    "homogeneity_M": 0.7,
+    "homogeneity_dv_scale": 0.5,
+    "comparison_tolerance": 1e-06,
+    "community_min": 4.0,
+    "community_max": 40.0,
+    "projection_x": 28.0,
+    "projection_y": 14.0,
+    "pan_divisor": 12.0,
+    "pan_limit": 0.8,
+    "terrain_height_screen_scale": 14.0
+  },
+  "terrain": {
+    "noise_octaves": 4.0,
+    "noise_gain": 0.5,
+    "noise_lacunarity": 2.0,
+    "noise_frequency": 0.065,
+    "minimum_buildable_ratio": 0.45,
+    "attempt_limit": 8.0,
+    "template_land_min": -4.0,
+    "template_land_max": 36.0,
+    "template_river_center": 16.0,
+    "template_river_base_half_width": 1.05,
+    "template_river_widening": 0.025,
+    "template_road_bank_offset": 3.6,
+    "template_road_half_width": 0.25,
+    "template_lot_road_offset": 1.2,
+    "template_lot_half_width": 0.62,
+    "template_lot_half_length": 0.64,
+    "template_lot_spacing": 1.6,
+    "template_bridge_y": 14.0,
+    "template_slice_building_budget": 24.0
+  },
+  "timing": {
+    "bpm": 120.0,
+    "beats_per_bar": 4,
+    "bars_per_phrase": 8,
+    "sample_rate": 22050,
+    "buffer_seconds": 0.12,
+    "phrase_frames": 352800
+  },
+  "harmony": {
+    "initial_vitality": 50.0,
+    "base_growth": 1.0,
+    "decay": 0.5,
+    "decay_threshold": 60.0,
+    "net_change_cap": 12.0,
+    "minimum_vitality": 0.0,
+    "maximum_vitality": 100.0,
+    "empty_resonance": 100.0,
+    "gray_entry": 40.0,
+    "gray_exit": 48.0,
+    "collapse_phrases": 3,
+    "intervals": {
+      "0": {
+        "score": 1.0,
+        "vitality_delta": 8.0,
+        "name": "同度 / 纯八度"
+      },
+      "5": {
+        "score": 0.9,
+        "vitality_delta": 5.0,
+        "name": "纯五 / 纯四"
+      },
+      "7": {
+        "score": 0.9,
+        "vitality_delta": 5.0,
+        "name": "纯五 / 纯四"
+      },
+      "4": {
+        "score": 0.85,
+        "vitality_delta": 5.0,
+        "name": "大三 / 大六"
+      },
+      "9": {
+        "score": 0.85,
+        "vitality_delta": 5.0,
+        "name": "大三 / 大六"
+      },
+      "3": {
+        "score": 0.6,
+        "vitality_delta": 0.0,
+        "name": "小三 / 小六"
+      },
+      "8": {
+        "score": 0.6,
+        "vitality_delta": 0.0,
+        "name": "小三 / 小六"
+      },
+      "2": {
+        "score": 0.3,
+        "vitality_delta": -3.0,
+        "name": "大二 / 小七"
+      },
+      "10": {
+        "score": 0.3,
+        "vitality_delta": -3.0,
+        "name": "大二 / 小七"
+      },
+      "1": {
+        "score": 0.05,
+        "vitality_delta": -8.0,
+        "name": "小二 / 大七"
+      },
+      "11": {
+        "score": 0.05,
+        "vitality_delta": -8.0,
+        "name": "小二 / 大七"
+      },
+      "6": {
+        "score": 0.0,
+        "vitality_delta": -8.0,
+        "name": "三全音"
+      }
+    }
+  },
+  "legacy_audio_contract_sha256": "1c4968251b745260ddd91f5b9d00a3fb14ad4f0e530b66cfd2b5199629b647e7",
+  "sources": {
+    "spec.asset.md": "6e9effac9084ba38d8a568432ef1fd290a5a95ee2f0bb33ec30c6d6ba4d2df39",
+    "spec.audio.md": "e72bf4d5f9accbad926a0978fca31184ecebb40d90b126f18685edfa3fd92301",
+    "spec.city.md": "c82ed4ae8a830b0f9adcfa4299de3a5ca411e54c41a15d0ab358354f6163f7aa",
+    "spec.harmony.md": "12f9b623d10638a74aacb8a9f85db87d1963bb487511f17cb381d0964985dfa1",
+    "spec.proposal.md": "00117121398d0a91d9d0583376a3e46e5d1ada10cd1779444e0b7ad8f0296be5",
+    "spec.run.md": "471b34011b6602047b0620017562b5ab878126f2da8d5143528393129e1f6f1b",
+    "spec.space.md": "2ee637a63c7928aafd6979a1d958c28ca85cbb461606289016a06eaf6be9687f",
+    "spec.terrain.md": "6bdf39ef8b41a529a45886a53315b4d1b2a1d1c2d0ffa26a3c9dc90e2d6248a2",
+    "spec.ui.md": "1b2bbe20ebfa664eb9dcd4336be53e76269ce21c32c73a5e4dd6a5396b559949"
+  },
+  "distance_reference": {
+    "0": 2.0,
+    "0.5": 1.8514825318487655,
+    "1": 1.4688873438594623,
+    "1.5": 0.9987035771985525,
+    "2": 0.5819209177286203,
+    "3": 0.1243530480442327,
+    "4": 0.014333950075224816
+  }
+}

@@ -1,0 +1,108 @@
+{
+	"checks": {
+		"audible_birth": true,
+		"bridge_committed_with_real_road": true,
+		"community_mute": true,
+		"community_solo": true,
+		"floating_seed_queued": true,
+		"no_audio_underruns": true,
+		"quantized_retune": true,
+		"roof_picks_building": true,
+		"space_preview_with_menu_context": true,
+		"stable_community": true
+	},
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"failures": [],
+	"runtime": {
+		"audible_frame": 1070521.94715493,
+		"buildings": 3,
+		"lots": 58,
+		"pending": {},
+		"phrase": 3,
+		"planned_communities": 6,
+		"preview_started": true,
+		"resonance": 100.0,
+		"seed_hex": "2026100900000062",
+		"skips": 0
+	},
+	"scope": "real GPU and audio clock, final continuous scene; UI path injection; three live phrase boundaries, not city-scale performance",
+	"trace": [
+		{
+			"context": {
+				"id": "building-00001",
+				"kind": "retune"
+			},
+			"retune_request": {
+				"frame": 705600,
+				"id": "building-00001",
+				"kind": "retune",
+				"midi": 55
+			}
+		},
+		{
+			"after_retune": {
+				"anchor_id": "family-00001",
+				"base_midi": 48,
+				"birth_frame": 352800,
+				"community_id": "west-2",
+				"current_midi": 55,
+				"district_id": "building-00001",
+				"era": 1,
+				"family_anchor": true,
+				"family_id": "family-00001",
+				"footprint": [
+					[
+						11.8968286514282,
+						16.4093036651611
+					]
+				],
+				"form": "胚",
+				"form_count": 0,
+				"is_anchor": false,
+				"lot_id": "west-lot-9--1",
+				"position": [
+					11.8968286514282,
+					16.4093036651611
+				],
+				"radius": 0.45,
+				"type": "commercial",
+				"vitality": 46.0,
+				"voice_level": 0.2
+			},
+			"events": [
+				{
+					"district_id": "building-00001",
+					"frame": 352800,
+					"kind": "birth"
+				},
+				{
+					"district_id": "building-00001",
+					"frame": 705600,
+					"kind": "retune"
+				},
+				{
+					"district_id": "building-00002",
+					"frame": 705600,
+					"kind": "birth"
+				}
+			]
+		},
+		{
+			"bridge_request": {
+				"frame": 1058400,
+				"kind": "bridge"
+			},
+			"notice": "桥会在下一乐句连接两岸"
+		}
+	]
+}

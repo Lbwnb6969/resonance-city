@@ -1,0 +1,42 @@
+{
+	"checks": {
+		"audible_birth": true,
+		"bridge_committed_with_real_road": false,
+		"community_mute": true,
+		"community_solo": true,
+		"floating_seed_queued": true,
+		"no_audio_underruns": true,
+		"quantized_retune": false,
+		"roof_picks_building": true,
+		"space_preview_with_menu_context": true,
+		"stable_community": true
+	},
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"failures": [
+		"quantized_retune",
+		"bridge_committed_with_real_road"
+	],
+	"runtime": {
+		"audible_frame": 1072543.24460493,
+		"buildings": 4,
+		"lots": 58,
+		"pending": {},
+		"phrase": 3,
+		"planned_communities": 6,
+		"preview_started": true,
+		"resonance": 100.0,
+		"seed_hex": "2026100900000062",
+		"skips": 0
+	},
+	"scope": "real GPU and audio clock, final continuous scene; UI path injection; three live phrase boundaries, not city-scale performance"
+}
