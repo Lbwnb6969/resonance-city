@@ -1,0 +1,69 @@
+{
+  "scope": "synthetic graph probe; not integrated into Godot",
+  "checks": 6,
+  "failures": 0,
+  "without_bridge": {
+    "selected": [
+      "east-service"
+    ],
+    "covered": [
+      "east"
+    ],
+    "uncovered": [
+      "west"
+    ],
+    "covered_weight": 10,
+    "total_weight": 11,
+    "coverage_by_candidate": {
+      "east-service": [
+        "east"
+      ],
+      "west-service": [
+        "west"
+      ]
+    }
+  },
+  "with_bridge": {
+    "selected": [
+      "east-service"
+    ],
+    "covered": [
+      "east",
+      "west"
+    ],
+    "uncovered": [],
+    "covered_weight": 11,
+    "total_weight": 11,
+    "coverage_by_candidate": {
+      "east-service": [
+        "east",
+        "west"
+      ],
+      "west-service": [
+        "east",
+        "west"
+      ]
+    }
+  },
+  "transit_without_bridge": {
+    "feasible": false,
+    "failed_leg": [
+      "w0",
+      "e0"
+    ]
+  },
+  "transit_detour": {
+    "feasible": true,
+    "stops": [
+      "w0",
+      "e0"
+    ],
+    "edge_ids": [
+      "w0>w1",
+      "w1>e1",
+      "e1>e0"
+    ],
+    "cost": 10.0
+  },
+  "fixture_units": "synthetic cost units; not metres/minutes/game values"
+}
