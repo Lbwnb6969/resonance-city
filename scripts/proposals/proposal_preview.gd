@@ -9,7 +9,7 @@ const Values = preload("res://scripts/spec_values.gd")
 
 static func model_from_snapshot(saved: Dictionary) -> CityAudioModel:
 	var state: Dictionary = saved["session"]
-	var session := Session.new(state["city"],state["rng"]["seed_hex"],state["rng"])
+	var session: CityInterventions = load("res://scripts/proposals/city_interventions.gd").new(state["city"],state["rng"]["seed_hex"],state["rng"],state.get("run",{}))
 	session.restore(state)
 	var model := Model.new(session)
 	model.restore(saved)
@@ -20,8 +20,8 @@ static func forecast(session: CityInterventions, choice: Dictionary, rendered_fr
 	var request := copy.request(choice,rendered_frames,requested_audio_frame)
 	if not request["accepted"]: return request
 	var boundary := int(request["frame"])
-	while copy.transport.phrase_frame(copy.phrase_index+1) <= boundary:
-		copy.settle(copy.transport.phrase_frame(copy.phrase_index+1))
+	while copy.next_city_boundary() <= boundary:
+		copy.settle(copy.next_city_boundary())
 	if copy.last_result.get("choice",{}).get("proposal_id","") != choice.get("proposal_id",""):
 		return {"accepted":false,"reason":"该方案在落定前会失效，请更换目标。"}
 	return {"accepted":true,"commit_boundary":boundary,"result":copy.last_result.duplicate(true)}

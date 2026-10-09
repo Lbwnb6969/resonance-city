@@ -2,6 +2,7 @@ class_name CityInterventions
 extends RefCounted
 ## Pure city transaction used by playback and preview forks.
 
+const Era = preload("res://scripts/city/city_era.gd")
 const Ring = preload("res://scripts/city/city_ring.gd")
 const Roads = preload("res://scripts/city/city_roads.gd")
 const Growth = preload("res://scripts/city/city_growth.gd")
@@ -17,6 +18,13 @@ var harmony := Harmony.new()
 var transport := Transport.new()
 var settings: Dictionary
 var phrase_index := 0
+var run: Dictionary = {}
+
+func city_frame(index: int) -> int:
+	return transport.phrase_frame(index)+int(run.get("offset",0))
+
+func next_city_boundary() -> int:
+	return Era.next_boundary(self)
 var refresh_cycle := 0
 var catalog: Array[Dictionary] = []
 var pending: Dictionary = {}
@@ -31,7 +39,7 @@ var rings: Dictionary = {}
 var gravity_band: Dictionary = {}
 var draft_pause_until := 0
 
-func _init(initial_city: Array, seed: String, random_state: Dictionary = {}) -> void:
+func _init(initial_city: Array, seed: String, random_state: Dictionary = {}, run_state: Dictionary = {}) -> void:
 	city = initial_city.duplicate(true)
 	harmony.road_marks = road_marks
 	rng = RandomStreams.new(seed)
@@ -39,6 +47,8 @@ func _init(initial_city: Array, seed: String, random_state: Dictionary = {}) -> 
 		rng.restore(random_state)
 	growth_values = Values.load_values()
 	settings = growth_values["proposals"]
+	run = run_state.duplicate(true)
+	Era.configure(self)
 	assert(int(settings["per_phrase"]) == 1)
 	_refresh_catalog()
 
@@ -53,6 +63,10 @@ func _pitches(id: String) -> Array[int]:
 	var result: Array[int] = []
 	if district.is_empty():
 		return result
+	if district.get("visitor",false) and not harmony.adjacency(city).any(func(edge: Dictionary) -> bool: return edge["a"] == id or edge["b"] == id):
+		for midi in settings["allowed_pitches"]:
+			if int(midi) != int(district["current_midi"]): result.append(int(midi))
+		return result
 	for midi in settings["allowed_pitches"]:
 		if int(midi) == int(district["current_midi"]):
 			continue
@@ -66,7 +80,7 @@ func _pitches(id: String) -> Array[int]:
 	return result
 
 func _empty_cells() -> Array:
-	var space: Dictionary = Values.load_values()["city"]
+	var space: Dictionary = growth_values["city"]
 	var occupied: Dictionary = {}
 	for district in city:
 		occupied[Schema.cell(district)] = true
@@ -126,7 +140,7 @@ func _legal(choice: Dictionary) -> bool:
 			if not choice.get(name) is Array or choice[name].size() != 2: return false
 		var a := Vector2i(int(choice["start"][0]),int(choice["start"][1]))
 		var b := Vector2i(int(choice["end"][0]),int(choice["end"][1]))
-		return Roads.valid(a,b) and not Roads.blocked(road_marks,a,b)
+		return Roads.valid(a,b,growth_values["city"]) and not Roads.blocked(road_marks,a,b)
 	if choice.get("verb","") == "draft":
 		if not growth_enabled or choice.get("bias","") not in growth_values["draft"]["allowed_biases"]: return false
 		for key in ["start","end"]:
@@ -148,15 +162,19 @@ func _legal(choice: Dictionary) -> bool:
 
 func is_on_grid(requested_audio_frame: float) -> bool:
 	var period := transport.phrase_frame(1)
-	var nearest := roundi(requested_audio_frame / period) * period
+	var anchor := int(run.get("offset",0))
+	var nearest := roundi((requested_audio_frame-anchor) / period) * period+anchor
 	var window := float(transport.timing["beat_assist_window_ms"]) * transport.sample_rate / 1000.0
 	return absf(requested_audio_frame - nearest) <= window
 
 func request(choice: Dictionary, rendered_frames: int, audible_frame: float) -> Dictionary:
+	if run.get("phase","") == "transition":
+		return {"accepted":false,"reason":"时代正在跨越，音乐继续；新乐章开始后恢复介入。"}
 	if bool(lifecycle["ended"]) or not _legal(choice):
 		return {"accepted":false,"reason":"Proposal is unavailable or target is no longer legal"}
-	transport.rendered_frames = maxi(rendered_frames, transport.phrase_frame(phrase_index+1))
-	var at := transport.next_phrase_frame()
+	transport.rendered_frames = rendered_frames
+	var at := city_frame(phrase_index+1)
+	while at < rendered_frames: at += transport.phrase_frame(1)
 	pending = choice.duplicate(true)
 	pending["frame"] = at
 	pending["requested_audio_frame"] = audible_frame
@@ -167,7 +185,10 @@ func cancel_pending() -> void:
 	pending.clear()
 
 func settle(at: int) -> Dictionary:
-	assert(at == transport.phrase_frame(phrase_index+1), "Only settle the next complete phrase")
+	if run.get("phase","") == "transition":
+		assert(at == next_city_boundary(),"Only process the next held city boundary")
+		return Era.held_boundary(self,at)
+	assert(at == city_frame(phrase_index+1), "Only settle the next complete city phrase")
 	phrase_index += 1
 	if bool(lifecycle["ended"]):
 		last_result = {"frame":at,"ended":true,"choice":{}}
@@ -219,7 +240,7 @@ func settle(at: int) -> Dictionary:
 					costs[item["district_id"]] = float(settings["retune_cost"])
 				elif item["verb"] == "relocate":
 					district["footprint"] = [applied["target"].duplicate()]
-					silent_until[item["district_id"]] = transport.phrase_frame(phrase_index + int(settings["relocate_silent_phrases"]))
+					silent_until[item["district_id"]] = city_frame(phrase_index + int(settings["relocate_silent_phrases"]))
 				if item["verb"] != "release" and bool(applied["on_grid"]):
 					costs[item["district_id"]] = float(costs.get(item["district_id"],0.0)) + float(settings["landing_bonus"])
 		pending.clear()
@@ -248,10 +269,13 @@ func settle(at: int) -> Dictionary:
 	last_result = {"frame":at,"choice":applied,"before":before,"after":city.duplicate(true),
 		"before_edges":old_edges,"after_edges":edges,"before_r":harmony.resonance(before,old_edges),
 		"after_r":resonance,"growth_events":growth_events,"ring_events":ring_result["events"],"ring_messages":ring_result["messages"],"intervention_deltas":costs.duplicate(true),"silent_until":silent_until.duplicate(true)}
+	Era.apply_assets(city)
+	last_result["after"] = city.duplicate(true)
+	Era.after_settle(self,at)
 	return last_result.duplicate(true)
 
 func snapshot() -> Dictionary:
-	return {"city":city.duplicate(true),"rng":rng.snapshot(),"phrase_index":phrase_index,
+	return {"city":city.duplicate(true),"rng":rng.snapshot(),"phrase_index":phrase_index,"run":run.duplicate(true),
 		"rings":rings.duplicate(true),"growth_enabled":growth_enabled,"growth_serial":growth_serial,"road_marks":road_marks.duplicate(true),"gravity_band":gravity_band.duplicate(true),"draft_pause_until":draft_pause_until,"refresh_cycle":refresh_cycle,"catalog":catalog.duplicate(true),"pending":pending.duplicate(true),
 		"silent_until":silent_until.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_result":last_result.duplicate(true)}
 
@@ -262,6 +286,8 @@ func restore(saved: Dictionary) -> void:
 	harmony.road_marks = road_marks
 	rng.restore(saved["rng"])
 	phrase_index = int(saved["phrase_index"])
+	run = saved.get("run",{}).duplicate(true)
+	Era.configure(self)
 	growth_enabled = bool(saved.get("growth_enabled",false))
 	growth_serial = int(saved.get("growth_serial",0))
 	gravity_band = saved.get("gravity_band",{}).duplicate(true)
@@ -274,6 +300,6 @@ func restore(saved: Dictionary) -> void:
 	last_result = saved["last_result"].duplicate(true)
 
 func fork() -> CityInterventions:
-	var copy := CityInterventions.new(city,rng.seed_hex,rng.snapshot())
+	var copy: CityInterventions = get_script().new(city,rng.seed_hex,rng.snapshot(),run)
 	copy.restore(snapshot())
 	return copy

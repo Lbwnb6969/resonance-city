@@ -7,8 +7,8 @@ static func settings() -> Dictionary:
 	if cached.is_empty(): cached = Values.load_values()
 	return cached
 
-static func valid(a: Vector2i,b: Vector2i) -> bool:
-	var space: Dictionary = settings()["city"]
+static func valid(a: Vector2i,b: Vector2i, space: Dictionary = {}) -> bool:
+	if space.is_empty(): space = settings()["city"]
 	return a.x >= 0 and a.y >= 0 and b.x >= 0 and b.y >= 0 and a.x < int(space["width"]) and b.x < int(space["width"]) and a.y < int(space["height"]) and b.y < int(space["height"]) and (a-b).length_squared() == 1
 
 static func key(a: Vector2i,b: Vector2i) -> String:

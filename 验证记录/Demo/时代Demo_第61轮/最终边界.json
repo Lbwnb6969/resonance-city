@@ -1,0 +1,8 @@
+{
+  "checks": [
+    "boundary newborn joins the sound conversion",
+    "new map updates the sound field width",
+    "20 tile projection uses scaled center/right split"
+  ],
+  "failures": []
+}

@@ -1,5 +1,6 @@
 class_name CityDemoView
 extends Control
+const Era = preload("res://scripts/city/city_era.gd")
 const RingOverlay = preload("res://scripts/visual/ring_overlay.gd")
 const Landscape = preload("res://scripts/visual/community_landscape.gd")
 const Diagnosis = preload("res://scripts/visual/boundary_diagnosis.gd")
@@ -59,6 +60,8 @@ var landscape_sprites: Dictionary = {}
 var landscape_key := ""
 var terrain_cfg: Dictionary
 var map_size := Vector2i.ZERO
+var map_offset := Vector2i.ZERO
+var era_mask_seen: Dictionary = {}
 var shadow_layer: CityShadowLayer
 var buildings: Node2D
 var label_layer: Control
@@ -77,6 +80,8 @@ func _ready() -> void:
 	clip_contents = true
 	focus_mode = Control.FOCUS_ALL
 	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://资源/Demo城市/manifest.json"))
+	var era_manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://资源/时代城市/manifest.json"))
+	manifest["entries"].append_array(era_manifest["entries"])
 	for entry in manifest["entries"]:
 		entries[entry["id"]] = entry
 		if entry["category"] == "tree": tree_ids.append(entry["id"])
@@ -88,6 +93,14 @@ func _ready() -> void:
 	shadow_layer = ShadowLayer.new()
 	shadow_layer.name = "CityGroundShadows"
 	add_child(shadow_layer)
+	# Loading era textures and decoding ground masks belongs before playback.
+	for entry in era_manifest["entries"]:
+		var path := "res://"+str(entry["texture"])
+		textures[path] = load(path)
+		for kind in ["shadow","contact"]:
+			path = "res://"+str(entry[kind+"_texture"])
+			var mask: Texture2D = load(path)
+			shadow_layer.mask_images[path] = mask.get_image()
 	buildings = Node2D.new()
 	buildings.y_sort_enabled = true
 	buildings.name = "CityBuildings"
@@ -114,11 +127,11 @@ func _view_origin() -> Vector2:
 	return Vector2(size.x*0.5,float(camera_cfg["origin_y"]))+view_pan
 
 func point(cell: Vector2i) -> Vector2:
-	return _view_origin()+Vector2((cell.x-cell.y)*float(cfg["tile_half_width"]),(cell.x+cell.y)*float(cfg["tile_half_height"]))*view_zoom
+	return _view_origin()+Vector2((cell.x-cell.y)*float(cfg["tile_half_width"]),(cell.x+cell.y-map_offset.x-map_offset.y)*float(cfg["tile_half_height"]))*view_zoom
 
 func cell_at(position: Vector2) -> Vector2i:
 	var p := (position-_view_origin())/view_zoom
-	return Vector2i(roundi((p.x/float(cfg["tile_half_width"])+p.y/float(cfg["tile_half_height"]))*0.5),roundi((p.y/float(cfg["tile_half_height"])-p.x/float(cfg["tile_half_width"]))*0.5))
+	return Vector2i(roundi((p.x/float(cfg["tile_half_width"])+p.y/float(cfg["tile_half_height"]))*0.5),roundi((p.y/float(cfg["tile_half_height"])-p.x/float(cfg["tile_half_width"]))*0.5))+map_offset
 
 func zoom_at(position: Vector2, requested: float) -> void:
 	zoom_from = view_zoom
@@ -221,13 +234,13 @@ func _gui_input(event: InputEvent) -> void:
 			return
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and tread_start.x >= 0:
 			var end := cell_at(event.position)
-			if event.position.y >= float(camera_cfg["header_height"]) and Roads.valid(tread_start,end): tread_selected.emit(tread_start,end)
+			if event.position.y >= float(camera_cfg["header_height"]) and Roads.valid(tread_start,end,session.growth_values["city"]): tread_selected.emit(tread_start,end)
 			tread_start = Vector2i(-1,-1)
 			accept_event()
 			return
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed and draft_start.x >= 0:
 			var end := cell_at(event.position)
-			if event.position.y >= float(camera_cfg["header_height"]) and end.x >= 0 and end.y >= 0 and end.x < 16 and end.y < 16 and end != draft_start:
+			if event.position.y >= float(camera_cfg["header_height"]) and end.x >= 0 and end.y >= 0 and end.x < map_size.x and end.y < map_size.y and end != draft_start:
 				draft_requested.emit(draft_start,end)
 			draft_start = Vector2i(-1,-1)
 			accept_event()
@@ -241,11 +254,11 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var cell := cell_at(event.position)
 		if tread_mode:
-			if cell.x >= 0 and cell.y >= 0 and cell.x < 16 and cell.y < 16: tread_start = cell
+			if cell.x >= 0 and cell.y >= 0 and cell.x < map_size.x and cell.y < map_size.y: tread_start = cell
 			accept_event()
 			return
 		if draft_mode:
-			if cell.x >= 0 and cell.y >= 0 and cell.x < 16 and cell.y < 16: draft_start = cell
+			if cell.x >= 0 and cell.y >= 0 and cell.x < map_size.x and cell.y < map_size.y: draft_start = cell
 			accept_event()
 			return
 		if release_mode:
@@ -272,7 +285,7 @@ func _gui_input(event: InputEvent) -> void:
 						district_clicked.emit(picked)
 						accept_event()
 						return
-		if cell.x < 0 or cell.x >= 16 or cell.y < 0 or cell.y >= 16: return
+		if cell.x < 0 or cell.x >= map_size.x or cell.y < 0 or cell.y >= map_size.y: return
 		for d in session.city:
 			if Schema.cell(d) == cell:
 				district_clicked.emit(d["district_id"])
@@ -343,12 +356,22 @@ func _draw_diagnosis() -> void:
 			draw_polyline(diagnosis_points(edge,1),color,width,true)
 		else: draw_polyline(diagnosis_points(edge),color,width,true)
 
+func _land_progress() -> float:
+	if session == null or session.run.get("phase","") != "transition" or map_offset == Vector2i.ZERO: return 1.0
+	var at: float = get_node("/root/AudioClock").renderer.transport.audible_frame
+	return smoothstep(0.0,1.0,(at-int(session.run["transition"]["start"])-session.transport.bar_frame(5))/session.transport.bar_frame(1))
+
 func ground_shape(half: Vector2) -> PackedVector2Array:
-	return PackedVector2Array([
+	var shape := PackedVector2Array([
 		point(Vector2i.ZERO)+Vector2(0,-half.y),
 		point(Vector2i(map_size.x-1,0))+Vector2(half.x,0),
 		point(map_size-Vector2i.ONE)+Vector2(0,half.y),
 		point(Vector2i(0,map_size.y-1))+Vector2(-half.x,0)])
+	var progress := _land_progress()
+	if progress < 1.0:
+		var old := PackedVector2Array([point(Vector2i(2,2))+Vector2(0,-half.y),point(Vector2i(17,2))+Vector2(half.x,0),point(Vector2i(17,17))+Vector2(0,half.y),point(Vector2i(2,17))+Vector2(-half.x,0)])
+		for index in range(4): shape[index] = old[index].lerp(shape[index],progress)
+	return shape
 
 func _sync_landscape(audible: float, gray: float) -> void:
 	var key := "%d:%d" % [session.get_instance_id(),session.phrase_index]
@@ -411,6 +434,23 @@ func _draw_ground_base(shape: PackedVector2Array) -> void:
 	draw_colored_polygon(PackedVector2Array([shape[1],shape[2],shape[2]+drop,shape[1]+drop]),Color(terrain_cfg["side_dark"]))
 	draw_colored_polygon(PackedVector2Array([shape[2],shape[3],shape[3]+drop,shape[2]+drop]),Color(terrain_cfg["side_light"]))
 
+func _draw_era_wave(half: Vector2) -> void:
+	if reduced_motion or session == null or session.run.get("phase","") != "transition": return
+	var transition: Dictionary = session.run["transition"]
+	var clock := get_node("/root/AudioClock")
+	var at: float = clock.renderer.transport.audible_frame
+	var radius: float = (at-int(transition["start"])-session.transport.bar_frame(3))/session.transport.beat_frame(1)
+	if radius < 0.0 or radius > 15.0: return
+	var origin := Vector2i(int(transition["origin"][0]),int(transition["origin"][1]))+map_offset
+	for y in range(map_size.y):
+		for x in range(map_size.x):
+			var cell := Vector2i(x,y)
+			var distance := absi(x-origin.x)+absi(y-origin.y)
+			var alpha := clampf(1.0-absf(radius-distance),0.0,1.0)*0.45
+			if alpha <= 0.0: continue
+			var center := point(cell)
+			draw_colored_polygon(PackedVector2Array([center+Vector2(-half.x,0),center+Vector2(0,-half.y),center+Vector2(half.x,0),center+Vector2(0,half.y)]),Color(0.90,0.82,0.65,alpha))
+
 func _draw() -> void:
 	if cfg == null: return
 	var half := Vector2(float(cfg["tile_half_width"]),float(cfg["tile_half_height"]))*view_zoom
@@ -419,12 +459,12 @@ func _draw() -> void:
 	var occupied: Dictionary = {}
 	if session != null:
 		for d in session.city: occupied[Schema.cell(d)] = d
-	for y in range(16):
-		for x in range(16):
+	for y in range(map_size.y):
+		for x in range(map_size.x):
 			var cell := Vector2i(x,y)
 			var center := point(cell)
 			var vertices := PackedVector2Array([center+Vector2(-half.x,0),center+Vector2(0,-half.y),center+Vector2(half.x,0),center+Vector2(0,half.y)])
-			var color := Color("e1e8ec") if (x+y)%2 == 0 else Color("e4eaee")
+			var color := (Color("ebe6dc") if (x+y)%2 == 0 else Color("efe9df")) if int(session.run.get("era",0)) == 1 else (Color("e1e8ec") if (x+y)%2 == 0 else Color("e4eaee"))
 			if occupied.has(cell) and not str(occupied[cell].get("anchor_id","")).is_empty():
 				color = Color("dde2d6") if occupied[cell]["type"] == "residential" else Color("d8e3e7")
 				if occupied[cell].get("is_anchor",false): color = Color("e8ddc3")
@@ -432,6 +472,7 @@ func _draw() -> void:
 				color = Color("d3e0df")
 				if release_mode and not session.release_feedback(release_midi,cell)["allowed"]: color = Color("dfc9c7")
 			if cell == preview_cell: color = Color("e8d4bb")
+			if map_offset != Vector2i.ZERO and (x < 2 or y < 2 or x >= 18 or y >= 18): color.a *= _land_progress()
 			var pending_here: bool = session != null and session.pending.get("verb","") == "release" and session.pending["target"] == [cell.x,cell.y]
 			if pending_here: color = Color("e8d4bb")
 			draw_colored_polygon(vertices,color)
@@ -439,6 +480,7 @@ func _draw() -> void:
 	ground.append(ground[0])
 	draw_polyline(ground,Color(terrain_cfg["rim_color"]),float(terrain_cfg["rim_width_px"])*view_zoom,true)
 	if session == null: return
+	_draw_era_wave(half)
 	_draw_landscape_ground()
 	_draw_diagnosis()
 	if session.pending.get("verb","") == "release":
@@ -452,7 +494,7 @@ func _draw() -> void:
 	if session.pending.get("verb","") == "draft":
 		var band: Dictionary = session.pending
 		_draw_band(Vector2i(band["start"][0],band["start"][1]),Vector2i(band["end"][0],band["end"][1]),Color("ba9673"))
-	if draft_start.x >= 0 and hover_cell.x >= 0 and hover_cell.y >= 0 and hover_cell.x < 16 and hover_cell.y < 16:
+	if draft_start.x >= 0 and hover_cell.x >= 0 and hover_cell.y >= 0 and hover_cell.x < map_size.x and hover_cell.y < map_size.y:
 		_draw_band(draft_start,hover_cell,Color("ba9673"))
 	var estate_forms: Dictionary = {}
 	var rank := {"胚":0,"群":1,"腔":2,"央":3}
@@ -478,7 +520,7 @@ func _draw() -> void:
 		var a := Vector2i(candidate["start"][0],candidate["start"][1])
 		var b := Vector2i(candidate["end"][0],candidate["end"][1])
 		if not Roads.blocked(session.road_marks,a,b): _draw_tread_edge(a,b,Roads.count(session.road_marks,a,b),Color("ba9673"))
-	if tread_start.x >= 0 and Roads.valid(tread_start,hover_cell): _draw_tread_edge(tread_start,hover_cell,0,Color("ba9673"))
+	if tread_start.x >= 0 and Roads.valid(tread_start,hover_cell,session.growth_values["city"]): _draw_tread_edge(tread_start,hover_cell,0,Color("ba9673"))
 	# Highlight the estate perimeter once instead of drawing a ring around every house.
 	var edge_directions := [Vector2i.LEFT,Vector2i.UP,Vector2i.RIGHT,Vector2i.DOWN]
 	var edge_vertices := [Vector2(-half.x,0),Vector2(0,-half.y),Vector2(half.x,0),Vector2(0,half.y)]
@@ -501,6 +543,8 @@ func _draw() -> void:
 
 func _process(delta: float) -> void:
 	if session == null or buildings == null: return
+	map_size = Vector2i(int(session.growth_values["city"]["width"]),int(session.growth_values["city"]["height"]))
+	map_offset = Vector2i(2,2) if int(session.run.get("era",1)) == 2 else Vector2i.ZERO
 	_sample_camera(delta)
 	hover_cell = cell_at(pointer_position) if pointer_inside and not pan_active else Vector2i(-1,-1)
 	if pan_active and not Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE): pan_active = false
@@ -535,6 +579,10 @@ func _process(delta: float) -> void:
 				sprite.progress = 1.0
 				sprite.material.set_shader_parameter("growth_progress",1.0)
 		var asset_id: String = d.get("manifest_id","")
+		var era_at := -1
+		if session.run.get("phase","") == "transition" and not d.get("is_anchor",false) and not d.get("landmark",false) and not d.get("visitor",false):
+			era_at = Era.wave_frame(d,session.run["transition"],session.transport)
+			if audible >= era_at: asset_id = Era.asset_id(str(d["type"]),2)
 		if forms.get(id,"") != form or appearance.get(id,"") != asset_id:
 			var old_asset: String = appearance.get(id,"")
 			appearance[id] = asset_id
@@ -547,7 +595,7 @@ func _process(delta: float) -> void:
 			else:
 				var candidates: Array = by_type[d["type"]]
 				var index := 0 if form == "胚" else (1 if form == "群" else 2)
-				var entry: Dictionary = entries[d.get("manifest_id",candidates[mini(index,candidates.size()-1)])]
+				var entry: Dictionary = entries[asset_id if not asset_id.is_empty() else candidates[mini(index,candidates.size()-1)]]
 				var path: String = "res://"+str(entry["texture"])
 				if not textures.has(path): textures[path] = load(path)
 				sprite.texture = textures[path]
@@ -568,6 +616,9 @@ func _process(delta: float) -> void:
 				if entry["category"] == "compound" and not old_asset.is_empty() and old_asset != asset_id:
 					var event: Dictionary = events.get(id,events.get(d.get("visual_partner",""),{}))
 					sprite.begin_at(int(event.get("frame",int(session.last_result.get("frame",0))+clock.renderer.transport.beat_frame(1))))
+		if era_at >= 0 and audible >= era_at and era_mask_seen.get(id,-1) != era_at:
+			era_mask_seen[id] = era_at
+			if not reduced_motion: sprites[id].begin_at(era_at)
 		if events.has(id) and event_seen.get(id,-1) != events[id]["frame"]:
 			event_seen[id] = events[id]["frame"]
 			sprites[id].begin_at(int(events[id]["frame"]))

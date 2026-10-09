@@ -2,6 +2,8 @@ class_name DistrictSynth
 extends RefCounted
 ## Software buses expose separate district layers before their additive Master sum.
 
+const EraVoice = preload("res://scripts/audio/era_voice.gd")
+const Era = preload("res://scripts/city/city_era.gd")
 const Stage = preload("res://scripts/audio/growth_voice.gd")
 const Values = preload("res://scripts/spec_values.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
@@ -10,12 +12,14 @@ const Roads = preload("res://scripts/city/city_roads.gd")
 var road_marks: Dictionary = {}
 var values: Dictionary
 var districts: Array
+var map_width := 16
 var active_layers: Array[String] = ["drone", "rhythm", "ornament"]
 var tables: Dictionary = {}
 var routing: Array[Dictionary] = []
 # Demo opt-in; P0 listening and calibration retain the original per-entity path.
 var voice_grouping := false
 var voice_group_stats: Dictionary = {}
+var era_score: Dictionary = {}
 var gain := 1.0
 var solo_id := ""
 var muted: Dictionary = {}
@@ -61,6 +65,8 @@ func _init(city: Array, marks: Dictionary = {}) -> void:
 	_prepare_envelopes(int(values["timing"]["sample_rate"]))
 	Stage.prepare(values,int(values["timing"]["sample_rate"]))
 	districts = city.duplicate(true)
+	map_width = 16
+	for d in districts: map_width = maxi(map_width,16+4*maxi(0,int(d.get("era",1))-1))
 	for midi in values["frequencies"]:
 		frequencies[int(midi)] = float(values["frequencies"][midi])
 	var size := int(values["synthesis"]["wavetable_size"])
@@ -77,12 +83,17 @@ func _init(city: Array, marks: Dictionary = {}) -> void:
 				sample += sin(TAU * index * (harmonic + 1) / size) * float(partials[harmonic])
 			table[index] = sample / weight
 		tables[type] = table
+	for type in values["voices"]: EraVoice.table(type,2,size)
+	# Warm the two expanded pitches before audio playback.
+	for midi in [53,59]:
+		for offset in values["stage_audio"]["ornament_intervals"]: Stage.waveform(midi+int(offset),int(values["timing"]["sample_rate"]),values["stage_audio"],"ornament")
+		Stage.waveform(midi+int(values["stage_audio"]["bell_interval"]),int(values["timing"]["sample_rate"]),values["stage_audio"],"bell")
 	for district in districts:
 		var id := str(district["district_id"])
 		routing.append({"id": id, "type": district["type"], "base_midi": district["current_midi"],
 			"rhythm_steps": PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
 			"phase_key": "_phase_" + id, "highpass_key": "_highpass_" + id,
-			"ring":{},"stage":Stage.initial(district),"table": tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
+			"ring":{},"tone":int(district.get("era",0)),"stage":Stage.initial(district),"table": _era_table(district),"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
 			"stereo": _stereo_for(district)})
 
 func _append_district(district: Dictionary) -> void:
@@ -90,17 +101,59 @@ func _append_district(district: Dictionary) -> void:
 	routing.append({"id":id,"type":district["type"],"base_midi":district["current_midi"],
 		"rhythm_steps":PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
 		"phase_key":"_phase_"+id,"highpass_key":"_highpass_"+id,
-		"ring":{},"stage":Stage.initial(district),"table":tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
+		"ring":{},"tone":int(district.get("era",0)),"stage":Stage.initial(district),"table":_era_table(district),"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
 		"stereo":_stereo_for(district)})
+
+func _era_table(district: Dictionary) -> PackedFloat32Array:
+	return EraVoice.table(str(district["type"]),2,int(values["synthesis"]["wavetable_size"])) if int(district.get("era",0)) == 2 else tables[district["type"]]
+
+func begin_era_transition(transition: Dictionary, transport: Object) -> void:
+	var motif: Array = []
+	for d in districts:
+		if d["type"] != "industrial" and motif.size() < 4: motif.append({"id":d["district_id"],"midi":d["current_midi"]})
+	era_score = {"start":transition["start"],"rate":transport.sample_rate,"motif":motif}
+	for route in routing:
+		var district: Dictionary = {}
+		for d in districts:
+			if d["district_id"] == route["id"]: district = d
+		if district.get("landmark",false): continue
+		route["era_change"] = {"frame":Era.wave_frame(district,transition,transport),"duration":transport.beat_frame(4),"era":2}
+		route["era_table"] = EraVoice.table(str(route["type"]),2,int(values["synthesis"]["wavetable_size"]))
+
+func era_snapshot() -> Dictionary:
+	var result: Dictionary = {}
+	for route in routing:
+		if route.has("era_change"): result[route["id"]] = route["era_change"].duplicate(true)
+	return result
+
+func restore_eras(saved: Dictionary) -> void:
+	for route in routing:
+		if not saved.has(route["id"]): continue
+		route["era_change"] = saved[route["id"]].duplicate(true)
+		route["table"] = tables[route["type"]]
+		route["tone"] = 1
+		route["era_table"] = EraVoice.table(str(route["type"]),2,int(values["synthesis"]["wavetable_size"]))
+
+func _route_wave(route: Dictionary, phase: float, at: int) -> float:
+	if not route.has("era_change"): return _table_wave(route["table"],phase)
+	var change: Dictionary = route["era_change"]
+	var blend := clampf(float(at-int(change["frame"]))/float(change["duration"]),0.0,1.0)
+	if blend <= 0.0: return _table_wave(route["table"],phase)
+	if blend >= 1.0: return _table_wave(route["era_table"],phase)
+	var old := cos(PI*blend/2.0)
+	var next := sin(PI*blend/2.0)
+	# Correlated oscillators share the fundamental: normalise the equal-power pair.
+	return (_table_wave(route["table"],phase)*old+_table_wave(route["era_table"],phase)*next)/(old+next)
 
 func _pan_for(district: Dictionary) -> float:
 	# A5 supplies the three equal-power pan values; A16 maps them to the
 	# horizontal coordinate of the isometric projection, x-y, rather than x.
 	var projection := Schema.cell(district).x-Schema.cell(district).y
 	var regions: Array = values["synthesis"]["pan_regions"]
-	if projection <= -5:
+	var threshold := roundi(5.0*(map_width-1)/15.0)
+	if projection <= -threshold:
 		return float(regions[0][2])
-	if projection >= 5:
+	if projection >= threshold:
 		return float(regions[2][2])
 	return float(regions[1][2])
 
@@ -181,7 +234,7 @@ func _rhythm(route: Dictionary, phase: float, at: int, rate: int, state: Diction
 	var envelope: PackedFloat32Array = envelopes[rate][route["type"]]
 	var fixture: Dictionary = state.get("_rhythm_fixture_"+str(route["id"]),{})
 	var envelope_index := at % envelope.size() if fixture.is_empty() else _fixture_rhythm_index(fixture,at,envelope.size())
-	var pulse := _table_wave(route["table"], phase * rhythm_multiplier) * envelope[envelope_index]
+	var pulse := _route_wave(route,phase*rhythm_multiplier,at) * envelope[envelope_index]
 	if route["type"] == "industrial":
 		var key: String = route["highpass_key"]
 		var previous: Vector2 = state.get(key, Vector2.ZERO)
@@ -193,7 +246,7 @@ func _rhythm(route: Dictionary, phase: float, at: int, rate: int, state: Diction
 		var blend := ring_level(ring,at,rate)
 		if blend > 0.0:
 			var table: PackedFloat32Array = envelopes[rate]["_ring"][int(ring["index"])]
-			var ring_pulse := _table_wave(route["table"],phase*rhythm_multiplier)*table[posmod(at,table.size())]
+			var ring_pulse := _route_wave(route,phase*rhythm_multiplier,at)*table[posmod(at,table.size())]
 			pulse = pulse*(cos(PI*blend/2.0) if blend < 1.0 else 0.0)+ring_pulse*(sin(PI*blend/2.0) if blend < 1.0 else 1.0)
 	return pulse * rhythm_gain
 
@@ -228,7 +281,7 @@ func _voice_layers(route: Dictionary, state: Dictionary, at: int, rate: int) -> 
 	var phase_key: String = route["phase_key"]
 	var phase := float(state.get(phase_key, 0.0))
 	var midi := int(state.get(route["id"], route["base_midi"]))
-	var drone := _table_wave(route["table"], phase) * drone_gain*float(route["level"])
+	var drone := _route_wave(route,phase,at) * drone_gain*float(route["level"])
 	var rhythm := _rhythm(route, phase, at, rate, state) if active_layers.has("rhythm") and not route["anchor"] and Stage.rhythm_level(route["stage"],at,rate,values) > 0.0 else 0.0
 	rhythm *= float(route["level"])*Stage.rhythm_level(route["stage"],at,rate,values)
 	_last_ornament = Stage.sample(route["stage"],midi,at,rate,values)*float(route["level"])*gain if active_layers.has("ornament") else 0.0
@@ -296,7 +349,7 @@ func _mix_frame(state: Dictionary, at: int, rate: int) -> Vector2:
 		if factor != 1.0:
 			sample += controlled_drone*(factor-1.0)
 		_guard_step(state,raw_drone,raw_other,rate)
-	return sample
+	return sample+_era_cue(at,rate)
 
 func _guard_step(state: Dictionary, drone: Vector2, other: Vector2, rate: int) -> void:
 	var count := int(state.get("_guard_count",0))+1
@@ -426,9 +479,27 @@ func rhythm_level(at: int, rate: int) -> float:
 	var duration := float(values["mixing"]["duck_release_seconds"])*rate
 	return lerpf(duck_level,1.0,clampf(float(at-duck_release_at)/duration,0.0,1.0))
 
+func _era_cue(at: int, rate: int) -> Vector2:
+	if era_score.is_empty() or not solo_id.is_empty(): return Vector2.ZERO
+	var elapsed := at-int(era_score["start"])
+	if elapsed < 0 or elapsed >= 16*rate: return Vector2.ZERO
+	var beat := int(rate*0.5)
+	var tick := elapsed/beat
+	var motif: Array = era_score["motif"]
+	if motif.is_empty() or tick not in [4,6,8,10,24,28]: return Vector2.ZERO
+	var note: Dictionary = motif[posmod(tick/2,motif.size())]
+	if muted.get(note["id"],false): return Vector2.ZERO
+	var seconds := float(elapsed-tick*beat)/rate
+	var envelope := minf(1.0,seconds/0.02)*exp(-seconds/(0.12 if tick < 24 else 0.23))
+	var hz := frequency(int(note["midi"])+(12 if tick >= 24 else 0))
+	var sample := sin(TAU*hz*seconds)*envelope*0.035*gain
+	return Vector2.ONE*sample*sqrt(0.5)
+
 func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
-	if voice_grouping: return _render_grouped_block(state,start,count,rate)
-	return _render_unmerged_block(state,start,count,rate)
+	var result := _render_grouped_block(state,start,count,rate) if voice_grouping else _render_unmerged_block(state,start,count,rate)
+	if not era_score.is_empty() and start+count > int(era_score["start"]) and start < int(era_score["start"])+16*rate:
+		for index in range(count): result[index] += _era_cue(start+index,rate)
+	return result
 
 func _render_unmerged_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
 	_prepare_envelopes(rate)
@@ -506,13 +577,13 @@ func _render_unmerged_block(state: Dictionary, start: int, count: int, rate: int
 			var at := start+offset
 			var position := fposmod(phase,1.0)*size
 			var index := int(position)
-			var drone := lerpf(table[index],table[(index+1)%size],position-index)*drone_gain*voice_level if drone_enabled else 0.0
+			var drone := (_route_wave(route,phase,at) if route.has("era_change") else lerpf(table[index],table[(index+1)%size],position-index))*drone_gain*voice_level if drone_enabled else 0.0
 			var rhythm := 0.0
 			if rhythm_enabled and not is_anchor and ((stage_level if fade.is_empty() else fade[offset]) > 0.0):
 				position = fposmod(phase*rhythm_multiplier,1.0)*size
 				index = int(position)
 				var envelope_index := at%envelope_count if fixture.is_empty() else _fixture_rhythm_index(fixture,at,envelope_count)
-				var wave := lerpf(table[index],table[(index+1)%size],position-index)
+				var wave := _route_wave(route,phase*rhythm_multiplier,at) if route.has("era_change") else lerpf(table[index],table[(index+1)%size],position-index)
 				var pulse := wave*envelope[envelope_index]
 				var blend := ring_blend if ring_blends.is_empty() else ring_blends[offset]
 				if blend > 0.0:
@@ -566,10 +637,20 @@ func _render_unmerged_block(state: Dictionary, start: int, count: int, rate: int
 			_guard_step(state,raw_drone[offset],raw_other[offset],rate)
 	return block
 
-func _oscillator_block(route: Dictionary, state: Dictionary, count: int, rate: int) -> Dictionary:
+func _tone_signature(route: Dictionary, start: int, count: int) -> Array:
+	var change: Dictionary = route.get("era_change",{})
+	if change.is_empty(): return [route.get("tone",0)]
+	if start >= int(change["frame"])+int(change["duration"]): return [2]
+	if start+count <= int(change["frame"]): return [route.get("tone",0)]
+	return [route.get("tone",0),change]
+
+func _oscillator_block(route: Dictionary, state: Dictionary, count: int, rate: int, start: int = 0) -> Dictionary:
 	var phase := float(state.get(route["phase_key"],0.0))
 	var increment := frequency(int(state.get(route["id"],route["base_midi"])))/rate
 	var table: PackedFloat32Array = route["table"]
+	var change: Dictionary = route.get("era_change",{})
+	var crossing := not change.is_empty() and start+count > int(change["frame"]) and start < int(change["frame"])+int(change["duration"])
+	if not change.is_empty() and start >= int(change["frame"])+int(change["duration"]): table = route["era_table"]
 	var size := table.size()
 	var drone := PackedFloat64Array()
 	var rhythm := PackedFloat64Array()
@@ -579,11 +660,11 @@ func _oscillator_block(route: Dictionary, state: Dictionary, count: int, rate: i
 	for offset in range(count):
 		var position := fposmod(phase,1.0)*size
 		var index := int(position)
-		drone[offset] = lerpf(table[index],table[(index+1)%size],position-index)
+		drone[offset] = _route_wave(route,phase,start+offset) if crossing else lerpf(table[index],table[(index+1)%size],position-index)
 		if rhythm_enabled:
 			position = fposmod(phase*rhythm_multiplier,1.0)*size
 			index = int(position)
-			rhythm[offset] = lerpf(table[index],table[(index+1)%size],position-index)
+			rhythm[offset] = _route_wave(route,phase*rhythm_multiplier,start+offset) if crossing else lerpf(table[index],table[(index+1)%size],position-index)
 		phase = fposmod(phase+increment,1.0)
 	return {"drone":drone,"rhythm":rhythm,"phase":phase}
 
@@ -731,7 +812,7 @@ func _render_grouped_block(state: Dictionary, start: int, count: int, rate: int)
 		var emphasis := emphasis_level if emphasized_id == id else 1.0
 		# Exact binary signature, including individual filter state and event schedule.
 		# Independent controls/silence split groups; phase/filter remain per entity.
-		var key := var_to_bytes([route["type"],state.get(route["phase_key"],0.0),int(state.get(id,route["base_midi"])),
+		var key := var_to_bytes([route["type"],_tone_signature(route,start,count),state.get(route["phase_key"],0.0),int(state.get(id,route["base_midi"])),
 			route["level"],route["anchor"],stage,route["ring"],state.get("_rhythm_fixture_"+id,{}),
 			state.get(route["highpass_key"],Vector2.ZERO),state.get("_gray_"+id,Vector3.ZERO),disabled,silence_end,emphasis]).hex_encode()
 		if not groups.has(key): groups[key] = {"first":route,"members":[],"stereo":Vector2.ZERO}
@@ -743,8 +824,8 @@ func _render_grouped_block(state: Dictionary, start: int, count: int, rate: int)
 		var disabled := bool(muted.get(id,false)) or (not solo_id.is_empty() and solo_id != id)
 		var silence_end := int(silent_until.get(id,0))
 		var emphasis := emphasis_level if emphasized_id == id else 1.0
-		var oscillator_key := var_to_bytes([route["type"],state.get(route["phase_key"],0.0),int(state.get(id,route["base_midi"]))]).hex_encode()
-		if not oscillators.has(oscillator_key): oscillators[oscillator_key] = _oscillator_block(route,state,count,rate)
+		var oscillator_key := var_to_bytes([route["type"],_tone_signature(route,start,count),state.get(route["phase_key"],0.0),int(state.get(id,route["base_midi"]))]).hex_encode()
+		if not oscillators.has(oscillator_key): oscillators[oscillator_key] = _oscillator_block(route,state,count,rate,start)
 		var voice := _voice_dsp_block(route,state,start,count,rate,gray_active,gray_levels,oscillators[oscillator_key])
 		var stereo: Vector2 = group["stereo"]
 		var drones: PackedFloat64Array = voice["drone"]
@@ -790,6 +871,8 @@ func _render_grouped_block(state: Dictionary, start: int, count: int, rate: int)
 func update_city(city: Array, state: Dictionary, marks: Dictionary = {}, events: Array = []) -> void:
 	road_marks = marks.duplicate(true)
 	districts = city.duplicate(true)
+	map_width = 16
+	for d in districts: map_width = maxi(map_width,16+4*maxi(0,int(d.get("era",1))-1))
 	_rebuild_assist_neighbors(city)
 	for district in city:
 		var id: String = district["district_id"]

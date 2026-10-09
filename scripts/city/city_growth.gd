@@ -155,7 +155,7 @@ static func advance(session: Object, at: int) -> Array[Dictionary]:
 	var anchors: Array = session.city.filter(func(d: Dictionary) -> bool: return d.get("is_anchor",false))
 	for anchor in anchors:
 		if at < int(session.draft_pause_until): break
-		if session.city.size() >= int(cfg["max_entities"]):
+		if session.city.size() >= int(session.growth_values["growth"]["max_entities"]):
 			break
 		var family := connected(session.city,anchor["district_id"],session.road_marks)
 		var occupied: Dictionary = {}
@@ -231,6 +231,8 @@ static func advance(session: Object, at: int) -> Array[Dictionary]:
 		if next != old:
 			events.append({"district_id":d["district_id"],"kind":"upgrade","frame":at+session.transport.beat_frame(1),"form":next})
 	assign_assets(session.city,session.road_marks)
+	for d in session.city:
+		if not d.has("era") and not session.run.is_empty(): d["era"] = int(session.run["era"])
 	return events
 
 static func stage_gaps(info: Dictionary, index: int) -> PackedStringArray:

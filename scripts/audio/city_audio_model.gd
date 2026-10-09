@@ -18,7 +18,7 @@ func _init(city_session: CityInterventions) -> void:
 	session = city_session
 	synth = Synth.new(session.city,session.road_marks)
 	synth.set_gray(bool(session.lifecycle["gray"]),session.transport.phrase_frame(session.phrase_index))
-	next_boundary = session.transport.phrase_frame(session.phrase_index+1)
+	next_boundary = session.next_city_boundary()
 
 func _mix_frame(state: Dictionary, at: int, rate: int) -> Vector2:
 	if at == next_boundary:
@@ -41,6 +41,7 @@ func _settle_for_render(state: Dictionary, at: int) -> void:
 	session.settle(at)
 	var events: Array = session.last_result.get("growth_events",[])
 	synth.update_city(session.city,state,session.road_marks,events)
+	if session.last_result.get("era_event","") == "departure": synth.begin_era_transition(session.run["transition"],session.transport)
 	synth.sync_rings(session.rings,at)
 	for event in session.last_result.get("ring_events",[]):
 		ring_history.append({"event":event.duplicate(true),"district":session._district(str(event["district_id"])).duplicate(true),"anchor_midi":session._district(str(event["district_id"]))["current_midi"],"stage_voice":false})
@@ -52,7 +53,7 @@ func _settle_for_render(state: Dictionary, at: int) -> void:
 			"anchor_midi":int(anchor.get("current_midi",district["current_midi"])),"stage_voice":Synth.Stage.applies(district)})
 	synth.set_gray(bool(session.lifecycle["gray"]),at)
 	synth.silent_until = session.silent_until.duplicate(true)
-	next_boundary = session.transport.phrase_frame(session.phrase_index+1)
+	next_boundary = session.next_city_boundary()
 
 func presentation_session(audible_frame: float) -> CityInterventions:
 	while not presentation_history.is_empty() and int(presentation_history[0]["frame"]) <= audible_frame:
@@ -63,7 +64,7 @@ func presentation_session(audible_frame: float) -> CityInterventions:
 		return session
 	var entry: Dictionary = presentation_history[0]
 	if presentation_copy == null or presentation_copy_frame != int(entry["frame"]):
-		presentation_copy = Session.new(entry["before"]["city"],session.rng.seed_hex)
+		presentation_copy = load("res://scripts/proposals/city_interventions.gd").new(entry["before"]["city"],session.rng.seed_hex,{},entry["before"].get("run",{}))
 		presentation_copy.restore(entry["before"])
 		presentation_copy_frame = int(entry["frame"])
 	# A newly submitted next intervention is intentionally visible as a preview.
@@ -74,7 +75,7 @@ func presentation_session(audible_frame: float) -> CityInterventions:
 func snapshot() -> Dictionary:
 	return {"session":session.snapshot(),"next_boundary":next_boundary,
 		"presentation_history":presentation_history.duplicate(true),
-		"growth_history":growth_history.duplicate(true),"ring_history":ring_history.duplicate(true),"ring_routes":synth.ring_snapshot(),"stage_routes":synth.stage_snapshot(),
+		"growth_history":growth_history.duplicate(true),"ring_history":ring_history.duplicate(true),"ring_routes":synth.ring_snapshot(),"stage_routes":synth.stage_snapshot(),"era_routes":synth.era_snapshot(),"era_score":synth.era_score.duplicate(true),
 		"active_layers":synth.active_layers.duplicate(),"gain":synth.gain,"voice_grouping":synth.voice_grouping,
 		"solo_id":synth.solo_id,"muted":synth.muted.duplicate(true),
 		"silent_until":synth.silent_until.duplicate(true),"ducking":synth.ducking,
@@ -90,6 +91,8 @@ func restore(saved: Dictionary) -> void:
 	synth = Synth.new(session.city,session.road_marks)
 	synth.restore_stages(saved.get("stage_routes",{}))
 	synth.restore_rings(saved.get("ring_routes",{}))
+	synth.restore_eras(saved.get("era_routes",{}))
+	synth.era_score = saved.get("era_score",{}).duplicate(true)
 	presentation_copy = null
 	presentation_copy_frame = -1
 	next_boundary = int(saved["next_boundary"])

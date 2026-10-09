@@ -1,6 +1,8 @@
 class_name P0Main
 extends Control
 
+const Era = preload("res://scripts/city/city_era.gd")
+const EraPresentation = preload("res://scripts/ui/era_presentation.gd")
 const Ring = preload("res://scripts/city/city_ring.gd")
 const Notice = preload("res://scripts/ui/formation_notice.gd")
 const Roads = preload("res://scripts/city/city_roads.gd")
@@ -57,6 +59,8 @@ var map_tool: OptionButton
 var tool_hint: Label
 var details_button: Button
 var formation_notice: Control
+var era_presentation: Control
+var era_display_key := ""
 var formation_button: CheckButton
 var diagnosis_button: CheckButton
 var reduced_motion_button: CheckButton
@@ -94,11 +98,14 @@ func _ready() -> void:
 			seed = arg.trim_prefix("--seed=")
 			daily = false
 	generation = Generator.new().generate(seed,daily)
-	model = Model.new(Session.new(generation["city"],generation["seed"],generation["rng"]))
+	var initial_session := Session.new(generation["city"],generation["seed"],generation["rng"])
+	if growth_demo: Era.enable(initial_session,"--era-preview" in OS.get_cmdline_user_args())
+	model = Model.new(initial_session)
 	model.synth.guard_enabled = true
 	model.synth.voice_grouping = growth_demo
 	model.session.growth_enabled = growth_demo
 	Growth.assign_assets(model.session.city)
+	Era.apply_assets(model.session.city)
 	_build_city_view()
 	clock = get_node("/root/AudioClock")
 	preview_clock = PreviewOutput.new()
@@ -106,6 +113,9 @@ func _ready() -> void:
 	add_child(preview_clock)
 	preview_clock.audition_finished.connect(_audition_finished)
 	_build_controls()
+	era_presentation = EraPresentation.new()
+	era_presentation.name = "EraPresentation"
+	add_child(era_presentation)
 	formation_notice = Notice.new()
 	formation_notice.name = "FormationNotice"
 	city_view.add_child(formation_notice)
@@ -117,7 +127,7 @@ func _ready() -> void:
 		city_view.focus_selected())
 	formation_button.toggled.connect(formation_notice.set_enabled)
 	if start_audio_on_ready:
-		calibration = Calibration.for_city(model.session.city)
+		calibration = Calibration.for_synth(model.synth) if growth_demo else Calibration.for_city(model.session.city)
 		model.synth.gain = float(calibration["gain"])
 		clock.start_output(model._mix_frame,model.synth.initial_state())
 	else:
@@ -176,8 +186,9 @@ func _button(text: String, node_name: String) -> Button:
 	return button
 
 func _build_controls() -> void:
-	_label("共鸣之城 · 生长 Demo","Title").add_theme_font_size_override("font_size",24)
+	_label("共鸣之城 · 从石到钟" if growth_demo else "共鸣之城 · P0","Title").add_theme_font_size_override("font_size",24)
 	city_summary = _label("城市先响着。","CitySummary")
+	if growth_demo: _label("本章目标：把三条大二度 / 小三度邻接调成协和，章末 R≥70。古典至少两章；第三章末保底跨越。","EraGoal")
 	beat_progress = ProgressBar.new()
 	beat_progress.show_percentage = false
 	beat_progress.custom_minimum_size.y = 8
@@ -218,10 +229,10 @@ func _build_controls() -> void:
 	controls.add_child(release_button)
 	release_pitch = OptionButton.new()
 	release_pitch.name = "ReleasePitch"
-	var names := ["C · 住宅共鸣","D · 住宅共鸣","E · 商业共鸣","G · 住宅共鸣","A · 住宅共鸣"]
-	for index in range(model.session.settings["allowed_pitches"].size()):
-		release_pitch.add_item(names[index])
-		release_pitch.set_item_metadata(index,model.session.settings["allowed_pitches"][index])
+	var names := {48:"C",50:"D",52:"E",53:"F",55:"G",57:"A",59:"B"}
+	for midi in model.session.settings["allowed_pitches"]:
+		release_pitch.add_item("%s · %s共鸣" % [names[int(midi)],"商业" if int(midi) == 52 else "住宅"])
+		release_pitch.set_item_metadata(release_pitch.item_count-1,int(midi))
 	controls.add_child(release_pitch)
 	draft_button = CheckButton.new()
 	draft_button.name = "DraftMode"
@@ -576,6 +587,12 @@ func _choice_changed() -> void:
 	_refresh_prediction()
 
 func _refresh_prediction() -> void:
+	if model.session.run.get("phase","") == "transition":
+		forecast_available = false
+		preview_button.disabled = true
+		confirm_button.disabled = true
+		forecast_summary.text = "时代跨越中，城市计时保持。"
+		return
 	var choice: Dictionary = tread_choice if city_view.tread_mode else selected_choice
 	preview_button.disabled = city_view.tread_mode or choice.is_empty()
 	confirm_button.text = "确认足迹：下一乐句落定" if city_view.tread_mode else "确认：下一乐句边界落定"
@@ -586,7 +603,7 @@ func _refresh_prediction() -> void:
 		return
 	var period := clock.renderer.transport.phrase_frame(1)
 	var on_grid := model.session.is_on_grid(clock.renderer.transport.audible_frame)
-	var key := "%s:%d:%d:%s" % [JSON.stringify(choice),model.session.phrase_index,clock.renderer.transport.rendered_frames/period,on_grid]
+	var key := "%s:%d:%d:%d:%s" % [JSON.stringify(choice),model.session.phrase_index,int(model.session.run.get("offset",0)),clock.renderer.transport.rendered_frames/period,on_grid]
 	if key == forecast_key: return
 	forecast_key = key
 	var expected := Preview.forecast(model.session,choice,clock.renderer.transport.rendered_frames,clock.renderer.transport.audible_frame)
@@ -629,6 +646,9 @@ func _process(_delta: float) -> void:
 	if model == null or closed:
 		return
 	var shown := _audible_session()
+	_refresh_era_ui(shown)
+	era_presentation.sample(shown,clock.renderer.transport.audible_frame,black_screen)
+	if not black_screen and not shown.run.is_empty(): $Background.color = Color("f4efe6") if int(shown.run["era"]) == 1 else Color("e8eef2")
 	formation_notice.consume(model.growth_history+model.ring_history,clock.renderer.transport.audible_frame)
 	formation_notice.tick(_delta,clock.renderer.transport.audible_frame,shown,black_screen,city_view.reduced_motion)
 	if worker != null and not worker.is_alive():
@@ -659,8 +679,11 @@ func _process(_delta: float) -> void:
 		audible_resonance = shown.harmony.resonance(shown.city,shown.harmony.adjacency(shown.city))
 	var resonance := audible_resonance
 	var bar := clock.renderer.transport.phrase_frame(1)
-	var remaining := float(bar)-fposmod(clock.renderer.transport.audible_frame,float(bar))
+	var remaining := maxf(0.0,float(shown.next_city_boundary())-clock.renderer.transport.audible_frame)
 	city_summary.text = "R %.0f · %d/%d 声部 · 第%d乐句\n下一次回应 %.1f 秒" % [resonance,shown.city.size(),model.session.growth_values["growth"]["max_entities"],shown.phrase_index+1,remaining/clock.renderer.transport.sample_rate]
+	if not shown.run.is_empty():
+		var run: Dictionary = shown.run
+		city_summary.text = "%s · 第%d/7乐章 · %d/12乐句\nR %.0f · 本章协和解决 %d/3\n%s" % ["古典" if int(run["era"]) == 1 else "中世纪",run["chapter"],run["phrase"],resonance,run["resolved"].size(),"时代跨越中 · 城市计时保持" if run["phase"] == "transition" else ("本局结束 · 可重新开始" if run["phase"] == "finished" else "下一次回应 %.1f秒 · %d/%d声部" % [remaining/clock.renderer.transport.sample_rate,shown.city.size(),shown.growth_values["growth"]["max_entities"]])]
 	if not shown.gravity_band.is_empty():
 		var band: Dictionary = shown.gravity_band
 		var paused := maxf(0.0,float(shown.draft_pause_until)-clock.renderer.transport.audible_frame)/clock.renderer.transport.sample_rate
@@ -681,9 +704,30 @@ func _process(_delta: float) -> void:
 			if shown.refresh_cycle != display_cycle or not shown.last_result.get("choice",{}).is_empty():
 				_rebuild_targets()
 				display_cycle = shown.refresh_cycle
-		confirm_button.disabled = not forecast_available or bool(shown.lifecycle["ended"])
+		confirm_button.disabled = not forecast_available or bool(shown.lifecycle["ended"]) or shown.run.get("phase","") == "transition"
 	if clock.underruns > 0 and not black_screen:
 		status.text = "音频下溢 %d 次：本次运行不用于正式听测。" % clock.underruns
+
+func _refresh_era_ui(shown: CityInterventions) -> void:
+	if shown.run.is_empty(): return
+	var key := "%d:%s:%d" % [shown.run["era"],shown.run["phase"],shown.city.size()]
+	if key == era_display_key: return
+	era_display_key = key
+	var previous := int(release_pitch.get_item_metadata(release_pitch.selected))
+	release_pitch.clear()
+	var names := {48:"C",50:"D",52:"E",53:"F",55:"G",57:"A",59:"B"}
+	for midi in shown.settings["allowed_pitches"]:
+		release_pitch.add_item("%s · %s共鸣" % [names[int(midi)],"商业" if int(midi) == 52 else "住宅"])
+		release_pitch.set_item_metadata(release_pitch.item_count-1,int(midi))
+		if int(midi) == previous: release_pitch.select(release_pitch.item_count-1)
+	_refresh_district_list()
+	_rebuild_targets()
+	forecast_key = ""
+	if shown.run["phase"] == "transition":
+		_cancel_audition()
+		status.text = "城市正在跨越；新乐章开始后恢复介入。"
+	elif int(shown.run["era"]) == 2:
+		status.text = "F、B 来客已抵达新土地：选中来客，可调音、迁移，或让城市向它们生长。"
 
 func _growth_description(shown: CityInterventions) -> String:
 	# City and road changes commit on a phrase boundary. Read the audible
@@ -760,8 +804,8 @@ func _confirm() -> void:
 	var request := model.session.request(choice,clock.renderer.transport.rendered_frames,clock.renderer.transport.audible_frame)
 	if request["accepted"]:
 		var prediction_copy := model.session.fork()
-		while prediction_copy.transport.phrase_frame(prediction_copy.phrase_index+1) <= int(request["frame"]):
-			prediction_copy.settle(prediction_copy.transport.phrase_frame(prediction_copy.phrase_index+1))
+		while prediction_copy.next_city_boundary() <= int(request["frame"]):
+			prediction_copy.settle(prediction_copy.next_city_boundary())
 		prediction.text = Presentation.describe(prediction_copy.last_result)["text"]
 		forecast_summary.text = Presentation.summary(prediction_copy.last_result)
 		status.text = "已确认，将在 %.2f 秒音频处落定；边界前可更换或取消。" % (float(request["frame"])/clock.renderer.transport.sample_rate)
@@ -783,6 +827,8 @@ func _input(event: InputEvent) -> void:
 		set_black_screen(not black_screen)
 	elif event.pressed and event.keycode == KEY_ESCAPE:
 		set_black_screen(false)
+	elif event.pressed and not black_screen and era_presentation.dismiss():
+		get_viewport().set_input_as_handled()
 	elif event.pressed and not black_screen and event.keycode == KEY_HOME:
 		city_view.reset_view()
 		get_viewport().set_input_as_handled()
