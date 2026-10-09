@@ -75,7 +75,7 @@ Godot4.7.2官方ed1daf0bf，1440×900 Compatibility。GD/场景改动经本项�
 
 第67轮多中心街坊与台地交通提交2498240，备份引用 refs/backups/round67-terrace；`TerraceNeighborhood` 是当前扩展城的唯一规划入口，不覆盖第64轮制作样例。
 
-第68轮地形化台地道路提交待本轮完成，备份引用将随提交更新；变化限制在扩展规划层，不改写既有 10 社区制作样例的身份。
+第68轮地形化台地道路提交a6d065b，备份引用 refs/backups/round68-terrain-roads；变化限制在扩展规划层，不改写既有 10 社区制作样例的身份。
 
 此前提交17da033及设计快照codex/backup-tech-final-docs-20261009保留。第62轮前备份分支codex/backup-before-continuous-valley-round62；原文在文档/废弃/2026-10-09_连续河谷前/与2026-10-09_第62轮吸收前/。完整bundle保存在.git/任务备份/技术准备_2026-10-09/Git备份/与.git/任务备份/连续河谷_2026-10-09/Git备份/。
 
