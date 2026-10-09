@@ -1,0 +1,107 @@
+{
+  "status": "PASS",
+  "archive_originals": 11,
+  "existing_runtime_values_unchanged": true,
+  "cache_pcm_identity": [
+    {
+      "name": "mature27.f32",
+      "bytes": 2822400,
+      "sha256": "db817269ba4e43f2f15e07522a947ddddb6bb025dcf1ccab77604fc0e3461601"
+    },
+    {
+      "name": "mature27__drone.f32",
+      "bytes": 2822400,
+      "sha256": "32a4d9e4601c46528e6191a84f73035a3eb4786dc73cf3f5654087b1f9d42a2d"
+    },
+    {
+      "name": "natural27.f32",
+      "bytes": 2822400,
+      "sha256": "c2e21e0245122411560e393f3dd96b3400bc95ba0945828155578e8c76f98376"
+    },
+    {
+      "name": "natural27__drone.f32",
+      "bytes": 2822400,
+      "sha256": "32a4d9e4601c46528e6191a84f73035a3eb4786dc73cf3f5654087b1f9d42a2d"
+    },
+    {
+      "name": "央_Drone.f32",
+      "bytes": 176400,
+      "sha256": "3ad8be28245c59be638cd274203dadd48a481f6cb1c9d158d5a889b426dbf89f"
+    },
+    {
+      "name": "央_Ornament.f32",
+      "bytes": 176400,
+      "sha256": "3e7db36431d577ead66cb9fb0f9e6a323d16f9ed811f32468dae37ed383cbb23"
+    },
+    {
+      "name": "央_Rhythm.f32",
+      "bytes": 176400,
+      "sha256": "864914885a449d27a4ce10a81facccff7b008976e6ef8dbe6265c2f9972d9740"
+    },
+    {
+      "name": "群_Drone.f32",
+      "bytes": 176400,
+      "sha256": "3ad8be28245c59be638cd274203dadd48a481f6cb1c9d158d5a889b426dbf89f"
+    },
+    {
+      "name": "群_Ornament.f32",
+      "bytes": 176400,
+      "sha256": "fd6f479534cdd14635e88dfedf25c3859c01062b645f2a85570f20451b4a95bc"
+    },
+    {
+      "name": "群_Rhythm.f32",
+      "bytes": 176400,
+      "sha256": "864914885a449d27a4ce10a81facccff7b008976e6ef8dbe6265c2f9972d9740"
+    },
+    {
+      "name": "胚_Drone.f32",
+      "bytes": 176400,
+      "sha256": "3ad8be28245c59be638cd274203dadd48a481f6cb1c9d158d5a889b426dbf89f"
+    },
+    {
+      "name": "胚_Ornament.f32",
+      "bytes": 176400,
+      "sha256": "fd6f479534cdd14635e88dfedf25c3859c01062b645f2a85570f20451b4a95bc"
+    },
+    {
+      "name": "胚_Rhythm.f32",
+      "bytes": 176400,
+      "sha256": "fd6f479534cdd14635e88dfedf25c3859c01062b645f2a85570f20451b4a95bc"
+    },
+    {
+      "name": "腔_Drone.f32",
+      "bytes": 176400,
+      "sha256": "3ad8be28245c59be638cd274203dadd48a481f6cb1c9d158d5a889b426dbf89f"
+    },
+    {
+      "name": "腔_Ornament.f32",
+      "bytes": 176400,
+      "sha256": "2c1c3960aa0a36d7025212bef9250a441063e048498247e257fb6666adfdfa0e"
+    },
+    {
+      "name": "腔_Rhythm.f32",
+      "bytes": 176400,
+      "sha256": "864914885a449d27a4ce10a81facccff7b008976e6ef8dbe6265c2f9972d9740"
+    }
+  ],
+  "black_rgb_nonzero": 0,
+  "black_pixels": 1296000,
+  "contracts": [
+    {
+      "name": "AUDIO-006_stage_round56",
+      "checks": 34,
+      "status": "PASS"
+    },
+    {
+      "name": "AUDIO-006_stage_supply_round56",
+      "checks": 9,
+      "status": "PASS"
+    },
+    {
+      "name": "UI-005_formation_round56",
+      "checks": 31,
+      "status": "PASS"
+    }
+  ],
+  "scope": "Source archive SHA, old runtime values excluding source SHA/new stage+notice sections, actual black GPU PNG and exact cache PCM; does not add human/performance claims."
+}

@@ -287,3 +287,6 @@ CITY-003第53轮人工叛离fixture：原计划`tests/city_contract.gd -- --case
 实际入口tests/lighting_contract.gd：固定种子真实17边界9→27、同层满/半进度重叠GPU字节一致、可听半拍、1296000像素RGB全零、城市/RNG及289帧边界PCM摘样对照不变、当前27实体120静态帧与30单栋生长帧。--style/--classical-frame保存同镜头小景；--asset-gray输出19件真实GPU512px图。tools/check_demo_lighting.py核验19件主/影/接触SHA与实际投影顶点、P0派生alpha/origin不变、15建筑同材质三面和底边采样。灰度操作口径见U14a，不能把白墙与陶土顶跨材质比较，也不把AA外缘/亚像素树干当完整竖面。
 
 最终日志无Assertion/脚本错误、均exit0；完整记录光影统一-第55轮.md与验证记录/Demo/UI-006_第55轮。静态平均10.84ms/P9511.92ms，单栋动画重建平均1.63ms、场景P9514.20ms；一次成熟集合改变重建19.27ms。只证明当前受控GPU/Dummy切片，非长期音频供给/多栋同时生长/700性能。实际新图人工仍PENDING。最初快照JSON类型、CanvasGroup半透明复合、浅基座失败证据保留废弃，不以exit0/CAPTURE判PASS。
+
+
+第56轮AUDIO-006/UI-005：tests/stage_audio_contract.gd（headless/Dummy，34项）、tools/check_stage_audio.py（原输入FFmpeg真峰值和每400ms/10ms-hop实际受保护drone比例）、tests/formation_notice_contract.gd（实际GPU/Dummy，31项）、tests/stage_audio_supply.gd（实际GPU/WASAPI，9项）。最终均PASS/exit0且日志无脚本错误；固定初始gain，natural27/mature27真峰值−6.24/−6.21dBTP、最差窗比例97.90/97.46%；最终27实体16秒0skips。首次失败供音与卡片布局证据保留废弃；缓存优化前后16份PCM字节相同。入口、范围和命令见../阶段声音与成形通知-第56轮.md；短时供音不是长期/窄带/真人，通知组件目前仅L1。

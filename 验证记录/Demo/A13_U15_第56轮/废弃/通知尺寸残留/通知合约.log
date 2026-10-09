@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+P0_READY seed=0000000000000056 districts=9
+ERROR: UI-005: Four-row card stays below title, above footer and outside right panel
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/contract_support.gd:26)
+       [1] run_check (res://tests/formation_notice_contract.gd:91)
+       [2] draw_save (res://tests/formation_notice_contract.gd:15)
+P0_READY seed=0000000000000056 districts=9
+UI-005 FAIL checks=31 evidence=res://验证记录/P0/UI-005_formation_round56.json scope=Actual GPU four-row rail; real settlement facts; audible gates, one-per-stage, hover/click/close/queue/OFF/B/restart/reduced motion; model/RNG and PCM read-only

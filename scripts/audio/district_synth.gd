@@ -2,6 +2,7 @@ class_name DistrictSynth
 extends RefCounted
 ## Software buses expose separate district layers before their additive Master sum.
 
+const Stage = preload("res://scripts/audio/growth_voice.gd")
 const Values = preload("res://scripts/spec_values.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
 
@@ -37,6 +38,11 @@ var gray_change_at := -1
 var gray_alpha: Dictionary = {}
 var gray_hold_frames: Dictionary = {}
 var _last_raw_layers := Vector2.ZERO
+var _last_ornament := 0.0
+var _last_raw_ornament := 0.0
+# Measurement opt-in: no production allocation or change to PCM.
+var capture_drone := false
+var captured_drone := PackedVector2Array()
 
 func _init(city: Array, marks: Dictionary = {}) -> void:
 	road_marks = marks.duplicate(true)
@@ -50,6 +56,7 @@ func _init(city: Array, marks: Dictionary = {}) -> void:
 	rhythm_gain = float(values["synthesis"]["rhythm_gain"])
 	rhythm_multiplier = pow(2.0, float(values["synthesis"]["rhythm_octave"]) / 12.0)
 	_prepare_envelopes(int(values["timing"]["sample_rate"]))
+	Stage.prepare(values,int(values["timing"]["sample_rate"]))
 	districts = city.duplicate(true)
 	for midi in values["frequencies"]:
 		frequencies[int(midi)] = float(values["frequencies"][midi])
@@ -76,7 +83,7 @@ func _init(city: Array, marks: Dictionary = {}) -> void:
 		routing.append({"id": id, "type": district["type"], "base_midi": district["current_midi"],
 			"rhythm_steps": PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
 			"phase_key": "_phase_" + id, "highpass_key": "_highpass_" + id,
-			"table": tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
+			"stage":Stage.initial(district),"table": tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
 			"stereo": Vector2(cos((pan + 1.0) * PI / 4.0), sin((pan + 1.0) * PI / 4.0))})
 
 func _append_district(district: Dictionary) -> void:
@@ -88,7 +95,7 @@ func _append_district(district: Dictionary) -> void:
 	routing.append({"id":id,"type":district["type"],"base_midi":district["current_midi"],
 		"rhythm_steps":PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
 		"phase_key":"_phase_"+id,"highpass_key":"_highpass_"+id,
-		"table":tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
+		"stage":Stage.initial(district),"table":tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
 		"stereo":Vector2(cos((pan+1.0)*PI/4.0),sin((pan+1.0)*PI/4.0))})
 
 func frequency(midi: int) -> float:
@@ -193,8 +200,10 @@ func _voice_layers(route: Dictionary, state: Dictionary, at: int, rate: int) -> 
 	var phase := float(state.get(phase_key, 0.0))
 	var midi := int(state.get(route["id"], route["base_midi"]))
 	var drone := _table_wave(route["table"], phase) * drone_gain*float(route["level"])
-	var rhythm := _rhythm(route, phase, at, rate, state) if active_layers.has("rhythm") and not route["anchor"] else 0.0
-	rhythm *= float(route["level"])
+	var rhythm := _rhythm(route, phase, at, rate, state) if active_layers.has("rhythm") and not route["anchor"] and Stage.rhythm_level(route["stage"],at,rate,values) > 0.0 else 0.0
+	rhythm *= float(route["level"])*Stage.rhythm_level(route["stage"],at,rate,values)
+	_last_ornament = Stage.sample(route["stage"],midi,at,rate,values)*float(route["level"])*gain if active_layers.has("ornament") else 0.0
+	_last_raw_ornament = _last_ornament
 	if active_layers.has("rhythm") and (gray_enabled or gray_level(at,rate) > 0.0):
 		rhythm = _gray_rhythm(rhythm,route["id"],at,rate,state)
 	if guard_enabled:
@@ -204,6 +213,7 @@ func _voice_layers(route: Dictionary, state: Dictionary, at: int, rate: int) -> 
 	if not active_layers.has("drone"):
 		drone = 0.0
 	if muted.get(route["id"], false) or (not solo_id.is_empty() and solo_id != route["id"]) or at < int(silent_until.get(route["id"], 0)):
+		_last_ornament = 0.0
 		return Vector2.ZERO
 	return Vector2(drone, rhythm) * gain
 
@@ -220,10 +230,11 @@ func render_tracks(state: Dictionary, at: int, rate: int) -> Dictionary:
 		var id: String = route["id"]
 		tracks["District_%s_Drone" % id] = layers.x*route["stereo"]*factor
 		tracks["District_%s_Rhythm" % id] = layers.y*route["stereo"]
-		tracks["District_%s_Ornament" % id] = Vector2.ZERO
+		tracks["District_%s_Ornament" % id] = _last_ornament*route["stereo"]
 		if guard_enabled:
 			raw_drone += _last_raw_layers.x*route["stereo"]
 			raw_other += _last_raw_layers.y*route["stereo"]
+			if _last_raw_ornament != 0.0: raw_other += _last_raw_ornament*route["stereo"]
 	tracks.merge(helpers)
 	if guard_enabled:
 		raw_other += raw_helpers
@@ -242,9 +253,11 @@ func _mix_frame(state: Dictionary, at: int, rate: int) -> Vector2:
 		var layers := _voice_layers(route,state,at,rate)
 		sample += layers.x*route["stereo"]
 		sample += layers.y*route["stereo"]
+		if _last_ornament != 0.0: sample += _last_ornament*route["stereo"]
 		if guard_enabled:
 			raw_drone += _last_raw_layers.x*route["stereo"]
 			raw_other += _last_raw_layers.y*route["stereo"]
+			if _last_raw_ornament != 0.0: raw_other += _last_raw_ornament*route["stereo"]
 			controlled_drone += layers.x*route["stereo"]
 	if not routes.is_empty():
 		sample += helpers
@@ -437,13 +450,21 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var emphasis := emphasis_level if emphasized_id == id else 1.0
 		var voice_level := float(route["level"])
 		var is_anchor := bool(route["anchor"])
+		var stage: Dictionary = route["stage"]
+		var fade := PackedFloat64Array()
+		var stage_level := Stage.rhythm_level(stage,start,rate,values)
+		var fade_end := int(stage.get("rhythm_start",-1))+roundi(float(values["stage_audio"]["fade_beats"])*60.0*rate/float(values["timing"]["bpm"]))
+		if not stage.is_empty() and (int(stage["change_frame"]) >= start or (int(stage["rhythm_start"]) >= 0 and fade_end > start)):
+			fade.resize(count)
+			for offset in range(count): fade[offset] = Stage.rhythm_level(stage,start+offset,rate,values)
+		var ornaments := Stage.block(stage,int(state.get(id,route["base_midi"])),start,count,rate,values) if active_layers.has("ornament") else PackedFloat64Array()
 		for offset in range(count):
 			var at := start+offset
 			var position := fposmod(phase,1.0)*size
 			var index := int(position)
 			var drone := lerpf(table[index],table[(index+1)%size],position-index)*drone_gain*voice_level if drone_enabled else 0.0
 			var rhythm := 0.0
-			if rhythm_enabled and not is_anchor:
+			if rhythm_enabled and not is_anchor and ((stage_level if fade.is_empty() else fade[offset]) > 0.0):
 				position = fposmod(phase*rhythm_multiplier,1.0)*size
 				index = int(position)
 				var envelope_index := at%envelope_count if fixture.is_empty() else _fixture_rhythm_index(fixture,at,envelope_count)
@@ -453,22 +474,26 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 					previous = Vector2(pulse,output)
 					pulse = output
 				rhythm = pulse*rhythm_gain*voice_level
+				if not fade.is_empty(): rhythm *= fade[offset]
 				if gray_active and (gray_enabled or gray_levels[offset] > 0.0):
 					gray_previous.x += lowpass_alpha*(rhythm-gray_previous.x)
 					gray_previous.y += lowpass_alpha*(gray_previous.x-gray_previous.y)
 					if at%hold_frames == 0:
 						gray_previous.z = gray_previous.y
 					rhythm = lerpf(rhythm,gray_previous.z,gray_levels[offset])
+			var ornament := ornaments[offset]*voice_level*gain if not ornaments.is_empty() else 0.0
 			if guard_enabled:
 				var dry_layers := Vector2(drone,rhythm)*gain
 				raw_drone[offset] += dry_layers.x*stereo
 				raw_other[offset] += dry_layers.y*stereo
+				if ornament != 0.0: raw_other[offset] += ornament*stereo
 			rhythm *= levels[offset]*emphasis
 			phase = fposmod(phase+increment,1.0)
 			if not disabled and at >= silence_end:
 				var layers := Vector2(drone,rhythm)*gain
 				block[offset] += layers.x*stereo
 				block[offset] += layers.y*stereo
+				if ornament != 0.0: block[offset] += ornament*stereo
 				if guard_enabled:
 					controlled_drone[offset] += layers.x*stereo
 		state[phase_key] = phase
@@ -479,6 +504,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 	if not helpers.is_empty():
 		for offset in range(count):
 			block[offset] += helpers[offset]
+	if capture_drone: captured_drone.resize(count)
 	if guard_enabled:
 		if not raw_helpers.is_empty():
 			for offset in range(count):
@@ -487,10 +513,11 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			var factor := float(state.get("_guard_factor",1.0))
 			if factor != 1.0:
 				block[offset] += controlled_drone[offset]*(factor-1.0)
+			if capture_drone: captured_drone[offset] = controlled_drone[offset]*factor
 			_guard_step(state,raw_drone[offset],raw_other[offset],rate)
 	return block
 
-func update_city(city: Array, state: Dictionary, marks: Dictionary = {}) -> void:
+func update_city(city: Array, state: Dictionary, marks: Dictionary = {}, events: Array = []) -> void:
 	road_marks = marks.duplicate(true)
 	districts = city.duplicate(true)
 	_rebuild_assist_neighbors(city)
@@ -502,6 +529,8 @@ func update_city(city: Array, state: Dictionary, marks: Dictionary = {}) -> void
 		for route in routing:
 			if route["id"] != id:
 				continue
+			for event in events:
+				if event["district_id"] == id: Stage.sync(route["stage"],event)
 			var pan := 0.0
 			for region in values["synthesis"]["pan_regions"]:
 				if Schema.cell(district).x >= int(region[0]) and Schema.cell(district).x <= int(region[1]):
@@ -519,3 +548,13 @@ func set_mute(id: String, enabled: bool) -> bool:
 		return false
 	muted[id] = enabled
 	return true
+
+func stage_snapshot() -> Dictionary:
+	var result: Dictionary = {}
+	for route in routing:
+		if not route["stage"].is_empty(): result[route["id"]] = route["stage"].duplicate(true)
+	return result
+
+func restore_stages(saved: Dictionary) -> void:
+	for route in routing:
+		if saved.has(route["id"]): route["stage"] = saved[route["id"]].duplicate(true)

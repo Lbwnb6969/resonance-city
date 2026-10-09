@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+STAGE_MIX natural27 samples=352800
+STAGE_MIX mature27 samples=352800
+AUDIO-006 PASS checks=34 evidence=res://验证记录/P0/AUDIO-006_stage_round56.json scope=Legacy exact PCM, stage layers and reveal schedule, deterministic event tails, controls, fork and natural+all-mature fixed-gain 27 PCM; external true-peak/window-RMS measurement follows

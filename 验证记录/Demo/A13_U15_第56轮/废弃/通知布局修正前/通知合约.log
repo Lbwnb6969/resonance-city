@@ -1,0 +1,35 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+P0_READY seed=0000000000000056 districts=9
+ERROR: UI-005: Four-row card stays below title, above footer and outside right panel
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/contract_support.gd:26)
+       [1] run_check (res://tests/formation_notice_contract.gd:91)
+       [2] draw_save (res://tests/formation_notice_contract.gd:15)
+ERROR: UI-005: Center follows group in rail
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/contract_support.gd:26)
+       [1] run_check (res://tests/formation_notice_contract.gd:135)
+       [2] draw_save (res://tests/formation_notice_contract.gd:15)
+ERROR: UI-005: Mature card describes alternatives, not forced center-to-chamber
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/contract_support.gd:26)
+       [1] run_check (res://tests/formation_notice_contract.gd:137)
+       [2] draw_save (res://tests/formation_notice_contract.gd:15)
+ERROR: Node not found: "VBoxContainer/HBoxContainer/Close" (relative to "/root/p0_main/CityView/FormationNotice/Card").
+   at: get_node (scene/main/node.cpp:1975)
+   GDScript backtrace (most recent call first):
+       [0] run_check (res://tests/formation_notice_contract.gd:138)
+       [1] draw_save (res://tests/formation_notice_contract.gd:15)
+SCRIPT ERROR: Invalid access to property or key 'pressed' on a base object of type 'null instance'.
+   at: run_check (res://tests/formation_notice_contract.gd:138)
+   GDScript backtrace (most recent call first):
+       [0] run_check (res://tests/formation_notice_contract.gd:138)
+       [1] draw_save (res://tests/formation_notice_contract.gd:15)

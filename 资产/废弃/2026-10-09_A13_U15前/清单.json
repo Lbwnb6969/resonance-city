@@ -1,0 +1,46 @@
+[
+  {
+    "path": "PROJECT.md",
+    "sha256": "c159d388126e3274fd30b3572386961b94bf6627fa7700221d4025688a5ae9ef"
+  },
+  {
+    "path": "scripts/audio/district_synth.gd",
+    "sha256": "2bed421eb6e3b8ed09f50a3f2033366f7c401c392a7791d085dc3cc61844a5fb"
+  },
+  {
+    "path": "scripts/audio/city_audio_model.gd",
+    "sha256": "a32e8bf1868461ec4657433b450c9255aa9720b7371978c5aee910d2e51f7b5b"
+  },
+  {
+    "path": "scripts/ui/p0_main.gd",
+    "sha256": "e3c6d4820056845f2866f000b78a1a3dfee1702e198344754587b10945fc57e1"
+  },
+  {
+    "path": "tools/build_spec_data.py",
+    "sha256": "be1d4767df814eedb86f839af64f6ae102498381be3029b6647b232afd0ba7b0"
+  },
+  {
+    "path": "数据/spec_values.json",
+    "sha256": "dd060a1e194e92aaab75d07944d941ae661a24ee6d7e15a045a4ad6d8f82d1ab"
+  },
+  {
+    "path": "文档/01_执行规格/spec.audio.md",
+    "sha256": "132f747edfdb088129c391a48f6cc470f84b74cf020f14a7af721e79a341974f"
+  },
+  {
+    "path": "文档/01_执行规格/spec.ui.md",
+    "sha256": "f118794965b7b9d00447d283ebe0eb9c8320979a989e621c2144c1470778f9fb"
+  },
+  {
+    "path": "文档/02_验收/DOD.md",
+    "sha256": "3cc83595e3afef0053846539071a778e29f83fcd57bc7a8664003f074e0ec60e"
+  },
+  {
+    "path": "文档/03_任务/P2.md",
+    "sha256": "c475bcc923fecc63b39ea9b752ecf109e8d0c85d1e2375f4bcaf7ee6097438f0"
+  },
+  {
+    "path": "文档/执行日志-P0.md",
+    "sha256": "f129020047d42453c5d0447523ceef32b4d0fa29e2b3ed79c378561a7ee2cfcb"
+  }
+]

@@ -483,6 +483,38 @@
     "compound_base": "#BCC1B3",
     "historic_stone": "#C6C0B5"
   },
+  "stage_audio": {
+    "fade_beats": 2.0,
+    "ornament_bars": 2,
+    "ornament_intervals": [
+      0,
+      7,
+      12
+    ],
+    "ornament_gain": 0.018,
+    "ornament_attack": 0.005,
+    "ornament_tail": 0.25,
+    "ornament_decay": 0.075,
+    "bell_interval": 24,
+    "bell_gain": 0.035,
+    "bell_attack": 0.005,
+    "bell_tail": 0.6,
+    "bell_decay": 0.18,
+    "event_partials": [
+      1.0,
+      0.25
+    ]
+  },
+  "formation_notice": {
+    "read_seconds": 6.0,
+    "gap_seconds": 2.0,
+    "width": 360.0,
+    "left": 24.0,
+    "top_gap": 12.0,
+    "entry_seconds": 0.18,
+    "entry_px": 12.0,
+    "delay_beats": 2
+  },
   "visual_diagnosis": {
     "slow_min_hz": 3.0,
     "slow_max_hz": 16.0,
@@ -501,10 +533,10 @@
     "rough_color": "#B38F87"
   },
   "sources": {
-    "spec.audio.md": "132f747edfdb088129c391a48f6cc470f84b74cf020f14a7af721e79a341974f",
+    "spec.audio.md": "6ea03aa9fe855c933f37c3fbc95ed78a37afe037a92b84660b1b5634e4d0872e",
     "spec.city.md": "689bffd3a3288580779edab4ee1a254609ec691952a1e36f5505c73166144252",
     "spec.harmony.md": "f5f6959c25ddcdca89de081ade88d4337281896d7a867efe85deb1a22bebb89f",
     "spec.proposal.md": "e3a3d0ecd7a4e99ee66e49ab0cf098f4d952c906d896255ee3c42c9c1acbdcbc",
-    "spec.ui.md": "f118794965b7b9d00447d283ebe0eb9c8320979a989e621c2144c1470778f9fb"
+    "spec.ui.md": "915b93665055fe69849489c532d2b3587dcfd0bd955ea4435a15750673a0a663"
   }
 }

@@ -296,6 +296,31 @@ def generate():
         'compound_base': colors(lighting['基座顶色'])[0],
         'historic_stone': colors(lighting['基座顶色'])[1],
     }
+    stage = dict(table(audio, '## 表 A13a ·'))
+    ornament = numbers(stage['装饰起振 / 尾音 / 衰减'])
+    bell = numbers(stage['钟起振 / 尾音 / 衰减'])
+    result['stage_audio'] = {
+        'fade_beats': numbers(stage['群淡入拍数'])[0],
+        'ornament_bars': int(numbers(stage['装饰周期与音程'])[0]),
+        'ornament_intervals': [int(x) for x in numbers(stage['装饰周期与音程'])[1:4]],
+        'ornament_gain': numbers(stage['装饰增益'])[0],
+        'ornament_attack': ornament[0], 'ornament_tail': ornament[1], 'ornament_decay': ornament[2],
+        'bell_interval': int(numbers(stage['钟音程与增益'])[0]),
+        'bell_gain': numbers(stage['钟音程与增益'])[1],
+        'bell_attack': bell[0], 'bell_tail': bell[1], 'bell_decay': bell[2],
+        'event_partials': [1.0, numbers(stage['事件谐波'])[1]],
+    }
+    notice = dict(table(ui, '## 表 U15a ·'))
+    result['formation_notice'] = {
+        'read_seconds': numbers(notice['阅读 / 间隔'])[0],
+        'gap_seconds': numbers(notice['阅读 / 间隔'])[1],
+        'width': numbers(notice['宽度 / 左距 / 标题下距'])[0],
+        'left': numbers(notice['宽度 / 左距 / 标题下距'])[1],
+        'top_gap': numbers(notice['宽度 / 左距 / 标题下距'])[2],
+        'entry_seconds': numbers(notice['滑入时长 / 距离'])[0],
+        'entry_px': numbers(notice['滑入时长 / 距离'])[1],
+        'delay_beats': int(numbers(notice['揭示后等待'])[0]),
+    }
     diagnosis = table(ui, '## 表 U10')
     result['visual_diagnosis'] = {key: (value if value.startswith('#') else numbers(value)[0])
                                   for key, value, _ in diagnosis}

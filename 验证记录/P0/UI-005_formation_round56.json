@@ -1,0 +1,1522 @@
+{
+	"arguments": [
+		"--script",
+		"tests/formation_notice_contract.gd"
+	],
+	"case": "formation_round56",
+	"checks": [
+		{
+			"description": "Production formation hints default ON",
+			"passed": true
+		},
+		{
+			"description": "Real growth rules produce group, center and chamber in the controlled layout",
+			"passed": true
+		},
+		{
+			"description": "Pre-rendered future facts do not occupy first records",
+			"passed": true
+		},
+		{
+			"description": "Card waits through reveal and its following beat",
+			"passed": true
+		},
+		{
+			"description": "First group appears on exact next beat with six seconds reading",
+			"passed": true
+		},
+		{
+			"description": "Stable ID resolves same-frame first-stage ties",
+			"passed": true
+		},
+		{
+			"description": "Exactly one record per actual stage, repeated history cannot replay",
+			"passed": true
+		},
+		{
+			"description": "Sound cause and both real mature branches appear",
+			"passed": true
+		},
+		{
+			"description": "Actual GPU viewport",
+			"passed": true
+		},
+		{
+			"description": "Four-row card stays below title, above footer and outside right panel",
+			"passed": true
+		},
+		{
+			"description": "Actual pointer hover reaches card",
+			"passed": true
+		},
+		{
+			"description": "Hover pauses full reading timer",
+			"passed": true
+		},
+		{
+			"description": "Manual card click selects and focuses its own building, retains card and pending",
+			"passed": true
+		},
+		{
+			"description": "B hides card and pauses reading",
+			"passed": true
+		},
+		{
+			"description": "Black screen covers former card, map and panel",
+			"passed": true
+		},
+		{
+			"description": "Six-second reading completes before inter-card gap",
+			"passed": true
+		},
+		{
+			"description": "No replacement before full two-second gap",
+			"passed": true
+		},
+		{
+			"description": "Center follows group in rail",
+			"passed": true
+		},
+		{
+			"description": "Mature card describes alternatives, not forced center-to-chamber",
+			"passed": true
+		},
+		{
+			"description": "Actual close button dismisses without replay",
+			"passed": true
+		},
+		{
+			"description": "Chamber follows center",
+			"passed": true
+		},
+		{
+			"description": "Settings OFF clears active card and queue",
+			"passed": true
+		},
+		{
+			"description": "ON does not replay occurred stages",
+			"passed": true
+		},
+		{
+			"description": "Stages occurring while OFF are recorded without later replay",
+			"passed": true
+		},
+		{
+			"description": "Card, hover, queue, black screen, focus and settings leave model/RNG/PCM state unchanged",
+			"passed": true
+		},
+		{
+			"description": "PCM after notification interactions equals untouched fork",
+			"passed": true
+		},
+		{
+			"description": "Future fork settlement does not emit live notifications",
+			"passed": true
+		},
+		{
+			"description": "Normal motion uses gentle entry",
+			"passed": true
+		},
+		{
+			"description": "Reduced motion shows static card without shortening reading",
+			"passed": true
+		},
+		{
+			"description": "Direction follows fixed isometric nine-grid, including x/y counterexample",
+			"passed": true
+		},
+		{
+			"description": "Production restart clears per-run records and rail",
+			"passed": true
+		}
+	],
+	"details": {
+		"actual_facts": [
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_7_7",
+					"footprint": [
+						[
+							7,
+							7
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 14,
+						"density_group": 13,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 3,
+						"unison": 3
+					},
+					"growth_counts": [
+						2,
+						2,
+						2,
+						2
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_a_01_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_7_7",
+					"form": "群",
+					"frame": 716625,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_7_8",
+					"footprint": [
+						[
+							7,
+							8
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 4,
+						"density_center": 14,
+						"density_group": 14,
+						"embryo_neighbors": 4,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 4,
+						"unison": 4
+					},
+					"growth_counts": [
+						2,
+						2,
+						2,
+						2
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_compound_terrace_01",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_partner": "fixture_8_8",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_7_8",
+					"form": "群",
+					"frame": 716625,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_8_7",
+					"footprint": [
+						[
+							8,
+							7
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 14,
+						"density_group": 14,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 3,
+						"unison": 3
+					},
+					"growth_counts": [
+						2,
+						2,
+						2,
+						2
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_compound_terrace_01",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_partner": "fixture_9_7",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_8_7",
+					"form": "群",
+					"frame": 716625,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_8_8",
+					"footprint": [
+						[
+							8,
+							8
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 14,
+						"density_group": 14,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 82.5,
+						"neighbors": 4,
+						"unison": 3
+					},
+					"growth_counts": [
+						2,
+						2,
+						2,
+						0
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_a_01_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_owner": "fixture_7_8",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_8_8",
+					"form": "群",
+					"frame": 716625,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_9_7",
+					"footprint": [
+						[
+							9,
+							7
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 14,
+						"density_group": 13,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 3,
+						"unison": 3
+					},
+					"growth_counts": [
+						2,
+						2,
+						2,
+						2
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_a_01_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_owner": "fixture_8_7",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_9_7",
+					"form": "群",
+					"frame": 716625,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_9_8",
+					"footprint": [
+						[
+							9,
+							8
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 4,
+						"density_center": 14,
+						"density_group": 14,
+						"embryo_neighbors": 4,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 4,
+						"unison": 4
+					},
+					"growth_counts": [
+						2,
+						2,
+						2,
+						2
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_a_01_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_9_8",
+					"form": "群",
+					"frame": 716625,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_9_9",
+					"footprint": [
+						[
+							9,
+							9
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 2,
+						"density_center": 14,
+						"density_group": 13,
+						"embryo_neighbors": 2,
+						"frozen": false,
+						"local_r": 76.6666666666667,
+						"neighbors": 3,
+						"unison": 2
+					},
+					"growth_counts": [
+						2,
+						2,
+						0,
+						0
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_compound_gable_01",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_partner": "fixture_10_9",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_9_9",
+					"form": "群",
+					"frame": 716625,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_10_7",
+					"footprint": [
+						[
+							10,
+							7
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 2,
+						"density_center": 13,
+						"density_group": 12,
+						"embryo_neighbors": 2,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 2,
+						"unison": 2
+					},
+					"growth_counts": [
+						2,
+						2,
+						0,
+						0
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_c_03_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_10_7",
+					"form": "群",
+					"frame": 716625,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_10_8",
+					"footprint": [
+						[
+							10,
+							8
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 14,
+						"density_group": 12,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 3,
+						"unison": 3
+					},
+					"growth_counts": [
+						2,
+						2,
+						2,
+						2
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_c_03_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_10_8",
+					"form": "群",
+					"frame": 716625,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_10_9",
+					"footprint": [
+						[
+							10,
+							9
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 2,
+						"density_center": 13,
+						"density_group": 12,
+						"embryo_neighbors": 2,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 2,
+						"unison": 2
+					},
+					"growth_counts": [
+						2,
+						2,
+						0,
+						0
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_c_03_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_owner": "fixture_9_9",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_10_9",
+					"form": "群",
+					"frame": 716625,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "grown_001",
+					"footprint": [
+						[
+							6,
+							7
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 2,
+						"density_center": 13,
+						"density_group": 11,
+						"embryo_neighbors": 2,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 2,
+						"unison": 2
+					},
+					"growth_counts": [
+						2,
+						2,
+						0,
+						0
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_c_03_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "grown_001",
+					"form": "群",
+					"frame": 716625,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_7_7",
+					"footprint": [
+						[
+							7,
+							7
+						]
+					],
+					"form": "央",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 15,
+						"density_group": 14,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 3,
+						"unison": 3
+					},
+					"growth_counts": [
+						3,
+						3,
+						3,
+						3
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_a_01_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"vitality": 86.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_7_7",
+					"form": "央",
+					"frame": 1069425,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_7_8",
+					"footprint": [
+						[
+							7,
+							8
+						]
+					],
+					"form": "央",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 4,
+						"density_center": 15,
+						"density_group": 15,
+						"embryo_neighbors": 4,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 4,
+						"unison": 4
+					},
+					"growth_counts": [
+						3,
+						3,
+						3,
+						3
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_compound_terrace_01",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_partner": "fixture_8_8",
+					"vitality": 86.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_7_8",
+					"form": "央",
+					"frame": 1069425,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_7_9",
+					"footprint": [
+						[
+							7,
+							9
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 2,
+						"density_center": 15,
+						"density_group": 14,
+						"embryo_neighbors": 2,
+						"frozen": false,
+						"local_r": 76.6666666666667,
+						"neighbors": 3,
+						"unison": 2
+					},
+					"growth_counts": [
+						3,
+						2,
+						0,
+						0
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_a_01_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_owner": "grown_002",
+					"vitality": 80.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_7_9",
+					"form": "群",
+					"frame": 1069425,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_8_7",
+					"footprint": [
+						[
+							8,
+							7
+						]
+					],
+					"form": "央",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 15,
+						"density_group": 15,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 3,
+						"unison": 3
+					},
+					"growth_counts": [
+						3,
+						3,
+						3,
+						3
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_compound_terrace_01",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_partner": "fixture_9_7",
+					"vitality": 86.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_8_7",
+					"form": "央",
+					"frame": 1069425,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_8_8",
+					"footprint": [
+						[
+							8,
+							8
+						]
+					],
+					"form": "央",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 15,
+						"density_group": 15,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 82.5,
+						"neighbors": 4,
+						"unison": 3
+					},
+					"growth_counts": [
+						3,
+						3,
+						3,
+						0
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_a_01_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_owner": "fixture_7_8",
+					"vitality": 86.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_8_8",
+					"form": "央",
+					"frame": 1069425,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_9_7",
+					"footprint": [
+						[
+							9,
+							7
+						]
+					],
+					"form": "央",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 15,
+						"density_group": 13,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 3,
+						"unison": 3
+					},
+					"growth_counts": [
+						3,
+						3,
+						3,
+						3
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_a_01_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_owner": "fixture_8_7",
+					"vitality": 86.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_9_7",
+					"form": "央",
+					"frame": 1069425,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_9_8",
+					"footprint": [
+						[
+							9,
+							8
+						]
+					],
+					"form": "央",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 4,
+						"density_center": 15,
+						"density_group": 15,
+						"embryo_neighbors": 4,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 4,
+						"unison": 4
+					},
+					"growth_counts": [
+						3,
+						3,
+						3,
+						3
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_a_01_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"vitality": 86.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_9_8",
+					"form": "央",
+					"frame": 1069425,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "fixture_10_8",
+					"footprint": [
+						[
+							10,
+							8
+						]
+					],
+					"form": "央",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 15,
+						"density_group": 12,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 3,
+						"unison": 3
+					},
+					"growth_counts": [
+						3,
+						3,
+						3,
+						3
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_c_03_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"vitality": 86.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "fixture_10_8",
+					"form": "央",
+					"frame": 1069425,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "grown_002",
+					"footprint": [
+						[
+							6,
+							9
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 2,
+						"density_center": 14,
+						"density_group": 12,
+						"embryo_neighbors": 2,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 2,
+						"unison": 2
+					},
+					"growth_counts": [
+						2,
+						2,
+						0,
+						0
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_compound_terrace_01",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_partner": "fixture_7_9",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "grown_002",
+					"form": "群",
+					"frame": 1069425,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "grown_001",
+					"footprint": [
+						[
+							6,
+							7
+						]
+					],
+					"form": "腔",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 16,
+						"density_group": 14,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 3,
+						"unison": 3
+					},
+					"growth_counts": [
+						5,
+						5,
+						2,
+						2
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_c_03_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_owner": "grown_004",
+					"vitality": 100.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "grown_001",
+					"form": "腔",
+					"frame": 1775025,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "grown_003",
+					"footprint": [
+						[
+							5,
+							8
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 3,
+						"density_center": 15,
+						"density_group": 12,
+						"embryo_neighbors": 3,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 3,
+						"unison": 3
+					},
+					"growth_counts": [
+						3,
+						2,
+						1,
+						1
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_building_type_a_01_base",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"vitality": 83.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "grown_003",
+					"form": "群",
+					"frame": 1775025,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			},
+			{
+				"anchor_midi": 48,
+				"district": {
+					"anchor_id": "fixture_source",
+					"base_midi": 48,
+					"current_midi": 48,
+					"debt_edges": [],
+					"district_id": "grown_004",
+					"footprint": [
+						[
+							5,
+							7
+						]
+					],
+					"form": "群",
+					"growth_conditions": {
+						"connected": true,
+						"consonant": 2,
+						"density_center": 14,
+						"density_group": 11,
+						"embryo_neighbors": 2,
+						"frozen": false,
+						"local_r": 100.0,
+						"neighbors": 2,
+						"unison": 2
+					},
+					"growth_counts": [
+						2,
+						2,
+						0,
+						0
+					],
+					"growth_stalled_phrases": 0,
+					"layers": {
+						"drone": {
+							"continuous": true
+						},
+						"ornament": {
+							"enabled": false
+						},
+						"rhythm": {
+							"signature": "稳定 4/4 中速"
+						}
+					},
+					"manifest_id": "residential_compound_gable_01",
+					"shared_boundary_cells": {},
+					"state": "normal",
+					"type": "residential",
+					"visual_partner": "grown_001",
+					"vitality": 74.0,
+					"voice_level": 0.2
+				},
+				"event": {
+					"district_id": "grown_004",
+					"form": "群",
+					"frame": 1775025,
+					"kind": "upgrade"
+				},
+				"stage_voice": true
+			}
+		],
+		"display": "Windows",
+		"images": [
+			"首次成形_群.png",
+			"首次成形_央.png",
+			"首次成形_腔.png",
+			"首次成形_黑屏.png"
+		],
+		"rendering_method": "gl_compatibility",
+		"source": "controlled layout; actual CityInterventions/Growth.advance, not a natural player run"
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "UI-005",
+	"scope": "Actual GPU four-row rail; real settlement facts; audible gates, one-per-stage, hover/click/close/queue/OFF/B/restart/reduced motion; model/RNG and PCM read-only",
+	"status": "PASS"
+}

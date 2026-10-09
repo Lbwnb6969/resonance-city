@@ -1,0 +1,191 @@
+{
+	"arguments": [
+		"--script",
+		"tests/stage_audio_contract.gd"
+	],
+	"case": "stage_round56",
+	"checks": [
+		{
+			"description": "Original nine routes exact PCM/state against preserved source at 22050 Hz",
+			"passed": true
+		},
+		{
+			"description": "Original nine routes exact PCM/state against preserved source at 44100 Hz",
+			"passed": true
+		},
+		{
+			"description": "胚 actual rhythm layer",
+			"passed": true
+		},
+		{
+			"description": "胚 actual event layer",
+			"passed": true
+		},
+		{
+			"description": "Embryo equals drone-only PCM",
+			"passed": true
+		},
+		{
+			"description": "胚 scalar/block PCM and state agree",
+			"passed": true
+		},
+		{
+			"description": "胚 mute covers all layers",
+			"passed": true
+		},
+		{
+			"description": "胚 relocation silence covers all layers",
+			"passed": true
+		},
+		{
+			"description": "群 actual rhythm layer",
+			"passed": true
+		},
+		{
+			"description": "群 actual event layer",
+			"passed": true
+		},
+		{
+			"description": "群 scalar/block PCM and state agree",
+			"passed": true
+		},
+		{
+			"description": "群 mute covers all layers",
+			"passed": true
+		},
+		{
+			"description": "群 relocation silence covers all layers",
+			"passed": true
+		},
+		{
+			"description": "央 actual rhythm layer",
+			"passed": true
+		},
+		{
+			"description": "央 actual event layer",
+			"passed": true
+		},
+		{
+			"description": "央 scalar/block PCM and state agree",
+			"passed": true
+		},
+		{
+			"description": "央 mute covers all layers",
+			"passed": true
+		},
+		{
+			"description": "央 relocation silence covers all layers",
+			"passed": true
+		},
+		{
+			"description": "腔 actual rhythm layer",
+			"passed": true
+		},
+		{
+			"description": "腔 actual event layer",
+			"passed": true
+		},
+		{
+			"description": "腔 scalar/block PCM and state agree",
+			"passed": true
+		},
+		{
+			"description": "腔 mute covers all layers",
+			"passed": true
+		},
+		{
+			"description": "腔 relocation silence covers all layers",
+			"passed": true
+		},
+		{
+			"description": "Prefill upgrade remains silent through reveal onset",
+			"passed": true
+		},
+		{
+			"description": "Two-beat equal-power fade",
+			"passed": true
+		},
+		{
+			"description": "Snapshot/fork restores in-flight reveal and fade without phase reset",
+			"passed": false
+		},
+		{
+			"description": "Bell waits for next true phrase and uses current+24 at 22050",
+			"passed": true
+		},
+		{
+			"description": "Mature ornament skips pre-reveal cycle at 22050",
+			"passed": true
+		},
+		{
+			"description": "Absolute event oscillator block/scalar identity across phrase at 22050",
+			"passed": true
+		},
+		{
+			"description": "Bell waits for next true phrase and uses current+24 at 44100",
+			"passed": true
+		},
+		{
+			"description": "Mature ornament skips pre-reveal cycle at 44100",
+			"passed": true
+		},
+		{
+			"description": "Absolute event oscillator block/scalar identity across phrase at 44100",
+			"passed": true
+		},
+		{
+			"description": "Source anchor stays drone-only",
+			"passed": true
+		},
+		{
+			"description": "Actual release/growth reaches 27 and records real upgrade facts",
+			"passed": false
+		}
+	],
+	"details": {
+		"directory": "res://验证记录/Demo/A13_U15_第56轮/",
+		"gain": 0.816651768638489,
+		"growth_history": [],
+		"initial_calibration": {
+			"blocks": 77,
+			"calibration_ms": 1026.077,
+			"duration_seconds": 8.0,
+			"gain": 0.816651768638489,
+			"initial_lufs": -14.2407381392538,
+			"sample_rate": 22050,
+			"target_lufs": -16.0
+		},
+		"natural_stages": {
+			"胚": 9
+		},
+		"rate": 22050,
+		"stage_energy": {
+			"央": {
+				"drone": 1.17833937372521,
+				"ornament": 0.00222382709397047,
+				"rhythm": 0.0103054780676293
+			},
+			"群": {
+				"drone": 1.17833937372521,
+				"ornament": 0.0,
+				"rhythm": 0.0103054780676293
+			},
+			"胚": {
+				"drone": 1.17833937372521,
+				"ornament": 0.0,
+				"rhythm": 0.0
+			},
+			"腔": {
+				"drone": 1.17833937372521,
+				"ornament": 0.0234193934876768,
+				"rhythm": 0.0103054780676293
+			}
+		},
+		"stress_scope": "mature27 forces grown voices to chamber for conservative event density; not a natural city or human listening"
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 1,
+	"rule_id": "AUDIO-006",
+	"scope": "Legacy exact PCM, stage layers and reveal schedule, deterministic event tails, controls, fork and natural+all-mature fixed-gain 27 PCM; external true-peak/window-RMS measurement follows",
+	"status": "FAIL"
+}

@@ -1,0 +1,197 @@
+{
+	"arguments": [
+		"--script",
+		"tests/stage_audio_supply.gd"
+	],
+	"case": "stage_supply_round56",
+	"checks": [
+		{
+			"description": "Production release queued on a legal cell",
+			"passed": true
+		},
+		{
+			"description": "Real release/growth rules reach the approved 27-entity budget",
+			"passed": true
+		},
+		{
+			"description": "Actual city viewport, not headless supply",
+			"passed": true
+		},
+		{
+			"description": "Production view and audio routes both contain 27 entities",
+			"passed": true
+		},
+		{
+			"description": "Physical WASAPI output",
+			"passed": true
+		},
+		{
+			"description": "No generator underruns during the physical full-city phrase",
+			"passed": false
+		},
+		{
+			"description": "One complete audible phrase, bounded by generated PCM",
+			"passed": true
+		},
+		{
+			"description": "Actual boundary settles and presents the full city",
+			"passed": true
+		},
+		{
+			"description": "Final HUD shows the new audible session, not preparation frames",
+			"passed": true
+		}
+	],
+	"details": {
+		"audible_frame": 353141.650554929,
+		"capacity": 4095,
+		"display": "Windows",
+		"district_count": 27,
+		"driver": "WASAPI",
+		"gain": 0.816651768638489,
+		"hardware_latency": 0.00999999977648258,
+		"hud_summary": "R 100 · 27/27 声部 · 第2乐句\n下一次回应 15.8 秒",
+		"initial_calibration": {
+			"blocks": 77,
+			"calibration_ms": 992.579,
+			"duration_seconds": 8.0,
+			"gain": 0.816651768638489,
+			"initial_lufs": -14.2407381392538,
+			"sample_rate": 22050,
+			"target_lufs": -16.0
+		},
+		"initial_entities": 9,
+		"preparation_simulated_phrases": 17,
+		"rendered_frames": 355199,
+		"renderer": "gl_compatibility",
+		"seed": "0000000000000056",
+		"skips": 2,
+		"stage_routes": {
+			"grown_002": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 798,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"grown_003": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 799,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"grown_004": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 800,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"grown_005": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 801,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"grown_006": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 802,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"grown_007": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 803,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"grown_008": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 804,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"grown_009": {
+				"change_frame": -1,
+				"form": "群",
+				"pattern": 805,
+				"previous": "群",
+				"rhythm_start": -1
+			},
+			"grown_010": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 797,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"grown_011": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 798,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"grown_012": {
+				"change_frame": -1,
+				"form": "群",
+				"pattern": 799,
+				"previous": "群",
+				"rhythm_start": -1
+			},
+			"grown_013": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 800,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"grown_014": {
+				"change_frame": -1,
+				"form": "腔",
+				"pattern": 801,
+				"previous": "腔",
+				"rhythm_start": -1
+			},
+			"grown_015": {
+				"change_frame": -1,
+				"form": "群",
+				"pattern": 802,
+				"previous": "群",
+				"rhythm_start": -1
+			},
+			"grown_016": {
+				"change_frame": -1,
+				"form": "群",
+				"pattern": 803,
+				"previous": "群",
+				"rhythm_start": -1
+			},
+			"grown_017": {
+				"change_frame": 363825,
+				"form": "群",
+				"pattern": 804,
+				"previous": "胚",
+				"rhythm_start": 363825
+			},
+			"grown_018": {
+				"change_frame": 363825,
+				"form": "群",
+				"pattern": 805,
+				"previous": "胚",
+				"rhythm_start": 363825
+			}
+		},
+		"wall_ms": 16020
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 1,
+	"rule_id": "AUDIO-006",
+	"scope": "Actual main scene, 27 naturally generated entities, one WASAPI audible phrase with fixed initial gain; preparation uses simulated boundaries, not a full real-time growth run; excludes human listening, long-run performance and narrowband assistance",
+	"status": "FAIL"
+}

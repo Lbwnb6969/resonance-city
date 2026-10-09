@@ -1,6 +1,7 @@
 class_name P0Main
 extends Control
 
+const Notice = preload("res://scripts/ui/formation_notice.gd")
 const Roads = preload("res://scripts/city/city_roads.gd")
 const CityView = preload("res://scripts/visual/city_demo_view.gd")
 const Growth = preload("res://scripts/city/city_growth.gd")
@@ -54,6 +55,8 @@ var focus_button: Button
 var map_tool: OptionButton
 var tool_hint: Label
 var details_button: Button
+var formation_notice: Control
+var formation_button: CheckButton
 var diagnosis_button: CheckButton
 var reduced_motion_button: CheckButton
 var diagnosis_legend: Label
@@ -97,6 +100,16 @@ func _ready() -> void:
 	add_child(preview_clock)
 	preview_clock.audition_finished.connect(_audition_finished)
 	_build_controls()
+	formation_notice = Notice.new()
+	formation_notice.name = "FormationNotice"
+	city_view.add_child(formation_notice)
+	var notice_cfg: Dictionary = Values.load_values()["formation_notice"]
+	formation_notice.position = Vector2(notice_cfg["left"],Values.load_values()["camera"]["header_height"]+notice_cfg["top_gap"])
+	formation_notice.focus_requested.connect(func(id: String) -> void:
+		_select_district(id)
+		city_view.selected_id = id
+		city_view.focus_selected())
+	formation_button.toggled.connect(formation_notice.set_enabled)
 	if start_audio_on_ready:
 		calibration = Calibration.for_city(model.session.city)
 		model.synth.gain = float(calibration["gain"])
@@ -339,6 +352,11 @@ func _build_controls() -> void:
 	listening.visible = false
 	listening.pressed.connect(func() -> void:
 		get_tree().change_scene_to_file("res://scenes/listening_session.tscn"))
+	formation_button = CheckButton.new()
+	formation_button.name = "FormationHints"
+	formation_button.text = "成形提示"
+	formation_button.set_pressed_no_signal(true)
+	controls.add_child(formation_button)
 	var advanced := _button("聆听设置 / 正式听测","AdvancedListening")
 	advanced.toggle_mode = true
 	advanced.toggled.connect(func(enabled: bool) -> void:
@@ -351,12 +369,12 @@ func _build_controls() -> void:
 	details_button = _button("详细信息 / 设置","Details")
 	details_button.toggle_mode = true
 	controls.move_child(details_button,status.get_index())
-	for item in [controls.get_node("Restart"),controls.get_node("Instructions"),advanced,assist,device,listening,condition_text,prediction]:
+	for item in [controls.get_node("Restart"),controls.get_node("Instructions"),advanced,assist,device,listening,condition_text,prediction,formation_button]:
 		controls.move_child(item,controls.get_child_count()-1)
-	for item in [controls.get_node("Restart"),controls.get_node("Instructions"),condition_text,prediction,advanced]:
+	for item in [controls.get_node("Restart"),controls.get_node("Instructions"),condition_text,prediction,advanced,formation_button]:
 		item.visible = false
 	details_button.toggled.connect(func(enabled: bool) -> void:
-		for item in [controls.get_node("Restart"),controls.get_node("Instructions"),condition_text,prediction,advanced]:
+		for item in [controls.get_node("Restart"),controls.get_node("Instructions"),condition_text,prediction,advanced,formation_button]:
 			item.visible = enabled
 		for item in [assist,device,listening]: item.visible = enabled and advanced.button_pressed)
 	for item in [release_button,draft_button,tread_button]:
@@ -605,6 +623,8 @@ func _process(_delta: float) -> void:
 	if model == null or closed:
 		return
 	var shown := _audible_session()
+	formation_notice.consume(model.growth_history,clock.renderer.transport.audible_frame)
+	formation_notice.tick(_delta,clock.renderer.transport.audible_frame,shown,black_screen,city_view.reduced_motion)
 	if worker != null and not worker.is_alive():
 		var result: Dictionary = worker.wait_to_finish()
 		worker = null
