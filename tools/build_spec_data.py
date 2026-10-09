@@ -47,6 +47,8 @@ def generate():
     docs = {p.name: read(p.name) for p in sorted(SPEC.glob('spec.*.md'))}
     space = scalar_table(docs['spec.space.md'], '## 表 SP8')
     terrain = scalar_table(docs['spec.terrain.md'], '## 表 T6')
+    city = scalar_table(docs['spec.city.md'], '## 表 E7')
+    score = scalar_table(docs['spec.audio.md'], '## 表 A26')
     required_space = {'schema_version', 'world_min', 'world_max', 'residential_radius',
                       'base_coupling', 'distance_sigma', 'gap_cutoff', 'industrial_factor',
                       'partial_occlusion', 'forest_factor', 'water_factor', 'comparison_tolerance',
@@ -96,7 +98,7 @@ def generate():
     for key, value in intervals.items():
         if any(legacy['harmony']['intervals'][key][field] != value[field] for field in ['score', 'vitality_delta']):
             raise ValueError('Approved interval table B changed')
-    result = dict(schema_version=2, world_model='continuous', space=space, terrain=terrain,
+    result = dict(schema_version=2, world_model='continuous', space=space, terrain=terrain, city=city, score=score,
                   timing=timing, harmony=harmony,
                   legacy_audio_contract_sha256=hashlib.sha256(legacy_path.read_bytes()).hexdigest(),
                   sources={name: hashlib.sha256(text.encode('utf-8')).hexdigest() for name, text in docs.items()})

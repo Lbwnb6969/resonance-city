@@ -1,7 +1,7 @@
 {
 	"arguments": [
 		"--script",
-		"res://tests/city_contract.gd"
+		"tests/city_contract.gd"
 	],
 	"case": "layers",
 	"checks": [
@@ -185,13 +185,13 @@
 		"track_energy": {
 			"District_factory_Drone": 67.1285223463135,
 			"District_factory_Ornament": 0.0,
-			"District_factory_Rhythm": 0.428898883188489,
+			"District_factory_Rhythm": 0.428898873029616,
 			"District_home_Drone": 88.3021083143038,
 			"District_home_Ornament": 0.0,
-			"District_home_Rhythm": 0.772642037905307,
+			"District_home_Rhythm": 0.772642037541326,
 			"District_shop_Drone": 78.9704132348531,
 			"District_shop_Ornament": 0.0,
-			"District_shop_Rhythm": 3.71766473855184
+			"District_shop_Rhythm": 3.7882303481095
 		},
 		"types": [
 			48,

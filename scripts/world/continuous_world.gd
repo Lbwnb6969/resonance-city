@@ -20,6 +20,14 @@ var communities: Dictionary = {}
 var families: Dictionary = {}
 var edge_cache: Dictionary = {}
 var pending: Dictionary = {}
+var pending_actions: Array[Dictionary] = []
+var blocks: Array[Dictionary] = []
+var public_sites: Array[Dictionary] = []
+var network: CityRoadNetwork
+var transit: Dictionary = {}
+var mode := "free"
+var profile := "bright"
+var action_serial := 0
 var events: Array[Dictionary] = []
 var bridge := false
 var phrase_index := 0
@@ -32,6 +40,9 @@ func _init(seed_hex: String = "2026100900000062") -> void:
 	rng = RandomStreams.new(seed_hex)
 	terrain.configure(rng.bounded("terrain",2147483647),float(rng.next_u32("terrain"))/4294967296.0*TAU)
 	_plan()
+	NeighborhoodPlan.populate(self)
+	network = CityRoadNetwork.new()
+	_refresh_public_network()
 
 func _plan() -> void:
 	var t: Dictionary = cfg["terrain"]
@@ -150,24 +161,37 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 	if lifecycle["ended"]: return {"accepted":false,"reason":"这一段已结束，按R重新播种"}
 	var kind := str(operation.get("kind",""))
 	if kind == "seed":
-		if buildings.size() >= int(cfg["terrain"]["template_slice_building_budget"]): return {"accepted":false,"reason":"河谷首片已达当前供音预算"}
+		var seed_count := pending_actions.filter(func(op: Dictionary) -> bool: return op["kind"] == "seed").size()
+		if buildings.size()+seed_count >= int(cfg["city"]["playable_building_budget"]): return {"accepted":false,"reason":"这片河谷已经长满，调音或改编让它继续演奏"}
 		var check := placement(Vector2(float(operation["position"][0]),float(operation["position"][1])))
 		if not check["allowed"]: return {"accepted":false,"reason":check["reason"]}
+		for op in pending_actions:
+			if op["kind"] == "seed" and op["lot_id"] == check["lot_id"]: return {"accepted":false,"reason":"这块地已经播下声音，下一句会长出来"}
+		operation = operation.duplicate(true)
+		operation["lot_id"] = check["lot_id"]
 	elif kind == "retune":
 		if not by_id.has(operation.get("id","")): return {"accepted":false,"reason":"请选择一栋建筑"}
 	elif kind == "bridge":
-		if bridge: return {"accepted":false,"reason":"桥已经连接两岸"}
+		if bridge or pending_actions.any(func(op: Dictionary) -> bool: return op["kind"] == "bridge"): return {"accepted":false,"reason":"桥已经连接或正在等待落定"}
+	elif kind in ["park","civic"]:
+		var found := false
+		for site in public_sites:
+			if site["id"] == operation.get("id","") and site["kind"] == kind and not site["active"]: found = true
+		if not found: return {"accepted":false,"reason":"请在公共保留地营造公园或设施"}
 	else: return {"accepted":false,"reason":"未知操作"}
 	if kind in ["seed","retune"]:
 		var midi := int(operation["midi"])
 		var allowed: Array = Legacy.load_values()["proposals"]["allowed_pitches"]
-		var legal := false
-		for pitch in allowed:
-			if int(pitch) == midi or int(pitch) == midi+12: legal = true
-		if not legal: return {"accepted":false,"reason":"请选择当前时代的五声音阶"}
+		if not allowed.any(func(pitch: float) -> bool: return int(pitch) == midi or int(pitch) == midi+12): return {"accepted":false,"reason":"请选择当前时代的五声音阶"}
+	# Repeated retuning replaces this building's future structural intent only.
+	pending_actions = pending_actions.filter(func(op: Dictionary) -> bool:
+		return not (op["kind"] == kind and kind != "seed" and op.get("id","") == operation.get("id","")))
+	action_serial += 1
 	pending = operation.duplicate(true)
 	pending["frame"] = frame
-	return {"accepted":true,"frame":frame}
+	pending["event_id"] = action_serial
+	pending_actions.append(pending.duplicate(true))
+	return {"accepted":true,"frame":frame,"event_id":action_serial}
 
 func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int) -> String:
 	var check := placement(p)
@@ -180,7 +204,7 @@ func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int) -> St
 	var building := {"district_id":id,"position":[p.x,p.y],"footprint":[[p.x,p.y]],"radius":cfg["space"]["residential_radius"],
 		"current_midi":midi,"base_midi":midi,"type":type,"vitality":cfg["harmony"]["initial_vitality"],
 		"community_id":check["community_id"],"lot_id":check["lot_id"],"family_id":family,"anchor_id":family,
-		"family_anchor":root,"is_anchor":false,"era":1,"form":"胚","form_count":0,"birth_frame":frame,"voice_level":0.2}
+		"expression":str(families.get(family,{}).get("expression",profile)),"family_anchor":root,"is_anchor":false,"era":1,"form":"胚","form_count":0,"birth_frame":frame,"voice_level":0.2}
 	buildings.append(building)
 	by_id[id] = building
 	for lot in lots:
@@ -194,18 +218,25 @@ func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int) -> St
 func settle(frame: int) -> void:
 	phrase_index += 1
 	var costs: Dictionary = {}
-	if not pending.is_empty():
-		assert(int(pending["frame"]) == frame)
-		match str(pending["kind"]):
+	# Compatibility with preserved direct world probes that assign one pending operation.
+	if pending_actions.is_empty() and not pending.is_empty(): pending_actions.append(pending.duplicate(true))
+	var committed := pending_actions.duplicate(true)
+	pending_actions.clear()
+	pending.clear()
+	for op in committed:
+		assert(int(op["frame"]) == frame)
+		match str(op["kind"]):
 			"seed":
+				var p := Vector2(float(op["position"][0]),float(op["position"][1]))
+				if not placement(p)["allowed"]: continue
 				var family := "family-%05d" % next_id
-				var p := Vector2(float(pending["position"][0]),float(pending["position"][1]))
-				var root := _birth(p,int(pending["midi"]),family,true,frame)
-				families[family] = {"root":root,"created_phrase":phrase_index}
+				families[family] = {"root":"","created_phrase":phrase_index,"expression":op.get("expression",profile)}
+				var root := _birth(p,int(op["midi"]),family,true,frame)
+				families[family]["root"] = root
 			"retune":
-				by_id[pending["id"]]["current_midi"] = int(pending["midi"])
-				costs[pending["id"]] = float(Legacy.load_values()["proposals"]["retune_cost"])
-				events.append({"kind":"retune","district_id":pending["id"],"frame":frame})
+				by_id[op["id"]]["current_midi"] = int(op["midi"])
+				costs[op["id"]] = float(Legacy.load_values()["proposals"]["retune_cost"])
+				events.append({"kind":"retune","district_id":op["id"],"frame":frame})
 			"bridge":
 				bridge = true
 				var a: Array = nodes["west-2"]
@@ -213,7 +244,12 @@ func settle(frame: int) -> void:
 				roads.append({"id":"river-bridge","from":"west-2","to":"east-2","path":PackedVector2Array([Vector2(a[0],a[1]),Vector2(b[0],b[1])]),"bridge":true})
 				rebuild_graph()
 				events.append({"kind":"bridge","frame":frame})
-		pending.clear()
+			"park","civic":
+				for site in public_sites:
+					if site["id"] != op["id"]: continue
+					site["active"] = true
+					site["frame"] = frame
+					events.append({"kind":op["kind"],"id":site["id"],"frame":frame})
 	if not lifecycle["ended"]:
 		for family in families:
 			if int(families[family]["created_phrase"]) == phrase_index: continue
@@ -227,11 +263,12 @@ func settle(frame: int) -> void:
 	if resonance < float(cfg["harmony"]["gray_entry"]): lifecycle["gray"] = true
 	elif resonance > float(cfg["harmony"]["gray_exit"]): lifecycle["gray"] = false
 	lifecycle["low_phrases"] = int(lifecycle["low_phrases"])+1 if resonance < float(cfg["harmony"]["gray_entry"]) else 0
-	lifecycle["ended"] = int(lifecycle["low_phrases"]) >= int(cfg["harmony"]["collapse_phrases"])
+	lifecycle["ended"] = mode != "free" and int(lifecycle["low_phrases"]) >= int(cfg["harmony"]["collapse_phrases"])
+	_refresh_public_network(frame)
 
 func _grow(family: String, frame: int) -> void:
-	if buildings.size() >= int(cfg["terrain"]["template_slice_building_budget"]):
-		last_reason = "这一片河谷已长满；城市规模扩展将在编曲预算接入后开放"
+	if buildings.size() >= int(cfg["city"]["playable_building_budget"]):
+		last_reason = "这片河谷已长满；用调音、公园与文化设施继续改编它"
 		return
 	var root: Dictionary = by_id[families[family]["root"]]
 	var origin := Coupling.position_of(root)
@@ -331,7 +368,7 @@ func _update_forms(frame: int) -> void:
 			events.append({"kind":"upgrade","district_id":building["district_id"],"frame":frame,"form":target})
 
 func snapshot() -> Dictionary:
-	return {"schema_version":2,"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
+	return {"schema_version":2,"generation_version":63,"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
 		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,
 		"next_id":next_id,"families":families.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_reason":last_reason}
 
@@ -352,6 +389,11 @@ func restore(saved: Dictionary) -> void:
 			if lot["id"] == building["lot_id"]: lot["occupant"] = id
 	families = saved["families"].duplicate(true)
 	pending = saved["pending"].duplicate(true)
+	pending_actions.assign(saved.get("pending_actions",[]).duplicate(true))
+	mode = str(saved.get("mode","free"))
+	profile = str(saved.get("profile","bright"))
+	action_serial = int(saved.get("action_serial",0))
+	if saved.has("public_sites"): public_sites.assign(saved["public_sites"].duplicate(true))
 	events.assign(saved["events"].duplicate(true))
 	bridge = bool(saved["bridge"])
 	if bridge and not roads.any(func(r: Dictionary) -> bool: return r["bridge"]):
@@ -366,8 +408,117 @@ func restore(saved: Dictionary) -> void:
 	rng.restore(saved["rng"])
 	rebuild_graph()
 	resonance = coupling.resonance(buildings,musical_edges(musicality()))
+	_refresh_public_network()
 
 func fork() -> RefCounted:
 	var copy: RefCounted = get_script().new(rng.seed_hex)
 	copy.restore(snapshot())
 	return copy
+
+
+func _refresh_public_network(frame: int = 0) -> void:
+	network.rebuild(nodes,roads,terrain)
+	for site in public_sites:
+		var covered: Array[String] = []
+		if site["active"]:
+			var entrance := Vector2(site["entrance"][0],site["entrance"][1])
+			for building in buildings:
+				var lot: Dictionary = {}
+				for candidate in lots:
+					if candidate["id"] == building["lot_id"]: lot = candidate
+				var p := Vector2(lot["entrance"][0],lot["entrance"][1])
+				if network.walking_distance(entrance,p) <= float(cfg["city"]["service_walk_radius"]): covered.append(building["district_id"])
+		site["covered"] = covered
+	var itinerary: Array = ["west-1","west-2","west-3","west-outer-3","west-outer-2","west-outer-1","west-1"]
+	if bridge: itinerary = ["west-1","west-2","east-2","east-1","east-2","east-3","east-2","west-2","west-3","west-2","west-1"]
+	var active := public_sites.any(func(site: Dictionary) -> bool: return site["kind"] == "civic" and site["active"])
+	if not active:
+		transit.clear()
+		return
+	var legs: Array[Dictionary] = []
+	var path := PackedVector2Array()
+	var edge_ids: Array = []
+	for i in range(itinerary.size()-1):
+		var journey := network.route(itinerary[i],itinerary[i+1])
+		if is_inf(float(journey["distance"])): continue
+		legs.append({"from":itinerary[i],"to":itinerary[i+1],"path":journey["path"],"length":journey["distance"]})
+		path.append_array(journey["path"])
+		edge_ids.append_array(journey["edges"])
+	var started := int(transit.get("frame",frame))
+	transit = {"id":"valley-line","name":"河谷环线" if not bridge else "两岸联奏线","legs":legs,"path":path,"edges":edge_ids,"frame":started,"stops":itinerary.slice(0,-1)}
+
+func bus_position(seconds: float, offset: float = 0.0) -> Dictionary:
+	if transit.is_empty(): return {}
+	var speed := float(cfg["city"]["bus_speed"])
+	var dwell := float(cfg["city"]["bus_dwell_beats"])*60.0/float(cfg["timing"]["bpm"])
+	var duration := 0.0
+	for leg in transit["legs"]: duration += float(leg["length"])/speed+dwell
+	var phase := fposmod(seconds-float(transit["frame"])/float(cfg["timing"]["sample_rate"])+offset,duration)
+	for leg in transit["legs"]:
+		var path: PackedVector2Array = leg["path"]
+		if path.size() < 2: continue
+		if phase < dwell:
+			var stopped_direction := (path[1]-path[0]).normalized()
+			return {"position":path[0]+_lane_offset(stopped_direction,0.10),"direction":stopped_direction,"stopped":true,"stop":leg["from"]}
+		phase -= dwell
+		var distance := phase*speed
+		if distance <= float(leg["length"]):
+			var remaining := distance
+			for i in range(path.size()-1):
+				var segment := path[i].distance_to(path[i+1])
+				if remaining <= segment:
+					var direction := (path[i+1]-path[i]).normalized()
+					return {"position":path[i].lerp(path[i+1],remaining/maxf(segment,0.0001))+_lane_offset(direction,0.10),"direction":direction,"stopped":false,"stop":leg["from"]}
+				remaining -= segment
+		phase -= float(leg["length"])/speed
+	return {}
+
+func _lane_offset(direction: Vector2, width: float) -> Vector2:
+	return Vector2(-direction.y,direction.x)*width
+
+func public_at(p: Vector2) -> Dictionary:
+	for site in public_sites:
+		if Geometry2D.is_point_in_polygon(p,site["polygon"]): return site
+	return {}
+
+func build_starter(expression: String = "bright") -> void:
+	profile = expression
+	var ids := ["west-1","west-2","east-2"]
+	var roots := [48,52,55] if expression == "bright" else [36,43,48]
+	for region in range(ids.size()):
+		var candidates: Array = lots.filter(func(lot: Dictionary) -> bool: return lot["community_id"] == ids[region])
+		# A stable street-front walk, not arbitrary point scattering.
+		candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return a["id"] < b["id"])
+		var family := "family-%05d" % next_id
+		families[family] = {"root":"","created_phrase":0,"expression":expression}
+		var count := 0
+		for lot in candidates:
+			var p := Vector2(lot["center"][0],lot["center"][1])
+			if not placement(p)["allowed"]: continue
+			var pitch: int = roots[region]
+			if expression == "bright" and count in [2,4]: pitch = [48,52,55][(region+count)%3]
+			var id := _birth(p,pitch,family,count == 0,-int(cfg["timing"]["sample_rate"])*4)
+			if count == 0: families[family]["root"] = id
+			count += 1
+			if count >= int(cfg["city"]["starter_buildings_per_region"]): break
+	for site in public_sites:
+		if site["id"] in ["west-park","west-civic"]:
+			site["active"] = true
+			site["frame"] = -int(cfg["timing"]["sample_rate"])*4
+	_update_forms(-int(cfg["timing"]["sample_rate"])*2)
+	_update_forms(-int(cfg["timing"]["sample_rate"]))
+	_refresh_public_network()
+	resonance = coupling.resonance(buildings,musical_edges(musicality()))
+
+func community_theme(cid: String, pitches: Dictionary = {}) -> Array:
+	var members: Array = communities[cid]["members"].duplicate()
+	members.sort_custom(func(a: String,b: String) -> bool:
+		var aa := Coupling.position_of(by_id[a])
+		var bb := Coupling.position_of(by_id[b])
+		if aa.x+aa.y != bb.x+bb.y: return aa.x+aa.y < bb.x+bb.y
+		return a < b)
+	var notes: Array = []
+	for id in members:
+		var pitch := int(pitches.get(id,by_id[id]["current_midi"]))
+		if not notes.has(pitch): notes.append(pitch)
+	return notes

@@ -8,6 +8,9 @@ const Config = preload("res://scripts/world/world_values.gd")
 const GrowthSprite = preload("res://scripts/visual/audio_growth_mask.gd")
 const Shadows = preload("res://scripts/visual/city_shadow_layer.gd")
 const Renderer = preload("res://scripts/audio/sample_renderer.gd")
+var scenery := ValleyScenery.new()
+var expression := "bright"
+var starter := true
 var model: ContinuousAudioModel
 var shown_world: ContinuousWorld
 var clock: AudibleAudioClock
@@ -36,13 +39,13 @@ var context: Dictionary = {}
 var pointer := Vector2.ZERO
 var pointer_inside := false
 var midi := 48
-var view_zoom := 0.58
-var zoom_target := 0.58
+var view_zoom := 0.88
+var zoom_target := 0.88
 var pan := Vector2.ZERO
 var pan_target := Vector2.ZERO
 var dragging := false
 var black := false
-var notice := "在街道旁播下一段声音，城市会在乐句里长大"
+var notice := "点击房屋改编 · 空地播种 · G连接两岸 · H看全城 · N空白开局 · V深流慢板"
 var notice_seconds := 10.0
 var last_hover_lot := ""
 var hover_seconds := 0.0
@@ -104,14 +107,20 @@ func _start_world() -> void:
 	clock.stop_output()
 	for sprite in sprites.values(): sprite.queue_free()
 	sprites.clear()
-	model = Model.new(World.new(),fixed_gain)
+	var world := World.new()
+	if starter: world.build_starter(expression)
+	model = Model.new(world,fixed_gain)
 	shown_world = model.world
 	selected_id = ""
 	context.clear()
 	menu.hide()
-	last_birth_count = 0
-	zoom_target = 0.58
-	pan_target = Vector2.ZERO
+	last_birth_count = shown_world.buildings.size()
+	zoom_target = 0.88
+	pan_target = Vector2(0,70)
+	view_zoom = zoom_target
+	pan = pan_target
+	scenery.rebuild(self)
+	_message("晴岸合奏 · 18栋制作示例，可从这里继续改编" if starter and expression == "bright" else ("深流慢板 · 低音与留白，可从这里继续改编" if starter else "空地开局 · 点击街边播下第一段声音"))
 
 func _make_menu() -> void:
 	menu = PanelContainer.new()
@@ -134,8 +143,8 @@ func _make_menu() -> void:
 	var notes := HBoxContainer.new()
 	for choice: int in [48,50,52,55,57]:
 		var button := Button.new()
-		button.text = note_name(choice)
-		button.custom_minimum_size = Vector2(45,34)
+		button.text = {48:"地基 · C",50:"张力 · D",52:"暖和 · E",55:"开阔 · G",57:"伸展 · A"}[choice]
+		button.custom_minimum_size = Vector2(72,38)
 		button.pressed.connect(_choose_note.bind(choice))
 		button.mouse_entered.connect(func() -> void: _light_note(choice))
 		notes.add_child(button)
@@ -143,13 +152,27 @@ func _make_menu() -> void:
 	low_octave = CheckBox.new()
 	low_octave.text = "低八度 · 深流"
 	box.add_child(low_octave)
+	var expressions := HBoxContainer.new()
+	for item in [["晴岸合奏","bright"],["深流慢板","deep"]]:
+		var button := Button.new()
+		button.text = item[0]
+		button.pressed.connect(_set_expression.bind(item[1]))
+		expressions.add_child(button)
+	box.add_child(expressions)
 	var verbs := HBoxContainer.new()
-	for item in [["独听社区","solo"],["静音社区","mute"],["聚焦","focus"],["连接两岸","bridge"]]:
+	for item in [["独听社区","solo"],["静音社区","mute"],["聚焦","focus"]]:
 		var button := Button.new()
 		button.text = item[0]
 		button.pressed.connect(_verb.bind(item[1]))
 		verbs.add_child(button)
 	box.add_child(verbs)
+	var public_row := HBoxContainer.new()
+	for item in [["营造公园","park"],["公共设施","civic"],["连接两岸","bridge"]]:
+		var button := Button.new()
+		button.text = item[0]
+		button.pressed.connect(_verb.bind(item[1]))
+		public_row.add_child(button)
+	box.add_child(public_row)
 	add_child(menu)
 	menu.hide()
 
@@ -224,7 +247,7 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
 			zoom_target = clampf(zoom_target*(1.12 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.12),0.55,1.9)
 		elif event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
-			model.world.pending.clear()
+			model.cancel_pending()
 			menu.hide()
 			context.clear()
 		elif event.pressed and event.button_index == MOUSE_BUTTON_LEFT and not black:
@@ -235,6 +258,14 @@ func _gui_input(event: InputEvent) -> void:
 				menu_info.text = "给这栋建筑换一个音"
 			else:
 				var p := world_at(pointer)
+				var site := shown_world.public_at(p)
+				if not site.is_empty():
+					context = {"kind":site["kind"],"id":site["id"]}
+					selected_id = ""
+					menu_info.text = site["name"]+" · 点击下方营造"
+					menu.position = Vector2(clampf(pointer.x-100,12,size.x-460),clampf(pointer.y+22,80,size.y-290))
+					menu.show()
+					return
 				var check := model.world.placement(p)
 				if not check["allowed"]:
 					_message(check["reason"])
@@ -242,25 +273,41 @@ func _gui_input(event: InputEvent) -> void:
 				selected_id = ""
 				context = {"kind":"seed","position":[p.x,p.y]}
 				menu_info.text = "播下一段声音 · 用途由临街地块决定"
-			menu.position = Vector2(clampf(pointer.x-100,12,size.x-370),clampf(pointer.y+22,70,size.y-220))
+			menu.position = Vector2(clampf(pointer.x-100,12,size.x-460),clampf(pointer.y+22,70,size.y-290))
 			menu.show()
 
 func _choose_note(choice: int) -> void:
 	midi = choice-12 if low_octave.button_pressed or Input.is_key_pressed(KEY_SHIFT) else choice
 	_light_note(choice)
-	if context.is_empty(): return
+	if context.is_empty() or context["kind"] not in ["seed","retune"]: return
 	var operation := context.duplicate(true)
 	operation["midi"] = midi
+	operation["expression"] = expression
 	var result := model.submit(operation)
 	if result["accepted"]:
 		if operation["kind"] == "seed": ripple_position = Vector2(operation["position"][0],operation["position"][1])
 		else: ripple_position = Coupling.position_of(shown_world.by_id[operation["id"]])
 		ripple_seconds = 0.6
-		_message("这一段会在下一个乐句里落定")
+		_message("下一拍换音，下一句城市随之生长" if operation["kind"] == "retune" else "声音已播下，下一句会长出房屋；可以继续播种")
 		menu.hide()
 	else: _message(result["reason"])
 
 func _verb(verb: String) -> void:
+	if verb in ["park","civic"]:
+		var site: Dictionary = {}
+		for candidate in shown_world.public_sites:
+			if candidate["kind"] != verb or candidate["active"]: continue
+			if context.get("id","") == candidate["id"]:
+				site = candidate
+				break
+			if site.is_empty(): site = candidate
+		if site.is_empty():
+			_message("公共空间已经落成，悬停查看它服务的街区")
+			return
+		var result := model.submit({"kind":verb,"id":site["id"]})
+		_message(site["name"]+"会在下一句落成" if result["accepted"] else result["reason"])
+		menu.hide()
+		return
 	if verb == "bridge":
 		var result := model.submit({"kind":"bridge"})
 		_message("桥会在下一乐句连接两岸" if result["accepted"] else str(result["reason"]))
@@ -268,8 +315,8 @@ func _verb(verb: String) -> void:
 		return
 	if selected_id.is_empty(): return
 	var community: String = shown_world.by_id[selected_id]["community_id"]
-	if verb == "solo": model.synth.listener_community = community if model.synth.listener_community != community else ""
-	elif verb == "mute": model.synth.muted_communities[community] = not bool(model.synth.muted_communities.get(community,false))
+	if verb == "solo": model.submit({"kind":"solo","community":community if model.synth.listener_community != community else ""})
+	elif verb == "mute": model.submit({"kind":"mute","community":community,"enabled":not bool(model.synth.muted_communities.get(community,false))})
 	elif verb == "focus":
 		zoom_target = 1.65
 		var p := Coupling.position_of(shown_world.by_id[selected_id])-Vector2(16,16)
@@ -278,7 +325,7 @@ func _verb(verb: String) -> void:
 
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey or event.echo: return
-	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5]: get_viewport().set_input_as_handled()
+	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H]: get_viewport().set_input_as_handled()
 	if event.keycode == KEY_SPACE and not event.pressed:
 		preview_requested = false
 		preview_player.stop()
@@ -288,13 +335,27 @@ func _input(event: InputEvent) -> void:
 		KEY_ESCAPE:
 			black = false
 			menu.hide()
-			model.synth.listener_community = ""
+			model.submit({"kind":"solo","community":""})
 		KEY_B: black = not black
 		KEY_G: _verb("bridge")
 		KEY_TAB: _verb("solo")
 		KEY_M: _verb("mute")
 		KEY_F: _verb("focus")
+		KEY_H:
+			zoom_target = 0.88
+			pan_target = Vector2(0,70)
+		KEY_N:
+			starter = false
+			_start_world()
+			clock.start_output(model._mix_frame,{})
+		KEY_V:
+			starter = true
+			expression = "deep"
+			_start_world()
+			clock.start_output(model._mix_frame,{})
 		KEY_R:
+			starter = true
+			expression = "bright"
 			_start_world()
 			clock.start_output(model._mix_frame,{})
 		KEY_SPACE: _request_preview()
@@ -309,23 +370,14 @@ func _message(text: String) -> void:
 	notice_seconds = 6.0
 
 func _request_preview() -> void:
-	if preview_thread != null: return
+	if preview_thread != null or context.get("kind","seed") not in ["seed","retune"]: return
 	var operation := context.duplicate(true)
 	if operation.is_empty():
 		var p := world_at(pointer)
 		if not model.world.placement(p)["allowed"]: return
 		operation = {"kind":"seed","position":[p.x,p.y]}
 	operation["midi"] = midi
-	var frozen := Model.new(model.world.fork(),fixed_gain)
-	frozen.next_boundary = model.next_boundary
-	frozen.event_cursor = model.event_cursor
-	frozen.synth.restore_stages(model.synth.stage_snapshot())
-	frozen.synth.gray_enabled = model.synth.gray_enabled
-	frozen.synth.gray_from = model.synth.gray_from
-	frozen.synth.gray_change_at = model.synth.gray_change_at
-	frozen.synth.listener_community = model.synth.listener_community
-	frozen.synth.muted_communities = model.synth.muted_communities.duplicate(true)
-	frozen.synth.targets = model.synth.targets.duplicate(true)
+	var frozen := model.freeze()
 	var state := clock.renderer.state.duplicate(true)
 	var at := clock.renderer.transport.rendered_frames
 	preview_requested = true
@@ -358,6 +410,7 @@ func _process(delta: float) -> void:
 			model.synth.ducking = true
 			model.synth.duck_release_at = clock.renderer.transport.rendered_frames+stream.mix_rate*3
 	_sync_buildings()
+	scenery.sync(self)
 	if shown_world.buildings.size() > last_birth_count:
 		if last_birth_count == 0:
 			zoom_target = 1.05
@@ -379,15 +432,19 @@ func _process(delta: float) -> void:
 	var check := model.world.placement(p)
 	if not hover_id.is_empty():
 		var b: Dictionary = shown_world.by_id[hover_id]
-		tooltip.text = "%s · %s · %s\n%s  ·  活力 %.0f\n点击选音   Tab独听社区   F聚焦" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(b["current_midi"])),b["form"],shown_world.communities[b["community_id"]]["name"],b["vitality"]]
+		tooltip.text = "%s · %s · %s\n%s  ·  活力 %.0f\n点击选音   Tab独听社区   F聚焦" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),b["form"],shown_world.communities[b["community_id"]]["name"],b["vitality"]]
 	elif check["allowed"]:
 		tooltip.text = "%s · 街道旁的一段新声音\n点击选音；Shift低八度；按住空格试听" % note_name(midi)
 		var lot: String = check["lot_id"]
 		hover_seconds = hover_seconds+delta if lot == last_hover_lot else 0.0
 		if lot != last_hover_lot: last_hover_lot = lot
 		if hover_seconds > 0.18 and hover_seconds < 0.18+delta: _light_note(midi+12 if midi < 48 else midi)
-	else: tooltip.text = "街道旁的空地可以播种\n滚轮缩放 · 中键移动 · G建桥 · R重新开始"
-	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-350),clampf(pointer.y+20,70,size.y-100))
+	else:
+		var site := shown_world.public_at(p)
+		if not site.is_empty():
+			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路服务%d栋\n公园为主题留白，文化设施让主题更清楚" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
+		else: tooltip.text = "街道旁的空地可以播种\n滚轮缩放 · 中键移动 · G建桥 · H全城\nR晴岸合奏 · V深流慢板 · N空地开局"
+	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
 	if menu.visible and pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()
 
@@ -410,7 +467,9 @@ func _sync_buildings() -> void:
 		sprite.position = point(Coupling.position_of(building))
 		sprite.scale = Vector2.ONE*scale_factor*view_zoom
 		sprite.sample_frame(clock.renderer.transport.audible_frame)
-		sprite.modulate = Color(1.0,1.0,0.96,1.0)
+		var played := int(model.audible_pitches().get(id,building["current_midi"]))
+		var warmth := 0.03*sin(TAU*float(clock.renderer.transport.audible_frame)/float(clock.renderer.transport.sample_rate)/4.0)
+		sprite.modulate = Color(0.96+warmth,1.0,0.92 if played < 48 else 0.97,1.0)
 		records.append({"entry":entry,"position":(sprite.position-Vector2(size.x*0.5,size.y*0.52)-pan)/view_zoom,"base_scale":Vector2.ONE*scale_factor,"progress":sprite.progress,"visible":true})
 	shadow_layer.position = Vector2(size.x*0.5,size.y*0.52)+pan
 	shadow_layer.scale = Vector2.ONE*view_zoom
@@ -426,6 +485,7 @@ func _draw() -> void:
 	draw_colored_polygon(_project_polygon(sea,0.0),Color("9bbcc0"))
 	draw_colored_polygon(_project_polygon(shown_world.terrain.left_bank),Color("e9e1cb"))
 	draw_colored_polygon(_project_polygon(shown_world.terrain.right_bank),Color("e0e5d6"))
+	_draw_ground_details()
 	# Contours show the seeded hill without introducing a second terrain model.
 	for radius: float in [3.0,5.0,7.0,9.0]:
 		var contour := PackedVector2Array()
@@ -440,9 +500,10 @@ func _draw() -> void:
 		var x := shown_world.terrain.river_x(y)
 		draw_line(point(Vector2(x-0.3,y),0.0),point(Vector2(x+0.4,y+0.12),0.0),Color(0.8,0.91,0.9,0.28),1.0*view_zoom,true)
 	for road in shown_world.roads:
-		var width := 0.55 if road["bridge"] else float(Config.load_values()["terrain"]["template_road_half_width"])
+		var width := 0.55 if road["bridge"] else (float(shown_world.cfg["city"]["branch_road_half_width"]) if road.get("kind","") == "branch" else float(shown_world.cfg["terrain"]["template_road_half_width"]))
 		for polygon in Geometry2D.offset_polyline(road["path"],width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):
 			draw_colored_polygon(_project_polygon(polygon),Color("d3bb93") if road["bridge"] else Color("f1eee0"))
+	_draw_public_space()
 	for lot in shown_world.lots:
 		var center := Vector2(lot["center"][0],lot["center"][1])
 		if lot["occupant"] != "":
@@ -450,32 +511,27 @@ func _draw() -> void:
 		elif pointer_inside and center.distance_to(world_at(pointer)) < 1.0:
 			draw_colored_polygon(_project_polygon(lot["polygon"]),Color(0.9,0.94,0.8,0.5))
 	if shown_world.buildings.is_empty():
-		var target: Dictionary = shown_world.lots[18]
+		var target: Dictionary = shown_world.lots[mini(18,shown_world.lots.size()-1)]
 		var p := Vector2(target["center"][0],target["center"][1])
 		draw_arc(point(p),13.0*view_zoom,0,TAU,36,Color(0.72,0.8,0.54,0.65),1.7,true)
-	if not model.world.pending.is_empty() and model.world.pending["kind"] == "seed":
-		var op: Dictionary = model.world.pending
+	for op in model.world.pending_actions:
+		if op["kind"] != "seed": continue
 		var p := Vector2(op["position"][0],op["position"][1])
-		var color := Color(0.87,0.78,0.53,0.65+0.15*sin(flow*TAU*2.0))
+		var color := Color(0.87,0.78,0.53,0.55+0.10*sin(flow*TAU*2.0))
 		draw_colored_polygon(_project_polygon(shown_world.building_polygon(p)),color)
-		var check := shown_world.placement(p)
-		if check["allowed"]:
-			var kind := "residential"
-			for lot in shown_world.lots:
-				if lot["id"] == check["lot_id"]:
-					kind = lot["use"]
-					break
-			var entry: Dictionary = assets[kind]
-			var fit := 28.0*sqrt(2.0)*0.8/maxf(float(entry["model_bounds"]["size"][0]),float(entry["model_bounds"]["size"][2]))/float(entry["pixels_per_world"])*view_zoom
-			var rect := Rect2(point(p)-Vector2(entry["origin"][0],entry["origin"][1])*fit,textures[kind].get_size()*fit)
-			draw_texture_rect(textures[kind],rect,false,Color(1,1,1,0.45))
+		draw_arc(point(p),10.0*view_zoom,0,TAU,24,color,1.0,true)
 	if ripple_seconds > 0.0:
 		draw_arc(point(ripple_position),(1.0-ripple_seconds/0.6)*55.0*view_zoom,0,TAU,48,Color(0.83,0.74,0.48,ripple_seconds/0.6),1.7,true)
 	if not hover_id.is_empty():
 		draw_arc(point(Coupling.position_of(shown_world.by_id[hover_id])),18*view_zoom,0,TAU,48,Color(0.62,0.72,0.5,0.8),1.5,true)
 	var font := ThemeDB.fallback_font
 	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("4b6561"))
-	draw_string(font,Vector2(47,67),"河谷 · 一座正在演奏的城市",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("758c85"))
+	draw_string(font,Vector2(47,67),"河谷 · 晴岸合奏" if expression == "bright" else "河谷 · 深流慢板",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("758c85"))
+	if pointer.y > size.y-60 and pointer_inside:
+		var score: Dictionary = model.synth.score_snapshot()
+		var lead := str(score["theme"].get("cid",""))
+		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
+		draw_string(font,Vector2(size.x-380,size.y-64),"主题 · "+name+"   "+str(shown_world.buildings.size())+"栋   "+str(model.world.pending_actions.size())+"段等待下一句",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("607974"))
 	var duration := float(model.phrase_frames)
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
@@ -485,8 +541,63 @@ func diagnostics() -> Dictionary:
 	return {"buildings":shown_world.buildings.size(),"planned_communities":shown_world.communities.size(),
 		"lots":shown_world.lots.size(),"resonance":shown_world.resonance,"phrase":shown_world.phrase_index,
 		"skips":clock.underruns,"audible_frame":clock.renderer.transport.audible_frame,"pending":model.world.pending.duplicate(true),
-		"preview_started":preview_started,"seed_hex":model.world.rng.seed_hex}
+		"preview_started":preview_started,"seed_hex":model.world.rng.seed_hex,"blocks":shown_world.blocks.size(),
+		"public_sites":shown_world.public_sites.duplicate(true),"transit":shown_world.transit.get("name",""),"score":model.synth.score_snapshot(),"sound_trace":model.sound_trace.duplicate(true)}
 
 func _exit_tree() -> void:
 	if preview_thread != null: preview_thread.wait_to_finish()
 	if is_instance_valid(clock): clock.stop_output()
+
+
+func _set_expression(value: String) -> void:
+	expression = value
+	low_octave.button_pressed = value == "deep"
+	_message("深流：低音、缓慢脉动与留白" if value == "deep" else "晴岸：明亮主题与商街节奏")
+
+func _draw_public_space() -> void:
+	var font := ThemeDB.fallback_font
+	for site in shown_world.public_sites:
+		var polygon: PackedVector2Array = site["polygon"]
+		var projected := _project_polygon(polygon)
+		if site["active"]:
+			var color := Color("bacda7") if site["kind"] == "park" else Color("ded5b9")
+			draw_colored_polygon(projected,color)
+			if site["kind"] == "park":
+				var p := Vector2(site["position"][0],site["position"][1])
+				var walk := PackedVector2Array([p+Vector2(-2,0.1),p+Vector2(0.2,-0.25),p+Vector2(2,0.15)])
+				for part in Geometry2D.intersect_polyline_with_polygon(walk,polygon):
+					draw_polyline(_project_polygon(part),Color("e6e2c9"),3.4*view_zoom,true)
+				var pool := PackedVector2Array()
+				for i in range(32): pool.append(p+Vector2(0.4,0.6)+Vector2(cos(TAU*i/32)*0.5,sin(TAU*i/32)*0.35))
+				draw_colored_polygon(_project_polygon(pool),Color("9bb9af"))
+		else:
+			projected.append(projected[0])
+			draw_polyline(projected,Color(0.45,0.59,0.43,0.34),1.1,true)
+		if pointer_inside and Geometry2D.is_point_in_polygon(world_at(pointer),polygon):
+			var p := Vector2(site["position"][0],site["position"][1])
+			draw_string(font,point(p)+Vector2(-30,30)*view_zoom,site["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("617b69"))
+	if not shown_world.transit.is_empty():
+		for node in shown_world.transit["stops"]:
+			var p: Array = shown_world.nodes[node]
+			var at := point(Vector2(p[0],p[1]))
+			draw_circle(at,3.5*view_zoom,Color("e9d4a0"))
+			draw_arc(at,4.2*view_zoom,0,TAU,16,Color("899d87"),1.0,true)
+
+func _draw_ground_details() -> void:
+	# Broad patches and terraces keep the hill legible without raster tiles.
+	for i in range(34):
+		var p := Vector2(-1.0+float((i*37)%330)/10.0,-1.5+float((i*67)%330)/10.0)
+		if not shown_world.terrain.land_at(p): continue
+		var ring := PackedVector2Array()
+		for j in range(24):
+			var q := p+Vector2(cos(TAU*j/24)*1.1,sin(TAU*j/24)*0.75)
+			if shown_world.terrain.land_at(q): ring.append(q)
+		if ring.size() == 24:
+			draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.12))
+	for community in shown_world.communities.values():
+		if community["members"].size() < 4: continue
+		var center := Vector2.ZERO
+		for id in community["members"]: center += Coupling.position_of(shown_world.by_id[id])
+		center /= community["members"].size()
+		if view_zoom < 1.0:
+			draw_string(ThemeDB.fallback_font,point(center)+Vector2(-16,29),community["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(0.40,0.48,0.42,0.72))
