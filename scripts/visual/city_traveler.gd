@@ -230,8 +230,28 @@ func snapshot() -> Dictionary:
 		"destination","line_key","line_index","leg_index","initialized","trip","walk_target","stop_id","passenger_load","passenger_capacity"]: saved[field] = get(field)
 	return saved.duplicate(true)
 
+func _saved_vector(value: Variant) -> Vector2:
+	return value if value is Vector2 else Vector2(float(value[0]),float(value[1]))
+
+func _saved_path(value: Variant) -> PackedVector2Array:
+	if value is PackedVector2Array: return value
+	var result := PackedVector2Array()
+	for point in value: result.append(_saved_vector(point))
+	return result
+
+func _saved_lengths(value: Variant) -> PackedFloat32Array:
+	if value is PackedFloat32Array: return value
+	var result := PackedFloat32Array()
+	for number in value: result.append(float(number))
+	return result
+
 func restore(saved: Dictionary) -> void:
-	for field in saved: set(field,saved[field])
+	for field in saved:
+		match field:
+			"position","direction","walk_target": set(field,_saved_vector(saved[field]))
+			"path": path = _saved_path(saved[field])
+			"lengths": lengths = _saved_lengths(saved[field])
+			_: set(field,saved[field])
 
 func _sample() -> void:
 	var remaining := distance

@@ -2,6 +2,7 @@ extends SceneTree
 const World = preload("res://scripts/world/continuous_world.gd")
 const Model = preload("res://scripts/audio/continuous_audio_model.gd")
 const Archive = preload("res://scripts/world/city_archive.gd")
+const Traveler = preload("res://scripts/visual/city_traveler.gd")
 
 var failures: Array[String] = []
 
@@ -13,8 +14,17 @@ func _initialize() -> void:
 	world.build_expanded_town()
 	var model := Model.new(world)
 	var decision := model.submit({"kind":"retune","id":world.buildings[0]["district_id"],"midi":52})
+	var traveler := Traveler.new("walker",0)
+	traveler.position = Vector2(1.0,2.0)
+	traveler.direction = Vector2.RIGHT
+	traveler.path = PackedVector2Array([Vector2(1.0,2.0),Vector2(2.0,3.0)])
+	traveler.lengths = PackedFloat32Array([1.4142])
+	traveler.total = 1.4142
+	traveler.distance = 0.4
+	traveler.walk_target = Vector2(2.0,3.0)
+	var dna_view := {"expression":"bright","starter":true,"town_starter":false,"zoom":0.88,"pan":Vector2.ZERO,"selected_id":"","travelers":{"walker-0":traveler.snapshot()}}
 	var directory := "user://resonance_dna_contract"
-	var result := Archive.export_dna({"model":model.capture_state(),"view":{"expression":"bright"}},directory)
+	var result := Archive.export_dna({"model":model.capture_state(),"view":dna_view},directory)
 	check(bool(result.get("ok",false)),"DNA export writes a complete file")
 	if bool(result.get("ok",false)):
 		var payload: Variant = JSON.parse_string(FileAccess.get_file_as_string(str(result["path"])))
@@ -39,6 +49,9 @@ func _initialize() -> void:
 			check(restored.world.buildings.size() == world.buildings.size(),"DNA runtime restores building count")
 			check(restored.world.rng.seed_hex == world.rng.seed_hex and restored.world.terrain.family == world.terrain.family,"DNA runtime restores seed and terrain")
 			check(restored.sound_events.size() == model.sound_events.size() and restored.decisions.size() == model.decisions.size(),"DNA runtime restores audio decisions")
+		var restored_traveler := Traveler.new("walker",0)
+		restored_traveler.restore(imported["view"]["travelers"]["walker-0"])
+		check(restored_traveler.position == Vector2(1.0,2.0) and restored_traveler.path is PackedVector2Array and restored_traveler.path.size() == 2,"DNA runtime restores traveler vector paths")
 		DirAccess.remove_absolute(str(result["path"]))
 	DirAccess.remove_absolute(directory)
 	print("CITY_DNA ",JSON.stringify({"failures":failures,"bytes":result.get("bytes",0),"buildings":world.buildings.size(),"roads":world.roads.size()}))
