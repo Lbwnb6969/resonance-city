@@ -133,6 +133,8 @@ func sync(demo: Control) -> void:
 				prop.passengers = int(movement.get("passengers",0))
 				prop.set_meta("stop_id",prop.stop_id)
 				prop.set_meta("passengers",prop.passengers)
+				prop.set_meta("purpose",movement.get("purpose",""))
+				prop.set_meta("destination_kind",movement.get("destination_kind",""))
 				prop.set_meta("world_position",p)
 		prop.position = demo.point(p)
 		prop.scale = Vector2.ONE*demo.view_zoom

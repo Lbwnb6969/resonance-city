@@ -25,6 +25,10 @@ var passenger_capacity := 12
 # Physical state is kept separate from the route's cruise speed so starts,
 # stops and bends read as motion instead of frame-to-frame teleportation.
 var motion_speed := 0.0
+# A traveler carries a small, deterministic reason for moving. This keeps the
+# street layer readable without adding a simulation-heavy economy system.
+var purpose := ""
+var destination_kind := ""
 
 func _init(agent_kind: String = "walker", index: int = 0) -> void:
 	kind = agent_kind
@@ -92,7 +96,7 @@ func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dict
 		if absf(output_angle) > output_limit:
 			direction = previous_direction.rotated(signf(output_angle)*output_limit).normalized()
 	return {"position":position,"direction":direction,"stopped":wait > 0.0,"destination":destination,
-		"stop_id":stop_id,"passengers":passenger_load,"capacity":passenger_capacity,"priority":_priority()}
+		"stop_id":stop_id,"passengers":passenger_load,"capacity":passenger_capacity,"priority":_priority(),"purpose":purpose,"destination_kind":destination_kind}
 
 func _is_vehicle() -> bool:
 	return kind in ["carriage","tram","bus","car"]
@@ -157,25 +161,65 @@ func _car_nodes(city: ContinuousWorld) -> Array[String]:
 	result.sort()
 	return result
 
+func _car_destinations(city: ContinuousWorld) -> Array[String]:
+	var result: Array[String] = []
+	for zone in city.functional_zones:
+		if str(zone.get("role","")) not in ["commercial","mixed","transit","civic_green"]: continue
+		for cid in zone.get("community_ids",[]):
+			var center := city.center_for(str(cid))
+			var node_id := str(center.get("node_id",""))
+			if not node_id.is_empty() and city.network.nodes.has(node_id) and not result.has(node_id):
+				result.append(node_id)
+	if result.size() < 2:
+		for center in city.centers:
+			var node_id := str(center.get("node_id",""))
+			if not node_id.is_empty() and city.network.nodes.has(node_id) and not result.has(node_id):
+				result.append(node_id)
+	if result.size() < 2: result = _car_nodes(city)
+	return result
+
+func _node_destination_kind(city: ContinuousWorld,node_id: String) -> String:
+	var best := "road"
+	var best_rank := 99
+	var ranks := {"commercial":0,"mixed":1,"transit":2,"civic_green":3,"residential":4}
+	for zone in city.functional_zones:
+		var role := str(zone.get("role","center"))
+		for cid in zone.get("community_ids",[]):
+			var center := city.center_for(str(cid))
+			if str(center.get("node_id","")) != node_id: continue
+			var rank := int(ranks.get(role,8))
+			if rank < best_rank:
+				best = role
+				best_rank = rank
+	return best
+
 func _next_car(city: ContinuousWorld) -> void:
 	var nodes := _car_nodes(city)
+	var anchors := _car_destinations(city)
 	if nodes.size() < 2: return
-	var origin := destination if nodes.has(destination) else nodes[posmod(ordinal*7,nodes.size())]
-	var origin_index := nodes.find(origin)
-	var target_index := posmod(origin_index+1+posmod(trip*3+ordinal,nodes.size()-1),nodes.size())
-	if target_index == origin_index: target_index = posmod(target_index+1,nodes.size())
-	var target := nodes[target_index]
-	var journey := city.network.route(origin,target)
-	if journey["path"].is_empty():
-		wait = 0.2
+	var origin := destination if nodes.has(destination) else nodes[posmod(ordinal*3,nodes.size())]
+	var targets: Array[String] = anchors.duplicate()
+	for node_id in nodes:
+		if not targets.has(node_id): targets.append(node_id)
+	# A disconnected river bank must never turn into a fake cross-city jump.
+	# Probe deterministic center targets first, then the rest of the reachable road graph.
+	for offset in range(targets.size()):
+		var target: String = targets[posmod(ordinal+trip+offset,targets.size())]
+		if target == origin: continue
+		var journey := city.network.route(origin,target)
+		if journey["path"].is_empty(): continue
+		destination = target
+		destination_kind = _node_destination_kind(city,target)
+		var labels := {"commercial":"商街","mixed":"混合中心","transit":"换乘","civic_green":"公共绿地","road":"道路","residential":"居住区"}
+		purpose = "前往"+str(labels.get(destination_kind,"道路"))
+		stop_id = ""
+		passenger_load = 0
+		passenger_capacity = 4
+		_set_path(journey["path"],_vehicle_lane())
+		wait = 0.15+float(posmod(ordinal+trip,3))*0.05
+		trip += 1
 		return
-	destination = target
-	stop_id = ""
-	passenger_load = 0
-	passenger_capacity = 4
-	_set_path(journey["path"],_vehicle_lane())
-	wait = 0.15+float(posmod(ordinal+trip,3))*0.05
-	trip += 1
+	wait = 0.2
 
 func _line(city: ContinuousWorld) -> Dictionary:
 	if city.transit_lines.is_empty(): return {}
@@ -188,6 +232,8 @@ func _line(city: ContinuousWorld) -> Dictionary:
 func _next_bus(city: ContinuousWorld) -> void:
 	var line := _line(city)
 	if line.is_empty(): return
+	purpose = "沿线接驳"
+	destination_kind = "transit"
 	var legs: Array = line["legs"]
 	if legs.is_empty(): return
 	var next_key := str(line["id"])+":"+str(line.get("edges",[]))
@@ -236,8 +282,34 @@ func _walk_destinations(city: ContinuousWorld) -> Array[Vector2]:
 			destinations.append(Vector2(site["entrance"][0],site["entrance"][1]))
 	return destinations
 
+func _walk_destinations_for(city: ContinuousWorld,category: String) -> Array[Vector2]:
+	var destinations: Array[Vector2] = []
+	if category in ["home","market"]:
+		for lot in city.lots:
+			if lot["occupant"] == "": continue
+			var use := str(lot.get("use","residential"))
+			if (category == "home" and use != "residential") or (category == "market" and use != "commercial"): continue
+			destinations.append(Vector2(lot["entrance"][0],lot["entrance"][1]))
+		for building in city.buildings:
+			if not str(building.get("lot_id","")).is_empty(): continue
+			var building_type := str(building.get("type","residential"))
+			if (category == "home" and building_type == "residential") or (category == "market" and building_type == "commercial"):
+				destinations.append(Coupling.position_of(building))
+		return destinations
+	for site in city.public_sites:
+		if not bool(site.get("active",false)): continue
+		var site_kind := str(site.get("kind",""))
+		if (category == "garden" and site_kind != "park") or (category == "civic" and site_kind != "civic"): continue
+		destinations.append(Vector2(site["entrance"][0],site["entrance"][1]))
+	return destinations
+
 func _next_walk(city: ContinuousWorld) -> void:
-	var destinations := _walk_destinations(city)
+	var profiles := ["market","garden","civic","home"]
+	var profile: String = profiles[posmod(ordinal+trip,profiles.size())]
+	var destinations := _walk_destinations_for(city,profile)
+	if destinations.is_empty():
+		profile = "local"
+		destinations = _walk_destinations(city)
 	trip += 1
 	for offset in range(destinations.size()):
 		var candidate: Vector2 = destinations[(ordinal*3+trip*7+offset)%destinations.size()]
@@ -246,6 +318,8 @@ func _next_walk(city: ContinuousWorld) -> void:
 		if is_inf(float(journey["distance"])): continue
 		walk_target = candidate
 		destination = "entrance"
+		destination_kind = profile
+		purpose = {"market":"去商街","garden":"去公园","civic":"去公共设施","home":"回家","local":"附近漫步"}.get(profile,"附近漫步")
 		_set_path(journey["path"],0.22)
 		wait = 0.6+float(ordinal%4)*0.2
 		return
@@ -295,7 +369,7 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 func snapshot() -> Dictionary:
 	var saved: Dictionary = {}
 	for field in ["kind","ordinal","position","direction","path","lengths","distance","total","last_seconds","wait",
-		"destination","line_key","line_index","leg_index","initialized","trip","walk_target","stop_id","passenger_load","passenger_capacity","motion_speed"]: saved[field] = get(field)
+		"destination","destination_kind","purpose","line_key","line_index","leg_index","initialized","trip","walk_target","stop_id","passenger_load","passenger_capacity","motion_speed"]: saved[field] = get(field)
 	return saved.duplicate(true)
 
 func _saved_vector(value: Variant) -> Vector2:
