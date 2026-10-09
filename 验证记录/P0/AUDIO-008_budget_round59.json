@@ -1,0 +1,480 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/audio008_budget_contract.gd"
+	],
+	"case": "budget_round59",
+	"checks": [
+		{
+			"description": "27 static_three_group_upper_bound: PCM relative error <=2e-5 and state exactly retained",
+			"passed": true
+		},
+		{
+			"description": "27 staged_ring_guard: PCM relative error <=2e-5 and state exactly retained",
+			"passed": true
+		},
+		{
+			"description": "27 staged/ring/guard fixture is exact per-entity fallback",
+			"passed": true
+		},
+		{
+			"description": "64 static_three_group_upper_bound: PCM relative error <=2e-5 and state exactly retained",
+			"passed": true
+		},
+		{
+			"description": "64 staged_ring_guard: PCM relative error <=2e-5 and state exactly retained",
+			"passed": true
+		},
+		{
+			"description": "64 staged/ring/guard fixture is exact per-entity fallback",
+			"passed": true
+		},
+		{
+			"description": "128 static_three_group_upper_bound: PCM relative error <=2e-5 and state exactly retained",
+			"passed": true
+		},
+		{
+			"description": "128 staged_ring_guard: PCM relative error <=2e-5 and state exactly retained",
+			"passed": true
+		},
+		{
+			"description": "128 staged/ring/guard fixture is exact per-entity fallback",
+			"passed": true
+		},
+		{
+			"description": "250 static_three_group_upper_bound: PCM relative error <=2e-5 and state exactly retained",
+			"passed": true
+		},
+		{
+			"description": "250 staged_ring_guard: PCM relative error <=2e-5 and state exactly retained",
+			"passed": true
+		},
+		{
+			"description": "250 staged/ring/guard fixture is exact per-entity fallback",
+			"passed": true
+		},
+		{
+			"description": "Independent control/state: mute",
+			"passed": true
+		},
+		{
+			"description": "Independent control/state: solo",
+			"passed": true
+		},
+		{
+			"description": "Independent control/state: mute_solo",
+			"passed": true
+		},
+		{
+			"description": "Independent control/state: all_mute",
+			"passed": true
+		},
+		{
+			"description": "Independent control/state: unmute_continuous",
+			"passed": true
+		},
+		{
+			"description": "Independent control/state: phase_split",
+			"passed": true
+		},
+		{
+			"description": "Independent control/state: pitch_split",
+			"passed": true
+		},
+		{
+			"description": "Independent control/state: filter_split",
+			"passed": true
+		},
+		{
+			"description": "All eight ring beat slots, mature events and guard are exact under fallback",
+			"passed": true
+		},
+		{
+			"description": "Coherent counterexample grows as k, not sqrt(k): 4",
+			"passed": true
+		},
+		{
+			"description": "Coherent counterexample grows as k, not sqrt(k): 16",
+			"passed": true
+		},
+		{
+			"description": "Coherent counterexample grows as k, not sqrt(k): 64",
+			"passed": true
+		},
+		{
+			"description": "Coherent counterexample grows as k, not sqrt(k): 128",
+			"passed": true
+		}
+	],
+	"details": {
+		"benchmarks": [
+			{
+				"candidate": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 1.996,
+					"buffer_512_p95_ms": 1.498,
+					"cpu_to_audio_ratio": 0.052222,
+					"frames": 11025,
+					"render_cpu_ms": 26.111
+				},
+				"comparison": {
+					"bytes_equal": false,
+					"max_absolute_error": 0.000000715255737304688,
+					"relative_error": 0.000000433834366232705,
+					"state_equal": true
+				},
+				"entities": 27,
+				"fallback_reason": "",
+				"fallbacks": 0,
+				"fixture": "static_three_group_upper_bound",
+				"unmerged": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 10.571,
+					"buffer_512_p95_ms": 10.044,
+					"cpu_to_audio_ratio": 0.397828,
+					"frames": 11025,
+					"render_cpu_ms": 198.914
+				}
+			},
+			{
+				"candidate": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 17.304,
+					"buffer_512_p95_ms": 16.774,
+					"cpu_to_audio_ratio": 0.65597,
+					"frames": 11025,
+					"render_cpu_ms": 327.985
+				},
+				"comparison": {
+					"bytes_equal": true,
+					"max_absolute_error": 0.0,
+					"relative_error": 0.0,
+					"state_equal": true
+				},
+				"entities": 27,
+				"fallback_reason": "assist_guard_or_gray",
+				"fallbacks": 22,
+				"fixture": "staged_ring_guard",
+				"unmerged": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 14.815,
+					"buffer_512_p95_ms": 14.808,
+					"cpu_to_audio_ratio": 0.562708,
+					"frames": 11025,
+					"render_cpu_ms": 281.354
+				}
+			},
+			{
+				"candidate": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 1.754,
+					"buffer_512_p95_ms": 1.531,
+					"cpu_to_audio_ratio": 0.058006,
+					"frames": 11025,
+					"render_cpu_ms": 29.003
+				},
+				"comparison": {
+					"bytes_equal": false,
+					"max_absolute_error": 0.000003814697265625,
+					"relative_error": 0.000000974338482022054,
+					"state_equal": true
+				},
+				"entities": 64,
+				"fallback_reason": "",
+				"fallbacks": 0,
+				"fixture": "static_three_group_upper_bound",
+				"unmerged": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 35.086,
+					"buffer_512_p95_ms": 29.77,
+					"cpu_to_audio_ratio": 1.116902,
+					"frames": 11025,
+					"render_cpu_ms": 558.451
+				}
+			},
+			{
+				"candidate": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 39.358,
+					"buffer_512_p95_ms": 38.231,
+					"cpu_to_audio_ratio": 1.507564,
+					"frames": 11025,
+					"render_cpu_ms": 753.782
+				},
+				"comparison": {
+					"bytes_equal": true,
+					"max_absolute_error": 0.0,
+					"relative_error": 0.0,
+					"state_equal": true
+				},
+				"entities": 64,
+				"fallback_reason": "assist_guard_or_gray",
+				"fallbacks": 22,
+				"fixture": "staged_ring_guard",
+				"unmerged": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 34.822,
+					"buffer_512_p95_ms": 34.693,
+					"cpu_to_audio_ratio": 1.365476,
+					"frames": 11025,
+					"render_cpu_ms": 682.738
+				}
+			},
+			{
+				"candidate": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 2.012,
+					"buffer_512_p95_ms": 1.766,
+					"cpu_to_audio_ratio": 0.065568,
+					"frames": 11025,
+					"render_cpu_ms": 32.784
+				},
+				"comparison": {
+					"bytes_equal": false,
+					"max_absolute_error": 0.0000152587890625,
+					"relative_error": 0.00000206747555355527,
+					"state_equal": true
+				},
+				"entities": 128,
+				"fallback_reason": "",
+				"fallbacks": 0,
+				"fixture": "static_three_group_upper_bound",
+				"unmerged": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 48.561,
+					"buffer_512_p95_ms": 47.277,
+					"cpu_to_audio_ratio": 1.892486,
+					"frames": 11025,
+					"render_cpu_ms": 946.243
+				}
+			},
+			{
+				"candidate": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 76.992,
+					"buffer_512_p95_ms": 76.221,
+					"cpu_to_audio_ratio": 3.02023,
+					"frames": 11025,
+					"render_cpu_ms": 1510.115
+				},
+				"comparison": {
+					"bytes_equal": true,
+					"max_absolute_error": 0.0,
+					"relative_error": 0.0,
+					"state_equal": true
+				},
+				"entities": 128,
+				"fallback_reason": "assist_guard_or_gray",
+				"fallbacks": 22,
+				"fixture": "staged_ring_guard",
+				"unmerged": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 68.424,
+					"buffer_512_p95_ms": 68.055,
+					"cpu_to_audio_ratio": 2.71892,
+					"frames": 11025,
+					"render_cpu_ms": 1359.46
+				}
+			},
+			{
+				"candidate": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 1.948,
+					"buffer_512_p95_ms": 1.94,
+					"cpu_to_audio_ratio": 0.074042,
+					"frames": 11025,
+					"render_cpu_ms": 37.021
+				},
+				"comparison": {
+					"bytes_equal": false,
+					"max_absolute_error": 0.0000619888305664063,
+					"relative_error": 0.00000516991851890265,
+					"state_equal": true
+				},
+				"entities": 250,
+				"fallback_reason": "",
+				"fallbacks": 0,
+				"fixture": "static_three_group_upper_bound",
+				"unmerged": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 90.664,
+					"buffer_512_p95_ms": 88.422,
+					"cpu_to_audio_ratio": 3.63364,
+					"frames": 11025,
+					"render_cpu_ms": 1816.82
+				}
+			},
+			{
+				"candidate": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 155.665,
+					"buffer_512_p95_ms": 155.208,
+					"cpu_to_audio_ratio": 6.252952,
+					"frames": 11025,
+					"render_cpu_ms": 3126.476
+				},
+				"comparison": {
+					"bytes_equal": true,
+					"max_absolute_error": 0.0,
+					"relative_error": 0.0,
+					"state_equal": true
+				},
+				"entities": 250,
+				"fallback_reason": "assist_guard_or_gray",
+				"fallbacks": 22,
+				"fixture": "staged_ring_guard",
+				"unmerged": {
+					"audio_seconds": 0.5,
+					"buffer_512_max_ms": 137.284,
+					"buffer_512_p95_ms": 134.536,
+					"cpu_to_audio_ratio": 5.459766,
+					"frames": 11025,
+					"render_cpu_ms": 2729.883
+				}
+			}
+		],
+		"coherent": [
+			{
+				"amplitude_ratio": 4.0,
+				"entities": 4,
+				"sqrt_estimate": 2.0
+			},
+			{
+				"amplitude_ratio": 16.0,
+				"entities": 16,
+				"sqrt_estimate": 4.0
+			},
+			{
+				"amplitude_ratio": 64.0000325202233,
+				"entities": 64,
+				"sqrt_estimate": 8.0
+			},
+			{
+				"amplitude_ratio": 127.999978319851,
+				"entities": 128,
+				"sqrt_estimate": 11.3137084989848
+			}
+		],
+		"controls": {
+			"all_mute": {
+				"bytes_equal": true,
+				"max_absolute_error": 0.0,
+				"relative_error": 0.0,
+				"state_equal": true
+			},
+			"filter_split": {
+				"bytes_equal": true,
+				"max_absolute_error": 0.0,
+				"relative_error": 0.0,
+				"state_equal": true
+			},
+			"mute": {
+				"bytes_equal": false,
+				"max_absolute_error": 0.000000834465026855469,
+				"relative_error": 0.000000433442973765554,
+				"state_equal": true
+			},
+			"mute_solo": {
+				"bytes_equal": true,
+				"max_absolute_error": 0.0,
+				"relative_error": 0.0,
+				"state_equal": true
+			},
+			"phase_split": {
+				"bytes_equal": true,
+				"max_absolute_error": 0.0,
+				"relative_error": 0.0,
+				"state_equal": true
+			},
+			"pitch_split": {
+				"bytes_equal": true,
+				"max_absolute_error": 0.0,
+				"relative_error": 0.0,
+				"state_equal": true
+			},
+			"solo": {
+				"bytes_equal": true,
+				"max_absolute_error": 0.0,
+				"relative_error": 0.0,
+				"state_equal": true
+			},
+			"unmute_continuous": {
+				"bytes_equal": false,
+				"max_absolute_error": 0.000000834465026855469,
+				"relative_error": 0.00000047361715630787,
+				"state_equal": true
+			}
+		},
+		"display": "headless",
+		"driver": "Dummy",
+		"growth_limit": 27,
+		"measurement_status": "offline measurement valid; realtime and peak/RMS verdicts are separate",
+		"mixes": [
+			{
+				"entities": 27,
+				"fixture": "original nine plus explicit mature/ring stress extension; no gain recalibration",
+				"frames": 352800,
+				"gain": 0.866917478949111,
+				"guard_factor": 1.0,
+				"name": "staged_27_palette",
+				"ring_routes": 16,
+				"stage_routes": 16
+			},
+			{
+				"entities": 64,
+				"fixture": "original nine plus explicit mature/ring stress extension; no gain recalibration",
+				"frames": 352800,
+				"gain": 0.866917478949111,
+				"guard_factor": 1.0,
+				"name": "staged_64_palette",
+				"ring_routes": 16,
+				"stage_routes": 53
+			},
+			{
+				"entities": 128,
+				"fixture": "original nine plus explicit mature/ring stress extension; no gain recalibration",
+				"frames": 352800,
+				"gain": 0.866917478949111,
+				"guard_factor": 1.0,
+				"name": "staged_128_palette",
+				"ring_routes": 16,
+				"stage_routes": 117
+			},
+			{
+				"entities": 250,
+				"fixture": "original nine plus explicit mature/ring stress extension; no gain recalibration",
+				"frames": 352800,
+				"gain": 0.866917478949111,
+				"guard_factor": 1.0,
+				"name": "staged_250_palette",
+				"ring_routes": 16,
+				"stage_routes": 239
+			},
+			{
+				"entities": 250,
+				"fixture": "original nine plus explicit mature/ring stress extension; no gain recalibration",
+				"frames": 352800,
+				"gain": 0.866917478949111,
+				"guard_factor": 1.0,
+				"name": "staged_250_coherent",
+				"ring_routes": 16,
+				"stage_routes": 239
+			}
+		],
+		"production_merge": "not enabled; candidate is only a static identical-timbre/pitch upper bound; actual staged/ring/guard city falls back",
+		"rate": 22050,
+		"reference_sha256": "00bf9c90b4068227e39d00b36f022576fc525aab739a474d12282af25d82e82a",
+		"relative_pcm_error_limit": 0.00002,
+		"ring": {
+			"bytes_equal": true,
+			"max_absolute_error": 0.0,
+			"relative_error": 0.0,
+			"state_equal": true
+		}
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "AUDIO-008",
+	"scope": "Fresh CPU baseline and isolated candidate; exact control/state barriers; coherent signal counterexample; original-nine fixed gain, 16s staged/ring/guard PCM at 27/64/128/250. No human or future-era-timbre claim.",
+	"status": "PASS"
+}

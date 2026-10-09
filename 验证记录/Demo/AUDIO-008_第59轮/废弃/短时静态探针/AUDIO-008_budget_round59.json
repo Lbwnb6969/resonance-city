@@ -1,0 +1,218 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/audio008_budget_contract.gd"
+	],
+	"case": "budget_round59",
+	"checks": [
+		{
+			"description": "Grouped candidate preserves PCM for static 27-entity fixture",
+			"passed": true
+		},
+		{
+			"description": "Grouped candidate preserves PCM for static 64-entity fixture",
+			"passed": true
+		},
+		{
+			"description": "Grouped candidate preserves PCM for static 128-entity fixture",
+			"passed": true
+		},
+		{
+			"description": "Grouped candidate preserves PCM for static 256-entity fixture",
+			"passed": true
+		},
+		{
+			"description": "Grouped candidate keeps one-entity mute isolated",
+			"passed": true
+		},
+		{
+			"description": "Grouped candidate keeps one-entity solo isolated",
+			"passed": true
+		},
+		{
+			"description": "Ring/轮唱 timing forces per-entity fallback",
+			"passed": true
+		},
+		{
+			"description": "Ring fallback preserves the production beat schedule",
+			"passed": true
+		},
+		{
+			"description": "Coherent same-tone peak grows linearly at k=4",
+			"passed": true
+		},
+		{
+			"description": "a√k estimate is rejected by coherent counterexample k=4",
+			"passed": true
+		},
+		{
+			"description": "Coherent same-tone peak grows linearly at k=16",
+			"passed": true
+		},
+		{
+			"description": "a√k estimate is rejected by coherent counterexample k=16",
+			"passed": true
+		},
+		{
+			"description": "Coherent same-tone peak grows linearly at k=64",
+			"passed": true
+		},
+		{
+			"description": "a√k estimate is rejected by coherent counterexample k=64",
+			"passed": true
+		},
+		{
+			"description": "Coherent same-tone peak grows linearly at k=128",
+			"passed": true
+		},
+		{
+			"description": "a√k estimate is rejected by coherent counterexample k=128",
+			"passed": true
+		},
+		{
+			"description": "128-entity unmerged production supply reaches one second for the measured baseline",
+			"passed": true
+		},
+		{
+			"description": "128-entity grouped candidate reaches one second with zero physical skips",
+			"passed": true
+		},
+		{
+			"description": "Physical WASAPI grouped candidate has no underrun",
+			"passed": true
+		}
+	],
+	"details": {
+		"benchmarks": [
+			{
+				"entities": 27,
+				"fallbacks": 0,
+				"grouped_candidate": {
+					"cpu_ms": 25.342,
+					"frames": 11025,
+					"peak": 1.88605666160584,
+					"rms": 1.12380794858735
+				},
+				"groups": 3,
+				"max_pcm_error": 0.000000774860382080078,
+				"unmerged": {
+					"cpu_ms": 219.308,
+					"frames": 11025,
+					"peak": 1.88605690002441,
+					"rms": 1.12380800217261
+				}
+			},
+			{
+				"entities": 64,
+				"fallbacks": 0,
+				"grouped_candidate": {
+					"cpu_ms": 25.866,
+					"frames": 11025,
+					"peak": 4.47454786300659,
+					"rms": 2.66605342363974
+				},
+				"groups": 3,
+				"max_pcm_error": 0.00000382214057026431,
+				"unmerged": {
+					"cpu_ms": 467.741,
+					"frames": 11025,
+					"peak": 4.47454690933228,
+					"rms": 2.66605330189623
+				}
+			},
+			{
+				"entities": 128,
+				"fallbacks": 0,
+				"grouped_candidate": {
+					"cpu_ms": 30.453,
+					"frames": 11025,
+					"peak": 8.85449123382568,
+					"rms": 5.27498217987703
+				},
+				"groups": 3,
+				"max_pcm_error": 0.0000140889042086201,
+				"unmerged": {
+					"cpu_ms": 929.577,
+					"frames": 11025,
+					"peak": 8.85448455810547,
+					"rms": 5.27498010490371
+				}
+			},
+			{
+				"entities": 256,
+				"fallbacks": 0,
+				"grouped_candidate": {
+					"cpu_ms": 41.39,
+					"frames": 11025,
+					"peak": 17.3450756072998,
+					"rms": 10.3348122842186
+				},
+				"groups": 3,
+				"max_pcm_error": 0.0000668456996208988,
+				"unmerged": {
+					"cpu_ms": 1837.283,
+					"frames": 11025,
+					"peak": 17.3450489044189,
+					"rms": 10.3348052416154
+				}
+			}
+		],
+		"coherent": {
+			"128": {
+				"linear_ratio": 127.999977004729,
+				"peak": 7.96274328231812,
+				"sqrt_ratio": 11.3137084989848
+			},
+			"16": {
+				"linear_ratio": 16.0,
+				"peak": 0.995343089103699,
+				"sqrt_ratio": 4.0
+			},
+			"4": {
+				"linear_ratio": 4.0,
+				"peak": 0.248835772275925,
+				"sqrt_ratio": 2.0
+			},
+			"64": {
+				"linear_ratio": 64.0000344929058,
+				"peak": 3.98137450218201,
+				"sqrt_ratio": 8.0
+			}
+		},
+		"controls": {
+			"muted_max_error": 0.00000205787137019797,
+			"solo_max_error": 0.0
+		},
+		"physical": {
+			"grouped_candidate": {
+				"driver": "WASAPI",
+				"frames": 22143,
+				"mode": "grouped_candidate",
+				"skips": 0,
+				"target": 22050,
+				"wall_ms": 808
+			},
+			"unmerged": {
+				"driver": "WASAPI",
+				"frames": 22399,
+				"mode": "unmerged",
+				"skips": 109,
+				"target": 22050,
+				"wall_ms": 1597
+			}
+		},
+		"production_merge": "not enabled; candidate only",
+		"recommended_unmerged_limit": "Use measured 128/256 CPU and physical results; do not infer future-era limit from 27/700.",
+		"ring": {
+			"fallbacks": 1,
+			"max_error": 0.0,
+			"reason": "stage_or_ring:budget_residential_0"
+		},
+		"sample_rate": 22050
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 0,
+	"rule_id": "AUDIO-008",
+	"scope": "TEC-01 isolated candidate measurement: real DistrictSynth baseline, candidate grouping only for identical static voices; stages/rings/individual transitions fall back; excludes human listening and final era merge",
+	"status": "PASS"
+}

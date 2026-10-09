@@ -1,0 +1,30 @@
+[
+  {
+    "path": "PROJECT.md",
+    "sha256": "fe1d9280fefd742c4b5c318556f4d6ed298e870e11cedf593ed856b6e94fd8a2"
+  },
+  {
+    "path": "文档/01_执行规格/spec.audio.md",
+    "sha256": "e6f4168bfb7a912b19f165a58f86fe88f4a11e2fb942c959dbc67a4e1f6b8c7b"
+  },
+  {
+    "path": "文档/02_验收/DOD.md",
+    "sha256": "1b4e574823fa590aaf486b85aac82c21038a663a86bbfca52b52e7d1a2ea37eb"
+  },
+  {
+    "path": "文档/03_任务/P2.md",
+    "sha256": "810ba4eb44f6ed9e7646f84d61d272d265ca4620fd0292f5daf920cc2a2daa43"
+  },
+  {
+    "path": "文档/执行日志-P0.md",
+    "sha256": "d205074518f5369cf7cafbe78145281b4080b298138a0a443a53cc68d525bc9d"
+  },
+  {
+    "path": "数据/spec_values.json",
+    "sha256": "3b0888b06d9cd13f15eb085339c4d18771a4be2da2e7fbb94e3b3370fe7d0759"
+  },
+  {
+    "path": "数据/listening_fixtures.json",
+    "sha256": "b34f3f69e99f1a4b11242e62c2ea3ea85b3bf17cb392de836cf9dbc16c9e8276"
+  }
+]

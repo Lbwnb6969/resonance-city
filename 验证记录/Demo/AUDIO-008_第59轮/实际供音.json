@@ -1,0 +1,60 @@
+{
+	"measurements": [
+		{
+			"audible_frames": 352882.483104929,
+			"candidate": false,
+			"capacity": 4095,
+			"display": "Windows",
+			"driver": "WASAPI",
+			"entities": 27,
+			"fallbacks": 0,
+			"gain": 0.866917478949111,
+			"monitor_attenuation_db": -30,
+			"rendered_frames": 356863,
+			"renderer": "gl_compatibility",
+			"required_audible_frames": 352800,
+			"skips": 0,
+			"staged": true,
+			"supply_pass": true,
+			"wall_ms": 15990
+		},
+		{
+			"audible_frames": 44820.2458049286,
+			"candidate": false,
+			"capacity": 4095,
+			"display": "Windows",
+			"driver": "WASAPI",
+			"entities": 64,
+			"fallbacks": 0,
+			"gain": 0.866917478949111,
+			"monitor_attenuation_db": -30,
+			"rendered_frames": 46839,
+			"renderer": "gl_compatibility",
+			"required_audible_frames": 44100,
+			"skips": 59,
+			"staged": true,
+			"supply_pass": false,
+			"wall_ms": 2309
+		},
+		{
+			"audible_frames": 352838.493354929,
+			"candidate": true,
+			"capacity": 4095,
+			"display": "Windows",
+			"driver": "WASAPI",
+			"entities": 250,
+			"fallbacks": 0,
+			"gain": 1.0,
+			"monitor_attenuation_db": -30,
+			"rendered_frames": 356863,
+			"renderer": "gl_compatibility",
+			"required_audible_frames": 352800,
+			"skips": 0,
+			"staged": false,
+			"supply_pass": true,
+			"wall_ms": 16001
+		}
+	],
+	"scope": "isolated audio in actual GPU/WASAPI window; AudioClock production priming/refill/audible estimator; not the full main-scene graphics workload or human listening; expansion failures retained",
+	"status": "MEASURED"
+}
