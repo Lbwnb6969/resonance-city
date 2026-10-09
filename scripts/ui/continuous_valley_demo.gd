@@ -659,6 +659,7 @@ func _draw() -> void:
 		var width := 0.55 if road["bridge"] else (float(shown_world.cfg["city"]["branch_road_half_width"]) if road.get("kind","") == "branch" else float(shown_world.cfg["terrain"]["template_road_half_width"]))
 		for polygon in Geometry2D.offset_polyline(road["path"],width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):
 			draw_colored_polygon(_project_polygon(polygon),Color("d3bb93") if road["bridge"] else Color("f1eee0"))
+	_draw_green_corridors()
 	_draw_public_space()
 	for lot in shown_world.lots:
 		var center := Vector2(lot["center"][0],lot["center"][1])
@@ -699,7 +700,7 @@ func diagnostics() -> Dictionary:
 		"lots":shown_world.lots.size(),"resonance":shown_world.resonance,"phrase":shown_world.phrase_index,
 		"skips":clock.underruns,"audible_frame":clock.renderer.transport.audible_frame,"pending":model.world.pending.duplicate(true),
 		"preview_started":preview_started,"seed_hex":model.world.rng.seed_hex,"blocks":shown_world.blocks.size(),
-		"public_sites":shown_world.public_sites.duplicate(true),"transit":shown_world.transit_lines.map(func(line: Dictionary) -> String: return line["name"]),"terrain_family":shown_world.terrain.family,"terrain_title":shown_world.terrain_title(),"era":shown_world.era,"era_title":shown_world.era_title(),"vehicle":shown_world.vehicle_kind(),"score":model.synth.score_snapshot(),"sound_trace":model.sound_trace.duplicate(true)}
+		"public_sites":shown_world.public_sites.duplicate(true),"green_corridors":shown_world.green_corridors.duplicate(true),"transit":shown_world.transit_lines.map(func(line: Dictionary) -> String: return line["name"]),"terrain_family":shown_world.terrain.family,"terrain_title":shown_world.terrain_title(),"era":shown_world.era,"era_title":shown_world.era_title(),"vehicle":shown_world.vehicle_kind(),"score":model.synth.score_snapshot(),"sound_trace":model.sound_trace.duplicate(true)}
 
 func _exit_tree() -> void:
 	if session_persistence and model != null and is_instance_valid(clock) and clock.active: save_city("离开时保存")
@@ -711,6 +712,19 @@ func _set_expression(value: String) -> void:
 	expression = value
 	low_octave.button_pressed = value == "deep"
 	_message("深流：低音、缓慢脉动与留白" if value == "deep" else "晴岸：明亮主题与商街节奏")
+
+func _draw_green_corridors() -> void:
+	for corridor in shown_world.green_corridors:
+		if not bool(corridor.get("active",true)): continue
+		var path: PackedVector2Array = corridor["path"]
+		if path.size() < 2: continue
+		var width := float(corridor.get("width",0.24))
+		for polygon in Geometry2D.offset_polyline(path,width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):
+			draw_colored_polygon(_project_polygon(polygon,0.012),Color(0.55,0.69,0.43,0.36))
+		draw_polyline(_project_polygon(path,0.025),Color(0.48,0.62,0.39,0.64),2.2*view_zoom,true)
+		for i in range(0,path.size(),2):
+			var p := path[i]
+			draw_circle(point(p,0.04),2.4*view_zoom,Color(0.38,0.56,0.35,0.72))
 
 func _draw_public_space() -> void:
 	var font := ThemeDB.fallback_font

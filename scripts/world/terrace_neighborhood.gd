@@ -109,3 +109,18 @@ static func populate(world: RefCounted) -> void:
 		_append_site(world,Vector2(site_x,site_y+3.45),Vector2(0.58,0.62),
 			[Vector2(bank*2.1,0.0),Vector2(bank*2.8,-0.3),Vector2(bank*1.9,1.25),Vector2(bank*3.2,1.8)],
 			prefix+"-terrace-civic","civic",civic_name,prefix+"-terrace-5")
+	for bank: int in [-1,1]:
+		var prefix := "west" if bank < 0 else "east"
+		var corridor_path := PackedVector2Array()
+		var corridor_communities: Array[String] = []
+		for index in range(ys.size()):
+			var y := float(ys[index])
+			var x: float = world.terrain.river_x(y)+float(bank)*offset
+			var p := Vector2(x+float(bank)*0.45,y)
+			if world.terrain.land_at(p):
+				corridor_path.append(p)
+				corridor_communities.append("%s-terrace-%d" % [prefix,index+1])
+		if corridor_path.size() >= 2:
+			world.green_corridors.append({"id":"%s-terrace-greenway" % prefix,"kind":"greenway",
+				"path":corridor_path,"width":0.24,"community_ids":corridor_communities,
+				"active":true,"covered":[]})

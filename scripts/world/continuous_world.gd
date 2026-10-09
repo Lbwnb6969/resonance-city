@@ -24,6 +24,7 @@ var edge_cache: Dictionary = {}
 var pending: Dictionary = {}
 var pending_actions: Array[Dictionary] = []
 var blocks: Array[Dictionary] = []
+var green_corridors: Array[Dictionary] = []
 var public_sites: Array[Dictionary] = []
 var network: CityRoadNetwork
 var transit: Dictionary = {}
@@ -438,7 +439,7 @@ func _update_forms(frame: int) -> void:
 func snapshot() -> Dictionary:
 	return {"schema_version":2,"generation_version":65,"settings":cfg.duplicate(true),
 		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase,"family":terrain.family},
-		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"communities":communities.duplicate(true)},
+		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"green_corridors":green_corridors.duplicate(true),"communities":communities.duplicate(true)},
 		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
 		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,"expanded_plan":expanded_plan,
 		"next_id":next_id,"families":families.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_reason":last_reason}
@@ -454,6 +455,7 @@ func restore(saved: Dictionary) -> void:
 		roads.assign(plan["roads"].duplicate(true))
 		nodes = plan["nodes"].duplicate(true)
 		blocks.assign(plan["blocks"].duplicate(true))
+		green_corridors.assign(plan.get("green_corridors",[]).duplicate(true))
 		communities = plan["communities"].duplicate(true)
 		transit = saved["transit"].duplicate(true)
 		transit_lines.assign(saved.get("transit_lines",[]).duplicate(true))
