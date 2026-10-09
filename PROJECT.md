@@ -82,7 +82,7 @@ Godot4.7.2官方ed1daf0bf，1440×900 Compatibility。GD/场景改动经本项�
 
 第69轮公共站点提交19e021d，备份引用 refs/backups/round69-public-facilities；公共站点均由 `TerraceNeighborhood` 生成，不覆盖第64轮制作样例。
 
-第70轮路线连续性提交待写入，备份引用待写入；台地道路接入节点与移动体路线回归通过，不覆盖第64轮制作样例。
+第70轮路线连续性提交99136e5，备份引用 refs/backups/round70-routes；台地道路接入节点与移动体路线回归通过，不覆盖第64轮制作样例。
 
 此前提交17da033及设计快照codex/backup-tech-final-docs-20261009保留。第62轮前备份分支codex/backup-before-continuous-valley-round62；原文在文档/废弃/2026-10-09_连续河谷前/与2026-10-09_第62轮吸收前/。完整bundle保存在.git/任务备份/技术准备_2026-10-09/Git备份/与.git/任务备份/连续河谷_2026-10-09/Git备份/。
 
