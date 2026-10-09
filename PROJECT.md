@@ -99,6 +99,8 @@ Godot4.7.2官方ed1daf0bf，1440×900 Compatibility。GD/场景改动经本项�
 
 第74轮庭院内地生长提交c01b48f，备份引用 refs/backups/round74-courtyard-growth；庭院落点保持派生身份，不覆盖第64轮制作样例。
 
+第75轮交通协调与上下客提交445e81d，备份引用 refs/backups/round75-traffic-behavior；车辆/行人运行时状态仍是派生视觉对象，不覆盖第64轮制作样例。
+
 此前提交17da033及设计快照codex/backup-tech-final-docs-20261009保留。第62轮前备份分支codex/backup-before-continuous-valley-round62；原文在文档/废弃/2026-10-09_连续河谷前/与2026-10-09_第62轮吸收前/。完整bundle保存在.git/任务备份/技术准备_2026-10-09/Git备份/与.git/任务备份/连续河谷_2026-10-09/Git备份/。
 
 本轮之前备份分支codex/backup-before-city-generation-deepening；设计方同步更新独立保存为refs/backups/city-generation-design-20261009（1c5ddc8）。PROJECT原文保留在文档/废弃/2026-10-09_城市生成深化前/；增量bundle放在.git/任务备份/城市生成深化_2026-10-09/Git备份/。提交不混入设计方其他未提交规格/旧入口迁移、CITY-001_layers.json或缓存。
