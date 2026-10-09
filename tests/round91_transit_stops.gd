@@ -32,7 +32,9 @@ func _run() -> void:
 		var access := demo.shown_world.network.access(Vector2(float(node[0]),float(node[1])))
 		on_roads = on_roads and not access.is_empty()
 	check(on_roads,"every stop marker is anchored to the physical road graph")
-	if is_instance_valid(demo.clock): demo.clock.stop_output()
+	if is_instance_valid(demo.clock):
+		demo.clock.stop_output()
+		if is_instance_valid(demo.clock.player): demo.clock.player.stream = null
 	demo.free()
 	await process_frame
 	print("TRANSIT_STOPS ",JSON.stringify({"checks":checks,"failures":failures,"stops":unique_stops.size(),"markers":marker_count}))

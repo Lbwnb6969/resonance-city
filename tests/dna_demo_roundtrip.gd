@@ -28,7 +28,9 @@ func _run() -> void:
 		demo.scenery.sync(demo)
 		check(demo.scenery.props.size() > 0,"live Demo rebuilds traveler props after DNA load")
 		DirAccess.remove_absolute(str(exported["path"]))
-	if is_instance_valid(demo.clock): demo.clock.stop_output()
+	if is_instance_valid(demo.clock):
+		demo.clock.stop_output()
+		if is_instance_valid(demo.clock.player): demo.clock.player.stream = null
 	demo.free()
 	await process_frame
 	print("DNA_DEMO_ROUNDTRIP ",JSON.stringify({"failures":failures,"buildings":before_buildings,"seed":before_seed}))
