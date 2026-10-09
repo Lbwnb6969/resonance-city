@@ -223,7 +223,7 @@ func _make_menu() -> void:
 	box.add_child(expanded_button)
 	var terrain_button := Button.new()
 	terrain_button.text = "切换地形族 · Y"
-	terrain_button.tooltip_text = "河谷、湖盆、林岭、海湾平原共享连续城市操作"
+	terrain_button.tooltip_text = "河谷、湖盆、林岭、海湾平原、高地峡谷共享连续城市操作"
 	terrain_button.pressed.connect(_cycle_terrain)
 	box.add_child(terrain_button)
 	add_child(menu)
@@ -630,9 +630,9 @@ func _draw() -> void:
 	if shown_world == null: return
 	var sea := PackedVector2Array([Vector2(-8,-8),Vector2(40,-8),Vector2(40,40),Vector2(-8,40)])
 	var family := shown_world.terrain.family
-	var water_color := Color("78a4ad") if family == "river_valley" else (Color("719ca8") if family == "lake_basin" else (Color("82aab0") if family == "coastal_plain" else Color("6e9c9a")))
-	var left_color := Color("e9e1cb") if family != "forest_ridge" else Color("b7c8a4")
-	var right_color := Color("e0e5d6") if family != "coastal_plain" else Color("e5d9bd")
+	var water_color := Color("78a4ad") if family == "river_valley" else (Color("719ca8") if family == "lake_basin" else (Color("82aab0") if family == "coastal_plain" else (Color("5f8192") if family == "highland_pass" else Color("6e9c9a"))))
+	var left_color := Color("e9e1cb") if family != "forest_ridge" and family != "highland_pass" else (Color("9eafad") if family == "highland_pass" else Color("b7c8a4"))
+	var right_color := Color("e0e5d6") if family != "coastal_plain" and family != "highland_pass" else (Color("c4d0cc") if family == "highland_pass" else Color("e5d9bd"))
 	draw_colored_polygon(_project_polygon(sea,0.0),Color("9bbcc0"))
 	draw_colored_polygon(_project_polygon(shown_world.terrain.left_bank),left_color)
 	draw_colored_polygon(_project_polygon(shown_world.terrain.right_bank),right_color)

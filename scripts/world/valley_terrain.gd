@@ -12,10 +12,10 @@ var left_bank := PackedVector2Array()
 var right_bank := PackedVector2Array()
 
 static func family_ids() -> Array[String]:
-	return ["river_valley","lake_basin","forest_ridge","coastal_plain"]
+	return ["river_valley","lake_basin","forest_ridge","coastal_plain","highland_pass"]
 
 static func family_title(value: String) -> String:
-	return {"river_valley":"河谷","lake_basin":"湖盆","forest_ridge":"林岭","coastal_plain":"海湾平原"}.get(value,"河谷")
+	return {"river_valley":"河谷","lake_basin":"湖盆","forest_ridge":"林岭","coastal_plain":"海湾平原","highland_pass":"高地峡谷"}.get(value,"河谷")
 
 func configure(seed_value: int, phase: float, terrain_family: String = "river_valley") -> void:
 	noise_seed = seed_value
@@ -48,6 +48,9 @@ func river_x(y: float) -> float:
 	var base := float(cfg["template_river_center"])
 	if family == "coastal_plain":
 		base -= 1.1
+	elif family == "highland_pass":
+		base += 0.7
+		return base+1.55*sin(y*0.14+river_phase)+0.42*cos(y*0.37+river_phase)
 	return base+0.8*sin(y*0.19+river_phase)+0.24*sin(y*0.53+river_phase)
 
 func river_width(y: float) -> float:
@@ -59,6 +62,8 @@ func river_width(y: float) -> float:
 			return base*0.78+0.12*sin(y*0.31+river_phase)
 		"coastal_plain":
 			return base*1.35+0.22*sin(y*0.27+river_phase)
+		"highland_pass":
+			return base*0.62+0.16*sin(y*0.44+river_phase)
 		_:
 			return base+(y-float(cfg["template_land_min"]))*float(cfg["template_river_widening"])
 
@@ -75,6 +80,9 @@ func height_at(p: Vector2) -> float:
 		"coastal_plain":
 			hill_gain = 0.75
 			ridge = 0.08*sin(p.y*0.33)
+		"highland_pass":
+			hill_gain = 4.2
+			ridge = 0.72*cos(p.y*0.18+river_phase)+0.34*sin(p.x*0.23)
 	var hill := hill_gain*exp(-p.distance_squared_to(Vector2(4,2))/60.0)
 	return maxf(0.0,0.28+0.18*noise.get_noise_2dv(p)+hill+ridge)
 
@@ -97,8 +105,8 @@ func environment(a: Vector2,b: Vector2,bridge: bool) -> Dictionary:
 			for p in line:
 				if absf(p.y-float(cfg["template_bridge_y"])) > 0.55: open = false
 	var terrain_factor := 1.0
-	if family == "forest_ridge" and crossing.is_empty():
-		terrain_factor = float(Config.load_values()["space"]["forest_factor"])
+	if family in ["forest_ridge","highland_pass"] and crossing.is_empty():
+		terrain_factor = float(Config.load_values()["space"]["forest_factor"])*(1.08 if family == "highland_pass" else 1.0)
 	elif not crossing.is_empty() and open:
 		terrain_factor = float(Config.load_values()["space"]["water_factor"])
 	return {"occlusion":1.0 if open else 0.0,"terrain_factor":terrain_factor,
