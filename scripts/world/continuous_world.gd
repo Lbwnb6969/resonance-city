@@ -148,6 +148,12 @@ func center_order(cid: String) -> int:
 		if str(centers[index]["community_id"]) == cid: return index
 	return 999
 
+func active_community_count() -> int:
+	var count := 0
+	for cid in communities:
+		if bool(communities[cid].get("active",true)): count += 1
+	return count
+
 func road_environment(a: Vector2,b: Vector2) -> Dictionary:
 	var key := Vector4(a.x,a.y,b.x,b.y)
 	if environment_cache.has(key): return environment_cache[key]
@@ -590,7 +596,8 @@ func settle(frame: int) -> void:
 		for family in families:
 			if int(families[family]["created_phrase"]) == phrase_index: continue
 			_grow(family,frame)
-	var forms_dirty := not committed.is_empty() or buildings.size() != buildings_before_growth
+	var split_events := split_oversized_communities(frame)
+	var forms_dirty := not committed.is_empty() or buildings.size() != buildings_before_growth or not split_events.is_empty()
 	var modifiers := musicality()
 	var effective := musical_edges(modifiers)
 	resonance = coupling.resonance(buildings,effective)
@@ -698,6 +705,241 @@ func _grow(family: String, frame: int) -> void:
 	var p: Vector2 = best["position"]
 	_birth(p,int(root["current_midi"]),family,false,frame)
 	families[family]["next_growth_phrase"] = phrase_index+int(best_check.get("growth_delay",1))
+
+
+func _community_adjacency(ids: Array) -> Dictionary:
+	var adjacency: Dictionary = {}
+	for raw_id in ids:
+		adjacency[str(raw_id)] = []
+	for i in range(ids.size()):
+		var a_id := str(ids[i])
+		if not by_id.has(a_id): continue
+		var a: Dictionary = by_id[a_id]
+		for j in range(i+1,ids.size()):
+			var b_id := str(ids[j])
+			if not by_id.has(b_id): continue
+			var b: Dictionary = by_id[b_id]
+			# Planning adjacency is local enough to read as one connected neighborhood;
+			# the acoustic cutoff remains wider and is not reused as a district boundary.
+			var max_gap := minf(float(cfg["space"]["gap_cutoff"])+float(a["radius"])+float(b["radius"]),3.2)
+			if Coupling.position_of(a).distance_to(Coupling.position_of(b)) > max_gap: continue
+			var environment := road_environment(Coupling.position_of(a),Coupling.position_of(b))
+			if float(environment.get("occlusion",1.0)) <= 0.0: continue
+			if coupling.coefficient(a,b,environment) <= 0.0: continue
+			adjacency[a_id].append(b_id)
+			adjacency[b_id].append(a_id)
+	for id in adjacency:
+		adjacency[id].sort()
+	return adjacency
+
+func _community_components(ids: Array, adjacency: Dictionary) -> Array:
+	var remaining: Dictionary = {}
+	for raw_id in ids: remaining[str(raw_id)] = true
+	var components: Array = []
+	while not remaining.is_empty():
+		var keys := remaining.keys()
+		keys.sort()
+		var start := str(keys[0])
+		var queue: Array[String] = [start]
+		remaining.erase(start)
+		var component: Array[String] = []
+		while not queue.is_empty():
+			var current: String = str(queue.pop_front())
+			component.append(current)
+			for next in adjacency.get(current,[]):
+				if remaining.has(next):
+					remaining.erase(next)
+					queue.append(str(next))
+		component.sort()
+		components.append(component)
+	return components
+
+func _community_split_seeds(component: Array, count: int) -> Array:
+	var ordered: Array = component.duplicate()
+	ordered.sort()
+	var seeds: Array = [str(ordered[0])]
+	while seeds.size() < count:
+		var best_id := ""
+		var best_distance := -1.0
+		for raw_id in ordered:
+			var id := str(raw_id)
+			if seeds.has(id): continue
+			var nearest := INF
+			for seed in seeds:
+				if not by_id.has(seed): continue
+				nearest = minf(nearest,Coupling.position_of(by_id[id]).distance_to(Coupling.position_of(by_id[seed])))
+			if nearest > best_distance or (is_equal_approx(nearest,best_distance) and (best_id.is_empty() or id < best_id)):
+				best_id = id
+				best_distance = nearest
+		if best_id.is_empty(): break
+		seeds.append(best_id)
+	return seeds
+
+func _community_distance_to_group(id: String, group: Array) -> float:
+	if not by_id.has(id): return INF
+	var position := Coupling.position_of(by_id[id])
+	var nearest := INF
+	for member in group:
+		if by_id.has(str(member)):
+			nearest = minf(nearest,position.distance_to(Coupling.position_of(by_id[str(member)])))
+	return nearest
+
+func _community_grow_partition(component: Array, adjacency: Dictionary, max_members: int) -> Array:
+	var group_count := maxi(2,ceili(float(component.size())/float(max_members)))
+	var seeds := _community_split_seeds(component,group_count)
+	var groups: Array = []
+	var assigned: Dictionary = {}
+	for seed in seeds:
+		groups.append({"members":[seed]})
+		assigned[seed] = true
+	while assigned.size() < component.size():
+		var best_group := -1
+		var best_id := ""
+		var best_size := INF
+		var best_distance := INF
+		for group_index in range(groups.size()):
+			var group: Dictionary = groups[group_index]
+			var members: Array = group["members"]
+			if members.size() >= max_members: continue
+			var frontier: Array = []
+			for member in members:
+				for candidate in adjacency.get(str(member),[]):
+					var candidate_id := str(candidate)
+					if assigned.has(candidate_id) or frontier.has(candidate_id): continue
+					frontier.append(candidate_id)
+			for candidate_id in frontier:
+				var distance := _community_distance_to_group(candidate_id,members)
+				if members.size() < best_size or (members.size() == best_size and (distance < best_distance or (is_equal_approx(distance,best_distance) and (best_id.is_empty() or candidate_id < best_id)))):
+					best_group = group_index
+					best_id = candidate_id
+					best_size = members.size()
+					best_distance = distance
+		if best_group < 0:
+			# Connected components are normally handled separately. This fallback
+			# keeps an isolated node deterministic when a plan has a hard gap.
+			for candidate in component:
+				var candidate_id := str(candidate)
+				if assigned.has(candidate_id): continue
+				for group_index in range(groups.size()):
+					if groups[group_index]["members"].size() < max_members:
+						best_group = group_index
+						best_id = candidate_id
+						break
+				if best_group >= 0: break
+		if best_group < 0 or best_id.is_empty(): break
+		groups[best_group]["members"].append(best_id)
+		assigned[best_id] = true
+	var partitions: Array = []
+	for group in groups:
+		var members: Array = group["members"]
+		members.sort()
+		partitions.append(members)
+	return partitions
+
+func _community_partitions(ids: Array, max_members: int) -> Array:
+	var adjacency := _community_adjacency(ids)
+	var partitions: Array = []
+	for component in _community_components(ids,adjacency):
+		if component.size() <= max_members:
+			partitions.append(component)
+		else:
+			partitions.append_array(_community_grow_partition(component,adjacency,max_members))
+	return partitions
+
+func _community_centroid(ids: Array) -> Vector2:
+	if ids.is_empty(): return Vector2.ZERO
+	var center := Vector2.ZERO
+	var count := 0
+	for id in ids:
+		if not by_id.has(str(id)): continue
+		center += Coupling.position_of(by_id[str(id)])
+		count += 1
+	return center/float(maxi(1,count))
+
+func _nearest_child_for(position: Vector2, child_ids: Array, child_centers: Dictionary) -> String:
+	var nearest := ""
+	var best_distance := INF
+	for raw_id in child_ids:
+		var id := str(raw_id)
+		var distance := position.distance_squared_to(child_centers[id])
+		if distance < best_distance or (is_equal_approx(distance,best_distance) and (nearest.is_empty() or id < nearest)):
+			nearest = id
+			best_distance = distance
+	return nearest
+
+func split_oversized_communities(frame: int) -> Array:
+	var max_members := int(cfg["space"].get("community_max",40))
+	var candidates: Array = []
+	for cid in communities:
+		var community: Dictionary = communities[cid]
+		if not bool(community.get("active",true)): continue
+		if not community.get("split_children",[]).is_empty(): continue
+		var members: Array = community.get("members",[])
+		if members.size() > max_members: candidates.append(str(cid))
+	var split_events: Array = []
+	for cid in candidates:
+		if not communities.has(cid): continue
+		var parent: Dictionary = communities[cid]
+		var partitions := _community_partitions(parent["members"],max_members)
+		if partitions.size() < 2: continue
+		var child_ids: Array = []
+		var child_centers: Dictionary = {}
+		for index in range(partitions.size()):
+			var child_id := "%s/%02d" % [cid,index+1]
+			var suffix := 2
+			while communities.has(child_id):
+				child_id = "%s/%02d-%d" % [cid,index+1,suffix]
+				suffix += 1
+			var child: Dictionary = parent.duplicate(true)
+			child["id"] = child_id
+			child["name"] = str(parent.get("name",cid))+"·"+str(index+1)
+			child["parent_id"] = cid
+			child["members"] = partitions[index].duplicate()
+			child["split_children"] = []
+			child["split_index"] = index
+			child["active"] = true
+			child.erase("center_id")
+			child.erase("center_level")
+			communities[child_id] = child
+			child_ids.append(child_id)
+			child_centers[child_id] = _community_centroid(partitions[index])
+			for member_id in partitions[index]:
+				if by_id.has(str(member_id)):
+					by_id[str(member_id)]["community_id"] = child_id
+		parent["members"] = []
+		parent["split_children"] = child_ids.duplicate()
+		parent["active"] = false
+		parent["is_parent"] = true
+		parent["split_frame"] = frame
+		for lot in lots:
+			if str(lot.get("community_id","")) != cid: continue
+			var lot_position := Vector2(float(lot["center"][0]),float(lot["center"][1]))
+			lot["community_id"] = _nearest_child_for(lot_position,child_ids,child_centers)
+		for site in public_sites:
+			if str(site.get("community_id","")) != cid: continue
+			var site_position := Vector2(float(site["position"][0]),float(site["position"][1]))
+			site["community_id"] = _nearest_child_for(site_position,child_ids,child_centers)
+		for block in blocks:
+			if str(block.get("community_id","")) != cid: continue
+			var block_position := Vector2.ZERO
+			var block_polygon: PackedVector2Array = block.get("polygon",PackedVector2Array())
+			for point in block_polygon: block_position += point
+			if not block_polygon.is_empty(): block_position /= float(block_polygon.size())
+			block["community_id"] = _nearest_child_for(block_position,child_ids,child_centers)
+		for center in centers:
+			if str(center.get("community_id","")) != cid: continue
+			var center_position := Vector2(float(center["position"][0]),float(center["position"][1]))
+			var assigned := _nearest_child_for(center_position,child_ids,child_centers)
+			center["community_id"] = assigned
+			communities[assigned]["center_id"] = center["id"]
+			communities[assigned]["center_level"] = center["level"]
+		rebuild_graph()
+		refresh_fabric()
+		var event := {"kind":"community_split","community":cid,"children":child_ids.duplicate(),"counts":[],"frame":frame}
+		for child_id in child_ids: event["counts"].append(communities[child_id]["members"].size())
+		events.append(event)
+		split_events.append(event)
+	return split_events
 
 func incident_edges(id: String) -> Array:
 	var nearby: Array = []
@@ -1017,13 +1259,21 @@ func community_theme(cid: String, pitches: Dictionary = {}) -> Array:
 		if not notes.has(pitch): notes.append(pitch)
 	# A landmark rewrites its source community around the absorbed motif. Keep
 	# the motif first and stable across saves, then let surviving members answer it.
+	var lineage: Array = [cid]
+	var lineage_cursor: String = cid
+	while communities.has(lineage_cursor):
+		var parent_id := str(communities[lineage_cursor].get("parent_id",""))
+		if parent_id.is_empty() or lineage.has(parent_id): break
+		lineage.append(parent_id)
+		lineage_cursor = parent_id
 	var motif_notes: Array = []
-	for landmark in landmarks:
-		var source_communities: Array = landmark.get("source_communities",[])
-		if not source_communities.has(cid): continue
-		for motif_entry in landmark.get("motif",[]):
-			var motif_pitch := int(motif_entry.get("midi",0))
-			if not motif_notes.has(motif_pitch): motif_notes.append(motif_pitch)
+	for source_cid in lineage:
+		for landmark in landmarks:
+			var source_communities: Array = landmark.get("source_communities",[])
+			if not source_communities.has(source_cid): continue
+			for motif_entry in landmark.get("motif",[]):
+				var motif_pitch := int(motif_entry.get("midi",0))
+				if not motif_notes.has(motif_pitch): motif_notes.append(motif_pitch)
 	if motif_notes.is_empty(): return notes
 	var composed: Array = motif_notes.duplicate()
 	for pitch in notes:

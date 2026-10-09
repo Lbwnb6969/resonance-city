@@ -137,7 +137,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			# instead of sounding like a click, while ordinary retunes keep the
 			# shorter pitch glide.
 			var structural_change := recent.any(func(event: Dictionary) -> bool:
-				return str(event.get("kind","")) in ["birth","upgrade","landmark","park","civic","bridge","era"])
+				return str(event.get("kind","")) in ["birth","upgrade","landmark","park","civic","bridge","era","community_split"])
 			var seam_seconds := 0.08 if structural_change else float(world.cfg["score"]["pitch_glide_seconds"])
 			transition_total = maxi(1,roundi(seam_seconds*rate))
 			transition_remaining = transition_total

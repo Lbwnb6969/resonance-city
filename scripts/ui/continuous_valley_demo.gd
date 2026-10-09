@@ -151,7 +151,7 @@ func _start_world(saved: Dictionary = {}) -> void:
 	last_saved_event_count = model.world.events.size()
 	last_checkpoint_phrase = model.world.phrase_index
 	selected_landmark_candidate = -1
-	_message("%s · %d栋 · %d个社区" % [shown_world.terrain_title(),shown_world.buildings.size(),shown_world.communities.size()] if not saved.is_empty() else ("%s · 林荫交响 · 完整河谷起点，可继续生长" % shown_world.terrain_title() if town_starter else ("%s · 晴岸合奏 · 18栋制作示例" % shown_world.terrain_title() if starter and expression == "bright" else ("%s · 深流慢板 · 低音与留白" % shown_world.terrain_title() if starter else "%s · 空地开局 · 点击街边播下第一段声音" % shown_world.terrain_title()))))
+	_message("%s · %d栋 · %d个社区" % [shown_world.terrain_title(),shown_world.buildings.size(),shown_world.active_community_count()] if not saved.is_empty() else ("%s · 林荫交响 · 完整河谷起点，可继续生长" % shown_world.terrain_title() if town_starter else ("%s · 晴岸合奏 · 18栋制作示例" % shown_world.terrain_title() if starter and expression == "bright" else ("%s · 深流慢板 · 低音与留白" % shown_world.terrain_title() if starter else "%s · 空地开局 · 点击街边播下第一段声音" % shown_world.terrain_title()))))
 
 func _make_menu() -> void:
 	menu = PanelContainer.new()
@@ -267,7 +267,7 @@ func _start_expanded_town() -> void:
 	expression = "bright"
 	_start_world()
 	clock.start_output(model._mix_frame,{})
-	_message("多中心街坊 · "+str(shown_world.communities.size())+"个社区 · "+str(shown_world.buildings.size())+"栋起点")
+	_message("多中心街坊 · "+str(shown_world.active_community_count())+"个社区 · "+str(shown_world.buildings.size())+"栋起点")
 
 func _start_town() -> void:
 	_save_before_switch()
@@ -830,7 +830,7 @@ func _draw() -> void:
 		var lead := str(score["theme"].get("cid",""))
 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
 		var decree_slots := " · 政令槽%d" % shown_world.landmark_intervention_slots() if shown_world.landmark_intervention_slots() > 1 else ""
-		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d条线路 · %d处公共 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.communities.size(),shown_world.transit_lines.size(),shown_world.public_sites.size(),model.world.pending_actions.size(),name,decree_slots]
+		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d条线路 · %d处公共 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.active_community_count(),shown_world.transit_lines.size(),shown_world.public_sites.size(),model.world.pending_actions.size(),name,decree_slots]
 		draw_string(font,Vector2(size.x-650,size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("607974"))
 	var duration := float(model.phrase_frames)
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
@@ -838,7 +838,7 @@ func _draw() -> void:
 	draw_line(Vector2(48,size.y-32),Vector2(48+(size.x-96)*progress,size.y-32),Color("af9c6a"),3.0)
 
 func diagnostics() -> Dictionary:
-	return {"buildings":shown_world.buildings.size(),"planned_communities":shown_world.communities.size(),
+	return {"buildings":shown_world.buildings.size(),"planned_communities":shown_world.active_community_count(),
 		"lots":shown_world.lots.size(),"resonance":shown_world.resonance,"phrase":shown_world.phrase_index,
 		"skips":clock.underruns,"audible_frame":clock.renderer.transport.audible_frame,"pending":model.world.pending.duplicate(true),
 		"preview_started":preview_started,"seed_hex":model.world.rng.seed_hex,"blocks":shown_world.blocks.size(),
