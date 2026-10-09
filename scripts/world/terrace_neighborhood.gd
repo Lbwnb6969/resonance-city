@@ -120,6 +120,53 @@ static func populate(world: RefCounted) -> void:
 		_append_site(world,Vector2(view_x,view_y),Vector2(0.50,0.52),
 			[Vector2(bank*2.1,0.0),Vector2(bank*2.8,-0.3),Vector2(bank*1.9,1.0),Vector2(bank*3.2,1.6)],
 			prefix+"-terrace-view-civic","civic","远台公共节点",prefix+"-terrace-12")
+	# A second inland band gives the expansion a real neighborhood depth instead of one ribbon.
+	var inner_ys: Array = [2.2,7.6,13.0,18.4,23.8,29.2]
+	var inner_offset: float = offset+3.2
+	for bank: int in [-1,1]:
+		var prefix := "west" if bank < 0 else "east"
+		var inner_names := ["杉影里","回音里","石桥里","云端里","风过里","青苔里"] if bank < 0 else ["潮影里","灯塔里","芦声里","远帆里","月湾里","海棠里"]
+		for index in range(inner_ys.size()):
+			var cid := "%s-inner-%d" % [prefix,index+1]
+			world.communities[cid] = {"id":cid,"bank":bank,"name":inner_names[index],"members":[],"parent_id":prefix+"-2"}
+			var y: float = float(inner_ys[index])
+			var x: float = world.terrain.river_x(y)+float(bank)*inner_offset
+			var node_id := "%s-inner-node-%d" % [prefix,index+1]
+			world.nodes[node_id] = [x,y]
+			var nearest_index := 1
+			var nearest_gap := INF
+			for outer_index in range(ys.size()):
+				var gap := absf(float(ys[outer_index])-y)
+				if gap < nearest_gap:
+					nearest_gap = gap
+					nearest_index = outer_index+1
+			var outer_node := "%s-terrace-node-%d" % [prefix,nearest_index]
+			var outer_point: Array = world.nodes[outer_node]
+			world.roads.append({"id":"%s-inner-feed-%d" % [prefix,index+1],"from":outer_node,"to":node_id,
+				"path":PackedVector2Array([Vector2(outer_point[0],outer_point[1]),Vector2(x,y)]),"bridge":false,"kind":"branch"})
+			if index > 0:
+				var previous_y: float = float(inner_ys[index-1])
+				var previous_x: float = world.terrain.river_x(previous_y)+float(bank)*inner_offset
+				world.roads.append({"id":"%s-inner-road-%d" % [prefix,index+1],
+					"from":"%s-inner-node-%d" % [prefix,index],"to":node_id,
+					"path":PackedVector2Array([Vector2(previous_x,previous_y),Vector2(x,y)]),"bridge":false,"kind":"branch"})
+			# Inner lots sit away from the feed road, toward the inland edge of each bank.
+			var lot_center := Vector2(x+float(bank)*float(t["template_lot_road_offset"]),y+0.9)
+			var half := Vector2(float(t["template_lot_half_width"]),float(t["template_lot_half_length"]))
+			var polygon := box(lot_center,half)
+			if world.terrain.valid_footprint(polygon):
+				world.lots.append({"id":"%s-inner-lot-%d" % [prefix,index+1],"center":[lot_center.x,lot_center.y],"polygon":polygon,
+					"entrance":[x,y],"use":"residential","community_id":cid,"bank":bank,"occupant":""})
+		var inner_site_y: float = float(inner_ys[2])
+		var inner_site_x: float = world.terrain.river_x(inner_site_y)+float(bank)*inner_offset
+		_append_site(world,Vector2(inner_site_x,inner_site_y),Vector2(0.68,0.56),
+			[Vector2(bank*1.2,0.0),Vector2(bank*1.8,0.5),Vector2(bank*0.9,1.0)],
+			prefix+"-inner-park","park","内台口袋园",prefix+"-inner-3")
+		var inner_civic_y: float = float(inner_ys[4])
+		var inner_civic_x: float = world.terrain.river_x(inner_civic_y)+float(bank)*inner_offset
+		_append_site(world,Vector2(inner_civic_x,inner_civic_y),Vector2(0.48,0.50),
+			[Vector2(bank*1.2,0.0),Vector2(bank*1.8,-0.4),Vector2(bank*0.9,0.9)],
+			prefix+"-inner-civic","civic","内台公共屋",prefix+"-inner-5")
 	for bank: int in [-1,1]:
 		var prefix := "west" if bank < 0 else "east"
 		var corridor_path := PackedVector2Array()

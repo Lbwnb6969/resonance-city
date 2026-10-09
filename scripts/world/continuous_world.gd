@@ -116,6 +116,14 @@ func _refresh_centers() -> void:
 			var terrace: Array = nodes[node_id]
 			centers.append({"id":"%s-center" % terrace_id,"level":"terrace","community_id":terrace_id,"node_id":node_id,"position":[terrace[0],terrace[1]],"active":expanded_plan})
 			index += 1
+		var inner_index := 1
+		while true:
+			var inner_id := "%s-inner-%d" % [prefix,inner_index]
+			var inner_node_id := "%s-inner-node-%d" % [prefix,inner_index]
+			if not nodes.has(inner_node_id) or not communities.has(inner_id): break
+			var inner: Array = nodes[inner_node_id]
+			centers.append({"id":"%s-center" % inner_id,"level":"local","community_id":inner_id,"node_id":inner_node_id,"position":[inner[0],inner[1]],"active":expanded_plan})
+			inner_index += 1
 	for center in centers:
 		var cid := str(center["community_id"])
 		if communities.has(cid):
@@ -613,6 +621,14 @@ func _refresh_public_network(frame: int = 0) -> void:
 		terrace_itinerary.append("west-1")
 		if terrace_itinerary.size() > 2:
 			lines.append(_make_transit_line("terrace-line","台地回声线",terrace_itinerary,frame))
+		var inner_itinerary: Array = ["west-1"]
+		var inner_index := 1
+		while nodes.has("west-inner-node-%d" % inner_index):
+			inner_itinerary.append("west-inner-node-%d" % inner_index)
+			inner_index += 1
+		inner_itinerary.append("west-1")
+		if inner_itinerary.size() > 2:
+			lines.append(_make_transit_line("inland-line","内台接驳线",inner_itinerary,frame))
 	transit_lines.assign(lines)
 	transit = lines[0] if not lines.is_empty() else {}
 
