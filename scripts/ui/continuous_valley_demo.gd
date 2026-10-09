@@ -211,6 +211,13 @@ func _make_menu() -> void:
 			menu.hide())
 		archive_row.add_child(button)
 	box.add_child(archive_row)
+	var dna_row := HBoxContainer.new()
+	var dna_button := Button.new()
+	dna_button.text = "继续最近DNA"
+	dna_button.tooltip_text = "从最近导出的 City DNA JSON 恢复城市、音乐与镜头"
+	dna_button.pressed.connect(load_dna)
+	dna_row.add_child(dna_button)
+	box.add_child(dna_row)
 	var export_button := Button.new()
 	export_button.text = "导出城市DNA · Ctrl+Shift+E"
 	export_button.tooltip_text = "导出可读的城市、地形、道路、设施、交通与音乐编曲 JSON"
@@ -294,6 +301,17 @@ func export_dna() -> Dictionary:
 	if result["ok"]: _message("城市DNA已导出 · "+str(result["path"]))
 	else: _message(result["reason"])
 	return result
+
+func load_dna() -> bool:
+	var saved := CityArchive.latest_dna()
+	if not saved["ok"]:
+		_message(saved["reason"])
+		return false
+	_save_before_switch()
+	_start_world(saved)
+	clock.start_output(model._mix_frame,{},saved.get("renderer",{}))
+	_message("已从最近 City DNA 继续 · 音乐与城市状态已恢复" if saved.get("skipped",0) == 0 else "已恢复上一份完整 City DNA")
+	return true
 
 func load_city(silent_empty: bool = false) -> bool:
 	var saved := CityArchive.latest(archive_directory)

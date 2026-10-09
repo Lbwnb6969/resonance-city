@@ -219,8 +219,10 @@ static func from_state(saved: Dictionary) -> ContinuousAudioModel:
 	copy.sound_overrides = saved["sound_overrides"].duplicate(true)
 	copy.decisions.assign(saved["decisions"].duplicate(true))
 	copy.presentation_history.assign(saved["presentation_history"].duplicate(true))
-	copy.last_sample = saved["last_sample"]
-	copy.transition_offset = saved["transition_offset"]
+	var saved_last_sample: Variant = saved.get("last_sample",Vector2.ZERO)
+	var saved_transition_offset: Variant = saved.get("transition_offset",Vector2.ZERO)
+	copy.last_sample = saved_last_sample if saved_last_sample is Vector2 else Vector2(float(saved_last_sample[0]),float(saved_last_sample[1]))
+	copy.transition_offset = saved_transition_offset if saved_transition_offset is Vector2 else Vector2(float(saved_transition_offset[0]),float(saved_transition_offset[1]))
 	copy.transition_remaining = int(saved["transition_remaining"])
 	copy.transition_total = int(saved["transition_total"])
 	for field in SAVED_SYNTH_FIELDS: copy.synth.set(field,saved["mix"][field])

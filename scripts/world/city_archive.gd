@@ -91,6 +91,11 @@ static func export_dna(city: Dictionary, directory: String = DIRECTORY+"/exports
 			"sound_events":model.get("sound_events",[]),
 			"sound_trace":model.get("sound_trace",[])
 		},
+		"runtime":{
+			"model":model,
+			"renderer":city.get("renderer",{}),
+			"view":city.get("view",{})
+		},
 		"view":city.get("view",{})
 	}
 	var path := "%s/%012d_%016d.dna.json" % [directory,stamp,Time.get_ticks_usec()]
@@ -103,6 +108,17 @@ static func export_dna(city: Dictionary, directory: String = DIRECTORY+"/exports
 	if write_error != OK: return {"ok":false,"reason":"DNA文件未写完"}
 	if DirAccess.rename_absolute(path+".tmp",path) != OK: return {"ok":false,"reason":"DNA版本未完成"}
 	return {"ok":true,"path":path,"bytes":FileAccess.get_file_as_bytes(path).size(),"saved_at":stamp}
+
+static func read_dna(path: String) -> Dictionary:
+	var file := FileAccess.open(path,FileAccess.READ)
+	if file == null: return {"ok":false,"reason":"无法读取DNA"}
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not parsed is Dictionary or str(parsed.get("schema","")) != "resonance_city_dna_v1":
+		return {"ok":false,"reason":"DNA版本不支持"}
+	if not parsed.has("runtime") or not parsed["runtime"] is Dictionary or not parsed["runtime"].has("model"):
+		return {"ok":false,"reason":"DNA缺少可恢复运行时"}
+	return {"ok":true,"dna":parsed,"model":parsed["runtime"]["model"],"renderer":parsed["runtime"].get("renderer",{}),"view":parsed["runtime"].get("view",{}),"path":path}
 
 static func read(path: String) -> Dictionary:
 	var file := FileAccess.open(path,FileAccess.READ)
@@ -121,6 +137,22 @@ static func read(path: String) -> Dictionary:
 	if not city.has_all(["model","renderer","view"]) or not city["model"] is Dictionary or not city["renderer"] is Dictionary:
 		return {"ok":false,"reason":"作品内容不完整"}
 	return {"ok":true,"city":city,"path":path,"saved_at":payload["saved_at"],"reason":payload["reason"]}
+
+static func latest_dna(directory: String = DIRECTORY+"/exports") -> Dictionary:
+	if not DirAccess.dir_exists_absolute(directory): return {"ok":false,"reason":"还没有导出的城市DNA"}
+	var paths: Array[String] = []
+	for filename in DirAccess.get_files_at(directory):
+		if filename.ends_with(".dna.json"): paths.append(directory+"/"+filename)
+	paths.sort()
+	paths.reverse()
+	var skipped := 0
+	for path in paths:
+		var result := read_dna(path)
+		if result["ok"]:
+			result["skipped"] = skipped
+			return result
+		skipped += 1
+	return {"ok":false,"reason":"没有完整可读的城市DNA" if skipped > 0 else "还没有导出的城市DNA"}
 
 static func latest(directory: String = DIRECTORY) -> Dictionary:
 	if not DirAccess.dir_exists_absolute(directory): return {"ok":false,"reason":"还没有保存的作品"}
