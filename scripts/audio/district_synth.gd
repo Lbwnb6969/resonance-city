@@ -76,27 +76,34 @@ func _init(city: Array, marks: Dictionary = {}) -> void:
 		tables[type] = table
 	for district in districts:
 		var id := str(district["district_id"])
-		var pan := 0.0
-		for region in values["synthesis"]["pan_regions"]:
-			if Schema.cell(district).x >= int(region[0]) and Schema.cell(district).x <= int(region[1]):
-				pan = float(region[2])
 		routing.append({"id": id, "type": district["type"], "base_midi": district["current_midi"],
 			"rhythm_steps": PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
 			"phase_key": "_phase_" + id, "highpass_key": "_highpass_" + id,
 			"ring":{},"stage":Stage.initial(district),"table": tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
-			"stereo": Vector2(cos((pan + 1.0) * PI / 4.0), sin((pan + 1.0) * PI / 4.0))})
+			"stereo": _stereo_for(district)})
 
 func _append_district(district: Dictionary) -> void:
 	var id: String = district["district_id"]
-	var pan := 0.0
-	for region in values["synthesis"]["pan_regions"]:
-		if Schema.cell(district).x >= int(region[0]) and Schema.cell(district).x <= int(region[1]):
-			pan = float(region[2])
 	routing.append({"id":id,"type":district["type"],"base_midi":district["current_midi"],
 		"rhythm_steps":PackedInt32Array(values["voices"][district["type"]]["rhythm_steps"]),
 		"phase_key":"_phase_"+id,"highpass_key":"_highpass_"+id,
 		"ring":{},"stage":Stage.initial(district),"table":tables[district["type"]],"level":float(district.get("voice_level",1.0)),"anchor":bool(district.get("is_anchor",false)),
-		"stereo":Vector2(cos((pan+1.0)*PI/4.0),sin((pan+1.0)*PI/4.0))})
+		"stereo":_stereo_for(district)})
+
+func _pan_for(district: Dictionary) -> float:
+	# A5 supplies the three equal-power pan values; A16 maps them to the
+	# horizontal coordinate of the isometric projection, x-y, rather than x.
+	var projection := Schema.cell(district).x-Schema.cell(district).y
+	var regions: Array = values["synthesis"]["pan_regions"]
+	if projection <= -5:
+		return float(regions[0][2])
+	if projection >= 5:
+		return float(regions[2][2])
+	return float(regions[1][2])
+
+func _stereo_for(district: Dictionary) -> Vector2:
+	var pan := _pan_for(district)
+	return Vector2(cos((pan+1.0)*PI/4.0),sin((pan+1.0)*PI/4.0))
 
 func frequency(midi: int) -> float:
 	if frequencies.has(midi):
@@ -566,11 +573,7 @@ func update_city(city: Array, state: Dictionary, marks: Dictionary = {}, events:
 				continue
 			for event in events:
 				if event["district_id"] == id: Stage.sync(route["stage"],event)
-			var pan := 0.0
-			for region in values["synthesis"]["pan_regions"]:
-				if Schema.cell(district).x >= int(region[0]) and Schema.cell(district).x <= int(region[1]):
-					pan = float(region[2])
-			route["stereo"] = Vector2(cos((pan+1.0)*PI/4.0),sin((pan+1.0)*PI/4.0))
+			route["stereo"] = _stereo_for(district)
 
 func set_solo(id: String) -> bool:
 	if not id.is_empty() and not routing.any(func(route: Dictionary) -> bool: return route["id"] == id):

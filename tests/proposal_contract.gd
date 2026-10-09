@@ -38,7 +38,7 @@ func _run() -> void:
 	test.check(city.city[0]["vitality"] == 56.0 and city.city[2]["vitality"] == 51.0, "New fifth and neutral minor third drive actual vitality")
 	test.check(city.pending.is_empty(), "Consumed intervention cannot replay")
 	var moved := Session.new(fixture(),"2026100800000001")
-	var move := {"proposal_id":"p0:0:factory:relocate","target":[12,12]}
+	var move := {"proposal_id":"p0:0:factory:relocate","target":[13,6]}
 	test.check(not moved.request({"proposal_id":"p0:0:factory:relocate","target":[2,6]},0,0.0)["accepted"], "Occupied target rejected")
 	test.check(not moved.request({"proposal_id":"p0:0:factory:relocate","target":[16,6]},0,0.0)["accepted"], "Out-of-map target rejected")
 	moved.request(retune,period-10,period-2000.0)
@@ -72,7 +72,7 @@ func _run() -> void:
 	output.render(1)
 	test.check(live.session.city[1]["footprint"] == [[3,6]], "PCM immediately before boundary keeps old location")
 	output.render(1)
-	test.check(live.session.city[1]["footprint"] == [[12,12]], "First boundary sample submits new graph")
+	test.check(live.session.city[1]["footprint"] == [[13,6]], "First boundary sample submits new graph")
 	var silent_tracks := live.synth.render_tracks(output.state,period+1,output.transport.sample_rate)
 	test.check(silent_tracks["District_factory_Drone"] == Vector2.ZERO and silent_tracks["District_factory_Rhythm"] == Vector2.ZERO, "Actual relocated output is silent")
 	test.check(silent_tracks["District_home_Drone"] != Vector2.ZERO, "Migration does not suppress unrelated district")
@@ -105,7 +105,7 @@ func _preview_contract() -> void:
 	var renderer_saved := renderer.snapshot()
 	var choices: Array = [
 		{"proposal_id":"p0:0:factory:retune","target":55},
-		{"proposal_id":"p0:0:factory:relocate","target":[12,12]}]
+		{"proposal_id":"p0:0:factory:relocate","target":[13,6]}]
 	for choice in choices:
 		var preview: Dictionary = ProposalPreview.build(model_saved,renderer_saved,choice,period-2000.0)
 		test.check(preview.get("accepted",false), "Snapshot preview accepted: "+str(choice["target"]))

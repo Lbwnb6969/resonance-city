@@ -1,0 +1,37 @@
+[
+  {
+    "path": "scripts/audio/district_synth.gd",
+    "sha256": "79dffba9d59fd0e09aa5d334501d86c4b95b496cadb82cf8b478069c6030bf30",
+    "bytes": 28494
+  },
+  {
+    "path": "tests/proposal_contract.gd",
+    "sha256": "75d31122512f338c1a80b959d7b709daa8585f1ab0b7a2a9e1790edcb4400cae",
+    "bytes": 8893
+  },
+  {
+    "path": "tests/listening_contract.gd",
+    "sha256": "da1c422f44ef2708e501336a9d3bafd298a04c9b76aa564add79341650c33e5d",
+    "bytes": 4212
+  },
+  {
+    "path": "文档/01_执行规格/spec.audio.md",
+    "sha256": "1e15ed29f44bb5d3f606ed4c325819eb86fb8ab61934f70f80204dba07dd71c5",
+    "bytes": 29730
+  },
+  {
+    "path": "文档/02_验收/DOD.md",
+    "sha256": "3df8ba363f4ad13b6dc8bb6afa8e77ab82aa858e9805d2effe403763802d1317",
+    "bytes": 35081
+  },
+  {
+    "path": "文档/03_任务/P2.md",
+    "sha256": "0fc7339a2ee5ff64d7ab76d301831142d59c619056f1bfb14fb3a8e76e520001",
+    "bytes": 2937
+  },
+  {
+    "path": "PROJECT.md",
+    "sha256": "2ec9b07a5a9c299d0cea2b6d6857b906a03e6b50e6b8dea1afc4069f889959d5",
+    "bytes": 17153
+  }
+]

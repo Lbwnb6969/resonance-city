@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+P0_READY seed=bf3f90214cfba646 districts=9
+AUDIO-007 PASS checks=12 evidence=res://验证记录/P0/AUDIO-007_projection_pan_round58.json scope=A16 x-y projection, equal-power route pan, quantized relocation and camera read-only behavior; no human localization claim

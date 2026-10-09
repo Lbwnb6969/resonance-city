@@ -1,7 +1,7 @@
 {
 	"arguments": [
 		"--script",
-		"res://tests/listening_contract.gd"
+		"tests/listening_contract.gd"
 	],
 	"case": "listening_tool",
 	"checks": [
