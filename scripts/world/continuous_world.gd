@@ -32,6 +32,9 @@ var landmark_progress: Dictionary = {}
 var network: CityRoadNetwork
 var transit: Dictionary = {}
 var transit_lines: Array[Dictionary] = []
+# Functional districts are derived from active communities and public infrastructure.
+# They provide a stable bridge between city layout, UI language, and musical phrasing.
+var functional_zones: Array[Dictionary] = []
 var environment_cache: Dictionary = {}
 var mode := "free"
 var profile := "bright"
@@ -153,6 +156,88 @@ func active_community_count() -> int:
 	for cid in communities:
 		if bool(communities[cid].get("active",true)): count += 1
 	return count
+
+func _active_community_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for cid in communities:
+		if not bool(communities[cid].get("active",true)): continue
+		if communities[cid].get("members",[]).is_empty(): continue
+		ids.append(str(cid))
+	ids.sort_custom(func(a: String,b: String) -> bool:
+		var ar := center_order(a)
+		var br := center_order(b)
+		if ar != br: return ar < br
+		return a < b)
+	return ids
+
+func _community_usage(cid: String) -> Dictionary:
+	var result := {"residential":0,"commercial":0,"industrial":0,"public":0}
+	if not communities.has(cid): return result
+	for id in communities[cid].get("members",[]):
+		if not by_id.has(id): continue
+		var kind := str(by_id[id].get("type","residential"))
+		if not result.has(kind): result[kind] = 0
+		result[kind] = int(result[kind])+1
+	return result
+
+func functional_zone_roles(cid: String) -> Array[String]:
+	var roles: Array[String] = []
+	for zone in functional_zones:
+		if zone.get("community_ids",[]).has(cid):
+			roles.append(str(zone.get("music_role",zone.get("role","mixed"))))
+	return roles
+
+func refresh_functional_zones() -> void:
+	var ids := _active_community_ids()
+	var next: Array[Dictionary] = []
+	var role_specs := [
+		{"role":"residential","title":"居住带","music_role":"home","threshold":2},
+		{"role":"commercial","title":"商贸核心","music_role":"market","threshold":2}
+	]
+	for spec in role_specs:
+		var members: Array[String] = []
+		var count := 0
+		for cid in ids:
+			var usage := _community_usage(cid)
+			if int(usage.get(spec["role"],0)) < int(spec["threshold"]): continue
+			members.append(cid)
+			count += int(usage[spec["role"]])
+		if members.size() >= 2:
+			next.append({"id":"zone-"+str(spec["role"])+ "-core","role":spec["role"],"title":spec["title"],"music_role":spec["music_role"],"community_ids":members,"building_count":count,"site_ids":[],"line_ids":[]})
+	var green_members: Array[String] = []
+	var green_sites: Array[String] = []
+	for site in public_sites:
+		if not bool(site.get("active",false)) or str(site.get("kind","")) not in ["park","civic"]: continue
+		var cid := str(site.get("community_id",""))
+		if cid.is_empty() or not ids.has(cid): continue
+		if not green_members.has(cid): green_members.append(cid)
+		green_sites.append(str(site.get("id","")))
+	if green_members.size() >= 1 and green_corridors.size() > 0:
+		green_members.sort_custom(func(a: String,b: String) -> bool: return center_order(a) < center_order(b) if center_order(a) != center_order(b) else a < b)
+		next.append({"id":"zone-civic-green","role":"civic_green","title":"公园与公共生活带","music_role":"garden","community_ids":green_members,"building_count":0,"site_ids":green_sites,"line_ids":[]})
+	var mixed_members: Array[String] = []
+	for cid in ids:
+		var usage := _community_usage(cid)
+		var used := 0
+		for key in usage:
+			if int(usage[key]) > 0: used += 1
+		if used >= 2: mixed_members.append(cid)
+	if mixed_members.size() >= 2:
+		next.append({"id":"zone-mixed-center","role":"mixed","title":"混合中心","music_role":"center","community_ids":mixed_members,"building_count":0,"site_ids":[],"line_ids":[]})
+	if transit_lines.size() > 0:
+		var transit_members: Array[String] = []
+		for cid in ids:
+			var center := center_for(cid)
+			if center.is_empty(): continue
+			var node_id := str(center.get("node_id",""))
+			for line in transit_lines:
+				if line.get("stops",[]).has(node_id) or line.get("itinerary",[]).has(node_id):
+					transit_members.append(cid)
+					break
+		if transit_members.size() >= 2:
+			var line_ids: Array = transit_lines.map(func(line: Dictionary) -> String: return str(line.get("id","")))
+			next.append({"id":"zone-transit-hub","role":"transit","title":"换乘节点","music_role":"pulse","community_ids":transit_members,"building_count":0,"site_ids":[],"line_ids":line_ids})
+	functional_zones = next
 
 func road_environment(a: Vector2,b: Vector2) -> Dictionary:
 	var key := Vector4(a.x,a.y,b.x,b.y)
@@ -1008,7 +1093,7 @@ func snapshot() -> Dictionary:
 	return {"schema_version":2,"generation_version":66,"settings":cfg.duplicate(true),
 		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase,"family":terrain.family},
 		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"green_corridors":green_corridors.duplicate(true),"centers":centers.duplicate(true),"communities":communities.duplicate(true)},
-		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"landmarks":landmarks.duplicate(true),"landmark_progress":landmark_progress.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
+		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"functional_zones":functional_zones.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"landmarks":landmarks.duplicate(true),"landmark_progress":landmark_progress.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
 		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,"expanded_plan":expanded_plan,
 		"next_id":next_id,"families":families.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_reason":last_reason}
 
@@ -1028,6 +1113,7 @@ func restore(saved: Dictionary) -> void:
 		communities = plan["communities"].duplicate(true)
 		transit = saved["transit"].duplicate(true)
 		transit_lines.assign(saved.get("transit_lines",[]).duplicate(true))
+		functional_zones.assign(saved.get("functional_zones",[]).duplicate(true))
 	buildings.assign(saved["buildings"].duplicate(true))
 	by_id.clear()
 	index = Index.new()
@@ -1143,6 +1229,7 @@ func _refresh_public_network(frame: int = 0) -> void:
 		if inner_itinerary.size() > 2:
 			lines.append(_make_transit_line("inland-line","内台接驳线",inner_itinerary,frame))
 	transit_lines.assign(lines)
+	refresh_functional_zones()
 	transit = lines[0] if not lines.is_empty() else {}
 
 func _make_transit_line(id: String, title: String, itinerary: Array, frame: int) -> Dictionary:

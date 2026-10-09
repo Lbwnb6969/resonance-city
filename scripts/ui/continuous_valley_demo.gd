@@ -830,8 +830,8 @@ func _draw() -> void:
 		var lead := str(score["theme"].get("cid",""))
 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
 		var decree_slots := " · 政令槽%d" % shown_world.landmark_intervention_slots() if shown_world.landmark_intervention_slots() > 1 else ""
-		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d条线路 · %d处公共 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.active_community_count(),shown_world.transit_lines.size(),shown_world.public_sites.size(),model.world.pending_actions.size(),name,decree_slots]
-		draw_string(font,Vector2(size.x-650,size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("607974"))
+		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d功能区 · %d条线路 · %d处公共 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.active_community_count(),shown_world.functional_zones.size(),shown_world.transit_lines.size(),shown_world.public_sites.size(),model.world.pending_actions.size(),name,decree_slots]
+		draw_string(font,Vector2(size.x-760,size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("607974"))
 	var duration := float(model.phrase_frames)
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
@@ -842,7 +842,7 @@ func diagnostics() -> Dictionary:
 		"lots":shown_world.lots.size(),"resonance":shown_world.resonance,"phrase":shown_world.phrase_index,
 		"skips":clock.underruns,"audible_frame":clock.renderer.transport.audible_frame,"pending":model.world.pending.duplicate(true),
 		"preview_started":preview_started,"seed_hex":model.world.rng.seed_hex,"blocks":shown_world.blocks.size(),
-		"public_sites":shown_world.public_sites.duplicate(true),"landmarks":shown_world.landmarks.duplicate(true),"landmark_candidates":shown_world.landmark_candidates(),"green_corridors":shown_world.green_corridors.duplicate(true),"centers":shown_world.centers.duplicate(true),"transit":shown_world.transit_lines.map(func(line: Dictionary) -> String: return line["name"]),"terrain_family":shown_world.terrain.family,"terrain_title":shown_world.terrain_title(),"era":shown_world.era,"era_title":shown_world.era_title(),"vehicle":shown_world.vehicle_kind(),"score":model.synth.score_snapshot(),"sound_trace":model.sound_trace.duplicate(true)}
+		"public_sites":shown_world.public_sites.duplicate(true),"functional_zones":shown_world.functional_zones.duplicate(true),"landmarks":shown_world.landmarks.duplicate(true),"landmark_candidates":shown_world.landmark_candidates(),"green_corridors":shown_world.green_corridors.duplicate(true),"centers":shown_world.centers.duplicate(true),"transit":shown_world.transit_lines.map(func(line: Dictionary) -> String: return line["name"]),"terrain_family":shown_world.terrain.family,"terrain_title":shown_world.terrain_title(),"era":shown_world.era,"era_title":shown_world.era_title(),"vehicle":shown_world.vehicle_kind(),"score":model.synth.score_snapshot(),"sound_trace":model.sound_trace.duplicate(true)}
 
 func _exit_tree() -> void:
 	if session_persistence and model != null and is_instance_valid(clock) and clock.active: save_city("离开时保存")
