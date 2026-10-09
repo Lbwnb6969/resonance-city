@@ -135,6 +135,13 @@ func _draw() -> void:
 			draw_circle(window,0.72,Color("f5e1a4") if active else Color("fff0bd"))
 		if not active:
 			draw_arc(Vector2(0,-5),13.0,0,TAU,20,Color(0.90,0.75,0.40,0.38),1.0,true)
+	elif kind == "stop":
+		var sign_colors: Array[Color] = [Color("d8b86e"),Color("86a9a0"),Color("c98e72"),Color("9c9bd0")]
+		var sign_color: Color = sign_colors[posmod(tone,4)]
+		draw_line(Vector2(0,2),Vector2(0,-14),Color("68766d"),1.4,true)
+		draw_circle(Vector2(0,-15),4.0,Color(0.17,0.24,0.22,0.82))
+		draw_circle(Vector2(0,-15),2.7,sign_color)
+		draw_arc(Vector2(0,-15),5.8,-2.7,-0.45,10,Color(sign_color.r,sign_color.g,sign_color.b,0.45),1.0,true)
 	elif kind == "walker":
 		var stride := sin(motion*2.7+tone)*0.8 if active else 0.0
 		var facing := _project(direction*0.035)

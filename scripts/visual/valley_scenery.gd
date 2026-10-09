@@ -31,6 +31,16 @@ func rebuild(demo: Control) -> void:
 		if road.get("kind","") == "branch": continue
 		var p := path[path.size()/2]+Vector2(0.38,0)
 		if city.terrain.land_at(p): _add(demo,"lamp-"+road["id"],p,"lamp",0)
+	# Transit stops are drawn from the same route nodes used by travelers.
+	# Shared stops get one marker so a transfer point reads as one place.
+	var stop_tone := 0
+	for line in city.transit_lines:
+		for stop_id in line.get("stops",[]):
+			var stop_key := "stop-"+str(stop_id)
+			if props.has(stop_key) or not city.network.nodes.has(stop_id): continue
+			var stop_node: Array = city.network.nodes[stop_id]
+			_add(demo,stop_key,Vector2(float(stop_node[0]),float(stop_node[1])),"stop",stop_tone)
+			stop_tone += 1
 	for site in city.public_sites:
 		var p := Vector2(site["position"][0],site["position"][1])
 		if site["kind"] == "civic": _add(demo,site["id"],p,"civic",0,site["id"])
