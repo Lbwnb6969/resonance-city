@@ -20,6 +20,8 @@ func _initialize() -> void:
 	check(world.buildings.size() >= 90,"expanded town creates a larger playable start")
 	check(world.buildings.size() > 100,"expanded city grows beyond the authored start after two phrases")
 	check(world.roads.size() >= 30,"terrace roads are part of the road graph")
+	check(world.transit_lines.size() == 3 and world.transit_lines.any(func(line: Dictionary) -> bool: return line["id"] == "terrace-line"),"expanded city adds a real terrace transit line")
+	check(world.transit_lines.any(func(line: Dictionary) -> bool: return float(line["legs"][0]["length"]) > 0.0),"terrace transit has measured road legs")
 	var terrace_members := 0
 	for cid in world.communities:
 		if str(cid).contains("-terrace-") and not world.communities[cid]["members"].is_empty(): terrace_members += 1

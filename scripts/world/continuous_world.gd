@@ -548,6 +548,13 @@ func _refresh_public_network(frame: int = 0) -> void:
 		var itinerary: Array = ["east-1","east-2","east-3","east-outer-3","east-outer-2","east-outer-1","east-1"]
 		if nodes.has("east-garden-1"): itinerary = ["east-1","east-2","east-3","east-outer-3","east-garden-3","east-garden-2","east-garden-1","east-outer-1","east-1"]
 		lines.append(_make_transit_line("garden-line","林荫支线",itinerary,frame))
+	if expanded_plan and public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "west-civic" and site["active"]):
+		var terrace_itinerary: Array = ["west-1"]
+		for index in range(1,9):
+			if nodes.has("west-terrace-node-%d" % index): terrace_itinerary.append("west-terrace-node-%d" % index)
+		terrace_itinerary.append("west-1")
+		if terrace_itinerary.size() > 2:
+			lines.append(_make_transit_line("terrace-line","台地回声线",terrace_itinerary,frame))
 	transit_lines.assign(lines)
 	transit = lines[0] if not lines.is_empty() else {}
 
