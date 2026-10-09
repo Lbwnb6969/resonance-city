@@ -19,12 +19,15 @@ var leg_index := 0
 var initialized := false
 var trip := 0
 var walk_target := Vector2.ZERO
+var stop_id := ""
+var passenger_load := 0
+var passenger_capacity := 12
 
 func _init(agent_kind: String = "walker", index: int = 0) -> void:
 	kind = agent_kind
 	ordinal = index
 
-func advance(city: ContinuousWorld, seconds: float) -> Dictionary:
+func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dictionary:
 	if _is_vehicle() and _line(city).is_empty(): return {}
 	if kind == "walker" and city.buildings.is_empty(): return {}
 	if not initialized:
@@ -51,7 +54,13 @@ func advance(city: ContinuousWorld, seconds: float) -> Dictionary:
 			wait -= pause
 			elapsed -= pause
 			continue
-		var travel := minf(elapsed,maxf(0.0,total-distance)/speed)
+		var desired: float = minf(elapsed,maxf(0.0,total-distance)/speed)
+		var allowed: float = _traffic_distance(city,desired,traffic)
+		if desired > 0.000001 and allowed <= 0.000001:
+			# Higher-priority traffic keeps moving; the follower yields for a short visible pause.
+			wait = maxf(wait,minf(elapsed,0.08))
+			continue
+		var travel := minf(desired,allowed/maxf(speed,0.00001))
 		distance += travel*speed
 		elapsed -= travel
 		_sample()
@@ -59,10 +68,35 @@ func advance(city: ContinuousWorld, seconds: float) -> Dictionary:
 			if _is_vehicle(): _next_bus(city)
 			else: _next_walk(city)
 			if total < 0.00001: break
-	return {"position":position,"direction":direction,"stopped":wait > 0.0,"destination":destination}
+	return {"position":position,"direction":direction,"stopped":wait > 0.0,"destination":destination,
+		"stop_id":stop_id,"passengers":passenger_load,"capacity":passenger_capacity,"priority":_priority()}
 
 func _is_vehicle() -> bool:
 	return kind in ["carriage","tram","bus"]
+
+func _priority() -> int:
+	var kind_rank: int = int({"carriage":0,"tram":1,"bus":2,"walker":3}.get(kind,4))
+	return ordinal*8+int(kind_rank)
+
+func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array) -> float:
+	if desired <= 0.000001 or traffic.is_empty(): return desired
+	var access: Dictionary = city.network.access(position)
+	var road: String = str(access.get("road",""))
+	if road.is_empty(): return desired
+	for other in traffic:
+		if str(other.get("kind","")) == kind and int(other.get("ordinal",-1)) == ordinal: continue
+		if str(other.get("road","")) != road: continue
+		var other_position: Vector2 = other.get("position",Vector2.ZERO)
+		var gap: float = position.distance_to(other_position)
+		var other_direction: Vector2 = other.get("direction",Vector2.RIGHT)
+		var same_way: bool = direction.dot(other_direction) > 0.55
+		var ahead: bool = (other_position-position).dot(direction) > -0.04
+		if same_way and ahead:
+			var safe: float = 0.52 if _is_vehicle() else 0.34
+			if gap < safe+desired: return maxf(0.0,gap-safe)
+		elif not same_way and gap < 0.48 and int(other.get("priority",0)) < _priority():
+			return 0.0
+	return desired
 
 func _speed(city: ContinuousWorld) -> float:
 	var city_cfg: Dictionary = city.cfg["city"]
@@ -106,10 +140,13 @@ func _next_bus(city: ContinuousWorld) -> void:
 			return
 		leg_index = match_index
 	var leg: Dictionary = legs[leg_index]
+	stop_id = str(leg["from"])
+	passenger_load = 1+posmod(stop_id.length()*13+ordinal*7+leg_index*5,passenger_capacity-1)
 	destination = leg["to"]
 	leg_index = (leg_index+1)%legs.size()
 	_set_path(leg["path"],_vehicle_lane())
-	wait = float(city.cfg["city"]["bus_dwell_beats"])*60.0/float(city.cfg["timing"]["bpm"])
+	var base_dwell := float(city.cfg["city"]["bus_dwell_beats"])*60.0/float(city.cfg["timing"]["bpm"])
+	wait = base_dwell+float(passenger_load)*0.035
 
 func _walk_destinations(city: ContinuousWorld) -> Array[Vector2]:
 	var destinations: Array[Vector2] = []
@@ -180,7 +217,7 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 func snapshot() -> Dictionary:
 	var saved: Dictionary = {}
 	for field in ["kind","ordinal","position","direction","path","lengths","distance","total","last_seconds","wait",
-		"destination","line_key","line_index","leg_index","initialized","trip","walk_target"]: saved[field] = get(field)
+		"destination","line_key","line_index","leg_index","initialized","trip","walk_target","stop_id","passenger_load","passenger_capacity"]: saved[field] = get(field)
 	return saved.duplicate(true)
 
 func restore(saved: Dictionary) -> void:

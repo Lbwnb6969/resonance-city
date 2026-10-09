@@ -82,6 +82,18 @@ func sync(demo: Control) -> void:
 	var frame: float = demo.clock.renderer.transport.audible_frame
 	var rate: int = demo.clock.renderer.transport.sample_rate
 	var seconds := frame/rate
+	# Share the previous frame's physical positions so travelers yield at the same road point.
+	# Priority is deterministic, keeping opposing traffic from deadlocking at a bend.
+	var traffic: Array = []
+	for traffic_key in props:
+		var traffic_prop: ValleyProp = props[traffic_key]
+		if not traffic_prop.has_meta("traveler"): continue
+		var traffic_traveler: CityTraveler = traffic_prop.get_meta("traveler")
+		if not traffic_traveler.initialized: continue
+		var traffic_access: Dictionary = city.network.access(traffic_traveler.position)
+		traffic.append({"kind":traffic_traveler.kind,"ordinal":traffic_traveler.ordinal,
+			"position":traffic_traveler.position,"direction":traffic_traveler.direction,
+			"road":str(traffic_access.get("road","")),"priority":traffic_traveler._priority()})
 	for key in props:
 		var prop: ValleyProp = props[key]
 		var p: Vector2 = prop.get_meta("world_position")
@@ -93,12 +105,16 @@ func sync(demo: Control) -> void:
 			prop.reveal = clampf((frame-int(site["frame"]))/(0.5*rate),0.0,1.0)
 		if prop.kind in ["bus","carriage","tram","walker"]:
 			var traveler: CityTraveler = prop.get_meta("traveler")
-			var movement := traveler.advance(city,seconds)
+			var movement := traveler.advance(city,seconds,traffic)
 			prop.visible = not movement.is_empty()
 			if prop.visible:
 				p = movement["position"]
 				prop.direction = movement["direction"]
 				prop.active = not movement["stopped"]
+				prop.stop_id = str(movement.get("stop_id",""))
+				prop.passengers = int(movement.get("passengers",0))
+				prop.set_meta("stop_id",prop.stop_id)
+				prop.set_meta("passengers",prop.passengers)
 				prop.set_meta("world_position",p)
 		prop.position = demo.point(p)
 		prop.scale = Vector2.ONE*demo.view_zoom

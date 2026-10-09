@@ -6,6 +6,8 @@ var motion := 0.0
 var direction := Vector2.RIGHT
 var active := true
 var reveal := 1.0
+var passengers := 0
+var stop_id := ""
 
 func _project(p: Vector2) -> Vector2:
 	return Vector2((p.x-p.y)*28.0,(p.x+p.y)*14.0)
@@ -106,6 +108,12 @@ func _draw() -> void:
 		draw_line(_project(forward-side*0.6)-Vector2(0,5.5),_project(forward+side*0.6)-Vector2(0,5.5),Color("62817c"),2.2,true)
 		for sign_side in [-1,1]:
 			draw_circle(_project(forward+side*sign_side*0.7)-Vector2(0,2),0.85,Color("f8e8b5"))
+		for i in range(mini(passengers,6)):
+			var t: float = -0.58+float(i)*0.22
+			var window := _project(forward*t+side*0.98)-Vector2(0,6.9)
+			draw_circle(window,0.72,Color("f5e1a4") if active else Color("fff0bd"))
+		if not active:
+			draw_arc(Vector2(0,-5),13.0,0,TAU,20,Color(0.90,0.75,0.40,0.38),1.0,true)
 	elif kind == "walker":
 		var stride := sin(motion*2.7+tone)*0.8 if active else 0.0
 		var facing := _project(direction*0.035)
