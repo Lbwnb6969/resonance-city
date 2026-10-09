@@ -67,3 +67,21 @@ static func for_city(city: Array) -> Dictionary:
 		"gain":pow(10.0,(target-float(measured["lufs"]))/20.0),
 		"duration_seconds":seconds,"sample_rate":rate,"blocks":measured["blocks"],
 		"calibration_ms":float(Time.get_ticks_usec()-started)/1000.0}
+
+static func for_synth(source: RefCounted) -> Dictionary:
+	# Prepared initial/era-entry synth only. Render private phase/filter state in
+	# bounded blocks; never recalibrate a live mute/solo/preview operation.
+	var values := Values.load_values()
+	var rate := int(values["timing"]["sample_rate"])
+	var seconds := float(values["loudness"]["duration_seconds"])
+	var count := roundi(seconds*rate)
+	var state: Dictionary = source.initial_state()
+	var started := Time.get_ticks_usec()
+	var pcm := PackedVector2Array()
+	for at in range(0,count,512): pcm.append_array(source.render_block(state,at,mini(512,count-at),rate))
+	var measured := integrated(pcm,rate)
+	var target := float(values["mixing"]["target_lufs"])
+	return {"initial_lufs":measured["lufs"],"target_lufs":target,
+		"gain":float(source.gain)*pow(10.0,(target-float(measured["lufs"]))/20.0),
+		"duration_seconds":seconds,"sample_rate":rate,"blocks":measured["blocks"],
+		"calibration_ms":float(Time.get_ticks_usec()-started)/1000.0,"prepared_synth":true}

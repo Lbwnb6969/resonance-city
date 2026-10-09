@@ -1,0 +1,108 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/audio008_production_supply.gd"
+	],
+	"case": "production_supply_round60",
+	"checks": [
+		{
+			"description": "Actual Demo startup opts into production DSP sharing",
+			"passed": true
+		},
+		{
+			"description": "Actual GPU/WASAPI main scene",
+			"passed": true
+		},
+		{
+			"description": "Full main scene and real audio routing contain 27 entities",
+			"passed": true
+		},
+		{
+			"description": "27 staged/ring/guard main scene supplies full audible phrase without underrun",
+			"passed": true
+		},
+		{
+			"description": "Actual Demo startup opts into production DSP sharing",
+			"passed": true
+		},
+		{
+			"description": "Actual GPU/WASAPI main scene",
+			"passed": true
+		},
+		{
+			"description": "Full main scene and real audio routing contain 64 entities",
+			"passed": true
+		},
+		{
+			"description": "64 staged/ring/guard main scene supplies full audible phrase without underrun",
+			"passed": false
+		}
+	],
+	"details": {
+		"results": [
+			{
+				"audible_frames": 353013.592154929,
+				"calibration": {
+					"blocks": 77.0,
+					"calibration_ms": 1454.592,
+					"duration_seconds": 8.0,
+					"gain": 0.866917478949111,
+					"initial_lufs": -14.7595551872935,
+					"sample_rate": 22050.0,
+					"target_lufs": -16.0
+				},
+				"display": "Windows",
+				"driver": "WASAPI",
+				"entities": 27,
+				"gain": 0.866917478949111,
+				"group_stats": {
+					"dsp_groups": 17,
+					"entities": 27,
+					"oscillators": 6,
+					"shared": 10
+				},
+				"rendered_frames": 356863,
+				"renderer": "gl_compatibility",
+				"ring_routes": 16,
+				"skips": 0,
+				"sprites": 27,
+				"wall_ms": 16001
+			},
+			{
+				"audible_frames": 353218.750454929,
+				"calibration": {
+					"blocks": 77,
+					"calibration_ms": 6224.899,
+					"duration_seconds": 8.0,
+					"gain": 0.453562070111535,
+					"initial_lufs": -9.13273457598533,
+					"prepared_synth": true,
+					"sample_rate": 22050,
+					"target_lufs": -16.0
+				},
+				"display": "Windows",
+				"driver": "WASAPI",
+				"entities": 64,
+				"gain": 0.453562070111535,
+				"group_stats": {
+					"dsp_groups": 47,
+					"entities": 64,
+					"oscillators": 11,
+					"shared": 17
+				},
+				"rendered_frames": 355579,
+				"renderer": "gl_compatibility",
+				"ring_routes": 16,
+				"skips": 23,
+				"sprites": 64,
+				"wall_ms": 16115
+			}
+		],
+		"scope": "27 production budget at original fixed gain; 64 explicit pressure fixture with prepared-synth calibration, actual main scene/GPU/WASAPI; does not raise gameplay growth limit or prove future timbres"
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 1,
+	"rule_id": "AUDIO-008",
+	"scope": "Production shared DSP full-main-scene supply at 27 and calibrated 64; peak/RMS independently metered; human/era timbre/long run excluded",
+	"status": "FAIL"
+}

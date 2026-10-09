@@ -77,6 +77,10 @@ var status: Label
 var forecast_summary: Label
 var forecast_key := ""
 var prediction: Label
+var audible_resonance_key := ""
+var audible_resonance := 100.0
+var selected_growth_key := ""
+var selected_growth_description := ""
 
 func _ready() -> void:
 	if "--performance-fixture=700" in OS.get_cmdline_user_args():
@@ -92,6 +96,7 @@ func _ready() -> void:
 	generation = Generator.new().generate(seed,daily)
 	model = Model.new(Session.new(generation["city"],generation["seed"],generation["rng"]))
 	model.synth.guard_enabled = true
+	model.synth.voice_grouping = growth_demo
 	model.session.growth_enabled = growth_demo
 	Growth.assign_assets(model.session.city)
 	_build_city_view()
@@ -648,7 +653,11 @@ func _process(_delta: float) -> void:
 	city_view.selected_id = _selected_id()
 	city_view.release_midi = int(release_pitch.get_item_metadata(release_pitch.selected))
 	_update_map_notice()
-	var resonance := shown.harmony.resonance(shown.city,shown.harmony.adjacency(shown.city))
+	var resonance_key := "%d:%d" % [shown.get_instance_id(),shown.phrase_index]
+	if resonance_key != audible_resonance_key:
+		audible_resonance_key = resonance_key
+		audible_resonance = shown.harmony.resonance(shown.city,shown.harmony.adjacency(shown.city))
+	var resonance := audible_resonance
 	var bar := clock.renderer.transport.phrase_frame(1)
 	var remaining := float(bar)-fposmod(clock.renderer.transport.audible_frame,float(bar))
 	city_summary.text = "R %.0f · %d/%d 声部 · 第%d乐句\n下一次回应 %.1f 秒" % [resonance,shown.city.size(),model.session.growth_values["growth"]["max_entities"],shown.phrase_index+1,remaining/clock.renderer.transport.sample_rate]
@@ -660,7 +669,7 @@ func _process(_delta: float) -> void:
 	if condition_selection != _selected_id() or condition_phrase != shown.phrase_index:
 		condition_selection = _selected_id()
 		condition_phrase = shown.phrase_index
-		condition_text.text = Growth.describe(shown.city,shown._district(_selected_id()),shown.road_marks)
+		condition_text.text = _growth_description(shown)
 	if shown.phrase_index != display_phrase:
 		display_phrase = shown.phrase_index
 		_refresh_district_list()
@@ -675,6 +684,15 @@ func _process(_delta: float) -> void:
 		confirm_button.disabled = not forecast_available or bool(shown.lifecycle["ended"])
 	if clock.underruns > 0 and not black_screen:
 		status.text = "音频下溢 %d 次：本次运行不用于正式听测。" % clock.underruns
+
+func _growth_description(shown: CityInterventions) -> String:
+	# City and road changes commit on a phrase boundary. Read the audible
+	# session identity, so pre-rendered future changes cannot invalidate early.
+	var key := "%d:%d:%s" % [shown.get_instance_id(),shown.phrase_index,_selected_id()]
+	if key != selected_growth_key:
+		selected_growth_key = key
+		selected_growth_description = Growth.describe(shown.city,shown._district(_selected_id()),shown.road_marks)
+	return selected_growth_description
 
 func _update_map_notice() -> void:
 	var shown := _audible_session()
@@ -692,7 +710,7 @@ func _update_map_notice() -> void:
 	else:
 		var district: Dictionary = shown._district(_selected_id())
 		var kind := "住宅" if district["type"] == "residential" else ("商业" if district["type"] == "commercial" else "工业")
-		var details: PackedStringArray = Growth.describe(shown.city,district,shown.road_marks).split("\n")
+		var details: PackedStringArray = _growth_description(shown).split("\n")
 		text = "%s · %s · 活力 %.0f\n%s" % [kind,district.get("form","胚"),district["vitality"],"\n".join(details.slice(0,mini(2,details.size())))]
 		var ring_text := Ring.describe(shown.rings,_selected_id(),model.synth.muted,model.synth.solo_id,shown.silent_until,clock.renderer.transport.audible_frame)
 		if not ring_text.is_empty():

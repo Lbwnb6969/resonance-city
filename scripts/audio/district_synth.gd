@@ -13,6 +13,9 @@ var districts: Array
 var active_layers: Array[String] = ["drone", "rhythm", "ornament"]
 var tables: Dictionary = {}
 var routing: Array[Dictionary] = []
+# Demo opt-in; P0 listening and calibration retain the original per-entity path.
+var voice_grouping := false
+var voice_group_stats: Dictionary = {}
 var gain := 1.0
 var solo_id := ""
 var muted: Dictionary = {}
@@ -424,6 +427,10 @@ func rhythm_level(at: int, rate: int) -> float:
 	return lerpf(duck_level,1.0,clampf(float(at-duck_release_at)/duration,0.0,1.0))
 
 func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
+	if voice_grouping: return _render_grouped_block(state,start,count,rate)
+	return _render_unmerged_block(state,start,count,rate)
+
+func _render_unmerged_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
 	_prepare_envelopes(rate)
 	var helpers := PackedVector2Array()
 	var raw_helpers := PackedVector2Array()
@@ -543,6 +550,227 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			state[gray_key] = gray_previous
 		if industrial and rhythm_enabled:
 			state[route["highpass_key"]] = previous
+	if not helpers.is_empty():
+		for offset in range(count):
+			block[offset] += helpers[offset]
+	if capture_drone: captured_drone.resize(count)
+	if guard_enabled:
+		if not raw_helpers.is_empty():
+			for offset in range(count):
+				raw_other[offset] += raw_helpers[offset]
+		for offset in range(count):
+			var factor := float(state.get("_guard_factor",1.0))
+			if factor != 1.0:
+				block[offset] += controlled_drone[offset]*(factor-1.0)
+			if capture_drone: captured_drone[offset] = controlled_drone[offset]*factor
+			_guard_step(state,raw_drone[offset],raw_other[offset],rate)
+	return block
+
+func _oscillator_block(route: Dictionary, state: Dictionary, count: int, rate: int) -> Dictionary:
+	var phase := float(state.get(route["phase_key"],0.0))
+	var increment := frequency(int(state.get(route["id"],route["base_midi"])))/rate
+	var table: PackedFloat32Array = route["table"]
+	var size := table.size()
+	var drone := PackedFloat64Array()
+	var rhythm := PackedFloat64Array()
+	drone.resize(count)
+	rhythm.resize(count)
+	var rhythm_enabled := active_layers.has("rhythm")
+	for offset in range(count):
+		var position := fposmod(phase,1.0)*size
+		var index := int(position)
+		drone[offset] = lerpf(table[index],table[(index+1)%size],position-index)
+		if rhythm_enabled:
+			position = fposmod(phase*rhythm_multiplier,1.0)*size
+			index = int(position)
+			rhythm[offset] = lerpf(table[index],table[(index+1)%size],position-index)
+		phase = fposmod(phase+increment,1.0)
+	return {"drone":drone,"rhythm":rhythm,"phase":phase}
+
+func _voice_dsp_block(route: Dictionary, state: Dictionary, start: int, count: int, rate: int, gray_active: bool, gray_levels: PackedFloat64Array, oscillator: Dictionary) -> Dictionary:
+	var drone_enabled := active_layers.has("drone")
+	var rhythm_enabled := active_layers.has("rhythm")
+	var lowpass_alpha := float(gray_alpha[rate])
+	var hold_frames := int(gray_hold_frames[rate])
+	var drones := PackedFloat64Array()
+	var rhythms := PackedFloat64Array()
+	var events := PackedFloat64Array()
+	drones.resize(count)
+	rhythms.resize(count)
+	events.resize(count)
+	var id: String = route["id"]
+	var phase_key: String = route["phase_key"]
+	var phase := float(state.get(phase_key,0.0))
+	var increment := frequency(int(state.get(id,route["base_midi"]))) / rate
+	var table: PackedFloat32Array = route["table"]
+	var size := table.size()
+	var stereo: Vector2 = route["stereo"]
+	var envelope: PackedFloat32Array = envelopes[rate][route["type"]]
+	var envelope_count := envelope.size()
+	var fixture: Dictionary = state.get("_rhythm_fixture_"+id,{})
+	var industrial: bool = route["type"] == "industrial"
+	var previous: Vector2 = state.get(route["highpass_key"],Vector2.ZERO)
+	var alpha := float(highpass_alpha[rate])
+	var gray_key := "_gray_"+id
+	var gray_previous: Vector3 = state.get(gray_key,Vector3.ZERO)
+	var disabled := bool(muted.get(id,false)) or (not solo_id.is_empty() and solo_id != id)
+	var silence_end := int(silent_until.get(id,0))
+	var emphasis := emphasis_level if emphasized_id == id else 1.0
+	var voice_level := float(route["level"])
+	var is_anchor := bool(route["anchor"])
+	var ring: Dictionary = route["ring"]
+	var ring_envelope := PackedFloat32Array()
+	var ring_blends := PackedFloat64Array()
+	var ring_blend := 0.0
+	if not ring.is_empty():
+		ring_envelope = envelopes[rate]["_ring"][int(ring["index"])]
+		ring_blend = ring_level(ring,start,rate)
+		var duration := float(values["ring"]["crossfade_bars"])*int(values["timing"]["beats_per_bar"])*60.0*rate/float(values["timing"]["bpm"])
+		if start < int(ring["frame"])+duration:
+			ring_blends.resize(count)
+			for offset in range(count): ring_blends[offset] = ring_level(ring,start+offset,rate)
+	var stage: Dictionary = route["stage"]
+	var fade := PackedFloat64Array()
+	var stage_level := Stage.rhythm_level(stage,start,rate,values)
+	var fade_end := int(stage.get("rhythm_start",-1))+roundi(float(values["stage_audio"]["fade_beats"])*60.0*rate/float(values["timing"]["bpm"]))
+	if not stage.is_empty() and (int(stage["change_frame"]) >= start or (int(stage["rhythm_start"]) >= 0 and fade_end > start)):
+		fade.resize(count)
+		for offset in range(count): fade[offset] = Stage.rhythm_level(stage,start+offset,rate,values)
+	var ornaments := Stage.block(stage,int(state.get(id,route["base_midi"])),start,count,rate,values) if active_layers.has("ornament") else PackedFloat64Array()
+	var base_drone: PackedFloat64Array = oscillator["drone"]
+	var base_rhythm: PackedFloat64Array = oscillator["rhythm"]
+	for offset in range(count):
+		var at := start+offset
+		var drone := base_drone[offset]*drone_gain*voice_level if drone_enabled else 0.0
+		var rhythm := 0.0
+		if rhythm_enabled and not is_anchor and ((stage_level if fade.is_empty() else fade[offset]) > 0.0):
+			var envelope_index := at%envelope_count if fixture.is_empty() else _fixture_rhythm_index(fixture,at,envelope_count)
+			var wave := base_rhythm[offset]
+			var pulse := wave*envelope[envelope_index]
+			var blend := ring_blend if ring_blends.is_empty() else ring_blends[offset]
+			if blend > 0.0:
+				var ring_pulse := wave*ring_envelope[posmod(at,ring_envelope.size())]
+				pulse = pulse*(cos(PI*blend/2.0) if blend < 1.0 else 0.0)+ring_pulse*(sin(PI*blend/2.0) if blend < 1.0 else 1.0)
+			if industrial:
+				var output := alpha*(previous.y+pulse-previous.x)
+				previous = Vector2(pulse,output)
+				pulse = output
+			rhythm = pulse*rhythm_gain*voice_level
+			if not fade.is_empty(): rhythm *= fade[offset]
+			if gray_active and (gray_enabled or gray_levels[offset] > 0.0):
+				gray_previous.x += lowpass_alpha*(rhythm-gray_previous.x)
+				gray_previous.y += lowpass_alpha*(gray_previous.x-gray_previous.y)
+				if at%hold_frames == 0:
+					gray_previous.z = gray_previous.y
+				rhythm = lerpf(rhythm,gray_previous.z,gray_levels[offset])
+		var ornament := ornaments[offset]*voice_level*gain if not ornaments.is_empty() else 0.0
+		drones[offset] = drone
+		rhythms[offset] = rhythm
+		events[offset] = ornament
+	phase = float(oscillator["phase"])
+	return {"drone":drones,"rhythm":rhythms,"ornament":events,"phase":phase,"highpass":previous,"gray":gray_previous}
+
+func _stage_block_signature(stage: Dictionary, midi: int, start: int, count: int, rate: int) -> Array:
+	if stage.is_empty(): return []
+	var curve := stage.duplicate()
+	curve.erase("pattern")
+	var fade_end := int(stage.get("rhythm_start",-1))+roundi(float(values["stage_audio"]["fade_beats"])*60.0*rate/float(values["timing"]["bpm"]))
+	if int(stage["change_frame"]) < start and (int(stage["rhythm_start"]) < 0 or fade_end <= start): curve = {}
+	var events: Array = []
+	if active_layers.has("ornament"):
+		for bell in [false,true]:
+			var bars := int(values["timing"]["bars_per_phrase"]) if bell else int(values["stage_audio"]["ornament_bars"])
+			var period := roundi(60.0*rate/float(values["timing"]["bpm"])*int(values["timing"]["beats_per_bar"])*bars)
+			var onset := floori(float(start)/period)*period
+			while onset < start+count:
+				var info := Stage.event_info(stage,midi,onset,rate,values,bell)
+				if not info.is_empty() and onset+ceili(float(values["stage_audio"][str(info["prefix"])+"_tail"])*rate) > start: events.append(info)
+				onset += period
+	return [Stage.rhythm_level(stage,start,rate,values),curve,events]
+
+
+func _render_grouped_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
+	_prepare_envelopes(rate)
+	var helpers := PackedVector2Array()
+	var raw_helpers := PackedVector2Array()
+	var routes := assist_routes(state)
+	if not routes.is_empty():
+		helpers = _assist_block(state,start,count,rate,routes)
+		if guard_enabled:
+			raw_helpers = _assist_block(state,start,count,rate,routes,true)
+	var block := PackedVector2Array()
+	block.resize(count)
+	var raw_drone := PackedVector2Array()
+	var raw_other := PackedVector2Array()
+	var controlled_drone := PackedVector2Array()
+	if guard_enabled:
+		raw_drone.resize(count)
+		raw_other.resize(count)
+		controlled_drone.resize(count)
+	var drone_enabled := active_layers.has("drone")
+	var rhythm_enabled := active_layers.has("rhythm")
+	var gray_active := rhythm_enabled and (gray_enabled or gray_level(start,rate) > 0.0)
+	var gray_levels := PackedFloat64Array()
+	var lowpass_alpha := float(gray_alpha[rate])
+	var hold_frames := int(gray_hold_frames[rate])
+	if gray_active:
+		gray_levels.resize(count)
+		for offset in range(count):
+			gray_levels[offset] = gray_level(start+offset,rate)*float(values["gray_audio"]["wet"])
+	var levels := PackedFloat64Array()
+	levels.resize(count)
+	for offset in range(count):
+		levels[offset] = rhythm_level(start+offset,rate)
+	var groups: Dictionary = {}
+	var oscillators: Dictionary = {}
+	for route in routing:
+		var id: String = route["id"]
+		var stage := _stage_block_signature(route["stage"],int(state.get(id,route["base_midi"])),start,count,rate)
+		var disabled := bool(muted.get(id,false)) or (not solo_id.is_empty() and solo_id != id)
+		var silence_end := int(silent_until.get(id,0))
+		var emphasis := emphasis_level if emphasized_id == id else 1.0
+		# Exact binary signature, including individual filter state and event schedule.
+		# Independent controls/silence split groups; phase/filter remain per entity.
+		var key := var_to_bytes([route["type"],state.get(route["phase_key"],0.0),int(state.get(id,route["base_midi"])),
+			route["level"],route["anchor"],stage,route["ring"],state.get("_rhythm_fixture_"+id,{}),
+			state.get(route["highpass_key"],Vector2.ZERO),state.get("_gray_"+id,Vector3.ZERO),disabled,silence_end,emphasis]).hex_encode()
+		if not groups.has(key): groups[key] = {"first":route,"members":[],"stereo":Vector2.ZERO}
+		groups[key]["members"].append(route)
+		groups[key]["stereo"] += route["stereo"]
+	for group in groups.values():
+		var route: Dictionary = group["first"]
+		var id: String = route["id"]
+		var disabled := bool(muted.get(id,false)) or (not solo_id.is_empty() and solo_id != id)
+		var silence_end := int(silent_until.get(id,0))
+		var emphasis := emphasis_level if emphasized_id == id else 1.0
+		var oscillator_key := var_to_bytes([route["type"],state.get(route["phase_key"],0.0),int(state.get(id,route["base_midi"]))]).hex_encode()
+		if not oscillators.has(oscillator_key): oscillators[oscillator_key] = _oscillator_block(route,state,count,rate)
+		var voice := _voice_dsp_block(route,state,start,count,rate,gray_active,gray_levels,oscillators[oscillator_key])
+		var stereo: Vector2 = group["stereo"]
+		var drones: PackedFloat64Array = voice["drone"]
+		var rhythms: PackedFloat64Array = voice["rhythm"]
+		var ornaments: PackedFloat64Array = voice["ornament"]
+		for offset in range(count):
+			var drone := drones[offset]
+			var rhythm := rhythms[offset]
+			var ornament := ornaments[offset]
+			if guard_enabled:
+				var dry_layers := Vector2(drone,rhythm)*gain
+				raw_drone[offset] += dry_layers.x*stereo
+				raw_other[offset] += dry_layers.y*stereo
+				if ornament != 0.0: raw_other[offset] += ornament*stereo
+			rhythm *= levels[offset]*emphasis
+			if not disabled and start+offset >= silence_end:
+				var layers := Vector2(drone,rhythm)*gain
+				block[offset] += layers.x*stereo
+				block[offset] += layers.y*stereo
+				if ornament != 0.0: block[offset] += ornament*stereo
+				if guard_enabled: controlled_drone[offset] += layers.x*stereo
+		for member in group["members"]:
+			state[member["phase_key"]] = voice["phase"]
+			if gray_active: state["_gray_"+str(member["id"])] = voice["gray"]
+			if member["type"] == "industrial" and rhythm_enabled: state[member["highpass_key"]] = voice["highpass"]
+	voice_group_stats = {"entities":routing.size(),"dsp_groups":groups.size(),"shared":routing.size()-groups.size(),"oscillators":oscillators.size()}
 	if not helpers.is_empty():
 		for offset in range(count):
 			block[offset] += helpers[offset]

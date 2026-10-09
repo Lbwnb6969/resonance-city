@@ -1,0 +1,408 @@
+{
+	"arguments": [
+		"--script",
+		"res://tests/audio008_production_contract.gd"
+	],
+	"case": "production_round60",
+	"checks": [
+		{
+			"description": "27 pressure entities occupy distinct grid cells",
+			"passed": true
+		},
+		{
+			"description": "64 pressure entities occupy distinct grid cells",
+			"passed": true
+		},
+		{
+			"description": "128 pressure entities occupy distinct grid cells",
+			"passed": true
+		},
+		{
+			"description": "250 pressure entities occupy distinct grid cells",
+			"passed": true
+		},
+		{
+			"description": "27 staged=false: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "27 staged=true: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "27 staged=false: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "27 staged=true: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "all eight ring beats and mature event tail: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 mature events across next ornament cycle: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 mute: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "unmute resumes continuous phase: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 solo: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 mute_solo: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 all_mute: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 phase: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 pitch: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 filter: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 gray: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 narrowband: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 duck: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "64 migration: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "reveal/fade and ring crossfade: original-source PCM relative error <=2e-5; per-entity state exact, guard meter tolerance <=2e-5",
+			"passed": true
+		},
+		{
+			"description": "Different block boundaries preserve exact PCM/state",
+			"passed": false
+		},
+		{
+			"description": "Model snapshot/fork retains grouping opt-in",
+			"passed": true
+		},
+		{
+			"description": "Direct/P0 synth defaults to original path",
+			"passed": true
+		}
+	],
+	"details": {
+		"baseline": "tests/废弃/第60轮前合成器.gd from 5ed9d2f; actual previous-source PCM",
+		"benchmarks": [
+			{
+				"before": {
+					"audio_seconds": 1,
+					"cpu_ms": 622.026,
+					"cpu_ratio": 0.622026,
+					"max_ms": 20.077,
+					"p95_512_ms": 18.662
+				},
+				"entities": 27,
+				"grouped": {
+					"audio_seconds": 1,
+					"cpu_ms": 367.671,
+					"cpu_ratio": 0.367671,
+					"max_ms": 14.44,
+					"p95_512_ms": 13.179
+				},
+				"groups": {
+					"dsp_groups": 12,
+					"entities": 27,
+					"oscillators": 6,
+					"shared": 15
+				}
+			},
+			{
+				"before": {
+					"audio_seconds": 1,
+					"cpu_ms": 1527.707,
+					"cpu_ratio": 1.527707,
+					"max_ms": 46.859,
+					"p95_512_ms": 45.775
+				},
+				"entities": 64,
+				"grouped": {
+					"audio_seconds": 1,
+					"cpu_ms": 774.117,
+					"cpu_ratio": 0.774117,
+					"max_ms": 35.004,
+					"p95_512_ms": 34.797
+				},
+				"groups": {
+					"dsp_groups": 22,
+					"entities": 64,
+					"oscillators": 11,
+					"shared": 42
+				}
+			},
+			{
+				"before": {
+					"audio_seconds": 1,
+					"cpu_ms": 3238.573,
+					"cpu_ratio": 3.238573,
+					"max_ms": 90.895,
+					"p95_512_ms": 89.457
+				},
+				"entities": 128,
+				"grouped": {
+					"audio_seconds": 1,
+					"cpu_ms": 873.52,
+					"cpu_ratio": 0.87352,
+					"max_ms": 36.114,
+					"p95_512_ms": 34.523
+				},
+				"groups": {
+					"dsp_groups": 22,
+					"entities": 128,
+					"oscillators": 11,
+					"shared": 106
+				}
+			},
+			{
+				"before": {
+					"audio_seconds": 1,
+					"cpu_ms": 6787.916,
+					"cpu_ratio": 6.787916,
+					"max_ms": 192.553,
+					"p95_512_ms": 179.69
+				},
+				"entities": 250,
+				"grouped": {
+					"audio_seconds": 1,
+					"cpu_ms": 1135.538,
+					"cpu_ratio": 1.135538,
+					"max_ms": 46.573,
+					"p95_512_ms": 45.187
+				},
+				"groups": {
+					"dsp_groups": 22,
+					"entities": 250,
+					"oscillators": 11,
+					"shared": 228
+				}
+			}
+		],
+		"comparisons": [
+			{
+				"bytes_equal": false,
+				"frames": 11025,
+				"label": "27 staged=false",
+				"max_error": 0.000000715255737304688,
+				"rate": 22050,
+				"relative_error": 0.000000433834366232705,
+				"shared_dsp_groups": 528,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 11025,
+				"label": "27 staged=true",
+				"max_error": 0.000000298023223876953,
+				"rate": 22050,
+				"relative_error": 0.000000599112857644914,
+				"shared_dsp_groups": 275,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 22050,
+				"label": "27 staged=false",
+				"max_error": 0.000000834465026855469,
+				"rate": 44100,
+				"relative_error": 0.00000050595812676087,
+				"shared_dsp_groups": 1056,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 22050,
+				"label": "27 staged=true",
+				"max_error": 0.000000327825546264648,
+				"rate": 44100,
+				"relative_error": 0.000000657514188707887,
+				"shared_dsp_groups": 550,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 352800,
+				"label": "all eight ring beats and mature event tail",
+				"max_error": 0.000000327825546264648,
+				"rate": 22050,
+				"relative_error": 0.000000624509476193245,
+				"shared_dsp_groups": 20150,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 20000,
+				"label": "64 mature events across next ornament cycle",
+				"max_error": 0.000000655651092529297,
+				"rate": 22050,
+				"relative_error": 0.000000820733458154457,
+				"shared_dsp_groups": 732,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 1536,
+				"label": "64 mute",
+				"max_error": 0.000000417232513427734,
+				"rate": 22050,
+				"relative_error": 0.000000514373884267933,
+				"shared_dsp_groups": 48,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 1536,
+				"label": "unmute resumes continuous phase",
+				"max_error": 0.000000357627868652344,
+				"rate": 22050,
+				"relative_error": 0.000000531050853164174,
+				"shared_dsp_groups": 102,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": true,
+				"frames": 1536,
+				"label": "64 solo",
+				"max_error": 0.0,
+				"rate": 22050,
+				"relative_error": 0.0,
+				"shared_dsp_groups": 48,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": true,
+				"frames": 1536,
+				"label": "64 mute_solo",
+				"max_error": 0.0,
+				"rate": 22050,
+				"relative_error": 0.0,
+				"shared_dsp_groups": 51,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": true,
+				"frames": 1536,
+				"label": "64 all_mute",
+				"max_error": 0.0,
+				"rate": 22050,
+				"relative_error": 0.0,
+				"shared_dsp_groups": 51,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 1536,
+				"label": "64 phase",
+				"max_error": 0.000000417232513427734,
+				"rate": 22050,
+				"relative_error": 0.000000510946891158239,
+				"shared_dsp_groups": 48,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 1536,
+				"label": "64 pitch",
+				"max_error": 0.000000417232513427734,
+				"rate": 22050,
+				"relative_error": 0.000000507774867421796,
+				"shared_dsp_groups": 48,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 1536,
+				"label": "64 filter",
+				"max_error": 0.000000417232513427734,
+				"rate": 22050,
+				"relative_error": 0.000000508341853505899,
+				"shared_dsp_groups": 48,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 1536,
+				"label": "64 gray",
+				"max_error": 0.000000536441802978516,
+				"rate": 22050,
+				"relative_error": 0.000000653582383079014,
+				"shared_dsp_groups": 51,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 1536,
+				"label": "64 narrowband",
+				"max_error": 0.000000357627868652344,
+				"rate": 22050,
+				"relative_error": 0.000000425526965501962,
+				"shared_dsp_groups": 48,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 1536,
+				"label": "64 duck",
+				"max_error": 0.000000476837158203125,
+				"rate": 22050,
+				"relative_error": 0.000000594826010046165,
+				"shared_dsp_groups": 51,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 1536,
+				"label": "64 migration",
+				"max_error": 0.000000417232513427734,
+				"rate": 22050,
+				"relative_error": 0.000000514373884267933,
+				"shared_dsp_groups": 48,
+				"state_equal": true
+			},
+			{
+				"bytes_equal": false,
+				"frames": 23000,
+				"label": "reveal/fade and ring crossfade",
+				"max_error": 0.000000298023223876953,
+				"rate": 22050,
+				"relative_error": 0.00000058830582160379,
+				"shared_dsp_groups": 360,
+				"state_equal": true
+			}
+		],
+		"scope": "Production grouped DSP: PCM <=2e-5 relative, exact individual phase/filter; guard accumulation <=2e-5 relative. No era timbre or human proof"
+	},
+	"engine": "4.7.2-stable (official)",
+	"exit_code": 1,
+	"rule_id": "AUDIO-008",
+	"scope": "Production DSP sharing, original-source PCM/state, control splits, event transitions, block boundaries and budget",
+	"status": "FAIL"
+}

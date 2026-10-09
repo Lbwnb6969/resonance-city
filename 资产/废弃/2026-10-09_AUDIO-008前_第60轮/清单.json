@@ -1,0 +1,14 @@
+{
+  "scripts/audio/district_synth.gd": "38238ed64631ff757de266a98eb88803072ed6699954e4b45071c8b7f17be500",
+  "scripts/audio/city_audio_model.gd": "59745e40a694878164749cc349e4547ce145834958c27d951e82d2fee70d08a6",
+  "scripts/ui/p0_main.gd": "896d2166c300f146a2a819af4bab2ef1e05c6c0e7a2b17995faba28905d0f926",
+  "PROJECT.md": "3894ff00a2129af9fe5bfe06c40b5ec9bf85fff0c4dedc8d17e20bed3ac737d3",
+  "文档/01_执行规格/spec.audio.md": "3ff5c25bbcab80b3d1265566ac00c667d91f8069c7b9d95357f2b918fa3538a6",
+  "文档/02_验收/DOD.md": "968ceb9cedae8f7df58e6d481bc5de984974ef35788b5bfbb1922353093e4511",
+  "文档/03_任务/P2.md": "5521272851af9d0feec09ca23c5d0a8a952ea869c5441d7f227078c09ebe86ec",
+  "文档/执行日志-P0.md": "e0aad0488a90c28fd2f57c26eebde3ceb39b4601459ac4309d5bdcb559a0360f",
+  "数据/spec_values.json": "7d5ed81c5d196819cd9b167fdcac4876adfe56448e7ad3c7833fef1aee9e863b",
+  "数据/listening_fixtures.json": "822cafd98f313b7f43b1855c48a1220ce55353dca8ab06bafd3556c41430a2ce",
+  "scripts/audio/loudness_calibration.gd": "eaebe9d83e530f763e695cf186e41999cc9211950b7331fae78a233a3c4b1dd4",
+  "tests/audio008_fixtures.gd": "b421d78bc092ee6388cc48780d610a21fdba90c8a9a69f659bd98a5456e0fec3"
+}

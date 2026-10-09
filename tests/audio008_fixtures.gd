@@ -25,12 +25,12 @@ static func staged_city(count: int, same_pitch: bool = false) -> Array:
 	var initial: Array = source()["controlled_full_city"].duplicate(true)
 	var used: Dictionary = {}
 	for district in initial:
-		used[str(district["footprint"][0])] = true
+		used[Schema.cell(district)] = true
 	var notes := [48,50,52,55,57]
 	for cell_index in range(256):
 		if initial.size() >= count: break
 		var cell := Vector2i(cell_index%16,cell_index/16)
-		if used.has(str([cell.x,cell.y])): continue
+		if used.has(cell): continue
 		var index := initial.size()
 		var district := Schema.create("stress_%d" % index,"residential" if index%2 == 0 else "commercial",cell)
 		district["anchor_id"] = "west_source" if index%2 == 0 else "east_source"

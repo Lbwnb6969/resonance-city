@@ -75,7 +75,7 @@ func snapshot() -> Dictionary:
 	return {"session":session.snapshot(),"next_boundary":next_boundary,
 		"presentation_history":presentation_history.duplicate(true),
 		"growth_history":growth_history.duplicate(true),"ring_history":ring_history.duplicate(true),"ring_routes":synth.ring_snapshot(),"stage_routes":synth.stage_snapshot(),
-		"active_layers":synth.active_layers.duplicate(),"gain":synth.gain,
+		"active_layers":synth.active_layers.duplicate(),"gain":synth.gain,"voice_grouping":synth.voice_grouping,
 		"solo_id":synth.solo_id,"muted":synth.muted.duplicate(true),
 		"silent_until":synth.silent_until.duplicate(true),"ducking":synth.ducking,
 		"duck_release_at":synth.duck_release_at,"emphasized_id":synth.emphasized_id,
@@ -95,6 +95,7 @@ func restore(saved: Dictionary) -> void:
 	next_boundary = int(saved["next_boundary"])
 	synth.active_layers.assign(saved["active_layers"])
 	synth.gain = float(saved["gain"])
+	synth.voice_grouping = bool(saved.get("voice_grouping",false))
 	synth.solo_id = saved["solo_id"]
 	synth.muted = saved["muted"].duplicate(true)
 	synth.silent_until = saved["silent_until"].duplicate(true)
