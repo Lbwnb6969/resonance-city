@@ -142,7 +142,8 @@ func _start_world(saved: Dictionary = {}) -> void:
 	if not saved.is_empty():
 		view_zoom = float(saved["view"]["zoom"])
 		zoom_target = view_zoom
-		pan = saved["view"]["pan"]
+		var saved_pan: Variant = saved["view"].get("pan",Vector2.ZERO)
+		pan = saved_pan if saved_pan is Vector2 else Vector2(float(saved_pan[0]),float(saved_pan[1]))
 		pan_target = pan
 		selected_id = str(saved["view"]["selected_id"])
 		scenery.restore(saved["view"]["travelers"])

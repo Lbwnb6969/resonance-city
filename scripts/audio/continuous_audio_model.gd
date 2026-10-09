@@ -198,6 +198,21 @@ func freeze() -> ContinuousAudioModel:
 const SAVED_SYNTH_FIELDS = ["pad_groups","population","rhythm_nodes","musical_nodes","theme","response","rhythms",
 	"listener_community","muted_communities","gray_enabled","gray_from","gray_change_at","ducking","duck_release_at","last_voice_count","max_voice_count","voice_group_stats"]
 
+static func _hydrate_stereo(value: Variant) -> Variant:
+	if value is Dictionary:
+		var result: Dictionary = value.duplicate(true)
+		for key in result:
+			if str(key) == "stereo" and result[key] is Array and result[key].size() >= 2:
+				result[key] = Vector2(float(result[key][0]),float(result[key][1]))
+			else:
+				result[key] = _hydrate_stereo(result[key])
+		return result
+	if value is Array:
+		var result_array: Array = []
+		for item in value: result_array.append(_hydrate_stereo(item))
+		return result_array
+	return value
+
 func capture_state() -> Dictionary:
 	var mix: Dictionary = {}
 	for field in SAVED_SYNTH_FIELDS: mix[field] = synth.get(field)
@@ -226,6 +241,12 @@ static func from_state(saved: Dictionary) -> ContinuousAudioModel:
 	copy.transition_remaining = int(saved["transition_remaining"])
 	copy.transition_total = int(saved["transition_total"])
 	for field in SAVED_SYNTH_FIELDS: copy.synth.set(field,saved["mix"][field])
+	copy.synth.pad_groups = _hydrate_stereo(copy.synth.pad_groups)
+	copy.synth.rhythm_nodes = _hydrate_stereo(copy.synth.rhythm_nodes)
+	copy.synth.musical_nodes = _hydrate_stereo(copy.synth.musical_nodes)
+	copy.synth.theme = _hydrate_stereo(copy.synth.theme)
+	copy.synth.response = _hydrate_stereo(copy.synth.response)
+	for index in range(copy.synth.rhythms.size()): copy.synth.rhythms[index] = _hydrate_stereo(copy.synth.rhythms[index])
 	return copy
 
 func forecast(operation: Dictionary, state: Dictionary, at: int, duration: int) -> PackedVector2Array:

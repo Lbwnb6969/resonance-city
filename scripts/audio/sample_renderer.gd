@@ -41,6 +41,9 @@ func snapshot() -> Dictionary:
 func restore(saved: Dictionary) -> void:
 	transport.restore(saved["transport"])
 	state = saved["state"].duplicate(true)
+	for key in state:
+		if str(key).begins_with("_pad_stereo_") and state[key] is Array and state[key].size() >= 2:
+			state[key] = Vector2(float(state[key][0]),float(state[key][1]))
 
 static func pcm16(block: PackedVector2Array) -> PackedByteArray:
 	var bytes := PackedByteArray()
