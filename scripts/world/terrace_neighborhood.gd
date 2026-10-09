@@ -53,12 +53,26 @@ static func populate(world: RefCounted) -> void:
 			var node_id := "%s-terrace-node-%d" % [prefix,index+1]
 			world.nodes[node_id] = [x,y]
 			var main_x: float = world.terrain.river_x(y)+float(bank)*float(t["template_road_bank_offset"])
+			var main_node_id := "%s-terrace-main-node-%d" % [prefix,index+1]
+			world.nodes[main_node_id] = [main_x,y]
+			var nearest_main := "%s-1" % prefix
+			var nearest_distance := INF
+			for main_index in range(1,5):
+				var main_candidate: Array = world.nodes["%s-%d" % [prefix,main_index]]
+				var main_gap := absf(float(main_candidate[1])-y)
+				if main_gap < nearest_distance:
+					nearest_distance = main_gap
+					nearest_main = "%s-%d" % [prefix,main_index]
+			var anchor: Array = world.nodes[nearest_main]
+			world.roads.append({"id":"%s-terrace-feed-%d" % [prefix,index+1],
+				"from":nearest_main,"to":main_node_id,
+				"path":PackedVector2Array([Vector2(anchor[0],anchor[1]),Vector2(main_x,y)]),"bridge":false,"kind":"branch"})
 			var link_path := PackedVector2Array([Vector2(main_x,y)])
 			if absf(bend) > 0.001:
 				link_path.append(Vector2(lerpf(main_x,x,0.5),y+bend))
 			link_path.append(Vector2(x,y))
 			world.roads.append({"id":"%s-terrace-link-%d" % [prefix,index+1],
-				"from":"%s-1" % prefix,"to":node_id,
+				"from":main_node_id,"to":node_id,
 				"path":link_path,"bridge":false,"kind":"branch"})
 			if index > 0:
 				var previous_y := float(ys[index-1])

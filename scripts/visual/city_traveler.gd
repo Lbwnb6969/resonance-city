@@ -14,6 +14,7 @@ var last_seconds := -1.0
 var wait := 0.0
 var destination := ""
 var line_key := ""
+var line_index := -1
 var leg_index := 0
 var initialized := false
 var trip := 0
@@ -75,15 +76,19 @@ func _vehicle_lane() -> float:
 	return 0.10
 
 func _line(city: ContinuousWorld) -> Dictionary:
-	var id := "valley-line" if ordinal < 2 else "garden-line"
-	for line in city.transit_lines:
-		if line["id"] == id: return line
-	return {}
+	if city.transit_lines.is_empty(): return {}
+	# Assign vehicles round-robin across every active line, including expanded terrace routes.
+	# Keep the chosen index stable while a line is rebuilt so a traveler reconnects at a stop.
+	if line_index < 0 or line_index >= city.transit_lines.size():
+		line_index = posmod(ordinal,city.transit_lines.size())
+	return city.transit_lines[line_index]
 
 func _next_bus(city: ContinuousWorld) -> void:
 	var line := _line(city)
+	if line.is_empty(): return
 	var legs: Array = line["legs"]
-	var next_key := str(line["name"])
+	if legs.is_empty(): return
+	var next_key := str(line["id"])
 	if line_key != next_key:
 		# Reroute only at the next completed stop; reconnect physically if it left the new line.
 		line_key = next_key
@@ -140,9 +145,12 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 		var following := (center[mini(center.size()-1,i+1)]-center[i]).normalized()
 		if previous == Vector2.ZERO: previous = following
 		if following == Vector2.ZERO: following = previous
-		var normal := Vector2(-(previous.y+following.y),previous.x+following.x).normalized()
-		var correction := lane/maxf(0.7,normal.dot(Vector2(-following.y,following.x)))
-		var amount := correction
+		var tangent := (previous+following).normalized()
+		if tangent == Vector2.ZERO: tangent = following
+		var normal := Vector2(-tangent.y,tangent.x)
+		# Keep the lane offset bounded at corners; the old projection correction
+		# could amplify a sharp terrace bend and visibly leave the carriageway.
+		var amount := lane
 		if kind == "walker" and (i == 0 or i == center.size()-1): amount = 0.0
 		shifted.append(center[i]+normal*amount)
 	if initialized:
@@ -172,7 +180,7 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 func snapshot() -> Dictionary:
 	var saved: Dictionary = {}
 	for field in ["kind","ordinal","position","direction","path","lengths","distance","total","last_seconds","wait",
-		"destination","line_key","leg_index","initialized","trip","walk_target"]: saved[field] = get(field)
+		"destination","line_key","line_index","leg_index","initialized","trip","walk_target"]: saved[field] = get(field)
 	return saved.duplicate(true)
 
 func restore(saved: Dictionary) -> void:
