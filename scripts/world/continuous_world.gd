@@ -226,6 +226,13 @@ func placement(p: Vector2) -> Dictionary:
 			tier["allowed"] = true
 			tier["reason"] = str(tier["preview"])+"；下一乐句落定"
 			return tier
+	var courtyard := Fabric.courtyard_at(self,p)
+	if not courtyard.is_empty():
+		var courtyard_tier := {"allowed":true,"tier":"L2","frontage":0,"lot_id":"courtyard:"+str(courtyard["id"]),
+			"courtyard_id":str(courtyard["id"]),"community_id":str(courtyard.get("community_id",Fabric.community_for_position(self,p))),
+			"preview":"庭院内地块 · 可成长","growth_delay":2,"max_form":"腔",
+			"reason":"庭院内地块 · 下一乐句落定"}
+		return courtyard_tier
 	var tier := Fabric.tier_for(self,p)
 	tier["allowed"] = true
 	tier["lot_id"] = ""
@@ -361,6 +368,9 @@ func _grow(family: String, frame: int) -> void:
 	for lot in lots:
 		if not str(lot["occupant"]).is_empty(): continue
 		candidates.append({"position":Vector2(float(lot["center"][0]),float(lot["center"][1])),"use":str(lot["use"])})
+	for courtyard in fabric_cache.get("courtyards",[]):
+		var court_center := Vector2(float(courtyard["center"][0]),float(courtyard["center"][1]))
+		candidates.append({"position":court_center,"use":"residential","courtyard_id":str(courtyard["id"])})
 	# L3 candidates make the city grow into open land instead of exhausting a parcel grid.
 	var owned_positions: Array[Vector2] = []
 	for owned in buildings:

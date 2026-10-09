@@ -79,6 +79,13 @@ static func community_for_position(world: RefCounted, p: Vector2) -> String:
 				best = str(cid)
 	return best if not best.is_empty() else str(world.communities.keys()[0]) if not world.communities.is_empty() else "wild"
 
+static func courtyard_at(world: RefCounted, p: Vector2) -> Dictionary:
+	for courtyard in world.fabric_cache.get("courtyards",[]):
+		var polygon: PackedVector2Array = courtyard.get("polygon",PackedVector2Array())
+		if polygon.size() >= 3 and Geometry2D.is_point_in_polygon(p,polygon):
+			return courtyard
+	return {}
+
 static func tier_for(world: RefCounted, p: Vector2, lot_id: String = "", community_id: String = "") -> Dictionary:
 	var frontage := frontage_directions(world,p)
 	var tier := "L3"

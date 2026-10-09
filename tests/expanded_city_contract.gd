@@ -12,6 +12,19 @@ func _initialize() -> void:
 	var world := World.new("2026101000000068",true,"river_valley")
 	world.build_expanded_town()
 	var authored_buildings := world.buildings.size()
+	var courtyard_sample: Dictionary = world.fabric_cache.get("courtyards",[])[0] if not world.fabric_cache.get("courtyards",[]).is_empty() else {}
+	var courtyard_point := Vector2(float(courtyard_sample.get("center",[0.0,0.0])[0]),float(courtyard_sample.get("center",[0.0,0.0])[1]))
+	var courtyard_check := world.placement(courtyard_point) if not courtyard_sample.is_empty() else {}
+	check(not courtyard_check.is_empty() and courtyard_check["allowed"] and courtyard_check["tier"] == "L2" and str(courtyard_check["lot_id"]).begins_with("courtyard:"),"courtyard supplies an interior L2 landing")
+	var courtyard_probe := World.new("2026101000000068",true,"river_valley")
+	courtyard_probe.build_expanded_town()
+	var probe_court: Dictionary = courtyard_probe.fabric_cache.get("courtyards",[])[0]
+	var probe_point := Vector2(float(probe_court["center"][0]),float(probe_court["center"][1]))
+	var probe_before := courtyard_probe.buildings.size()
+	var probe_request := courtyard_probe.request({"kind":"seed","position":[probe_point.x,probe_point.y],"midi":48},int(courtyard_probe.cfg["timing"]["phrase_frames"]))
+	courtyard_probe.settle(int(courtyard_probe.cfg["timing"]["phrase_frames"]))
+	var probe_birth := courtyard_probe.buildings.any(func(building: Dictionary) -> bool: return str(building.get("lot_id","")).begins_with("courtyard:"))
+	check(probe_request["accepted"] and probe_birth and courtyard_probe.buildings.size() > probe_before,"courtyard seed commits as a playable building")
 	var phrase_frames := int(world.cfg["timing"]["phrase_frames"])
 	world.settle(phrase_frames)
 	world.settle(phrase_frames*2)
