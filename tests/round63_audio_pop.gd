@@ -23,6 +23,9 @@ func run() -> void:
 	var retune := model.render_block(state,event_frame,2048,22050)
 	var retune_jump := (retune[0]-to_event[-1]).length()
 	var result := {"boundary":boundary,"before":before[-1],"after":after[0],"jump":jump,"retune_jump":retune_jump,"peak_before":_peak(before),"peak_after":_peak(after)}
+	var file := FileAccess.open("res://验证记录/连续河谷/第63轮_声音边界.json",FileAccess.WRITE)
+	file.store_string(JSON.stringify(result,"\t")+"\n")
+	file.close()
 	print("AUDIO_POP ",JSON.stringify(result))
 	quit(0 if jump < 0.002 and retune_jump < 0.002 else 1)
 func _peak(block: PackedVector2Array) -> float:

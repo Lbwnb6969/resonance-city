@@ -19,5 +19,8 @@ func _initialize() -> void:
 		samples += 1
 		on_road += 1 if not world.network.access(bus["position"]).is_empty() else 0
 	var result := {"road_water_clear":road_water,"transit_legs":world.transit["legs"].size(),"continuous_legs":continuity,"bus_samples":samples,"bus_on_road":on_road}
+	var file := FileAccess.open("res://验证记录/连续河谷/第63轮_道路公交.json",FileAccess.WRITE)
+	file.store_string(JSON.stringify(result,"\t")+"\n")
+	file.close()
 	print("ROUTES ",JSON.stringify(result))
 	quit(0 if road_water and continuity and samples == on_road and samples >= 20 else 1)

@@ -1,0 +1,7 @@
+{
+	"bus_on_road": 24,
+	"bus_samples": 24,
+	"continuous_legs": true,
+	"road_water_clear": true,
+	"transit_legs": 6
+}
