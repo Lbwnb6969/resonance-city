@@ -61,6 +61,15 @@ func _run() -> void:
 		demo.model.world.landmarks.append(temple)
 		check(demo.model.world.landmark_upgrade_duration(demo.model.world.buildings[0],3) == 2,"temple effect shortens a matching form duration")
 		demo.model.world.landmarks.pop_back()
+	var medieval_position := site_position+Vector2(0.4,0.0)
+	demo.model.world.landmarks.append({"name":"大教堂","position":[medieval_position.x,medieval_position.y],"radius":1.45,"active":true})
+	demo.model.world.landmarks.append({"name":"行会大厅","position":[medieval_position.x,medieval_position.y],"radius":1.25,"active":true})
+	check(demo.model.world.landmark_allows_dissonance(site_position),"cathedral effect relaxes local dissonance freeze")
+	var commercial_probe := {"type":"commercial","position":[medieval_position.x,medieval_position.y],"radius":0.8}
+	var residential_probe := {"type":"residential","position":[medieval_position.x,medieval_position.y],"radius":0.8}
+	check(is_equal_approx(demo.model.world.landmark_commercial_bonus(commercial_probe),2.0) and is_zero_approx(demo.model.world.landmark_commercial_bonus(residential_probe)),"guild hall boosts commercial vitality only")
+	demo.model.world.landmarks.pop_back()
+	demo.model.world.landmarks.pop_back()
 	var audio_city: Array = demo.model.audio_city()
 	check(audio_city.any(func(item: Dictionary) -> bool: return bool(item.get("landmark",false))),"landmark contributes an independent audio entity")
 	demo.model.synth.update_city(audio_city,{}, {},[])

@@ -382,6 +382,13 @@ func landmark_growth_connected(position: Vector2,connected: bool) -> bool:
 func landmark_vitality_bonus(position: Vector2) -> float:
 	return 2.0 if not _landmark_near("圆形剧场",position,4.0).is_empty() else 0.0
 
+func landmark_commercial_bonus(building: Dictionary) -> float:
+	if str(building.get("type","")) != "commercial": return 0.0
+	return 2.0 if not _landmark_near("行会大厅",Coupling.position_of(building),4.0).is_empty() else 0.0
+
+func landmark_allows_dissonance(position: Vector2) -> bool:
+	return not _landmark_near("大教堂",position,4.5).is_empty()
+
 func _landmark_distance_to_segment(p: Vector2,a: Vector2,b: Vector2) -> float:
 	var delta := b-a
 	var length_squared := delta.length_squared()
@@ -587,7 +594,7 @@ func settle(frame: int) -> void:
 	var vitalities := coupling.vitality(buildings,effective,resonance,costs,modifiers)
 	for building in buildings: building["vitality"] = vitalities[building["district_id"]]
 	for building in buildings:
-		var bonus := landmark_vitality_bonus(Coupling.position_of(building))
+		var bonus := landmark_vitality_bonus(Coupling.position_of(building))+landmark_commercial_bonus(building)
 		if bonus > 0.0:
 			building["vitality"] = minf(float(cfg["harmony"]["maximum_vitality"]),float(building["vitality"])+bonus)
 	if forms_dirty: _update_forms(frame)
@@ -708,6 +715,8 @@ func near_edges(id: String) -> Array:
 	return nearby.slice(0,int(cfg["space"]["near_neighbour_count"]))
 
 func frozen(id: String) -> bool:
+	if not by_id.has(id): return false
+	if landmark_allows_dissonance(Coupling.position_of(by_id[id])): return false
 	for edge in near_edges(id):
 		var other: String = edge["b"] if edge["a"] == id else edge["a"]
 		if float(coupling.interval(int(by_id[id]["current_midi"]),int(by_id[other]["current_midi"]))["score"]) <= 0.05: return true
