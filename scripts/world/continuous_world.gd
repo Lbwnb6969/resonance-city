@@ -374,18 +374,35 @@ func _grow(family: String, frame: int) -> void:
 		return
 	var root: Dictionary = by_id[families[family]["root"]]
 	var origin := Coupling.position_of(root)
-	var candidates: Array[Dictionary] = []
-	for lot in lots:
-		if not str(lot["occupant"]).is_empty(): continue
-		candidates.append({"position":Vector2(float(lot["center"][0]),float(lot["center"][1])),"use":str(lot["use"])})
-	for courtyard in fabric_cache.get("courtyards",[]):
-		var court_center := Vector2(float(courtyard["center"][0]),float(courtyard["center"][1]))
-		candidates.append({"position":court_center,"use":"residential","courtyard_id":str(courtyard["id"])})
-	# L3 candidates make the city grow into open land instead of exhausting a parcel grid.
+	# Growth searches a bounded frontier. The old all-history search became quadratic
+	# once dozens of communities had several generations of L3 candidates.
 	var owned_positions: Array[Vector2] = []
 	for owned in buildings:
 		if str(owned["family_id"]) == family: owned_positions.append(Coupling.position_of(owned))
-	for origin_point in owned_positions:
+	var frontier: Array[Vector2] = []
+	var frontier_start := maxi(0,owned_positions.size()-4)
+	for index in range(frontier_start,owned_positions.size()): frontier.append(owned_positions[index])
+	if frontier.is_empty(): frontier.append(origin)
+	var candidates: Array[Dictionary] = []
+	for lot in lots:
+		if not str(lot["occupant"]).is_empty(): continue
+		var lot_position := Vector2(float(lot["center"][0]),float(lot["center"][1]))
+		var lot_near_frontier := false
+		for frontier_point in frontier:
+			if lot_position.distance_to(frontier_point) <= 8.0:
+				lot_near_frontier = true
+				break
+		if lot_near_frontier: candidates.append({"position":lot_position,"use":str(lot["use"])})
+	for courtyard in fabric_cache.get("courtyards",[]):
+		var court_center := Vector2(float(courtyard["center"][0]),float(courtyard["center"][1]))
+		var court_near_frontier := false
+		for frontier_point in frontier:
+			if court_center.distance_to(frontier_point) <= 8.0:
+				court_near_frontier = true
+				break
+		if court_near_frontier: candidates.append({"position":court_center,"use":"residential","courtyard_id":str(courtyard["id"])})
+	# L3 candidates make the city grow into open land instead of exhausting a parcel grid.
+	for origin_point in frontier:
 		for radius: float in [1.05,1.55,2.05,2.35]:
 			for step in range(12):
 				var angle := TAU*float(step)/12.0+float(posmod(origin_point.x*37.0+origin_point.y*19.0,1.0))*0.22

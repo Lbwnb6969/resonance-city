@@ -73,7 +73,11 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
 	pitch_overrides = overrides.duplicate(true)
 	var candidates: Array[String] = []
 	for cid in world.communities:
-		if world.communities[cid]["members"].size() >= 3: candidates.append(cid)
+		var members: Array = world.communities[cid]["members"]
+		var has_facility := world.public_sites.any(func(site: Dictionary) -> bool:
+			return bool(site.get("active",false)) and str(site.get("community_id","")) == cid and str(site.get("kind","")) in ["park","civic"])
+		# A public site gives a small community a musical doorway before it has three houses.
+		if members.size() >= 3 or (has_facility and not members.is_empty()): candidates.append(cid)
 	candidates.sort_custom(func(a: String,b: String) -> bool:
 		var ar := current_world.center_rank(a)
 		var br := current_world.center_rank(b)
@@ -90,9 +94,30 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
 			if b["type"] == "commercial" or (b["expression"] == "bright" and b["form"] != "胚"):
 				chosen = b
 				break
+		var facility_rhythm := false
+		if chosen.is_empty() and not world.communities[cid]["members"].is_empty():
+			for site in world.public_sites:
+				if bool(site.get("active",false)) and str(site.get("community_id","")) == cid and str(site.get("kind","")) in ["park","civic"]:
+					chosen = world.by_id[world.communities[cid]["members"][0]]
+					facility_rhythm = true
+					break
 		if not chosen.is_empty():
-			rhythms.append({"cid":cid,"midi":int(overrides.get(chosen["district_id"],chosen["current_midi"])),"stereo":_stereo_for(chosen),"expression":chosen["expression"]})
+			rhythms.append({"cid":cid,"midi":int(overrides.get(chosen["district_id"],chosen["current_midi"])),"stereo":_stereo_for(chosen),"expression":chosen["expression"],"facility":facility_rhythm})
 		if rhythms.size() >= int(score["rhythm_slot_limit"]): break
+	# Keep one public place audible even when the two ordinary rhythm slots are full.
+	# This makes a park or civic room a compositional invitation, not only a visual tag.
+	var facility_rhythm_present := rhythms.any(func(part: Dictionary) -> bool: return bool(part.get("facility",false)))
+	if not facility_rhythm_present:
+		for cid in candidates:
+			var has_facility := world.public_sites.any(func(site: Dictionary) -> bool:
+				return bool(site.get("active",false)) and str(site.get("community_id","")) == cid and str(site.get("kind","")) in ["park","civic"])
+			if not has_facility or world.communities[cid]["members"].is_empty(): continue
+			var already_present := rhythms.any(func(part: Dictionary) -> bool: return str(part.get("cid","")) == cid)
+			if already_present: continue
+			var facility_building: Dictionary = world.by_id[world.communities[cid]["members"][0]]
+			if rhythms.size() >= int(score["rhythm_slot_limit"]): rhythms.pop_back()
+			rhythms.append({"cid":cid,"midi":int(overrides.get(facility_building["district_id"],facility_building["current_midi"])),"stereo":_stereo_for(facility_building),"expression":facility_building["expression"],"facility":true})
+			break
 	_sync_rhythm_nodes()
 	theme.clear()
 	response.clear()

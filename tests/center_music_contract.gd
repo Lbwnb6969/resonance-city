@@ -16,5 +16,6 @@ func _initialize() -> void:
 	check(str(theme.get("cid","")) == "west-2","primary center community leads the first theme")
 	check(str(theme.get("center",{}).get("level","")) == "primary","theme carries its center level")
 	check(world.center_rank(str(theme.get("cid",""))) == 0,"music selection follows center hierarchy")
-	print("CENTER_MUSIC ",JSON.stringify({"failures":failures,"theme":theme,"center_count":world.centers.size()}))
+	check(score.get("rhythms",[]).any(func(part: Dictionary) -> bool: return bool(part.get("facility",false))),"an active public place claims a rhythm slot")
+	print("CENTER_MUSIC ",JSON.stringify({"failures":failures,"theme":theme,"rhythms":score.get("rhythms",[]),"center_count":world.centers.size()}))
 	quit(0 if failures.is_empty() else 1)
