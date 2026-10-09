@@ -14,6 +14,7 @@ func _initialize() -> void:
 	for i in range(6): travelers.append(Traveler.new("bus",i))
 	for i in range(3): travelers.append(Traveler.new("car",i+8))
 	var line_ids: Dictionary = {}
+	var car_destinations: Dictionary = {}
 	var max_step := 0.0
 	var max_gap := 0.0
 	var previous: Dictionary = {}
@@ -24,7 +25,11 @@ func _initialize() -> void:
 			var result := traveler.advance(world,seconds)
 			check(not result.is_empty(),"traveler remains routed")
 			if result.is_empty(): continue
-			line_ids[traveler.line_index] = str(traveler._line(world).get("id",""))
+			if traveler.kind != "car":
+				line_ids[traveler.line_index] = str(traveler._line(world).get("id",""))
+			if traveler.kind == "car":
+				car_destinations[i] = traveler.destination
+				check(traveler.line_key.is_empty(),"private car does not borrow a transit line")
 			if previous.has(i): max_step = maxf(max_step,result["position"].distance_to(previous[i]))
 			previous[i] = result["position"]
 			var access := world.network.access(result["position"])
@@ -33,6 +38,7 @@ func _initialize() -> void:
 			check(not access.is_empty() and float(access["gap"]) <= 0.18,"traveler stays on a road")
 	check(line_ids.values().has("terrace-line"),"a vehicle uses the terrace line")
 	check(travelers.filter(func(t: CityTraveler) -> bool: return t.kind == "car" and t.initialized).size() == 3,"modern cars remain routed")
+	check(car_destinations.size() == 3 and car_destinations.values().all(func(value: Variant) -> bool: return not str(value).is_empty()),"private cars choose road-node destinations")
 	check(max_step <= 0.15,"line assignment keeps continuous movement at modern car speed")
-	print("EXPANDED_ROUTES ",JSON.stringify({"failures":failures,"line_ids":line_ids,"max_step":max_step,"max_gap":max_gap,"cars":travelers.filter(func(t: CityTraveler) -> bool: return t.kind == "car" and t.initialized).size()}))
+	print("EXPANDED_ROUTES ",JSON.stringify({"failures":failures,"line_ids":line_ids,"car_destinations":car_destinations,"max_step":max_step,"max_gap":max_gap,"cars":travelers.filter(func(t: CityTraveler) -> bool: return t.kind == "car" and t.initialized).size()}))
 	quit(0 if failures.is_empty() else 1)

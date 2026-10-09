@@ -32,11 +32,19 @@ func _init(agent_kind: String = "walker", index: int = 0) -> void:
 
 func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dictionary:
 	if kind == "car" and city.era < 5: return {}
-	if _is_vehicle() and _line(city).is_empty(): return {}
+	if kind in ["carriage","tram","bus"] and _line(city).is_empty(): return {}
+	if kind == "car" and city.network.nodes.is_empty(): return {}
 	if kind == "walker" and city.buildings.is_empty(): return {}
 	var previous_direction := direction
 	if not initialized:
-		if _is_vehicle():
+		if kind == "car":
+			var starts := _car_nodes(city)
+			if starts.is_empty(): return {}
+			destination = starts[posmod(ordinal*7,starts.size())]
+			var start_point: Array = city.network.nodes[destination]
+			position = Vector2(float(start_point[0]),float(start_point[1]))
+			_next_car(city)
+		elif _is_vehicle():
 			var line := _line(city)
 			leg_index = (ordinal*3)%line["legs"].size()
 			var leg: Dictionary = line["legs"][leg_index]
@@ -74,7 +82,8 @@ func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dict
 		elapsed -= travel
 		_sample(frame_delta)
 		if distance >= total-0.00001:
-			if _is_vehicle(): _next_bus(city)
+			if kind == "car": _next_car(city)
+			elif _is_vehicle(): _next_bus(city)
 			else: _next_walk(city)
 			if total < 0.00001: break
 	if previous_direction.length_squared() > 0.00001 and direction.length_squared() > 0.00001:
@@ -140,6 +149,33 @@ func _vehicle_lane() -> float:
 	if kind == "tram": return 0.08
 	if kind == "car": return 0.07
 	return 0.10
+
+func _car_nodes(city: ContinuousWorld) -> Array[String]:
+	var result: Array[String] = []
+	for node_id in city.network.nodes:
+		if city.network.adjacency.get(node_id,[]).size() > 0: result.append(str(node_id))
+	result.sort()
+	return result
+
+func _next_car(city: ContinuousWorld) -> void:
+	var nodes := _car_nodes(city)
+	if nodes.size() < 2: return
+	var origin := destination if nodes.has(destination) else nodes[posmod(ordinal*7,nodes.size())]
+	var origin_index := nodes.find(origin)
+	var target_index := posmod(origin_index+1+posmod(trip*3+ordinal,nodes.size()-1),nodes.size())
+	if target_index == origin_index: target_index = posmod(target_index+1,nodes.size())
+	var target := nodes[target_index]
+	var journey := city.network.route(origin,target)
+	if journey["path"].is_empty():
+		wait = 0.2
+		return
+	destination = target
+	stop_id = ""
+	passenger_load = 0
+	passenger_capacity = 4
+	_set_path(journey["path"],_vehicle_lane())
+	wait = 0.15+float(posmod(ordinal+trip,3))*0.05
+	trip += 1
 
 func _line(city: ContinuousWorld) -> Dictionary:
 	if city.transit_lines.is_empty(): return {}
