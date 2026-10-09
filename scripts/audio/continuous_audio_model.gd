@@ -92,6 +92,15 @@ func audio_city() -> Array:
 	var city := world.buildings.duplicate(true)
 	for building in city:
 		if sound_overrides.has(building["district_id"]): building["current_midi"] = sound_overrides[building["district_id"]]
+	for landmark in world.landmarks:
+		var motif: Array = landmark.get("motif",[])
+		var midi := int(motif[0].get("midi",48)) if not motif.is_empty() else 48
+		city.append({"district_id":str(landmark["id"]),"position":landmark["position"],"radius":float(landmark["radius"]),
+			"current_midi":midi,"base_midi":midi,"type":"residential","vitality":100.0,
+			"community_id":"landmark:"+str(landmark["id"]),"family_id":"landmark:"+str(landmark["id"]),
+			"expression":"bright","family_anchor":true,"is_anchor":true,"era":int(landmark.get("era",1)),
+			"form":"央","form_count":0,"birth_frame":int(landmark.get("frame",0)),"voice_level":float(landmark.get("voice_level",0.34)),
+			"landmark":true})
 	return city
 
 func _apply_sound(event: Dictionary) -> void:

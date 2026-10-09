@@ -27,6 +27,8 @@ var blocks: Array[Dictionary] = []
 var green_corridors: Array[Dictionary] = []
 var centers: Array[Dictionary] = []
 var public_sites: Array[Dictionary] = []
+var landmarks: Array[Dictionary] = []
+var landmark_progress: Dictionary = {}
 var network: CityRoadNetwork
 var transit: Dictionary = {}
 var transit_lines: Array[Dictionary] = []
@@ -249,6 +251,168 @@ func placement(p: Vector2) -> Dictionary:
 	tier["reason"] = str(tier["preview"])+"；任意合法陆地都能播种"
 	return tier
 
+
+func landmark_specs() -> Array[Dictionary]:
+	if era <= 1:
+		return [
+			{"name":"元老院","glyph":"政","radius":1.35,"condition":"全城R≥75 · 至少1个央"},
+			{"name":"神殿","glyph":"和","radius":1.15,"condition":"存在腔 · 至少2条同音共鸣"},
+			{"name":"圆形剧场","glyph":"节","radius":1.55,"condition":"两家族成群 · 距离≤6 · 城中有道路"}
+		]
+	if era == 2:
+		return [
+			{"name":"市政厅","glyph":"政","radius":1.35,"condition":"R≥75 · ≥2个央 · ≥2条道路"},
+			{"name":"大教堂","glyph":"和","radius":1.45,"condition":"存在腔 · 全城R≥80"},
+			{"name":"行会大厅","glyph":"商","radius":1.25,"condition":"商业≥12 · 至少1个商业群"}
+		]
+	return []
+
+func _landmark_condition(name: String) -> bool:
+	var core_count := 0
+	var chamber_count := 0
+	var commercial_count := 0
+	var commercial_group := 0
+	var group_positions: Array[Dictionary] = []
+	for building in buildings:
+		var form := str(building.get("form","胚"))
+		if form == "央": core_count += 1
+		if form == "腔": chamber_count += 1
+		if str(building.get("type","")) == "commercial": commercial_count += 1
+		if form in ["群","央","腔"] and str(building.get("type","")) == "commercial": commercial_group += 1
+		if form in ["群","央","腔"]:
+			group_positions.append({"family":str(building.get("family_id","")),"position":Coupling.position_of(building)})
+	var road_count := roads.size()
+	if name == "元老院": return resonance >= 75.0 and core_count >= 1
+	if name == "神殿":
+		if chamber_count < 1: return false
+		var same_edges := 0
+		for edge in musical_edges(musicality()):
+			if float(edge.get("coupling",0.0)) >= 0.9: same_edges += 1
+		return same_edges >= 2
+	if name == "圆形剧场":
+		for i in range(group_positions.size()):
+			for j in range(i+1,group_positions.size()):
+				if group_positions[i]["family"] == group_positions[j]["family"]: continue
+				if Vector2(group_positions[i]["position"]).distance_to(Vector2(group_positions[j]["position"])) <= 6.0 and road_count > 0: return true
+		return false
+	if name == "市政厅": return resonance >= 75.0 and core_count >= 2 and road_count >= 2
+	if name == "大教堂": return chamber_count >= 1 and resonance >= 80.0
+	if name == "行会大厅": return commercial_count >= 12 and commercial_group >= 1
+	return false
+
+func landmark_candidates() -> Array[Dictionary]:
+	var has_group := buildings.any(func(building: Dictionary) -> bool: return str(building.get("form","胚")) in ["群","央","腔"])
+	if not has_group and landmarks.is_empty(): return []
+	var result: Array[Dictionary] = []
+	for spec in landmark_specs():
+		var name := str(spec["name"])
+		var record: Dictionary = landmark_progress.get(name,{})
+		var candidate := spec.duplicate(true)
+		candidate["ready"] = _landmark_condition(name)
+		candidate["streak"] = int(record.get("streak",0))
+		candidate["awakened"] = bool(record.get("awakened",false))
+		candidate["required_streak"] = 2
+		candidate["built"] = landmark_exists(name)
+		result.append(candidate)
+	return result
+
+func landmark_status(name: String) -> Dictionary:
+	for candidate in landmark_candidates():
+		if str(candidate["name"]) == name: return candidate
+	return {}
+
+func landmark_exists(name: String) -> bool:
+	return landmarks.any(func(item: Dictionary) -> bool: return str(item.get("name","")) == name)
+
+func _advance_landmark_progress(frame: int) -> void:
+	for spec in landmark_specs():
+		var name := str(spec["name"])
+		if landmark_exists(name): continue
+		var record: Dictionary = landmark_progress.get(name,{"streak":0,"awakened":false,"last_phrase":-1}).duplicate(true)
+		record["streak"] = int(record.get("streak",0))+1 if _landmark_condition(name) else 0
+		record["last_phrase"] = phrase_index
+		if int(record["streak"]) >= 2 and not bool(record.get("awakened",false)):
+			record["awakened"] = true
+			events.append({"kind":"landmark_awakened","name":name,"frame":frame,"phrase":phrase_index})
+		landmark_progress[name] = record
+
+func _landmark_distance_to_segment(p: Vector2,a: Vector2,b: Vector2) -> float:
+	var delta := b-a
+	var length_squared := delta.length_squared()
+	if length_squared <= 0.0001: return p.distance_to(a)
+	var t := clampf((p-a).dot(delta)/length_squared,0.0,1.0)
+	return p.distance_to(a+delta*t)
+
+func landmark_site_clear(position: Vector2,radius: float) -> bool:
+	if not terrain.land_at(position): return false
+	for site in public_sites:
+		var site_position := Vector2(float(site["position"][0]),float(site["position"][1]))
+		if position.distance_to(site_position) < radius+1.1: return false
+	for road in roads:
+		var path: PackedVector2Array = road["path"]
+		for i in range(path.size()-1):
+			if _landmark_distance_to_segment(position,path[i],path[i+1]) < radius+0.30: return false
+	for landmark in landmarks:
+		var other := Vector2(float(landmark["position"][0]),float(landmark["position"][1]))
+		if position.distance_to(other) < radius+float(landmark.get("radius",1.0)): return false
+	return true
+
+func _remove_building_for_landmark(id: String,landmark_id: String) -> Dictionary:
+	if not by_id.has(id): return {}
+	var building: Dictionary = by_id[id].duplicate(true)
+	by_id.erase(id)
+	index.remove(id)
+	for i in range(buildings.size()-1,-1,-1):
+		if str(buildings[i]["district_id"]) == id: buildings.remove_at(i)
+	var community_id := str(building.get("community_id",""))
+	if communities.has(community_id):
+		communities[community_id]["members"].erase(id)
+	for lot in lots:
+		if str(lot.get("occupant","")) == id:
+			lot["occupant"] = landmark_id
+			lot["landmark_id"] = landmark_id
+	for family_id in families:
+		if str(families[family_id].get("root","")) != id: continue
+		var replacement := ""
+		for other in buildings:
+			if str(other.get("family_id","")) == family_id:
+				replacement = str(other["district_id"])
+				break
+		families[family_id]["root"] = replacement
+	return building
+
+func _commit_landmark(operation: Dictionary,frame: int) -> void:
+	var name := str(operation.get("name",""))
+	if landmark_exists(name): return
+	var position := Vector2(float(operation["position"][0]),float(operation["position"][1]))
+	var radius := float(operation.get("radius",1.0))
+	var landmark_id := "landmark-%02d" % (landmarks.size()+1)
+	var spec := landmark_status(name)
+	var landmark := {"id":landmark_id,"name":name,"glyph":str(spec.get("glyph","地")),"era":era,
+		"position":[position.x,position.y],"radius":radius,"frame":frame,
+		"reveal_frame":frame,"reveal_frames":maxi(1,int(cfg["timing"]["phrase_frames"])/8),
+		"voice_level":0.34,"motif":[],"absorbed_buildings":[],"active":false}
+	var candidates: Array[Dictionary] = []
+	for building in buildings:
+		var form := str(building.get("form","胚"))
+		if form not in ["群","央","腔"]: continue
+		var distance := position.distance_to(Coupling.position_of(building))
+		if distance <= radius+float(building["radius"]): candidates.append({"id":str(building["district_id"]),"distance":distance})
+	candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+		if float(a["distance"]) != float(b["distance"]): return float(a["distance"]) < float(b["distance"])
+		return str(a["id"]) < str(b["id"]))
+	var capacity := 4 if name in ["元老院","圆形剧场"] else 3
+	for candidate in candidates.slice(0,mini(capacity,candidates.size())):
+		var absorbed := _remove_building_for_landmark(str(candidate["id"]),landmark_id)
+		if absorbed.is_empty(): continue
+		landmark["absorbed_buildings"].append(str(absorbed["district_id"]))
+		landmark["motif"].append({"id":str(absorbed["district_id"]),"midi":int(absorbed["current_midi"])})
+	landmarks.append(landmark)
+	landmark_progress[name] = {"streak":2,"awakened":true,"last_phrase":phrase_index}
+	rebuild_graph()
+	refresh_fabric()
+	events.append({"kind":"landmark","id":landmark_id,"name":name,"frame":frame,"absorbed":landmark["absorbed_buildings"].duplicate()})
+
 func request(operation: Dictionary, frame: int) -> Dictionary:
 	if lifecycle["ended"]: return {"accepted":false,"reason":"这一段已结束，按R重新播种"}
 	var kind := str(operation.get("kind",""))
@@ -268,6 +432,18 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		if not by_id.has(operation.get("id","")): return {"accepted":false,"reason":"请选择一栋建筑"}
 	elif kind == "bridge":
 		if bridge or pending_actions.any(func(op: Dictionary) -> bool: return op["kind"] == "bridge"): return {"accepted":false,"reason":"桥已经连接或正在等待落定"}
+	elif kind == "landmark":
+		var name := str(operation.get("name",""))
+		var status := landmark_status(name)
+		if status.is_empty() or bool(status.get("built",false)): return {"accepted":false,"reason":"这座地标当前不可用"}
+		if not bool(status.get("awakened",false)): return {"accepted":false,"reason":"地标还需要连续两句满足条件"}
+		if pending_actions.any(func(op: Dictionary) -> bool: return op["kind"] == "landmark"): return {"accepted":false,"reason":"已有一座地标等待下一句落成"}
+		var site_position := Vector2(float(operation["position"][0]),float(operation["position"][1]))
+		var site_radius := float(operation.get("radius",status.get("radius",1.0)))
+		if not landmark_site_clear(site_position,site_radius): return {"accepted":false,"reason":"预影位置已被道路、公共空间或另一座地标占用"}
+		operation = operation.duplicate(true)
+		operation["radius"] = site_radius
+		operation["era"] = era
 	elif kind in ["park","civic"]:
 		var found := false
 		for site in public_sites:
@@ -344,6 +520,8 @@ func settle(frame: int) -> void:
 				roads.append({"id":"river-bridge","from":"west-2","to":"east-2","path":PackedVector2Array([Vector2(a[0],a[1]),Vector2(b[0],b[1])]),"bridge":true})
 				rebuild_graph()
 				events.append({"kind":"bridge","frame":frame})
+			"landmark":
+				_commit_landmark(op,frame)
 			"park","civic":
 				for site in public_sites:
 					if site["id"] != op["id"]: continue
@@ -361,6 +539,7 @@ func settle(frame: int) -> void:
 	var vitalities := coupling.vitality(buildings,effective,resonance,costs,modifiers)
 	for building in buildings: building["vitality"] = vitalities[building["district_id"]]
 	if forms_dirty: _update_forms(frame)
+	_advance_landmark_progress(frame)
 	if resonance < float(cfg["harmony"]["gray_entry"]): lifecycle["gray"] = true
 	elif resonance > float(cfg["harmony"]["gray_exit"]): lifecycle["gray"] = false
 	lifecycle["low_phrases"] = int(lifecycle["low_phrases"])+1 if resonance < float(cfg["harmony"]["gray_entry"]) else 0
@@ -517,10 +696,10 @@ func _update_forms(frame: int) -> void:
 			events.append({"kind":"upgrade","district_id":building["district_id"],"frame":frame,"form":target})
 
 func snapshot() -> Dictionary:
-	return {"schema_version":2,"generation_version":65,"settings":cfg.duplicate(true),
+	return {"schema_version":2,"generation_version":66,"settings":cfg.duplicate(true),
 		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase,"family":terrain.family},
 		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"green_corridors":green_corridors.duplicate(true),"centers":centers.duplicate(true),"communities":communities.duplicate(true)},
-		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
+		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"landmarks":landmarks.duplicate(true),"landmark_progress":landmark_progress.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
 		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,"expanded_plan":expanded_plan,
 		"next_id":next_id,"families":families.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_reason":last_reason}
 
@@ -560,6 +739,11 @@ func restore(saved: Dictionary) -> void:
 	profile = str(saved.get("profile","bright"))
 	action_serial = int(saved.get("action_serial",0))
 	if saved.has("public_sites"): public_sites.assign(saved["public_sites"].duplicate(true))
+	landmarks.assign(saved.get("landmarks",[]).duplicate(true))
+	landmark_progress = saved.get("landmark_progress",{}).duplicate(true)
+	for landmark in landmarks:
+		for lot in lots:
+			if str(lot.get("landmark_id","")) == str(landmark.get("id","")): lot["occupant"] = str(landmark["id"])
 	events.assign(saved["events"].duplicate(true))
 	bridge = bool(saved["bridge"])
 	if bridge and not roads.any(func(r: Dictionary) -> bool: return r["bridge"]):

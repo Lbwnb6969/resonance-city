@@ -390,23 +390,8 @@ func _hit(screen: Vector2) -> String:
 func _landmark_radius(index: int) -> float:
 	return 1.35 if index == 0 else (1.15 if index == 1 else 1.55)
 
-func _distance_to_segment(p: Vector2, a: Vector2, b: Vector2) -> float:
-	var delta := b-a
-	var length_squared := delta.length_squared()
-	if length_squared <= 0.0001: return p.distance_to(a)
-	var t := clampf((p-a).dot(delta)/length_squared,0.0,1.0)
-	return p.distance_to(a+delta*t)
-
 func _landmark_site_clear(position: Vector2, radius: float) -> bool:
-	if not shown_world.terrain.land_at(position): return false
-	for site in shown_world.public_sites:
-		var site_position := Vector2(float(site["position"][0]),float(site["position"][1]))
-		if position.distance_to(site_position) < radius+1.1: return false
-	for road in shown_world.roads:
-		var path: PackedVector2Array = road["path"]
-		for i in range(path.size()-1):
-			if _distance_to_segment(position,path[i],path[i+1]) < radius+0.30: return false
-	return true
+	return shown_world != null and shown_world.landmark_site_clear(position,radius)
 
 func _landmark_anchor_positions(index: int) -> Array[Vector2]:
 	var positions: Array[Vector2] = []
@@ -434,7 +419,7 @@ func _landmark_anchor_positions(index: int) -> Array[Vector2]:
 
 func _landmark_preview_positions(index: int) -> Array[Dictionary]:
 	var candidates := _landmark_candidates()
-	if index < 0 or index >= candidates.size() or not bool(candidates[index]["ready"]): return []
+	if index < 0 or index >= candidates.size() or (not bool(candidates[index]["ready"]) and not bool(candidates[index].get("awakened",false))) or bool(candidates[index].get("built",false)): return []
 	var radius := _landmark_radius(index)
 	var offsets := [Vector2.ZERO,Vector2(0.8,0.0),Vector2(-0.8,0.0),Vector2(0.0,0.8),Vector2(0.0,-0.8),Vector2(1.5,0.0),Vector2(-1.5,0.0),Vector2(0.0,1.5),Vector2(0.0,-1.5)]
 	for position in _landmark_anchor_positions(index):
@@ -457,11 +442,35 @@ func _select_landmark_candidate(index: int) -> void:
 	if index < 0 or index >= candidates.size(): return
 	selected_landmark_candidate = index
 	var candidate: Dictionary = candidates[index]
-	if bool(candidate["ready"]):
+	if bool(candidate.get("awakened",false)):
 		var sites := _landmark_preview_positions(index)
-		_message(str(candidate["name"])+" · 场地预影已显示" if not sites.is_empty() else str(candidate["name"])+" · 条件满足，但暂未找到连续陆地")
+		_message(str(candidate["name"])+" · 场地预影已显示 · Enter确认" if not sites.is_empty() else str(candidate["name"])+" · 觉醒已完成，但暂未找到连续陆地")
+	elif bool(candidate["ready"]):
+		var sites := _landmark_preview_positions(index)
+		_message(str(candidate["name"])+" · 条件满足%d/2句 · 预影已显示，继续保持两句后可确认" % int(candidate.get("streak",0)) if not sites.is_empty() else str(candidate["name"])+" · 条件满足，但暂未找到连续陆地")
 	else:
-		_message(str(candidate["name"])+" · "+str(candidate["condition"]))
+		_message(str(candidate["name"])+" · "+str(candidate["condition"])+" · 觉醒%d/2句" % int(candidate.get("streak",0)))
+
+func _confirm_landmark() -> void:
+	var candidates := _landmark_candidates()
+	if selected_landmark_candidate < 0 or selected_landmark_candidate >= candidates.size(): return
+	var candidate: Dictionary = candidates[selected_landmark_candidate]
+	if bool(candidate.get("built",false)):
+		_message(str(candidate["name"])+"已经落成")
+		return
+	if not bool(candidate.get("awakened",false)):
+		_message(str(candidate["name"])+"还需连续两句满足条件 · 当前%d/2" % int(candidate.get("streak",0)))
+		return
+	var sites := _landmark_preview_positions(selected_landmark_candidate)
+	if sites.is_empty():
+		_message(str(candidate["name"])+"没有可用的连续陆地预影")
+		return
+	var site: Dictionary = sites[0]
+	var result := model.submit({"kind":"landmark","name":str(candidate["name"]),"position":site["position"],"radius":site["radius"]})
+	if result["accepted"]:
+		_message(str(candidate["name"])+"已确认 · 下一句开始分段落成")
+	else:
+		_message(result["reason"])
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
@@ -572,7 +581,7 @@ func _input(event: InputEvent) -> void:
 		load_city()
 		get_viewport().set_input_as_handled()
 		return
-	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y,KEY_E]: get_viewport().set_input_as_handled()
+	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y,KEY_E,KEY_ENTER]: get_viewport().set_input_as_handled()
 	if event.keycode == KEY_SPACE and not event.pressed:
 		preview_requested = false
 		preview_player.stop()
@@ -618,6 +627,7 @@ func _input(event: InputEvent) -> void:
 			_start_world()
 			clock.start_output(model._mix_frame,{})
 		KEY_SPACE: _request_preview()
+		KEY_ENTER: _confirm_landmark()
 		KEY_1: _choose_note(48)
 		KEY_2: _choose_note(50)
 		KEY_3: _choose_note(52)
@@ -713,6 +723,10 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 func _sync_buildings() -> void:
+	for id in sprites.keys().duplicate():
+		if shown_world.by_id.has(id): continue
+		sprites[id].queue_free()
+		sprites.erase(id)
 	var records: Array[Dictionary] = []
 	for building in shown_world.buildings:
 		var id: String = building["district_id"]
@@ -779,6 +793,7 @@ func _draw() -> void:
 	_draw_center_markers()
 	_draw_green_corridors()
 	_draw_public_space()
+	_draw_landmarks()
 	_draw_landmark_preview()
 	for lot in shown_world.lots:
 		var center := Vector2(lot["center"][0],lot["center"][1])
@@ -821,7 +836,7 @@ func diagnostics() -> Dictionary:
 		"lots":shown_world.lots.size(),"resonance":shown_world.resonance,"phrase":shown_world.phrase_index,
 		"skips":clock.underruns,"audible_frame":clock.renderer.transport.audible_frame,"pending":model.world.pending.duplicate(true),
 		"preview_started":preview_started,"seed_hex":model.world.rng.seed_hex,"blocks":shown_world.blocks.size(),
-		"public_sites":shown_world.public_sites.duplicate(true),"green_corridors":shown_world.green_corridors.duplicate(true),"centers":shown_world.centers.duplicate(true),"transit":shown_world.transit_lines.map(func(line: Dictionary) -> String: return line["name"]),"terrain_family":shown_world.terrain.family,"terrain_title":shown_world.terrain_title(),"era":shown_world.era,"era_title":shown_world.era_title(),"vehicle":shown_world.vehicle_kind(),"score":model.synth.score_snapshot(),"sound_trace":model.sound_trace.duplicate(true)}
+		"public_sites":shown_world.public_sites.duplicate(true),"landmarks":shown_world.landmarks.duplicate(true),"landmark_candidates":shown_world.landmark_candidates(),"green_corridors":shown_world.green_corridors.duplicate(true),"centers":shown_world.centers.duplicate(true),"transit":shown_world.transit_lines.map(func(line: Dictionary) -> String: return line["name"]),"terrain_family":shown_world.terrain.family,"terrain_title":shown_world.terrain_title(),"era":shown_world.era,"era_title":shown_world.era_title(),"vehicle":shown_world.vehicle_kind(),"score":model.synth.score_snapshot(),"sound_trace":model.sound_trace.duplicate(true)}
 
 func _exit_tree() -> void:
 	if session_persistence and model != null and is_instance_valid(clock) and clock.active: save_city("离开时保存")
@@ -836,38 +851,32 @@ func _set_expression(value: String) -> void:
 
 func _landmark_candidates() -> Array[Dictionary]:
 	if shown_world == null: return []
-	var has_group := false
-	var core_count := 0
-	var chamber_count := 0
-	var commercial_count := 0
-	var commercial_group := 0
-	var family_same_edges := 0
-	var families_seen := {}
-	for building in shown_world.buildings:
-		var form := str(building.get("form","胚"))
-		has_group = has_group or form in ["群","央","腔"]
-		core_count += 1 if form == "央" else 0
-		chamber_count += 1 if form == "腔" else 0
-		commercial_count += 1 if str(building.get("type","")) == "commercial" else 0
-		if form in ["群","央","腔"] and str(building.get("type","")) == "commercial": commercial_group += 1
-		families_seen[str(building.get("family_anchor",""))] = true
-	if not has_group: return []
-	for edge in shown_world.musical_edges(shown_world.musicality()):
-		if float(edge.get("coupling",0.0)) >= 0.9: family_same_edges += 1
-	var road_count := shown_world.roads.size()
-	if shown_world.era <= 1:
-		return [
-			{"name":"元老院","glyph":"政","ready":shown_world.resonance >= 75.0 and core_count >= 1,"condition":"全城R≥75 · 至少1个央"},
-			{"name":"神殿","glyph":"和","ready":chamber_count >= 1 and family_same_edges >= 2,"condition":"存在腔 · 至少2条同音共鸣"},
-			{"name":"圆形剧场","glyph":"节","ready":families_seen.size() >= 2 and road_count > 0,"condition":"两家族成群 · 城中有道路"}
-		]
-	if shown_world.era == 2:
-		return [
-			{"name":"市政厅","glyph":"政","ready":shown_world.resonance >= 75.0 and core_count >= 2 and road_count >= 2,"condition":"R≥75 · ≥2个央 · ≥2条道路"},
-			{"name":"大教堂","glyph":"和","ready":chamber_count >= 1 and shown_world.resonance >= 80.0,"condition":"存在腔 · 全城R≥80"},
-			{"name":"行会大厅","glyph":"商","ready":commercial_count >= 12 and commercial_group >= 1,"condition":"商业≥12 · 至少1个商业群"}
-		]
-	return []
+	return shown_world.landmark_candidates()
+
+func _draw_landmarks() -> void:
+	var frame := int(clock.renderer.transport.audible_frame)
+	for landmark in shown_world.landmarks:
+		var position := Vector2(float(landmark["position"][0]),float(landmark["position"][1]))
+		var radius := float(landmark["radius"])
+		var reveal_start := int(landmark.get("reveal_frame",landmark.get("frame",0)))
+		var reveal_frames := maxi(1,int(landmark.get("reveal_frames",1)))
+		var progress := clampf(float(frame-reveal_start)/float(reveal_frames),0.0,1.0)
+		var at := point(position,shown_world.terrain.height_at(position)+0.16)
+		var tint := Color("b18b55")
+		var sides := 12 if str(landmark.get("name","")) == "圆形剧场" else 8
+		var ring := PackedVector2Array()
+		for i in range(sides):
+			ring.append(position+Vector2.from_angle(TAU*float(i)/sides)*radius*progress)
+		if ring.size() >= 3:
+			draw_colored_polygon(_project_polygon(ring,shown_world.terrain.height_at(position)+0.12),Color(tint,0.28+0.22*progress))
+		draw_arc(at,radius*progress*view_zoom,0,TAU,32,Color(tint,0.95),2.0*view_zoom,true)
+		for i in range(sides):
+			var outer := point(position+Vector2.from_angle(TAU*float(i)/sides)*radius*progress,shown_world.terrain.height_at(position)+0.18)
+			draw_line(at,outer,Color(tint,0.55+0.25*progress),1.0*view_zoom,true)
+		draw_circle(at,2.5*view_zoom,Color(tint,0.92))
+		draw_string(ThemeDB.fallback_font,at+Vector2(8,-10)*view_zoom,str(landmark["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("776247"))
+		if progress < 1.0:
+			draw_string(ThemeDB.fallback_font,at+Vector2(8,7)*view_zoom,"落成 %.0f%%" % (progress*100.0),HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("8a7356"))
 
 func _draw_landmark_bar() -> void:
 	var candidates := _landmark_candidates()
@@ -877,17 +886,21 @@ func _draw_landmark_bar() -> void:
 	for i in range(candidates.size()):
 		var candidate: Dictionary = candidates[i]
 		var y := 122.0+float(i)*28.0
-		var tint := Color("b18b55") if bool(candidate["ready"]) else Color("9aa69a")
+		var tint := Color("79966e") if bool(candidate.get("built",false)) else (Color("b18b55") if bool(candidate.get("awakened",false)) else (Color("b39a63") if bool(candidate["ready"]) else Color("9aa69a")))
 		draw_circle(Vector2(32,y-4),8.0,Color(tint,0.18))
 		draw_arc(Vector2(32,y-4),8.0,0,TAU,18,tint,1.1,true)
-		draw_string(font,Vector2(49,y),str(candidate["glyph"])+"  "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("566d65") if bool(candidate["ready"]) else Color("87948b"))
-		draw_string(font,Vector2(49,y+13),str(candidate["condition"]),HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("7e8d84"))
+		draw_string(font,Vector2(49,y),str(candidate["glyph"])+"  "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("566d65") if bool(candidate["ready"]) or bool(candidate.get("awakened",false)) else Color("87948b"))
+		var status_text := str(candidate["condition"])
+		if bool(candidate.get("built",false)): status_text += " · 已落成"
+		elif bool(candidate.get("awakened",false)): status_text += " · 已觉醒 · Enter确认"
+		else: status_text += " · 觉醒%d/2句" % int(candidate.get("streak",0))
+		draw_string(font,Vector2(49,y+13),status_text,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("7e8d84"))
 
 func _draw_landmark_preview() -> void:
 	var candidates := _landmark_candidates()
 	if selected_landmark_candidate < 0 or selected_landmark_candidate >= candidates.size(): return
 	var candidate: Dictionary = candidates[selected_landmark_candidate]
-	if not bool(candidate["ready"]): return
+	if not bool(candidate["ready"]) and not bool(candidate.get("awakened",false)): return
 	var sites := _landmark_preview_positions(selected_landmark_candidate)
 	var tint := Color("b18b55")
 	for site in sites:
