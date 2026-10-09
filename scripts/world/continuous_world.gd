@@ -324,6 +324,39 @@ func landmark_status(name: String) -> Dictionary:
 func landmark_exists(name: String) -> bool:
 	return landmarks.any(func(item: Dictionary) -> bool: return str(item.get("name","")) == name)
 
+
+func landmark_at(position: Vector2) -> Dictionary:
+	for landmark in landmarks:
+		var center := Vector2(float(landmark["position"][0]),float(landmark["position"][1]))
+		if center.distance_to(position) <= float(landmark.get("radius",1.0)): return landmark
+	return {}
+
+func _landmark_record(name: String) -> Dictionary:
+	for landmark in landmarks:
+		if str(landmark.get("name","")) == name and bool(landmark.get("active",false)): return landmark
+	return {}
+
+func landmark_intervention_slots() -> int:
+	return 2 if not _landmark_record("元老院").is_empty() else 1
+
+func _landmark_near(name: String,position: Vector2,radius: float) -> Dictionary:
+	var landmark := _landmark_record(name)
+	if landmark.is_empty(): return {}
+	var center := Vector2(float(landmark["position"][0]),float(landmark["position"][1]))
+	return landmark if center.distance_to(position) <= radius else {}
+
+func _landmark_same_pitch(landmark: Dictionary,midi: int) -> bool:
+	var anchor := int(landmark.get("anchor_midi",48))
+	return posmod(absi(midi-anchor),12) == 0
+
+func _update_landmark_activation(frame: int) -> void:
+	for landmark in landmarks:
+		if bool(landmark.get("active",false)): continue
+		var reveal_end := int(landmark.get("reveal_frame",frame))+int(landmark.get("reveal_frames",1))
+		if frame < reveal_end: continue
+		landmark["active"] = true
+		events.append({"kind":"landmark_active","id":landmark["id"],"name":landmark["name"],"frame":frame})
+
 func _advance_landmark_progress(frame: int) -> void:
 	for spec in landmark_specs():
 		var name := str(spec["name"])
@@ -335,6 +368,19 @@ func _advance_landmark_progress(frame: int) -> void:
 			record["awakened"] = true
 			events.append({"kind":"landmark_awakened","name":name,"frame":frame,"phrase":phrase_index})
 		landmark_progress[name] = record
+
+
+func landmark_upgrade_duration(building: Dictionary,base_duration: int) -> int:
+	var temple := _landmark_near("神殿",Coupling.position_of(building),4.0)
+	if not temple.is_empty() and _landmark_same_pitch(temple,int(building["current_midi"])):
+		return maxi(1,base_duration-1)
+	return base_duration
+
+func landmark_growth_connected(position: Vector2,connected: bool) -> bool:
+	return connected or not _landmark_near("圆形剧场",position,5.0).is_empty()
+
+func landmark_vitality_bonus(position: Vector2) -> float:
+	return 2.0 if not _landmark_near("圆形剧场",position,4.0).is_empty() else 0.0
 
 func _landmark_distance_to_segment(p: Vector2,a: Vector2,b: Vector2) -> float:
 	var delta := b-a
@@ -391,7 +437,7 @@ func _commit_landmark(operation: Dictionary,frame: int) -> void:
 	var landmark := {"id":landmark_id,"name":name,"glyph":str(spec.get("glyph","地")),"era":era,
 		"position":[position.x,position.y],"radius":radius,"frame":frame,
 		"reveal_frame":frame,"reveal_frames":maxi(1,int(cfg["timing"]["phrase_frames"])/8),
-		"voice_level":0.34,"motif":[],"absorbed_buildings":[],"active":false}
+		"voice_level":0.34,"anchor_midi":48,"motif":[],"absorbed_buildings":[],"active":false}
 	var candidates: Array[Dictionary] = []
 	for building in buildings:
 		var form := str(building.get("form","胚"))
@@ -407,6 +453,7 @@ func _commit_landmark(operation: Dictionary,frame: int) -> void:
 		if absorbed.is_empty(): continue
 		landmark["absorbed_buildings"].append(str(absorbed["district_id"]))
 		landmark["motif"].append({"id":str(absorbed["district_id"]),"midi":int(absorbed["current_midi"])})
+	if not landmark["motif"].is_empty(): landmark["anchor_midi"] = int(landmark["motif"][0]["midi"])
 	landmarks.append(landmark)
 	landmark_progress[name] = {"streak":2,"awakened":true,"last_phrase":phrase_index}
 	rebuild_graph()
@@ -489,6 +536,7 @@ func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int) -> St
 
 func settle(frame: int) -> void:
 	phrase_index += 1
+	_update_landmark_activation(frame)
 	update_era(frame)
 	var costs: Dictionary = {}
 	var buildings_before_growth := buildings.size()
@@ -538,6 +586,10 @@ func settle(frame: int) -> void:
 	resonance = coupling.resonance(buildings,effective)
 	var vitalities := coupling.vitality(buildings,effective,resonance,costs,modifiers)
 	for building in buildings: building["vitality"] = vitalities[building["district_id"]]
+	for building in buildings:
+		var bonus := landmark_vitality_bonus(Coupling.position_of(building))
+		if bonus > 0.0:
+			building["vitality"] = minf(float(cfg["harmony"]["maximum_vitality"]),float(building["vitality"])+bonus)
 	if forms_dirty: _update_forms(frame)
 	_advance_landmark_progress(frame)
 	if resonance < float(cfg["harmony"]["gray_entry"]): lifecycle["gray"] = true
@@ -607,6 +659,7 @@ func _grow(family: String, frame: int) -> void:
 			var op := Coupling.position_of(owned)
 			if p.distance_to(op) <= 2.4 and float(road_environment(p,op)["occlusion"]) > 0.0 and not frozen(owned["district_id"]):
 				connected = true
+		connected = landmark_growth_connected(p,connected)
 		if not connected: continue
 		var clashes := false
 		var ranked: Array = []
@@ -689,6 +742,8 @@ func _update_forms(frame: int) -> void:
 				target = "央"
 				duration = 3
 			elif good >= 3 and good == scores.size(): target = "腔"
+			if not target.is_empty():
+				duration = landmark_upgrade_duration(building,duration)
 		building["form_count"] = int(building["form_count"])+1 if not target.is_empty() else 0
 		if not target.is_empty() and int(building["form_count"]) >= duration:
 			building["form"] = target

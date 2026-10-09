@@ -50,6 +50,17 @@ func _run() -> void:
 		var landmark: Dictionary = demo.model.world.landmarks[0]
 		check(landmark.get("name","") == name and landmark.get("reveal_frames",0) > 0,"landmark has staged reveal metadata")
 		check(landmark.get("motif",[]).size() == landmark.get("absorbed_buildings",[]).size(),"absorbed pitches are retained in the landmark motif")
+	demo.model.world.settle(phrase*4)
+	check(bool(demo.model.world.landmarks[0].get("active",false)),"landmark effect activates after its staged reveal")
+	check(demo.model.world.landmark_intervention_slots() == (2 if name == "元老院" else 1),"landmark exposes its intervention capacity")
+	var site_position := Vector2(float(site["position"][0]),float(site["position"][1]))
+	check(not demo.model.world._landmark_near(name,site_position,5.0).is_empty(),"landmark effect radius is spatially queryable")
+	check(demo.model.world.landmark_growth_connected(site_position,false) and is_equal_approx(demo.model.world.landmark_vitality_bonus(site_position),2.0),"theatre effect changes growth reach and vitality")
+	if not demo.model.world.buildings.is_empty():
+		var temple := {"name":"神殿","position":[site_position.x,site_position.y],"radius":1.15,"active":true,"anchor_midi":int(demo.model.world.buildings[0]["current_midi"])}
+		demo.model.world.landmarks.append(temple)
+		check(demo.model.world.landmark_upgrade_duration(demo.model.world.buildings[0],3) == 2,"temple effect shortens a matching form duration")
+		demo.model.world.landmarks.pop_back()
 	var audio_city: Array = demo.model.audio_city()
 	check(audio_city.any(func(item: Dictionary) -> bool: return bool(item.get("landmark",false))),"landmark contributes an independent audio entity")
 	demo.model.synth.update_city(audio_city,{}, {},[])

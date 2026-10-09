@@ -704,7 +704,12 @@ func _process(delta: float) -> void:
 	hover_id = _hit(pointer) if pointer_inside else ""
 	var p := world_at(pointer)
 	var check := model.world.placement(p)
-	if not hover_id.is_empty():
+	var landmark := shown_world.landmark_at(p)
+	if not landmark.is_empty():
+		var progress := clampf(float(clock.renderer.transport.audible_frame-int(landmark.get("reveal_frame",landmark.get("frame",0))))/float(maxi(1,int(landmark.get("reveal_frames",1)))),0.0,1.0)
+		var effect := "独立长音 · 吸收%d栋 · 动机%d音" % [landmark.get("absorbed_buildings",[]).size(),landmark.get("motif",[]).size()]
+		tooltip.text = "%s · %s\n%s\n落成 %.0f%% · 悬停查看历史" % [str(landmark["name"]),"古典遗产" if int(landmark.get("era",1)) == 1 else "时代地标",effect,progress*100.0]
+	elif not hover_id.is_empty():
 		var b: Dictionary = shown_world.by_id[hover_id]
 		tooltip.text = "%s · %s · %s\n%s  ·  活力 %.0f\n点击选音   Tab独听社区   F聚焦" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),b["form"],shown_world.communities[b["community_id"]]["name"],b["vitality"]]
 	elif check["allowed"]:
@@ -824,7 +829,8 @@ func _draw() -> void:
 		var score: Dictionary = model.synth.score_snapshot()
 		var lead := str(score["theme"].get("cid",""))
 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
-		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d条线路 · %d处公共 · %d段待播 · 主题%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.communities.size(),shown_world.transit_lines.size(),shown_world.public_sites.size(),model.world.pending_actions.size(),name]
+		var decree_slots := " · 政令槽%d" % shown_world.landmark_intervention_slots() if shown_world.landmark_intervention_slots() > 1 else ""
+		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d条线路 · %d处公共 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.communities.size(),shown_world.transit_lines.size(),shown_world.public_sites.size(),model.world.pending_actions.size(),name,decree_slots]
 		draw_string(font,Vector2(size.x-650,size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("607974"))
 	var duration := float(model.phrase_frames)
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
