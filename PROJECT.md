@@ -152,6 +152,8 @@ Godot4.7.2官方ed1daf0bf，1440×900 Compatibility。GD/场景改动经本项�
 
 第89轮真实Demo DNA往返与音频/镜头向量解码已提交，备份引用 refs/backups/round89-live-dna; `dna_demo_roundtrip.gd` 通过，实际场景可从可读 JSON 继续创作。
 
+第90轮移动体运动连续性已提交，备份引用 refs/backups/round90-motion-realism；载具加减速、转向限幅和 `motion_speed` 快照通过回归，保留旧 DNA 兼容路径。
+
 此前提交17da033及设计快照codex/backup-tech-final-docs-20261009保留。第62轮前备份分支codex/backup-before-continuous-valley-round62；原文在文档/废弃/2026-10-09_连续河谷前/与2026-10-09_第62轮吸收前/。完整bundle保存在.git/任务备份/技术准备_2026-10-09/Git备份/与.git/任务备份/连续河谷_2026-10-09/Git备份/。
 
 本轮之前备份分支codex/backup-before-city-generation-deepening；设计方同步更新独立保存为refs/backups/city-generation-design-20261009（1c5ddc8）。PROJECT原文保留在文档/废弃/2026-10-09_城市生成深化前/；增量bundle放在.git/任务备份/城市生成深化_2026-10-09/Git备份/。提交不混入设计方其他未提交规格/旧入口迁移、CITY-001_layers.json或缓存。
