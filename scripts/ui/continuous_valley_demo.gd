@@ -59,6 +59,7 @@ var hover_seconds := 0.0
 var last_birth_count := 0
 var ripple_position := Vector2.ZERO
 var ripple_seconds := 0.0
+var selected_landmark_candidate := -1
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -149,6 +150,7 @@ func _start_world(saved: Dictionary = {}) -> void:
 		scenery.restore(saved["view"]["travelers"])
 	last_saved_event_count = model.world.events.size()
 	last_checkpoint_phrase = model.world.phrase_index
+	selected_landmark_candidate = -1
 	_message("%s · %d栋 · %d个社区" % [shown_world.terrain_title(),shown_world.buildings.size(),shown_world.communities.size()] if not saved.is_empty() else ("%s · 林荫交响 · 完整河谷起点，可继续生长" % shown_world.terrain_title() if town_starter else ("%s · 晴岸合奏 · 18栋制作示例" % shown_world.terrain_title() if starter and expression == "bright" else ("%s · 深流慢板 · 低音与留白" % shown_world.terrain_title() if starter else "%s · 空地开局 · 点击街边播下第一段声音" % shown_world.terrain_title()))))
 
 func _make_menu() -> void:
@@ -385,6 +387,82 @@ func _hit(screen: Vector2) -> String:
 			if image.get_pixelv(Vector2i(local)).a > 0.1 and local.y/image.get_height() >= 1.0-sprite.progress: return id
 	return ""
 
+func _landmark_radius(index: int) -> float:
+	return 1.35 if index == 0 else (1.15 if index == 1 else 1.55)
+
+func _distance_to_segment(p: Vector2, a: Vector2, b: Vector2) -> float:
+	var delta := b-a
+	var length_squared := delta.length_squared()
+	if length_squared <= 0.0001: return p.distance_to(a)
+	var t := clampf((p-a).dot(delta)/length_squared,0.0,1.0)
+	return p.distance_to(a+delta*t)
+
+func _landmark_site_clear(position: Vector2, radius: float) -> bool:
+	if not shown_world.terrain.land_at(position): return false
+	for site in shown_world.public_sites:
+		var site_position := Vector2(float(site["position"][0]),float(site["position"][1]))
+		if position.distance_to(site_position) < radius+1.1: return false
+	for road in shown_world.roads:
+		var path: PackedVector2Array = road["path"]
+		for i in range(path.size()-1):
+			if _distance_to_segment(position,path[i],path[i+1]) < radius+0.30: return false
+	return true
+
+func _landmark_anchor_positions(index: int) -> Array[Vector2]:
+	var positions: Array[Vector2] = []
+	if index == 0 or index == 1:
+		var wanted := "央" if index == 0 else "腔"
+		for building in shown_world.buildings:
+			if str(building.get("form","")) == wanted:
+				positions.append(Coupling.position_of(building))
+	if index == 2:
+		var community_ids: Array = shown_world.communities.keys()
+		community_ids.sort()
+		for community_id in community_ids:
+			var community: Dictionary = shown_world.communities[community_id]
+			if community["members"].size() < 2: continue
+			var center := Vector2.ZERO
+			for id in community["members"]:
+				if shown_world.by_id.has(id): center += Coupling.position_of(shown_world.by_id[id])
+			center /= float(community["members"].size())
+			positions.append(center)
+	for center in shown_world.centers:
+		positions.append(Vector2(float(center["position"][0]),float(center["position"][1])))
+	for lot in shown_world.lots:
+		positions.append(Vector2(float(lot["center"][0]),float(lot["center"][1])))
+	return positions
+
+func _landmark_preview_positions(index: int) -> Array[Dictionary]:
+	var candidates := _landmark_candidates()
+	if index < 0 or index >= candidates.size() or not bool(candidates[index]["ready"]): return []
+	var radius := _landmark_radius(index)
+	var offsets := [Vector2.ZERO,Vector2(0.8,0.0),Vector2(-0.8,0.0),Vector2(0.0,0.8),Vector2(0.0,-0.8),Vector2(1.5,0.0),Vector2(-1.5,0.0),Vector2(0.0,1.5),Vector2(0.0,-1.5)]
+	for position in _landmark_anchor_positions(index):
+		for offset in offsets:
+			var candidate_position: Vector2 = position+Vector2(offset)
+			if _landmark_site_clear(candidate_position,radius):
+				return [{"position":[candidate_position.x,candidate_position.y],"radius":radius,"candidate":str(candidates[index]["name"])}]
+	return []
+
+func _landmark_candidate_at(screen: Vector2) -> int:
+	var candidates := _landmark_candidates()
+	if candidates.is_empty() or screen.x < 20.0 or screen.x > 360.0: return -1
+	for i in range(candidates.size()):
+		var y := 122.0+float(i)*28.0
+		if screen.y >= y-18.0 and screen.y <= y+17.0: return i
+	return -1
+
+func _select_landmark_candidate(index: int) -> void:
+	var candidates := _landmark_candidates()
+	if index < 0 or index >= candidates.size(): return
+	selected_landmark_candidate = index
+	var candidate: Dictionary = candidates[index]
+	if bool(candidate["ready"]):
+		var sites := _landmark_preview_positions(index)
+		_message(str(candidate["name"])+" · 场地预影已显示" if not sites.is_empty() else str(candidate["name"])+" · 条件满足，但暂未找到连续陆地")
+	else:
+		_message(str(candidate["name"])+" · "+str(candidate["condition"]))
+
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		pointer = event.position
@@ -403,6 +481,11 @@ func _gui_input(event: InputEvent) -> void:
 			menu.hide()
 			context.clear()
 		elif event.pressed and event.button_index == MOUSE_BUTTON_LEFT and not black:
+			var landmark_index := _landmark_candidate_at(pointer)
+			if landmark_index >= 0:
+				_select_landmark_candidate(landmark_index)
+				menu.hide()
+				return
 			var id := _hit(pointer)
 			if not id.is_empty():
 				selected_id = id
@@ -696,6 +779,7 @@ func _draw() -> void:
 	_draw_center_markers()
 	_draw_green_corridors()
 	_draw_public_space()
+	_draw_landmark_preview()
 	for lot in shown_world.lots:
 		var center := Vector2(lot["center"][0],lot["center"][1])
 		if lot["occupant"] != "":
@@ -798,6 +882,23 @@ func _draw_landmark_bar() -> void:
 		draw_arc(Vector2(32,y-4),8.0,0,TAU,18,tint,1.1,true)
 		draw_string(font,Vector2(49,y),str(candidate["glyph"])+"  "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("566d65") if bool(candidate["ready"]) else Color("87948b"))
 		draw_string(font,Vector2(49,y+13),str(candidate["condition"]),HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("7e8d84"))
+
+func _draw_landmark_preview() -> void:
+	var candidates := _landmark_candidates()
+	if selected_landmark_candidate < 0 or selected_landmark_candidate >= candidates.size(): return
+	var candidate: Dictionary = candidates[selected_landmark_candidate]
+	if not bool(candidate["ready"]): return
+	var sites := _landmark_preview_positions(selected_landmark_candidate)
+	var tint := Color("b18b55")
+	for site in sites:
+		var position := Vector2(float(site["position"][0]),float(site["position"][1]))
+		var radius := float(site["radius"])
+		var at := point(position,shown_world.terrain.height_at(position)+0.12)
+		draw_circle(at,radius*view_zoom,Color(tint,0.16))
+		draw_arc(at,radius*view_zoom,0,TAU,32,Color(tint,0.92),1.8*view_zoom,true)
+		draw_line(at+Vector2(-5,0)*view_zoom,at+Vector2(5,0)*view_zoom,Color(tint,0.75),1.1*view_zoom,true)
+		draw_line(at+Vector2(0,-5)*view_zoom,at+Vector2(0,5)*view_zoom,Color(tint,0.75),1.1*view_zoom,true)
+		draw_string(ThemeDB.fallback_font,at+Vector2(8,-8)*view_zoom,"预影 · "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("776247"))
 
 func _draw_center_markers() -> void:
 	for center in shown_world.centers:
