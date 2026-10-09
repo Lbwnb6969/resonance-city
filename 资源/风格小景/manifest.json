@@ -98,13 +98,115 @@
       "variant": "base",
       "voice_tag": "residential",
       "indexed_master_sha256": "4d529c27b1c1572552974507718fb5c4e533763534476bb531b09bf6de0a399b",
-      "texture_sha256": "374ed141c157eb753715210ca8523af75b6d8c932158d6782b59dd9ef591cb75",
+      "texture_sha256": "3fc7ac430200bc3616883ddf0112c7f7f3c07b8cc1a6fae305f7471cf61eb3ca",
       "slot_encoding": "grayscale: 8+10*slot; GPU transfer canonicalized; alpha=silhouette",
       "alpha_border": "transparent RGB zero; runtime fix_alpha_border + mipmaps",
       "source_license_file": "资产/许可记录/CityKits/suburban/License.txt",
       "license_sha256": "d778fa769a89a7d9f167bc337fdf8fc2144e47d9abb0c35eb6ad897c0ee24d0a",
+      "shadow_texture": "资源/Demo城市/阴影/residential_building_type_b_02_base_shadow.png",
+      "shadow_origin": [
+        235.0,
+        108.0
+      ],
+      "shadow_pixels_per_world": 256.3580281871576,
+      "shadow_sha256": "e4ee751ebca3cc1e4f6f2d7190b746107593f597740140a24281085b39c045aa",
+      "contact_texture": "资源/Demo城市/阴影/residential_building_type_b_02_base_contact.png",
+      "contact_origin": [
+        502.0,
+        375.0
+      ],
+      "contact_pixels_per_world": 256.3580281871576,
+      "contact_sha256": "a0aae988389f0b28f95daaa39a705ae23171e87a9177225aac1748af828cdb75",
+      "pixels_per_world": 1080.1705222653625,
+      "lighting": {
+        "sun_screen_shadow_degrees": 13.12426812279171,
+        "ground_anchor_world": [
+          0.0,
+          0.0,
+          1.9984014443252818e-15
+        ],
+        "projection": "actual_geometry_to_ground",
+        "contact_footprint": [
+          [
+            -0.9084276515666535,
+            -0.18172644225918122
+          ],
+          [
+            -0.8937830125551187,
+            -0.19940411600352975
+          ],
+          [
+            -0.6816509592330726,
+            -0.3054701426645528
+          ],
+          [
+            -0.25738682097884413,
+            -0.41153612717872734
+          ],
+          [
+            -0.2291025767053653,
+            -0.41153612717872734
+          ],
+          [
+            0.760846836876789,
+            -0.02262744178031715
+          ],
+          [
+            0.9729789218089715,
+            0.08343860068577408
+          ],
+          [
+            0.9876235608205063,
+            0.10111627443012261
+          ],
+          [
+            0.9729788796621229,
+            0.1187939271010469
+          ],
+          [
+            0.902268205758153,
+            0.16829138618977127
+          ],
+          [
+            0.6194255733625462,
+            0.3097127866812717
+          ],
+          [
+            0.33658279345296965,
+            0.4511341344892115
+          ],
+          [
+            0.3082985281060665,
+            0.45113414502592364
+          ],
+          [
+            0.24207798978162898,
+            0.43975175638282904
+          ],
+          [
+            0.22935006299982408,
+            0.43711572388956366
+          ],
+          [
+            -0.11596551531775286,
+            0.3450681025598324
+          ],
+          [
+            -0.32809755810308683,
+            0.23900208116716543
+          ],
+          [
+            -0.8937830125551187,
+            -0.1640487685148327
+          ]
+        ],
+        "stage": "UI-006",
+        "normal_coverage": 0.9995253479289238,
+        "visible_pixels": 2121554,
+        "contact_reference_world_pixels": 14.296863047575018
+      },
       "source_texture": "资源/Demo城市/整图/residential_building_type_b_02_base.png",
-      "source_texture_sha256": "374ed141c157eb753715210ca8523af75b6d8c932158d6782b59dd9ef591cb75",
+      "source_texture_sha256": "3fc7ac430200bc3616883ddf0112c7f7f3c07b8cc1a6fae305f7471cf61eb3ca",
       "processing": "Retained Demo building, or P0 indexed slot -> same pastel palette; alpha/origin retained"
     },
     {
@@ -114,20 +216,20 @@
       "variant": "gable",
       "texture": "资源/风格小景/整图/residential_compound_gable_01.png",
       "origin": [
-        1037.7310698376796,
-        1068.5558344161634
+        1025.3665588216643,
+        1121.9318048064956
       ],
       "image_bounds": {
         "width": 2048,
-        "height": 1602,
+        "height": 1610,
         "crop": [
-          14,
           15,
-          2165,
-          1693
+          15,
+          2062,
+          1621
         ]
       },
-      "pixels_per_world": 945.9584295612009,
+      "pixels_per_world": 993.2104752667314,
       "plot_span": 1.5,
       "footprint_tiles": [
         2,
@@ -154,9 +256,48 @@
         "elevation": 30,
         "projection": "orthogonal"
       },
-      "texture_sha256": "a1e636bf36f0e00501db127177a210147517704e9c8bd5f7e2cebb752168a59f",
+      "texture_sha256": "09ba95d415cd855fe37c0c886c66da362fc56b21bcf9a673ef003a3f95352087",
+      "shadow_texture": "资源/Demo城市/阴影/residential_compound_gable_01_shadow.png",
+      "shadow_origin": [
+        342.0,
+        169.0
+      ],
+      "shadow_pixels_per_world": 345.26848825239597,
+      "shadow_sha256": "1b0612209cb7d340c09ce0158f07f2faf05ea4b031bfaa5b0b26ac8c42f378fe",
+      "contact_texture": "资源/Demo城市/阴影/residential_compound_gable_01_contact.png",
+      "contact_origin": [
+        512.0,
+        238.0
+      ],
+      "contact_pixels_per_world": 345.26848825239597,
+      "contact_sha256": "3cca35293a9da68d2e3be1452d6bb77025bb2970664cd737e2b69d4093117c5a",
+      "lighting": {
+        "sun_screen_shadow_degrees": 13.12426812279171,
+        "ground_anchor_world": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "projection": "actual_geometry_to_ground",
+        "contact_footprint": [
+          [
+            -0.982878425849301,
+            -0.1873832970144351
+          ],
+          [
+            0.982878425849301,
+            0.1873832970144351
+          ],
+          [
+            0.3747665940288702,
+            0.4914392129246505
+          ]
+        ],
+        "contact_reference_world_pixels": 29.998469504883833,
+        "stage": "UI-006"
+      },
       "source_texture": "资源/Demo城市/整图/residential_compound_gable_01.png",
-      "source_texture_sha256": "a1e636bf36f0e00501db127177a210147517704e9c8bd5f7e2cebb752168a59f",
+      "source_texture_sha256": "09ba95d415cd855fe37c0c886c66da362fc56b21bcf9a673ef003a3f95352087",
       "processing": "Retained Demo building, or P0 indexed slot -> same pastel palette; alpha/origin retained"
     },
     {
@@ -166,20 +307,20 @@
       "variant": "terrace",
       "texture": "资源/风格小景/整图/residential_compound_terrace_01.png",
       "origin": [
-        1037.7310698376796,
-        1248.0296338072994
+        1023.8733551064945,
+        1374.3561328549356
       ],
       "image_bounds": {
         "width": 2048,
-        "height": 1781,
+        "height": 1887,
         "crop": [
-          14,
           15,
-          2165,
-          1883
+          15,
+          1966,
+          1811
         ]
       },
-      "pixels_per_world": 945.9584295612009,
+      "pixels_per_world": 1041.7090539165818,
       "plot_span": 1.5,
       "footprint_tiles": [
         2,
@@ -206,9 +347,48 @@
         "elevation": 30,
         "projection": "orthogonal"
       },
-      "texture_sha256": "66a02153cc2c2544447e1ca33354c40cc1cc7b19ff6731070c50d82cf6220da6",
+      "texture_sha256": "49ab90c0fbd758d202ae6860c6752d19ba91af99aa83e6d57187386b5a437561",
+      "shadow_texture": "资源/Demo城市/阴影/residential_compound_terrace_01_shadow.png",
+      "shadow_origin": [
+        342.0,
+        169.0
+      ],
+      "shadow_pixels_per_world": 345.26848825239597,
+      "shadow_sha256": "9351153ceef819ea3b704142c4c1457d40549cce20718e95ee836a1fb59592e6",
+      "contact_texture": "资源/Demo城市/阴影/residential_compound_terrace_01_contact.png",
+      "contact_origin": [
+        512.0,
+        238.0
+      ],
+      "contact_pixels_per_world": 345.26848825239597,
+      "contact_sha256": "3cca35293a9da68d2e3be1452d6bb77025bb2970664cd737e2b69d4093117c5a",
+      "lighting": {
+        "sun_screen_shadow_degrees": 13.12426812279171,
+        "ground_anchor_world": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "projection": "actual_geometry_to_ground",
+        "contact_footprint": [
+          [
+            -0.982878425849301,
+            -0.1873832970144351
+          ],
+          [
+            0.982878425849301,
+            0.1873832970144351
+          ],
+          [
+            0.3747665940288702,
+            0.4914392129246505
+          ]
+        ],
+        "contact_reference_world_pixels": 29.998469504883833,
+        "stage": "UI-006"
+      },
       "source_texture": "资源/Demo城市/整图/residential_compound_terrace_01.png",
-      "source_texture_sha256": "66a02153cc2c2544447e1ca33354c40cc1cc7b19ff6731070c50d82cf6220da6",
+      "source_texture_sha256": "49ab90c0fbd758d202ae6860c6752d19ba91af99aa83e6d57187386b5a437561",
       "processing": "Retained Demo building, or P0 indexed slot -> same pastel palette; alpha/origin retained"
     },
     {
@@ -298,13 +478,59 @@
       "variant": "base",
       "voice_tag": "non_voice",
       "indexed_master_sha256": "4613baebead816436c4648c499a5ef3ae05a2e54d6bcbd4f07d706e75391c913",
-      "texture_sha256": "b2f6b88d0a84b599791ee7a4729fd644b653064fb5b4f16bc5dc81583660018b",
+      "texture_sha256": "ccdc987b5bf832adb58a8b7d5a07b2f688252a36965db0a67c9a204c407a7c56",
       "slot_encoding": "grayscale: 8+10*slot; GPU transfer canonicalized; alpha=silhouette",
       "alpha_border": "transparent RGB zero; runtime fix_alpha_border + mipmaps",
       "source_license_file": "资产/许可记录/CityKits/suburban/License.txt",
       "license_sha256": "d778fa769a89a7d9f167bc337fdf8fc2144e47d9abb0c35eb6ad897c0ee24d0a",
-      "source_texture": "资源/P0城市/整图/tree_tree_small_01_base.png",
-      "source_texture_sha256": "4bff23cb56107b47b182d7955f01b98a829c7c8269449b2d02f3990e8221b20d",
+      "shadow_texture": "资源/Demo城市/阴影/tree_tree_small_01_base_shadow.png",
+      "shadow_origin": [
+        67.0,
+        35.0
+      ],
+      "shadow_pixels_per_world": 1735.7717026849496,
+      "shadow_sha256": "e9907c79c98b1404178a8b93da0fcfc98f331fb401a727603458450304b6b2ad",
+      "contact_texture": "资源/Demo城市/阴影/tree_tree_small_01_base_contact.png",
+      "contact_origin": [
+        307.0,
+        275.0
+      ],
+      "contact_pixels_per_world": 1735.7717026849496,
+      "contact_sha256": "b696602da7f04edf67c72cfd0a6a21e705a711ac014a05c6b06e73b4ffa2a579",
+      "pixels_per_world": 3871.6751203915846,
+      "lighting": {
+        "sun_screen_shadow_degrees": 13.12426812279171,
+        "ground_anchor_world": [
+          0.0,
+          0.0,
+          4.996003610813204e-16
+        ],
+        "projection": "actual_geometry_to_ground",
+        "contact_footprint": [
+          [
+            -0.03694279273279136,
+            -1.766354016019247e-16
+          ],
+          [
+            3.532708032038494e-16,
+            -0.01847139636639603
+          ],
+          [
+            0.03694279273279206,
+            -1.766354016019247e-16
+          ],
+          [
+            3.532708032038494e-16,
+            0.01847139636639568
+          ]
+        ],
+        "stage": "UI-006",
+        "normal_coverage": 0.9988936038218008,
+        "visible_pixels": 1109006,
+        "contact_reference_world_pixels": 107.55007472571992
+      },
+      "source_texture": "资源/Demo城市/整图/tree_tree_small_01_base.png",
+      "source_texture_sha256": "ccdc987b5bf832adb58a8b7d5a07b2f688252a36965db0a67c9a204c407a7c56",
       "processing": "Retained Demo building, or P0 indexed slot -> same pastel palette; alpha/origin retained"
     },
     {
@@ -394,13 +620,59 @@
       "variant": "base",
       "voice_tag": "non_voice",
       "indexed_master_sha256": "81175ca77773e2d9c8bab0d92c84555578cb2e3eb1e157e981080a532ef4a7d1",
-      "texture_sha256": "14be9c5552cf5b2c30033da68223172a1b2b0e627e3cd2b54dd7b0b756157459",
+      "texture_sha256": "37e01cd148c6f787c739b72155efd62ae7d0029d0cee4fa5f21af441d123226b",
       "slot_encoding": "grayscale: 8+10*slot; GPU transfer canonicalized; alpha=silhouette",
       "alpha_border": "transparent RGB zero; runtime fix_alpha_border + mipmaps",
       "source_license_file": "资产/许可记录/CityKits/suburban/License.txt",
       "license_sha256": "d778fa769a89a7d9f167bc337fdf8fc2144e47d9abb0c35eb6ad897c0ee24d0a",
-      "source_texture": "资源/P0城市/整图/tree_tree_large_02_base.png",
-      "source_texture_sha256": "6bb7f559f888054977cc5103c0248585e6daa39b2dfd96203c63e44593ea607e",
+      "shadow_texture": "资源/Demo城市/阴影/tree_tree_large_02_base_shadow.png",
+      "shadow_origin": [
+        52.0,
+        27.0
+      ],
+      "shadow_pixels_per_world": 1327.7994089609388,
+      "shadow_sha256": "5c2ae7122129df887b03e14caeb976c002b3e948c0c01fbe0f8378b342aa99be",
+      "contact_texture": "资源/Demo城市/阴影/tree_tree_large_02_base_contact.png",
+      "contact_origin": [
+        235.0,
+        210.0
+      ],
+      "contact_pixels_per_world": 1327.7994089609388,
+      "contact_sha256": "a5dda8ea07572f8ceb65bf1ec0784efe82c5537ffaf3814c31ec1adc6560db70",
+      "pixels_per_world": 2917.538878777018,
+      "lighting": {
+        "sun_screen_shadow_degrees": 13.12426812279171,
+        "ground_anchor_world": [
+          0.0,
+          0.0,
+          4.996003610813204e-16
+        ],
+        "projection": "actual_geometry_to_ground",
+        "contact_footprint": [
+          [
+            -0.03694279273279136,
+            -1.766354016019247e-16
+          ],
+          [
+            3.532708032038494e-16,
+            -0.01847139636639603
+          ],
+          [
+            0.03694279273279206,
+            -1.766354016019247e-16
+          ],
+          [
+            3.532708032038494e-16,
+            0.01847139636639568
+          ]
+        ],
+        "stage": "UI-006",
+        "normal_coverage": 0.9988530963621216,
+        "visible_pixels": 720200,
+        "contact_reference_world_pixels": 107.55007472571992
+      },
+      "source_texture": "资源/Demo城市/整图/tree_tree_large_02_base.png",
+      "source_texture_sha256": "37e01cd148c6f787c739b72155efd62ae7d0029d0cee4fa5f21af441d123226b",
       "processing": "Retained Demo building, or P0 indexed slot -> same pastel palette; alpha/origin retained"
     },
     {
@@ -491,13 +763,91 @@
       "variant": "base",
       "voice_tag": "non_voice",
       "indexed_master_sha256": "677bf935b3347467d7fcf0288608f9b3370d6c1d87d3ae81cadccacfd77d80e0",
-      "texture_sha256": "5f028402529204815112fc6b7113237bcbc83f68f82f59e38c31228a0d0f0732",
+      "texture_sha256": "32e18dff55f88aef147891371a9588237e883d323a59b8295876fcc2282e54c1",
       "slot_encoding": "grayscale: 8+10*slot; GPU transfer canonicalized; alpha=silhouette",
       "alpha_border": "transparent RGB zero; runtime fix_alpha_border + mipmaps",
       "source_license_file": "资产/许可记录/CityKits/suburban/License.txt",
       "license_sha256": "d778fa769a89a7d9f167bc337fdf8fc2144e47d9abb0c35eb6ad897c0ee24d0a",
-      "source_texture": "资源/P0城市/整图/decoration_planter_02_base.png",
-      "source_texture_sha256": "11c63ab4524c4ac4f36ba884bb781fccb4bb470588cf4e22d4e55f14d86ca6e1",
+      "shadow_texture": "资源/Demo城市/阴影/decoration_planter_02_base_shadow.png",
+      "shadow_origin": [
+        257.0,
+        130.0
+      ],
+      "shadow_pixels_per_world": 1121.929109205601,
+      "shadow_sha256": "b369fc61e6b82211dc23fa7568104c18f7d93c6d57aa0b1a728a2b6dbb7e2b23",
+      "contact_texture": "资源/Demo城市/阴影/decoration_planter_02_base_contact.png",
+      "contact_origin": [
+        512.0,
+        385.0
+      ],
+      "contact_pixels_per_world": 1121.929109205601,
+      "contact_sha256": "41e78fd6ba08511153838a813b3d14eb55ae1b56bda18196f92124d053dea187",
+      "pixels_per_world": 4515.492646269733,
+      "lighting": {
+        "sun_screen_shadow_degrees": 13.12426812279171,
+        "ground_anchor_world": [
+          0.0,
+          0.0,
+          -0.0005733668804164815
+        ],
+        "projection": "actual_geometry_to_ground",
+        "contact_footprint": [
+          [
+            -0.2267766817968685,
+            -0.017677673744348674
+          ],
+          [
+            -0.21213202698026548,
+            -0.03535534485451918
+          ],
+          [
+            -0.07071067917232568,
+            -0.10606601875848908
+          ],
+          [
+            -0.035355326415272545,
+            -0.11338835143514664
+          ],
+          [
+            2.7476618026966064e-16,
+            -0.1060660213926671
+          ],
+          [
+            0.2121320427853342,
+            -1.3738309013483032e-16
+          ],
+          [
+            0.22677670287029328,
+            0.017677663207636272
+          ],
+          [
+            0.21213203751697815,
+            0.03535533958616284
+          ],
+          [
+            0.07071068444068229,
+            0.10606601612431077
+          ],
+          [
+            0.03535534748869735,
+            0.11338834089843425
+          ],
+          [
+            1.0536712402489688e-08,
+            0.10606601612431077
+          ],
+          [
+            -0.21213203224862154,
+            -5.268356201244844e-09
+          ]
+        ],
+        "stage": "UI-006",
+        "normal_coverage": 0.999252836766103,
+        "visible_pixels": 1833602,
+        "contact_reference_world_pixels": 65.3366656080449
+      },
+      "source_texture": "资源/Demo城市/整图/decoration_planter_02_base.png",
+      "source_texture_sha256": "32e18dff55f88aef147891371a9588237e883d323a59b8295876fcc2282e54c1",
       "processing": "Retained Demo building, or P0 indexed slot -> same pastel palette; alpha/origin retained"
     },
     {
@@ -586,13 +936,59 @@
       "variant": "base",
       "voice_tag": "non_voice",
       "indexed_master_sha256": "76b81a46837d27973a7ccb8b5c79f129d92ff462eaba7bb2a256e82eb3860239",
-      "texture_sha256": "352361539b2c2445c3e7b998dbfff03b400528437d63d4f55071d1e62ae84cbb",
+      "texture_sha256": "e82c21c7d49eeaedf5cf9b19176d7c14c8d6ee8ab461e35f9e5eab888a52bfe0",
       "slot_encoding": "grayscale: 8+10*slot; GPU transfer canonicalized; alpha=silhouette",
       "alpha_border": "transparent RGB zero; runtime fix_alpha_border + mipmaps",
       "source_license_file": "资产/许可记录/CityKits/roads/License.txt",
       "license_sha256": "87b9404aef5dff6162ae1e53a27bc6427fe1cdd2e2dd5ec05fdd25f17da10498",
-      "source_texture": "资源/P0城市/整图/decoration_light_square_04_base.png",
-      "source_texture_sha256": "d344190d81bda1eabee5d2aaa12b29ca03b7ee7d1f2454a4ea412a3aa319f036",
+      "shadow_texture": "资源/Demo城市/阴影/decoration_light_square_04_base_shadow.png",
+      "shadow_origin": [
+        142.0,
+        -19.0
+      ],
+      "shadow_pixels_per_world": 1370.6736828912578,
+      "shadow_sha256": "a02117fc5081106b6cb7dddd16894cdd5ec514db2f9291f8de97f1053178ebd3",
+      "contact_texture": "资源/Demo城市/阴影/decoration_light_square_04_base_contact.png",
+      "contact_origin": [
+        327.0,
+        166.0
+      ],
+      "contact_pixels_per_world": 1370.6736828912578,
+      "contact_sha256": "6ef8dc68af256e4f9137da3206b33f6d92ef079bac5061833a56ba9910fc577d",
+      "pixels_per_world": 3296.194584450474,
+      "lighting": {
+        "sun_screen_shadow_degrees": 13.12426812279171,
+        "ground_anchor_world": [
+          5.204170427930421e-17,
+          0.0,
+          -0.093750007450581
+        ],
+        "projection": "actual_geometry_to_ground",
+        "contact_footprint": [
+          [
+            -0.10164660559075818,
+            0.033145633002297566
+          ],
+          [
+            -0.06629126600459521,
+            0.015467963209216078
+          ],
+          [
+            -0.030935926418432232,
+            0.033145633002297566
+          ],
+          [
+            -0.06629126600459521,
+            0.05082330279537906
+          ]
+        ],
+        "stage": "UI-006",
+        "normal_coverage": 0.9957129010612124,
+        "visible_pixels": 321896,
+        "contact_reference_world_pixels": 110.04068918372012
+      },
+      "source_texture": "资源/Demo城市/整图/decoration_light_square_04_base.png",
+      "source_texture_sha256": "e82c21c7d49eeaedf5cf9b19176d7c14c8d6ee8ab461e35f9e5eab888a52bfe0",
       "processing": "Retained Demo building, or P0 indexed slot -> same pastel palette; alpha/origin retained"
     }
   ],

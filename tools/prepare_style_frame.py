@@ -33,7 +33,7 @@ def main():
         entry = copy.deepcopy(all_entries[identifier])
         source = ROOT / entry['texture']
         rgba = np.array(Image.open(source).convert('RGBA'))
-        if entry['category'] in ('tree', 'decoration'):
+        if entry['category'] in ('tree', 'decoration') and 'lighting' not in entry:
             indexed = np.array(Image.open(ROOT / entry['indexed_master']).convert('RGBA'))
             assert indexed.shape == rgba.shape
             slots = np.clip(np.rint((indexed[..., 0].astype(np.float32)-8)/10), 0, 23).astype(np.int32)

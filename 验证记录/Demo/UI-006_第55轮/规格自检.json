@@ -1,0 +1,7 @@
+{
+  "result": "DOC_CONTRACT PASS",
+  "specs": 7,
+  "rules": 38,
+  "spec_data": "PASS",
+  "scope": "Structure, unique IDs, required fields only; no gameplay claim"
+}

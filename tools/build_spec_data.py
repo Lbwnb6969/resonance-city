@@ -274,6 +274,28 @@ def generate():
         'ground_color': colors(landscape['庭院'])[0],
         'ground_alpha': float(re.search(r'alpha([0-9.]+)', landscape['庭院'])[1]),
     }
+    lighting = dict(table(ui, '## 表 U14a ·'))
+    sun = numbers(lighting['太阳方位与高度'])
+    faces = numbers(lighting['三面明度'])
+    mixes = numbers(re.sub(r'#[0-9A-Fa-f]{6}', '', lighting['冷暖混色']))
+    alpha = numbers(re.sub(r'#[0-9A-Fa-f]{6}', '', lighting['投影层与接触层']))
+    contact = numbers(lighting['接触范围'])
+    result['lighting'] = {
+        'sun_west_south_degrees': sun[0], 'sun_height_degrees': sun[1],
+        'light_face_reduction': abs(faces[0]), 'dark_face_reduction': abs(faces[1]),
+        'cold_tint': colors(lighting['冷暖混色'])[0], 'warm_tint': colors(lighting['冷暖混色'])[1],
+        'cold_mix': mixes[0]/100, 'warm_mix': mixes[1]/100,
+        'shadow_color': colors(lighting['投影层与接触层'])[0],
+        'shadow_alpha': alpha[0], 'contact_alpha': alpha[1],
+        'contact_expand_px': contact[0], 'contact_feather_px': contact[1],
+        'mask_long_edge': int(numbers(lighting['遮罩输出'])[0]),
+        'union_resolution': numbers(lighting['运行合成'])[0],
+        'progress_steps': int(numbers(lighting['运行合成'])[-1]),
+        'default_half_width': numbers(lighting['默认尺度'])[0],
+        'default_plot_coverage': numbers(lighting['默认尺度'])[1],
+        'compound_base': colors(lighting['基座顶色'])[0],
+        'historic_stone': colors(lighting['基座顶色'])[1],
+    }
     diagnosis = table(ui, '## 表 U10')
     result['visual_diagnosis'] = {key: (value if value.startswith('#') else numbers(value)[0])
                                   for key, value, _ in diagnosis}

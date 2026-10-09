@@ -6,6 +6,7 @@ import json
 
 import numpy as np
 from PIL import Image
+from demo_lighting import glb_faces, masks, relight_indexed
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / '资源/Demo城市'
@@ -27,21 +28,15 @@ def main():
     new_colors = np.array([rgb(color) for color in COLORS], dtype=np.float32)
     entries = []
     for original_entry in original['entries']:
-        if original_entry['category'] not in ('residential', 'commercial', 'industrial', 'tree'):
+        if original_entry['category'] not in ('residential', 'commercial', 'industrial', 'tree') and original_entry['id'] not in ('decoration_planter_02_base', 'decoration_light_square_04_base'):
             continue
         entry = copy.deepcopy(original_entry)
         source = ROOT / entry['texture']
         index_source = ROOT / entry['indexed_master']
-        rgba = np.array(Image.open(source).convert('RGBA'))
-        indexed = np.array(Image.open(index_source).convert('RGBA'))
-        assert rgba.shape == indexed.shape
-        slots = np.clip(np.rint((indexed[..., 0].astype(np.float32) - 8) / 10), 0, 23).astype(np.int32)
-        before_luma = rgba[..., :3].astype(np.float32) @ np.array([.2126, .7152, .0722])
-        base_luma = old_colors[slots] @ np.array([.2126, .7152, .0722])
-        shade = .78 + .22 * np.clip(before_luma / np.maximum(base_luma, 1), 0, 1.3)
-        rgba[..., :3] = np.clip(new_colors[slots] * shade[..., None], 0, 255).astype(np.uint8)
-        rgba[rgba[..., 3] == 0, :3] = 0
-        image = Image.fromarray(rgba)
+        faces = glb_faces(ROOT/entry['model'])
+        image, lighting_proof = relight_indexed(entry, COLORS, faces)
+        masks(entry, faces, RUNTIME, PRODUCTION)
+        entry['lighting'].update(lighting_proof)
         relative = '整图/' + entry['id'] + '.png'
         for directory in (RUNTIME, PRODUCTION):
             path = directory / relative
@@ -51,7 +46,7 @@ def main():
         entry['source_texture_sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
         entry['texture'] = '资源/Demo城市/' + relative
         entry['texture_sha256'] = hashlib.sha256((RUNTIME / relative).read_bytes()).hexdigest()
-        entry['processing'] = 'P0 slot LUT -> Demo pastel palette; shade=0.78+0.22*source_shade; original alpha/origin retained'
+        entry['processing'] = 'P0 indexed slots -> pastel base; true mesh normals -> OKLab three-face light/cold-warm chroma; retained silhouette/origin'
         entry['availability'] = 'demo_style_candidate; user_visual_review_pending'
         entries.append(entry)
     manifest = {'schema_version': 1, 'camera': original['camera'], 'entries': entries,

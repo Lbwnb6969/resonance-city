@@ -5,6 +5,7 @@ const Diagnosis = preload("res://scripts/visual/boundary_diagnosis.gd")
 const Roads = preload("res://scripts/city/city_roads.gd")
 const Schema = preload("res://scripts/city/district_schema.gd")
 const Values = preload("res://scripts/spec_values.gd")
+const ShadowLayer = preload("res://scripts/visual/city_shadow_layer.gd")
 const GrowthMask = preload("res://scripts/visual/audio_growth_mask.gd")
 signal district_clicked(id: String)
 signal empty_clicked(cell: Vector2i)
@@ -57,6 +58,7 @@ var landscape_sprites: Dictionary = {}
 var landscape_key := ""
 var terrain_cfg: Dictionary
 var map_size := Vector2i.ZERO
+var shadow_layer: CityShadowLayer
 var buildings: Node2D
 var label_layer: Control
 var point_texture: Texture2D
@@ -81,6 +83,9 @@ func _ready() -> void:
 			by_type[entry["category"]].append(entry["id"])
 	tree_ids.sort_custom(func(a: String,b: String) -> bool: return float(entries[a]["model_bounds"]["size"][1]) < float(entries[b]["model_bounds"]["size"][1]))
 	for list in by_type.values(): list.sort()
+	shadow_layer = ShadowLayer.new()
+	shadow_layer.name = "CityGroundShadows"
+	add_child(shadow_layer)
 	buildings = Node2D.new()
 	buildings.y_sort_enabled = true
 	buildings.name = "CityBuildings"
@@ -397,8 +402,8 @@ func _draw_ground_base(shape: PackedVector2Array) -> void:
 	tint.a = float(terrain_cfg["shadow_alpha"])
 	draw_colored_polygon(shadow,tint)
 	var drop := Vector2(0,float(terrain_cfg["depth_px"]))*view_zoom
-	draw_colored_polygon(PackedVector2Array([shape[1],shape[2],shape[2]+drop,shape[1]+drop]),Color(terrain_cfg["side_light"]))
-	draw_colored_polygon(PackedVector2Array([shape[2],shape[3],shape[3]+drop,shape[2]+drop]),Color(terrain_cfg["side_dark"]))
+	draw_colored_polygon(PackedVector2Array([shape[1],shape[2],shape[2]+drop,shape[1]+drop]),Color(terrain_cfg["side_dark"]))
+	draw_colored_polygon(PackedVector2Array([shape[2],shape[3],shape[3]+drop,shape[2]+drop]),Color(terrain_cfg["side_light"]))
 
 func _draw() -> void:
 	if cfg == null: return
@@ -569,4 +574,20 @@ func _process(delta: float) -> void:
 		label.text = ("● %s" % form if d.get("is_anchor",false) else "%s %.0f" % [form,d["vitality"]]) if d["type"] != "industrial" else "工业 %.0f" % d["vitality"]
 		label.visible = sprites[id].progress >= 1.0 and (id == selected_id or Schema.cell(d) == hover_cell)
 	_sync_landscape(audible,gray)
+	_sync_shadows(audible)
 	queue_redraw()
+
+func _sync_shadows(audible: float) -> void:
+	var records: Array[Dictionary] = []
+	var visible_sprites: Array[AudioGrowthMask] = []
+	for id in sprites:
+		var sprite: AudioGrowthMask = sprites[id]
+		if sprite.has_meta("asset_id") and sprite.visible: visible_sprites.append(sprite)
+	for sprite in landscape_sprites.values():
+		if sprite.visible: visible_sprites.append(sprite)
+	for sprite in visible_sprites:
+		if sprite.start_frame >= 0: sprite.sample_frame(int(audible))
+		records.append({"entry":entries[sprite.get_meta("asset_id")],"position":(sprite.position-_view_origin())/view_zoom,"base_scale":sprite.scale/view_zoom,"progress":sprite.progress,"visible":sprite.visible})
+	shadow_layer.position = _view_origin()
+	shadow_layer.scale = Vector2.ONE*view_zoom
+	shadow_layer.update_records(records)

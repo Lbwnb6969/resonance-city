@@ -4,6 +4,8 @@ import hashlib
 import itertools
 import json
 import math
+import numpy as np
+from demo_lighting import face_normal, masks, shade_hex, config
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / '资源/古典建筑候选'
@@ -206,6 +208,10 @@ def amphitheater():
 
 
 def build(identifier, label, geometry):
+    source_faces = [(np.asarray(vertices),face_normal(vertices)) for _,vertices,_ in geometry]
+    base_map = {color:family[2] for family in [WALL,STONE,ROOF] for color in family}
+    for color in STONE: base_map[color] = config()['historic_stone']
+    geometry = [(distance,vertices,shade_hex(color,vertices,base_map)) for distance,vertices,color in geometry]
     points=[project(p) for _,vertices,_ in geometry for p in vertices]
     left=min(p[0] for p in points)-.025
     top=min(p[1] for p in points)-.025
@@ -232,7 +238,7 @@ def build(identifier, label, geometry):
     xs=[p[0] for _,v,_ in geometry for p in v]
     ys=[p[1] for _,v,_ in geometry for p in v]
     zs=[p[2] for _,v,_ in geometry for p in v]
-    return {'id':identifier,'display_name':label,'category':'historical_building_candidate',
+    entry = {'id':identifier,'display_name':label,'category':'historical_building_candidate',
             'texture':f'资源/古典建筑候选/SVG/{identifier}.svg','origin':[-left*ppu,-top*ppu],
             'image_bounds':{'width':w,'height':h,'crop':[0,0,w,h]},'pixels_per_world':ppu,
             'model_bounds':{'position':[min(xs),min(ys),min(zs)],'size':[max(xs)-min(xs),max(ys)-min(ys),max(zs)-min(zs)]},
@@ -240,6 +246,7 @@ def build(identifier, label, geometry):
             'license':'Project-authored geometry','source_url':'','availability':'visual_review_candidate; not_a_gameplay_unlock',
             'camera':{'azimuth':45,'elevation':30,'projection':'orthogonal'},
             'texture_sha256':hashlib.sha256(content.encode('utf-8')).hexdigest()}
+    return masks(entry, source_faces, RUNTIME, PRODUCTION)
 
 
 def main():

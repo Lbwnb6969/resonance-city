@@ -6,6 +6,7 @@ import math
 
 import numpy as np
 from PIL import Image, ImageDraw
+from demo_lighting import masks, face_normal, shade_hex, config
 
 ROOT = Path(__file__).resolve().parents[1]
 PPI = 1000
@@ -72,9 +73,17 @@ def geometry(kind):
 
 def build(kind):
     faces, details, height = geometry(kind)
+    original_faces = [(np.asarray(v), face_normal(v)) for v, _ in faces+details]
+    base_map = {color: colors[2] for colors in [
+        ['#D4D6CB','#C4CFCA','#E3E5D7'], ['#F1E9DE','#D6DCDD','#F6EFE5'],
+        ['#D9CEC2','#C2C8C6','#E8E0D4'], ['#C49B8D','#B58E84','#D9B4A5'],
+        ['#C1AAA4','#B19794','#D5BEAF'], ['#EEE9DD','#D9DDDA','#F6F0E7'],
+    ] for color in colors}
+    base_map.update({'#CFA59A':'#DBB9A8','#BC8C81':'#DBB9A8','#E3DED4':'#F6EFE5'})
+    for color in ['#D4D6CB','#C4CFCA','#E3E5D7']: base_map[color] = config()['compound_base']
+    faces = [(v, shade_hex(c,v,base_map)) for v,c in faces]
+    details = [(v, shade_hex(c,v,base_map)) for v,c in details]
     points = [project(p) for vertices, _ in faces + details for p in vertices]
-    shadow = [(-1.0,-.005,-.48),(1.03,-.005,-.48),(1.03,-.005,.55),(-1.0,-.005,.55)]
-    points.extend(project(p) for p in shadow)
     left = min(p[0] for p in points) - .015
     top = min(p[1] for p in points) - .015
     width = math.ceil((max(p[0] for p in points) - left + .015) * PPI)
@@ -85,7 +94,6 @@ def build(kind):
     def polygon(vertices, color):
         draw.polygon([((project(p)[0]-left)*PPI,(project(p)[1]-top)*PPI) for p in vertices], fill=color)
 
-    polygon(shadow, (122,151,159,45))
     # A depth buffer keeps annex roofs from painting over the upper facade.
     pixels = np.array(image)
     depth = np.full((height_px, width), -np.inf, dtype=np.float32)
@@ -121,7 +129,7 @@ def build(kind):
     relative = '整图/' + identifier + '.png'
     for base in ('资源/Demo城市','资产/03_入库/Demo城市'):
         image.save(ROOT / base / relative)
-    return {'id':identifier,'category':'compound','voice_tag':'residential','variant':kind,
+    entry = {'id':identifier,'category':'compound','voice_tag':'residential','variant':kind,
             'texture':'资源/Demo城市/'+relative,'origin':[(-left*PPI-crop[0])*factor,(-top*PPI-crop[1])*factor],
             'image_bounds':{'width':image.width,'height':image.height,'crop':[crop[0],crop[1],crop[2]-crop[0],crop[3]-crop[1]]},
             'pixels_per_world':PPI*factor,'plot_span':1.5,'footprint_tiles':[2,1],
@@ -130,6 +138,7 @@ def build(kind):
             'license':'Project-authored geometry','source_url':'','availability':'demo_style_candidate; user_visual_review_pending',
             'camera':{'azimuth':45,'elevation':30,'projection':'orthogonal'},
             'texture_sha256':hashlib.sha256((ROOT/'资源/Demo城市'/relative).read_bytes()).hexdigest()}
+    return masks(entry, original_faces, ROOT/'资源/Demo城市', ROOT/'资产/03_入库/Demo城市')
 
 
 def main():

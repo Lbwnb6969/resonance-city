@@ -1,5 +1,8 @@
 extends Control
 ## A standalone art review scene; no city simulation or audio output.
+const ShadowLayer = preload("res://scripts/visual/city_shadow_layer.gd")
+var shadow_layer: CityShadowLayer
+var land_outline := PackedVector2Array()
 const Values = preload("res://scripts/spec_values.gd")
 var layout: Dictionary
 var entries: Dictionary = {}
@@ -36,6 +39,9 @@ func _ready() -> void:
 	for y in range(layout["land_rows"].size()):
 		var row: Array = layout["land_rows"][y]
 		for x in range(int(row[0]),int(row[1])+1): cells[Vector2i(x,y)] = true
+	_build_land_outline()
+	shadow_layer = ShadowLayer.new()
+	add_child(shadow_layer)
 	var buildings := Node2D.new()
 	buildings.y_sort_enabled = true
 	add_child(buildings)
@@ -51,6 +57,7 @@ func _ready() -> void:
 		var crop: Array = entry["image_bounds"]["crop"]
 		var ppu := float(entry.get("pixels_per_world",2048.0*2048.0/(camera_span*maxf(float(crop[2]),float(crop[3])))))
 		var scale_base: float = float(layout["half_width"])*sqrt(2.0)*float(placement["span"])/maxf(float(bounds[0]),float(bounds[2]))/ppu
+		sprite.set_meta("asset_id",entry["id"])
 		sprite.set_meta("base_scale",scale_base)
 		sprite.set_meta("cell",Vector2(placement["cell"][0],placement["cell"][1]))
 		buildings.add_child(sprite)
@@ -89,16 +96,14 @@ func polygon(cell: Vector2) -> PackedVector2Array:
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO,size),Color("e9edf2"))
 	if layout == null or layout.is_empty(): return
-	# A single soft shadow per tile, with no stacked blur layers.
-	for cell in cells:
-		var shape := polygon(Vector2(cell))
-		for i in range(shape.size()): shape[i] += Vector2(-20,23)*view_zoom
-		draw_colored_polygon(shape,Color(0.52,0.64,0.68,0.25))
+	var carrier := PackedVector2Array()
+	for corner in land_outline: carrier.append(point(corner)+Vector2(12,18)*view_zoom)
+	draw_colored_polygon(carrier,Color(0.44,0.55,0.56,0.08))
 	for cell in cells:
 		var shape := polygon(Vector2(cell))
 		var drop := Vector2(0,18)*view_zoom
-		if not cells.has(cell+Vector2i.RIGHT): draw_colored_polygon(PackedVector2Array([shape[2],shape[3],shape[3]+drop,shape[2]+drop]),Color("c4d1c9"))
-		if not cells.has(cell+Vector2i.DOWN): draw_colored_polygon(PackedVector2Array([shape[0],shape[3],shape[3]+drop,shape[0]+drop]),Color("b8c8c2"))
+		if not cells.has(cell+Vector2i.RIGHT): draw_colored_polygon(PackedVector2Array([shape[2],shape[3],shape[3]+drop,shape[2]+drop]),Color("C0CFCE"))
+		if not cells.has(cell+Vector2i.DOWN): draw_colored_polygon(PackedVector2Array([shape[0],shape[3],shape[3]+drop,shape[0]+drop]),Color("CCD8D5"))
 	for cell in cells:
 		draw_colored_polygon(polygon(Vector2(cell)),Color("dde3d7") if posmod(cell.x+cell.y,3) else Color("e1e6db"))
 		var shape := polygon(Vector2(cell))
@@ -143,9 +148,14 @@ func _process(delta: float) -> void:
 		var t := 1.0-pow(1.0-camera_age/duration,3.0)
 		view_zoom = lerpf(zoom_from,zoom_target,t)
 		view_pan = pan_from.lerp(Vector2.ZERO,t) if resetting else pivot-Vector2(size.x*0.5,float(layout["origin_y"]))-fixed_world*view_zoom
+	var records: Array[Dictionary] = []
 	for sprite in sprites:
 		sprite.position = point(sprite.get_meta("cell"))
 		sprite.scale = Vector2.ONE*float(sprite.get_meta("base_scale"))*view_zoom
+		records.append({"entry":entries[sprite.get_meta("asset_id")],"position":(sprite.position-origin())/view_zoom,"base_scale":sprite.scale/view_zoom,"progress":1.0,"visible":true})
+	shadow_layer.position = origin()
+	shadow_layer.scale = Vector2.ONE*view_zoom
+	shadow_layer.update_records(records)
 	queue_redraw()
 
 func _gui_input(event: InputEvent) -> void:
@@ -205,3 +215,19 @@ func _capture() -> void:
 	for texture in textures.values(): assert(texture.get_image().has_mipmaps())
 	print("STYLE_FRAME_CAPTURE actual_GPU two_views + cursor_zoom + middle_pan + Home_reset + imported_mipmaps; human_art=PENDING")
 	get_tree().quit()
+
+func _build_land_outline() -> void:
+	var edges: Dictionary = {}
+	var corners := [Vector2i(-1,1),Vector2i(-1,-1),Vector2i(1,-1),Vector2i(1,1)]
+	var neighbors := [Vector2i.LEFT,Vector2i.UP,Vector2i.RIGHT,Vector2i.DOWN]
+	for cell: Vector2i in cells:
+		for i in range(4):
+			if not cells.has(cell+neighbors[i]): edges[cell*2+corners[i]] = cell*2+corners[(i+1)%4]
+	assert(not edges.is_empty())
+	var start: Vector2i = edges.keys()[0]
+	var cursor := start
+	while true:
+		land_outline.append(Vector2(cursor)/2.0)
+		cursor = edges[cursor]
+		if cursor == start: break
+		assert(land_outline.size() <= edges.size(),"Broken island outline")

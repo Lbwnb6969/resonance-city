@@ -436,7 +436,7 @@
     "side_light": "#CCD8D5",
     "side_dark": "#C0CFCE",
     "shadow_offset": [
-      -12.0,
+      12.0,
       18.0
     ],
     "shadow_color": "#708C90",
@@ -461,6 +461,28 @@
     "ground_color": "#D4DFC9",
     "ground_alpha": 0.7
   },
+  "lighting": {
+    "sun_west_south_degrees": 20.0,
+    "sun_height_degrees": 45.0,
+    "light_face_reduction": 0.06,
+    "dark_face_reduction": 0.16,
+    "cold_tint": "#5B6788",
+    "warm_tint": "#F3C98B",
+    "cold_mix": 0.25,
+    "warm_mix": 0.1,
+    "shadow_color": "#4A5A78",
+    "shadow_alpha": 0.22,
+    "contact_alpha": 0.18,
+    "contact_expand_px": 3.0,
+    "contact_feather_px": 4.0,
+    "mask_long_edge": 1024,
+    "union_resolution": 2.0,
+    "progress_steps": 255,
+    "default_half_width": 28.0,
+    "default_plot_coverage": 0.66,
+    "compound_base": "#BCC1B3",
+    "historic_stone": "#C6C0B5"
+  },
   "visual_diagnosis": {
     "slow_min_hz": 3.0,
     "slow_max_hz": 16.0,
@@ -483,6 +505,6 @@
     "spec.city.md": "689bffd3a3288580779edab4ee1a254609ec691952a1e36f5505c73166144252",
     "spec.harmony.md": "f5f6959c25ddcdca89de081ade88d4337281896d7a867efe85deb1a22bebb89f",
     "spec.proposal.md": "e3a3d0ecd7a4e99ee66e49ab0cf098f4d952c906d896255ee3c42c9c1acbdcbc",
-    "spec.ui.md": "3c6cccfe48b58d57836002dcc5c7386cbfadaea11f7271a995b79d991251364e"
+    "spec.ui.md": "f118794965b7b9d00447d283ebe0eb9c8320979a989e621c2144c1470778f9fb"
   }
 }

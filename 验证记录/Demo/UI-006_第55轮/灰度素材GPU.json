@@ -1,0 +1,192 @@
+{
+	"classical_amphitheater_01": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/古典建筑候选/SVG/classical_amphitheater_01.svg",
+		"texture_size": "(2048.0, 1597.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"classical_civic_hall_01": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/古典建筑候选/SVG/classical_civic_hall_01.svg",
+		"texture_size": "(2048.0, 1637.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"classical_temple_01": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/古典建筑候选/SVG/classical_temple_01.svg",
+		"texture_size": "(2048.0, 1745.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"commercial_building_a_01_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/commercial_building_a_01_base.png",
+		"texture_size": "(1412.0, 2048.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"commercial_building_b_02_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/commercial_building_b_02_base.png",
+		"texture_size": "(1507.0, 2048.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"commercial_building_c_03_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/commercial_building_c_03_base.png",
+		"texture_size": "(1909.0, 2048.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"decoration_light_square_04_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/decoration_light_square_04_base.png",
+		"texture_size": "(671.0, 2048.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"decoration_planter_02_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/decoration_planter_02_base.png",
+		"texture_size": "(2048.0, 1363.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"historic_church_01": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/古典建筑候选/SVG/historic_church_01.svg",
+		"texture_size": "(2048.0, 2048.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"industrial_building_a_01_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/industrial_building_a_01_base.png",
+		"texture_size": "(2048.0, 2015.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"industrial_building_b_02_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/industrial_building_b_02_base.png",
+		"texture_size": "(2048.0, 1761.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"industrial_building_c_03_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/industrial_building_c_03_base.png",
+		"texture_size": "(2048.0, 1376.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"residential_building_type_a_01_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/residential_building_type_a_01_base.png",
+		"texture_size": "(2048.0, 1527.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"residential_building_type_b_02_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/residential_building_type_b_02_base.png",
+		"texture_size": "(2048.0, 1549.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"residential_building_type_c_03_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/residential_building_type_c_03_base.png",
+		"texture_size": "(2048.0, 1787.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"residential_compound_gable_01": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/residential_compound_gable_01.png",
+		"texture_size": "(2048.0, 1610.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"residential_compound_terrace_01": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/Demo城市/整图/residential_compound_terrace_01.png",
+		"texture_size": "(2048.0, 1887.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"tree_tree_large_02_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/风格小景/整图/tree_tree_large_02_base.png",
+		"texture_size": "(685.0, 2048.0)",
+		"viewport": [
+			512,
+			512
+		]
+	},
+	"tree_tree_small_01_base": {
+		"ground": "#e1e8ec",
+		"scale": 0.205078125,
+		"texture": "资源/风格小景/整图/tree_tree_small_01_base.png",
+		"texture_size": "(908.0, 2048.0)",
+		"viewport": [
+			512,
+			512
+		]
+	}
+}
