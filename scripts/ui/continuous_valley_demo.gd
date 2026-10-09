@@ -720,6 +720,7 @@ func _draw() -> void:
 	var font := ThemeDB.fallback_font
 	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("4b6561"))
 	draw_string(font,Vector2(47,67),shown_world.terrain_title()+" · 晴岸合奏" if expression == "bright" else shown_world.terrain_title()+" · 深流慢板",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("758c85"))
+	_draw_landmark_bar()
 	if not black:
 		var score: Dictionary = model.synth.score_snapshot()
 		var lead := str(score["theme"].get("cid",""))
@@ -748,6 +749,55 @@ func _set_expression(value: String) -> void:
 	expression = value
 	low_octave.button_pressed = value == "deep"
 	_message("深流：低音、缓慢脉动与留白" if value == "deep" else "晴岸：明亮主题与商街节奏")
+
+func _landmark_candidates() -> Array[Dictionary]:
+	if shown_world == null: return []
+	var has_group := false
+	var core_count := 0
+	var chamber_count := 0
+	var commercial_count := 0
+	var commercial_group := 0
+	var family_same_edges := 0
+	var families_seen := {}
+	for building in shown_world.buildings:
+		var form := str(building.get("form","胚"))
+		has_group = has_group or form in ["群","央","腔"]
+		core_count += 1 if form == "央" else 0
+		chamber_count += 1 if form == "腔" else 0
+		commercial_count += 1 if str(building.get("type","")) == "commercial" else 0
+		if form in ["群","央","腔"] and str(building.get("type","")) == "commercial": commercial_group += 1
+		families_seen[str(building.get("family_anchor",""))] = true
+	if not has_group: return []
+	for edge in shown_world.musical_edges(shown_world.musicality()):
+		if float(edge.get("coupling",0.0)) >= 0.9: family_same_edges += 1
+	var road_count := shown_world.roads.size()
+	if shown_world.era <= 1:
+		return [
+			{"name":"元老院","glyph":"政","ready":shown_world.resonance >= 75.0 and core_count >= 1,"condition":"全城R≥75 · 至少1个央"},
+			{"name":"神殿","glyph":"和","ready":chamber_count >= 1 and family_same_edges >= 2,"condition":"存在腔 · 至少2条同音共鸣"},
+			{"name":"圆形剧场","glyph":"节","ready":families_seen.size() >= 2 and road_count > 0,"condition":"两家族成群 · 城中有道路"}
+		]
+	if shown_world.era == 2:
+		return [
+			{"name":"市政厅","glyph":"政","ready":shown_world.resonance >= 75.0 and core_count >= 2 and road_count >= 2,"condition":"R≥75 · ≥2个央 · ≥2条道路"},
+			{"name":"大教堂","glyph":"和","ready":chamber_count >= 1 and shown_world.resonance >= 80.0,"condition":"存在腔 · 全城R≥80"},
+			{"name":"行会大厅","glyph":"商","ready":commercial_count >= 12 and commercial_group >= 1,"condition":"商业≥12 · 至少1个商业群"}
+		]
+	return []
+
+func _draw_landmark_bar() -> void:
+	var candidates := _landmark_candidates()
+	if candidates.is_empty(): return
+	var font := ThemeDB.fallback_font
+	draw_string(font,Vector2(28,98),"地标候选 · 当前时代",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("71837a"))
+	for i in range(candidates.size()):
+		var candidate: Dictionary = candidates[i]
+		var y := 122.0+float(i)*28.0
+		var tint := Color("b18b55") if bool(candidate["ready"]) else Color("9aa69a")
+		draw_circle(Vector2(32,y-4),8.0,Color(tint,0.18))
+		draw_arc(Vector2(32,y-4),8.0,0,TAU,18,tint,1.1,true)
+		draw_string(font,Vector2(49,y),str(candidate["glyph"])+"  "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("566d65") if bool(candidate["ready"]) else Color("87948b"))
+		draw_string(font,Vector2(49,y+13),str(candidate["condition"]),HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("7e8d84"))
 
 func _draw_center_markers() -> void:
 	for center in shown_world.centers:
