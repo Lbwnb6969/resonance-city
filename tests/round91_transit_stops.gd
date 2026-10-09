@@ -33,8 +33,7 @@ func _run() -> void:
 		on_roads = on_roads and not access.is_empty()
 	check(on_roads,"every stop marker is anchored to the physical road graph")
 	if is_instance_valid(demo.clock): demo.clock.stop_output()
-	demo.queue_free()
-	await process_frame
+	demo.free()
 	await process_frame
 	print("TRANSIT_STOPS ",JSON.stringify({"checks":checks,"failures":failures,"stops":unique_stops.size(),"markers":marker_count}))
 	quit(0 if failures.is_empty() else 1)
