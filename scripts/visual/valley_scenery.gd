@@ -40,15 +40,19 @@ func rebuild(demo: Control) -> void:
 				_add(demo,"%s-tree-%d" % [site["id"],i],p+offset,"tree",i,site["id"])
 	vehicle_kind = city.vehicle_kind()
 	for i in range(4): _add(demo,"vehicle-%d" % i,Vector2.ZERO,vehicle_kind,i)
+	# Private cars only enter the street mix in the modern era; they remain
+	# authored travelers so the era transition does not create a visual burst.
+	for i in range(3): _add(demo,"car-%d" % i,Vector2.ZERO,"car",i+4,"",true)
 	for i in range(10): _add(demo,"walker-%d" % i,Vector2.ZERO,"walker",i)
 
-func _add(demo: Control,key: String,p: Vector2,kind: String,tone: int,site: String = "") -> void:
+func _add(demo: Control,key: String,p: Vector2,kind: String,tone: int,site: String = "",modern_only: bool = false) -> void:
 	var prop := ValleyProp.new()
 	prop.kind = kind
 	prop.tone = tone
 	prop.set_meta("world_position",p)
 	prop.set_meta("site",site)
-	if kind in ["bus","carriage","tram","walker"]: prop.set_meta("traveler",CityTraveler.new(kind,tone))
+	prop.set_meta("modern_only",modern_only)
+	if kind in ["bus","carriage","tram","car","walker"]: prop.set_meta("traveler",CityTraveler.new(kind,tone))
 	demo.buildings_layer.add_child(prop)
 	props[key] = prop
 
@@ -88,6 +92,7 @@ func sync(demo: Control) -> void:
 	for traffic_key in props:
 		var traffic_prop: ValleyProp = props[traffic_key]
 		if not traffic_prop.has_meta("traveler"): continue
+		if bool(traffic_prop.get_meta("modern_only",false)) and city.vehicle_kind() != "bus": continue
 		var traffic_traveler: CityTraveler = traffic_prop.get_meta("traveler")
 		if not traffic_traveler.initialized: continue
 		var traffic_access: Dictionary = city.network.access(traffic_traveler.position)
@@ -99,11 +104,14 @@ func sync(demo: Control) -> void:
 		var p: Vector2 = prop.get_meta("world_position")
 		var site_id := str(prop.get_meta("site"))
 		prop.visible = true
+		if bool(prop.get_meta("modern_only",false)) and city.vehicle_kind() != "bus":
+			prop.visible = false
+			continue
 		if not site_id.is_empty():
 			var site: Dictionary = city.public_sites.filter(func(s: Dictionary) -> bool: return s["id"] == site_id)[0]
 			prop.visible = site["active"]
 			prop.reveal = clampf((frame-int(site["frame"]))/(0.5*rate),0.0,1.0)
-		if prop.kind in ["bus","carriage","tram","walker"]:
+		if prop.kind in ["bus","carriage","tram","car","walker"]:
 			var traveler: CityTraveler = prop.get_meta("traveler")
 			var movement := traveler.advance(city,seconds,traffic)
 			prop.visible = not movement.is_empty()

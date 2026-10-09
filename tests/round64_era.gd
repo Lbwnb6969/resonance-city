@@ -14,6 +14,8 @@ func _initialize() -> void:
 	world.build_town()
 	check(world.era == 1 and world.vehicle_kind() == "carriage","Classical era starts with horse carriages")
 	check(world.transit_lines.size() == 2,"Classical public lines remain available")
+	var early_car := Traveler.new("car",0)
+	check(early_car.advance(world,0.0).is_empty(),"Early eras keep private cars dormant")
 	var carriage := Traveler.new("carriage",0)
 	var first := carriage.advance(world,0.0)
 	check(not first.is_empty() and carriage.kind == "carriage","Carriage follows a real line")
@@ -32,6 +34,12 @@ func _initialize() -> void:
 	world.phrase_index = 48
 	world.update_era(999)
 	check(world.era == 5 and world.vehicle_kind() == "bus","Modern era introduces bus")
+	var car := Traveler.new("car",1)
+	var car_first := car.advance(world,0.0)
+	check(not car_first.is_empty() and car.kind == "car","Modern car follows a real line")
+	var car_start := car.position
+	car.advance(world,18.0)
+	check(car.position.distance_to(car_start) > 0.01,"Modern car moves along the road")
 	var restored := World.new(world.rng.seed_hex,false)
 	restored.restore(world.snapshot())
 	check(restored.era == 5 and restored.vehicle_kind() == "bus","Era persists through city snapshot")

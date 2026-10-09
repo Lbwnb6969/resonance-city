@@ -28,6 +28,7 @@ func _init(agent_kind: String = "walker", index: int = 0) -> void:
 	ordinal = index
 
 func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dictionary:
+	if kind == "car" and city.era < 5: return {}
 	if _is_vehicle() and _line(city).is_empty(): return {}
 	if kind == "walker" and city.buildings.is_empty(): return {}
 	if not initialized:
@@ -72,10 +73,10 @@ func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dict
 		"stop_id":stop_id,"passengers":passenger_load,"capacity":passenger_capacity,"priority":_priority()}
 
 func _is_vehicle() -> bool:
-	return kind in ["carriage","tram","bus"]
+	return kind in ["carriage","tram","bus","car"]
 
 func _priority() -> int:
-	var kind_rank: int = int({"carriage":0,"tram":1,"bus":2,"walker":3}.get(kind,4))
+	var kind_rank: int = int({"carriage":0,"tram":1,"bus":2,"car":3,"walker":4}.get(kind,5))
 	return ordinal*8+int(kind_rank)
 
 func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array) -> float:
@@ -91,8 +92,10 @@ func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array) -> f
 		var other_direction: Vector2 = other.get("direction",Vector2.RIGHT)
 		var same_way: bool = direction.dot(other_direction) > 0.55
 		var ahead: bool = (other_position-position).dot(direction) > -0.04
+		var other_kind := str(other.get("kind",""))
+		var other_is_vehicle := other_kind in ["carriage","tram","bus","car"]
 		if same_way and ahead:
-			var safe: float = 0.52 if _is_vehicle() else 0.34
+			var safe: float = 0.52 if (_is_vehicle() or other_is_vehicle) else 0.34
 			if gap < safe+desired: return maxf(0.0,gap-safe)
 		elif not same_way and gap < 0.48 and int(other.get("priority",0)) < _priority():
 			return 0.0
@@ -102,11 +105,13 @@ func _speed(city: ContinuousWorld) -> float:
 	var city_cfg: Dictionary = city.cfg["city"]
 	if kind == "carriage": return float(city_cfg.get("carriage_speed",0.95))
 	if kind == "tram": return float(city_cfg.get("tram_speed",2.2))
+	if kind == "car": return float(city_cfg.get("car_speed",2.8))
 	return float(city_cfg.get("bus_speed",1.8))
 
 func _vehicle_lane() -> float:
 	if kind == "carriage": return 0.14
 	if kind == "tram": return 0.08
+	if kind == "car": return 0.07
 	return 0.10
 
 func _line(city: ContinuousWorld) -> Dictionary:
@@ -141,10 +146,15 @@ func _next_bus(city: ContinuousWorld) -> void:
 		leg_index = match_index
 	var leg: Dictionary = legs[leg_index]
 	stop_id = str(leg["from"])
-	passenger_load = 1+posmod(stop_id.length()*13+ordinal*7+leg_index*5,passenger_capacity-1)
 	destination = leg["to"]
 	leg_index = (leg_index+1)%legs.size()
 	_set_path(leg["path"],_vehicle_lane())
+	if kind == "car":
+		passenger_load = 0
+		passenger_capacity = 4
+		wait = 0.0
+		return
+	passenger_load = 1+posmod(stop_id.length()*13+ordinal*7+leg_index*5,passenger_capacity-1)
 	var base_dwell := float(city.cfg["city"]["bus_dwell_beats"])*60.0/float(city.cfg["timing"]["bpm"])
 	wait = base_dwell+float(passenger_load)*0.035
 

@@ -60,6 +60,7 @@
     "carriage_speed": 0.95,
     "tram_speed": 2.2,
     "bus_speed": 1.8,
+    "car_speed": 2.8,
     "bus_dwell_beats": 2.0,
     "starter_buildings_per_region": 6.0,
     "starter_region_count": 3.0
@@ -169,7 +170,7 @@
   "sources": {
     "spec.asset.md": "fce93d7410eb7254727245a6dab4ec8b1490e95dddd7887bbab9fbc7ddca5e6b",
     "spec.audio.md": "0057ce21058d9462113fe7809e96a0572fadc7f140d1cc0c971a43a4d1432eba",
-    "spec.city.md": "430490ec49f86f3b4174776fbdfaa28ea741b4ee1155257383380dff50c4fbc0",
+    "spec.city.md": "0cae88b6b6eb93732369e7b9338d2f2e589d09cd20f8c9144438726ed87bb8ae",
     "spec.fabric.md": "a61e0369b0db0005d2a0c3c281a1e2fdb7c658cfbfd0cf0b7d5ea3e764665957",
     "spec.harmony.md": "ee0cee446c42d4eb155a4fd37c55effedbee7ae9db53c4de68780957978eedc8",
     "spec.proposal.md": "c4e70940feb2623731f52cd3e5899e36563c8988bb4460218f47c40a71263b2f",

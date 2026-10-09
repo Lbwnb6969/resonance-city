@@ -82,6 +82,27 @@ func _draw() -> void:
 			var b := _project(forward*(t+0.28)+side*0.95)-Vector2(0,6.0)
 			draw_line(a,b,Color("dbe5d1"),1.8,true)
 		for wheel in [-0.60,0.60]: draw_circle(_project(forward*wheel+side*0.85),1.7,Color("4e625f"))
+	elif kind == "car":
+		var forward := direction.normalized()*0.30
+		var side := Vector2(-direction.y,direction.x)*0.09
+		var floor := PackedVector2Array()
+		for p in [-forward-side,forward-side,forward+side,-forward+side]: floor.append(_project(p))
+		var roof := PackedVector2Array()
+		for p in floor: roof.append(p-Vector2(0,5.4))
+		draw_set_transform(Vector2(2,2),0,Vector2(1.0,0.5))
+		draw_circle(Vector2.ZERO,7.5,Color(0.29,0.38,0.34,0.15))
+		draw_set_transform(Vector2.ZERO)
+		draw_colored_polygon(PackedVector2Array([floor[0],floor[1],roof[1],roof[0]]),Color("708d8b"))
+		draw_colored_polygon(PackedVector2Array([floor[1],floor[2],roof[2],roof[1]]),Color("88aaa2"))
+		draw_colored_polygon(PackedVector2Array([floor[2],floor[3],roof[3],roof[2]]),Color("526f73"))
+		draw_colored_polygon(roof,Color("d9c58e"))
+		for t in [-0.42,0.20]:
+			var window := _project(forward*t+side*1.01)-Vector2(0,4.9)
+			draw_colored_polygon(PackedVector2Array([window,window+Vector2(5,0),window+Vector2(5,2.0),window+Vector2(0,2.0)]),Color("547479"))
+		for wheel in [-0.48,0.48]:
+			draw_circle(_project(forward*wheel+side*0.88),1.6,Color("4f5b5a"))
+		draw_circle(_project(forward+side*0.5)-Vector2(0,1.8),0.75,Color("f8e8b5"))
+		draw_circle(_project(forward-side*0.5)-Vector2(0,1.8),0.75,Color("f8e8b5"))
 	elif kind == "bus":
 		var forward := direction.normalized()*0.38
 		var side := Vector2(-direction.y,direction.x)*0.105
