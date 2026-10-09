@@ -9,8 +9,10 @@ func check(ok: bool, label: String) -> void:
 func _initialize() -> void:
 	var world := World.new("2026101000000069",true,"river_valley")
 	world.build_expanded_town()
+	world.era = 5
 	var travelers: Array = []
 	for i in range(6): travelers.append(Traveler.new("bus",i))
+	for i in range(3): travelers.append(Traveler.new("car",i+8))
 	var line_ids: Dictionary = {}
 	var max_step := 0.0
 	var max_gap := 0.0
@@ -30,6 +32,7 @@ func _initialize() -> void:
 				max_gap = maxf(max_gap,float(access["gap"]))
 			check(not access.is_empty() and float(access["gap"]) <= 0.18,"traveler stays on a road")
 	check(line_ids.values().has("terrace-line"),"a vehicle uses the terrace line")
-	check(max_step <= 0.13,"line assignment keeps continuous movement")
-	print("EXPANDED_ROUTES ",JSON.stringify({"failures":failures,"line_ids":line_ids,"max_step":max_step,"max_gap":max_gap}))
+	check(travelers.filter(func(t: CityTraveler) -> bool: return t.kind == "car" and t.initialized).size() == 3,"modern cars remain routed")
+	check(max_step <= 0.15,"line assignment keeps continuous movement at modern car speed")
+	print("EXPANDED_ROUTES ",JSON.stringify({"failures":failures,"line_ids":line_ids,"max_step":max_step,"max_gap":max_gap,"cars":travelers.filter(func(t: CityTraveler) -> bool: return t.kind == "car" and t.initialized).size()}))
 	quit(0 if failures.is_empty() else 1)
