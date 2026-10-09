@@ -4,6 +4,25 @@ extends RefCounted
 static func box(p: Vector2, half: Vector2) -> PackedVector2Array:
 	return PackedVector2Array([p-half,p+Vector2(half.x,-half.y),p+half,p+Vector2(-half.x,half.y)])
 
+static func _clear_site(world: RefCounted, polygon: PackedVector2Array) -> bool:
+	if not world.terrain.valid_footprint(polygon): return false
+	# Extension reservations are added after authored lots; placement will honor them
+	# and skip any overlapping lot, preserving the public site as the source of truth.
+	for road in world.roads:
+		var width := float(world.cfg["city"]["branch_road_half_width"]) if road.get("kind","") == "branch" else float(world.cfg["terrain"]["template_road_half_width"])
+		for strip in Geometry2D.offset_polyline(road["path"],width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):
+			if not Geometry2D.intersect_polygons(polygon,strip).is_empty(): return false
+	return true
+
+static func _append_site(world: RefCounted, base: Vector2, half: Vector2, candidates: Array, site_id: String, kind: String, name: String, community_id: String) -> void:
+	for delta in candidates:
+		var center := base+Vector2(delta)
+		var polygon := box(center,half)
+		if not _clear_site(world,polygon): continue
+		world.public_sites.append({"id":site_id,"kind":kind,"name":name,"position":[center.x,center.y],
+			"polygon":polygon,"entrance":[base.x,base.y],"community_id":community_id,"active":false,"frame":0})
+		return
+
 static func populate(world: RefCounted) -> void:
 	var cfg: Dictionary = world.cfg["city"]
 	var t: Dictionary = world.cfg["terrain"]
@@ -66,3 +85,13 @@ static func populate(world: RefCounted) -> void:
 				polygon_block.append(Vector2(x,y))
 				polygon_block.append(Vector2(world.terrain.river_x(previous)+bank*offset,previous))
 				world.blocks.append({"id":"%s-terrace-block-%d" % [prefix,index],"polygon":polygon_block,"community_id":cid})
+		var site_y := float(ys[3])
+		var site_x: float = world.terrain.river_x(site_y)+float(bank)*offset
+		var park_name := "湖光台地公园" if world.terrain.family == "lake_basin" else ("林脊听风园" if world.terrain.family == "forest_ridge" else ("潮汐绿湾" if world.terrain.family == "coastal_plain" else "回声台地公园"))
+		_append_site(world,Vector2(site_x,site_y),Vector2(0.9,0.82),
+			[Vector2(bank*2.1,0.0),Vector2(bank*2.8,0.4),Vector2(bank*1.9,1.5),Vector2(bank*3.2,-1.2)],
+			prefix+"-terrace-park","park",park_name,prefix+"-terrace-4")
+		var civic_name := "湖心共鸣屋" if world.terrain.family == "lake_basin" else ("林岭声部所" if world.terrain.family == "forest_ridge" else ("海湾潮声站" if world.terrain.family == "coastal_plain" else "台地音乐亭"))
+		_append_site(world,Vector2(site_x,site_y+3.45),Vector2(0.58,0.62),
+			[Vector2(bank*2.1,0.0),Vector2(bank*2.8,-0.3),Vector2(bank*1.9,1.25),Vector2(bank*3.2,1.8)],
+			prefix+"-terrace-civic","civic",civic_name,prefix+"-terrace-5")
