@@ -25,6 +25,7 @@ func screenshot(path: String) -> void:
 	root.get_texture().get_image().save_png(path)
 func run() -> void:
 	demo = DemoScene.instantiate()
+	demo.session_persistence = false
 	root.add_child(demo)
 	await create_timer(1.0).timeout
 	checks["starter_18_buildings"] = demo.shown_world.buildings.size() == 18

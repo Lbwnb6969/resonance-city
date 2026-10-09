@@ -25,22 +25,27 @@ var blocks: Array[Dictionary] = []
 var public_sites: Array[Dictionary] = []
 var network: CityRoadNetwork
 var transit: Dictionary = {}
+var transit_lines: Array[Dictionary] = []
+var environment_cache: Dictionary = {}
 var mode := "free"
 var profile := "bright"
 var action_serial := 0
 var events: Array[Dictionary] = []
 var bridge := false
 var phrase_index := 0
+# Transport is a visible part of the city history. The first playable era is classical.
+var era := 1
 var next_id := 1
 var resonance := 100.0
 var lifecycle := {"gray":false,"low_phrases":0,"ended":false}
 var last_reason := "在河边选择一块临街空地，播下第一段声音"
 
-func _init(seed_hex: String = "2026100900000062") -> void:
+func _init(seed_hex: String = "2026100900000062", generate_plan: bool = true) -> void:
 	rng = RandomStreams.new(seed_hex)
 	terrain.configure(rng.bounded("terrain",2147483647),float(rng.next_u32("terrain"))/4294967296.0*TAU)
-	_plan()
-	NeighborhoodPlan.populate(self)
+	if generate_plan:
+		_plan()
+		NeighborhoodPlan.populate(self)
 	network = CityRoadNetwork.new()
 	_refresh_public_network()
 
@@ -85,6 +90,13 @@ func _plan() -> void:
 					"entrance":[entrance.x,entrance.y],"use":"commercial" if absf(py-bridge_y) < 4.1 and side == bank else "residential","community_id":"%s-%d" % [prefix,region+1],"bank":bank,"occupant":""})
 
 func road_environment(a: Vector2,b: Vector2) -> Dictionary:
+	var key := Vector4(a.x,a.y,b.x,b.y)
+	if environment_cache.has(key): return environment_cache[key]
+	var result := _road_environment(a,b)
+	environment_cache[key] = result
+	return result
+
+func _road_environment(a: Vector2,b: Vector2) -> Dictionary:
 	var result := terrain.environment(a,b,bridge)
 	if float(result["occlusion"]) == 0.0: return result
 	for road in roads:
@@ -112,6 +124,7 @@ func _cache_entity(id: String) -> void:
 		else: edge_cache.erase(key)
 
 func rebuild_graph() -> void:
+	environment_cache.clear()
 	edge_cache.clear()
 	for building in buildings: _cache_entity(building["district_id"])
 
@@ -217,7 +230,9 @@ func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int) -> St
 
 func settle(frame: int) -> void:
 	phrase_index += 1
+	update_era(frame)
 	var costs: Dictionary = {}
+	var buildings_before_growth := buildings.size()
 	# Compatibility with preserved direct world probes that assign one pending operation.
 	if pending_actions.is_empty() and not pending.is_empty(): pending_actions.append(pending.duplicate(true))
 	var committed := pending_actions.duplicate(true)
@@ -254,12 +269,13 @@ func settle(frame: int) -> void:
 		for family in families:
 			if int(families[family]["created_phrase"]) == phrase_index: continue
 			_grow(family,frame)
+	var forms_dirty := not committed.is_empty() or buildings.size() != buildings_before_growth
 	var modifiers := musicality()
 	var effective := musical_edges(modifiers)
 	resonance = coupling.resonance(buildings,effective)
 	var vitalities := coupling.vitality(buildings,effective,resonance,costs,modifiers)
 	for building in buildings: building["vitality"] = vitalities[building["district_id"]]
-	_update_forms(frame)
+	if forms_dirty: _update_forms(frame)
 	if resonance < float(cfg["harmony"]["gray_entry"]): lifecycle["gray"] = true
 	elif resonance > float(cfg["harmony"]["gray_exit"]): lifecycle["gray"] = false
 	lifecycle["low_phrases"] = int(lifecycle["low_phrases"])+1 if resonance < float(cfg["harmony"]["gray_entry"]) else 0
@@ -368,12 +384,27 @@ func _update_forms(frame: int) -> void:
 			events.append({"kind":"upgrade","district_id":building["district_id"],"frame":frame,"form":target})
 
 func snapshot() -> Dictionary:
-	return {"schema_version":2,"generation_version":63,"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
-		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,
+	return {"schema_version":2,"generation_version":64,"settings":cfg.duplicate(true),
+		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase},
+		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"communities":communities.duplicate(true)},
+		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
+		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,
 		"next_id":next_id,"families":families.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_reason":last_reason}
 
 func restore(saved: Dictionary) -> void:
 	assert(int(saved["schema_version"]) == 2 and saved["seed_hex"] == rng.seed_hex)
+	if saved.has("plan"):
+		cfg = saved["settings"].duplicate(true)
+		terrain.cfg = cfg["terrain"]
+		terrain.configure(int(saved["terrain_state"]["noise_seed"]),float(saved["terrain_state"]["river_phase"]))
+		var plan: Dictionary = saved["plan"]
+		lots.assign(plan["lots"].duplicate(true))
+		roads.assign(plan["roads"].duplicate(true))
+		nodes = plan["nodes"].duplicate(true)
+		blocks.assign(plan["blocks"].duplicate(true))
+		communities = plan["communities"].duplicate(true)
+		transit = saved["transit"].duplicate(true)
+		transit_lines.assign(saved.get("transit_lines",[]).duplicate(true))
 	buildings.assign(saved["buildings"].duplicate(true))
 	by_id.clear()
 	index = Index.new()
@@ -402,6 +433,7 @@ func restore(saved: Dictionary) -> void:
 		roads.append({"id":"river-bridge","from":"west-2","to":"east-2","path":PackedVector2Array([Vector2(a[0],a[1]),Vector2(b[0],b[1])]),"bridge":true})
 	elif not bridge: roads = roads.filter(func(r: Dictionary) -> bool: return not r["bridge"])
 	phrase_index = int(saved["phrase_index"])
+	era = int(saved.get("era",era_for_phrase(phrase_index)))
 	next_id = int(saved["next_id"])
 	lifecycle = saved["lifecycle"].duplicate(true)
 	last_reason = saved["last_reason"]
@@ -411,10 +443,31 @@ func restore(saved: Dictionary) -> void:
 	_refresh_public_network()
 
 func fork() -> RefCounted:
-	var copy: RefCounted = get_script().new(rng.seed_hex)
+	var copy: RefCounted = get_script().new(rng.seed_hex,false)
 	copy.restore(snapshot())
 	return copy
 
+
+func era_for_phrase(value: int) -> int:
+	# Twelve phrases is one readable city chapter. Vehicle history follows the music boundary.
+	return clampi(1 + maxi(0,value) / 12,1,5)
+
+func era_title() -> String:
+	return ["古典","中世纪","文艺复兴","工业","现代"][clampi(era,1,5)-1]
+
+func vehicle_kind() -> String:
+	return "carriage" if era <= 3 else ("tram" if era == 4 else "bus")
+
+func vehicle_label() -> String:
+	return {"carriage":"马车","tram":"有轨车","bus":"公交"}[vehicle_kind()]
+
+func update_era(frame: int = 0) -> bool:
+	var next_era := era_for_phrase(phrase_index)
+	if next_era == era: return false
+	era = next_era
+	events.append({"kind":"era","era":era,"title":era_title(),"vehicle":vehicle_kind(),"frame":frame})
+	_refresh_public_network(frame)
+	return true
 
 func _refresh_public_network(frame: int = 0) -> void:
 	network.rebuild(nodes,roads,terrain)
@@ -429,28 +482,75 @@ func _refresh_public_network(frame: int = 0) -> void:
 				var p := Vector2(lot["entrance"][0],lot["entrance"][1])
 				if network.walking_distance(entrance,p) <= float(cfg["city"]["service_walk_radius"]): covered.append(building["district_id"])
 		site["covered"] = covered
-	var itinerary: Array = ["west-1","west-2","west-3","west-outer-3","west-outer-2","west-outer-1","west-1"]
-	if bridge: itinerary = ["west-1","west-2","east-2","east-1","east-2","east-3","east-2","west-2","west-3","west-2","west-1"]
-	var active := public_sites.any(func(site: Dictionary) -> bool: return site["kind"] == "civic" and site["active"])
-	if not active:
-		transit.clear()
-		return
+	var lines: Array[Dictionary] = []
+	if public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "west-civic" and site["active"]):
+		var itinerary: Array = ["west-1","west-2","west-3","west-outer-3","west-outer-2","west-outer-1","west-1"]
+		if bridge: itinerary = ["west-1","west-2","east-2","east-1","east-2","east-3","east-2","west-2","west-3","west-2","west-1"]
+		lines.append(_make_transit_line("valley-line","两岸联奏线" if bridge else "河谷环线",itinerary,frame))
+	if public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "east-civic" and site["active"]):
+		var itinerary: Array = ["east-1","east-2","east-3","east-outer-3","east-outer-2","east-outer-1","east-1"]
+		if nodes.has("east-garden-1"): itinerary = ["east-1","east-2","east-3","east-outer-3","east-garden-3","east-garden-2","east-garden-1","east-outer-1","east-1"]
+		lines.append(_make_transit_line("garden-line","林荫支线",itinerary,frame))
+	transit_lines.assign(lines)
+	transit = lines[0] if not lines.is_empty() else {}
+
+func _make_transit_line(id: String, title: String, itinerary: Array, frame: int) -> Dictionary:
 	var legs: Array[Dictionary] = []
 	var path := PackedVector2Array()
 	var edge_ids: Array = []
 	for i in range(itinerary.size()-1):
 		var journey := network.route(itinerary[i],itinerary[i+1])
-		if is_inf(float(journey["distance"])): continue
 		legs.append({"from":itinerary[i],"to":itinerary[i+1],"path":journey["path"],"length":journey["distance"]})
 		path.append_array(journey["path"])
 		edge_ids.append_array(journey["edges"])
-	var started := int(transit.get("frame",frame))
-	transit = {"id":"valley-line","name":"河谷环线" if not bridge else "两岸联奏线","legs":legs,"path":path,"edges":edge_ids,"frame":started,"stops":itinerary.slice(0,-1)}
+	var started := frame
+	for line in transit_lines:
+		if line["id"] == id: started = int(line["frame"])
+	return {"id":id,"name":title,"legs":legs,"path":path,"edges":edge_ids,"frame":started,"stops":itinerary.slice(0,-1)}
 
 func public_at(p: Vector2) -> Dictionary:
 	for site in public_sites:
 		if Geometry2D.is_point_in_polygon(p,site["polygon"]): return site
 	return {}
+
+func build_town() -> void:
+	profile = "bright"
+	var ids: Array = communities.keys()
+	ids.sort()
+	var candidates: Dictionary = {}
+	var roots: Dictionary = {}
+	var tones := [48,55,52,43,36,48,55,52,36,43]
+	for index in range(ids.size()):
+		var cid: String = ids[index]
+		var choices: Array = lots.filter(func(lot: Dictionary) -> bool: return lot["community_id"] == cid)
+		choices.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return a["id"] < b["id"])
+		candidates[cid] = choices
+		roots[cid] = {"midi":tones[index%tones.size()],"count":0,"family":"town-"+cid}
+		families["town-"+cid] = {"root":"","created_phrase":0,"expression":"deep" if cid.contains("garden") else "bright"}
+	var progressed := true
+	while buildings.size() < int(cfg["city"]["playable_building_budget"]) and progressed:
+		progressed = false
+		for cid in ids:
+			if buildings.size() >= int(cfg["city"]["playable_building_budget"]): break
+			if candidates[cid].is_empty(): continue
+			var lot: Dictionary = candidates[cid].pop_front()
+			var p := Vector2(lot["center"][0],lot["center"][1])
+			if not placement(p)["allowed"]: continue
+			var root: Dictionary = roots[cid]
+			var pitch := int(root["midi"])
+			if not str(cid).contains("garden") and int(root["count"]) in [2,5,8]:
+				pitch = [48,52,55][int(root["count"])%3]
+			var id := _birth(p,pitch,root["family"],int(root["count"]) == 0,-int(cfg["timing"]["sample_rate"])*4)
+			if int(root["count"]) == 0: families[root["family"]]["root"] = id
+			root["count"] = int(root["count"])+1
+			progressed = true
+	for site in public_sites:
+		site["active"] = true
+		site["frame"] = -int(cfg["timing"]["sample_rate"])*4
+	_update_forms(-int(cfg["timing"]["sample_rate"])*2)
+	_update_forms(-int(cfg["timing"]["sample_rate"]))
+	_refresh_public_network()
+	resonance = coupling.resonance(buildings,musical_edges(musicality()))
 
 func build_starter(expression: String = "bright") -> void:
 	profile = expression

@@ -55,7 +55,7 @@ Ghostscript是EPS导入依赖，不是CC0低模生产线的前置依赖。已授
 |---|---|
 | id / category / variant | 命名`{类别}_{子类}_{序号}_{变体}`；稳定唯一ID |
 | texture / palette_slots | 单张整图引用与LUT槽位；中性灰须可区分槽位，编码见S6 |
-| footprint_tiles / floor_height / origin | 占地、层高、底部中心基准 |
+| footprint_radius / floor_height / origin | 占地（**半径制**；旧 footprint_tiles 已废弃，见 S10）、层高、底部中心基准 |
 | voice_tag | residential/commercial/industrial；非街区件明确标为非声部 |
 | source_url / package_version / downloaded_at | 实际来源、版本与下载日期，禁止假填已下载 |
 | license / license_file / attribution | 可再查的许可、用户授权与署名证据；已购记录实际来源及使用授权说明，不标成CC0 |
@@ -211,7 +211,7 @@ Ghostscript是EPS导入依赖，不是CC0低模生产线的前置依赖。已授
 | contact_texture / contact_origin / contact_sha256 | 小范围接触阴影、按相同地面基准对齐；纹理尺寸可不同，不能直接比较原点像素数值而忽略裁剪 |
 | 光影切片 | Demo9原建筑、2连宅、2树、实际使用花坛/路灯，以及独立风格与古典4SVG小景；不覆盖原P0图/模型/700fixture |
 | era / era_variants | 随时代切片填写真实历史风格与可用变体；Kenney现代件归Ⅴ，神殿/古典公共/圆形剧场Ⅰ，教堂Ⅱ；尚无变体不伪填路径 |
-| landmark_id / footprint_tiles / heritage | 地标稳定身份与多格占地，制作目录与城市运行状态分开；建成年代/遗产状态来自真实局内记录，不当静态素材事实 |
+| landmark_id / **footprint_radius** / heritage | 地标稳定身份与**半径占地**（S10 已把 footprint_tiles 改为 footprint_radius）；建成年代/遗产状态来自真实局内记录，不当静态素材事实 |
 | 三面与索引 | U14三面OKLab处理；保留24槽与来源，坡屋顶按实际法线插值；冷暖只偏色度不再压明度 |
 
 第55轮已部署光影字段：Demo15件（9建筑、2连宅、2树、花坛、路灯），风格7件复用实际Demo资源，古典4原创建筑+2树，去重19件。主图、投影、接触各有真实SHA；两个遮罩各有origin与pixels_per_world，主图也显式记录pixels_per_world；lighting记录世界锚点、投影角、接触参考比例，GLB件另记法线分类覆盖率。新增字段作为schema_version=1兼容扩展；时代/地标字段继续随其切片填真实内容，当前仍未实现。原件93项按SHA留资产/废弃/2026-10-09_UI-006光影前/原件.zip。风格帧制度按v3.1修订批准，但实际新图未签核；不能把方向批准当所有资产人工PASS。
@@ -261,7 +261,7 @@ schema_version → **2**。
 |---|---|
 | 建筑占地 | 半径 `r`（民居 0.45，公共 0.8，地标 1.0–1.5） |
 | 渲染 | 单整图/栋（社区尺度）；**整城尺度按社区合并贴图** |
-| 视觉错落 | 单建筑确定性偏移 ≤0.05 地块，显示尺度 94%–100%（沿用表 E2） |
+| 视觉错落 | 单建筑确定性偏移 ≤0.05 地块，显示尺度 94%–100%（仅改显示，不改逻辑位置/声场） |
 | 细节退场 | 拉远时按层级退场（门窗 → 屋顶 → 轮廓合并色块），300 ms 缓动 |
 | 合并贴图 | 离线烘焙或运行时缓存；每社区 1 张 |
 

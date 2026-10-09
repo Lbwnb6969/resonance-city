@@ -11,6 +11,11 @@ const Renderer = preload("res://scripts/audio/sample_renderer.gd")
 var scenery := ValleyScenery.new()
 var expression := "bright"
 var starter := true
+var town_starter := false
+@export var session_persistence := true
+var archive_directory := CityArchive.DIRECTORY
+var last_saved_event_count := -1
+var last_checkpoint_phrase := 0
 var model: ContinuousAudioModel
 var shown_world: ContinuousWorld
 var clock: AudibleAudioClock
@@ -100,16 +105,25 @@ func _ready() -> void:
 	clock = get_node("/root/AudioClock") as AudibleAudioClock
 	_start_world()
 	_warm_notes()
-	clock.start_output(model._mix_frame,{})
+	if not session_persistence or not load_city(true): clock.start_output(model._mix_frame,{})
 	mouse_exited.connect(func() -> void: pointer_inside = false)
 
-func _start_world() -> void:
+func _start_world(saved: Dictionary = {}) -> void:
+	_stop_preview()
 	clock.stop_output()
 	for sprite in sprites.values(): sprite.queue_free()
 	sprites.clear()
-	var world := World.new()
-	if starter: world.build_starter(expression)
-	model = Model.new(world,fixed_gain)
+	if saved.is_empty():
+		var world := World.new()
+		if town_starter: world.build_town()
+		elif starter: world.build_starter(expression)
+		model = Model.new(world,fixed_gain)
+	else:
+		model = Model.from_state(saved["model"])
+		expression = str(saved["view"]["expression"])
+		starter = bool(saved["view"]["starter"])
+		town_starter = bool(saved["view"].get("town_starter",false))
+		fixed_gain = model.synth.gain
 	shown_world = model.world
 	selected_id = ""
 	context.clear()
@@ -120,7 +134,16 @@ func _start_world() -> void:
 	view_zoom = zoom_target
 	pan = pan_target
 	scenery.rebuild(self)
-	_message("晴岸合奏 · 18栋制作示例，可从这里继续改编" if starter and expression == "bright" else ("深流慢板 · 低音与留白，可从这里继续改编" if starter else "空地开局 · 点击街边播下第一段声音"))
+	if not saved.is_empty():
+		view_zoom = float(saved["view"]["zoom"])
+		zoom_target = view_zoom
+		pan = saved["view"]["pan"]
+		pan_target = pan
+		selected_id = str(saved["view"]["selected_id"])
+		scenery.restore(saved["view"]["travelers"])
+	last_saved_event_count = model.world.events.size()
+	last_checkpoint_phrase = model.world.phrase_index
+	_message("林荫交响 · 80栋制作示例，十个社区轮换与应答" if town_starter else ("晴岸合奏 · 18栋制作示例，可从这里继续改编" if starter and expression == "bright" else ("深流慢板 · 低音与留白，可从这里继续改编" if starter else "空地开局 · 点击街边播下第一段声音")))
 
 func _make_menu() -> void:
 	menu = PanelContainer.new()
@@ -173,8 +196,69 @@ func _make_menu() -> void:
 		button.pressed.connect(_verb.bind(item[1]))
 		public_row.add_child(button)
 	box.add_child(public_row)
+	var archive_row := HBoxContainer.new()
+	for item in [["存一版 · Ctrl+S","save"],["继续上次 · F9","load"]]:
+		var button := Button.new()
+		button.text = item[0]
+		button.pressed.connect(func() -> void:
+			if item[1] == "save": save_city()
+			else: load_city()
+			menu.hide())
+		archive_row.add_child(button)
+	box.add_child(archive_row)
+	var town_button := Button.new()
+	town_button.text = "林荫交响 · T"
+	town_button.tooltip_text = "切换到80栋制作示例；当前作品先保存"
+	town_button.pressed.connect(_start_town)
+	box.add_child(town_button)
 	add_child(menu)
 	menu.hide()
+
+func _save_before_switch() -> void:
+	if session_persistence and model != null and clock.active: save_city("切换前保存")
+
+func _start_town() -> void:
+	_save_before_switch()
+	starter = true
+	town_starter = true
+	expression = "bright"
+	_start_world()
+	clock.start_output(model._mix_frame,{})
+
+func _stop_preview() -> void:
+	preview_requested = false
+	preview_started = false
+	if preview_thread != null:
+		preview_thread.wait_to_finish()
+		preview_thread = null
+	if is_instance_valid(preview_player): preview_player.stop()
+
+func capture_city() -> Dictionary:
+	return {"model":model.capture_state(),"renderer":clock.renderer.snapshot(),
+		"view":{"expression":expression,"starter":starter,"town_starter":town_starter,"zoom":view_zoom,"pan":pan,
+			"selected_id":selected_id,"travelers":scenery.snapshot()}}
+
+func save_city(reason: String = "手动保存") -> Dictionary:
+	var result := CityArchive.save(capture_city(),reason,archive_directory)
+	if result["ok"]:
+		last_saved_event_count = model.world.events.size()
+		if reason == "手动保存": _message("这一版城市已保存 · F9继续上次，旧版本保留")
+	else: _message(result["reason"])
+	return result
+
+func load_city(silent_empty: bool = false) -> bool:
+	var saved := CityArchive.latest(archive_directory)
+	if not saved["ok"]:
+		if not silent_empty: _message(saved["reason"])
+		return false
+	_save_before_switch()
+	_start_world(saved["city"])
+	clock.start_output(model._mix_frame,{},saved["city"]["renderer"])
+	_message("已继续上次的城市 · 音乐与生长从这里接上" if saved["skipped"] == 0 else "已恢复上一份完整作品，损坏版本仍保留")
+	return true
+
+func _checkpoint() -> void:
+	if session_persistence and model.world.events.size() != last_saved_event_count: save_city("城市生长")
 
 func _warm_notes() -> void:
 	var rate := int(Config.load_values()["timing"]["sample_rate"])
@@ -325,7 +409,15 @@ func _verb(verb: String) -> void:
 
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey or event.echo: return
-	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H]: get_viewport().set_input_as_handled()
+	if event.pressed and event.ctrl_pressed and event.keycode == KEY_S:
+		save_city()
+		get_viewport().set_input_as_handled()
+		return
+	if event.pressed and event.keycode == KEY_F9:
+		load_city()
+		get_viewport().set_input_as_handled()
+		return
+	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T]: get_viewport().set_input_as_handled()
 	if event.keycode == KEY_SPACE and not event.pressed:
 		preview_requested = false
 		preview_player.stop()
@@ -344,16 +436,23 @@ func _input(event: InputEvent) -> void:
 		KEY_H:
 			zoom_target = 0.88
 			pan_target = Vector2(0,70)
+		KEY_T: _start_town()
 		KEY_N:
+			_save_before_switch()
+			town_starter = false
 			starter = false
 			_start_world()
 			clock.start_output(model._mix_frame,{})
 		KEY_V:
+			_save_before_switch()
+			town_starter = false
 			starter = true
 			expression = "deep"
 			_start_world()
 			clock.start_output(model._mix_frame,{})
 		KEY_R:
+			_save_before_switch()
+			town_starter = false
 			starter = true
 			expression = "bright"
 			_start_world()
@@ -411,6 +510,11 @@ func _process(delta: float) -> void:
 			model.synth.duck_release_at = clock.renderer.transport.rendered_frames+stream.mix_rate*3
 	_sync_buildings()
 	scenery.sync(self)
+	if shown_world.phrase_index != last_checkpoint_phrase:
+		last_checkpoint_phrase = shown_world.phrase_index
+		if not shown_world.events.is_empty() and shown_world.events.back().get("kind","") == "era":
+			_message("时代进入 "+shown_world.era_title()+" · "+shown_world.vehicle_label()+" 已沿道路出现")
+		call_deferred("_checkpoint")
 	if shown_world.buildings.size() > last_birth_count:
 		if last_birth_count == 0:
 			zoom_target = 1.05
@@ -443,7 +547,7 @@ func _process(delta: float) -> void:
 		var site := shown_world.public_at(p)
 		if not site.is_empty():
 			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路服务%d栋\n公园为主题留白，文化设施让主题更清楚" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
-		else: tooltip.text = "街道旁的空地可以播种\n滚轮缩放 · 中键移动 · G建桥 · H全城\nR晴岸合奏 · V深流慢板 · N空地开局"
+		else: tooltip.text = "街道旁的空地可以播种\n滚轮缩放 · 中键移动 · G建桥 · H全城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
 	if menu.visible and pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()
@@ -531,7 +635,7 @@ func _draw() -> void:
 		var score: Dictionary = model.synth.score_snapshot()
 		var lead := str(score["theme"].get("cid",""))
 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
-		draw_string(font,Vector2(size.x-380,size.y-64),"主题 · "+name+"   "+str(shown_world.buildings.size())+"栋   "+str(model.world.pending_actions.size())+"段等待下一句",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("607974"))
+		draw_string(font,Vector2(size.x-500,size.y-64),"时代 · "+shown_world.era_title()+"   "+shown_world.vehicle_label()+"   主题 · "+name+"   "+str(shown_world.buildings.size())+"栋   "+str(model.world.pending_actions.size())+"段等待下一句",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("607974"))
 	var duration := float(model.phrase_frames)
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
@@ -542,9 +646,10 @@ func diagnostics() -> Dictionary:
 		"lots":shown_world.lots.size(),"resonance":shown_world.resonance,"phrase":shown_world.phrase_index,
 		"skips":clock.underruns,"audible_frame":clock.renderer.transport.audible_frame,"pending":model.world.pending.duplicate(true),
 		"preview_started":preview_started,"seed_hex":model.world.rng.seed_hex,"blocks":shown_world.blocks.size(),
-		"public_sites":shown_world.public_sites.duplicate(true),"transit":shown_world.transit.get("name",""),"score":model.synth.score_snapshot(),"sound_trace":model.sound_trace.duplicate(true)}
+		"public_sites":shown_world.public_sites.duplicate(true),"transit":shown_world.transit_lines.map(func(line: Dictionary) -> String: return line["name"]),"era":shown_world.era,"era_title":shown_world.era_title(),"vehicle":shown_world.vehicle_kind(),"score":model.synth.score_snapshot(),"sound_trace":model.sound_trace.duplicate(true)}
 
 func _exit_tree() -> void:
+	if session_persistence and model != null and is_instance_valid(clock) and clock.active: save_city("离开时保存")
 	if preview_thread != null: preview_thread.wait_to_finish()
 	if is_instance_valid(clock): clock.stop_output()
 
@@ -576,8 +681,8 @@ func _draw_public_space() -> void:
 		if pointer_inside and Geometry2D.is_point_in_polygon(world_at(pointer),polygon):
 			var p := Vector2(site["position"][0],site["position"][1])
 			draw_string(font,point(p)+Vector2(-30,30)*view_zoom,site["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("617b69"))
-	if not shown_world.transit.is_empty():
-		for node in shown_world.transit["stops"]:
+	for line in shown_world.transit_lines:
+		for node in line["stops"]:
 			var p: Array = shown_world.nodes[node]
 			var at := point(Vector2(p[0],p[1]))
 			draw_circle(at,3.5*view_zoom,Color("e9d4a0"))

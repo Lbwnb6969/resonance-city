@@ -3,6 +3,9 @@ extends Node
 
 const Renderer = preload("res://scripts/audio/sample_renderer.gd")
 const Values = preload("res://scripts/spec_values.gd")
+# The model keeps the approved 120 ms scheduling horizon. The live generator has
+# extra queue headroom for one large-city settlement on the main thread.
+const LIVE_BUFFER_FLOOR_SECONDS := 0.24
 
 signal output_started
 signal output_stopped
@@ -14,6 +17,8 @@ var capacity := 0
 var output_latency := 0.0
 var active := false
 var underruns := 0
+var resume_fade_left := 0
+var resume_fade_total := 1
 
 func _ready() -> void:
 	renderer = Renderer.new()
@@ -22,16 +27,23 @@ func _ready() -> void:
 	var generator := AudioStreamGenerator.new()
 	generator.mix_rate_mode = AudioStreamGenerator.MIX_RATE_CUSTOM
 	generator.mix_rate = renderer.transport.sample_rate
-	generator.buffer_length = float(Values.load_values()["timing"]["buffer_seconds"])
+	generator.buffer_length = maxf(float(Values.load_values()["timing"]["buffer_seconds"]),LIVE_BUFFER_FLOOR_SECONDS)
 	player.stream = generator
 	output_latency = AudioServer.get_output_latency()
 	set_process(false)
 
-func start_output(source: Callable, initial_state: Dictionary) -> void:
+func start_output(source: Callable, initial_state: Dictionary, saved_renderer: Dictionary = {}) -> void:
 	stop_output()
 	renderer = Renderer.new()
 	renderer.source = source
 	renderer.state = initial_state.duplicate(true)
+	resume_fade_left = 0
+	if not saved_renderer.is_empty():
+		renderer.restore(saved_renderer)
+		# The saved cursor is the next unrendered sample; no new mixer has the old queued PCM.
+		renderer.transport.audible_frame = float(renderer.transport.rendered_frames)
+		resume_fade_total = roundi(renderer.transport.sample_rate*0.08)
+		resume_fade_left = resume_fade_total
 	# Prime while the mixer is locked, so it never consumes an empty new stream.
 	AudioServer.lock()
 	player.play()
@@ -62,6 +74,9 @@ func _fill_buffer() -> void:
 	var available := playback.get_frames_available()
 	if available > 0:
 		var block := renderer.render(available)
+		for i in range(mini(block.size(),resume_fade_left)):
+			block[i] *= smoothstep(0.0,1.0,1.0-float(resume_fade_left)/resume_fade_total)
+			resume_fade_left -= 1
 		if not playback.push_buffer(block):
 			push_error("Audio PCM buffer rejected; stop and restart to preserve the timeline")
 			stop_output()

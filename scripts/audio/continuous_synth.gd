@@ -55,7 +55,7 @@ func update_city(city: Array, state: Dictionary, marks: Dictionary = {}, events:
 		if not group["active"]: continue
 		var pan: float = float(group["pan_sum"])/group["members"].size()
 		group["stereo"] = Vector2(cos((pan+1.0)*PI/4.0),sin((pan+1.0)*PI/4.0))
-		group["target"] = float(score["pad_gain"])*sqrt(float(group["members"].size())/maxf(6.0,float(population[group["cid"]])))
+		group["target"] = float(score["pad_gain"])*sqrt(float(group["members"].size())/maxf(6.0,float(population[group["cid"]])))*sqrt(float(score.get("pad_reference_communities",3.0))/maxf(float(score.get("pad_reference_communities",3.0)),population.size()))
 	# Retiring nodes count during their two-beat fade.
 	while pad_groups.size() > int(score["pad_group_limit"])*2:
 		var quiet := ""

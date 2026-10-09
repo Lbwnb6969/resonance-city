@@ -4,6 +4,7 @@ func _initialize() -> void:
 	call_deferred("run")
 func run() -> void:
 	var demo := DemoScene.instantiate()
+	demo.session_persistence = false
 	root.add_child(demo)
 	await process_frame
 	await process_frame

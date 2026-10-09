@@ -23,12 +23,13 @@ func _init(agent_kind: String = "walker", index: int = 0) -> void:
 	ordinal = index
 
 func advance(city: ContinuousWorld, seconds: float) -> Dictionary:
-	if kind == "bus" and city.transit.is_empty(): return {}
+	if _is_vehicle() and _line(city).is_empty(): return {}
 	if kind == "walker" and city.buildings.is_empty(): return {}
 	if not initialized:
-		if kind == "bus":
-			leg_index = (ordinal*3)%city.transit["legs"].size()
-			var leg: Dictionary = city.transit["legs"][leg_index]
+		if _is_vehicle():
+			var line := _line(city)
+			leg_index = (ordinal*3)%line["legs"].size()
+			var leg: Dictionary = line["legs"][leg_index]
 			destination = leg["from"]
 			position = leg["path"][0]
 			_next_bus(city)
@@ -41,7 +42,7 @@ func advance(city: ContinuousWorld, seconds: float) -> Dictionary:
 		last_seconds = seconds
 	var elapsed := maxf(0.0,seconds-last_seconds)
 	last_seconds = seconds
-	var speed := float(city.cfg["city"]["bus_speed"]) if kind == "bus" else 0.48
+	var speed := _speed(city) if _is_vehicle() else 0.48
 	while elapsed > 0.000001:
 		if wait > 0.0:
 			var pause := minf(elapsed,wait)
@@ -53,14 +54,35 @@ func advance(city: ContinuousWorld, seconds: float) -> Dictionary:
 		elapsed -= travel
 		_sample()
 		if distance >= total-0.00001:
-			if kind == "bus": _next_bus(city)
+			if _is_vehicle(): _next_bus(city)
 			else: _next_walk(city)
 			if total < 0.00001: break
 	return {"position":position,"direction":direction,"stopped":wait > 0.0,"destination":destination}
 
+func _is_vehicle() -> bool:
+	return kind in ["carriage","tram","bus"]
+
+func _speed(city: ContinuousWorld) -> float:
+	var city_cfg: Dictionary = city.cfg["city"]
+	if kind == "carriage": return float(city_cfg.get("carriage_speed",0.95))
+	if kind == "tram": return float(city_cfg.get("tram_speed",2.2))
+	return float(city_cfg.get("bus_speed",1.8))
+
+func _vehicle_lane() -> float:
+	if kind == "carriage": return 0.14
+	if kind == "tram": return 0.08
+	return 0.10
+
+func _line(city: ContinuousWorld) -> Dictionary:
+	var id := "valley-line" if ordinal < 2 else "garden-line"
+	for line in city.transit_lines:
+		if line["id"] == id: return line
+	return {}
+
 func _next_bus(city: ContinuousWorld) -> void:
-	var legs: Array = city.transit["legs"]
-	var next_key := str(city.transit["name"])
+	var line := _line(city)
+	var legs: Array = line["legs"]
+	var next_key := str(line["name"])
 	if line_key != next_key:
 		# Reroute only at the next completed stop; reconnect physically if it left the new line.
 		line_key = next_key
@@ -73,14 +95,14 @@ func _next_bus(city: ContinuousWorld) -> void:
 			var reconnect := city.network.route(destination,legs[0]["from"])
 			destination = legs[0]["from"]
 			leg_index = 0
-			_set_path(reconnect["path"],0.10)
+			_set_path(reconnect["path"],_vehicle_lane())
 			wait = 1.0
 			return
 		leg_index = match_index
 	var leg: Dictionary = legs[leg_index]
 	destination = leg["to"]
 	leg_index = (leg_index+1)%legs.size()
-	_set_path(leg["path"],0.10)
+	_set_path(leg["path"],_vehicle_lane())
 	wait = float(city.cfg["city"]["bus_dwell_beats"])*60.0/float(city.cfg["timing"]["bpm"])
 
 func _walk_destinations(city: ContinuousWorld) -> Array[Vector2]:
@@ -142,6 +164,15 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 		lengths.append(length)
 		total += length
 	distance = 0.0
+
+func snapshot() -> Dictionary:
+	var saved: Dictionary = {}
+	for field in ["kind","ordinal","position","direction","path","lengths","distance","total","last_seconds","wait",
+		"destination","line_key","leg_index","initialized","trip","walk_target"]: saved[field] = get(field)
+	return saved.duplicate(true)
+
+func restore(saved: Dictionary) -> void:
+	for field in saved: set(field,saved[field])
 
 func _sample() -> void:
 	var remaining := distance

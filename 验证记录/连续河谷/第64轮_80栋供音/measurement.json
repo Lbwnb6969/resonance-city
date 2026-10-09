@@ -1,0 +1,39 @@
+{
+  "town": {
+    "integrated_lufs": -15.4,
+    "true_peak_dbtp": -8.5,
+    "loudness_range": 0.1,
+    "gate_lufs": -25.4,
+    "command": [
+      "D:\\GODOT\\GODOTPRO\\共鸣之城\\.git\\工具依赖\\响度\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+      "-hide_banner",
+      "-nostats",
+      "-f",
+      "f32le",
+      "-ar",
+      "22050",
+      "-ac",
+      "2",
+      "-i",
+      "D:\\GODOT\\GODOTPRO\\共鸣之城\\验证记录\\连续河谷\\第64轮_80栋供音\\town.f32",
+      "-af",
+      "loudnorm=I=-16.0:TP=-3.0:print_format=json",
+      "-f",
+      "null",
+      "-"
+    ],
+    "ffmpeg_json": {
+      "input_i": "-15.40",
+      "input_tp": "-8.50",
+      "input_lra": "0.10",
+      "input_thresh": "-25.40",
+      "output_i": "-16.01",
+      "output_tp": "-9.10",
+      "output_lra": "0.10",
+      "output_thresh": "-26.01",
+      "normalization_type": "dynamic",
+      "target_offset": "0.01"
+    },
+    "sample_peak": 0.3758682906627655
+  }
+}

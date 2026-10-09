@@ -13,6 +13,7 @@ var presentation_history: Array[Dictionary] = []
 var presentation_copy: ContinuousWorld
 var presentation_copy_frame := -1
 var event_cursor := 0
+var decisions: Array[Dictionary] = []
 var sound_events: Array[Dictionary] = []
 var sound_overrides: Dictionary = {}
 var sound_trace: Array[Dictionary] = []
@@ -27,10 +28,11 @@ var bed_table := PackedFloat32Array()
 func _init(city_world: ContinuousWorld, fixed_gain: float = 1.0) -> void:
 	world = city_world
 	synth = Synth.new(world.buildings)
+	synth.score = world.cfg["score"]
 	synth.warm_score()
 	synth.assist_enabled = false
 	synth.gain = fixed_gain
-	phrase_frames = int(Config.load_values()["timing"]["phrase_frames"])
+	phrase_frames = int(world.cfg["timing"]["phrase_frames"])
 	beat_frames = phrase_frames/32
 	next_boundary = (world.phrase_index+1)*phrase_frames
 	event_cursor = world.events.size()
@@ -54,6 +56,7 @@ func submit(operation: Dictionary) -> Dictionary:
 		event["sound_frame"] = beat
 		sound_events.append(event)
 		_sort_sound_events()
+		decisions.append({"requested_frame":rendered_until,"operation":operation.duplicate(true),"sound_frame":beat,"structure_frame":-1})
 		return {"accepted":true,"frame":beat,"sound_frame":beat}
 	var result := world.request(operation,next_boundary)
 	if result["accepted"] and kind == "retune":
@@ -64,6 +67,7 @@ func submit(operation: Dictionary) -> Dictionary:
 		sound_events.append(event)
 		_sort_sound_events()
 		result["sound_frame"] = beat
+	if result["accepted"]: decisions.append({"requested_frame":rendered_until,"operation":operation.duplicate(true),"sound_frame":result.get("sound_frame",-1),"structure_frame":result["frame"]})
 	return result
 
 func _sort_sound_events() -> void:
@@ -160,7 +164,7 @@ func presentation_world(audible_frame: float) -> ContinuousWorld:
 		return world
 	var entry: Dictionary = presentation_history[0]
 	if presentation_copy == null or presentation_copy_frame != int(entry["frame"]):
-		presentation_copy = World.new(world.rng.seed_hex)
+		presentation_copy = World.new(world.rng.seed_hex,false)
 		presentation_copy.restore(entry["before"])
 		presentation_copy_frame = int(entry["frame"])
 	presentation_copy.pending = world.pending.duplicate(true)
@@ -180,6 +184,7 @@ func freeze() -> ContinuousAudioModel:
 	copy.transition_total = transition_total
 	copy.sound_events.assign(sound_events.duplicate(true))
 	copy.sound_overrides = sound_overrides.duplicate(true)
+	copy.decisions.assign(decisions.duplicate(true))
 	copy.synth.listener_community = synth.listener_community
 	copy.synth.muted_communities = synth.muted_communities.duplicate(true)
 	copy.synth.pad_groups = synth.pad_groups.duplicate(true)
@@ -187,6 +192,36 @@ func freeze() -> ContinuousAudioModel:
 	copy.synth.musical_nodes = synth.musical_nodes.duplicate(true)
 	copy.synth.update_city(copy.audio_city(),{}, {},[])
 	copy.synth.configure_score(copy.world,copy.sound_overrides)
+	return copy
+
+const SAVED_SYNTH_FIELDS = ["pad_groups","population","rhythm_nodes","musical_nodes","theme","response","rhythms",
+	"listener_community","muted_communities","gray_enabled","gray_from","gray_change_at","ducking","duck_release_at","last_voice_count","max_voice_count","voice_group_stats"]
+
+func capture_state() -> Dictionary:
+	var mix: Dictionary = {}
+	for field in SAVED_SYNTH_FIELDS: mix[field] = synth.get(field)
+	return {"world":world.snapshot(),"gain":synth.gain,"next_boundary":next_boundary,"rendered_until":rendered_until,
+		"event_cursor":event_cursor,"sound_events":sound_events.duplicate(true),"sound_overrides":sound_overrides.duplicate(true),
+		"decisions":decisions.duplicate(true),"presentation_history":presentation_history.duplicate(true),
+		"last_sample":last_sample,"transition_offset":transition_offset,"transition_remaining":transition_remaining,
+		"transition_total":transition_total,"mix":mix.duplicate(true)}
+
+static func from_state(saved: Dictionary) -> ContinuousAudioModel:
+	var city := World.new(saved["world"]["seed_hex"],false)
+	city.restore(saved["world"])
+	var copy := ContinuousAudioModel.new(city,float(saved["gain"]))
+	copy.next_boundary = int(saved["next_boundary"])
+	copy.rendered_until = int(saved["rendered_until"])
+	copy.event_cursor = int(saved["event_cursor"])
+	copy.sound_events.assign(saved["sound_events"].duplicate(true))
+	copy.sound_overrides = saved["sound_overrides"].duplicate(true)
+	copy.decisions.assign(saved["decisions"].duplicate(true))
+	copy.presentation_history.assign(saved["presentation_history"].duplicate(true))
+	copy.last_sample = saved["last_sample"]
+	copy.transition_offset = saved["transition_offset"]
+	copy.transition_remaining = int(saved["transition_remaining"])
+	copy.transition_total = int(saved["transition_total"])
+	for field in SAVED_SYNTH_FIELDS: copy.synth.set(field,saved["mix"][field])
 	return copy
 
 func forecast(operation: Dictionary, state: Dictionary, at: int, duration: int) -> PackedVector2Array:

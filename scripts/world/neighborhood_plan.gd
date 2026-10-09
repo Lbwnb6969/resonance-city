@@ -1,6 +1,6 @@
 class_name NeighborhoodPlan
 extends RefCounted
-## Extend the controlled valley into four real closed blocks; reserve public land first.
+## Stable street-front parcels and closed neighborhoods; public reservations precede plots.
 static func box(p: Vector2,half: Vector2) -> PackedVector2Array:
 	return PackedVector2Array([p-half,p+Vector2(half.x,-half.y),p+half,p+Vector2(-half.x,half.y)])
 
@@ -54,6 +54,7 @@ static func populate(world: RefCounted) -> void:
 				world.lots.append({"id":"%s-outer-lot-%d-%d" % [prefix,row,side],"center":[center_lot.x,center_lot.y],
 					"polygon":box(center_lot,Vector2(t["template_lot_half_width"],t["template_lot_half_length"])),"entrance":[x,y],
 					"use":"commercial" if row in [2,3] else "residential","community_id":"%s-%d" % [prefix,region+1],"bank":bank,"occupant":""})
+	GardenNeighborhood.populate(world)
 	var legal: Array[Dictionary] = []
 	for lot in world.lots:
 		var polygon: PackedVector2Array = lot["polygon"]

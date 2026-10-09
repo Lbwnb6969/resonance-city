@@ -43,7 +43,7 @@ func run_checks() -> void:
 	check(coupling.coefficient(a,f,{"sigma_a":2.0,"sigma_b":1.0}) == coupling.coefficient(f,a,{"sigma_a":1.0,"sigma_b":2.0}),"symmetric height kernel")
 	var world := World.new()
 	check(world.terrain.buildable_ratio() >= 0.45,"buildable terrain fraction")
-	check(world.communities.size() == 6 and world.lots.size() > 40,"six planned communities with frontage")
+	check(world.communities.size() == 10 and world.lots.size() >= 80,"ten planned communities with frontage")
 	var shared := true
 	for road in world.roads:
 		var from: Array = world.nodes[road["from"]]

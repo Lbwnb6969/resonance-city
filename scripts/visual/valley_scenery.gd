@@ -3,6 +3,7 @@ extends RefCounted
 ## Props share the building depth sort and the same audio frame as the river and city.
 var props: Dictionary = {}
 var sites: Dictionary = {}
+var vehicle_kind := ""
 
 func rebuild(demo: Control) -> void:
 	for node in props.values(): node.queue_free()
@@ -37,7 +38,8 @@ func rebuild(demo: Control) -> void:
 			for i in range(8):
 				var offset := Vector2(-1.1+(i%2)*2.2,-1.4+(i/2)*0.9)
 				_add(demo,"%s-tree-%d" % [site["id"],i],p+offset,"tree",i,site["id"])
-	for i in range(2): _add(demo,"bus-%d" % i,Vector2.ZERO,"bus",i)
+	vehicle_kind = city.vehicle_kind()
+	for i in range(4): _add(demo,"vehicle-%d" % i,Vector2.ZERO,vehicle_kind,i)
 	for i in range(10): _add(demo,"walker-%d" % i,Vector2.ZERO,"walker",i)
 
 func _add(demo: Control,key: String,p: Vector2,kind: String,tone: int,site: String = "") -> void:
@@ -46,12 +48,37 @@ func _add(demo: Control,key: String,p: Vector2,kind: String,tone: int,site: Stri
 	prop.tone = tone
 	prop.set_meta("world_position",p)
 	prop.set_meta("site",site)
-	if kind in ["bus","walker"]: prop.set_meta("traveler",CityTraveler.new(kind,tone))
+	if kind in ["bus","carriage","tram","walker"]: prop.set_meta("traveler",CityTraveler.new(kind,tone))
 	demo.buildings_layer.add_child(prop)
 	props[key] = prop
 
+func snapshot() -> Dictionary:
+	var saved: Dictionary = {}
+	for key in props:
+		if props[key].has_meta("traveler"): saved[key] = props[key].get_meta("traveler").snapshot()
+	return saved
+
+func restore(saved: Dictionary) -> void:
+	for key in saved:
+		if props.has(key) and props[key].has_meta("traveler"): props[key].get_meta("traveler").restore(saved[key])
+
+func _sync_vehicle_kind(city: ContinuousWorld) -> void:
+	var desired := city.vehicle_kind()
+	if desired == vehicle_kind: return
+	vehicle_kind = desired
+	for i in range(4):
+		var key := "vehicle-%d" % i
+		if not props.has(key): continue
+		var prop: ValleyProp = props[key]
+		prop.kind = desired
+		if prop.has_meta("traveler"):
+			var traveler: CityTraveler = prop.get_meta("traveler")
+			traveler.kind = desired
+			traveler.line_key = ""
+
 func sync(demo: Control) -> void:
 	var city: ContinuousWorld = demo.shown_world
+	_sync_vehicle_kind(city)
 	var frame: float = demo.clock.renderer.transport.audible_frame
 	var rate: int = demo.clock.renderer.transport.sample_rate
 	var seconds := frame/rate
@@ -64,7 +91,7 @@ func sync(demo: Control) -> void:
 			var site: Dictionary = city.public_sites.filter(func(s: Dictionary) -> bool: return s["id"] == site_id)[0]
 			prop.visible = site["active"]
 			prop.reveal = clampf((frame-int(site["frame"]))/(0.5*rate),0.0,1.0)
-		if prop.kind in ["bus","walker"]:
+		if prop.kind in ["bus","carriage","tram","walker"]:
 			var traveler: CityTraveler = prop.get_meta("traveler")
 			var movement := traveler.advance(city,seconds)
 			prop.visible = not movement.is_empty()

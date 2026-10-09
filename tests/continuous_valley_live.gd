@@ -27,6 +27,7 @@ func boundary() -> void:
 
 func run() -> void:
 	demo = WorldScene.instantiate()
+	demo.session_persistence = false
 	root.add_child(demo)
 	await process_frame
 	var lot: Dictionary = demo.shown_world.lots[18]

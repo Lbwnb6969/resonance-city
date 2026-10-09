@@ -38,6 +38,48 @@ func _draw() -> void:
 		for x in [7,15]:
 			draw_colored_polygon(PackedVector2Array([Vector2(x,-15-x*0.48),Vector2(x+4,-17-x*0.48),Vector2(x+4,-7-x*0.48),Vector2(x,-5-x*0.48)]),Color("829b9a"))
 		draw_line(Vector2(-12,6),Vector2(4,14),Color("ede4cb"),2,true)
+	elif kind == "carriage":
+		var forward := direction.normalized()*0.30
+		var side := Vector2(-direction.y,direction.x)*0.12
+		var body := PackedVector2Array([_project(-forward-side),_project(forward-side),_project(forward+side),_project(-forward+side)])
+		var roof := PackedVector2Array()
+		for p in body: roof.append(p-Vector2(0,5.8))
+		draw_set_transform(Vector2(2,2),0,Vector2(1.0,0.5))
+		draw_circle(Vector2.ZERO,8.0,Color(0.29,0.38,0.34,0.15))
+		draw_set_transform(Vector2.ZERO)
+		draw_colored_polygon(PackedVector2Array([body[0],body[1],roof[1],roof[0]]),Color("9b6d4d"))
+		draw_colored_polygon(PackedVector2Array([body[1],body[2],roof[2],roof[1]]),Color("b98558"))
+		draw_colored_polygon(PackedVector2Array([body[2],body[3],roof[3],roof[2]]),Color("7f5944"))
+		draw_colored_polygon(roof,Color("d4b77d"))
+		for wheel in [-0.62,0.62]:
+			draw_circle(_project(forward*wheel+side*1.05)+Vector2(0,0.5),2.7,Color("594d43"))
+			draw_circle(_project(forward*wheel+side*1.05)+Vector2(0,0.5),1.35,Color("c2a36f"))
+		# A pair of small horses makes the early era readable at a glance.
+		for side_sign in [-1.0,1.0]:
+			var horse := _project(forward*1.45+side*side_sign*0.42)
+			draw_line(_project(forward*0.35+side*side_sign*0.34)-Vector2(0,3),horse-Vector2(0,3),Color("89664e"),1.1,true)
+			draw_line(horse+Vector2(-1.0,0),horse+Vector2(-1.2,4),Color("6d5949"),1.0,true)
+			draw_line(horse+Vector2(1.0,0),horse+Vector2(1.2,4),Color("6d5949"),1.0,true)
+			draw_circle(horse-Vector2(0,3.8),2.0,Color("ad8e6c"))
+	elif kind == "tram":
+		var forward := direction.normalized()*0.43
+		var side := Vector2(-direction.y,direction.x)*0.11
+		var floor := PackedVector2Array()
+		for p in [-forward-side,forward-side,forward+side,-forward+side]: floor.append(_project(p))
+		var roof := PackedVector2Array()
+		for p in floor: roof.append(p-Vector2(0,7.5))
+		draw_set_transform(Vector2(2,2),0,Vector2(1.0,0.5))
+		draw_circle(Vector2.ZERO,11,Color(0.29,0.38,0.34,0.15))
+		draw_set_transform(Vector2.ZERO)
+		for i in range(4):
+			var j := (i+1)%4
+			draw_colored_polygon(PackedVector2Array([floor[i],floor[j],roof[j],roof[i]]),Color("718b87") if i%2 == 0 else Color("91a9a1"))
+		draw_colored_polygon(roof,Color("d9c48a"))
+		for t in [-0.55,-0.12,0.31]:
+			var a := _project(forward*t+side*0.95)-Vector2(0,6.0)
+			var b := _project(forward*(t+0.28)+side*0.95)-Vector2(0,6.0)
+			draw_line(a,b,Color("dbe5d1"),1.8,true)
+		for wheel in [-0.60,0.60]: draw_circle(_project(forward*wheel+side*0.85),1.7,Color("4e625f"))
 	elif kind == "bus":
 		var forward := direction.normalized()*0.38
 		var side := Vector2(-direction.y,direction.x)*0.105
