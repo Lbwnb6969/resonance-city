@@ -444,7 +444,7 @@ func _commit_landmark(operation: Dictionary,frame: int) -> void:
 	var landmark := {"id":landmark_id,"name":name,"glyph":str(spec.get("glyph","地")),"era":era,
 		"position":[position.x,position.y],"radius":radius,"frame":frame,
 		"reveal_frame":frame,"reveal_frames":maxi(1,int(cfg["timing"]["phrase_frames"])/8),
-		"voice_level":0.34,"anchor_midi":48,"motif":[],"absorbed_buildings":[],"active":false}
+		"voice_level":0.34,"anchor_midi":48,"motif":[],"absorbed_buildings":[],"source_communities":[],"active":false}
 	var candidates: Array[Dictionary] = []
 	for building in buildings:
 		var form := str(building.get("form","胚"))
@@ -459,6 +459,9 @@ func _commit_landmark(operation: Dictionary,frame: int) -> void:
 		var absorbed := _remove_building_for_landmark(str(candidate["id"]),landmark_id)
 		if absorbed.is_empty(): continue
 		landmark["absorbed_buildings"].append(str(absorbed["district_id"]))
+		var source_community := str(absorbed.get("community_id",""))
+		if not source_community.is_empty() and not landmark["source_communities"].has(source_community):
+			landmark["source_communities"].append(source_community)
 		landmark["motif"].append({"id":str(absorbed["district_id"]),"midi":int(absorbed["current_midi"])})
 	if not landmark["motif"].is_empty(): landmark["anchor_midi"] = int(landmark["motif"][0]["midi"])
 	landmarks.append(landmark)
@@ -1012,4 +1015,17 @@ func community_theme(cid: String, pitches: Dictionary = {}) -> Array:
 	for id in members:
 		var pitch := int(pitches.get(id,by_id[id]["current_midi"]))
 		if not notes.has(pitch): notes.append(pitch)
-	return notes
+	# A landmark rewrites its source community around the absorbed motif. Keep
+	# the motif first and stable across saves, then let surviving members answer it.
+	var motif_notes: Array = []
+	for landmark in landmarks:
+		var source_communities: Array = landmark.get("source_communities",[])
+		if not source_communities.has(cid): continue
+		for motif_entry in landmark.get("motif",[]):
+			var motif_pitch := int(motif_entry.get("midi",0))
+			if not motif_notes.has(motif_pitch): motif_notes.append(motif_pitch)
+	if motif_notes.is_empty(): return notes
+	var composed: Array = motif_notes.duplicate()
+	for pitch in notes:
+		if not composed.has(pitch): composed.append(pitch)
+	return composed
