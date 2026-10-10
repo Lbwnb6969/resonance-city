@@ -5,6 +5,7 @@ const PlanningCard = preload("res://scripts/world/planning_card.gd")
 const Model = preload("res://scripts/audio/continuous_audio_model.gd")
 const Projection2D = preload("res://scripts/world/world_projection.gd")
 const Coupling = preload("res://scripts/world/world_coupling.gd")
+const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 const Config = preload("res://scripts/world/world_values.gd")
 const GrowthSprite = preload("res://scripts/visual/audio_growth_mask.gd")
 const Shadows = preload("res://scripts/visual/city_shadow_layer.gd")
@@ -576,8 +577,8 @@ func _hit(screen: Vector2) -> String:
 func _landmark_radius(index: int) -> float:
 	return 1.35 if index == 0 else (1.15 if index == 1 else 1.55)
 
-func _landmark_site_clear(position: Vector2, radius: float) -> bool:
-	return shown_world != null and shown_world.landmark_site_clear(position,radius)
+func _landmark_site_clear(position: Vector2, radius: float, reservation_id: String = "") -> bool:
+	return shown_world != null and shown_world.landmark_site_clear(position,radius,reservation_id)
 
 func _landmark_anchor_positions(index: int) -> Array[Vector2]:
 	var positions: Array[Vector2] = []
@@ -608,6 +609,18 @@ func _landmark_preview_positions(index: int) -> Array[Dictionary]:
 	if index < 0 or index >= candidates.size() or (not bool(candidates[index]["ready"]) and not bool(candidates[index].get("awakened",false))) or bool(candidates[index].get("built",false)): return []
 	var radius := _landmark_radius(index)
 	var offsets := [Vector2.ZERO,Vector2(0.8,0.0),Vector2(-0.8,0.0),Vector2(0.0,0.8),Vector2(0.0,-0.8),Vector2(1.5,0.0),Vector2(-1.5,0.0),Vector2(0.0,1.5),Vector2(0.0,-1.5)]
+	# A reserved parcel can become a landmark without losing its untouched
+	# remainder. Prefer its real center so the preview and commit share the same
+	# source identity; ordinary city anchors remain the fallback.
+	for reservation in shown_world.planning_reservations:
+		var raw: Array = reservation.get("position",[])
+		if raw.size() != 2: continue
+		var reservation_id := str(reservation.get("reservation_id",reservation.get("id","")))
+		for offset in offsets:
+			var candidate_position := Vector2(float(raw[0]),float(raw[1]))+Vector2(offset)
+			if not SpatialPlanning.reservation_contains_disc(reservation,candidate_position,radius): continue
+			if _landmark_site_clear(candidate_position,radius,reservation_id):
+				return [{"position":[candidate_position.x,candidate_position.y],"radius":radius,"candidate":str(candidates[index]["name"]),"reservation_id":reservation_id}]
 	for position in _landmark_anchor_positions(index):
 		for offset in offsets:
 			var candidate_position: Vector2 = position+Vector2(offset)
@@ -652,7 +665,9 @@ func _confirm_landmark() -> void:
 		_message(str(candidate["name"])+"没有可用的连续陆地预影")
 		return
 	var site: Dictionary = sites[0]
-	var result := model.submit({"kind":"landmark","name":str(candidate["name"]),"position":site["position"],"radius":site["radius"]})
+	var operation := {"kind":"landmark","name":str(candidate["name"]),"position":site["position"],"radius":site["radius"]}
+	if site.has("reservation_id"): operation["source_reservation_id"] = site["reservation_id"]
+	var result := model.submit(operation)
 	if result["accepted"]:
 		_message(str(candidate["name"])+"已确认 · 下一句开始分段落成")
 	else:
@@ -1033,6 +1048,25 @@ func _charter_card_feedback(charter: Dictionary) -> String:
 		labels.append("+%d张" % (cards.size()-3))
 	return "本章变化 · "+"、".join(labels)
 
+func _planning_status_hint() -> String:
+	## Keep the planning cause visible after the transient P panel closes. The
+	## map and hover cards still carry the detailed spatial preview.
+	if model == null or model.world == null: return "P规划：选章程 → 变化卡 → 社区 → 公共空间"
+	var pending_labels: Array[String] = []
+	for operation in model.world.pending_actions:
+		var kind := str(operation.get("kind", ""))
+		var label: String = str({"charter":"章程", "park":"公园", "civic":"文化馆", "reserve":"留地", "release_reservation":"释放留地"}.get(kind, ""))
+		if not str(label).is_empty(): pending_labels.append(str(label))
+	if not pending_labels.is_empty():
+		return "待播规划 · %s · 下一个乐句落定" % "、".join(pending_labels)
+	if model.world.development_charters.is_empty():
+		return "P规划：选章程 → 变化卡 → 社区 → 公共空间"
+	var charter: Dictionary = model.world.development_charters[0]
+	var title := str(World.Charter.PLANS.get(str(charter.get("plan_id", "")), {}).get("title", "发展章程"))
+	var card_text := _charter_card_feedback(charter)
+	if card_text.is_empty(): return "当前规划 · %s · P重新规划" % title
+	return "当前规划 · %s · %s · P重新规划" % [title, card_text]
+
 func _request_preview() -> void:
 	var operation := context.duplicate(true)
 	if planning_guide.opened:
@@ -1199,7 +1233,7 @@ func _process(delta: float) -> void:
 			if site["active"] and site["kind"] == "civic":
 				tooltip.text = "%s · 文化设施%d级\n覆盖%d栋 · 已服务%d/%d栋\n%s" % [site["name"],int(site.get("service_level",1)),site.get("covered",[]).size(),site.get("served",[]).size(),int(site.get("service_capacity",18)),"点击后选公共设施，下一句扩容" if int(site.get("service_level",1)) < 3 else "三级扩容完成 · 文化主题继续演奏"]
 		else: tooltip.text = str(check["reason"])+"\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形 · E扩展城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
-	var status_line := notice if notice_seconds > 0.0 else ""
+	var status_line := notice if notice_seconds > 0.0 else _planning_status_hint()
 	if not hover_card_status.is_empty():
 		status_line = hover_card_status if status_line.is_empty() else status_line+" · "+hover_card_status
 	caption.text = status_line

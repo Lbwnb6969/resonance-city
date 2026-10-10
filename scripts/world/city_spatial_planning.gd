@@ -15,6 +15,68 @@ static func disc_hits(polygon: PackedVector2Array,p: Vector2,radius: float) -> b
 static func overlaps(a: PackedVector2Array,b: PackedVector2Array) -> bool:
 	return bounds(a).intersects(bounds(b),true) and not Geometry2D.intersect_polygons(a,b).is_empty()
 
+static func circle_polygon(center: Vector2,radius: float,sides: int = 32) -> PackedVector2Array:
+	var polygon := PackedVector2Array()
+	for i in range(maxi(8,sides)):
+		polygon.append(center+Vector2.from_angle(TAU*float(i)/float(maxi(8,sides)))*radius)
+	return polygon
+
+static func reservation_contains_disc(reservation: Dictionary,center: Vector2,radius: float) -> bool:
+	var polygon: PackedVector2Array = reservation.get("polygon",PackedVector2Array())
+	if polygon.size() < 3: return false
+	# The footprint uses the same polygonal circle as the landmark renderer. All
+	# samples must stay inside the reserved parcel before conversion is accepted.
+	for point in circle_polygon(center,radius):
+		if not Geometry2D.is_point_in_polygon(point,polygon): return false
+	return true
+
+static func subtract_disc(polygon: PackedVector2Array,center: Vector2,radius: float) -> Array[PackedVector2Array]:
+	if polygon.size() < 3: return []
+	var result: Array[PackedVector2Array] = []
+	var box := bounds(polygon)
+	var cutter_radius := radius+0.01
+	var min_corner := center-Vector2(cutter_radius,cutter_radius)
+	var max_corner := center+Vector2(cutter_radius,cutter_radius)
+	# Current player parcels are rectangles. Split their four sides and retain
+	# the rounded corners as small sector polygons; this avoids Geometry2D's
+	# hole contour becoming a second reservation with the landmark inside it.
+	var candidates: Array[PackedVector2Array] = [
+		PackedVector2Array([Vector2(box.position.x,box.position.y),Vector2(min_corner.x,box.position.y),Vector2(min_corner.x,box.end.y),Vector2(box.position.x,box.end.y)]),
+		PackedVector2Array([Vector2(max_corner.x,box.position.y),Vector2(box.end.x,box.position.y),Vector2(box.end.x,box.end.y),Vector2(max_corner.x,box.end.y)]),
+		PackedVector2Array([Vector2(min_corner.x,box.position.y),Vector2(max_corner.x,box.position.y),Vector2(max_corner.x,min_corner.y),Vector2(min_corner.x,min_corner.y)]),
+		PackedVector2Array([Vector2(min_corner.x,max_corner.y),Vector2(max_corner.x,max_corner.y),Vector2(max_corner.x,box.end.y),Vector2(min_corner.x,box.end.y)])]
+	var rectangular := polygon.size() == 4
+	if rectangular:
+		for point in polygon:
+			if point != Vector2(box.position.x,box.position.y) and point != Vector2(box.end.x,box.position.y) and point != Vector2(box.end.x,box.end.y) and point != Vector2(box.position.x,box.end.y):
+				rectangular = false
+				break
+	for candidate in candidates:
+		for clipped in Geometry2D.intersect_polygons(candidate,polygon):
+			if clipped.size() >= 3 and Geometry2D.intersect_polygons(clipped,circle_polygon(center,radius)).is_empty(): result.append(clipped)
+	# Four corner sectors cover the portions outside the round footprint that
+	# lie inside its bounding square. A small geometric margin keeps the shared
+	# boundary out of the next placement exclusion check.
+	var corner_angles := [[-PI/2.0,-PI],[-PI,-PI*1.5],[PI*1.5,TAU],[0.0,PI/2.0]]
+	var corners := [Vector2(box.position.x,box.position.y),Vector2(box.position.x,box.end.y),Vector2(box.end.x,box.end.y),Vector2(box.end.x,box.position.y)]
+	for index in range(4):
+		var angle_start: float = corner_angles[index][0]
+		var angle_end: float = corner_angles[index][1]
+		var sector := PackedVector2Array([corners[index]])
+		sector.append(center+Vector2.from_angle(angle_start)*cutter_radius)
+		for step in range(1,7): sector.append(center+Vector2.from_angle(lerpf(angle_start,angle_end,float(step)/6.0))*cutter_radius)
+		sector.append(center+Vector2.from_angle(angle_end)*cutter_radius)
+		if Geometry2D.is_polygon_clockwise(sector) != Geometry2D.is_polygon_clockwise(polygon): sector.reverse()
+		var contained := rectangular
+		for point in sector:
+			if not Geometry2D.is_point_in_polygon(point,polygon): contained = false; break
+		if contained:
+			if Geometry2D.intersect_polygons(sector,circle_polygon(center,radius)).is_empty(): result.append(sector)
+		else:
+			for clipped in Geometry2D.intersect_polygons(sector,polygon):
+				if clipped.size() >= 3 and Geometry2D.intersect_polygons(clipped,circle_polygon(center,radius)).is_empty(): result.append(clipped)
+	return result
+
 static func green_hits(world: RefCounted,polygon: PackedVector2Array) -> bool:
 	var box := bounds(polygon)
 	for corridor in world.green_corridors:

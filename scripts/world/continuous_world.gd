@@ -746,10 +746,10 @@ func _landmark_distance_to_segment(p: Vector2,a: Vector2,b: Vector2) -> float:
 	var t := clampf((p-a).dot(delta)/length_squared,0.0,1.0)
 	return p.distance_to(a+delta*t)
 
-func landmark_site_clear(position: Vector2,radius: float) -> bool:
+func landmark_site_clear(position: Vector2,radius: float,ignore_reservation: String = "") -> bool:
 	var polygon := PackedVector2Array()
 	for i in range(32): polygon.append(position+Vector2.from_angle(TAU*i/32.0)*radius)
-	if not SpatialPlanning.exclusion(self,polygon).is_empty(): return false
+	if not SpatialPlanning.exclusion(self,polygon,ignore_reservation).is_empty(): return false
 	for site in public_sites:
 		var site_position := Vector2(float(site["position"][0]),float(site["position"][1]))
 		if position.distance_to(site_position) < radius+1.1: return false
@@ -761,6 +761,34 @@ func landmark_site_clear(position: Vector2,radius: float) -> bool:
 		var other := Vector2(float(landmark["position"][0]),float(landmark["position"][1]))
 		if position.distance_to(other) < radius+float(landmark.get("radius",1.0)): return false
 	return true
+
+func landmark_reservation(position: Vector2,radius: float) -> Dictionary:
+	for reservation in planning_reservations:
+		if SpatialPlanning.reservation_contains_disc(reservation,position,radius): return reservation
+	return {}
+
+func _split_landmark_reservation(position: Vector2,radius: float,landmark_id: String) -> Array[String]:
+	var fragment_ids: Array[String] = []
+	var circle_reservations: Array[Dictionary] = []
+	for reservation in planning_reservations:
+		if SpatialPlanning.reservation_contains_disc(reservation,position,radius): circle_reservations.append(reservation)
+	if circle_reservations.is_empty(): return fragment_ids
+	for reservation in circle_reservations:
+		var source_id := str(reservation.get("reservation_id",reservation.get("id","")))
+		var fragments := SpatialPlanning.subtract_disc(reservation["polygon"],position,radius)
+		planning_reservations = planning_reservations.filter(func(item: Dictionary) -> bool:
+			return str(item.get("reservation_id",item.get("id",""))) != source_id)
+		var part := 0
+		for polygon in fragments:
+			var part_id := "%s-part-%02d" % [source_id,part+1]
+			var center := SpatialPlanning.bounds(polygon).get_center()
+			planning_reservations.append({"id":part_id,"reservation_id":part_id,"parent_reservation_id":source_id,
+				"source_site_id":reservation.get("source_site_id",""),"polygon":polygon,"position":[center.x,center.y],
+				"created_phrase":reservation.get("created_phrase",phrase_index),"converted_by":landmark_id})
+			fragment_ids.append(part_id)
+			part += 1
+	_refresh_parcel_index()
+	return fragment_ids
 
 func _remove_building_for_landmark(id: String,landmark_id: String) -> Dictionary:
 	if not by_id.has(id): return {}
@@ -791,7 +819,10 @@ func _commit_landmark(operation: Dictionary,frame: int) -> void:
 	if landmark_exists(name): return
 	var position := Vector2(float(operation["position"][0]),float(operation["position"][1]))
 	var radius := float(operation.get("radius",1.0))
-	if not landmark_site_clear(position,radius): return
+	var source_reservation := landmark_reservation(position,radius)
+	var source_reservation_id := str(operation.get("source_reservation_id",source_reservation.get("reservation_id","")))
+	if not source_reservation_id.is_empty() and (source_reservation.is_empty() or str(source_reservation.get("reservation_id","")) != source_reservation_id): return
+	if not landmark_site_clear(position,radius,source_reservation_id): return
 	var landmark_id := "landmark-%02d" % (landmarks.size()+1)
 	var spec := landmark_status(name)
 	var landmark := {"id":landmark_id,"name":name,"glyph":str(spec.get("glyph","地")),"era":era,
@@ -818,10 +849,12 @@ func _commit_landmark(operation: Dictionary,frame: int) -> void:
 		landmark["motif"].append({"id":str(absorbed["district_id"]),"midi":int(absorbed["current_midi"])})
 	if not landmark["motif"].is_empty(): landmark["anchor_midi"] = int(landmark["motif"][0]["midi"])
 	landmarks.append(landmark)
+	var fragment_ids := _split_landmark_reservation(position,radius,landmark_id)
 	landmark_progress[name] = {"streak":2,"awakened":true,"last_phrase":phrase_index}
 	rebuild_graph()
 	refresh_fabric()
-	events.append({"kind":"landmark","id":landmark_id,"name":name,"frame":frame,"absorbed":landmark["absorbed_buildings"].duplicate()})
+	events.append({"kind":"landmark","id":landmark_id,"name":name,"frame":frame,"absorbed":landmark["absorbed_buildings"].duplicate(),
+		"converted_reservation":source_reservation_id,"reservation_fragments":fragment_ids.duplicate()})
 
 func request(operation: Dictionary, frame: int) -> Dictionary:
 	if lifecycle["ended"]: return {"accepted":false,"reason":"这一段已结束，按R重新播种"}
@@ -860,10 +893,14 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		if pending_actions.any(func(op: Dictionary) -> bool: return op["kind"] == "landmark"): return {"accepted":false,"reason":"已有一座地标等待下一句落成"}
 		var site_position := Vector2(float(operation["position"][0]),float(operation["position"][1]))
 		var site_radius := float(operation.get("radius",status.get("radius",1.0)))
-		if not landmark_site_clear(site_position,site_radius): return {"accepted":false,"reason":"预影位置已被道路、公共空间或另一座地标占用"}
+		var source_reservation := landmark_reservation(site_position,site_radius)
+		var source_reservation_id := str(operation.get("source_reservation_id",source_reservation.get("reservation_id","")))
+		if not source_reservation_id.is_empty() and (source_reservation.is_empty() or str(source_reservation.get("reservation_id","")) != source_reservation_id): return {"accepted":false,"reason":"这片留地已变化，请重新选择地标位置"}
+		if not landmark_site_clear(site_position,site_radius,source_reservation_id): return {"accepted":false,"reason":"预影位置已被道路、公共空间或另一座地标占用"}
 		operation = operation.duplicate(true)
 		operation["radius"] = site_radius
 		operation["era"] = era
+		if not source_reservation_id.is_empty(): operation["source_reservation_id"] = source_reservation_id
 	elif kind in ["reserve","release_reservation"] or (kind in ["park","civic"] and operation.has("position")):
 		if kind == "release_reservation":
 			if not planning_reservations.any(func(item: Dictionary) -> bool: return str(item["reservation_id"]) == str(operation.get("id",""))):
