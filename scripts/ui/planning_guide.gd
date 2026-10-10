@@ -4,6 +4,7 @@ const Charter = preload("res://scripts/world/development_charter.gd")
 const PlanningCard = preload("res://scripts/world/planning_card.gd")
 const Planning = preload("res://scripts/world/city_spatial_planning.gd")
 const PublicPreview = preload("res://scripts/world/public_planning_preview.gd")
+const NextAction = preload("res://scripts/world/planning_next_action.gd")
 var comparison: Dictionary = {}
 var comparison_key: Array = []
 var demo: Control
@@ -27,6 +28,13 @@ var scope_polygons: Array[PackedVector2Array] = []
 var scope_version: Array = []
 var observed_phrase := -1
 var causal_feedback_count := 0
+## A queued self-directed follow-up survives the transient planning panel. It is
+## populated from the selected public-preview branch and becomes actionable
+## only when a matching charter birth is visible in the presentation world.
+var next_action: Dictionary = {}
+var next_action_row: HBoxContainer
+var next_action_button: Button
+var next_replan_button: Button
 
 func setup(owner_demo: Control) -> void:
 	demo = owner_demo
@@ -95,6 +103,19 @@ func setup(owner_demo: Control) -> void:
 	detail.add_theme_color_override("font_color",Color("51665c"))
 	detail.add_theme_font_size_override("font_size",15)
 	box.add_child(detail)
+	next_action_row = HBoxContainer.new()
+	next_action_row.add_theme_constant_override("separation",8)
+	next_action_button = Button.new()
+	next_action_button.text = "定位落地房屋 · 继续调音"
+	next_action_button.tooltip_text = "选中刚落地的房屋，打开已有聚焦与调音入口"
+	next_action_button.pressed.connect(_take_next_action)
+	next_action_row.add_child(next_action_button)
+	next_replan_button = Button.new()
+	next_replan_button.text = "重新规划另一片社区"
+	next_replan_button.tooltip_text = "回到章程、变化卡和社区范围选择"
+	next_replan_button.pressed.connect(_replan_next_action)
+	next_action_row.add_child(next_replan_button)
+	box.add_child(next_action_row)
 	actions = HBoxContainer.new()
 	confirm = Button.new()
 	confirm.text = "确认社区范围 → 摆放锚点"
@@ -121,6 +142,7 @@ func reset_for_city() -> void:
 	observed_phrase = demo.shown_world.phrase_index
 	opened = demo.model.world.development_charters.is_empty()
 	causal_feedback_count = 0 if opened else 2
+	next_action.clear()
 	stage = "charter"
 	plan_id = ""
 	card_id = ""
@@ -179,6 +201,7 @@ func refresh() -> void:
 	card_choices.visible = stage == "card"
 	actions.visible = stage != "charter"
 	confirm.visible = stage == "scope"
+	next_action_row.visible = opened and stage == "feedback" and next_action.get("state","") == "ready"
 	confirm.disabled = scope.is_empty()
 	for i in range(1,actions.get_child_count()):
 		var button: Button = actions.get_child(i)
@@ -197,6 +220,9 @@ func refresh() -> void:
 		var summary := Charter.scope_preview(demo.model.world,scope)
 		detail.text = ("点击地图选择一个社区；Shift点击可选多个。\n" if scope.is_empty() else "范围 · "+ "、".join(names)+"\n")
 		detail.text += "%d栋现有房屋 · %d块合法空置地块 · 不改房屋音级，不封锁其他用途" % [summary["houses"],summary["legal_lots"]]
+	elif stage == "feedback":
+		heading.text = "你的选择已经落地 · 现在轮到你"
+		detail.text = _next_action_detail()
 	else:
 		heading.text = str(Charter.PLANS[plan_id]["title"])+" · "+{"park":"摆放公园","civic":"摆放文化馆","none":"暂不建设"}[anchor_kind]
 		detail.text = "移动到所选社区的空置地块或公共候选地。\n按住空格比较不建、公园、文化馆；选择一种后点击地图确认。"
@@ -223,6 +249,7 @@ func _rebuild_card_choices() -> void:
 func map_click(p: Vector2,multiple: bool) -> bool:
 	if not opened: return false
 	if stage == "charter": return true
+	if stage == "feedback": return true
 	if stage == "card":
 		# Map-first input accepts the deterministic default card and proceeds;
 		# explicit card buttons can replace it before this click.
@@ -244,21 +271,132 @@ func map_click(p: Vector2,multiple: bool) -> bool:
 		demo._message("这里不在所选社区；按P可为另一片社区规划")
 		return true
 	if anchor_kind == "none":
+		var none_variant: Dictionary = {}
+		if comparison.has("variants") and comparison["variants"] is Dictionary:
+			none_variant = comparison["variants"].get("none",{})
+		if none_variant.is_empty(): none_variant = {"accepted":true,"choice":"none","opportunity_preview":{}}
+		_queue_next_action(none_variant)
 		demo.model.cancel_planning()
 		demo._message("这里暂不建设 · 章程保留，普通成长照常继续")
-		hide_tool()
+		_close_after_commit()
 		return true
 	if not bool(preview.get("access",false)):
 		demo._message("这片公共空间没有能接入道路的真实入口")
 		return true
 	var result: Dictionary = demo.model.submit({"kind":anchor_kind,"position":candidate["position"].duplicate()})
 	if bool(result["accepted"]):
+		var selected_variant: Dictionary = {}
+		if comparison.has("variants") and comparison["variants"] is Dictionary:
+			selected_variant = comparison["variants"].get(anchor_kind,{})
+		_queue_next_action(selected_variant)
 		demo.ripple_position = p
 		demo.ripple_seconds = 0.6
 		demo._message("规划已排入下一乐句 · "+("公园为主题留白" if anchor_kind == "park" else "文化馆按道路与容量支持主题")+"；点击房屋可查看实际声部与下一步")
-		hide_tool()
+		_close_after_commit()
 	else: demo._message(str(result["reason"]))
 	return true
+
+## Build the stable UI-side contract from a public-preview branch. World code
+## may add richer fields later; these fields remain sufficient to route the
+## player to a real community/building without inventing a new action type.
+static func next_action_from_variant(variant: Dictionary,candidate: Dictionary) -> Dictionary:
+	var raw_preview: Variant = variant.get("opportunity_preview",{})
+	var preview: Dictionary = raw_preview if raw_preview is Dictionary else {}
+	var action: Dictionary = NextAction.from_preview(preview,str(preview.get("choice",variant.get("choice",""))))
+	var owner := str(candidate.get("community_id",action.get("community_id","")))
+	if not owner.is_empty():
+		action["community_id"] = owner
+	var ids: Array = action.get("affected_communities",[])
+	if ids.is_empty() and not owner.is_empty(): action["affected_communities"] = [owner]
+	action["state"] = "queued"
+	action["building_id"] = ""
+	return action
+
+func _queue_next_action(variant: Dictionary) -> void:
+	var data: Dictionary = {}
+	if not comparison.is_empty() and comparison.has("variants"):
+		data = NextAction.from_comparison(comparison,anchor_kind)
+	else:
+		data = next_action_from_variant(variant,candidate)
+	if data.get("community_id","") == "" and candidate.has("community_id"): data["community_id"] = str(candidate["community_id"])
+	if data.get("affected_communities",[]).is_empty() and data.get("community_id","") != "": data["affected_communities"] = [data["community_id"]]
+	data["state"] = "queued"
+	next_action = data
+
+func _close_after_commit() -> void:
+	if demo.preview_public: demo._cancel_preview_playback()
+	comparison.clear()
+	comparison_key.clear()
+	opened = false
+	hide()
+	demo.queue_redraw()
+
+func _next_action_event_matches(event: Dictionary) -> bool:
+	if next_action.get("state","") != "queued" or str(event.get("kind","")) != "birth": return false
+	if not event.has("plan_id") or not event.has("district_id"): return false
+	if demo.shown_world == null or not demo.shown_world.by_id.has(str(event["district_id"])): return false
+	var cid := str(demo.shown_world.by_id[str(event["district_id"])].get("community_id",""))
+	var ids: Array = next_action.get("affected_communities",[])
+	return ids.is_empty() or ids.has(cid)
+
+func _activate_next_action(event: Dictionary) -> void:
+	var id := str(event.get("district_id",""))
+	if demo.shown_world != null and not demo.shown_world.by_id.has(id): id = ""
+	if id.is_empty():
+		var target := str(next_action.get("community_id",next_action.get("target",{}).get("community_id","") if next_action.get("target",{}) is Dictionary else ""))
+		if demo.shown_world != null:
+			for building in demo.shown_world.buildings:
+				if target.is_empty() or str(building.get("community_id","")) == target:
+					id = str(building.get("district_id",""))
+					break
+	var cid := str(next_action.get("community_id",""))
+	if not id.is_empty() and demo.shown_world != null and demo.shown_world.by_id.has(id):
+		cid = str(demo.shown_world.by_id[id].get("community_id",cid))
+	next_action["state"] = "ready"
+	next_action["building_id"] = id
+	next_action["community_id"] = cid
+	stage = "feedback"
+	opened = true
+	visible = not demo.black
+	refresh()
+	demo._message("规划结果已经落地 · 下一次行动由你选择")
+
+func _next_action_detail() -> String:
+	var choice: String = str({"park":"公园","civic":"文化馆","none":"暂不建设"}.get(str(next_action.get("choice","")),"公共规划"))
+	var community_name: String = str(next_action.get("community_id",""))
+	if demo != null and demo.shown_world != null:
+		community_name = str(demo.shown_world.communities.get(str(next_action.get("community_id","")),{}).get("name",community_name))
+	var hint := "点击下方定位落地房屋，进入已有调音、独听与聚焦入口。"
+	var roles: Variant = next_action.get("roles",{})
+	if roles is Dictionary:
+		for role in ["theme","commercial","bass","response"]:
+			var row: Dictionary = roles.get(role,{})
+			if not row.is_empty() and not str(row.get("next","")).is_empty():
+				hint = str(row["next"]).replace("\n","；")+"\n点击下方定位这片社区，继续由你决定。"
+				break
+	return "%s · %s\n%s\n%s" % [choice,community_name,hint,"规划影响已经兑现，下一步可以改一栋的音、聚焦主题或重新规划另一片社区。"]
+
+func _take_next_action() -> void:
+	if next_action.get("state","") != "ready": return
+	var id := str(next_action.get("building_id",""))
+	if demo.shown_world == null or id.is_empty() or not demo.shown_world.by_id.has(id):
+		demo._message("落地房屋已离开当前画面；点击另一栋房屋继续调音")
+		hide_tool()
+		return
+	demo.selected_id = id
+	demo.context = {"kind":"retune","id":id}
+	# Existing focus verb supplies camera movement and a one-shot focus event;
+	# opening the context menu afterwards keeps the real note/solo/mute controls.
+	demo._verb("focus")
+	demo._show_context_menu()
+	next_action["state"] = "consumed"
+	next_action_row.visible = false
+	opened = false
+	hide()
+
+func _replan_next_action() -> void:
+	next_action.clear()
+	open_tool()
 
 func commit_scope() -> void:
 	if scope.is_empty(): return
@@ -403,6 +541,8 @@ func sync() -> void:
 		observed_phrase = demo.shown_world.phrase_index
 		for event in demo.shown_world.events:
 			if int(event.get("frame",-1)) != observed_phrase*int(demo.shown_world.cfg["timing"]["phrase_frames"]): continue
+			if _next_action_event_matches(event):
+				_activate_next_action(event)
 			if causal_feedback_count < 2 and str(event.get("kind","")) == "birth" and event.has("plan_id"):
 				causal_feedback_count += 1
 				var building: Dictionary = demo.shown_world.by_id.get(str(event.get("district_id","")),{})
