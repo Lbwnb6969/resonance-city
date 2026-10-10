@@ -1,0 +1,221 @@
+extends SceneTree
+const World = preload("res://scripts/world/continuous_world.gd")
+const Model = preload("res://scripts/audio/continuous_audio_model.gd")
+const Rules = preload("res://scripts/world/community_music_rules.gd")
+const Frontage = preload("res://scripts/world/community_frontage.gd")
+const Renderer = preload("res://scripts/audio/sample_renderer.gd")
+const OUT = "res://验证记录/连续河谷/第142轮_社区创作"
+var checks: Dictionary = {}
+var report: Dictionary = {}
+func _initialize() -> void: call_deferred("_run")
+func check(ok: bool,label: String) -> void:
+	checks[label] = ok
+	if not ok: push_error(label)
+func step(world: ContinuousWorld) -> void:
+	world.settle((world.phrase_index+1)*int(world.cfg["timing"]["phrase_frames"]))
+func _run() -> void:
+	var world := World.new()
+	world.build_starter("bright")
+	var untouched := world.snapshot()
+	var initial := Model.new(world)
+	check(initial.synth.theme.is_empty() and not initial.synth.rhythms.is_empty(),"opening keeps rhythms without premature Lead")
+	var initial_op := Rules.opportunity(world,"west-1",initial.synth.score_snapshot())
+	check(not initial_op["qualified"] and not initial_op["missing_conditions"].is_empty() and initial_op["rule_id"] == "P11-COMMUNITY-THEME","opportunity exposes actual missing conditions")
+	check(world.snapshot() == untouched,"opportunity and score consume no world RNG")
+	check(is_equal_approx(Frontage.length_of([Vector2(0,3),Vector2(2,5),Vector2(8,9)]),6.0),"frontage union avoids overlap and counts length")
+	var first_ready := -1
+	for i in range(8):
+		step(world)
+		if Rules.status(world,"west-1")["theme_eligible"]:
+			first_ready = world.phrase_index
+			break
+	check(first_ready == 2 and world.buildings.size() == 24,"starter naturally earns first community theme at phrase two")
+	report["natural_first_theme"] = {"phrase":first_ready,"houses":world.buildings.size(),"status":Rules.status(world,"west-1"),"wall":world.fabric_cache["community_wall"]["west-1"]}
+	var cid := "west-1"
+	var members: Array = world.communities[cid]["members"]
+	var wall: Dictionary = world.fabric_cache["community_wall"][cid]
+	check(is_equal_approx(float(wall["score"]),float(wall["occupied_length"])/float(wall["available_length"])) and wall["score"] > 0.35,"actual world qualification uses measured frontage")
+	var p: Vector2 = WorldCoupling.position_of(world.by_id[members[0]])
+	var polygon := world.building_polygon(p)
+	var projection := Frontage.projection(world,polygon,p)
+	check(not projection.is_empty() and projection["interval"].y > projection["interval"].x,"building facade projects onto actual road side")
+	var parcels: Array = world.lots.filter(func(l:Dictionary)->bool:return str(l["community_id"]) == cid)
+	var filled: int = parcels.filter(func(l:Dictionary)->bool:return not str(l["occupant"]).is_empty()).size()
+	check(absf(float(wall["score"])-float(filled)/parcels.size()) > 0.01,"frontage does not substitute occupied parcel count")
+	var model := Model.new(world.fork())
+	check(model.synth.theme.get("cid","") == cid,"qualified grown community occupies one Lead")
+	var controlled: ContinuousWorld = world.fork()
+	for id in controlled.communities[cid]["members"]: controlled.by_id[id]["form"] = "胚"
+	for id in controlled.communities[cid]["members"].slice(0,5): controlled.by_id[id]["form"] = "群"
+	var gate := Model.new(controlled)
+	gate.synth.focused_community = cid
+	gate.synth.configure_score(controlled)
+	check(gate.synth.theme.is_empty(),"focus cannot bypass six mature members")
+	controlled = world.fork()
+	controlled.fabric_cache["courtyards"] = controlled.fabric_cache["courtyards"].filter(func(c:Dictionary)->bool:return str(c.get("community_id","")) != cid)
+	gate = Model.new(controlled)
+	check(gate.synth.theme.is_empty(),"missing courtyard prevents theme despite enough houses")
+	controlled = world.fork()
+	controlled.fabric_cache["community_wall"][cid]["score"] = 0.34
+	gate = Model.new(controlled)
+	check(gate.synth.theme.is_empty(),"scattered frontage prevents theme")
+	# Controlled second qualified competitor isolates selection from geometric generation.
+	var competition: ContinuousWorld = world.fork()
+	var other := "west-2"
+	for id in competition.communities[other]["members"]: competition.by_id[id]["form"] = "群"
+	competition.fabric_cache["community_wall"][other]["score"] = 0.40
+	var focus := Model.new(competition)
+	focus.synth.focused_community = cid
+	focus.synth.configure_score(competition)
+	var rate: int = world.cfg["timing"]["sample_rate"]
+	var start: int = world.phrase_index*int(world.cfg["timing"]["phrase_frames"])
+	var phases: Dictionary = {}
+	focus.render_block(phases,start,64,rate)
+	var waiting := Rules.opportunity(competition,other,focus.synth.score_snapshot())
+	check(waiting["qualified"] and not waiting["playing"] and waiting["next"].contains("聚焦"),"qualified waiting community differs from current performer")
+	var operation := focus.submit({"kind":"focus","community":other})
+	var boundary := int(operation["sound_frame"])
+	check(boundary > focus.rendered_until and boundary-focus.rendered_until <= focus.beat_frames and focus.synth.focused_community == cid,"focus queued at next writable beat")
+	var crossing := focus.render_block(phases,boundary-64,128,rate)
+	focus.presentation_world(boundary-1)
+	check(focus.synth.theme["cid"] == other and focus.audible_score()["theme"]["cid"] == cid,"rendered focus not revealed before audible boundary")
+	focus.presentation_world(boundary)
+	check(focus.audible_score()["theme"]["cid"] == other and Rules.opportunity(competition,other,focus.audible_score())["playing"],"performer and opportunity switch at actual audible frame")
+	check(crossing[64].distance_to(crossing[63]) < 0.000001,"focus seam begins from preceding sample without click")
+	var detached := focus.audible_score()
+	detached["theme"].clear()
+	check(not focus.audible_score()["theme"].is_empty(),"audible score is independent presentation data")
+	focus.submit({"kind":"solo","community":cid})
+	focus.render_block(phases,boundary+focus.beat_frames,128,rate)
+	check(focus.synth.theme["cid"] == cid and focus.synth.focused_community == other,"solo temporarily selects eligible community ahead of focus")
+	var saved := focus.capture_state()
+	var restored := Model.from_state(CityArchive._json_value(saved))
+	check(restored.synth.focused_community == other and restored.synth.listener_community == cid,"JSON runtime retains authored focus and solo")
+	check(focus.freeze().synth.focused_community == other,"preview fork retains focused theme")
+	saved["mix"].erase("focused_community")
+	check(Model.from_state(saved).synth.focused_community.is_empty(),"old runtime defaults to unfocused rotation")
+	competition.phrase_index = 6
+	focus.synth.configure_score(competition)
+	check(focus.synth.theme.is_empty(),"focus and solo respect global theme rest phrase")
+	# Preserve duplicate member pitches, including survivors of a landmark motif.
+	var authored: ContinuousWorld = world.fork()
+	var target := str(members[0])
+	for id in members: authored.by_id[id]["current_midi"] = 48
+	authored.by_id[members[-1]]["current_midi"] = 52
+	var before_notes := authored.community_theme(cid)
+	var after_notes := authored.community_theme(cid,{target:52})
+	check(before_notes.size() == members.size() and before_notes != after_notes and before_notes.count(48)-after_notes.count(48) == 1,"retuning into existing pitch still rewrites member motif")
+	authored.landmarks.append({"source_communities":[cid],"motif":[{"midi":48}]})
+	check(authored.community_theme(cid).size() == members.size()+1 and authored.community_theme(cid) != authored.community_theme(cid,{target:52}),"landmark prefix preserves surviving member authorship")
+	authored.landmarks.clear()
+	var before_synth := Model.new(authored.fork()).synth
+	var after_synth := Model.new(authored.fork()).synth
+	after_synth.configure_score(after_synth.current_world,{target:52})
+	var before_node: Dictionary = before_synth.musical_nodes.values()[0]
+	var after_node: Dictionary = after_synth.musical_nodes.values().filter(func(n:Dictionary)->bool:return n["active"])[0]
+	check(before_synth._musical_block(before_node,start,rate*16,rate) != after_synth._musical_block(after_node,start,rate*16,rate),"member edit changes actual isolated theme PCM")
+	var sparse_notes: Array = [48,48,48,48,48,48,48,48,52]
+	var long_node := {"part":{"notes":sparse_notes},"pattern":{"expression":"bright","park":false,"terrain":"river_valley","zone_roles":[]},"answer":false}
+	var flat_node: Dictionary = long_node.duplicate(true)
+	flat_node["part"]["notes"][8] = 48
+	check(before_synth._musical_block(long_node,rate*16,rate,rate) != before_synth._musical_block(flat_node,rate*16,rate,rate),"member beyond first eight sounds in next motif cycle")
+	var muted_score := model.synth.score_snapshot()
+	muted_score["muted_communities"][cid] = true
+	check(Rules.opportunity(world,cid,muted_score)["current"].contains("已静音"),"opportunity reports muted community honestly")
+	var service: ContinuousWorld = world.fork()
+	var site: Dictionary = service.public_sites.filter(func(s:Dictionary)->bool:return s["kind"] == "civic")[0]
+	site["active"] = true
+	site["community_id"] = cid
+	site["served"] = []
+	check(not Rules.facilities(service,cid)["civic"],"culture effect requires actual service rather than matching label")
+	site["served"] = [target]
+	check(Rules.facilities(service,cid)["civic"] and Rules.facilities(service,cid)["served"] == 1,"served culture effect uses canonical facility capacity")
+	for variant: String in ["before","after"]:
+		await record(authored,variant,target,start,rate)
+	await gpu_flow(world,cid)
+	var ok := not checks.values().has(false)
+	report["checks"] = checks
+	report["status"] = "PASS" if ok else "FAIL"
+	report["scope"] = "Natural starter qualification; controlled second-competitor and duplicate-pitch fixtures; real full-score PCM and GPU/audio generation. P11 Theme slice, not complete role opportunities or human listening."
+	FileAccess.open(OUT+".json",FileAccess.WRITE).store_string(JSON.stringify(report,"\t")+"\n")
+	print("COMMUNITY_AUTHOR ",report["status"]," checks=",checks.size())
+	quit(0 if ok else 1)
+func record(world: ContinuousWorld,variant: String,target: String,start: int,rate: int) -> void:
+	var gain := float(JSON.parse_string(FileAccess.get_file_as_string("res://数据/valley_score_calibration.json"))["gain"])
+	var audio := Model.new(world.fork(),gain)
+	var state: Dictionary = {}
+	audio.render_block(state,start,64,rate)
+	if variant == "after": audio.submit({"kind":"retune","id":target,"midi":52})
+	var pcm := PackedVector2Array()
+	pcm.resize(rate*30)
+	var raw := PackedFloat32Array()
+	raw.resize(pcm.size()*2)
+	var peak := 0.0
+	var max_seam := 0.0
+	for offset in range(0,pcm.size(),1024):
+		var at := start+64+offset
+		var block := audio.render_block(state,at,mini(1024,pcm.size()-offset),rate)
+		for i in range(block.size()):
+			pcm[offset+i] = block[i]
+			raw[(offset+i)*2] = block[i].x
+			raw[(offset+i)*2+1] = block[i].y
+			peak = maxf(peak,maxf(absf(block[i].x),absf(block[i].y)))
+			if (at+i)%audio.phrase_frames == 0 and offset+i > 0:
+				max_seam = maxf(max_seam,block[i].distance_to(pcm[offset+i-1]))
+	var wav := AudioStreamWAV.new()
+	wav.format = AudioStreamWAV.FORMAT_16_BITS
+	wav.stereo = true
+	wav.mix_rate = rate
+	wav.data = Renderer.pcm16(pcm)
+	wav.save_to_wav(OUT+"_"+variant+".wav")
+	FileAccess.open(OUT+"_"+variant+".f32",FileAccess.WRITE).store_buffer(raw.to_byte_array())
+	check(peak > 0.001 and peak < 0.70795 and max_seam < 0.000001 and audio.synth.max_voice_count <= 70,variant+" full score keeps headroom seam and voice budget")
+	report[variant] = {"gain":gain,"seconds":30,"sample_rate":rate,"sample_peak":peak,"growth_seam":max_seam,"roles":audio.synth.score_snapshot(),"sound_trace":audio.sound_trace}
+	await process_frame
+func gpu_flow(world: ContinuousWorld,cid: String) -> void:
+	var demo: ContinuousValleyDemo = load("res://scenes/continuous_valley.tscn").instantiate()
+	demo.session_persistence = false
+	root.add_child(demo)
+	await RenderingServer.frame_post_draw
+	demo.clock.stop_output()
+	demo.set_process(false)
+	demo.planning_guide.hide_tool()
+	demo._start_world({},world.fork())
+	demo.planning_guide.hide_tool()
+	demo._sync_buildings()
+	demo.selected_id = str(demo.shown_world.communities[cid]["members"][0])
+	demo.context = {"kind":"retune","id":demo.selected_id}
+	demo.pointer = demo.point(WorldCoupling.position_of(demo.shown_world.by_id[demo.selected_id]))
+	demo._show_context_menu()
+	await RenderingServer.frame_post_draw
+	# Wrapped labels obtain their final minimum height on the next layout pass.
+	demo._show_context_menu()
+	await RenderingServer.frame_post_draw
+	check(demo.menu_info.text.contains("正在唱主题") and demo.menu_info.text.contains("音型") and demo.selected_opportunity["qualified"],"actual selected-building menu shows role motif and opportunity")
+	check(demo.menu.position.x >= 0 and demo.menu.position.y >= 0 and demo.menu.get_rect().end.x <= demo.size.x and demo.menu.get_rect().end.y <= demo.size.y,"community menu fits actual viewport")
+	demo.menu.hide()
+	demo.menu_info.text = "给这栋建筑换一个音"
+	demo._show_context_menu()
+	check(demo.menu_info.text.contains("正在唱主题"),"reopening same building retains community information")
+	root.get_texture().get_image().save_png(OUT+"_社区主题.png")
+	demo._verb("focus")
+	check(demo.model.sound_events.any(func(e:Dictionary)->bool:return e["kind"] == "focus" and e["community"] == cid),"GPU focus button queues real theme selection")
+	var escape := InputEventKey.new()
+	escape.keycode = KEY_ESCAPE
+	escape.pressed = true
+	demo._input(escape)
+	check(demo.model.sound_events.any(func(e:Dictionary)->bool:return e["kind"] == "focus" and e["community"] == ""),"Esc returns from focused theme to rotating ensemble")
+	demo.model.cancel_pending()
+	var rate: int = world.cfg["timing"]["sample_rate"]
+	var live_start := demo.model.next_boundary-rate*2
+	demo.clock.renderer.transport.rendered_frames = live_start
+	demo.clock.renderer.transport.audible_frame = live_start
+	demo.clock.start_output(demo.model._mix_frame,{},demo.clock.renderer.snapshot())
+	demo.set_process(true)
+	demo._verb("focus")
+	await create_timer(4.5).timeout
+	check(demo.clock.underruns == 0 and demo.shown_world.phrase_index > world.phrase_index and demo.model.synth.max_voice_count <= 70,"actual audio generation crosses focus and growth with zero skips")
+	report["live"] = {"audio_driver":AudioServer.get_driver_name(),"skips":demo.clock.underruns,"phrase":demo.shown_world.phrase_index,"max_voices":demo.model.synth.max_voice_count,"max_render_ms":demo.model.max_render_ms}
+	demo.clock.stop_output()
+	demo.free()
+	await process_frame

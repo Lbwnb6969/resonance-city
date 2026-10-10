@@ -1026,11 +1026,10 @@ func settle(frame: int) -> void:
 	_refresh_public_network(frame)
 	settle_profile["public_network_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
 	phase_started = Time.get_ticks_usec()
-	# Courtyard geometry is a derived visual cache. Rebuilding every phrase made
-	# long growth quadratic; explicit structural actions stay immediate, while
-	# organic growth refreshes on alternating phrases.
-	var geometry_action := committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["seed","bridge","landmark"])
-	if forms_dirty and (geometry_action or phrase_index % 2 == 0): refresh_fabric()
+	# Theme eligibility consumes real frontage and courtyards, so changed geometry
+	# must be current at this audible phrase rather than a phrase-old visual hint.
+	var geometry_action := committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["seed","bridge","landmark","park","civic","reserve","release_reservation"])
+	if buildings.size() != buildings_before_growth or not split_events.is_empty() or geometry_action: refresh_fabric()
 	settle_profile["fabric_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
 	_commit_transit_flow()
 
@@ -1872,7 +1871,7 @@ func community_theme(cid: String, pitches: Dictionary = {}) -> Array:
 	var notes: Array = []
 	for id in members:
 		var pitch := int(pitches.get(id,by_id[id]["current_midi"]))
-		if not notes.has(pitch): notes.append(pitch)
+		notes.append(pitch)
 	# A landmark rewrites its source community around the absorbed motif. Keep
 	# the motif first and stable across saves, then let surviving members answer it.
 	var lineage: Array = [cid]
@@ -1892,6 +1891,5 @@ func community_theme(cid: String, pitches: Dictionary = {}) -> Array:
 				if not motif_notes.has(motif_pitch): motif_notes.append(motif_pitch)
 	if motif_notes.is_empty(): return notes
 	var composed: Array = motif_notes.duplicate()
-	for pitch in notes:
-		if not composed.has(pitch): composed.append(pitch)
+	composed.append_array(notes)
 	return composed

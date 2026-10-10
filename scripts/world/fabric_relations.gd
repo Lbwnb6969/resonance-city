@@ -288,14 +288,4 @@ static func _select_courtyards(world: RefCounted, anchors: Dictionary) -> Array:
 	return selected
 
 static func community_wall_stats(world: RefCounted) -> Dictionary:
-	var result: Dictionary = {}
-	for cid in world.communities:
-		var total := 0
-		var occupied := 0
-		for lot in world.lots:
-			if str(lot["community_id"]) != str(cid): continue
-			total += 1
-			if not str(lot["occupant"]).is_empty(): occupied += 1
-		var score := float(occupied)/float(total) if total > 0 else 0.0
-		result[cid] = {"score":score,"tier":"萌芽" if score < 0.35 else ("成街" if score < 0.70 else "街区")}
-	return result
+	return preload("res://scripts/world/community_frontage.gd").measure(world)

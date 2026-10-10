@@ -5,6 +5,8 @@ const WorldConfig = preload("res://scripts/world/world_values.gd")
 var score: Dictionary = WorldConfig.load_values()["score"]
 var targets: Dictionary = {}
 var listener_community := ""
+var focused_community := ""
+const MusicRules = preload("res://scripts/world/community_music_rules.gd")
 var muted_communities: Dictionary = {}
 var pad_groups: Dictionary = {}
 var rhythms: Array[Dictionary] = []
@@ -181,17 +183,23 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
 	_sync_rhythm_nodes()
 	theme.clear()
 	response.clear()
-	if candidates.is_empty() or (world.phrase_index+1)%int(score["theme_rest_phrases"]) == 0:
+	var theme_candidates: Array[String] = []
+	for cid in candidates:
+		if bool(MusicRules.status(world,cid)["theme_eligible"]): theme_candidates.append(cid)
+	if theme_candidates.is_empty() or (world.phrase_index+1)%int(score["theme_rest_phrases"]) == 0:
 		_sync_musical_nodes()
 		return
-	var selected := candidates[(world.phrase_index/int(score["theme_rotate_phrases"]))%candidates.size()]
+	var selected := theme_candidates[(world.phrase_index/int(score["theme_rotate_phrases"]))%theme_candidates.size()]
+	if theme_candidates.has(focused_community): selected = focused_community
+	if theme_candidates.has(listener_community): selected = listener_community
 	var notes := world.community_theme(selected,overrides)
 	var first: Dictionary = world.by_id[world.communities[selected]["members"][0]]
-	var has_park := world.public_sites.any(func(site: Dictionary) -> bool: return site["kind"] == "park" and site["active"] and site["community_id"] == selected)
-	var has_civic := world.public_sites.any(func(site: Dictionary) -> bool: return site["kind"] == "civic" and site["active"] and site["community_id"] == selected)
+	var facility := MusicRules.facilities(world,selected)
+	var has_park := bool(facility["park"])
+	var has_civic := bool(facility["civic"])
 	theme = {"cid":selected,"notes":notes,"expression":first["expression"],"park":has_park,"civic":has_civic,"terrain":world.terrain.family,"center":current_world.center_for(selected).duplicate(true),"zone_roles":world.functional_zone_roles(selected),"stereo":_stereo_for(first)}
 	if world.bridge:
-		for cid in candidates:
+		for cid in theme_candidates:
 			if world.communities[cid]["bank"] == world.communities[selected]["bank"]: continue
 			var other_notes := world.community_theme(cid,overrides)
 			if float(world.coupling.interval(int(notes[0]),int(other_notes[0]))["score"]) < 0.6: continue
@@ -278,7 +286,7 @@ func _musical_block(node: Dictionary, start: int, count: int, rate: int) -> Pack
 		for index in range(steps.size()):
 			var onset := cycle*period+int(steps[index])*beat+delay
 			var notes: Array = part["notes"]
-			var pitch := int(notes[index%notes.size()])
+			var pitch := int(notes[posmod(cycle*steps.size()+index,notes.size())])
 			pitch += 24 if pitch < 48 else 12
 			if index%4 == 3: pitch += 12
 			var wave := _event_wave(pitch,pattern["expression"],rate)
@@ -458,4 +466,5 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 	return output
 
 func score_snapshot() -> Dictionary:
-	return {"theme":theme.duplicate(true),"response":response.duplicate(true),"rhythms":rhythms.duplicate(true),"pads":pad_groups.keys(),"voices":voice_group_stats.duplicate(true)}
+	return {"theme":theme.duplicate(true),"response":response.duplicate(true),"rhythms":rhythms.duplicate(true),"pads":pad_groups.keys(),"voices":voice_group_stats.duplicate(true),
+		"focused_community":focused_community,"listener_community":listener_community,"muted_communities":muted_communities.duplicate(true)}

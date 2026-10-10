@@ -36,6 +36,10 @@ func _run() -> void:
 	charter_city.Charter.commit(charter_city,charter_city.pending_actions.back(),int(charter_city.cfg["timing"]["phrase_frames"]))
 	var resumed: ContinuousWorld = charter_city.fork()
 	_check(charter_request["accepted"] and resumed.development_charters == charter_city.development_charters and resumed.Charter.for_community(resumed,str(scope[0]))["plan_id"] == "compact","portable charter operation and snapshot persistence")
+	_check(demo.model.synth.theme.is_empty() and not demo.MusicRules.opportunity(demo.shown_world,"west-1",demo.model.audible_score())["qualified"],"portable opening respects real community theme eligibility")
+	var focused_copy := ContinuousAudioModel.from_state(demo.model.capture_state())
+	focused_copy.synth.focused_community = "west-1"
+	_check(ContinuousAudioModel.from_state(focused_copy.capture_state()).synth.focused_community == "west-1","portable runtime preserves focused community")
 	_check(demo.model.synth.native_mixer != null and demo.model.synth.native_enabled,"opening score uses native mixer")
 	_check(ClassDB.class_exists("CityMaskUnion") and demo.shadow_layer.mask_merger != null and demo.shadow_layer.native_batches > 0,"opening shadows use native batch merger")
 	var native_audio := ContinuousAudioModel.from_state(demo.model.capture_state())
@@ -209,8 +213,10 @@ func _run() -> void:
 	demo._sync_buildings()
 	await RenderingServer.frame_post_draw
 	var regional_ground_draws: Dictionary = {}
+	var regional_ground_keys: Dictionary = {}
 	for part_name in demo.city_ground_layer.urban_parts:
 		regional_ground_draws[part_name] = demo.city_ground_layer.urban_parts[part_name].rebuild_count
+		regional_ground_keys[part_name] = demo.city_ground_layer.urban_parts[part_name].key.duplicate(true)
 	demo.model.enable_background_settlement()
 	demo.model.prepare_settlement(demo.model.next_boundary-22050,22050)
 	while not demo.model.settlement_job.completed(): await process_frame
@@ -223,7 +229,10 @@ func _run() -> void:
 	demo.shown_world = demo.model.presentation_world(growth_at+64)
 	demo._sync_buildings()
 	await RenderingServer.frame_post_draw
-	_check(demo.city_ground_layer.urban_parts.size() == 6 and regional_ground_draws.keys().all(func(part_name: String) -> bool: return demo.city_ground_layer.urban_parts[part_name].rebuild_count == regional_ground_draws[part_name]),"packed regional growth retains six unchanged urban drawing parts")
+	_check(demo.city_ground_layer.urban_parts.size() == 6 and regional_ground_draws.keys().all(func(part_name: String) -> bool:
+		var part: Node2D = demo.city_ground_layer.urban_parts[part_name]
+		var changed: bool = part.key != regional_ground_keys[part_name]
+		return part.rebuild_count == regional_ground_draws[part_name]+(1 if changed else 0)), "packed regional growth redraws only changed urban drawing parts")
 	demo.queue_free()
 	await process_frame
 	FileAccess.open(output.get_base_dir()+"/Godot及第三方许可.json",FileAccess.WRITE).store_string(JSON.stringify({"engine":Engine.get_version_info(),"engine_license":Engine.get_license_text(),"third_party_licenses":Engine.get_license_info(),"third_party_copyright":Engine.get_copyright_info()},"\t")+"\n")

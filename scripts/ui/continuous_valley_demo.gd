@@ -44,6 +44,9 @@ var menu: PanelContainer
 var menu_info: Label
 var planning_buttons: Dictionary = {}
 var planning_guide: PanelContainer
+const MusicRules = preload("res://scripts/world/community_music_rules.gd")
+var opportunity_key: Array = []
+var selected_opportunity: Dictionary = {}
 var low_octave: CheckBox
 var light_player: AudioStreamPlayer
 var preview_player: AudioStreamPlayer
@@ -251,6 +254,8 @@ func _make_menu() -> void:
 	box.add_theme_constant_override("separation",8)
 	menu.add_child(box)
 	menu_info = Label.new()
+	menu_info.custom_minimum_size.x = 560
+	menu_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	menu_info.add_theme_color_override("font_color",Color("435c59"))
 	menu_info.add_theme_font_size_override("font_size",16)
 	box.add_child(menu_info)
@@ -708,10 +713,29 @@ func _choose_note(choice: int) -> void:
 	else: _message(result["reason"])
 
 func _show_context_menu() -> void:
+	opportunity_key.clear()
+	_update_selected_opportunity()
 	_planning_menu()
 	menu.size = menu.get_combined_minimum_size()
 	menu.position = Vector2(clampf(pointer.x-100,12,maxf(12,size.x-menu.size.x-12)),clampf(pointer.y+22,70,maxf(70,size.y-menu.size.y-12)))
 	menu.show()
+
+func _update_selected_opportunity() -> void:
+	if context.get("kind","") != "retune" or not shown_world.by_id.has(selected_id): return
+	var current_score := model.audible_score()
+	var key: Array = [model.presentation_token,shown_world.phrase_index,selected_id,hash(current_score),hash(model.audible_pitches())]
+	if key == opportunity_key: return
+	opportunity_key = key
+	var cid := str(shown_world.by_id[selected_id]["community_id"])
+	selected_opportunity = MusicRules.opportunity(shown_world,cid,current_score)
+	var notes := shown_world.community_theme(cid,model.audible_pitches())
+	var displayed: Array[String] = []
+	for pitch in notes.slice(0,8): displayed.append(note_name(int(pitch)))
+	menu_info.text = "%s · %s\n音型 · %s%s\n%s\n%s" % [
+		shown_world.communities[cid]["name"],selected_opportunity["current"],"  ".join(displayed),
+		" …" if notes.size() > 8 else "",selected_opportunity["next"],
+		"公园给主题留白" if selected_opportunity["facility"]["park"] else ("文化馆实际服务%d栋" % int(selected_opportunity["facility"]["served"]) if selected_opportunity["facility"]["civic"] else "可自由选择留白、文化或商业布局")]
+	menu_info.text += "\n点击音级改编 · F聚焦主题 · Tab独听 · Esc回合奏"
 
 func _planning_menu() -> void:
 	var candidate: Dictionary = {}
@@ -769,6 +793,8 @@ func _verb(verb: String) -> void:
 	if verb == "solo": model.submit({"kind":"solo","community":community if model.synth.listener_community != community else ""})
 	elif verb == "mute": model.submit({"kind":"mute","community":community,"enabled":not bool(model.synth.muted_communities.get(community,false))})
 	elif verb == "focus":
+		model.submit({"kind":"focus","community":community})
+		_message("主题已聚焦这片社区，下一拍接入；留白句继续休息" if MusicRules.status(shown_world,community)["theme_eligible"] else "镜头与主题已聚焦；沿街成形并有六栋成熟房屋后开唱")
 		zoom_target = 1.65
 		var p := Coupling.position_of(shown_world.by_id[selected_id])-Vector2(16,16)
 		pan_target = -Vector2((p.x-p.y)*28,(p.x+p.y)*14)*zoom_target
@@ -803,6 +829,7 @@ func _input(event: InputEvent) -> void:
 			black = false
 			menu.hide()
 			model.submit({"kind":"solo","community":""})
+			model.submit({"kind":"focus","community":""})
 		KEY_B: black = not black
 		KEY_G: _verb("bridge")
 		KEY_TAB: _verb("solo")
@@ -944,6 +971,7 @@ func _process(delta: float) -> void:
 		tooltip.text = "%s · %s · %s\n%s  ·  活力 %.0f\n点击选音   Tab独听社区   F聚焦" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),b["form"],shown_world.communities[b["community_id"]]["name"],b["vitality"]]
 		var charter := World.Charter.for_community(shown_world,str(b["community_id"]))
 		if not charter.is_empty(): tooltip.text += "\n发展章程 · "+str(World.Charter.PLANS[charter["plan_id"]]["title"])+" · P重新规划"
+		tooltip.text += "\n点击查看社区音型、当前声部与下一步机会"
 	elif check["allowed"]:
 		tooltip.text = "%s\n%s\n点击选音；Shift低八度；按住空格试听" % [str(check["preview"]),note_name(midi)]
 		var lot: String = check["lot_id"]
@@ -962,6 +990,9 @@ func _process(delta: float) -> void:
 		else: tooltip.text = str(check["reason"])+"\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形 · E扩展城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
 	if menu.visible:
+		_update_selected_opportunity()
+		menu.size = menu.get_combined_minimum_size()
+		menu.position = Vector2(clampf(menu.position.x,12,maxf(12,size.x-menu.size.x-12)),clampf(menu.position.y,70,maxf(70,size.y-menu.size.y-12)))
 		_planning_menu()
 		if pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()

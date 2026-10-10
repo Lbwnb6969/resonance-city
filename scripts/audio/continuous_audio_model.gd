@@ -135,7 +135,7 @@ func _init(city_world: ContinuousWorld, fixed_gain: float = 1.0) -> void:
 func submit(operation: Dictionary) -> Dictionary:
 	var kind := str(operation.get("kind",""))
 	var beat := next_boundary if rendered_until == 0 else (rendered_until/beat_frames+1)*beat_frames
-	if kind in ["solo","mute"]:
+	if kind in ["solo","mute","focus"]:
 		var event := operation.duplicate(true)
 		event["sound_frame"] = beat
 		sound_events.append(event)
@@ -173,10 +173,10 @@ func _record_presentation(at: int) -> void:
 	if _settlement_ready(at):
 		settlement_job.join()
 		presentation_history.append({"frame":at,"before":settlement_job.snapshot,
-			"pitches":sound_overrides.duplicate(true),"view":settlement_job.presentation_view})
+			"pitches":sound_overrides.duplicate(true),"score":synth.score_snapshot(),"view":settlement_job.presentation_view})
 		presentation_stats["prepared"] += 1
 		return
-	presentation_history.append({"frame":at,"before":world.snapshot(),"pitches":sound_overrides.duplicate(true),
+	presentation_history.append({"frame":at,"before":world.snapshot(),"pitches":sound_overrides.duplicate(true),"score":synth.score_snapshot(),
 		"derived":{"fabric":world.fabric_cache.duplicate(true),"edges":world.edge_cache.duplicate(true),
 			"service":world.public_service_cache.duplicate(true),"resonance":world.resonance}})
 
@@ -211,6 +211,7 @@ func _apply_sound(event: Dictionary) -> void:
 	match str(event["kind"]):
 		"retune": sound_overrides[event["id"]] = int(event["midi"])
 		"solo": synth.listener_community = str(event.get("community",""))
+		"focus": synth.focused_community = str(event.get("community",""))
 		"mute": synth.muted_communities[event["community"]] = bool(event["enabled"])
 	sound_trace.append(event.duplicate(true))
 	if sound_trace.size() > 64: sound_trace.pop_front()
@@ -308,6 +309,9 @@ func presentation_world(audible_frame: float) -> ContinuousWorld:
 	presentation_copy.pending = world.pending.duplicate(true)
 	return presentation_copy
 
+func audible_score() -> Dictionary:
+	return synth.score_snapshot() if presentation_history.is_empty() else presentation_history[0].get("score",{}).duplicate(true)
+
 func audible_pitches() -> Dictionary:
 	return sound_overrides if presentation_history.is_empty() else presentation_history[0]["pitches"]
 
@@ -325,6 +329,7 @@ func freeze() -> ContinuousAudioModel:
 	copy.sound_overrides = sound_overrides.duplicate(true)
 	copy.decisions.assign(decisions.duplicate(true))
 	copy.synth.listener_community = synth.listener_community
+	copy.synth.focused_community = synth.focused_community
 	copy.synth.muted_communities = synth.muted_communities.duplicate(true)
 	copy.synth.pad_groups = synth.pad_groups.duplicate(true)
 	copy.synth.rhythm_nodes = synth.rhythm_nodes.duplicate(true)
@@ -335,7 +340,7 @@ func freeze() -> ContinuousAudioModel:
 	return copy
 
 const SAVED_SYNTH_FIELDS = ["pad_groups","population","rhythm_nodes","musical_nodes","theme","response","rhythms",
-	"listener_community","muted_communities","gray_enabled","gray_from","gray_change_at","ducking","duck_release_at","last_voice_count","max_voice_count","voice_group_stats"]
+	"listener_community","focused_community","muted_communities","gray_enabled","gray_from","gray_change_at","ducking","duck_release_at","last_voice_count","max_voice_count","voice_group_stats"]
 
 static func _hydrate_stereo(value: Variant) -> Variant:
 	if value is Dictionary:
@@ -387,7 +392,7 @@ static func from_state(saved: Dictionary) -> ContinuousAudioModel:
 	copy.transition_offset = saved_transition_offset if saved_transition_offset is Vector2 else Vector2(float(saved_transition_offset[0]),float(saved_transition_offset[1]))
 	copy.transition_remaining = int(saved["transition_remaining"])
 	copy.transition_total = int(saved["transition_total"])
-	for field in SAVED_SYNTH_FIELDS: copy.synth.set(field,saved["mix"][field])
+	for field in SAVED_SYNTH_FIELDS: copy.synth.set(field,saved["mix"].get(field,copy.synth.get(field)))
 	copy.synth.restore_eras(saved.get("era_changes",{}))
 	copy.synth.pad_groups = _hydrate_stereo(copy.synth.pad_groups)
 	copy.synth.rhythm_nodes = _hydrate_stereo(copy.synth.rhythm_nodes)
