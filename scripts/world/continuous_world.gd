@@ -800,6 +800,8 @@ func _growth_use_for_candidate(cid: String,position: Vector2,requested: String) 
 	var usage := _community_usage(cid)
 	if int(quota.get("industrial",0)) > int(usage.get("industrial",0)) and _near_use_anchor(cid,position,"industrial"):
 		return "industrial"
+	if int(quota.get("commercial",0)) > int(usage.get("commercial",0)) and _near_use_anchor(cid,position,"commercial"):
+		return "commercial"
 	return requested
 
 func _land_use_quota_bonus(cid: String,use: String) -> float:
