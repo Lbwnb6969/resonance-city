@@ -60,6 +60,25 @@ var last_birth_count := 0
 var ripple_position := Vector2.ZERO
 var ripple_seconds := 0.0
 var selected_landmark_candidate := -1
+var building_display_key: Array = []
+var revealing_buildings: Dictionary = {}
+var building_geometry: Dictionary = {}
+var shadow_records: Dictionary = {}
+var shadow_terrain_key: Array = []
+var projected_ground: Dictionary = {}
+var ground_terrain_key: Array = []
+var ground_phrase_index := -1
+var road_draw_key := ""
+var road_draw_polygons: Array[Dictionary] = []
+var ground_patches: Array[PackedVector2Array] = []
+var ground_contours: Array[PackedVector2Array] = []
+var frame_profile: Dictionary = {}
+var frame_peaks: Dictionary = {}
+
+func _profile_frame(stage: String, started: int) -> void:
+	var elapsed := float(Time.get_ticks_usec()-started)/1000.0
+	frame_profile[stage] = elapsed
+	frame_peaks[stage] = maxf(float(frame_peaks.get(stage,0.0)),elapsed)
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -148,6 +167,13 @@ func _start_world(saved: Dictionary = {}) -> void:
 		pan_target = pan
 		selected_id = str(saved["view"]["selected_id"])
 		scenery.restore(saved["view"]["travelers"])
+	# Destination and route queries belong to city preparation, before output starts.
+	clock.renderer = Renderer.new()
+	if saved.has("renderer"):
+		clock.renderer.restore(saved["renderer"])
+		clock.renderer.transport.audible_frame = float(clock.renderer.transport.rendered_frames)
+	_sync_buildings()
+	scenery.sync(self)
 	last_saved_event_count = model.world.events.size()
 	last_checkpoint_phrase = model.world.phrase_index
 	selected_landmark_candidate = -1
@@ -371,9 +397,50 @@ func world_at(screen: Vector2) -> Vector2:
 	return p
 
 func _project_polygon(polygon: PackedVector2Array, height: float = -1.0) -> PackedVector2Array:
-	var result := PackedVector2Array()
-	for p in polygon: result.append(point(p,height))
-	return result
+	if not projected_ground.has(height): projected_ground[height] = {}
+	var cache: Dictionary = projected_ground[height]
+	if not cache.has(polygon):
+		var result := PackedVector2Array()
+		for p in polygon:
+			var h := shown_world.terrain.height_at(p) if height < 0.0 else height
+			result.append(Projection2D.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),h))
+		cache[polygon] = result
+	return Transform2D(Vector2.RIGHT*view_zoom,Vector2.DOWN*view_zoom,Vector2(size.x*0.5,size.y*0.52)+pan)*PackedVector2Array(cache[polygon])
+
+func _prepare_ground() -> void:
+	if ground_phrase_index != shown_world.phrase_index:
+		ground_phrase_index = shown_world.phrase_index
+		projected_ground.clear()
+	var terrain_key := [shown_world.terrain.noise_seed,shown_world.terrain.river_phase,shown_world.terrain.family]
+	if ground_terrain_key != terrain_key:
+		ground_terrain_key = terrain_key
+		projected_ground.clear()
+		ground_patches.clear()
+		ground_contours.clear()
+		for i in range(34):
+			var p := Vector2(-1.0+float((i*37)%330)/10.0,-1.5+float((i*67)%330)/10.0)
+			if not shown_world.terrain.land_at(p): continue
+			var ring := PackedVector2Array()
+			for j in range(24):
+				var q := p+Vector2(cos(TAU*j/24)*1.1,sin(TAU*j/24)*0.75)
+				if shown_world.terrain.land_at(q): ring.append(q)
+			if ring.size() == 24: ground_patches.append(ring)
+		for radius: float in [3.0,5.0,7.0,9.0]:
+			var contour := PackedVector2Array()
+			for step in range(65):
+				var p := Vector2(4,2)+Vector2.from_angle(TAU*step/64.0)*radius
+				if shown_world.terrain.land_at(p): contour.append(p)
+			if contour.size() > 2: ground_contours.append(contour)
+	if road_draw_key == shown_world.network.topology: return
+	road_draw_key = shown_world.network.topology
+	road_draw_polygons.clear()
+	# Polygon projections depend on mutable occupancy/derived geometry too;
+	# prune those entries at each topology or city phrase instead of keeping history.
+	projected_ground.clear()
+	for road in shown_world.roads:
+		var width := 0.55 if road["bridge"] else (float(shown_world.cfg["city"]["branch_road_half_width"]) if road.get("kind","") == "branch" else float(shown_world.cfg["terrain"]["template_road_half_width"]))
+		for polygon in Geometry2D.offset_polyline(road["path"],width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):
+			road_draw_polygons.append({"polygon":polygon,"color":Color("d3bb93") if road["bridge"] else Color("f1eee0")})
 
 func _hit(screen: Vector2) -> String:
 	var ordered: Array = sprites.keys()
@@ -679,8 +746,13 @@ func _process(delta: float) -> void:
 			preview_skips = clock.underruns
 			model.synth.ducking = true
 			model.synth.duck_release_at = clock.renderer.transport.rendered_frames+stream.mix_rate*3
+	var frame_started := Time.get_ticks_usec()
 	_sync_buildings()
+	_profile_frame("buildings_ms",frame_started)
+	frame_started = Time.get_ticks_usec()
 	scenery.sync(self)
+	_profile_frame("traffic_ms",frame_started)
+	frame_started = Time.get_ticks_usec()
 	if shown_world.phrase_index != last_checkpoint_phrase:
 		last_checkpoint_phrase = shown_world.phrase_index
 		if not shown_world.events.is_empty() and shown_world.events.back().get("kind","") == "era":
@@ -729,18 +801,61 @@ func _process(delta: float) -> void:
 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
 	if menu.visible and pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()
+	_profile_frame("interaction_ms",frame_started)
 
 func _sync_buildings() -> void:
+	_prepare_ground()
+	var frame := clock.renderer.transport.audible_frame
+	var warmth := 0.03*sin(TAU*frame/float(clock.renderer.transport.sample_rate)/4.0)
+	var pitches := model.audible_pitches()
+	var origin := Vector2(size.x*0.5,size.y*0.52)+pan
+	buildings_layer.position = origin
+	buildings_layer.scale = Vector2.ONE*view_zoom
+	buildings_layer.modulate = Color(0.96+warmth,1.0,1.0,1.0)
+	shadow_layer.position = origin
+	shadow_layer.scale = Vector2.ONE*view_zoom
+	var display_key := [shown_world,shown_world.phrase_index,shown_world.buildings.size(),pitches.hash()]
+	if building_display_key == display_key and sprites.size() == shown_world.buildings.size():
+		var dirty := false
+		for id in revealing_buildings.keys():
+			var sprite: AudioGrowthMask = sprites[id]
+			sprite.sample_frame(frame-minf(0.0,float(shown_world.by_id[id]["birth_frame"])))
+			var step := roundi(sprite.progress*int(shadow_layer.cfg["progress_steps"]))
+			if step != int(shadow_records[id]["step"]):
+				shadow_records[id]["progress"] = sprite.progress
+				shadow_records[id]["step"] = step
+				dirty = true
+			if sprite.progress >= 1.0: revealing_buildings.erase(id)
+		if dirty: _update_shadows()
+		return
+	building_display_key = display_key
+	revealing_buildings.clear()
+	var terrain_key := [shown_world.terrain.noise_seed,shown_world.terrain.river_phase,shown_world.terrain.family]
+	var shadows_dirty := shadow_terrain_key != terrain_key
+	if shadows_dirty:
+		building_geometry.clear()
+		shadow_records.clear()
+		shadow_terrain_key = terrain_key
 	for id in sprites.keys().duplicate():
 		if shown_world.by_id.has(id): continue
 		sprites[id].queue_free()
 		sprites.erase(id)
-	var records: Array[Dictionary] = []
+		building_geometry.erase(id)
+		shadow_records.erase(id)
+		shadows_dirty = true
 	for building in shown_world.buildings:
 		var id: String = building["district_id"]
 		var entry: Dictionary = assets[building["type"]]
-		var scale_factor := 28.0*sqrt(2.0)*0.8/maxf(float(entry["model_bounds"]["size"][0]),float(entry["model_bounds"]["size"][2]))/float(entry["pixels_per_world"])
+		var world_position := Coupling.position_of(building)
+		var key := [world_position,entry["id"]]
+		if not building_geometry.has(id) or building_geometry[id]["key"] != key:
+			building_geometry[id] = {"key":key,"position":Projection2D.to_screen(world_position-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),shown_world.terrain.height_at(world_position)),
+				"scale":28.0*sqrt(2.0)*0.8/maxf(float(entry["model_bounds"]["size"][0]),float(entry["model_bounds"]["size"][2]))/float(entry["pixels_per_world"])}
+			shadows_dirty = true
+		var geometry: Dictionary = building_geometry[id]
+		var scale_factor: float = geometry["scale"]
 		if not sprites.has(id):
+			shadows_dirty = true
 			var sprite := GrowthSprite.new()
 			sprite.use_master_clock = false
 			sprite.texture = textures[building["type"]]
@@ -750,18 +865,26 @@ func _sync_buildings() -> void:
 			sprite.begin_at(maxi(0,int(building["birth_frame"])))
 			sprites[id] = sprite
 		var sprite: AudioGrowthMask = sprites[id]
-		sprite.position = point(Coupling.position_of(building))
-		sprite.scale = Vector2.ONE*scale_factor*view_zoom
-		sprite.sample_frame(clock.renderer.transport.audible_frame-minf(0.0,float(building["birth_frame"])))
-		var played := int(model.audible_pitches().get(id,building["current_midi"]))
-		var warmth := 0.03*sin(TAU*float(clock.renderer.transport.audible_frame)/float(clock.renderer.transport.sample_rate)/4.0)
-		sprite.modulate = Color(0.96+warmth,1.0,0.92 if played < 48 else 0.97,1.0)
-		records.append({"entry":entry,"position":(sprite.position-Vector2(size.x*0.5,size.y*0.52)-pan)/view_zoom,"base_scale":Vector2.ONE*scale_factor,"progress":sprite.progress,"visible":true})
-	shadow_layer.position = Vector2(size.x*0.5,size.y*0.52)+pan
-	shadow_layer.scale = Vector2.ONE*view_zoom
+		sprite.position = geometry["position"]
+		sprite.scale = Vector2.ONE*scale_factor
+		if sprite.progress < 1.0:
+			sprite.sample_frame(frame-minf(0.0,float(building["birth_frame"])))
+			if sprite.progress < 1.0: revealing_buildings[id] = true
+		var played := int(pitches.get(id,building["current_midi"]))
+		sprite.modulate = Color(1.0,1.0,0.92 if played < 48 else 0.97,1.0)
+		var step := roundi(sprite.progress*int(shadow_layer.cfg["progress_steps"]))
+		if not shadow_records.has(id) or shadow_records[id]["step"] != step or shadows_dirty:
+			shadow_records[id] = {"entry":entry,"position":geometry["position"],"base_scale":Vector2.ONE*scale_factor,"progress":sprite.progress,"visible":true,"step":step}
+			shadows_dirty = true
+	if shadows_dirty: _update_shadows()
+
+func _update_shadows() -> void:
+	var records: Array[Dictionary] = []
+	for building in shown_world.buildings: records.append(shadow_records[building["district_id"]])
 	shadow_layer.update_records(records)
 
 func _draw() -> void:
+	var draw_started := Time.get_ticks_usec()
 	draw_rect(Rect2(Vector2.ZERO,size),Color("ecebe2"))
 	if black:
 		draw_rect(Rect2(Vector2.ZERO,size),Color.BLACK)
@@ -776,13 +899,9 @@ func _draw() -> void:
 	draw_colored_polygon(_project_polygon(shown_world.terrain.left_bank),left_color)
 	draw_colored_polygon(_project_polygon(shown_world.terrain.right_bank),right_color)
 	_draw_ground_details()
-	# Contours show the seeded hill without introducing a second terrain model.
-	for radius: float in [3.0,5.0,7.0,9.0]:
-		var contour := PackedVector2Array()
-		for step in range(65):
-			var p := Vector2(4,2)+Vector2.from_angle(TAU*step/64.0)*radius
-			if shown_world.terrain.land_at(p): contour.append(point(p))
-		if contour.size() > 2: draw_polyline(contour,Color(0.54,0.64,0.49,0.16),1.0,true)
+	# Contours share cached world geometry with the ground patches.
+	for contour in ground_contours:
+		draw_polyline(_project_polygon(contour),Color(0.54,0.64,0.49,0.16),1.0,true)
 	draw_colored_polygon(_project_polygon(shown_world.terrain.water,0.0),water_color)
 	var flow := float(clock.renderer.transport.audible_frame)/float(clock.renderer.transport.sample_rate)
 	for i in range(18):
@@ -794,10 +913,8 @@ func _draw() -> void:
 		for i in range(6):
 			var ripple := Vector2(shown_world.terrain.river_x(10.0+i*3.2),10.0+i*3.2)
 			draw_arc(point(ripple,0.01),0.38+0.08*sin(flow*2.0+i),0,TAU,20,Color(0.86,0.93,0.9,0.22),0.8*view_zoom,true)
-	for road in shown_world.roads:
-		var width := 0.55 if road["bridge"] else (float(shown_world.cfg["city"]["branch_road_half_width"]) if road.get("kind","") == "branch" else float(shown_world.cfg["terrain"]["template_road_half_width"]))
-		for polygon in Geometry2D.offset_polyline(road["path"],width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):
-			draw_colored_polygon(_project_polygon(polygon),Color("d3bb93") if road["bridge"] else Color("f1eee0"))
+	for road in road_draw_polygons:
+		draw_colored_polygon(_project_polygon(road["polygon"]),road["color"])
 	_draw_center_markers()
 	_draw_green_corridors()
 	_draw_public_space()
@@ -840,6 +957,7 @@ func _draw() -> void:
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
 	draw_line(Vector2(48,size.y-32),Vector2(48+(size.x-96)*progress,size.y-32),Color("af9c6a"),3.0)
+	_profile_frame("draw_ms",draw_started)
 
 func diagnostics() -> Dictionary:
 	return {"buildings":shown_world.buildings.size(),"planned_communities":shown_world.active_community_count(),
@@ -1009,16 +1127,9 @@ func _draw_fabric_overlay() -> void:
 			draw_line(a,b,Color(0.62,0.67,0.49,0.42),1.4*view_zoom,true)
 
 func _draw_ground_details() -> void:
-	# Broad patches and terraces keep the hill legible without raster tiles.
-	for i in range(34):
-		var p := Vector2(-1.0+float((i*37)%330)/10.0,-1.5+float((i*67)%330)/10.0)
-		if not shown_world.terrain.land_at(p): continue
-		var ring := PackedVector2Array()
-		for j in range(24):
-			var q := p+Vector2(cos(TAU*j/24)*1.1,sin(TAU*j/24)*0.75)
-			if shown_world.terrain.land_at(q): ring.append(q)
-		if ring.size() == 24:
-			draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.12))
+	# Broad patches retain the same seeded geometry across camera motion.
+	for ring in ground_patches:
+		draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.12))
 	for community in shown_world.communities.values():
 		if community["members"].size() < 4: continue
 		var center := Vector2.ZERO

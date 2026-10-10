@@ -13,6 +13,7 @@ func _init() -> void:
 	STEP_FRAMES = transport.beat_frame(1)-transport.beat_frame(0)
 
 func _ready() -> void:
+	set_process(use_master_clock)
 	var shader_material := ShaderMaterial.new()
 	shader_material.shader = load("res://资源/着色器/音频一拍揭示.gdshader")
 	material = shader_material
@@ -26,7 +27,9 @@ func end_frame() -> int:
 	return start_frame+STEP_FRAMES
 
 func sample_frame(audio_frame: float) -> float:
-	progress = clampf((audio_frame-float(start_frame))/float(STEP_FRAMES),0.0,1.0) if start_frame >= 0 else 0.0
+	var next_progress := clampf((audio_frame-float(start_frame))/float(STEP_FRAMES),0.0,1.0) if start_frame >= 0 else 0.0
+	if progress == next_progress: return progress
+	progress = next_progress
 	if material is ShaderMaterial:
 		material.set_shader_parameter("growth_progress",progress)
 	return progress

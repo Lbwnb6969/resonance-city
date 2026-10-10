@@ -32,7 +32,7 @@ func run() -> void:
 	await screenshot("res://验证记录/连续河谷/第63轮_晴岸开局.png")
 	var first: Dictionary = demo.shown_world.buildings[0]
 	var id: String = first["district_id"]
-	click(demo.sprites[id].position-Vector2(0,5))
+	click(demo.sprites[id].global_position-Vector2(0,5))
 	key(KEY_5)
 	var requested_at: float = demo.clock.renderer.transport.audible_frame
 	var sound_frame := 0

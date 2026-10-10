@@ -155,15 +155,17 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var amount := mini(start+count-at,until-at)
 		var block := synth.render_block(state,at,amount,rate)
 		var bed_gain := float(world.cfg["score"]["bed_gain"])
+		var empty_city := world.buildings.is_empty()
+		var duck_target := synth.duck_level if synth.ducking else 1.0
+		var duck_seconds := float(world.cfg["score"]["pitch_glide_seconds"]) if synth.ducking else float(synth.values["mixing"]["duck_release_seconds"])
+		var duck_step := 1.0/(duck_seconds*rate)
+		var duck := float(state.get("_score_duck",1.0))
 		for i in range(block.size()):
 			var frame := at+i
-			var breath := 0.004*sin(TAU*130.81*float(frame)/rate) if world.buildings.is_empty() else 0.0
+			var breath := 0.004*sin(TAU*130.81*float(frame)/rate) if empty_city else 0.0
 			var stream := float(bed_table[frame%bed_table.size()])*bed_gain
 			block[i] += Vector2.ONE*(breath+stream)
-			var duck_target := synth.duck_level if synth.ducking else 1.0
-			var duck_seconds := float(world.cfg["score"]["pitch_glide_seconds"]) if synth.ducking else float(synth.values["mixing"]["duck_release_seconds"])
-			var duck := move_toward(float(state.get("_score_duck",1.0)),duck_target,1.0/(duck_seconds*rate))
-			state["_score_duck"] = duck
+			duck = move_toward(duck,duck_target,duck_step)
 			block[i] *= duck
 			if transition_remaining > 0:
 				if transition_remaining == transition_total: transition_offset = last_sample-block[i]
@@ -171,6 +173,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 				block[i] += transition_offset*remaining*remaining*remaining
 				transition_remaining -= 1
 			last_sample = block[i]
+		state["_score_duck"] = duck
 		output.append_array(block)
 		at += amount
 	rendered_until = maxi(rendered_until,start+count)

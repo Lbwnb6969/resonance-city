@@ -120,7 +120,7 @@ func _priority() -> int:
 
 func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array) -> float:
 	if desired <= 0.000001 or traffic.is_empty(): return desired
-	var access: Dictionary = city.network.access(position)
+	var access: Dictionary = city.network.access(position,false)
 	var road: String = str(access.get("road",""))
 	if road.is_empty(): return desired
 	for other in traffic:

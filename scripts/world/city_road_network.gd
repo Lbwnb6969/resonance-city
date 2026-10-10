@@ -10,6 +10,11 @@ var route_cache: Dictionary = {}
 var route_trees: Dictionary = {}
 var access_cache: Dictionary = {}
 var walking_distance_cache: Dictionary = {}
+var access_index := WorldSpatialIndex.new()
+var access_segments: Dictionary = {}
+var road_lookup: Dictionary = {}
+var access_extent := Rect2()
+var access_candidates := 0
 
 func rebuild(city_nodes: Dictionary, city_roads: Array, city_terrain: RefCounted) -> void:
 	var identity: Array = []
@@ -25,6 +30,24 @@ func rebuild(city_nodes: Dictionary, city_roads: Array, city_terrain: RefCounted
 	access_cache.clear()
 	walking_distance_cache.clear()
 	adjacency.clear()
+	access_index = WorldSpatialIndex.new()
+	access_segments.clear()
+	road_lookup.clear()
+	var ordinal := 0
+	for road in roads:
+		road_lookup[road["id"]] = road
+		var path: PackedVector2Array = road["path"]
+		var along := 0.0
+		for i in range(path.size()-1):
+			var length := path[i].distance_to(path[i+1])
+			var id := "%08d" % ordinal
+			var center := (path[i]+path[i+1])*0.5
+			access_index.put(id,center,length*0.5+0.000001)
+			access_segments[id] = {"road":road,"a":path[i],"b":path[i+1],"along":along}
+			if ordinal == 0: access_extent = Rect2(path[i],Vector2.ZERO)
+			access_extent = access_extent.expand(path[i]).expand(path[i+1])
+			ordinal += 1
+			along += length
 	for id in nodes: adjacency[id] = []
 	for road in roads:
 		var path: PackedVector2Array = road["path"]
@@ -81,30 +104,32 @@ func route(start: String, finish: String) -> Dictionary:
 	return result
 
 func road_by_id(id: String) -> Dictionary:
-	for road in roads:
-		if road["id"] == id: return road
-	return {}
+	return road_lookup.get(id,{})
 
-func access(p: Vector2) -> Dictionary:
-	if access_cache.has(p): return access_cache[p]
+func access(p: Vector2, cache_result: bool = true) -> Dictionary:
+	if cache_result and access_cache.has(p): return access_cache[p]
 	var best: Dictionary = {}
-	var nearest := INF
-	for road in roads:
-		var path: PackedVector2Array = road["path"]
-		var along := 0.0
-		for i in range(path.size()-1):
-			var q := Geometry2D.get_closest_point_to_segment(p,path[i],path[i+1])
+	var limit := 1.0
+	for corner in [access_extent.position,access_extent.end,Vector2(access_extent.position.x,access_extent.end.y),Vector2(access_extent.end.x,access_extent.position.y)]:
+		limit = maxf(limit,p.distance_to(corner)+0.000002)
+	var radius := minf(1.0,limit)
+	access_candidates = 0
+	while not access_segments.is_empty():
+		var nearest := INF
+		# Restart in original segment order: ties within 1e-6 choose the same road.
+		for id in access_index.query_circle(p,radius):
+			access_candidates += 1
+			var segment: Dictionary = access_segments[id]
+			var q := Geometry2D.get_closest_point_to_segment(p,segment["a"],segment["b"])
 			var gap := p.distance_to(q)
-			if gap >= nearest-0.000001:
-				along += path[i].distance_to(path[i+1])
-				continue
-			var connector := PackedVector2Array([p,q])
-			var valid := Geometry2D.intersect_polyline_with_polygon(connector,terrain.water).is_empty()
-			if valid:
-				nearest = gap
-				best = {"road":road["id"],"from":road["from"],"to":road["to"],"along":along+path[i].distance_to(q),"length":road["length"],"gap":gap,"position":[q.x,q.y]}
-			along += path[i].distance_to(path[i+1])
-	access_cache[p] = best
+			if gap >= nearest-0.000001: continue
+			if not Geometry2D.intersect_polyline_with_polygon(PackedVector2Array([p,q]),terrain.water).is_empty(): continue
+			var road: Dictionary = segment["road"]
+			nearest = gap
+			best = {"road":road["id"],"from":road["from"],"to":road["to"],"along":float(segment["along"])+Vector2(segment["a"]).distance_to(q),"length":road["length"],"gap":gap,"position":[q.x,q.y]}
+		if nearest < radius-0.000001 or radius >= limit: break
+		radius = minf(radius*2.0,limit)
+	if cache_result: access_cache[p] = best
 	return best
 
 func walking_route(a: Vector2,b: Vector2) -> Dictionary:

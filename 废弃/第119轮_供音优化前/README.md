@@ -1,0 +1,1 @@
+第119轮等价验证基线，来自57d0554的continuous_synth、continuous_audio_model与city_shadow_layer。仅改类名和内部引用以便和现行实现同时加载；对应替代脚本在scripts/audio与scripts/visual。保留连续相位、PCM及阴影字节对照，不作为Demo入口。

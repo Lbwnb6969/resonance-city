@@ -6,6 +6,9 @@ const Values = preload("res://scripts/spec_values.gd")
 # Keep the existing live queue; after a slow settlement, refill the frames
 # consumed during rendering before yielding to city presentation.
 const LIVE_BUFFER_FLOOR_SECONDS := 0.24
+# Publish recovered samples frequently; a large catch-up block can outlast
+# the remaining queue even when synthesis is faster than real time overall.
+const LIVE_CHUNK_FRAMES := 1024
 
 signal output_started
 signal output_stopped
@@ -19,6 +22,7 @@ var active := false
 var underruns := 0
 var resume_fade_left := 0
 var resume_fade_total := 1
+var largest_block: Dictionary = {}
 
 func _ready() -> void:
 	renderer = Renderer.new()
@@ -55,6 +59,7 @@ func start_output(source: Callable, initial_state: Dictionary, saved_renderer: D
 	playback = player.get_stream_playback()
 	capacity = playback.get_frames_available()
 	underruns = 0
+	largest_block.clear()
 	active = true
 	_fill_buffer()
 	player.stream_paused = false
@@ -77,7 +82,13 @@ func _update_audible() -> void:
 func _fill_buffer() -> void:
 	var available := playback.get_frames_available()
 	while available > 0:
-		var block := renderer.render(available)
+		var started := Time.get_ticks_usec()
+		var begin := renderer.transport.rendered_frames
+		var amount := mini(available,LIVE_CHUNK_FRAMES)
+		var block := renderer.render(amount)
+		var elapsed := float(Time.get_ticks_usec()-started)/1000.0
+		if elapsed > float(largest_block.get("render_ms",0.0)):
+			largest_block = {"render_ms":elapsed,"begin":begin,"count":amount,"reserve_frames":capacity-available,"capacity":capacity,"skips_after_render":playback.get_skips()}
 		for i in range(mini(block.size(),resume_fade_left)):
 			block[i] *= smoothstep(0.0,1.0,1.0-float(resume_fade_left)/resume_fade_total)
 			resume_fade_left -= 1

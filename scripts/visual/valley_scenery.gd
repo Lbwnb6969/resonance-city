@@ -111,7 +111,7 @@ func sync(demo: Control) -> void:
 		if bool(traffic_prop.get_meta("modern_only",false)) and city.vehicle_kind() != "bus": continue
 		var traffic_traveler: CityTraveler = traffic_prop.get_meta("traveler")
 		if not traffic_traveler.initialized: continue
-		var traffic_access: Dictionary = city.network.access(traffic_traveler.position)
+		var traffic_access: Dictionary = city.network.access(traffic_traveler.position,false)
 		traffic.append({"kind":traffic_traveler.kind,"ordinal":traffic_traveler.ordinal,
 			"position":traffic_traveler.position,"direction":traffic_traveler.direction,
 			"road":str(traffic_access.get("road","")),"road_from":str(traffic_access.get("from","")),
@@ -148,7 +148,9 @@ func sync(demo: Control) -> void:
 				prop.set_meta("transfer_passengers",movement.get("transfer_passengers",0))
 				prop.set_meta("passenger_destinations",movement.get("passenger_destinations",[]))
 				prop.set_meta("world_position",p)
-		prop.position = demo.point(p)
-		prop.scale = Vector2.ONE*demo.view_zoom
+		prop.position = WorldProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),city.terrain.height_at(p))
+		prop.scale = Vector2.ONE
+		# Building warmth is shared at the layer; scenery retains its original tint.
+		prop.modulate = Color(1.0/demo.buildings_layer.modulate.r,1.0,1.0,1.0)
 		prop.motion = seconds*TAU/4.0
 		prop.queue_redraw()

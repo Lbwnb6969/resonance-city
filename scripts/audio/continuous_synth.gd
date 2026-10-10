@@ -281,14 +281,34 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		if selected and (level > 0.00001 or target > 0.0): active_count += 1
 		# Linear amplitude ramps with continuous oscillator phase; no replayed PCM.
 		var step := float(score["pad_gain"])/fade_frames
-		for i in range(count):
-			level = move_toward(level,target if selected else 0.0,step)
-			if selected:
-				stereo = stereo.lerp(target_stereo,1.0/(float(score["pitch_glide_seconds"])*rate))
-				var sample := _table_wave(table,phase)*level*gain*stereo
-				output[i] += sample
-				if capture_drone: captured_drone[i] += sample
-			phase = fposmod(phase+hz/rate,1.0)
+		if not selected:
+			# Virtual groups retain oscillator time without a per-sample render loop.
+			level = move_toward(level,0.0,step*count)
+			phase = fposmod(phase+hz*count/rate,1.0)
+		else:
+			var stereo_step := 1.0/(float(score["pitch_glide_seconds"])*rate)
+			var phase_step := hz/rate
+			var table_size := table.size()
+			var stationary := level == target and stereo == stereo.lerp(target_stereo,stereo_step)
+			if stationary:
+				var amplitude := level*gain*stereo
+				for i in range(count):
+					var position := phase*table_size
+					var index := int(position)
+					var sample := lerpf(table[index],table[(index+1)%table_size],position-index)*amplitude
+					output[i] += sample
+					if capture_drone: captured_drone[i] += sample
+					phase = fposmod(phase+phase_step,1.0)
+			else:
+				for i in range(count):
+					level = move_toward(level,target,step)
+					stereo = stereo.lerp(target_stereo,stereo_step)
+					var position := phase*table_size
+					var index := int(position)
+					var sample := lerpf(table[index],table[(index+1)%table_size],position-index)*level*gain*stereo
+					output[i] += sample
+					if capture_drone: captured_drone[i] += sample
+					phase = fposmod(phase+phase_step,1.0)
 		state["_pad_stereo_"+key] = stereo
 		state["_pad_level_"+key] = level
 		state["_pad_phase_"+key] = phase

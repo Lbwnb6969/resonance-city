@@ -1,0 +1,41 @@
+{
+	"after": 472,
+	"before": 469,
+	"checks": {
+		"audible_reveal": true,
+		"grows": true,
+		"modern_era": true,
+		"no_underruns": false,
+		"target_scale": true,
+		"voice_budget": true
+	},
+	"era": 5,
+	"frame_last_ms": {
+		"buildings_ms": 15.167,
+		"draw_ms": 6.222,
+		"interaction_ms": 2.134,
+		"traffic_ms": 4.322
+	},
+	"frame_peaks_ms": {
+		"buildings_ms": 22.804,
+		"draw_ms": 33.537,
+		"interaction_ms": 3.308,
+		"traffic_ms": 7.781
+	},
+	"max_render_ms": 326.662,
+	"max_settle_ms": 267.084,
+	"max_voices": 70,
+	"passed": false,
+	"profile": {
+		"actions_growth_ms": 83.903,
+		"coverage_ms": 9.873,
+		"fabric_ms": 97.887,
+		"music_forms_ms": 67.629,
+		"public_network_ms": 16.706,
+		"service_allocation_ms": 3.517,
+		"split_ms": 0.048
+	},
+	"shadow_rebuild_ms": 12.491,
+	"skips": 18,
+	"steady_skips": 0
+}

@@ -85,16 +85,26 @@ func update_records(records: Array[Dictionary]) -> void:
   sprite.visible = not active.is_empty()
   if active.is_empty(): continue
   var size_px := high-low
-  var static_key := var_to_str(low)+var_to_str(size_px)
+  var completed: Dictionary = {}
   for item in active:
-   if item["progress"] == int(cfg["progress_steps"]): static_key += str(item["patch"]["key"])
-  if not static_cache.has(kind) or static_cache[kind]["key"] != static_key:
-   var base := PackedByteArray()
+   if item["progress"] == int(cfg["progress_steps"]): completed[item["patch"]["key"]] = item["patch"]
+  var cached: Dictionary = static_cache.get(kind,{})
+  var previous: Dictionary = cached.get("members",{})
+  var can_extend: bool = cached.get("low",Vector2i(-2147483647,-2147483647)) == low and cached.get("size",Vector2i.ZERO) == size_px
+  if can_extend:
+   for key in previous:
+    if not completed.has(key):
+     can_extend = false
+     break
+  var base: PackedByteArray
+  if can_extend: base = cached["data"]
+  else:
+   base = PackedByteArray()
    base.resize(size_px.x*size_px.y)
    base.fill(0)
-   for item in active:
-    if item["progress"] == int(cfg["progress_steps"]): _merge(base,size_px.x,low,item["patch"],int(cfg["progress_steps"]))
-   static_cache[kind] = {"key":static_key,"data":base}
+  for key in completed:
+   if not can_extend or not previous.has(key): _merge(base,size_px.x,low,completed[key],int(cfg["progress_steps"]))
+  static_cache[kind] = {"low":low,"size":size_px,"members":completed,"data":base}
   var union: PackedByteArray = static_cache[kind]["data"].duplicate()
   for item in active:
    var progress: int = item["progress"]

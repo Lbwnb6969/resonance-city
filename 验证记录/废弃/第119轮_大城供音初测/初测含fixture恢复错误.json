@@ -1,0 +1,27 @@
+{
+	"after": 472,
+	"before": 469,
+	"checks": {
+		"audible_reveal": true,
+		"grows": true,
+		"modern_era": true,
+		"no_underruns": false,
+		"target_scale": true,
+		"voice_budget": true
+	},
+	"era": 5,
+	"max_render_ms": 948.837,
+	"max_settle_ms": 883.798,
+	"max_voices": 70,
+	"passed": false,
+	"profile": {
+		"actions_growth_ms": 160.664,
+		"coverage_ms": 87.611,
+		"fabric_ms": 418.277,
+		"music_forms_ms": 208.128,
+		"public_network_ms": 94.602,
+		"service_allocation_ms": 3.744,
+		"split_ms": 0.042
+	},
+	"skips": 290
+}

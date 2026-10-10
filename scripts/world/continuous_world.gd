@@ -18,6 +18,11 @@ var road_index_identity := ""
 var parcel_index := Index.new()
 var parcel_index_identity := ""
 var parcel_records: Dictionary = {}
+var fabric_anchor_cache: Dictionary = {}
+var fabric_profile: Dictionary = {}
+var fabric_geometry_identity := ""
+var incident_edge_cache: Dictionary = {}
+var near_edge_cache: Dictionary = {}
 var rng: NamedRandom
 var buildings: Array[Dictionary] = []
 var by_id: Dictionary = {}
@@ -416,9 +421,13 @@ func edges() -> Array:
 	return edge_cache.values()
 
 func _cache_entity(id: String) -> void:
+	incident_edge_cache.erase(id)
+	near_edge_cache.erase(id)
 	var a: Dictionary = by_id[id]
 	for other_id in index.query_circle(Coupling.position_of(a),float(a["radius"])+float(cfg["space"]["gap_cutoff"])):
 		if other_id == id: continue
+		incident_edge_cache.erase(other_id)
+		near_edge_cache.erase(other_id)
 		var b: Dictionary = by_id[other_id]
 		var pair := [id,other_id]
 		pair.sort()
@@ -487,6 +496,8 @@ func rebuild_graph() -> void:
 	_refresh_road_index()
 	environment_cache.clear()
 	edge_cache.clear()
+	incident_edge_cache.clear()
+	near_edge_cache.clear()
 	for building in buildings: _cache_entity(building["district_id"])
 
 func refresh_fabric() -> void:
@@ -925,7 +936,7 @@ func settle(frame: int) -> void:
 		var bonus := landmark_vitality_bonus(Coupling.position_of(building))+landmark_commercial_bonus(building)
 		if bonus > 0.0:
 			building["vitality"] = minf(float(cfg["harmony"]["maximum_vitality"]),float(building["vitality"])+bonus)
-	if forms_dirty: _update_forms(frame)
+	if forms_dirty: _update_forms(frame,modifiers)
 	_advance_landmark_progress(frame)
 	if resonance < float(cfg["harmony"]["gray_entry"]): lifecycle["gray"] = true
 	elif resonance > float(cfg["harmony"]["gray_exit"]): lifecycle["gray"] = false
@@ -1353,6 +1364,7 @@ func split_oversized_communities(frame: int) -> Array:
 	return split_events
 
 func incident_edges(id: String) -> Array:
+	if incident_edge_cache.has(id): return incident_edge_cache[id]
 	var nearby: Array = []
 	var building: Dictionary = by_id[id]
 	for other_id in index.query_circle(Coupling.position_of(building),float(building["radius"])+float(cfg["space"]["gap_cutoff"])):
@@ -1361,14 +1373,17 @@ func incident_edges(id: String) -> Array:
 		pair.sort()
 		var key := str(pair[0])+":"+str(pair[1])
 		if edge_cache.has(key): nearby.append(edge_cache[key])
+	incident_edge_cache[id] = nearby
 	return nearby
 
 func near_edges(id: String) -> Array:
-	var nearby := incident_edges(id)
+	if near_edge_cache.has(id): return near_edge_cache[id]
+	var nearby := incident_edges(id).duplicate()
 	nearby.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
 		if a["coupling"] != b["coupling"]: return a["coupling"] > b["coupling"]
 		return str(a["a"])+":"+str(a["b"]) < str(b["a"])+":"+str(b["b"]))
-	return nearby.slice(0,int(cfg["space"]["near_neighbour_count"]))
+	near_edge_cache[id] = nearby.slice(0,int(cfg["space"]["near_neighbour_count"]))
+	return near_edge_cache[id]
 
 func frozen(id: String) -> bool:
 	if not by_id.has(id): return false
@@ -1378,9 +1393,12 @@ func frozen(id: String) -> bool:
 		if float(coupling.interval(int(by_id[id]["current_midi"]),int(by_id[other]["current_midi"]))["score"]) <= 0.05: return true
 	return false
 
-func _update_forms(frame: int) -> void:
-	var modifiers := musicality()
+func _update_forms(frame: int, modifiers: Dictionary = {}) -> void:
+	if modifiers.is_empty(): modifiers = musicality()
 	for building in buildings:
+		if building["form"] not in ["胚","群"]:
+			building["form_count"] = 0
+			continue
 		var neighbors := near_edges(building["district_id"])
 		var scores: Array[float] = []
 		for edge in neighbors:
@@ -1394,14 +1412,15 @@ func _update_forms(frame: int) -> void:
 		var radius := 4.0 if building["form"] == "胚" else 5.0
 		for id in index.query_circle(Coupling.position_of(building),radius-float(building["radius"])):
 			if by_id[id]["type"] == building["type"] and not by_id[id]["family_anchor"]: near += 1
-		var local_edges: Array = []
-		for edge in incident_edges(building["district_id"]):
-			var copy: Dictionary = edge.duplicate()
-			copy["coupling"] = float(edge["coupling"])*minf(float(modifiers[edge["a"]]["M"]),float(modifiers[edge["b"]]["M"]))
-			local_edges.append(copy)
 		var target := ""
 		var duration := 2
-		if building["form"] == "胚" and good >= 2 and near >= 3 and coupling.resonance(buildings,local_edges) >= 60.0: target = "群"
+		if building["form"] == "胚" and good >= 2 and near >= 3:
+			var local_edges: Array = []
+			for edge in incident_edges(building["district_id"]):
+				var copy: Dictionary = edge.duplicate()
+				copy["coupling"] = float(edge["coupling"])*minf(float(modifiers[edge["a"]]["M"]),float(modifiers[edge["b"]]["M"]))
+				local_edges.append(copy)
+			if coupling.resonance_from_index(by_id,local_edges) >= 60.0: target = "群"
 		elif building["form"] == "群" and str(building.get("placement_tier","L1")) != "L3":
 			if good >= 3 and scores.has(1.0) and near >= 6:
 				target = "央"
@@ -1427,6 +1446,10 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	assert(int(saved["schema_version"]) == 2 and saved["seed_hex"] == rng.seed_hex)
 	road_index_identity = ""
 	parcel_index_identity = ""
+	fabric_anchor_cache.clear()
+	fabric_geometry_identity = ""
+	incident_edge_cache.clear()
+	near_edge_cache.clear()
 	if saved.has("plan"):
 		cfg = saved["settings"].duplicate(true)
 		terrain.cfg = cfg["terrain"]
@@ -1527,14 +1550,14 @@ func _refresh_public_network(frame: int = 0) -> void:
 	public_service_cache.clear()
 	network.rebuild(nodes,roads,terrain)
 	_refresh_road_index()
+	var lots_by_id: Dictionary = {}
+	for lot in lots: lots_by_id[str(lot["id"])] = lot
 	for site in public_sites:
 		var covered: Array[String] = []
 		if site["active"]:
 			var entrance := Vector2(site["entrance"][0],site["entrance"][1])
 			for building in buildings:
-				var lot: Dictionary = {}
-				for candidate in lots:
-					if candidate["id"] == building["lot_id"]: lot = candidate
+				var lot: Dictionary = lots_by_id.get(str(building["lot_id"]),{})
 				var p := Coupling.position_of(building) if lot.is_empty() else Vector2(lot["entrance"][0],lot["entrance"][1])
 				var radius := float(cfg["city"]["service_walk_radius"])
 				if entrance.distance_squared_to(p) > radius*radius: continue

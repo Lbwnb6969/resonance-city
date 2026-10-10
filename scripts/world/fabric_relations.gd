@@ -124,6 +124,8 @@ static func _connected_components(ids: Array, adjacency: Dictionary) -> Array:
 	return groups
 
 static func rebuild(world: RefCounted) -> Dictionary:
+	world._refresh_parcel_index()
+	var started := Time.get_ticks_usec()
 	var shared: Array = []
 	var adjacency: Dictionary = {}
 	var street_ids: Dictionary = {}
@@ -131,12 +133,17 @@ static func rebuild(world: RefCounted) -> Dictionary:
 		var id: String = building["district_id"]
 		adjacency[id] = []
 		street_ids[id] = _street_id(world,WorldCoupling.position_of(building))
+	var order: Dictionary = {}
+	for i in range(world.buildings.size()): order[world.buildings[i]["district_id"]] = i
 	for i in range(world.buildings.size()):
 		var a: Dictionary = world.buildings[i]
 		var aid: String = a["district_id"]
-		for j in range(i+1,world.buildings.size()):
-			var b: Dictionary = world.buildings[j]
-			var bid: String = b["district_id"]
+		var nearby: Array = []
+		for id in world.index.query_circle(WorldCoupling.position_of(a),float(a["radius"])+0.25+1e-6):
+			if int(order[id]) > i: nearby.append(id)
+		nearby.sort_custom(func(left: String,right: String) -> bool: return int(order[left]) < int(order[right]))
+		for bid in nearby:
+			var b: Dictionary = world.by_id[bid]
 			var distance := gap(a,b)
 			if distance <= 0.10+1e-6:
 				shared.append({"a":aid,"b":bid,"gap":distance})
@@ -150,49 +157,118 @@ static func rebuild(world: RefCounted) -> Dictionary:
 			var segment: Array = component.slice(cursor,min(component.size(),cursor+6))
 			rows.append({"members":segment,"split_gap":0.3 if cursor > 0 else 0.0})
 			cursor += 6
-	var courts: Array = []
-	var seen_courts: Dictionary = {}
-	for i in range(world.buildings.size()):
-		var anchor: Dictionary = world.buildings[i]
+	world.fabric_profile["walls_rows_ms"] = float(Time.get_ticks_usec()-started)/1000.0
+	started = Time.get_ticks_usec()
+	var geometry: Array = [str(world.terrain.water),world.terrain.cfg["template_land_min"],world.terrain.cfg["template_land_max"]]
+	for site in world.public_sites: geometry.append([site["id"],site["polygon"]])
+	var identity := JSON.stringify(geometry)
+	if identity != world.fabric_geometry_identity:
+		world.fabric_geometry_identity = identity
+		world.fabric_anchor_cache.clear()
+	var next_cache: Dictionary = {}
+	for anchor in world.buildings:
 		var anchor_id: String = anchor["district_id"]
-		var nearby_ids: Array = world.index.query_circle(WorldCoupling.position_of(anchor),3.2)
 		var nearby: Array[Dictionary] = []
-		for id in nearby_ids:
+		var signature: Array = [WorldCoupling.position_of(anchor)]
+		for id in world.index.query_circle(WorldCoupling.position_of(anchor),3.2):
 			if str(id) <= anchor_id or not world.by_id.has(id): continue
 			nearby.append(world.by_id[id])
-		for j in range(nearby.size()):
-			for k in range(j+1,nearby.size()):
-				var points := PackedVector2Array([WorldCoupling.position_of(anchor),WorldCoupling.position_of(nearby[j]),WorldCoupling.position_of(nearby[k])])
-				var hull := Geometry2D.convex_hull(points)
-				if hull.size() < 3: continue
-				var bounds := Rect2(hull[0],Vector2.ZERO)
-				for p in hull:
-					bounds = bounds.expand(p)
-				if minf(bounds.size.x,bounds.size.y) < 0.8: continue
-				var center := (points[0]+points[1]+points[2])/3.0
-				if not world.terrain.land_at(center) or reserved(world,center): continue
-				var members := [anchor_id,str(nearby[j]["district_id"]),str(nearby[k]["district_id"])]
-				members.sort()
-				var key := ":".join(members)
-				if seen_courts.has(key): continue
-				seen_courts[key] = true
-				courts.append({"id":"courtyard:"+key,"members":members,"center":[center.x,center.y],"polygon":hull,"clear_diameter":minf(bounds.size.x,bounds.size.y)})
-	return {"shared_walls":shared,"rows":rows,"courtyards":_select_courtyards(world,courts),"community_wall":community_wall_stats(world)}
+			signature.append([id,WorldCoupling.position_of(world.by_id[id])])
+		var cached: Dictionary = world.fabric_anchor_cache.get(anchor_id,{})
+		if cached.get("signature",[]) != signature:
+			cached = {"signature":signature,"courts":_anchor_courts(world,anchor,nearby,cached)}
+		next_cache[anchor_id] = cached
+	world.fabric_anchor_cache = next_cache
+	world.fabric_profile["anchor_ms"] = float(Time.get_ticks_usec()-started)/1000.0
+	started = Time.get_ticks_usec()
+	var courts := _select_courtyards(world,next_cache)
+	world.fabric_profile["select_ms"] = float(Time.get_ticks_usec()-started)/1000.0
+	return {"shared_walls":shared,"rows":rows,"courtyards":courts,"community_wall":community_wall_stats(world)}
 
-static func _select_courtyards(world: RefCounted, candidates: Array) -> Array:
-	# Many adjacent triples describe the same open court. Keep the clearest two
-	# per community and reject near-duplicate centers so the visual layer stays legible.
-	candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
-		if float(a.get("clear_diameter",0.0)) != float(b.get("clear_diameter",0.0)):
-			return float(a.get("clear_diameter",0.0)) > float(b.get("clear_diameter",0.0))
-		return str(a.get("id","")) < str(b.get("id","")))
+static func _anchor_courts(world: RefCounted, anchor: Dictionary, nearby: Array[Dictionary], cached: Dictionary) -> Array:
+	var courts: Array = []
+	var anchor_id: String = anchor["district_id"]
+	var previous: Array = cached.get("signature",[])
+	var old_neighbors: Dictionary = {}
+	var can_extend: bool = not previous.is_empty() and previous[0] == WorldCoupling.position_of(anchor)
+	if can_extend:
+		var positions: Dictionary = {}
+		for building in nearby: positions[building["district_id"]] = WorldCoupling.position_of(building)
+		for item in previous.slice(1):
+			if not positions.has(item[0]) or positions[item[0]] != item[1]:
+				can_extend = false
+				break
+			old_neighbors[item[0]] = true
+	if can_extend: courts = cached["courts"].duplicate()
+	else: old_neighbors.clear()
+	for j in range(nearby.size()):
+		for k in range(j+1,nearby.size()):
+			if old_neighbors.has(nearby[j]["district_id"]) and old_neighbors.has(nearby[k]["district_id"]): continue
+			var points := PackedVector2Array([WorldCoupling.position_of(anchor),WorldCoupling.position_of(nearby[j]),WorldCoupling.position_of(nearby[k])])
+			var hull := Geometry2D.convex_hull(points)
+			if hull.size() < 3: continue
+			var bounds := Rect2(hull[0],Vector2.ZERO)
+			for p in hull: bounds = bounds.expand(p)
+			if minf(bounds.size.x,bounds.size.y) < 0.8: continue
+			var center := (points[0]+points[1]+points[2])/3.0
+			if not world.terrain.land_at(center) or reserved(world,center): continue
+			var members := [anchor_id,str(nearby[j]["district_id"]),str(nearby[k]["district_id"])]
+			members.sort()
+			courts.append({"id":"courtyard:"+":".join(members),"members":members,"center":[center.x,center.y],"polygon":hull,"clear_diameter":minf(bounds.size.x,bounds.size.y)})
+	courts.sort_custom(_court_before)
+	return courts
+
+static func _court_before(a: Dictionary,b: Dictionary) -> bool:
+	if float(a["clear_diameter"]) != float(b["clear_diameter"]):
+		return float(a["clear_diameter"]) > float(b["clear_diameter"])
+	return str(a["id"]) < str(b["id"])
+
+static func _entry_before(a: Dictionary,b: Dictionary) -> bool:
+	return _court_before(a["courts"][a["cursor"]],b["courts"][b["cursor"]])
+
+static func _heap_push(heap: Array, entry: Dictionary) -> void:
+	heap.append(entry)
+	var child := heap.size()-1
+	while child > 0:
+		var parent: int = (child-1)/2
+		if not _entry_before(heap[child],heap[parent]): break
+		var previous: Dictionary = heap[parent]
+		heap[parent] = heap[child]
+		heap[child] = previous
+		child = parent
+
+static func _heap_pop(heap: Array) -> Dictionary:
+	var first: Dictionary = heap[0]
+	var tail: Dictionary = heap.pop_back()
+	if not heap.is_empty():
+		heap[0] = tail
+		var parent := 0
+		while parent*2+1 < heap.size():
+			var child := parent*2+1
+			if child+1 < heap.size() and _entry_before(heap[child+1],heap[child]): child += 1
+			if not _entry_before(heap[child],heap[parent]): break
+			var previous: Dictionary = heap[parent]
+			heap[parent] = heap[child]
+			heap[child] = previous
+			parent = child
+	return first
+
+static func _select_courtyards(world: RefCounted, anchors: Dictionary) -> Array:
+	# Each anchor list is already sorted by the original diameter/ID rule.
+	# Merge only the prefix needed for two courts per community, skipping a
+	# saturated community without sorting or visiting its remaining triangles.
+	var heap: Array = []
+	for anchor_id in anchors:
+		var courts: Array = anchors[anchor_id]["courts"]
+		if not courts.is_empty():
+			_heap_push(heap,{"courts":courts,"cursor":0,"community":str(world.by_id[anchor_id]["community_id"])})
 	var selected: Array = []
 	var counts: Dictionary = {}
-	for candidate in candidates:
-		var members: Array = candidate.get("members",[])
-		if members.is_empty() or not world.by_id.has(members[0]): continue
-		var community_id := str(world.by_id[members[0]].get("community_id",""))
+	while not heap.is_empty():
+		var entry := _heap_pop(heap)
+		var community_id := str(entry["community"])
 		if int(counts.get(community_id,0)) >= 2: continue
+		var candidate: Dictionary = entry["courts"][entry["cursor"]]
 		var center := Vector2(float(candidate["center"][0]),float(candidate["center"][1]))
 		var duplicate := false
 		for prior in selected:
@@ -200,10 +276,13 @@ static func _select_courtyards(world: RefCounted, candidates: Array) -> Array:
 			if center.distance_to(prior_center) < 0.72:
 				duplicate = true
 				break
-		if duplicate: continue
-		candidate["community_id"] = community_id
-		selected.append(candidate)
-		counts[community_id] = int(counts.get(community_id,0))+1
+		if not duplicate:
+			candidate["community_id"] = community_id
+			selected.append(candidate)
+			counts[community_id] = int(counts.get(community_id,0))+1
+		entry["cursor"] = int(entry["cursor"])+1
+		if int(counts.get(community_id,0)) < 2 and int(entry["cursor"]) < entry["courts"].size():
+			_heap_push(heap,entry)
 	return selected
 
 static func community_wall_stats(world: RefCounted) -> Dictionary:

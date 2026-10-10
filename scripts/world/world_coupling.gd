@@ -28,6 +28,9 @@ func interval(first: int, second: int) -> Dictionary:
 func resonance(buildings: Array, edges: Array) -> float:
 	var by_id: Dictionary = {}
 	for building in buildings: by_id[building["district_id"]] = building
+	return resonance_from_index(by_id,edges)
+
+func resonance_from_index(by_id: Dictionary, edges: Array) -> float:
 	var weighted := 0.0
 	var total := 0.0
 	for edge in edges:
