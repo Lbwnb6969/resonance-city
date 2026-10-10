@@ -103,6 +103,11 @@ func _draw_green_corridors() -> void:
 			draw_circle(_point(p,0.04),2.4*1.0,Color(0.38,0.56,0.35,0.72))
 
 func _draw_public_space() -> void:
+	for reservation in city.planning_reservations:
+		var polygon := _project_polygon(reservation["polygon"])
+		draw_colored_polygon(polygon,Color(0.78,0.83,0.69,0.36))
+		polygon.append(polygon[0])
+		draw_polyline(polygon,Color(0.40,0.56,0.40,0.72),1.5/camera_zoom,true)
 	for site in city.public_sites:
 		var polygon: PackedVector2Array = site["polygon"]
 		var projected := _project_polygon(polygon)
@@ -116,7 +121,8 @@ func _draw_public_space() -> void:
 					draw_polyline(_project_polygon(part),Color("e6e2c9"),3.4*1.0,true)
 				var pool := PackedVector2Array()
 				for i in range(32): pool.append(p+Vector2(0.4,0.6)+Vector2(cos(TAU*i/32)*0.5,sin(TAU*i/32)*0.35))
-				draw_colored_polygon(_project_polygon(pool),Color("9bb9af"))
+				for clipped_pool in Geometry2D.intersect_polygons(pool,polygon):
+					draw_colored_polygon(_project_polygon(clipped_pool),Color("9bb9af"))
 			else:
 				var center := _point(Vector2(site["position"][0],site["position"][1]))
 				for level in range(int(site.get("service_level",1))):

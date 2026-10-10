@@ -45,7 +45,9 @@
     "template_lot_half_length": 0.64,
     "template_lot_spacing": 1.6,
     "template_bridge_y": 14.0,
-    "template_slice_building_budget": 24.0
+    "template_slice_building_budget": 24.0,
+    "template_building_max_grade": 0.577350269,
+    "template_shore_buffer_ratio": 0.12
   },
   "city": {
     "neighborhood_depth": 5.6,
@@ -63,7 +65,8 @@
     "car_speed": 2.8,
     "bus_dwell_beats": 2.0,
     "starter_buildings_per_region": 6.0,
-    "starter_region_count": 3.0
+    "starter_region_count": 3.0,
+    "growth_compact_neighbor_weight": 10000.0
   },
   "score": {
     "control_fade_beats": 2.0,
@@ -170,13 +173,13 @@
   "sources": {
     "spec.asset.md": "fce93d7410eb7254727245a6dab4ec8b1490e95dddd7887bbab9fbc7ddca5e6b",
     "spec.audio.md": "85e7a9e8e06b9c331d284db94dc8de18de779eb4ea3f0220fc4f0fb40ed42be3",
-    "spec.city.md": "0da7495c9126e9bc55ab78feab6fb821ca244f36d2a96a396145036ecf09d366",
+    "spec.city.md": "e7f743f50826891ffa78fe5f518a28aba3041de308e8254066b973c47d72a790",
     "spec.fabric.md": "a61e0369b0db0005d2a0c3c281a1e2fdb7c658cfbfd0cf0b7d5ea3e764665957",
     "spec.harmony.md": "ee0cee446c42d4eb155a4fd37c55effedbee7ae9db53c4de68780957978eedc8",
-    "spec.proposal.md": "c4e70940feb2623731f52cd3e5899e36563c8988bb4460218f47c40a71263b2f",
-    "spec.run.md": "f202c56a1b93d00981f223dcef39a9a9b99680da4c398fe06ee75a5c8e362b68",
+    "spec.proposal.md": "ed8ff397639b2eec97206e4798aac66f2aeb70612f2edf6de83040e14cc46d4e",
+    "spec.run.md": "74fe9fc6286dfa1d1678ed9efe3510176978130d03ef29d50fa5e74c888c523c",
     "spec.space.md": "93c84f380965c2e2ade545063f3c8a180e85e33ba14f03fc215f489e4af81505",
-    "spec.terrain.md": "863c10e449f9d7e1f4944f326ecb989909759ec5458a8b7e31405b77fbd34d05",
+    "spec.terrain.md": "a597f12d5f8c0dfe7ca79bd4adf9e2184b861b84594434d4d329fe0cef924165",
     "spec.ui.md": "1666b250eb2ed4ab592ab30fcb6ee6ed94b0e692a97d65a70076153bd8a6f1ee"
   },
   "distance_reference": {

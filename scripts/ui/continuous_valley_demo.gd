@@ -41,6 +41,7 @@ var tooltip: Label
 var caption: Label
 var menu: PanelContainer
 var menu_info: Label
+var planning_buttons: Dictionary = {}
 var low_octave: CheckBox
 var light_player: AudioStreamPlayer
 var preview_player: AudioStreamPlayer
@@ -261,11 +262,12 @@ func _make_menu() -> void:
 		verbs.add_child(button)
 	box.add_child(verbs)
 	var public_row := HBoxContainer.new()
-	for item in [["营造公园","park"],["公共设施","civic"],["连接两岸","bridge"]]:
+	for item in [["建公园","park"],["文化设施","civic"],["留地","reserve"],["释放留地","release_reservation"],["连接两岸","bridge"]]:
 		var button := Button.new()
 		button.text = item[0]
 		button.pressed.connect(_verb.bind(item[1]))
 		public_row.add_child(button)
+		planning_buttons[item[1]] = button
 	box.add_child(public_row)
 	var archive_row := HBoxContainer.new()
 	for item in [["存一版 · Ctrl+S","save"],["继续上次 · F9","load"]]:
@@ -613,13 +615,22 @@ func _gui_input(event: InputEvent) -> void:
 				menu_info.text = "给这栋建筑换一个音"
 			else:
 				var p := world_at(pointer)
+				var reservation := shown_world.planning_at(p)
+				if not reservation.is_empty():
+					context = {"kind":"reservation","id":reservation["reservation_id"],"position":reservation["position"].duplicate()}
+					selected_id = ""
+					menu_info.text = "你留下的空地 · 可释放、建公园或文化设施"
+					_planning_menu()
+					_show_context_menu()
+					return
 				var site := shown_world.public_at(p)
 				if not site.is_empty():
 					context = {"kind":site["kind"],"id":site["id"]}
+					if not bool(site["active"]): context["position"] = site["position"].duplicate()
+					_planning_menu()
 					selected_id = ""
 					menu_info.text = site["name"]+(" · 点击公共设施扩容" if site["active"] and site["kind"] == "civic" else " · 点击下方营造")
-					menu.position = Vector2(clampf(pointer.x-100,12,size.x-460),clampf(pointer.y+22,80,size.y-290))
-					menu.show()
+					_show_context_menu()
 					return
 				var check := model.world.placement(p)
 				if not check["allowed"]:
@@ -627,9 +638,9 @@ func _gui_input(event: InputEvent) -> void:
 					return
 				selected_id = ""
 				context = {"kind":"seed","position":[p.x,p.y]}
-				menu_info.text = "播下一段声音 · "+str(check["preview"])+" · 用途由地块决定"
-			menu.position = Vector2(clampf(pointer.x-100,12,size.x-460),clampf(pointer.y+22,70,size.y-290))
-			menu.show()
+				menu_info.text = "播种声音 · "+str(check["preview"])+"\n也可选定这片地营造公共空间"
+			_planning_menu()
+			_show_context_menu()
 
 func _choose_note(choice: int) -> void:
 	midi = choice-12 if low_octave.button_pressed or Input.is_key_pressed(KEY_SHIFT) else choice
@@ -647,7 +658,39 @@ func _choose_note(choice: int) -> void:
 		menu.hide()
 	else: _message(result["reason"])
 
+func _show_context_menu() -> void:
+	_planning_menu()
+	menu.size = menu.get_combined_minimum_size()
+	menu.position = Vector2(clampf(pointer.x-100,12,maxf(12,size.x-menu.size.x-12)),clampf(pointer.y+22,70,maxf(70,size.y-menu.size.y-12)))
+	menu.show()
+
+func _planning_menu() -> void:
+	var candidate: Dictionary = {}
+	if context.has("position"):
+		candidate = model.world.planning_candidate(Vector2(float(context["position"][0]),float(context["position"][1])))
+	var selectable := not candidate.is_empty() and bool(candidate.get("allowed",false))
+	planning_buttons["reserve"].disabled = not selectable or candidate.has("reservation_id") or candidate.has("public_id")
+	planning_buttons["release_reservation"].disabled = context.get("kind","") != "reservation"
+	for verb in ["park","civic"]:
+		var existing := false
+		for site in model.world.public_sites:
+			if str(site["id"]) == str(context.get("id","")) and bool(site["active"]) and verb == "civic" and str(site["kind"]) == "civic":
+				existing = int(site.get("service_level",1)) < 3
+		planning_buttons[verb].disabled = not selectable and not existing
+
 func _verb(verb: String) -> void:
+	if verb in ["reserve","release_reservation"] or (verb in ["park","civic"] and context.has("position")):
+		var operation := {"kind":verb}
+		if verb == "release_reservation": operation["id"] = context.get("id","")
+		elif context.has("position"): operation["position"] = context["position"].duplicate()
+		else:
+			_message("先点选一片空地")
+			return
+		var result := model.submit(operation)
+		var labels := {"reserve":"这片空地会在下一句保留","release_reservation":"下一句释放留地","park":"公园会在选中位置落成","civic":"文化设施会在选中位置落成"}
+		_message(labels[verb] if result["accepted"] else str(result["reason"]))
+		if result["accepted"]: menu.hide()
+		return
 	if verb in ["park","civic"]:
 		var site: Dictionary = {}
 		for candidate in shown_world.public_sites:
@@ -655,7 +698,7 @@ func _verb(verb: String) -> void:
 			if context.get("id","") == candidate["id"]:
 				site = candidate
 				break
-			if not candidate["active"] and site.is_empty(): site = candidate
+			# Public actions always use the selected location.
 		if site.is_empty():
 			_message("公共空间已经落成，悬停查看它服务的街区")
 			return
@@ -845,14 +888,19 @@ func _process(delta: float) -> void:
 		if lot != last_hover_lot: last_hover_lot = lot
 		if hover_seconds > 0.18 and hover_seconds < 0.18+delta: _light_note(midi+12 if midi < 48 else midi)
 	else:
+		var reservation := shown_world.planning_at(p)
 		var site := shown_world.public_at(p)
-		if not site.is_empty():
+		if not reservation.is_empty():
+			tooltip.text = "你留下的空地 · 房屋不会长进来\n点击选择释放、建公园或文化设施"
+		elif not site.is_empty():
 			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路覆盖%d栋\n公园为主题留白" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
 			if site["active"] and site["kind"] == "civic":
 				tooltip.text = "%s · 文化设施%d级\n覆盖%d栋 · 已服务%d/%d栋\n%s" % [site["name"],int(site.get("service_level",1)),site.get("covered",[]).size(),site.get("served",[]).size(),int(site.get("service_capacity",18)),"点击后选公共设施，下一句扩容" if int(site.get("service_level",1)) < 3 else "三级扩容完成 · 文化主题继续演奏"]
-		else: tooltip.text = "合法陆地都能播种；靠近道路会长得更快\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形 · E扩展城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
+		else: tooltip.text = str(check["reason"])+"\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形 · E扩展城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
-	if menu.visible and pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
+	if menu.visible:
+		_planning_menu()
+		if pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()
 	_profile_frame("interaction_ms",frame_started)
 
@@ -946,6 +994,7 @@ func _draw() -> void:
 	var draw_started := Time.get_ticks_usec()
 	if black: return
 	if shown_world == null: return
+	_draw_planning_preview()
 	var flow := float(clock.renderer.transport.audible_frame)/float(clock.renderer.transport.sample_rate)
 	_draw_community_names()
 	_draw_public_labels()
@@ -1085,6 +1134,21 @@ func _draw_landmark_preview() -> void:
 		draw_line(at+Vector2(-5,0)*view_zoom,at+Vector2(5,0)*view_zoom,Color(tint,0.75),1.1*view_zoom,true)
 		draw_line(at+Vector2(0,-5)*view_zoom,at+Vector2(0,5)*view_zoom,Color(tint,0.75),1.1*view_zoom,true)
 		draw_string(ThemeDB.fallback_font,at+Vector2(8,-8)*view_zoom,"预影 · "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("776247"))
+
+func _draw_planning_preview() -> void:
+	if menu.visible and context.has("position"):
+		var raw: Array = context["position"]
+		var candidate := model.world.planning_candidate(Vector2(float(raw[0]),float(raw[1])))
+		if not candidate.is_empty():
+			var polygon := _project_polygon(candidate["polygon"])
+			draw_colored_polygon(polygon,Color(0.72,0.84,0.72,0.35))
+			polygon.append(polygon[0])
+			draw_polyline(polygon,Color("789978"),1.8,true)
+	for op in model.world.pending_actions:
+		if not op.has("polygon"): continue
+		var polygon := _project_polygon(op["polygon"])
+		var color := Color(0.65,0.78,0.56,0.55) if op["kind"] != "civic" else Color(0.82,0.73,0.56,0.55)
+		draw_colored_polygon(polygon,color)
 
 func _draw_public_labels() -> void:
 	if not pointer_inside: return

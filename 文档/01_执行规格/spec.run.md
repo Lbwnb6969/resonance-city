@@ -34,7 +34,7 @@ seed = hash("daily:" + UTC日期 + 版本号)
 | 有界取样 | uint32拒绝采样，丢弃≥floor(2^32/上界)×上界的字，再取模，不引入模偏差 |
 | 快照 | 根seed与五子流计数器；试听只深拷贝不推进真子流 |
 | daily | SHA256("daily:"+UTC YYYY-MM-DD+ProjectSettings application/config/version)前16位hex |
-| P0版本 | p0-1（执行方案版本，写project.godot）；改变生成/子流语义必须升版本 |
+| P0版本 | p0-2（第130轮改变合法选址/连片成长，写project.godot；旧作品保留身份）；改变生成/子流语义必须升版本 |
 | P0决策 | 保留原bar/proposal_id/target/choice；追加verb、district_id、输入requested_audio_frame与commit_phrase_frame；音级/格子来自系统选项，不丢失输入时刻 |
 
 P0只实现种子/生成/选择可追溯接口；完整Run、祝福、图鉴重放内容仍不进入P0。daily失败保留根种子并记录回退，见CITY-002/T2；旧P0九街区安全坐标只属于固定测试fixture。

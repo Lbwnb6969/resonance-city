@@ -5,10 +5,14 @@ var props: Dictionary = {}
 var sites: Dictionary = {}
 var vehicle_kind := ""
 var site_key: Array = []
+var public_prop_layouts: Dictionary = {}
+var public_prop_keys: Dictionary = {}
 
 func rebuild(demo: Control) -> void:
 	for node in props.values(): node.queue_free()
 	props.clear()
+	public_prop_layouts.clear()
+	public_prop_keys.clear()
 	for site in demo.shown_world.public_sites:
 		sites[site["id"]] = site
 	var city: ContinuousWorld = demo.shown_world
@@ -48,13 +52,7 @@ func rebuild(demo: Control) -> void:
 					break
 			if shared: props[stop_key].set_meta("transfer_stop",true)
 			stop_tone += 1
-	for site in city.public_sites:
-		var p := Vector2(site["position"][0],site["position"][1])
-		if site["kind"] == "civic": _add(demo,site["id"],p,"civic",0,site["id"])
-		else:
-			for i in range(8):
-				var offset := Vector2(-1.1+(i%2)*2.2,-1.4+(i/2)*0.9)
-				_add(demo,"%s-tree-%d" % [site["id"],i],p+offset,"tree",i,site["id"])
+	_sync_public_props(demo,city)
 	vehicle_kind = city.vehicle_kind()
 	for i in range(4): _add(demo,"vehicle-%d" % i,Vector2.ZERO,vehicle_kind,i)
 	# Private cars only enter the street mix in the modern era; they remain
@@ -83,6 +81,41 @@ func restore(saved: Dictionary) -> void:
 	for key in saved:
 		if props.has(key) and props[key].has_meta("traveler"): props[key].get_meta("traveler").restore(saved[key])
 
+func _sync_public_props(demo: Control,city: ContinuousWorld) -> void:
+	for site in city.public_sites:
+		var id := str(site["id"])
+		var layout := [site["position"],site["polygon"],site["kind"]]
+		if public_prop_layouts.get(id,[]) == layout: continue
+		for key in public_prop_keys.get(id,[]):
+			if props.has(key):
+				props[key].queue_free()
+				props.erase(key)
+		public_prop_layouts[id] = layout.duplicate()
+		var keys: Array[String] = []
+		var p := Vector2(float(site["position"][0]),float(site["position"][1]))
+		if site["kind"] == "civic":
+			_add(demo,id,p,"civic",0,id)
+			if bool(site.get("player_planned",false)):
+				var box := _polygon_bounds(site["polygon"])
+				props[id].set_meta("public_scale",minf(1.0,minf(box.size.x,box.size.y)/1.1))
+			keys.append(id)
+		else:
+			var box := _polygon_bounds(site["polygon"])
+			for i in range(8):
+				var offset := Vector2(-1.1+(i%2)*2.2,-1.4+(i/2)*0.9)
+				if bool(site.get("player_planned",false)) or box.size.x < 2.4 or box.size.y < 3.2:
+					offset = Vector2((-0.35 if i%2 == 0 else 0.35)*box.size.x,(-0.33+(i/2)*0.22)*box.size.y)
+				if not Geometry2D.is_point_in_polygon(p+offset,site["polygon"]): continue
+				var key := "%s-tree-%d" % [id,i]
+				_add(demo,key,p+offset,"tree",i,id)
+				keys.append(key)
+		public_prop_keys[id] = keys
+
+func _polygon_bounds(polygon: PackedVector2Array) -> Rect2:
+	var box := Rect2(polygon[0],Vector2.ZERO)
+	for p in polygon: box = box.expand(p)
+	return box
+
 func _sync_vehicle_kind(city: ContinuousWorld) -> void:
 	var desired := city.vehicle_kind()
 	if desired == vehicle_kind: return
@@ -105,6 +138,7 @@ func sync(demo: Control) -> void:
 		site_key = next_site_key
 		sites.clear()
 		for site in city.public_sites: sites[site["id"]] = site
+		_sync_public_props(demo,city)
 	var frame: float = demo.clock.renderer.transport.audible_frame
 	var rate: int = demo.clock.renderer.transport.sample_rate
 	var seconds := frame/rate
@@ -157,7 +191,7 @@ func sync(demo: Control) -> void:
 				prop.set_meta("passenger_destinations",movement.get("passenger_destinations",[]))
 				prop.set_meta("world_position",p)
 		prop.position = WorldProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),city.terrain.height_at(p))
-		prop.scale = Vector2.ONE
+		prop.scale = Vector2.ONE*float(prop.get_meta("public_scale",1.0))
 		# Building warmth is shared at the layer; scenery retains its original tint.
 		prop.modulate = Color(1.0/demo.buildings_layer.modulate.r,1.0,1.0,prop.reveal)
 		prop.motion = seconds*TAU/4.0

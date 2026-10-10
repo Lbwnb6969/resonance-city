@@ -76,6 +76,7 @@ static func export_dna(city: Dictionary, directory: String = DIRECTORY+"/exports
 			"green_corridors":plan.get("green_corridors",[]),
 			"centers":plan.get("centers",[]),
 			"public_sites":world.get("public_sites",[]),
+			"planning_reservations":world.get("planning_reservations",[]),
 			"transit_lines":world.get("transit_lines",[])
 		},
 		"music":{

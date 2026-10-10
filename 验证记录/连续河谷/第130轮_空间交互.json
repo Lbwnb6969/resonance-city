@@ -1,0 +1,129 @@
+{
+	"background": {
+		"adopted": 3,
+		"discarded": 0,
+		"fallbacks": 0,
+		"max_capture_ms": 0.526,
+		"max_commit_ms": 0.194,
+		"max_worker_ms": 36.733,
+		"retired": 2,
+		"started": 3
+	},
+	"checks": {
+		"adding_sites_preserves_traffic_state": true,
+		"another_player_site_available": true,
+		"built_facility_can_expand": true,
+		"button_queues_exact_selected_space": true,
+		"click_opens_position_choices": true,
+		"conversion_keeps_old_view": true,
+		"facility_built_at_player_position": true,
+		"menu_fits_window": true,
+		"new_civic_has_visible_model": true,
+		"player_civic_serves_real_buildings": true,
+		"player_park_trees_stay_inside": true,
+		"reservation_has_release": true,
+		"reservation_hidden_until_heard": true,
+		"reservation_revealed": true,
+		"selectable_public_location": true
+	},
+	"civic": {
+		"access_path": "[(11.70691, 5.223098), (12.89938, 5.149159)]",
+		"active": true,
+		"community_id": "west-1",
+		"covered": [
+			"building-00001",
+			"building-00002",
+			"building-00003",
+			"building-00004",
+			"building-00005",
+			"building-00006",
+			"building-00007",
+			"building-00008",
+			"building-00009",
+			"building-00010",
+			"building-00011",
+			"building-00012",
+			"building-00019",
+			"building-00020",
+			"building-00022",
+			"building-00023"
+		],
+		"entrance": [
+			12.8993768692017,
+			5.14915943145752
+		],
+		"frame": 705600,
+		"id": "player-civic-00002",
+		"kind": "civic",
+		"name": "自选文化馆",
+		"player_planned": true,
+		"polygon": "[(11.08691, 4.583098), (12.32691, 4.583098), (12.32691, 5.863098), (11.08691, 5.863098)]",
+		"position": [
+			11.7069063186646,
+			5.22309827804565
+		],
+		"road_id": "west-road-1",
+		"served": [
+			"building-00001",
+			"building-00002",
+			"building-00003",
+			"building-00004",
+			"building-00005",
+			"building-00006",
+			"building-00008",
+			"building-00009",
+			"building-00019",
+			"building-00022"
+		],
+		"service_capacity": 18,
+		"service_demand": 10,
+		"service_level": 1,
+		"source_site_id": "west-lot-3--1"
+	},
+	"park": {
+		"access_path": "[(11.74597, 6.736822), (12.9446, 6.749182)]",
+		"active": true,
+		"community_id": "west-1",
+		"covered": [
+			"building-00001",
+			"building-00002",
+			"building-00003",
+			"building-00004",
+			"building-00005",
+			"building-00006",
+			"building-00007",
+			"building-00008",
+			"building-00009",
+			"building-00010",
+			"building-00011",
+			"building-00012",
+			"building-00019",
+			"building-00020",
+			"building-00022",
+			"building-00023",
+			"building-00025",
+			"building-00026"
+		],
+		"entrance": [
+			12.9445962905884,
+			6.74918222427368
+		],
+		"frame": 1058400,
+		"id": "player-park-00003",
+		"kind": "park",
+		"name": "自选公园",
+		"player_planned": true,
+		"polygon": "[(11.12597, 6.096822), (12.36597, 6.096822), (12.36597, 7.376822), (11.12597, 7.376822)]",
+		"position": [
+			11.7459707260132,
+			6.73682165145874
+		],
+		"road_id": "west-road-1",
+		"served": [],
+		"service_capacity": 0,
+		"service_demand": 0,
+		"service_level": 1,
+		"source_site_id": "west-lot-4--1"
+	},
+	"passed": true
+}

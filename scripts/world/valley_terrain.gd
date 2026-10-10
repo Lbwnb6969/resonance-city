@@ -103,6 +103,29 @@ func valid_footprint(polygon: PackedVector2Array) -> bool:
 	for point in polygon: bounds = bounds.expand(point)
 	return not bounds.intersects(water_bounds,true) or Geometry2D.intersect_polygons(polygon,water).is_empty()
 
+func slope_at(p: Vector2) -> float:
+	var dx := height_at(p+Vector2(0.25,0))-height_at(p-Vector2(0.25,0))
+	var dy := height_at(p+Vector2(0,0.25))-height_at(p-Vector2(0,0.25))
+	return Vector2(dx,dy).length()/0.5
+
+func building_footprint_reason(polygon: PackedVector2Array) -> String:
+	if not valid_footprint(polygon): return "这里是水域或地图边界，需要完整的陆地占地"
+	var bounds := Rect2(polygon[0],Vector2.ZERO)
+	for p in polygon: bounds = bounds.expand(p)
+	var center := bounds.get_center()
+	var samples := polygon.duplicate()
+	samples.append(center)
+	for i in range(polygon.size()): samples.append((polygon[i]+polygon[(i+1)%polygon.size()])*0.5)
+	var shore := float(cfg.get("template_shore_buffer_ratio",0.12))*river_width(center.y)
+	if bounds.grow(shore).intersects(water_bounds,true):
+		for expanded in Geometry2D.offset_polygon(polygon,shore,Geometry2D.JOIN_ROUND):
+			if not Geometry2D.intersect_polygons(expanded,water).is_empty():
+				return "这里是岸线缓冲带，给水岸留出空间"
+	var maximum := float(cfg.get("template_building_max_grade",0.577350269))
+	for p in samples:
+		if slope_at(p) > maximum: return "这里的坡面太陡，房屋需要缓坡"
+	return ""
+
 func environment(a: Vector2,b: Vector2,bridge: bool) -> Dictionary:
 	var crossing: Array[PackedVector2Array] = []
 	if Rect2(a,b-a).abs().intersects(water_bounds,true):

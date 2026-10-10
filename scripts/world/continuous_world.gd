@@ -8,6 +8,7 @@ const RandomStreams = preload("res://scripts/city/named_random.gd")
 const Legacy = preload("res://scripts/spec_values.gd")
 const Fabric = preload("res://scripts/world/fabric_relations.gd")
 const Terrace = preload("res://scripts/world/terrace_neighborhood.gd")
+const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -38,6 +39,7 @@ var blocks: Array[Dictionary] = []
 var green_corridors: Array[Dictionary] = []
 var centers: Array[Dictionary] = []
 var public_sites: Array[Dictionary] = []
+var planning_reservations: Array[Dictionary] = []
 var landmarks: Array[Dictionary] = []
 var landmark_progress: Dictionary = {}
 var network: CityRoadNetwork
@@ -461,15 +463,15 @@ func _refresh_road_index() -> void:
 
 func _refresh_parcel_index() -> void:
 	var identity: Array = []
-	for group in [lots,public_sites]:
+	for group in [lots,public_sites,planning_reservations]:
 		for record in group: identity.append([record["id"],record["polygon"]])
 	var next_identity := JSON.stringify(identity)
 	if next_identity == parcel_index_identity: return
 	parcel_index_identity = next_identity
 	parcel_index = Index.new()
 	parcel_records.clear()
-	for group in [lots,public_sites]:
-		var prefix := "lot" if group == lots else "site"
+	for group in [lots,public_sites,planning_reservations]:
+		var prefix := "reservation" if group == planning_reservations else ("lot" if group == lots else "site")
 		for ordinal in range(group.size()):
 			var polygon: PackedVector2Array = group[ordinal]["polygon"]
 			var bounds := Rect2(polygon[0],Vector2.ZERO)
@@ -489,6 +491,18 @@ func near_public_sites(p: Vector2,reach: float = 0.0) -> Array[Dictionary]:
 	for id in parcel_index.query_circle(p,reach):
 		if id.begins_with("site-"): result.append(public_sites[int(parcel_records[id])])
 	return result
+
+func near_planning_reservations(p: Vector2,reach: float = 0.0) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for id in parcel_index.query_circle(p,reach):
+		if id.begins_with("reservation-"): result.append(planning_reservations[int(parcel_records[id])])
+	return result
+
+func planning_candidate(p: Vector2) -> Dictionary:
+	return SpatialPlanning.candidate(self,p)
+
+func planning_at(p: Vector2) -> Dictionary:
+	return SpatialPlanning.reservation_at(self,p)
 
 func near_road_segments(p: Vector2,reach: float) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -535,15 +549,14 @@ func building_polygon(p: Vector2) -> PackedVector2Array:
 
 func placement(p: Vector2) -> Dictionary:
 	var polygon := building_polygon(p)
-	if not terrain.valid_footprint(polygon): return {"allowed":false,"reason":"这里是水域或岸线，房子需要完整的陆地占地"}
+	if not terrain.valid_footprint(polygon): return {"allowed":false,"reason":"这里是水域或地图边界，需要完整的陆地占地"}
 	var radius := float(cfg["space"]["residential_radius"])
 	if Fabric.on_road(self,p,radius): return {"allowed":false,"reason":"这里是成路，留出道路的连续通行面"}
-	if Fabric.reserved(self,p): return {"allowed":false,"reason":"这里是公园或公共设施保留地"}
-	for site in near_public_sites(p,polygon[0].distance_to(p)):
-		if not Geometry2D.intersect_polygons(polygon,site["polygon"]).is_empty(): return {"allowed":false,"reason":"建筑占地不能压进公共保留地"}
 	for id in index.query_circle(p,radius):
 		if p.distance_to(Coupling.position_of(by_id[id])) < radius+float(by_id[id]["radius"])-1e-6:
 			return {"allowed":false,"reason":"与已有建筑太近，留一点呼吸的空隙"}
+	var excluded := SpatialPlanning.exclusion(self,polygon)
+	if not excluded.is_empty(): return {"allowed":false,"reason":excluded}
 	for lot in near_lots(p):
 		if not str(lot["occupant"]).is_empty(): continue
 		var contained := true
@@ -715,7 +728,9 @@ func _landmark_distance_to_segment(p: Vector2,a: Vector2,b: Vector2) -> float:
 	return p.distance_to(a+delta*t)
 
 func landmark_site_clear(position: Vector2,radius: float) -> bool:
-	if not terrain.land_at(position): return false
+	var polygon := PackedVector2Array()
+	for i in range(32): polygon.append(position+Vector2.from_angle(TAU*i/32.0)*radius)
+	if not SpatialPlanning.exclusion(self,polygon).is_empty(): return false
 	for site in public_sites:
 		var site_position := Vector2(float(site["position"][0]),float(site["position"][1]))
 		if position.distance_to(site_position) < radius+1.1: return false
@@ -757,6 +772,7 @@ func _commit_landmark(operation: Dictionary,frame: int) -> void:
 	if landmark_exists(name): return
 	var position := Vector2(float(operation["position"][0]),float(operation["position"][1]))
 	var radius := float(operation.get("radius",1.0))
+	if not landmark_site_clear(position,radius): return
 	var landmark_id := "landmark-%02d" % (landmarks.size()+1)
 	var spec := landmark_status(name)
 	var landmark := {"id":landmark_id,"name":name,"glyph":str(spec.get("glyph","地")),"era":era,
@@ -819,6 +835,26 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation = operation.duplicate(true)
 		operation["radius"] = site_radius
 		operation["era"] = era
+	elif kind in ["reserve","release_reservation"] or (kind in ["park","civic"] and operation.has("position")):
+		if kind == "release_reservation":
+			if not planning_reservations.any(func(item: Dictionary) -> bool: return str(item["reservation_id"]) == str(operation.get("id",""))):
+				return {"accepted":false,"reason":"这片留地已经释放"}
+		else:
+			var p := Vector2(float(operation["position"][0]),float(operation["position"][1]))
+			var candidate := planning_candidate(p)
+			if candidate.is_empty(): return {"accepted":false,"reason":"请先选择空置地块、庭院净空或公共候选地"}
+			if not bool(candidate["allowed"]): return {"accepted":false,"reason":candidate["reason"]}
+			if kind == "reserve" and (candidate.has("reservation_id") or candidate.has("public_id")):
+				return {"accepted":false,"reason":"这里已是留地，请选择释放或公共用途"}
+			if kind in ["park","civic"] and SpatialPlanning.public_access(self,candidate).is_empty():
+				return {"accepted":false,"reason":"公共空间需要能接入道路的真实入口"}
+			operation = operation.duplicate(true)
+			operation["position"] = candidate["position"].duplicate()
+			operation["polygon"] = candidate["polygon"].duplicate()
+			operation["source_site_id"] = candidate["source_site_id"]
+		# One replaceable planning intent; the historical demo's other queued verbs remain.
+		pending_actions = pending_actions.filter(func(op: Dictionary) -> bool:
+			return not (str(op["kind"]) in ["reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position"))))
 	elif kind in ["park","civic"]:
 		var found := false
 		for site in public_sites:
@@ -882,8 +918,16 @@ func settle(frame: int) -> void:
 	var committed := pending_actions.duplicate(true)
 	pending_actions.clear()
 	pending.clear()
+	# Public space is reserved before any queued seed or natural growth in this phrase.
+	var successful_planning: Array[Dictionary] = []
+	for op in committed:
+		if str(op["kind"]) in ["reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position")):
+			if SpatialPlanning.commit(self,op,frame): successful_planning.append(op)
+			else:
+				events.append({"kind":"planning_rejected","event_id":op["event_id"],"frame":frame})
 	for op in committed:
 		assert(int(op["frame"]) == frame)
+		if str(op["kind"]) in ["reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position")): continue
 		match str(op["kind"]):
 			"seed":
 				var p := Vector2(float(op["position"][0]),float(op["position"][1]))
@@ -929,7 +973,10 @@ func settle(frame: int) -> void:
 	var split_events := split_oversized_communities(frame)
 	settle_profile["split_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
 	phase_started = Time.get_ticks_usec()
-	var forms_dirty := not committed.is_empty() or buildings.size() != buildings_before_growth or not split_events.is_empty()
+	var musical_action := committed.any(func(op: Dictionary) -> bool:
+		return str(op["kind"]) not in ["reserve","release_reservation"] and not (str(op["kind"]) in ["park","civic"] and op.has("position")))
+	musical_action = musical_action or successful_planning.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["park","civic"])
+	var forms_dirty := musical_action or buildings.size() != buildings_before_growth or not split_events.is_empty()
 	var modifiers := musicality()
 	var effective := musical_edges(modifiers)
 	resonance = coupling.resonance(buildings,effective)
@@ -1038,6 +1085,11 @@ func _grow(family: String, frame: int) -> void:
 	var frontier: Array[Vector2] = []
 	var frontier_start := maxi(0,owned_positions.size()-4)
 	for index in range(frontier_start,owned_positions.size()): frontier.append(owned_positions[index])
+	# Revisit older pockets as well as the newest edge; bounded samples avoid all-history growth.
+	for sample in range(4):
+		if owned_positions.is_empty(): break
+		var old_point := owned_positions[mini(owned_positions.size()-1,sample*owned_positions.size()/4)]
+		if not frontier.has(old_point): frontier.append(old_point)
 	if frontier.is_empty(): frontier.append(origin)
 	var candidates: Array[Dictionary] = []
 	for lot in lots:
@@ -1087,7 +1139,13 @@ func _grow(family: String, frame: int) -> void:
 		var distance := p.distance_squared_to(origin)
 		var transit_bonus := _transit_growth_bonus(p,candidate_use)
 		var quota_bonus := maxf(0.0,float(int(quotas[cid].get(candidate_use,0))-int(usages[cid].get(candidate_use,0))))
-		var base_score := float(tier_rank)*100000.0+quota_bonus*1000.0+transit_bonus*100.0-distance
+		var compact_neighbors := 0
+		for neighbor_id in index.query_circle(p,1.35):
+			var neighbor: Dictionary = by_id[neighbor_id]
+			if p.distance_to(Coupling.position_of(neighbor)) > 1.8: continue
+			if str(neighbor["community_id"]) == cid or str(neighbor["family_id"]) == family: compact_neighbors += 1
+		var compact_bonus := float(mini(6,compact_neighbors))*float(cfg["city"].get("growth_compact_neighbor_weight",10000.0))
+		var base_score := float(tier_rank)*100000.0+compact_bonus+quota_bonus*1000.0+transit_bonus*100.0-distance
 		# Exact upper bound: acoustic checks cannot rescue a candidate whose
 		# placement score plus the maximum civic bonus cannot beat the winner.
 		if base_score+50.0 <= best_growth_score: continue
@@ -1115,9 +1173,9 @@ func _grow(family: String, frame: int) -> void:
 			if float(coupling.interval(int(root["current_midi"]),int(by_id[neighbor["id"]]["current_midi"]))["score"]) <= 0.05: clashes = true
 		if clashes: continue
 		var service_bonus := _public_service_growth_bonus(str(check.get("community_id","")),p)
-		# Tier remains the primary placement rule; land-use deficits, transit
-		# demand, and spare civic capacity break ties inside the same tier.
-		var growth_score := float(tier_rank)*100000.0+quota_bonus*1000.0+transit_bonus*100.0+service_bonus*50.0-distance
+		# Tier remains primary; compact community infill precedes use/transit/service ties.
+		# This placement preference does not alter acoustic coupling or R/V.
+		var growth_score := base_score+service_bonus*50.0
 		if growth_score > best_growth_score:
 			best_growth_score = growth_score
 			best_rank = tier_rank
@@ -1438,12 +1496,31 @@ func _update_forms(frame: int, modifiers: Dictionary = {}) -> void:
 			events.append({"kind":"upgrade","district_id":building["district_id"],"frame":frame,"form":target})
 
 func snapshot() -> Dictionary:
-	return {"schema_version":2,"generation_version":66,"settings":cfg.duplicate(true),
+	return {"schema_version":2,"generation_version":130,"settings":cfg.duplicate(true),"planning_reservations":planning_reservations.duplicate(true),
 		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase,"family":terrain.family},
 		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"green_corridors":green_corridors.duplicate(true),"centers":centers.duplicate(true),"communities":communities.duplicate(true)},
 		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"transit_demand":transit_demand.duplicate(true),"functional_zones":functional_zones.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"landmarks":landmarks.duplicate(true),"landmark_progress":landmark_progress.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
 		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,"expanded_plan":expanded_plan,
 		"next_id":next_id,"families":families.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_reason":last_reason}
+
+static func _geometry_from_json(value: Variant) -> PackedVector2Array:
+	if value is PackedVector2Array: return value
+	var polygon := PackedVector2Array()
+	for point in value: polygon.append(point if point is Vector2 else Vector2(float(point[0]),float(point[1])))
+	return polygon
+
+func _restore_geometry() -> void:
+	for group in [lots,blocks,public_sites,planning_reservations]:
+		for item in group:
+			if item.has("polygon"): item["polygon"] = _geometry_from_json(item["polygon"])
+			if item.has("access_path"): item["access_path"] = _geometry_from_json(item["access_path"])
+	for group in [roads,green_corridors,transit_lines]:
+		for item in group:
+			if item.has("path"): item["path"] = _geometry_from_json(item["path"])
+			for leg in item.get("legs",[]): leg["path"] = _geometry_from_json(leg["path"])
+	for item in pending_actions:
+		if item.has("polygon"): item["polygon"] = _geometry_from_json(item["polygon"])
+	if pending.has("polygon"): pending["polygon"] = _geometry_from_json(pending["polygon"])
 
 func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	assert(int(saved["schema_version"]) == 2 and saved["seed_hex"] == rng.seed_hex)
@@ -1491,8 +1568,10 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	profile = str(saved.get("profile","bright"))
 	action_serial = int(saved.get("action_serial",0))
 	if saved.has("public_sites"): public_sites.assign(saved["public_sites"].duplicate(true))
+	planning_reservations.assign(saved.get("planning_reservations",[]).duplicate(true))
 	landmarks.assign(saved.get("landmarks",[]).duplicate(true))
 	landmark_progress = saved.get("landmark_progress",{}).duplicate(true)
+	_restore_geometry()
 	var landmark_occupants: Dictionary = {}
 	for landmark in landmarks: landmark_occupants[str(landmark.get("id",""))] = str(landmark["id"])
 	for lot in lots:

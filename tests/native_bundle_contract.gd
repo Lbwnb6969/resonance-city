@@ -50,6 +50,19 @@ func _run() -> void:
 			break
 	_check(found,"playable seed location")
 	if found:
+		var private_city: ContinuousWorld = demo.model.world.fork()
+		var planning_site := private_city.planning_candidate(point)
+		var planned := false
+		if not planning_site.is_empty() and bool(planning_site["allowed"]):
+			var action := private_city.request({"kind":"reserve","position":[point.x,point.y]},int(private_city.cfg["timing"]["phrase_frames"]))
+			if bool(action["accepted"]):
+				private_city.settle(int(private_city.cfg["timing"]["phrase_frames"]))
+				var json_snapshot: Dictionary = CityArchive._json_value(private_city.snapshot())
+				var restored_city := ContinuousWorld.new(private_city.rng.seed_hex,false)
+				restored_city.restore(json_snapshot)
+				planned = restored_city.planning_reservations.size() == 1 and not bool(restored_city.placement(point)["allowed"])
+		_check(planned,"packed player reservation survives JSON DNA geometry and blocks growth")
+	if found:
 		_check(demo._hover_placement(point) == demo.model.world.placement(point),"hover matches placement before change")
 		var accepted := demo.model.submit({"kind":"seed","position":[point.x,point.y],"midi":48})
 		_check(accepted["accepted"],"packed player operation accepted")
