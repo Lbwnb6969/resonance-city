@@ -1010,8 +1010,9 @@ func settle(frame: int) -> void:
 	var modifiers := musicality()
 	var effective := musical_edges(modifiers)
 	resonance = coupling.resonance(buildings,effective)
-	var river_bonuses := RiverResponse.bonuses(RiverResponse.pairs(self))
-	var vitalities := coupling.vitality(buildings,effective,resonance,costs,modifiers,river_bonuses)
+	# River call/response is an audible relationship. It does not grant automatic
+	# growth vitality; otherwise filling both banks becomes the dominant strategy.
+	var vitalities := coupling.vitality(buildings,effective,resonance,costs,modifiers)
 	for building in buildings: building["vitality"] = vitalities[building["district_id"]]
 	for building in buildings:
 		var bonus := landmark_vitality_bonus(Coupling.position_of(building))+landmark_commercial_bonus(building)

@@ -9,6 +9,7 @@ var focused_community := ""
 const MusicRules = preload("res://scripts/world/community_music_rules.gd")
 const RiverResponse = preload("res://scripts/world/river_call_response.gd")
 var muted_communities: Dictionary = {}
+var response_enabled := true
 var pad_groups: Dictionary = {}
 var rhythms: Array[Dictionary] = []
 var rhythm_nodes: Dictionary = {}
@@ -165,7 +166,7 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}, at: int
 					break
 		if not chosen.is_empty():
 			var service_pressure := float(world.community_public_service(cid).get("pressure",0.0))
-			rhythms.append({"cid":cid,"midi":int(overrides.get(chosen["district_id"],chosen["current_midi"])),"stereo":_stereo_for(chosen),"expression":chosen["expression"],"facility":facility_rhythm,"terrain":world.terrain.family,"zone_roles":world.functional_zone_roles(cid),"service_pressure":service_pressure})
+			rhythms.append({"cid":cid,"midi":int(overrides.get(chosen["district_id"],chosen["current_midi"])),"stereo":_stereo_for(chosen),"expression":chosen["expression"],"facility":facility_rhythm,"zone_roles":world.functional_zone_roles(cid),"service_pressure":service_pressure})
 		if rhythms.size() >= int(score["rhythm_slot_limit"]): break
 	# Keep one public place audible even when the two ordinary rhythm slots are full.
 	# This makes a park or civic room a compositional invitation, not only a visual tag.
@@ -180,7 +181,7 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}, at: int
 			var facility_building: Dictionary = world.by_id[world.communities[cid]["members"][0]]
 			if rhythms.size() >= int(score["rhythm_slot_limit"]): rhythms.pop_back()
 			var service_pressure := float(world.community_public_service(cid).get("pressure",0.0))
-			rhythms.append({"cid":cid,"midi":int(overrides.get(facility_building["district_id"],facility_building["current_midi"])),"stereo":_stereo_for(facility_building),"expression":facility_building["expression"],"facility":true,"terrain":world.terrain.family,"zone_roles":world.functional_zone_roles(cid),"service_pressure":service_pressure})
+			rhythms.append({"cid":cid,"midi":int(overrides.get(facility_building["district_id"],facility_building["current_midi"])),"stereo":_stereo_for(facility_building),"expression":facility_building["expression"],"facility":true,"zone_roles":world.functional_zone_roles(cid),"service_pressure":service_pressure})
 			break
 	_sync_rhythm_nodes()
 	theme.clear()
@@ -199,16 +200,12 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}, at: int
 	var facility := MusicRules.facilities(world,selected)
 	var has_park := bool(facility["park"])
 	var has_civic := bool(facility["civic"])
-	theme = {"cid":selected,"notes":notes,"expression":first["expression"],"park":has_park,"civic":has_civic,"terrain":world.terrain.family,"center":current_world.center_for(selected).duplicate(true),"zone_roles":world.functional_zone_roles(selected),"stereo":_stereo_for(first)}
+	theme = {"cid":selected,"notes":notes,"expression":first["expression"],"park":has_park,"civic":has_civic,"center":current_world.center_for(selected).duplicate(true),"zone_roles":world.functional_zone_roles(selected),"stereo":_stereo_for(first)}
 	theme["source_ids"] = world.community_theme_sources(selected)
-	response = RiverResponse.reply(world,theme,RiverResponse.pairs(world,overrides),overrides)
-	if not response.is_empty():
-		var receiver_id := ""
-		for id in response["receiver_ids"]:
-			if not str(id).is_empty():
-				receiver_id = str(id)
-				break
-		response["stereo"] = _stereo_for(world.by_id[receiver_id])
+	# The river supplies a spatial opportunity; the player still authors the
+	# pitches and placement. One response is derived from the lead schedule.
+	if response_enabled:
+		response = RiverResponse.reply(world,theme,RiverResponse.pairs(world,pitch_overrides),pitch_overrides)
 	_sync_musical_nodes(at)
 
 func _audibility(cid: String) -> float:
@@ -219,7 +216,7 @@ func _audibility(cid: String) -> float:
 func _sync_rhythm_nodes() -> void:
 	for node in rhythm_nodes.values(): node["active"] = false
 	for part in rhythms:
-		var key := "%s:%d:%s:%s:%s:%s" % [part["cid"],part["midi"],part["expression"],part.get("terrain","river_valley"),JSON.stringify(part.get("zone_roles",[])),float(part.get("service_pressure",0.0)) >= 0.5]
+		var key := "%s:%d:%s:%s:%s" % [part["cid"],part["midi"],part["expression"],JSON.stringify(part.get("zone_roles",[])),float(part.get("service_pressure",0.0)) >= 0.5]
 		if not rhythm_nodes.has(key):
 			rhythm_nodes[key] = part.duplicate(true)
 			rhythm_nodes[key]["key"] = key
@@ -234,7 +231,7 @@ func _sync_musical_nodes(at: int) -> void:
 	if not response.is_empty(): _register_musical_node(response,theme,true,at)
 
 func _register_musical_node(part: Dictionary, pattern: Dictionary, answer: bool, at: int) -> void:
-	var key := JSON.stringify([part["cid"],part["notes"],part.get("source_ids",[]),part.get("receiver_ids",[]),pattern["expression"],pattern["park"],pattern["civic"],pattern.get("terrain","river_valley"),pattern.get("zone_roles",[]),answer])
+	var key := JSON.stringify([part["cid"],part["notes"],part.get("source_ids",[]),part.get("receiver_ids",[]),pattern["expression"],pattern["park"],pattern["civic"],pattern.get("zone_roles",[]),answer])
 	if not musical_nodes.has(key):
 		musical_nodes[key] = {"key":key,"part":part.duplicate(true),"pattern":pattern.duplicate(true),"answer":answer,"born_at":at}
 	elif musical_nodes[key].has("retired_at") and int(musical_nodes[key]["retired_at"]) != at:
@@ -269,11 +266,6 @@ func _event_wave(pitch: int, expression: String, rate: int) -> PackedFloat32Arra
 
 func musical_steps(pattern: Dictionary) -> Array:
 	var steps: Array = [0,8,16,24] if pattern["expression"] == "deep" else [0,3,6,10,16,19,22,27]
-	var terrain := str(pattern.get("terrain","river_valley"))
-	if terrain == "lake_basin": steps = [0,6,12,20] if pattern["expression"] == "deep" else [0,2,7,13,20,25]
-	elif terrain == "forest_ridge": steps = [0,10,20] if pattern["expression"] == "deep" else [0,5,14,23]
-	elif terrain == "coastal_plain": steps = [0,5,13,21] if pattern["expression"] == "deep" else [0,3,9,15,22,28]
-	elif terrain == "highland_pass": steps = [0,6,14,22] if pattern["expression"] == "deep" else [0,4,11,18,26]
 	var zone_roles: Array = pattern.get("zone_roles",[])
 	if zone_roles.has("workshop"): steps = [0,6,12,18,24,30] if pattern["expression"] != "deep" else [0,8,16,24]
 	elif zone_roles.has("choir"): steps = [0,8,16,24] if pattern["expression"] == "deep" else [0,4,12,20,28]
@@ -504,5 +496,5 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 	return output
 
 func score_snapshot() -> Dictionary:
-	return {"theme":theme.duplicate(true),"response":response.duplicate(true),"rhythms":rhythms.duplicate(true),"pads":pad_groups.keys(),"voices":voice_group_stats.duplicate(true),
+	return {"theme":theme.duplicate(true),"response":response.duplicate(true),"response_enabled":response_enabled,"rhythms":rhythms.duplicate(true),"pads":pad_groups.keys(),"voices":voice_group_stats.duplicate(true),
 		"focused_community":focused_community,"listener_community":listener_community,"muted_communities":muted_communities.duplicate(true)}

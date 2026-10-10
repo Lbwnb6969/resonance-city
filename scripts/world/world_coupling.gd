@@ -39,7 +39,7 @@ func resonance_from_index(by_id: Dictionary, edges: Array) -> float:
 		total += weight
 	return float(harmony["empty_resonance"]) if total <= 0.0 else 100.0*weighted/total
 
-func vitality(buildings: Array, edges: Array, resonance_value: float, actions: Dictionary = {}, musicality: Dictionary = {}, pair_bonuses: Dictionary = {}) -> Dictionary:
+func vitality(buildings: Array, edges: Array, resonance_value: float, actions: Dictionary = {}, musicality: Dictionary = {}) -> Dictionary:
 	var by_id: Dictionary = {}
 	var deltas: Dictionary = {}
 	for building in buildings:
@@ -54,6 +54,6 @@ func vitality(buildings: Array, edges: Array, resonance_value: float, actions: D
 		deltas[b] += snappedf(delta*float(musicality.get(b,{}).get("dv_scale",1.0)),0.5)
 	var result: Dictionary = {}
 	for id in by_id:
-		var delta := clampf(float(deltas[id])+float(pair_bonuses.get(id,0.0))+float(actions.get(id,0.0)),-float(harmony["net_change_cap"]),float(harmony["net_change_cap"]))
+		var delta := clampf(float(deltas[id])+float(actions.get(id,0.0)),-float(harmony["net_change_cap"]),float(harmony["net_change_cap"]))
 		result[id] = clampf(float(by_id[id]["vitality"])+delta,float(harmony["minimum_vitality"]),float(harmony["maximum_vitality"]))
 	return result

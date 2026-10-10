@@ -6,7 +6,7 @@ const Charter = preload("res://scripts/world/development_charter.gd")
 static func identity(model: ContinuousAudioModel,site: Dictionary) -> Array:
 	return [Charter.version(model.world),model.next_boundary,site.get("source_site_id",""),site.get("polygon",PackedVector2Array()),
 		hash(model.world.pending_actions),hash(model.sound_events),hash(model.sound_overrides),
-		model.synth.focused_community,model.synth.listener_community,hash(model.synth.muted_communities),model.synth.gain,hash(model.synth.score)]
+		model.synth.focused_community,model.synth.listener_community,model.synth.response_enabled,hash(model.synth.muted_communities),model.synth.gain,hash(model.synth.score)]
 
 static func build(source: ContinuousAudioModel,site: Dictionary,state: Dictionary,at: int) -> Dictionary:
 	var rate: int = source.world.cfg["timing"]["sample_rate"]

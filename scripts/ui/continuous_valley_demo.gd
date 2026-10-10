@@ -285,7 +285,7 @@ func _make_menu() -> void:
 		expressions.add_child(button)
 	box.add_child(expressions)
 	var verbs := HBoxContainer.new()
-	for item in [["独听社区","solo"],["静音社区","mute"],["聚焦","focus"],["规划社区 · P","planning"]]:
+	for item in [["独听社区","solo"],["静音社区","mute"],["聚焦","focus"],["跨河应答","response"],["规划社区 · P","planning"]]:
 		var button := Button.new()
 		button.text = item[0]
 		button.pressed.connect(_verb.bind(item[1]))
@@ -800,6 +800,14 @@ func _verb(verb: String) -> void:
 	if verb == "bridge":
 		var result := model.submit({"kind":"bridge"})
 		_message("桥会在下一乐句连接两岸" if result["accepted"] else str(result["reason"]))
+		menu.hide()
+		return
+	if verb == "response":
+		var enabled := not model.synth.response_enabled
+		for pending in model.sound_events:
+			if str(pending.get("kind","")) == "response": enabled = not bool(pending.get("enabled",true))
+		var result := model.submit({"kind":"response","enabled":enabled})
+		_message(("跨河应答将在下一拍开启" if enabled else "跨河应答将在下一拍关闭") if result["accepted"] else str(result.get("reason","")))
 		menu.hide()
 		return
 	if selected_id.is_empty(): return

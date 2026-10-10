@@ -138,13 +138,11 @@ func environment(a: Vector2,b: Vector2,bridge: bool) -> Dictionary:
 		for line in crossing:
 			for p in line:
 				if absf(p.y-float(cfg["template_bridge_y"])) > 0.55: open = false
-	var terrain_factor := 1.0
-	if family in ["forest_ridge","highland_pass"] and crossing.is_empty():
-		terrain_factor = float(Config.load_values()["space"]["forest_factor"])*(1.08 if family == "highland_pass" else 1.0)
-	elif not crossing.is_empty() and open:
-		terrain_factor = float(Config.load_values()["space"]["water_factor"])
-	return {"occlusion":1.0 if open else 0.0,"terrain_factor":terrain_factor,
-		"sigma_a":1.0+height_at(a)/8.0,"sigma_b":1.0+height_at(b)/8.0}
+	# Terrain currently contributes physical occlusion only. Forest texture,
+	# elevation propagation and coast openness remain player-facing candidates;
+	# they are not hidden global multipliers in the growth formula.
+	return {"occlusion":1.0 if open else 0.0,"terrain_factor":1.0,
+		"sigma_a":1.0,"sigma_b":1.0}
 
 func buildable_ratio() -> float:
 	var count := 0

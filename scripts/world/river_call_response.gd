@@ -22,12 +22,6 @@ static func pairs(world: RefCounted,overrides: Dictionary = {}) -> Array[Diction
 			result.append({"a":aid,"b":bid,"distance":ap.distance_to(bp),"score":score})
 	return result
 
-static func bonuses(relations: Array) -> Dictionary:
-	var result: Dictionary = {}
-	for pair in relations:
-		for id in [pair["a"],pair["b"]]: result[id] = float(result.get(id,0.0))+2.0
-	return result
-
 static func reply(world: RefCounted,source: Dictionary,relations: Array,overrides: Dictionary = {}) -> Dictionary:
 	var options: Dictionary = {}
 	for pair in relations:

@@ -135,7 +135,7 @@ func _init(city_world: ContinuousWorld, fixed_gain: float = 1.0) -> void:
 func submit(operation: Dictionary) -> Dictionary:
 	var kind := str(operation.get("kind",""))
 	var beat := next_boundary if rendered_until == 0 else (rendered_until/beat_frames+1)*beat_frames
-	if kind in ["solo","mute","focus"]:
+	if kind in ["solo","mute","focus","response"]:
 		var event := operation.duplicate(true)
 		event["sound_frame"] = beat
 		sound_events.append(event)
@@ -219,6 +219,7 @@ func _apply_sound(event: Dictionary) -> void:
 		"solo": synth.listener_community = str(event.get("community",""))
 		"focus": synth.focused_community = str(event.get("community",""))
 		"mute": synth.muted_communities[event["community"]] = bool(event["enabled"])
+		"response": synth.response_enabled = bool(event.get("enabled",true))
 	sound_trace.append(event.duplicate(true))
 	if sound_trace.size() > 64: sound_trace.pop_front()
 
@@ -336,6 +337,7 @@ func freeze() -> ContinuousAudioModel:
 	copy.decisions.assign(decisions.duplicate(true))
 	copy.synth.listener_community = synth.listener_community
 	copy.synth.focused_community = synth.focused_community
+	copy.synth.response_enabled = synth.response_enabled
 	copy.synth.muted_communities = synth.muted_communities.duplicate(true)
 	copy.synth.pad_groups = synth.pad_groups.duplicate(true)
 	copy.synth.rhythm_nodes = synth.rhythm_nodes.duplicate(true)
@@ -345,8 +347,9 @@ func freeze() -> ContinuousAudioModel:
 	copy.synth.restore_eras(synth.era_snapshot())
 	return copy
 
+const MUSIC_LAYOUT_VERSION = 145
 const SAVED_SYNTH_FIELDS = ["pad_groups","population","rhythm_nodes","musical_nodes","theme","response","rhythms",
-	"listener_community","focused_community","muted_communities","gray_enabled","gray_from","gray_change_at","ducking","duck_release_at","last_voice_count","max_voice_count","voice_group_stats"]
+	"listener_community","focused_community","response_enabled","muted_communities","gray_enabled","gray_from","gray_change_at","ducking","duck_release_at","last_voice_count","max_voice_count","voice_group_stats"]
 
 static func _hydrate_stereo(value: Variant) -> Variant:
 	if value is Dictionary:
@@ -374,7 +377,7 @@ func capture_state() -> Dictionary:
 		history.append(saved_entry.duplicate(true))
 	var mix: Dictionary = {}
 	for field in SAVED_SYNTH_FIELDS: mix[field] = synth.get(field)
-	return {"world":world.snapshot(),"gain":synth.gain,"next_boundary":next_boundary,"rendered_until":rendered_until,
+	return {"music_layout_version":MUSIC_LAYOUT_VERSION,"world":world.snapshot(),"gain":synth.gain,"next_boundary":next_boundary,"rendered_until":rendered_until,
 		"event_cursor":event_cursor,"sound_events":sound_events.duplicate(true),"sound_trace":sound_trace.duplicate(true),"sound_overrides":sound_overrides.duplicate(true),
 		"decisions":decisions.duplicate(true),"presentation_history":history,
 		"last_sample":last_sample,"transition_offset":transition_offset,"transition_remaining":transition_remaining,
@@ -406,6 +409,17 @@ static func from_state(saved: Dictionary) -> ContinuousAudioModel:
 	copy.synth.theme = _hydrate_stereo(copy.synth.theme)
 	copy.synth.response = _hydrate_stereo(copy.synth.response)
 	for index in range(copy.synth.rhythms.size()): copy.synth.rhythms[index] = _hydrate_stereo(copy.synth.rhythms[index])
+	if int(saved.get("music_layout_version",0)) < MUSIC_LAYOUT_VERSION:
+		# Imported works retain houses, decisions and pad phases. Rebuild only
+		# obsolete terrain-driven score routes under the current music contract.
+		copy.synth.rhythm_nodes.clear()
+		copy.synth.musical_nodes.clear()
+		copy.synth.configure_score(city,copy.sound_overrides,copy.rendered_until)
+		for entry in copy.presentation_history:
+			var historical: Dictionary = entry.get("score",{})
+			historical["response"] = {}
+			historical.get("theme",{}).erase("terrain")
+			for part in historical.get("rhythms",[]): part.erase("terrain")
 	return copy
 
 func forecast(operation: Dictionary, state: Dictionary, at: int, duration: int) -> PackedVector2Array:
