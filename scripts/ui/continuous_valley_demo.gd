@@ -7,6 +7,7 @@ const Projection2D = preload("res://scripts/world/world_projection.gd")
 const Coupling = preload("res://scripts/world/world_coupling.gd")
 const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 const PublicRelocation = preload("res://scripts/world/public_site_relocation.gd")
+const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd")
 const Config = preload("res://scripts/world/world_values.gd")
 const GrowthSprite = preload("res://scripts/visual/audio_growth_mask.gd")
 const Shadows = preload("res://scripts/visual/city_shadow_layer.gd")
@@ -72,6 +73,9 @@ var hover_id := ""
 var context: Dictionary = {}
 var relocation_mode := false
 var relocation_site_id := ""
+var partial_mode := false
+var partial_kind := ""
+var partial_reservation_id := ""
 var pointer := Vector2.ZERO
 var pointer_inside := false
 var midi := 48
@@ -303,7 +307,7 @@ func _make_menu() -> void:
 		verbs.add_child(button)
 	box.add_child(verbs)
 	var public_row := HBoxContainer.new()
-	for item in [["建公园","park"],["文化设施","civic"],["搬迁公共设施","relocate_public"],["留地","reserve"],["释放留地","release_reservation"],["连接两岸","bridge"]]:
+	for item in [["建公园","park"],["文化设施","civic"],["局部公园","partial_park"],["局部文化馆","partial_civic"],["搬迁公共设施","relocate_public"],["留地","reserve"],["释放留地","release_reservation"],["连接两岸","bridge"]]:
 		var button := Button.new()
 		button.text = item[0]
 		button.pressed.connect(_verb.bind(item[1]))
@@ -692,6 +696,9 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
 			relocation_mode = false
 			relocation_site_id = ""
+			partial_mode = false
+			partial_kind = ""
+			partial_reservation_id = ""
 			model.cancel_pending()
 			menu.hide()
 			planning_guide.hide_tool()
@@ -699,6 +706,9 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.pressed and event.button_index == MOUSE_BUTTON_LEFT and not black:
 			if relocation_mode:
 				_submit_relocation_at(world_at(pointer))
+				return
+			if partial_mode:
+				_submit_partial_at(world_at(pointer))
 				return
 			if planning_guide.map_click(world_at(pointer),Input.is_key_pressed(KEY_SHIFT)): return
 			var landmark_index := _landmark_candidate_at(pointer)
@@ -717,7 +727,7 @@ func _gui_input(event: InputEvent) -> void:
 				if not reservation.is_empty():
 					context = {"kind":"reservation","id":reservation["reservation_id"],"position":reservation["position"].duplicate()}
 					selected_id = ""
-					menu_info.text = "你留下的空地 · 可释放、建公园或文化设施"
+					menu_info.text = "你留下的空地 · 可释放、整片营造或局部兑现"
 					_planning_menu()
 					_show_context_menu()
 					return
@@ -840,6 +850,8 @@ func _planning_menu() -> void:
 	var selectable := not candidate.is_empty() and bool(candidate.get("allowed",false))
 	planning_buttons["reserve"].disabled = not selectable or candidate.has("reservation_id") or candidate.has("public_id")
 	planning_buttons["release_reservation"].disabled = context.get("kind","") != "reservation"
+	planning_buttons["partial_park"].disabled = context.get("kind","") != "reservation"
+	planning_buttons["partial_civic"].disabled = context.get("kind","") != "reservation"
 	for verb in ["park","civic"]:
 		var existing := false
 		for site in model.world.public_sites:
@@ -872,6 +884,27 @@ func _submit_relocation_at(target: Vector2) -> void:
 	else:
 		_message(str(result.get("reason","搬迁未能排入下一句")))
 
+func _submit_partial_at(target: Vector2) -> void:
+	if partial_reservation_id.is_empty() or partial_kind.is_empty():
+		partial_mode = false
+		return
+	var preview: Dictionary = PartialPublic.preview(model.world,partial_reservation_id,partial_kind,target)
+	if not bool(preview.get("accepted",false)):
+		_message(str(preview.get("reason","局部公共空间不可用")))
+		return
+	var result := model.submit({"kind":partial_kind,"partial":true,"source_reservation_id":partial_reservation_id,"position":[target.x,target.y],"source_revision":str(preview.get("source_revision",""))})
+	if bool(result.get("accepted",false)):
+		_message(("局部公园" if partial_kind == "park" else "局部文化馆")+"已确认 · 剩余留地保留到下一次规划")
+		partial_mode = false
+		partial_kind = ""
+		partial_reservation_id = ""
+		context.clear()
+		ripple_position = target
+		ripple_seconds = 0.6
+		menu.hide()
+	else:
+		_message(str(result.get("reason","局部兑现未能排入下一句")))
+
 func _verb(verb: String) -> void:
 	if verb == "planning":
 		planning_guide.open_tool()
@@ -887,6 +920,16 @@ func _verb(verb: String) -> void:
 		var labels := {"reserve":"这片空地会在下一句保留","release_reservation":"下一句释放留地","park":"公园会在选中位置落成","civic":"文化设施会在选中位置落成"}
 		_message(labels[verb] if result["accepted"] else str(result["reason"]))
 		if result["accepted"]: menu.hide()
+		return
+	if verb in ["partial_park","partial_civic"]:
+		if context.get("kind","") != "reservation" or str(context.get("id","")).is_empty():
+			_message("先点选一片留地，再选择局部兑现")
+			return
+		partial_kind = "park" if verb == "partial_park" else "civic"
+		partial_reservation_id = str(context["id"])
+		partial_mode = true
+		menu.hide()
+		_message(("局部公园" if partial_kind == "park" else "局部文化馆")+"预影开启 · 点击留地内的位置确认，右键取消")
 		return
 	if verb in ["park","civic"]:
 		var site: Dictionary = {}
@@ -1106,6 +1149,8 @@ func _planning_status_hint() -> String:
 	for operation in model.world.pending_actions:
 		var kind := str(operation.get("kind", ""))
 		var label: String = str({"charter":"章程", "park":"公园", "civic":"文化馆", "relocate_public":"搬迁公共设施", "reserve":"留地", "release_reservation":"释放留地", "bridge":"跨河连接"}.get(kind, ""))
+		if bool(operation.get("partial",false)):
+			label = "局部公园" if kind == "park" else ("局部文化馆" if kind == "civic" else label)
 		if not str(label).is_empty(): pending_labels.append(str(label))
 	if not pending_labels.is_empty():
 		return "待播规划 · %s · 下一个乐句落定" % "、".join(pending_labels)
@@ -1562,6 +1607,29 @@ func _draw_landmark_preview() -> void:
 		draw_string(ThemeDB.fallback_font,at+Vector2(8,-8)*view_zoom,"预影 · "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("776247"))
 
 func _draw_planning_preview() -> void:
+	if partial_mode and not partial_reservation_id.is_empty() and pointer_inside:
+		var partial_preview: Dictionary = PartialPublic.preview(shown_world,partial_reservation_id,partial_kind,world_at(pointer))
+		var reservation: Dictionary = PartialPublic._reservation(shown_world,partial_reservation_id)
+		if not reservation.is_empty() and reservation.has("polygon"):
+			var source_polygon := _project_polygon(reservation["polygon"])
+			source_polygon.append(source_polygon[0])
+			draw_polyline(source_polygon,Color(0.55,0.72,0.48,0.55),1.3,true)
+		for residual in partial_preview.get("remaining_polygons",[]):
+			var residual_polygon := _project_polygon(residual)
+			draw_colored_polygon(residual_polygon,Color(0.45,0.72,0.48,0.13))
+			if residual_polygon.size() > 1:
+				residual_polygon.append(residual_polygon[0])
+				draw_polyline(residual_polygon,Color(0.42,0.67,0.45,0.40),1.0,true)
+		if partial_preview.has("target_polygon"):
+			var target_polygon := _project_polygon(partial_preview["target_polygon"])
+			var accepted := bool(partial_preview.get("accepted",false))
+			draw_colored_polygon(target_polygon,Color(0.35,0.78,0.65,0.30) if accepted else Color(0.82,0.36,0.34,0.20))
+			if target_polygon.size() > 1:
+				target_polygon.append(target_polygon[0])
+				draw_polyline(target_polygon,Color("4f9f7b") if accepted else Color("b35e58"),2.0,true)
+			var partial_text := ("局部公园" if partial_kind == "park" else "局部文化馆")+"预影 · "+("点击确认" if accepted else str(partial_preview.get("reason","位置不可用")))
+			if accepted: partial_text += " · 保留%d片留地 · %s" % [int(partial_preview.get("remaining_count",0)),str(partial_preview.get("target_community_id","未知社区"))]
+			draw_string(ThemeDB.fallback_font,point(world_at(pointer))+Vector2(10,-12),partial_text,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("41665b") if accepted else Color("9b4b4b"))
 	if relocation_mode and not relocation_site_id.is_empty() and pointer_inside:
 		var relocation_preview: Dictionary = PublicRelocation.preview(shown_world,relocation_site_id,world_at(pointer))
 		if relocation_preview.has("target_polygon"):

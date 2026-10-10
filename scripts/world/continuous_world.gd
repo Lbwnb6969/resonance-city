@@ -12,6 +12,7 @@ const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 const Charter = preload("res://scripts/world/development_charter.gd")
 const RiverResponse = preload("res://scripts/world/river_call_response.gd")
 const PublicRelocation = preload("res://scripts/world/public_site_relocation.gd")
+const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -945,6 +946,24 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation["target_access_path"] = relocation.get("target_access_path",PackedVector2Array())
 		operation["target_community_id"] = str(relocation.get("target_community_id",relocation.get("target_community", "")))
 		operation["source_revision"] = str(relocation.get("source_revision",""))
+	elif kind in ["park","civic"] and bool(operation.get("partial",false)):
+		var reservation_id := str(operation.get("source_reservation_id",operation.get("reservation_id","")))
+		var raw_target: Array = operation.get("position",operation.get("target_position",[]))
+		if raw_target.size() != 2: return {"accepted":false,"reason":"请选择局部公共空间的位置"}
+		var partial := PartialPublic.preview(self,reservation_id,kind,Vector2(float(raw_target[0]),float(raw_target[1])))
+		if not bool(partial.get("accepted",false)): return partial
+		var source_revision := str(operation.get("source_revision",partial.get("source_revision","")))
+		if not source_revision.is_empty() and source_revision != str(partial.get("source_revision","")):
+			return {"accepted":false,"reason":"留地已经变化，请重新查看局部兑现预影","source_reservation_id":reservation_id}
+		operation = operation.duplicate(true)
+		operation["partial"] = true
+		operation["source_reservation_id"] = reservation_id
+		operation["position"] = partial["target_position"].duplicate(true)
+		operation["target_position"] = partial["target_position"].duplicate(true)
+		operation["target_polygon"] = partial["target_polygon"].duplicate()
+		operation["target_entrance"] = partial["target_entrance"].duplicate(true)
+		operation["target_access_path"] = partial.get("target_access_path",PackedVector2Array())
+		operation["source_revision"] = str(partial.get("source_revision",""))
 	elif kind == "bridge":
 		var bridge_check := bridge_preview()
 		if not bool(bridge_check.get("available",false)): return {"accepted":false,"reason":str(bridge_check.get("reason","桥位当前不可用"))}
@@ -974,7 +993,7 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation["radius"] = site_radius
 		operation["era"] = era
 		if not source_reservation_id.is_empty(): operation["source_reservation_id"] = source_reservation_id
-	elif kind in ["reserve","release_reservation"] or (kind in ["park","civic"] and operation.has("position")):
+	elif kind in ["reserve","release_reservation"] or (kind in ["park","civic"] and operation.has("position") and not bool(operation.get("partial",false))):
 		if kind == "release_reservation":
 			if not planning_reservations.any(func(item: Dictionary) -> bool: return str(item["reservation_id"]) == str(operation.get("id",""))):
 				return {"accepted":false,"reason":"这片留地已经释放"}
@@ -1061,7 +1080,7 @@ func settle(frame: int) -> void:
 	var successful_planning: Array[Dictionary] = []
 	for op in committed:
 		if str(op["kind"]) == "charter": Charter.commit(self,op,frame)
-		if str(op["kind"]) in ["reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position")):
+		if str(op["kind"]) in ["reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position") and not bool(op.get("partial",false))):
 			if SpatialPlanning.commit(self,op,frame): successful_planning.append(op)
 			else:
 				events.append({"kind":"planning_rejected","operation_kind":str(op.get("kind","")),"event_id":op["event_id"],
@@ -1074,6 +1093,13 @@ func settle(frame: int) -> void:
 				events.append({"kind":"planning_rejected","operation_kind":"relocate_public","event_id":op["event_id"],
 					"source_site_id":str(op.get("id",op.get("source_site_id",""))),"position":op.get("position",[]).duplicate(true),
 					"reason":str(relocation_result.get("reason","公共设施所在城市已经变化，请重新查看搬迁预影")),"frame":frame})
+		elif str(op["kind"]) in ["park","civic"] and bool(op.get("partial",false)):
+			var partial_result: Dictionary = PartialPublic.commit(self,op,frame)
+			if bool(partial_result.get("accepted",false)): successful_planning.append(op)
+			else:
+				events.append({"kind":"planning_rejected","operation_kind":str(op["kind"]),"event_id":op["event_id"],
+					"source_reservation_id":str(op.get("source_reservation_id","")),"position":op.get("position",[]).duplicate(true),
+					"reason":str(partial_result.get("reason","局部兑现条件已失效，请重新查看预影")),"frame":frame})
 	for op in committed:
 		assert(int(op["frame"]) == frame)
 		if str(op["kind"]) in ["charter","reserve","release_reservation","relocate_public"] or (str(op["kind"]) in ["park","civic"] and op.has("position")): continue
@@ -1689,7 +1715,11 @@ func _restore_geometry() -> void:
 			for leg in item.get("legs",[]): leg["path"] = _geometry_from_json(leg["path"])
 	for item in pending_actions:
 		if item.has("polygon"): item["polygon"] = _geometry_from_json(item["polygon"])
+		if item.has("target_polygon"): item["target_polygon"] = _geometry_from_json(item["target_polygon"])
+		if item.has("target_access_path"): item["target_access_path"] = _geometry_from_json(item["target_access_path"])
 	if pending.has("polygon"): pending["polygon"] = _geometry_from_json(pending["polygon"])
+	if pending.has("target_polygon"): pending["target_polygon"] = _geometry_from_json(pending["target_polygon"])
+	if pending.has("target_access_path"): pending["target_access_path"] = _geometry_from_json(pending["target_access_path"])
 
 func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	assert(int(saved["schema_version"]) == 2 and saved["seed_hex"] == rng.seed_hex)
