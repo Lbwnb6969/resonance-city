@@ -982,6 +982,8 @@ func _sync_buildings() -> void:
 	revealing_buildings.clear()
 	var terrain_key := [shown_world.terrain.noise_seed,shown_world.terrain.river_phase,shown_world.terrain.family]
 	var shadows_dirty := shadow_terrain_key != terrain_key
+	var append_only := not shadows_dirty
+	var added_shadows: Array[Dictionary] = []
 	if shadows_dirty:
 		building_geometry.clear()
 		shadow_records.clear()
@@ -993,12 +995,16 @@ func _sync_buildings() -> void:
 		building_geometry.erase(id)
 		shadow_records.erase(id)
 		shadows_dirty = true
+		append_only = false
 	for building in shown_world.buildings:
 		var id: String = building["district_id"]
 		var entry: Dictionary = assets[building["type"]]
 		var world_position := Coupling.position_of(building)
 		var key := [world_position,entry["id"]]
+		var geometry_dirty := false
 		if not building_geometry.has(id) or building_geometry[id]["key"] != key:
+			geometry_dirty = true
+			if building_geometry.has(id): append_only = false
 			building_geometry[id] = {"key":key,"position":Projection2D.to_screen(world_position-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),shown_world.terrain.height_at(world_position)),
 				"scale":28.0*sqrt(2.0)*0.8/maxf(float(entry["model_bounds"]["size"][0]),float(entry["model_bounds"]["size"][2]))/float(entry["pixels_per_world"])}
 			shadows_dirty = true
@@ -1023,10 +1029,13 @@ func _sync_buildings() -> void:
 		var played := int(pitches.get(id,building["current_midi"]))
 		sprite.modulate = Color(1.0,1.0,0.92 if played < 48 else 0.97,1.0)
 		var step := roundi(sprite.progress*int(shadow_layer.cfg["progress_steps"]))
-		if not shadow_records.has(id) or shadow_records[id]["step"] != step or shadows_dirty:
+		var new_shadow := not shadow_records.has(id)
+		if not new_shadow and shadow_records[id]["step"] != step: append_only = false
+		if new_shadow or shadow_records[id]["step"] != step or geometry_dirty:
 			shadow_records[id] = {"entry":entry,"position":geometry["position"],"base_scale":Vector2.ONE*scale_factor,"progress":sprite.progress,"visible":true,"step":step}
+			if new_shadow: added_shadows.append(shadow_records[id])
 			shadows_dirty = true
-	if shadows_dirty: _update_shadows()
+	if shadows_dirty and (not append_only or not shadow_layer.try_append_records(added_shadows)): _update_shadows()
 
 func _update_shadows() -> void:
 	var records: Array[Dictionary] = []

@@ -96,6 +96,7 @@ func _compare(records: Array[Dictionary],label: String,changes: Array = []) -> v
   actual.fill(Color(0,0,0))
   for coord: Vector2i in current.tiles[kind]:
    var sprite: Sprite2D = current.tiles[kind][coord]["sprite"]
+   if sprite.texture == null: continue # Newly registered zero-coverage tiles have no upload yet.
    actual.blit_rect(sprite.texture.get_image(),Rect2i(1,1,current.TILE_SIZE,current.TILE_SIZE),coord*current.TILE_SIZE-low)
   _check(actual.get_data() == image.get_data(),label+" exact R8 "+kind)
 func _gpu(_records: Array[Dictionary],label: String,zoom: float,at: Vector2) -> void:

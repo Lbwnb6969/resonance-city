@@ -11,7 +11,13 @@ func _tiles_equal(a: CityShadowLayer,b: Node2D) -> bool:
  for kind in ["shadow","contact"]:
   if a.tiles[kind].keys() != b.tiles[kind].keys(): return false
   for coord in a.tiles[kind]:
-   if a.tiles[kind][coord]["sprite"].texture.get_image().get_data() != b.tiles[kind][coord]["sprite"].texture.get_image().get_data(): return false
+   var actual: Texture2D = a.tiles[kind][coord]["sprite"].texture
+   var expected: Texture2D = b.tiles[kind][coord]["sprite"].texture
+   if actual == null:
+    if expected != null:
+     for byte in expected.get_image().get_data():
+      if byte != 0: return false
+   elif expected == null or actual.get_image().get_data() != expected.get_image().get_data(): return false
  return true
 func _run() -> void:
  var current := CityShadowLayer.new()

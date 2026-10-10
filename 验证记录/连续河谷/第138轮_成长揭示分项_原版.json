@@ -1,0 +1,17 @@
+{
+	"after": 1525,
+	"before": 1511,
+	"ground_draw_ms": 17.461,
+	"scope": "Isolated GPU display binding after a real 1511->1525 settlement; output paused, no real-time FPS claim",
+	"shadow_update_ms": 17.175,
+	"stages": {
+		"display_bind_ms": 0.322,
+		"ground_bind_ms": 0.08,
+		"overlay_ms": 5.53,
+		"shadow_records_ms": 17.953,
+		"sprite_loop_ms": 9.423
+	},
+	"tile_updates": 34,
+	"total_sync_ms": 33.316,
+	"uploaded_pixels": 8982664
+}

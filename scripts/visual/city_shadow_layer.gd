@@ -112,7 +112,9 @@ func update_records(records: Array[Dictionary]) -> void:
      clipped = _clip_patch(patch,coord)
      tile["clips"][key] = clipped
     tile["items"][key] = {"patch":clipped,"progress":progress}
-    dirty[coord] = true
+    # A newly registered transparent mask changes membership, not coverage.
+    # Removing an earlier visible member already marked its tiles dirty above.
+    if progress > 0: dirty[coord] = true
   for key in previous:
    if not current.has(key): _remove_member(kind,key,previous[key],dirty,true)
   members[kind] = current
@@ -130,6 +132,47 @@ func update_records(records: Array[Dictionary]) -> void:
   if not live_masks.has(key): scaled_masks.erase(key)
  if updated_tile_count > 0: rebuild_count += 1
  rebuild_usec = Time.get_ticks_usec()-started
+
+# Append new mask geometry without scanning existing members. Validate the batch
+# first; an audible reveal may already be in progress when the next display frame arrives.
+func try_append_records(records: Array[Dictionary]) -> bool:
+ var started := Time.get_ticks_usec()
+ var additions: Array[Dictionary] = []
+ var incoming := {"shadow":{},"contact":{}}
+ for record in records:
+  if not record["visible"]: return false
+  for kind: String in ["shadow","contact"]:
+   if not record["entry"].has(kind+"_texture"): continue
+   var patch := _patch(record,kind)
+   var key: Array = patch["key"]
+   if members[kind].has(key) or incoming[kind].has(key): return false
+   incoming[kind][key] = true
+   additions.append({"record":record,"kind":kind,"patch":patch,"progress":clampi(roundi(float(record["progress"])*int(cfg["progress_steps"])),0,int(cfg["progress_steps"]))})
+ updated_tile_count = 0
+ uploaded_pixels = 0
+ var dirty := {"shadow":{},"contact":{}}
+ for addition in additions:
+  var record: Dictionary = addition["record"]
+  var kind: String = addition["kind"]
+  var patch: Dictionary = addition["patch"]
+  var key: Array = patch["key"]
+  var progress: int = addition["progress"]
+  if not record.has("mask_keys"): record["mask_keys"] = {}
+  record["mask_keys"][kind] = key
+  var coords := _tile_coords(patch)
+  members[kind][key] = {"progress":progress,"coords":coords}
+  for coord: Vector2i in coords:
+   if not tiles[kind].has(coord): tiles[kind][coord] = _new_tile(kind,coord)
+   var tile: Dictionary = tiles[kind][coord]
+   var clipped := _clip_patch(patch,coord)
+   tile["clips"][key] = clipped
+   tile["items"][key] = {"patch":clipped,"progress":progress}
+   if progress > 0: dirty[kind][coord] = true
+ for kind: String in ["shadow","contact"]:
+  for coord: Vector2i in dirty[kind]: _update_tile(tiles[kind][coord],coord)
+ if updated_tile_count > 0: rebuild_count += 1
+ rebuild_usec = Time.get_ticks_usec()-started
+ return true
 
 func update_progress(records: Array[Dictionary]) -> void:
  var started := Time.get_ticks_usec()

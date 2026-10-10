@@ -92,6 +92,12 @@ func _run() -> void:
 		_check(demo.city_ground_layer.update_count == old_ground_updates and demo.building_sync_count == old_building_syncs and demo.city_ground_layer.city == old_shown,"packed old-world view retains geometry while rebinding data")
 		var history: Array = demo.model.capture_state()["presentation_history"]
 		_check(not history.is_empty() and history.all(func(entry: Dictionary) -> bool: return not entry.has("view") and not entry.has("derived")),"packed runtime view excluded from DNA")
+		demo.clock.renderer.transport.audible_frame = boundary
+		demo.shown_world = demo.model.presentation_world(boundary)
+		demo._sync_buildings()
+		var registered := true
+		for record in demo.shadow_records.values(): registered = registered and record.has("mask_keys")
+		_check(registered and demo.shadow_layer.uploaded_pixels == 0,"packed transparent newborn shadows register without uploading unchanged masks")
 		demo.clock.renderer.transport.audible_frame = boundary+2205
 		demo.shown_world = demo.model.presentation_world(boundary+2205)
 		demo._sync_buildings()
