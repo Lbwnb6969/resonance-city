@@ -14,6 +14,9 @@ var rebuild_usec := 0
 var rebuild_count := 0
 var static_merge_count := 0
 var retained_resize_count := 0
+var native_enabled := true
+var native_batches := 0
+var mask_merger: RefCounted = ClassDB.instantiate("CityMaskUnion") if ClassDB.class_exists("CityMaskUnion") else null
 func _ready() -> void:
  cfg = Values.load_values()["lighting"]
  for kind in ["shadow","contact"]:
@@ -116,15 +119,19 @@ func update_records(records: Array[Dictionary]) -> void:
    base = PackedByteArray()
    base.resize(size_px.x*size_px.y)
    base.fill(0)
+  var mature_batch: Array[Dictionary] = []
   for key in completed:
    if not can_extend or not previous.has(key):
-    _merge(base,size_px.x,low,completed[key],int(cfg["progress_steps"]))
+    mature_batch.append({"patch":completed[key],"progress":int(cfg["progress_steps"])})
     static_merge_count += 1
+  base = _merge_batch(base,size_px.x,low,mature_batch)
   static_cache[kind] = {"low":low,"size":size_px,"members":completed,"data":base}
   var union: PackedByteArray = static_cache[kind]["data"].duplicate()
+  var reveal_batch: Array[Dictionary] = []
   for item in active:
    var progress: int = item["progress"]
-   if progress > 0 and progress < int(cfg["progress_steps"]): _merge(union,size_px.x,low,item["patch"],progress)
+   if progress > 0 and progress < int(cfg["progress_steps"]): reveal_batch.append(item)
+  union = _merge_batch(union,size_px.x,low,reveal_batch)
   var image := Image.create_from_data(size_px.x,size_px.y,false,Image.FORMAT_R8,union)
   if sprite.texture != null and sprite.texture.get_size() == Vector2(size_px):
    (sprite.texture as ImageTexture).update(image)
@@ -132,6 +139,14 @@ func update_records(records: Array[Dictionary]) -> void:
   sprite.position = Vector2(low)/float(cfg["union_resolution"])
   sprite.scale = Vector2.ONE/float(cfg["union_resolution"])
  rebuild_usec = Time.get_ticks_usec()-started
+
+func _merge_batch(union: PackedByteArray, width: int, low: Vector2i, items: Array[Dictionary]) -> PackedByteArray:
+ if items.is_empty(): return union
+ if native_enabled and mask_merger != null:
+  native_batches += 1
+  return mask_merger.merge_masks(union,width,low,items,int(cfg["progress_steps"]))
+ for item in items: _merge(union,width,low,item["patch"],item["progress"])
+ return union
 
 func _merge(union: PackedByteArray, width: int, low: Vector2i, patch: Dictionary, progress: int) -> void:
  var data: PackedByteArray = patch["alpha"]

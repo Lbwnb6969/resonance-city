@@ -1,0 +1,96 @@
+{
+	"after": 609,
+	"background": {
+		"adopted": 1,
+		"discarded": 2,
+		"fallbacks": 0,
+		"max_capture_ms": 12.102,
+		"max_commit_ms": 0.516,
+		"max_worker_ms": 329.175,
+		"retired": 3,
+		"started": 3
+	},
+	"before": 607,
+	"checks": {
+		"audible_reveal": true,
+		"background_adoption": true,
+		"camera_projection": true,
+		"grows": true,
+		"native_audio": true,
+		"no_underruns": true,
+		"shadow_backend": false,
+		"target_scale": true,
+		"voice_budget": true
+	},
+	"concurrent_load": "User reports another game may be running; no other apps stopped",
+	"cpu_max_ms": 47.423,
+	"cpu_p50_ms": 20.051,
+	"cpu_p95_ms": 31.916,
+	"era": 5,
+	"fabric_profile": {
+		"anchor_ms": 48.125,
+		"select_ms": 9.999,
+		"walls_rows_ms": 17.308
+	},
+	"frame_last_ms": {
+		"buildings_ms": 17.404,
+		"draw_ms": 0.202,
+		"interaction_ms": 0.031,
+		"traffic_ms": 3.911
+	},
+	"frame_max_ms": 86.02,
+	"frame_p50_ms": 17.567,
+	"frame_p95_ms": 19.713,
+	"frame_peaks_ms": {
+		"buildings_ms": 28.014,
+		"draw_ms": 11.952,
+		"interaction_ms": 2.633,
+		"traffic_ms": 9.656
+	},
+	"frame_samples": 803,
+	"logical_processors": 32,
+	"max_projection_error": 0.0,
+	"max_render_ms": 29.006,
+	"max_settle_ms": 0.54,
+	"max_voices": 70,
+	"native_shadow_batches": 2,
+	"passed": false,
+	"profile": {
+		"actions_growth_ms": 67.148,
+		"coverage_ms": 11.3,
+		"fabric_ms": 78.006,
+		"music_forms_ms": 134.945,
+		"public_network_ms": 20.803,
+		"service_allocation_ms": 5.056,
+		"split_ms": 0.051
+	},
+	"retained_ground": {
+		"city_max_ms": 9.33,
+		"city_rebuilds": 3,
+		"terrain_max_ms": 1.709,
+		"terrain_rebuilds": 1,
+		"water_frames": 901
+	},
+	"retained_shadow_resizes": 0,
+	"script_shadow": true,
+	"shadow_rebuild_ms": 16.42,
+	"skips": 0,
+	"static_shadow_merges": 1250,
+	"steady_fps": 52.0,
+	"steady_frame_ms": {
+		"buildings_ms": 0.055,
+		"draw_ms": 0.207,
+		"interaction_ms": 0.031,
+		"traffic_ms": 4.434
+	},
+	"steady_skips": 0,
+	"supply_block": {
+		"begin": 25401439,
+		"capacity": 8191,
+		"count": 256,
+		"render_ms": 29.015,
+		"reserve_frames": 7935,
+		"skips_after_render": 0
+	},
+	"synchronous": false
+}

@@ -11,6 +11,7 @@
 #include <godot_cpp/variant/packed_float64_array.hpp>
 #include <godot_cpp/variant/packed_vector2_array.hpp>
 #include <cmath>
+#include "city_mask_union.h"
 
 using namespace godot;
 
@@ -67,7 +68,10 @@ public:
 };
 
 static void initialize_city_audio(ModuleInitializationLevel level) {
-    if (level == MODULE_INITIALIZATION_LEVEL_SCENE) ClassDB::register_class<CityPadMixer>();
+    if (level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+        ClassDB::register_class<CityPadMixer>();
+        ClassDB::register_class<CityMaskUnion>();
+    }
 }
 static void terminate_city_audio(ModuleInitializationLevel) {}
 

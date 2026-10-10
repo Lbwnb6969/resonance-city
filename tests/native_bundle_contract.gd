@@ -29,6 +29,15 @@ func _run() -> void:
 	demo.set_process(false)
 	_check(demo.model.world.buildings.size() == 18 and demo.sprites.size() == 18,"current continuous main scene builds opening city")
 	_check(demo.model.synth.native_mixer != null and demo.model.synth.native_enabled,"opening score uses native mixer")
+	_check(ClassDB.class_exists("CityMaskUnion") and demo.shadow_layer.mask_merger != null and demo.shadow_layer.native_batches > 0,"opening shadows use native batch merger")
+	var native_audio := ContinuousAudioModel.from_state(demo.model.capture_state())
+	var script_audio := ContinuousAudioModel.from_state(demo.model.capture_state())
+	script_audio.synth.native_enabled = false
+	var audio_frame: int = demo.clock.renderer.transport.rendered_frames
+	var audio_rate: int = demo.model.world.cfg["timing"]["sample_rate"]
+	_check(native_audio.render_block(demo.clock.renderer.state.duplicate(true),audio_frame,256,audio_rate) == script_audio.render_block(demo.clock.renderer.state.duplicate(true),audio_frame,256,audio_rate),"rebuilt native mixer preserves opening PCM against script")
+	native_audio.close_background_settlement()
+	script_audio.close_background_settlement()
 	var textures_ok := true
 	for texture in demo.textures.values(): textures_ok = textures_ok and texture.get_image().has_mipmaps()
 	_check(textures_ok,"packed era textures have mipmaps")
