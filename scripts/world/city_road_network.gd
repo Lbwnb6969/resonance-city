@@ -7,6 +7,7 @@ var adjacency: Dictionary = {}
 var terrain: RefCounted
 var topology := ""
 var route_cache: Dictionary = {}
+var route_trees: Dictionary = {}
 var access_cache: Dictionary = {}
 var walking_distance_cache: Dictionary = {}
 
@@ -20,6 +21,7 @@ func rebuild(city_nodes: Dictionary, city_roads: Array, city_terrain: RefCounted
 	if next_topology == topology: return
 	topology = next_topology
 	route_cache.clear()
+	route_trees.clear()
 	access_cache.clear()
 	walking_distance_cache.clear()
 	adjacency.clear()
@@ -38,21 +40,24 @@ func route(start: String, finish: String) -> Dictionary:
 	var key := start+">"+finish
 	if route_cache.has(key): return route_cache[key]
 	if not nodes.has(start) or not nodes.has(finish): return {"distance":INF,"edges":[],"path":PackedVector2Array()}
-	var distance := {start:0.0}
-	var parent: Dictionary = {}
-	var queue: Array[String] = [start]
-	while not queue.is_empty():
-		queue.sort_custom(func(a: String,b: String) -> bool:
-			if distance[a] != distance[b]: return distance[a] < distance[b]
-			return a < b)
-		var current: String = queue.pop_front()
-		if current == finish: break
-		for edge in adjacency[current]:
-			var candidate := float(distance[current])+float(edge["cost"])
-			if candidate < float(distance.get(edge["to"],INF))-0.000001:
-				distance[edge["to"]] = candidate
-				parent[edge["to"]] = {"node":current,"road":edge["road"]}
-				if not queue.has(edge["to"]): queue.append(edge["to"])
+	if not route_trees.has(start):
+		var distances := {start:0.0}
+		var parents: Dictionary = {}
+		var queue: Array[String] = [start]
+		while not queue.is_empty():
+			queue.sort_custom(func(a: String,b: String) -> bool:
+				if distances[a] != distances[b]: return distances[a] < distances[b]
+				return a < b)
+			var current: String = queue.pop_front()
+			for edge in adjacency[current]:
+				var candidate := float(distances[current])+float(edge["cost"])
+				if candidate < float(distances.get(edge["to"],INF))-0.000001:
+					distances[edge["to"]] = candidate
+					parents[edge["to"]] = {"node":current,"road":edge["road"]}
+					if not queue.has(edge["to"]): queue.append(edge["to"])
+		route_trees[start] = {"distance":distances,"parent":parents}
+	var distance: Dictionary = route_trees[start]["distance"]
+	var parent: Dictionary = route_trees[start]["parent"]
 	if not distance.has(finish): return {"distance":INF,"edges":[],"path":PackedVector2Array()}
 	var steps: Array = []
 	var cursor := finish

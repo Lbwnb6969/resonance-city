@@ -8,6 +8,7 @@ var noise_seed := 0
 var river_phase := 0.0
 var family := "river_valley"
 var water := PackedVector2Array()
+var water_bounds := Rect2()
 var left_bank := PackedVector2Array()
 var right_bank := PackedVector2Array()
 
@@ -38,6 +39,8 @@ func configure(seed_value: int, phase: float, terrain_family: String = "river_va
 		shore_right.append(Vector2(river_x(y)+river_width(y),y))
 	water = shore_left.duplicate()
 	for i in range(shore_right.size()-1,-1,-1): water.append(shore_right[i])
+	water_bounds = Rect2(water[0],Vector2.ZERO)
+	for point in water: water_bounds = water_bounds.expand(point)
 	left_bank = PackedVector2Array([Vector2(low,low)])
 	left_bank.append_array(shore_left)
 	left_bank.append(Vector2(low,high))
@@ -89,15 +92,21 @@ func height_at(p: Vector2) -> float:
 func land_at(p: Vector2) -> bool:
 	var low := float(cfg["template_land_min"])
 	var high := float(cfg["template_land_max"])
-	return p.x >= low and p.x <= high and p.y >= low and p.y <= high and not Geometry2D.is_point_in_polygon(p,water)
+	if p.x < low or p.x > high or p.y < low or p.y > high: return false
+	if p.x < water_bounds.position.x or p.x > water_bounds.end.x or p.y < water_bounds.position.y or p.y > water_bounds.end.y: return true
+	return not Geometry2D.is_point_in_polygon(p,water)
 
 func valid_footprint(polygon: PackedVector2Array) -> bool:
 	for p in polygon:
 		if not land_at(p): return false
-	return Geometry2D.intersect_polygons(polygon,water).is_empty()
+	var bounds := Rect2(polygon[0],Vector2.ZERO)
+	for point in polygon: bounds = bounds.expand(point)
+	return not bounds.intersects(water_bounds,true) or Geometry2D.intersect_polygons(polygon,water).is_empty()
 
 func environment(a: Vector2,b: Vector2,bridge: bool) -> Dictionary:
-	var crossing := Geometry2D.intersect_polyline_with_polygon(PackedVector2Array([a,b]),water)
+	var crossing: Array[PackedVector2Array] = []
+	if Rect2(a,b-a).abs().intersects(water_bounds,true):
+		crossing = Geometry2D.intersect_polyline_with_polygon(PackedVector2Array([a,b]),water)
 	var open := crossing.is_empty()
 	if not open and bridge:
 		open = true

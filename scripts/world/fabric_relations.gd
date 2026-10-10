@@ -15,19 +15,15 @@ static func _road_width(world: RefCounted, road: Dictionary) -> float:
 
 static func frontage_directions(world: RefCounted, p: Vector2) -> Array[int]:
 	var directions: Dictionary = {}
-	for road in world.roads:
-		if bool(road.get("bridge",false)): continue
-		var path: PackedVector2Array = road["path"]
-		for i in range(path.size()-1):
-			var a: Vector2 = path[i]
-			var b: Vector2 = path[i+1]
-			var q := Geometry2D.get_closest_point_to_segment(p,a,b)
-			var delta := q-p
-			var distance := delta.length()
-			if distance > 1.35 or distance < 0.0001: continue
-			var connector := PackedVector2Array([p,q])
-			if not Geometry2D.intersect_polyline_with_polygon(connector,world.terrain.water).is_empty(): continue
-			directions[_bucket(delta)] = true
+	for segment in world.near_road_segments(p,1.35):
+		if bool(segment["road"].get("bridge",false)): continue
+		var q := Geometry2D.get_closest_point_to_segment(p,segment["a"],segment["b"])
+		var delta := q-p
+		var distance := delta.length()
+		if distance > 1.35 or distance < 0.0001: continue
+		var connector := PackedVector2Array([p,q])
+		if not Geometry2D.intersect_polyline_with_polygon(connector,world.terrain.water).is_empty(): continue
+		directions[_bucket(delta)] = true
 	var result: Array[int] = []
 	for key in directions.keys(): result.append(int(key))
 	return result
@@ -46,16 +42,15 @@ static func nearest_road(world: RefCounted, p: Vector2) -> Dictionary:
 	return best
 
 static func on_road(world: RefCounted, p: Vector2, radius: float) -> bool:
-	for road in world.roads:
-		var path: PackedVector2Array = road["path"]
-		var width := _road_width(world,road)
-		for i in range(path.size()-1):
-			if p.distance_to(Geometry2D.get_closest_point_to_segment(p,path[i],path[i+1])) < radius+width-0.02:
-				return true
+	var width := maxf(0.55,maxf(float(world.cfg["city"]["branch_road_half_width"]),float(world.cfg["terrain"]["template_road_half_width"])))
+	for segment in world.near_road_segments(p,radius+width):
+		var road_width := _road_width(world,segment["road"])
+		if p.distance_to(Geometry2D.get_closest_point_to_segment(p,segment["a"],segment["b"])) < radius+road_width-0.02:
+			return true
 	return false
 
 static func reserved(world: RefCounted, p: Vector2) -> bool:
-	for site in world.public_sites:
+	for site in world.near_public_sites(p):
 		if Geometry2D.is_point_in_polygon(p,site["polygon"]): return true
 	return false
 
@@ -99,8 +94,14 @@ static func tier_for(world: RefCounted, p: Vector2, lot_id: String = "", communi
 		"max_form":"群" if tier == "L3" else "腔"}
 
 static func _street_id(world: RefCounted, p: Vector2) -> String:
-	var road := nearest_road(world,p)
-	return str(road.get("road","")) if float(road.get("gap",INF)) <= 1.35 else ""
+	var nearest := INF
+	var result := ""
+	for segment in world.near_road_segments(p,1.35):
+		var distance := p.distance_to(Geometry2D.get_closest_point_to_segment(p,segment["a"],segment["b"]))
+		if distance <= 1.35 and distance < nearest:
+			nearest = distance
+			result = str(segment["road"]["id"])
+	return result
 
 static func _connected_components(ids: Array, adjacency: Dictionary) -> Array:
 	var remaining: Dictionary = {}

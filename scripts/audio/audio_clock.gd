@@ -3,8 +3,8 @@ extends Node
 
 const Renderer = preload("res://scripts/audio/sample_renderer.gd")
 const Values = preload("res://scripts/spec_values.gd")
-# The model keeps the approved 120 ms scheduling horizon. The live generator has
-# extra queue headroom for one large-city settlement on the main thread.
+# Keep the existing live queue; after a slow settlement, refill the frames
+# consumed during rendering before yielding to city presentation.
 const LIVE_BUFFER_FLOOR_SECONDS := 0.24
 
 signal output_started
@@ -76,7 +76,7 @@ func _update_audible() -> void:
 
 func _fill_buffer() -> void:
 	var available := playback.get_frames_available()
-	if available > 0:
+	while available > 0:
 		var block := renderer.render(available)
 		for i in range(mini(block.size(),resume_fade_left)):
 			block[i] *= smoothstep(0.0,1.0,1.0-float(resume_fade_left)/resume_fade_total)
@@ -84,6 +84,8 @@ func _fill_buffer() -> void:
 		if not playback.push_buffer(block):
 			push_error("Audio PCM buffer rejected; stop and restart to preserve the timeline")
 			stop_output()
+			return
+		available = playback.get_frames_available()
 
 func stop_output() -> void:
 	active = false

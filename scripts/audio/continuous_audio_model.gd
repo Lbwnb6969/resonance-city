@@ -86,7 +86,9 @@ func _mix_frame(_state: Dictionary, _at: int, _rate: int) -> Vector2:
 
 func _record_presentation(at: int) -> void:
 	if not presentation_history.is_empty() and int(presentation_history[-1]["frame"]) == at: return
-	presentation_history.append({"frame":at,"before":world.snapshot(),"pitches":sound_overrides.duplicate(true)})
+	presentation_history.append({"frame":at,"before":world.snapshot(),"pitches":sound_overrides.duplicate(true),
+		"derived":{"fabric":world.fabric_cache.duplicate(true),"edges":world.edge_cache.duplicate(true),
+			"service":world.public_service_cache.duplicate(true),"resonance":world.resonance}})
 
 func audio_city() -> Array:
 	var city := world.buildings.duplicate(true)
@@ -184,7 +186,13 @@ func presentation_world(audible_frame: float) -> ContinuousWorld:
 	var entry: Dictionary = presentation_history[0]
 	if presentation_copy == null or presentation_copy_frame != int(entry["frame"]):
 		presentation_copy = World.new(world.rng.seed_hex,false)
-		presentation_copy.restore(entry["before"])
+		var derived: Dictionary = entry.get("derived",{})
+		presentation_copy.restore(entry["before"],derived.is_empty())
+		if not derived.is_empty():
+			presentation_copy.fabric_cache = derived["fabric"].duplicate(true)
+			presentation_copy.edge_cache = derived["edges"].duplicate(true)
+			presentation_copy.public_service_cache = derived["service"].duplicate(true)
+			presentation_copy.resonance = float(derived["resonance"])
 		presentation_copy_frame = int(entry["frame"])
 	presentation_copy.pending = world.pending.duplicate(true)
 	return presentation_copy
@@ -234,11 +242,14 @@ static func _hydrate_stereo(value: Variant) -> Variant:
 	return value
 
 func capture_state() -> Dictionary:
+	# Derived presentation geometry is a short-lived live cache, not DNA state.
+	var history := presentation_history.duplicate(true)
+	for entry in history: entry.erase("derived")
 	var mix: Dictionary = {}
 	for field in SAVED_SYNTH_FIELDS: mix[field] = synth.get(field)
 	return {"world":world.snapshot(),"gain":synth.gain,"next_boundary":next_boundary,"rendered_until":rendered_until,
 		"event_cursor":event_cursor,"sound_events":sound_events.duplicate(true),"sound_trace":sound_trace.duplicate(true),"sound_overrides":sound_overrides.duplicate(true),
-		"decisions":decisions.duplicate(true),"presentation_history":presentation_history.duplicate(true),
+		"decisions":decisions.duplicate(true),"presentation_history":history,
 		"last_sample":last_sample,"transition_offset":transition_offset,"transition_remaining":transition_remaining,
 		"transition_total":transition_total,"era_changes":synth.era_snapshot(),"mix":mix.duplicate(true)}
 

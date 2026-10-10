@@ -12,6 +12,12 @@ var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
 var index := Index.new()
+var road_index := Index.new()
+var road_segments: Dictionary = {}
+var road_index_identity := ""
+var parcel_index := Index.new()
+var parcel_index_identity := ""
+var parcel_records: Dictionary = {}
 var rng: NamedRandom
 var buildings: Array[Dictionary] = []
 var by_id: Dictionary = {}
@@ -398,13 +404,12 @@ func road_environment(a: Vector2,b: Vector2) -> Dictionary:
 func _road_environment(a: Vector2,b: Vector2) -> Dictionary:
 	var result := terrain.environment(a,b,bridge)
 	if float(result["occlusion"]) == 0.0: return result
-	for road in roads:
-		if road["bridge"]: continue
-		var path: PackedVector2Array = road["path"]
-		for i in range(path.size()-1):
-			if Geometry2D.segment_intersects_segment(a,b,path[i],path[i+1]) != null:
-				result["occlusion"] = 0.0
-				return result
+	for id in road_index.query_bounds(Rect2(a,b-a).abs()):
+		var segment: Dictionary = road_segments[id]
+		if segment["road"]["bridge"]: continue
+		if Geometry2D.segment_intersects_segment(a,b,segment["a"],segment["b"]) != null:
+			result["occlusion"] = 0.0
+			return result
 	return result
 
 func edges() -> Array:
@@ -422,7 +427,64 @@ func _cache_entity(id: String) -> void:
 		if weight > 0.0: edge_cache[key] = {"a":pair[0],"b":pair[1],"coupling":weight}
 		else: edge_cache.erase(key)
 
+func _refresh_road_index() -> void:
+	_refresh_parcel_index()
+	var identity: Array = []
+	for road in roads: identity.append([road["id"],road["path"],road.get("bridge",false),road.get("kind","")])
+	var next_identity := JSON.stringify(identity)
+	if next_identity == road_index_identity: return
+	road_index_identity = next_identity
+	road_index = Index.new()
+	road_segments.clear()
+	var ordinal := 0
+	for road in roads:
+		var path: PackedVector2Array = road["path"]
+		for step in range(path.size()-1):
+			var id := "segment-%05d" % ordinal
+			var a: Vector2 = path[step]
+			var b: Vector2 = path[step+1]
+			road_segments[id] = {"a":a,"b":b,"road":road}
+			road_index.put(id,(a+b)*0.5,a.distance_to(b)*0.5)
+			ordinal += 1
+
+func _refresh_parcel_index() -> void:
+	var identity: Array = []
+	for group in [lots,public_sites]:
+		for record in group: identity.append([record["id"],record["polygon"]])
+	var next_identity := JSON.stringify(identity)
+	if next_identity == parcel_index_identity: return
+	parcel_index_identity = next_identity
+	parcel_index = Index.new()
+	parcel_records.clear()
+	for group in [lots,public_sites]:
+		var prefix := "lot" if group == lots else "site"
+		for ordinal in range(group.size()):
+			var polygon: PackedVector2Array = group[ordinal]["polygon"]
+			var bounds := Rect2(polygon[0],Vector2.ZERO)
+			for point in polygon: bounds = bounds.expand(point)
+			var id := "%s-%05d" % [prefix,ordinal]
+			parcel_records[id] = ordinal
+			parcel_index.put(id,bounds.get_center(),bounds.size.length()*0.5)
+
+func near_lots(p: Vector2) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for id in parcel_index.query_circle(p,0.0):
+		if id.begins_with("lot-"): result.append(lots[int(parcel_records[id])])
+	return result
+
+func near_public_sites(p: Vector2,reach: float = 0.0) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for id in parcel_index.query_circle(p,reach):
+		if id.begins_with("site-"): result.append(public_sites[int(parcel_records[id])])
+	return result
+
+func near_road_segments(p: Vector2,reach: float) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for id in road_index.query_circle(p,reach): result.append(road_segments[id])
+	return result
+
 func rebuild_graph() -> void:
+	_refresh_road_index()
 	environment_cache.clear()
 	edge_cache.clear()
 	for building in buildings: _cache_entity(building["district_id"])
@@ -463,16 +525,18 @@ func placement(p: Vector2) -> Dictionary:
 	var radius := float(cfg["space"]["residential_radius"])
 	if Fabric.on_road(self,p,radius): return {"allowed":false,"reason":"这里是成路，留出道路的连续通行面"}
 	if Fabric.reserved(self,p): return {"allowed":false,"reason":"这里是公园或公共设施保留地"}
-	for site in public_sites:
+	for site in near_public_sites(p,polygon[0].distance_to(p)):
 		if not Geometry2D.intersect_polygons(polygon,site["polygon"]).is_empty(): return {"allowed":false,"reason":"建筑占地不能压进公共保留地"}
 	for id in index.query_circle(p,radius):
 		if p.distance_to(Coupling.position_of(by_id[id])) < radius+float(by_id[id]["radius"])-1e-6:
 			return {"allowed":false,"reason":"与已有建筑太近，留一点呼吸的空隙"}
-	for lot in lots:
+	for lot in near_lots(p):
 		if not str(lot["occupant"]).is_empty(): continue
 		var contained := true
 		for corner in polygon:
-			if not Geometry2D.is_point_in_polygon(corner,lot["polygon"]): contained = false
+			if not Geometry2D.is_point_in_polygon(corner,lot["polygon"]):
+				contained = false
+				break
 		if contained:
 			var tier := Fabric.tier_for(self,p,str(lot["id"]),str(lot["community_id"]))
 			tier["allowed"] = true
@@ -826,6 +890,7 @@ func settle(frame: int) -> void:
 				var b: Array = nodes["east-2"]
 				roads.append({"id":"river-bridge","from":"west-2","to":"east-2","path":PackedVector2Array([Vector2(a[0],a[1]),Vector2(b[0],b[1])]),"bridge":true})
 				rebuild_graph()
+				network.rebuild(nodes,roads,terrain)
 				events.append({"kind":"bridge","frame":frame})
 			"landmark":
 				_commit_landmark(op,frame)
@@ -916,10 +981,10 @@ func _near_use_anchor(cid: String,position: Vector2,use: String) -> bool:
 		if position.distance_to(anchor) <= 5.0: return true
 	return false
 
-func _growth_use_for_candidate(cid: String,position: Vector2,requested: String) -> String:
+func _growth_use_for_candidate(cid: String,position: Vector2,requested: String,quota: Dictionary = {},usage: Dictionary = {}) -> String:
 	if requested != "residential": return requested
-	var quota := community_land_use_quota(cid)
-	var usage := _community_usage(cid)
+	if quota.is_empty(): quota = community_land_use_quota(cid)
+	if usage.is_empty(): usage = _community_usage(cid)
 	if int(quota.get("industrial",0)) > int(usage.get("industrial",0)) and _near_use_anchor(cid,position,"industrial"):
 		return "industrial"
 	if int(quota.get("commercial",0)) > int(usage.get("commercial",0)) and _near_use_anchor(cid,position,"commercial"):
@@ -993,17 +1058,32 @@ func _grow(family: String, frame: int) -> void:
 	var best_distance := INF
 	var best_rank := -1
 	var best_growth_score := -INF
+	var quotas: Dictionary = {}
+	var usages: Dictionary = {}
 	for candidate in candidates:
 		var p: Vector2 = Vector2(candidate["position"])
 		var check := placement(p)
 		if not check["allowed"]: continue
-		var candidate_use := _growth_use_for_candidate(str(check.get("community_id","")),p,str(candidate.get("use","residential")))
+		var cid := str(check.get("community_id",""))
+		if not quotas.has(cid):
+			quotas[cid] = community_land_use_quota(cid)
+			usages[cid] = _community_usage(cid)
+		var candidate_use := _growth_use_for_candidate(cid,p,str(candidate.get("use","residential")),quotas[cid],usages[cid])
+		var tier_rank := 3 if check["tier"] == "L1" else (2 if check["tier"] == "L2" else 1)
+		var distance := p.distance_squared_to(origin)
+		var transit_bonus := _transit_growth_bonus(p,candidate_use)
+		var quota_bonus := maxf(0.0,float(int(quotas[cid].get(candidate_use,0))-int(usages[cid].get(candidate_use,0))))
+		var base_score := float(tier_rank)*100000.0+quota_bonus*1000.0+transit_bonus*100.0-distance
+		# Exact upper bound: acoustic checks cannot rescue a candidate whose
+		# placement score plus the maximum civic bonus cannot beat the winner.
+		if base_score+50.0 <= best_growth_score: continue
 		var connected := false
 		for owned in buildings:
 			if owned["family_id"] != family: continue
 			var op := Coupling.position_of(owned)
 			if p.distance_to(op) <= 2.4 and float(road_environment(p,op)["occlusion"]) > 0.0 and not frozen(owned["district_id"]):
 				connected = true
+				break
 		connected = landmark_growth_connected(p,connected)
 		if not connected: continue
 		var clashes := false
@@ -1020,14 +1100,6 @@ func _grow(family: String, frame: int) -> void:
 		for neighbor in ranked.slice(0,int(cfg["space"]["near_neighbour_count"])):
 			if float(coupling.interval(int(root["current_midi"]),int(by_id[neighbor["id"]]["current_midi"]))["score"]) <= 0.05: clashes = true
 		if clashes: continue
-		var tier_rank := 3 if check["tier"] == "L1" else (2 if check["tier"] == "L2" else 1)
-		var distance := p.distance_squared_to(origin)
-		var transit_bonus := _transit_growth_bonus(p,candidate_use)
-		var quota_bonus := _land_use_quota_bonus(str(check.get("community_id","")),candidate_use)
-		var base_score := float(tier_rank)*100000.0+quota_bonus*1000.0+transit_bonus*100.0-distance
-		# Service bonus is at most 50; do not query access paths for a candidate
-		# that cannot beat the current winner even at full spare capacity.
-		if base_score+50.0 <= best_growth_score: continue
 		var service_bonus := _public_service_growth_bonus(str(check.get("community_id","")),p)
 		# Tier remains the primary placement rule; land-use deficits, transit
 		# demand, and spare civic capacity break ties inside the same tier.
@@ -1351,8 +1423,10 @@ func snapshot() -> Dictionary:
 		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,"expanded_plan":expanded_plan,
 		"next_id":next_id,"families":families.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_reason":last_reason}
 
-func restore(saved: Dictionary) -> void:
+func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	assert(int(saved["schema_version"]) == 2 and saved["seed_hex"] == rng.seed_hex)
+	road_index_identity = ""
+	parcel_index_identity = ""
 	if saved.has("plan"):
 		cfg = saved["settings"].duplicate(true)
 		terrain.cfg = cfg["terrain"]
@@ -1409,6 +1483,10 @@ func restore(saved: Dictionary) -> void:
 	lifecycle = saved["lifecycle"].duplicate(true)
 	last_reason = saved["last_reason"]
 	rng.restore(saved["rng"])
+	if not rebuild_derived:
+		_refresh_road_index()
+		network.rebuild(nodes,roads,terrain)
+		return
 	rebuild_graph()
 	resonance = coupling.resonance(buildings,musical_edges(musicality()))
 	_refresh_public_network()
@@ -1448,6 +1526,7 @@ func _refresh_public_network(frame: int = 0) -> void:
 	var coverage_started := Time.get_ticks_usec()
 	public_service_cache.clear()
 	network.rebuild(nodes,roads,terrain)
+	_refresh_road_index()
 	for site in public_sites:
 		var covered: Array[String] = []
 		if site["active"]:
