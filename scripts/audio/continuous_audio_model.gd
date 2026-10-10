@@ -171,7 +171,7 @@ func cancel_pending() -> void:
 
 func cancel_planning() -> void:
 	world.pending_actions = world.pending_actions.filter(func(op: Dictionary) -> bool:
-		return str(op["kind"]) not in ["reserve","release_reservation"] and not (str(op["kind"]) in ["park","civic"] and op.has("position")))
+		return str(op["kind"]) not in ["reserve","release_reservation","relocate_public"] and not (str(op["kind"]) in ["park","civic"] and op.has("position")))
 	world.pending = world.pending_actions[-1].duplicate(true) if not world.pending_actions.is_empty() else {}
 	decisions.append({"requested_frame":rendered_until,"operation":{"kind":"cancel_planning"},"sound_frame":-1,"structure_frame":-1})
 
@@ -253,7 +253,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			# instead of sounding like a click, while ordinary retunes keep the
 			# shorter pitch glide.
 			var structural_change := recent.any(func(event: Dictionary) -> bool:
-				return str(event.get("kind","")) in ["birth","upgrade","landmark","park","civic","bridge","era","community_split"])
+				return str(event.get("kind","")) in ["birth","upgrade","landmark","park","civic","relocate_public","bridge","era","community_split"])
 			var seam_seconds := 0.08 if structural_change else float(world.cfg["score"]["pitch_glide_seconds"])
 			transition_total = maxi(1,roundi(seam_seconds*rate))
 			transition_remaining = transition_total

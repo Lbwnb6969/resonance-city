@@ -77,6 +77,8 @@ func _run() -> void:
 	var move_target := _find_preview(moving,source_id)
 	_check(not move_target.is_empty(),"move_fixture_reuses_legal_target")
 	if not move_target.is_empty():
+		var stale: Dictionary = move_model.submit({"kind":"relocate_public","id":source_id,"target_position":move_target["target_position"],"source_revision":"stale-revision"})
+		_check(not bool(stale.get("accepted",false)),"relocation_rejects_stale_source_revision")
 		var operation := {"kind":"relocate_public","id":source_id,"target_position":move_target["target_position"],"source_revision":move_target["source_revision"]}
 		var queued: Dictionary = move_model.submit(operation)
 		_check(bool(queued.get("accepted",false)),"relocation_request_accepts_stable_preview")
@@ -87,6 +89,7 @@ func _run() -> void:
 		_check(Vector2(float(moved["position"][0]),float(moved["position"][1])) == Vector2(float(move_target["target_position"][0]),float(move_target["target_position"][1])),"relocation_moves_same_stable_site_id")
 		_check(str(moved.get("kind","")) == str(moving_site.get("kind","")) and int(moved.get("service_level",1)) == int(moving_site.get("service_level",1)),"relocation_preserves_facility_kind_and_level")
 		_check(moving.events.any(func(event: Dictionary)->bool:return str(event.get("kind","")) == "relocate_public" and str(event.get("id","")) == source_id and event.has("covered_before") and event.has("covered_after") and event.has("served_before") and event.has("served_after")),"relocation_event_records_service_before_after")
+		_check(move_model.transition_total > 0,"relocation_enters_structural_audio_seam")
 	_finish()
 
 func _finish() -> void:

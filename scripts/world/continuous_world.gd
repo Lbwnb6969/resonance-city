@@ -11,6 +11,7 @@ const Terrace = preload("res://scripts/world/terrace_neighborhood.gd")
 const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 const Charter = preload("res://scripts/world/development_charter.gd")
 const RiverResponse = preload("res://scripts/world/river_call_response.gd")
+const PublicRelocation = preload("res://scripts/world/public_site_relocation.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -556,6 +557,11 @@ func near_planning_reservations(p: Vector2,reach: float = 0.0) -> Array[Dictiona
 func planning_candidate(p: Vector2) -> Dictionary:
 	return SpatialPlanning.candidate(self,p)
 
+## Read-only relocation preview. The action pipeline consumes the same result
+## when a relocate_public operation is requested.
+func public_site_relocation_preview(site_id: String,target_position: Vector2) -> Dictionary:
+	return PublicRelocation.preview(self,site_id,target_position)
+
 func planning_at(p: Vector2) -> Dictionary:
 	return SpatialPlanning.reservation_at(self,p)
 
@@ -920,6 +926,25 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation["id"] = "scope:"+",".join(scope)
 	elif kind == "retune":
 		if not by_id.has(operation.get("id","")): return {"accepted":false,"reason":"请选择一栋建筑"}
+	elif kind == "relocate_public":
+		var site_id := str(operation.get("id",""))
+		var raw_target: Array = operation.get("position",operation.get("target_position",[]))
+		if raw_target.size() != 2: return {"accepted":false,"reason":"请选择公共设施的新位置"}
+		var target := Vector2(float(raw_target[0]),float(raw_target[1]))
+		var relocation := PublicRelocation.preview(self,site_id,target)
+		if not bool(relocation.get("accepted",false)): return relocation
+		var source_revision := str(operation.get("source_revision",relocation.get("source_revision","")))
+		if not source_revision.is_empty() and source_revision != str(relocation.get("source_revision","")):
+			return {"accepted":false,"reason":"公共设施所在城市已经变化，请重新查看搬迁预影","source_site_id":site_id}
+		operation = operation.duplicate(true)
+		operation["id"] = site_id
+		operation["position"] = relocation["target_position"].duplicate(true)
+		operation["target_position"] = relocation["target_position"].duplicate(true)
+		operation["target_polygon"] = relocation["target_polygon"].duplicate()
+		operation["target_entrance"] = relocation["target_entrance"].duplicate(true)
+		operation["target_access_path"] = relocation.get("target_access_path",PackedVector2Array())
+		operation["target_community_id"] = str(relocation.get("target_community_id",relocation.get("target_community", "")))
+		operation["source_revision"] = str(relocation.get("source_revision",""))
 	elif kind == "bridge":
 		var bridge_check := bridge_preview()
 		if not bool(bridge_check.get("available",false)): return {"accepted":false,"reason":str(bridge_check.get("reason","桥位当前不可用"))}
@@ -968,7 +993,7 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 			operation["source_site_id"] = candidate["source_site_id"]
 		# One replaceable planning intent; the historical demo's other queued verbs remain.
 		pending_actions = pending_actions.filter(func(op: Dictionary) -> bool:
-			return not (str(op["kind"]) in ["reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position"))))
+			return not (str(op["kind"]) in ["reserve","release_reservation","relocate_public"] or (str(op["kind"]) in ["park","civic"] and op.has("position"))))
 	elif kind in ["park","civic"]:
 		var found := false
 		for site in public_sites:
@@ -1042,9 +1067,16 @@ func settle(frame: int) -> void:
 				events.append({"kind":"planning_rejected","operation_kind":str(op.get("kind","")),"event_id":op["event_id"],
 					"source_site_id":str(op.get("source_site_id","")),"position":op.get("position",[]).duplicate(true),
 					"reason":SpatialPlanning.rejection_reason(self,op),"frame":frame})
+		elif str(op["kind"]) == "relocate_public":
+			var relocation_result: Dictionary = PublicRelocation.commit(self,op,frame)
+			if bool(relocation_result.get("accepted",false)): successful_planning.append(op)
+			else:
+				events.append({"kind":"planning_rejected","operation_kind":"relocate_public","event_id":op["event_id"],
+					"source_site_id":str(op.get("id",op.get("source_site_id",""))),"position":op.get("position",[]).duplicate(true),
+					"reason":str(relocation_result.get("reason","公共设施所在城市已经变化，请重新查看搬迁预影")),"frame":frame})
 	for op in committed:
 		assert(int(op["frame"]) == frame)
-		if str(op["kind"]) in ["charter","reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position")): continue
+		if str(op["kind"]) in ["charter","reserve","release_reservation","relocate_public"] or (str(op["kind"]) in ["park","civic"] and op.has("position")): continue
 		match str(op["kind"]):
 			"seed":
 				var p := Vector2(float(op["position"][0]),float(op["position"][1]))
@@ -1090,7 +1122,7 @@ func settle(frame: int) -> void:
 						site["frame"] = frame
 						events.append({"kind":op["kind"],"id":site["id"],"frame":frame})
 	# Facility actions become available to the same phrase's growth search.
-	if committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["civic","park"]):
+	if committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["civic","park","relocate_public"]):
 		_refresh_public_service()
 	if not lifecycle["ended"]:
 		for family in families:
@@ -1103,7 +1135,7 @@ func settle(frame: int) -> void:
 	phase_started = Time.get_ticks_usec()
 	var musical_action := committed.any(func(op: Dictionary) -> bool:
 		return str(op["kind"]) not in ["charter","reserve","release_reservation"] and not (str(op["kind"]) in ["park","civic"] and op.has("position")))
-	musical_action = musical_action or successful_planning.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["park","civic"])
+	musical_action = musical_action or successful_planning.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["park","civic","relocate_public"])
 	var forms_dirty := musical_action or buildings.size() != buildings_before_growth or not split_events.is_empty()
 	var modifiers := musicality()
 	var effective := musical_edges(modifiers)
@@ -1129,7 +1161,7 @@ func settle(frame: int) -> void:
 	phase_started = Time.get_ticks_usec()
 	# Theme eligibility consumes real frontage and courtyards, so changed geometry
 	# must be current at this audible phrase rather than a phrase-old visual hint.
-	var geometry_action := committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["seed","bridge","landmark","park","civic","reserve","release_reservation"])
+	var geometry_action := committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["seed","bridge","landmark","park","civic","reserve","release_reservation","relocate_public"])
 	if buildings.size() != buildings_before_growth or not split_events.is_empty() or geometry_action: refresh_fabric()
 	settle_profile["fabric_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
 	_commit_transit_flow()

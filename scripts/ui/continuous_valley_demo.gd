@@ -6,6 +6,7 @@ const Model = preload("res://scripts/audio/continuous_audio_model.gd")
 const Projection2D = preload("res://scripts/world/world_projection.gd")
 const Coupling = preload("res://scripts/world/world_coupling.gd")
 const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
+const PublicRelocation = preload("res://scripts/world/public_site_relocation.gd")
 const Config = preload("res://scripts/world/world_values.gd")
 const GrowthSprite = preload("res://scripts/visual/audio_growth_mask.gd")
 const Shadows = preload("res://scripts/visual/city_shadow_layer.gd")
@@ -69,6 +70,8 @@ var fixed_gain := 1.0
 var selected_id := ""
 var hover_id := ""
 var context: Dictionary = {}
+var relocation_mode := false
+var relocation_site_id := ""
 var pointer := Vector2.ZERO
 var pointer_inside := false
 var midi := 48
@@ -300,7 +303,7 @@ func _make_menu() -> void:
 		verbs.add_child(button)
 	box.add_child(verbs)
 	var public_row := HBoxContainer.new()
-	for item in [["建公园","park"],["文化设施","civic"],["留地","reserve"],["释放留地","release_reservation"],["连接两岸","bridge"]]:
+	for item in [["建公园","park"],["文化设施","civic"],["搬迁公共设施","relocate_public"],["留地","reserve"],["释放留地","release_reservation"],["连接两岸","bridge"]]:
 		var button := Button.new()
 		button.text = item[0]
 		button.pressed.connect(_verb.bind(item[1]))
@@ -687,11 +690,16 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
 			zoom_target = clampf(zoom_target*(1.12 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.12),0.18 if int(shown_world.cfg["city"].get("regional_count",1)) > 1 else 0.55,1.9)
 		elif event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+			relocation_mode = false
+			relocation_site_id = ""
 			model.cancel_pending()
 			menu.hide()
 			planning_guide.hide_tool()
 			context.clear()
 		elif event.pressed and event.button_index == MOUSE_BUTTON_LEFT and not black:
+			if relocation_mode:
+				_submit_relocation_at(world_at(pointer))
+				return
 			if planning_guide.map_click(world_at(pointer),Input.is_key_pressed(KEY_SHIFT)): return
 			var landmark_index := _landmark_candidate_at(pointer)
 			if landmark_index >= 0:
@@ -838,6 +846,31 @@ func _planning_menu() -> void:
 			if str(site["id"]) == str(context.get("id","")) and bool(site["active"]) and verb == "civic" and str(site["kind"]) == "civic":
 				existing = int(site.get("service_level",1)) < 3
 		planning_buttons[verb].disabled = not selectable and not existing
+	var active_public := false
+	for site in model.world.public_sites:
+		if str(site.get("id","")) == str(context.get("id","")):
+			active_public = bool(site.get("active",false)) and str(context.get("kind","")) in ["park","civic"]
+	planning_buttons["relocate_public"].disabled = not active_public
+
+func _submit_relocation_at(target: Vector2) -> void:
+	if relocation_site_id.is_empty():
+		relocation_mode = false
+		return
+	var preview: Dictionary = PublicRelocation.preview(model.world,relocation_site_id,target)
+	if not bool(preview.get("accepted",false)):
+		_message(str(preview.get("reason","这片空间不可用于搬迁")))
+		return
+	var result: Dictionary = model.submit({"kind":"relocate_public","id":relocation_site_id,"position":[target.x,target.y],"source_revision":str(preview.get("source_revision",""))})
+	if bool(result.get("accepted",false)):
+		_message("搬迁预影已确认 · 下一句转移道路入口与公共服务")
+		relocation_mode = false
+		relocation_site_id = ""
+		context.clear()
+		ripple_position = target
+		ripple_seconds = 0.6
+		menu.hide()
+	else:
+		_message(str(result.get("reason","搬迁未能排入下一句")))
 
 func _verb(verb: String) -> void:
 	if verb == "planning":
@@ -870,6 +903,17 @@ func _verb(verb: String) -> void:
 		var action_label := "会在下一句扩容" if site["active"] and verb == "civic" else "会在下一句落成"
 		_message(site["name"]+action_label if result["accepted"] else result["reason"])
 		menu.hide()
+		return
+	if verb == "relocate_public":
+		var site_id := str(context.get("id",""))
+		var site: Dictionary = PublicRelocation._site(model.world,site_id)
+		if site.is_empty() or not bool(site.get("active",false)):
+			_message("请先点选一座已经落成的公共设施")
+			return
+		relocation_site_id = site_id
+		relocation_mode = true
+		menu.hide()
+		_message("搬迁预影开启 · 点击地图上的合法空地确认新位置，右键取消")
 		return
 	if verb == "bridge":
 		var bridge_preview: Dictionary = model.world.bridge_preview()
@@ -1061,7 +1105,7 @@ func _planning_status_hint() -> String:
 	var pending_labels: Array[String] = []
 	for operation in model.world.pending_actions:
 		var kind := str(operation.get("kind", ""))
-		var label: String = str({"charter":"章程", "park":"公园", "civic":"文化馆", "reserve":"留地", "release_reservation":"释放留地", "bridge":"跨河连接"}.get(kind, ""))
+		var label: String = str({"charter":"章程", "park":"公园", "civic":"文化馆", "relocate_public":"搬迁公共设施", "reserve":"留地", "release_reservation":"释放留地", "bridge":"跨河连接"}.get(kind, ""))
 		if not str(label).is_empty(): pending_labels.append(str(label))
 	if not pending_labels.is_empty():
 		return "待播规划 · %s · 下一个乐句落定" % "、".join(pending_labels)
@@ -1518,6 +1562,24 @@ func _draw_landmark_preview() -> void:
 		draw_string(ThemeDB.fallback_font,at+Vector2(8,-8)*view_zoom,"预影 · "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("776247"))
 
 func _draw_planning_preview() -> void:
+	if relocation_mode and not relocation_site_id.is_empty() and pointer_inside:
+		var relocation_preview: Dictionary = PublicRelocation.preview(shown_world,relocation_site_id,world_at(pointer))
+		if relocation_preview.has("target_polygon"):
+			var target_polygon := _project_polygon(relocation_preview["target_polygon"])
+			var accepted := bool(relocation_preview.get("accepted",false))
+			draw_colored_polygon(target_polygon,Color(0.35,0.78,0.65,0.28) if accepted else Color(0.82,0.36,0.34,0.18))
+			if target_polygon.size() > 1:
+				target_polygon.append(target_polygon[0])
+				draw_polyline(target_polygon,Color("4f9f7b") if accepted else Color("b35e58"),2.0,true)
+			var source: Dictionary = PublicRelocation._site(shown_world,relocation_site_id)
+			if not source.is_empty():
+				var source_p := Vector2(source["position"][0],source["position"][1])
+				draw_line(point(source_p),point(world_at(pointer)),Color(0.39,0.58,0.48,0.6),1.5,true)
+			var preview_text := "搬迁预影 · " + ("点击确认" if accepted else str(relocation_preview.get("reason","位置不可用")))
+			if accepted:
+				var delta: Dictionary = relocation_preview.get("service_delta",{})
+				preview_text += " · 覆盖 %+d · 服务 %+d · %s" % [int(delta.get("covered",0)),int(delta.get("served",0)),str(relocation_preview.get("target_community_id","未知社区"))]
+			draw_string(ThemeDB.fallback_font,point(world_at(pointer))+Vector2(10,-12),preview_text,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("41665b") if accepted else Color("9b4b4b"))
 	planning_guide.draw_map()
 	_draw_bridge_preview()
 	if menu.visible and context.has("position"):
