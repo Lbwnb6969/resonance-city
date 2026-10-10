@@ -58,6 +58,15 @@ static func _polygon_area(polygon: PackedVector2Array) -> float:
 		area += a.x*b.y-b.x*a.y
 	return absf(area)*0.5
 
+static func _signed_polygon_area(polygon: PackedVector2Array) -> float:
+	if polygon.size() < 3: return 0.0
+	var area := 0.0
+	for index in range(polygon.size()):
+		var a: Vector2 = polygon[index]
+		var b: Vector2 = polygon[(index+1)%polygon.size()]
+		area += a.x*b.y-b.x*a.y
+	return area*0.5
+
 static func _orientation(a: Vector2,b: Vector2,c: Vector2) -> float:
 	return (b-a).cross(c-a)
 
@@ -83,29 +92,69 @@ static func _valid_simple_polygon(polygon: PackedVector2Array) -> bool:
 			if _segments_intersect(a,b,polygon[j],polygon[(j+1)%polygon.size()]): return false
 	return true
 
+static func _representative_point(polygon: PackedVector2Array) -> Vector2:
+	var average := Vector2.ZERO
+	for point in polygon: average += point
+	average /= float(maxi(1,polygon.size()))
+	if Geometry2D.is_point_in_polygon(average,polygon): return average
+	var center := SpatialPlanning.bounds(polygon).get_center()
+	if Geometry2D.is_point_in_polygon(center,polygon): return center
+	for index in range(1,polygon.size()-1):
+		var triangle_center := (polygon[0]+polygon[index]+polygon[index+1])/3.0
+		if Geometry2D.is_point_in_polygon(triangle_center,polygon): return triangle_center
+	return polygon[0]
+
+static func _is_convex_polygon(polygon: PackedVector2Array) -> bool:
+	if not _valid_simple_polygon(polygon): return false
+	var sign := 0
+	for index in range(polygon.size()):
+		var cross := _orientation(polygon[index],polygon[(index+1)%polygon.size()],polygon[(index+2)%polygon.size()])
+		if absf(cross) <= 0.00001: continue
+		var current := 1 if cross > 0.0 else -1
+		if sign == 0: sign = current
+		elif sign != current: return false
+	return sign != 0
+
 static func _box_polygon(box: Rect2) -> PackedVector2Array:
 	return PackedVector2Array([box.position,Vector2(box.end.x,box.position.y),box.end,Vector2(box.position.x,box.end.y)])
 
+static func _half_plane_polygon(a: Vector2,b: Vector2,keep_left: bool,extent: float) -> PackedVector2Array:
+	var direction := b-a
+	var length := direction.length()
+	if length <= 0.00001: return PackedVector2Array()
+	direction /= length
+	var normal := Vector2(-direction.y,direction.x)
+	if not keep_left: normal = -normal
+	var start := a-direction*extent
+	var end := b+direction*extent
+	return PackedVector2Array([start,end,end+normal*extent,start+normal*extent])
+
 static func _residuals(source: PackedVector2Array,footprint: PackedVector2Array) -> Array[PackedVector2Array]:
 	var result: Array[PackedVector2Array] = []
-	# Partition the source around the four sides of the axis-aligned target.
-	# Intersecting those four disjoint bands with the source also works for
-	# concave or sector-shaped historical fragments.  It avoids the hole
-	# contour returned by clip_polygons/exclude_polygons.
-	var source_box := SpatialPlanning.bounds(source)
-	var cut_box := SpatialPlanning.bounds(footprint)
-	var margin := maxf(source_box.size.x,source_box.size.y)+1.0
-	var outer := source_box.grow(margin)
-	var bands: Array[Rect2] = [
-		Rect2(outer.position,Vector2(maxf(0.0,cut_box.position.x-outer.position.x),outer.size.y)),
-		Rect2(Vector2(cut_box.end.x,outer.position.y),Vector2(maxf(0.0,outer.end.x-cut_box.end.x),outer.size.y)),
-		Rect2(Vector2(cut_box.position.x,outer.position.y),Vector2(cut_box.size.x,maxf(0.0,cut_box.position.y-outer.position.y))),
-		Rect2(Vector2(cut_box.position.x,cut_box.end.y),Vector2(cut_box.size.x,maxf(0.0,outer.end.y-cut_box.end.y)))]
-	for band in bands:
-		if band.size.x <= 0.00001 or band.size.y <= 0.00001: continue
-		for fragment in Geometry2D.intersect_polygons(_box_polygon(band),source):
-			if fragment.size() < 3 or _polygon_area(fragment) <= 0.00001: continue
-			if _intersection_area(fragment,footprint) <= 0.00001: result.append(fragment)
+	# Geometry2D.exclude_polygons/clip_polygons expose a hole contour as a
+	# second polygon.  A hole cannot be stored in the reservation schema, so
+	# split source around each edge of a convex target instead.  At each edge
+	# emit the outside pieces and carry only the inside pieces to the next edge.
+	# This produces disjoint simple residuals for concave historical sources.
+	var combined_box := SpatialPlanning.bounds(source)
+	for point in footprint: combined_box = combined_box.expand(point)
+	var extent := maxf(combined_box.size.length()*8.0,64.0)
+	var keep_left := _signed_polygon_area(footprint) > 0.0
+	var remaining: Array[PackedVector2Array] = [source]
+	for index in range(footprint.size()):
+		var a := footprint[index]
+		var b := footprint[(index+1)%footprint.size()]
+		var outside_plane := _half_plane_polygon(a,b,not keep_left,extent)
+		var inside_plane := _half_plane_polygon(a,b,keep_left,extent)
+		if outside_plane.size() < 3 or inside_plane.size() < 3: return []
+		var next_remaining: Array[PackedVector2Array] = []
+		for part in remaining:
+			for fragment in Geometry2D.intersect_polygons(part,outside_plane):
+				if fragment.size() < 3 or _polygon_area(fragment) <= 0.00001: continue
+				if _intersection_area(fragment,footprint) <= 0.00001 and _valid_simple_polygon(fragment): result.append(fragment)
+			for fragment in Geometry2D.intersect_polygons(part,inside_plane):
+				if fragment.size() >= 3 and _polygon_area(fragment) > 0.00001 and _valid_simple_polygon(fragment): next_remaining.append(fragment)
+		remaining = next_remaining
 	result = result.filter(func(fragment: PackedVector2Array) -> bool: return _valid_simple_polygon(fragment))
 	result.sort_custom(func(a: PackedVector2Array,b: PackedVector2Array) -> bool:
 		var ac := SpatialPlanning.bounds(a).get_center()
@@ -126,46 +175,72 @@ static func preview(world: RefCounted,reservation_id: String,kind: String,target
 	if not _valid_simple_polygon(source_polygon): return {"accepted":false,"reason":"这片留地不是可继续规划的简单连续范围","source_reservation_id":reservation_id}
 	var half := _half_size(world,reservation,kind)
 	if half.x < 0.08 or half.y < 0.08: return {"accepted":false,"reason":"留地太窄，暂时无法放入局部公共空间","source_reservation_id":reservation_id}
-	var footprint := NeighborhoodPlan.box(target_position,half)
+	return preview_footprint(world,reservation_id,kind,NeighborhoodPlan.box(target_position,half))
+
+## Preview a player-specified public footprint.  The target is deliberately
+## limited to a simple convex polygon: Geometry2D's polygon difference returns
+## a hole contour, while reservations store only disjoint simple polygons.
+## Splitting a source around each convex edge preserves a hole-free residual
+## representation and makes the phrase-boundary recheck deterministic.
+static func preview_footprint(world: RefCounted,reservation_id: String,kind: String,target_polygon: Variant) -> Dictionary:
+	var reservation := _reservation(world,reservation_id)
+	if reservation.is_empty(): return {"accepted":false,"reason":"找不到这片留地","source_reservation_id":reservation_id}
+	if kind not in ["park","civic"]: return {"accepted":false,"reason":"局部兑现只支持公园或文化设施","source_reservation_id":reservation_id}
+	var source_polygon: PackedVector2Array = reservation.get("polygon",PackedVector2Array())
+	var footprint := SpatialPlanning.normalize_polygon(target_polygon)
+	var source_revision := _source_revision(reservation)
+	var base := {"source_reservation_id":reservation_id,"source_revision":source_revision,"target_polygon":footprint}
+	if not _valid_simple_polygon(source_polygon):
+		base["reason"] = "这片留地不是可继续规划的简单连续范围"
+		return base
+	if not _is_convex_polygon(footprint):
+		base["reason"] = "公共目标足迹当前需要简单凸多边形"
+		return base
 	if not _inside(footprint,source_polygon):
-		return {"accepted":false,"reason":"局部公共空间必须完整留在原留地内","source_reservation_id":reservation_id,
-			"source_revision":_source_revision(reservation),"target_polygon":footprint}
+		base["reason"] = "公共目标足迹必须完整留在原留地内"
+		return base
+	var representative := _representative_point(footprint)
 	var candidate := {"source_site_id":str(reservation.get("source_site_id","")),"reservation_id":reservation_id,
-		"position":[target_position.x,target_position.y],"polygon":footprint,
-		"community_id":FabricRelations.community_for_position(world,target_position)}
+		"position":[representative.x,representative.y],"polygon":footprint,
+		"community_id":FabricRelations.community_for_position(world,representative)}
 	var reason := SpatialPlanning.site_reason(world,candidate,reservation_id)
 	if not reason.is_empty():
-		return {"accepted":false,"reason":reason,"source_reservation_id":reservation_id,
-			"source_revision":_source_revision(reservation),"target_polygon":footprint}
+		base["reason"] = reason
+		return base
 	var access := SpatialPlanning.public_access(world,candidate)
 	if access.is_empty():
-		return {"accepted":false,"reason":"局部公共空间没有可达的真实道路入口","source_reservation_id":reservation_id,
-			"source_revision":_source_revision(reservation),"target_polygon":footprint}
+		base["reason"] = "局部公共空间没有可达的真实道路入口"
+		return base
 	var residuals := _residuals(source_polygon,footprint)
 	if residuals.is_empty():
-		return {"accepted":false,"reason":"局部兑现必须保留一片可继续规划的剩余留地","source_reservation_id":reservation_id,
-			"source_revision":_source_revision(reservation),"target_polygon":footprint}
+		base["reason"] = "局部兑现必须保留一片可继续规划的剩余留地"
+		return base
 	var residual_area := 0.0
 	for fragment in residuals: residual_area += _polygon_area(fragment)
 	var target_area := _polygon_area(footprint)
-	var area_tolerance := 0.0001*maxf(1.0,_polygon_area(source_polygon))
-	if absf(_polygon_area(source_polygon)-target_area-residual_area) > area_tolerance:
-		return {"accepted":false,"reason":"局部兑现的几何差集不稳定，请换一处留地","source_reservation_id":reservation_id,
-			"source_revision":_source_revision(reservation),"target_polygon":footprint}
+	var source_area := _polygon_area(source_polygon)
+	var area_tolerance := 0.0001*maxf(1.0,source_area)
+	if absf(source_area-target_area-residual_area) > area_tolerance:
+		base["reason"] = "局部兑现的几何差集不稳定，请换一处留地"
+		return base
 	return {"accepted":true,"reason":"可在留地内兑现局部公共空间","source_reservation_id":reservation_id,
-		"source_revision":_source_revision(reservation),"source_site_id":str(reservation.get("source_site_id","")),
-		"kind":kind,"target_position":[target_position.x,target_position.y],"target_polygon":footprint,
+		"source_revision":source_revision,"source_site_id":str(reservation.get("source_site_id","")),
+		"kind":kind,"target_position":[representative.x,representative.y],"target_polygon":footprint,
 		"target_entrance":access["entrance"].duplicate(),"target_access_path":access.get("access_path",PackedVector2Array()).duplicate(),
 		"road_id":str(access.get("road_id","")),"target_community_id":str(candidate["community_id"]),
-		"root_reservation_id":_root_reservation_id(world,reservation_id,reservation),"source_area":_polygon_area(source_polygon),"target_area":target_area,
+		"root_reservation_id":_root_reservation_id(world,reservation_id,reservation),"source_area":source_area,"target_area":target_area,
 		"remaining_polygons":residuals,"remaining_count":residuals.size(),"remaining_area":residual_area}
 
 static func commit(world: RefCounted,operation: Dictionary,frame: int) -> Dictionary:
 	var reservation_id := str(operation.get("source_reservation_id",operation.get("reservation_id","")))
 	var kind := str(operation.get("facility_kind",operation.get("kind",""))).replace("partial_","")
-	var raw: Array = operation.get("target_position",operation.get("position",[]))
-	if raw.size() != 2: return {"accepted":false,"reason":"局部兑现位置缺失"}
-	var current := preview(world,reservation_id,kind,Vector2(float(raw[0]),float(raw[1])))
+	var current: Dictionary = {}
+	if operation.has("target_polygon"):
+		current = preview_footprint(world,reservation_id,kind,operation["target_polygon"])
+	else:
+		var raw: Array = operation.get("target_position",operation.get("position",[]))
+		if raw.size() != 2: return {"accepted":false,"reason":"局部兑现位置缺失"}
+		current = preview(world,reservation_id,kind,Vector2(float(raw[0]),float(raw[1])))
 	if not bool(current.get("accepted",false)): return current
 	if not str(operation.get("source_revision","")).is_empty() and str(operation["source_revision"]) != str(current["source_revision"]):
 		return {"accepted":false,"reason":"留地已经变化，请重新查看局部兑现预影"}

@@ -948,9 +948,13 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation["source_revision"] = str(relocation.get("source_revision",""))
 	elif kind in ["park","civic"] and bool(operation.get("partial",false)):
 		var reservation_id := str(operation.get("source_reservation_id",operation.get("reservation_id","")))
-		var raw_target: Array = operation.get("position",operation.get("target_position",[]))
-		if raw_target.size() != 2: return {"accepted":false,"reason":"请选择局部公共空间的位置"}
-		var partial := PartialPublic.preview(self,reservation_id,kind,Vector2(float(raw_target[0]),float(raw_target[1])))
+		var partial: Dictionary = {}
+		if operation.has("target_polygon"):
+			partial = PartialPublic.preview_footprint(self,reservation_id,kind,operation["target_polygon"])
+		else:
+			var raw_target: Array = operation.get("position",operation.get("target_position",[]))
+			if raw_target.size() != 2: return {"accepted":false,"reason":"请选择局部公共空间的位置"}
+			partial = PartialPublic.preview(self,reservation_id,kind,Vector2(float(raw_target[0]),float(raw_target[1])))
 		if not bool(partial.get("accepted",false)): return partial
 		var source_revision := str(operation.get("source_revision",partial.get("source_revision","")))
 		if not source_revision.is_empty() and source_revision != str(partial.get("source_revision","")):

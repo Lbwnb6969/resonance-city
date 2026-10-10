@@ -340,6 +340,10 @@ static func candidate(world: RefCounted,p: Vector2) -> Dictionary:
 static func public_access(world: RefCounted,site: Dictionary) -> Dictionary:
 	var polygon: PackedVector2Array = site["polygon"]
 	var center := bounds(polygon).get_center()
+	var raw_position: Array = site.get("position",[])
+	if raw_position.size() == 2:
+		var candidate_position := Vector2(float(raw_position[0]),float(raw_position[1]))
+		if Geometry2D.is_point_in_polygon(candidate_position,polygon): center = candidate_position
 	var best: Dictionary = {}
 	var distance := INF
 	for segment in world.near_road_segments(center,3.0):
