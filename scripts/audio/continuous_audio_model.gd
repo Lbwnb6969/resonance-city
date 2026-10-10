@@ -339,15 +339,17 @@ func freeze() -> ContinuousAudioModel:
 	copy.sound_trace.assign(sound_trace.duplicate(true))
 	copy.sound_overrides = sound_overrides.duplicate(true)
 	copy.decisions.assign(decisions.duplicate(true))
-	copy.synth.listener_community = synth.listener_community
-	copy.synth.focused_community = synth.focused_community
-	copy.synth.response_enabled = synth.response_enabled
-	copy.synth.muted_communities = synth.muted_communities.duplicate(true)
-	copy.synth.pad_groups = synth.pad_groups.duplicate(true)
-	copy.synth.rhythm_nodes = synth.rhythm_nodes.duplicate(true)
-	copy.synth.musical_nodes = synth.musical_nodes.duplicate(true)
-	copy.synth.update_audio_city(copy.audio_city(),{}, {},[])
-	copy.synth.configure_score(copy.world,copy.sound_overrides,rendered_until)
+	# Keep the captured schedule and retiring nodes exactly as heard. Rebuilding
+	# the score here can reactivate a retired note or change its authored onset;
+	# the next actual boundary remains responsible for configuring a new score.
+	for field in SAVED_SYNTH_FIELDS:
+		var value: Variant = synth.get(field)
+		copy.synth.set(field,value.duplicate(true) if value is Array or value is Dictionary else value)
+	copy.synth.score = synth.score.duplicate(true)
+	copy.synth.targets = synth.targets.duplicate(true)
+	copy.synth.current_world = copy.world
+	copy.synth.pitch_overrides = synth.pitch_overrides.duplicate(true)
+	copy.synth.native_enabled = synth.native_enabled
 	copy.synth.restore_eras(synth.era_snapshot())
 	return copy
 
@@ -405,7 +407,9 @@ static func from_state(saved: Dictionary) -> ContinuousAudioModel:
 	copy.transition_offset = saved_transition_offset if saved_transition_offset is Vector2 else Vector2(float(saved_transition_offset[0]),float(saved_transition_offset[1]))
 	copy.transition_remaining = int(saved["transition_remaining"])
 	copy.transition_total = int(saved["transition_total"])
-	for field in SAVED_SYNTH_FIELDS: copy.synth.set(field,saved["mix"].get(field,copy.synth.get(field)))
+	for field in SAVED_SYNTH_FIELDS:
+		var value: Variant = saved["mix"].get(field,copy.synth.get(field))
+		copy.synth.set(field,value.duplicate(true) if value is Array or value is Dictionary else value)
 	copy.synth.restore_eras(saved.get("era_changes",{}))
 	copy.synth.pad_groups = _hydrate_stereo(copy.synth.pad_groups)
 	copy.synth.rhythm_nodes = _hydrate_stereo(copy.synth.rhythm_nodes)

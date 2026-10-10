@@ -13,6 +13,7 @@ static func _affected_communities(world: RefCounted,site: Dictionary,anchor: Dic
 	var ids: Array[String] = []
 	_append_community_id(ids,site.get("community_id",""))
 	_append_community_id(ids,anchor.get("community_id",""))
+	for cid in anchor.get("target_community_ids",[]): _append_community_id(ids,cid)
 	for raw_id in anchor.get("served",[]):
 		var id := str(raw_id)
 		if world.by_id.has(id): _append_community_id(ids,world.by_id[id].get("community_id",""))
@@ -158,8 +159,39 @@ static func _opportunity_preview(world: RefCounted,site: Dictionary,choice: Stri
 
 static func identity(model: ContinuousAudioModel,site: Dictionary) -> Array:
 	return [Charter.version(model.world),model.next_boundary,site.get("source_site_id",""),site.get("polygon",PackedVector2Array()),site.get("footprint_components",[]),
+		bool(site.get("partial",false)),site.get("source_reservation_id",site.get("reservation_id","")),site.get("source_revision",""),
+		site.get("target_polygons",[]),site.get("target_polygon",PackedVector2Array()),site.get("hole_polygons",[]),site.get("target_holes",[]),
+		site.get("position",[]),site.get("target_position",[]),site.get("community_id",""),
 		hash(model.world.pending_actions),hash(model.sound_events),hash(model.sound_overrides),
-		model.synth.focused_community,model.synth.listener_community,model.synth.response_enabled,hash(model.synth.muted_communities),model.synth.gain,hash(model.synth.score)]
+		model.synth.focused_community,model.synth.listener_community,model.synth.response_enabled,hash(model.synth.muted_communities),model.synth.gain,hash(model.synth.score)].duplicate(true)
+
+static func _operation(site: Dictionary,kind: String) -> Dictionary:
+	if not bool(site.get("partial",false)): return {"kind":kind,"position":site["position"].duplicate()}
+	# The painted target is one authored decision shared by both facility
+	# choices. Passing only its position would select the entire source parcel.
+	var operation := {"kind":kind,"partial":true}
+	for key in ["source_reservation_id","reservation_id","source_revision","source_site_id","community_id",
+			"position","target_position","target_polygon","target_polygons","footprint_components","hole_polygons","target_holes"]:
+		if not site.has(key): continue
+		var value: Variant = site[key]
+		if value is Array or value is Dictionary: operation[key] = value.duplicate(true)
+		elif value is PackedVector2Array: operation[key] = value.duplicate()
+		else: operation[key] = value
+	return operation
+
+static func _committed_anchor(world: RefCounted,site: Dictionary,kind: String,event_id: int,boundary: int) -> Dictionary:
+	var anchor_id := ""
+	for event in world.events:
+		if str(event.get("kind","")) != kind or int(event.get("frame",-1)) != boundary: continue
+		if bool(site.get("partial",false)):
+			if int(event.get("event_id",-1)) != event_id: continue
+		elif str(event.get("source_site_id","")) != str(site.get("source_site_id","")): continue
+		anchor_id = str(event.get("id",""))
+		break
+	for public_site in world.public_sites:
+		if str(public_site.get("id","")) == anchor_id and str(public_site.get("kind","")) == kind and bool(public_site.get("active",false)):
+			return public_site.duplicate(true)
+	return {}
 
 static func build(source: ContinuousAudioModel,site: Dictionary,state: Dictionary,at: int) -> Dictionary:
 	var rate: int = source.world.cfg["timing"]["sample_rate"]
@@ -174,7 +206,7 @@ static func build(source: ContinuousAudioModel,site: Dictionary,state: Dictionar
 		var branch := common.freeze()
 		var phases := state.duplicate(true)
 		var request := {"accepted":true}
-		if kind != "none": request = branch.submit({"kind":kind,"position":site["position"].duplicate()})
+		if kind != "none": request = branch.submit(_operation(site,kind))
 		if not bool(request["accepted"]):
 			result["variants"][kind] = {"accepted":false,"reason":request["reason"],"pcm":PackedByteArray()}
 			continue
@@ -185,10 +217,7 @@ static func build(source: ContinuousAudioModel,site: Dictionary,state: Dictionar
 			accepted = not branch.world.events.any(func(e:Dictionary)->bool:
 				return e.get("kind","") == "planning_rejected" and int(e.get("event_id",-1)) == int(request["event_id"]))
 		var anchor: Dictionary = {}
-		for public_site in branch.world.public_sites:
-			if str(public_site.get("source_site_id","")) == str(site["source_site_id"]) and public_site.get("kind","") == kind and public_site.get("active",false):
-				anchor = public_site.duplicate(true)
-				break
+		if kind != "none": anchor = _committed_anchor(branch.world,site,kind,int(request["event_id"]),boundary)
 		accepted = accepted and (kind == "none" or not anchor.is_empty())
 		var score := branch.synth.score_snapshot()
 		var theme: Dictionary = score["theme"]

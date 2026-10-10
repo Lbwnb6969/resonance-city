@@ -1,0 +1,47 @@
+{
+  "driver": "WASAPI",
+  "technical_evidence_only": true,
+  "branches": {
+    "none": {
+      "rate": 22050,
+      "channels": 2,
+      "frames": 66150,
+      "seconds": 3.0,
+      "pcm_sha256": "2bb41790822b00f2f650dcc1613610325b4f35e78339396c056023e1239ce549",
+      "peak": 0.3419189453125,
+      "rms": 0.11243172397726689
+    },
+    "park": {
+      "rate": 22050,
+      "channels": 2,
+      "frames": 66150,
+      "seconds": 3.0,
+      "pcm_sha256": "2bb41790822b00f2f650dcc1613610325b4f35e78339396c056023e1239ce549",
+      "peak": 0.3419189453125,
+      "rms": 0.11243172397726689
+    },
+    "civic": {
+      "rate": 22050,
+      "channels": 2,
+      "frames": 66150,
+      "seconds": 3.0,
+      "pcm_sha256": "2bb41790822b00f2f650dcc1613610325b4f35e78339396c056023e1239ce549",
+      "peak": 0.3419189453125,
+      "rms": 0.11243172397726689
+    }
+  },
+  "differences": {
+    "none_vs_park": {
+      "max": 0.0,
+      "rms": 0.0
+    },
+    "none_vs_civic": {
+      "max": 0.0,
+      "rms": 0.0
+    },
+    "park_vs_civic": {
+      "max": 0.0,
+      "rms": 0.0
+    }
+  }
+}
