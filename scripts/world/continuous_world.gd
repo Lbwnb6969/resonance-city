@@ -716,6 +716,22 @@ func settle(frame: int) -> void:
 	# organic growth refreshes on alternating phrases.
 	if forms_dirty and (not committed.is_empty() or phrase_index % 2 == 0): refresh_fabric()
 
+func _transit_growth_bonus(position: Vector2,use: String = "residential") -> float:
+	var bonus := 0.0
+	for line in transit_lines:
+		for stop_id in line.get("stops",[]):
+			if not network.nodes.has(str(stop_id)): continue
+			var node: Array = network.nodes[str(stop_id)]
+			var stop_position := Vector2(float(node[0]),float(node[1]))
+			var distance := position.distance_to(stop_position)
+			if distance > 4.5: continue
+			var local := (4.5-distance)/4.5
+			if use in ["commercial","industrial"]: local *= 1.35
+			if line.get("transfer_stops",[]).any(func(transfer: Dictionary) -> bool: return str(transfer.get("stop_id","")) == str(stop_id)):
+				local += 0.75
+			bonus = maxf(bonus,local)
+	return bonus
+
 func _grow(family: String, frame: int) -> void:
 	if str(families[family].get("root","")).is_empty() or not by_id.has(str(families[family].get("root",""))): return
 	if phrase_index < int(families[family].get("next_growth_phrase",0)):
@@ -763,6 +779,7 @@ func _grow(family: String, frame: int) -> void:
 	var best_check: Dictionary = {}
 	var best_distance := INF
 	var best_rank := -1
+	var best_growth_score := -INF
 	for candidate in candidates:
 		var p: Vector2 = Vector2(candidate["position"])
 		var check := placement(p)
@@ -791,10 +808,15 @@ func _grow(family: String, frame: int) -> void:
 		if clashes: continue
 		var tier_rank := 3 if check["tier"] == "L1" else (2 if check["tier"] == "L2" else 1)
 		var distance := p.distance_squared_to(origin)
-		if tier_rank > best_rank or (tier_rank == best_rank and distance < best_distance):
+		var transit_bonus := _transit_growth_bonus(p,str(candidate.get("use","residential")))
+		# Tier remains the primary placement rule; transit demand breaks ties and
+		# pulls useful lots toward transfer stops and functional centers.
+		var growth_score := float(tier_rank)*100000.0+transit_bonus*100.0-distance
+		if growth_score > best_growth_score:
+			best_growth_score = growth_score
 			best_rank = tier_rank
 			best_distance = distance
-			best = {"position":p}
+			best = {"position":p,"transit_bonus":transit_bonus}
 			best_check = check
 	if best.is_empty():
 		last_reason = "这一家族暂缺可达空地；可以在另一侧播种新主题"
