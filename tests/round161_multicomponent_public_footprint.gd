@@ -7,6 +7,7 @@ const Planning = preload("res://scripts/world/city_spatial_planning.gd")
 const NeighborhoodPlan = preload("res://scripts/world/neighborhood_plan.gd")
 const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd")
 const FabricRelations = preload("res://scripts/world/fabric_relations.gd")
+const Archive = preload("res://scripts/world/city_archive.gd")
 
 var checks: Dictionary = {}
 var failures: Array[String] = []
@@ -130,6 +131,24 @@ func _run() -> void:
 	for candidate in restored.world.events:
 		if bool(candidate.get("partial",false)) and str(candidate.get("source_reservation_id","")) == reservation_id: restored_event = candidate
 	_check(restored_event.get("converted_footprints",[]).size() == 2 and restored_event.get("footprint_components",[]).size() == 2,"dna_roundtrips_component_event")
+	var directory := "user://round161_multi_component_%d" % Time.get_ticks_usec()
+	var dna_directory := directory+"/exports"
+	var exported := Archive.export_dna({"model":model.capture_state(),"renderer":{},"view":{}},dna_directory)
+	_check(bool(exported.get("ok",false)),"json_dna_exports_components")
+	var dna := Archive.read_dna(str(exported.get("path",""))) if bool(exported.get("ok",false)) else {}
+	_check(bool(dna.get("ok",false)),"json_dna_reads_components")
+	if bool(dna.get("ok",false)):
+		var json_restored: Model = Model.from_state(dna["model"])
+		var json_site: Dictionary = {}
+		for candidate in json_restored.world.public_sites:
+			if str(candidate.get("source_reservation_id","")) == reservation_id: json_site = candidate
+		_check(json_site.get("footprint_components",[]).size() == 2,"json_dna_keeps_component_geometry")
+		_check(json_restored.world.public_at(second_center).get("id","") == site.get("id",""),"json_dna_keeps_second_component_hit_test")
+		_check(json_restored.world.events.any(func(candidate: Dictionary)->bool:
+			return bool(candidate.get("partial",false)) and candidate.get("converted_footprints",[]).size() == 2),"json_dna_keeps_component_event")
+	if FileAccess.file_exists(str(exported.get("path",""))): DirAccess.remove_absolute(str(exported["path"]))
+	if DirAccess.dir_exists_absolute(dna_directory): DirAccess.remove_absolute(dna_directory)
+	if DirAccess.dir_exists_absolute(directory): DirAccess.remove_absolute(directory)
 	_finish()
 
 func _finish() -> void:

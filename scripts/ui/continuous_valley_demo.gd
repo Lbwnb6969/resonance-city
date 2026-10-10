@@ -78,6 +78,8 @@ var partial_kind := ""
 var partial_reservation_id := ""
 var partial_polygon_mode := false
 var partial_polygon_points := PackedVector2Array()
+var partial_multi_component_mode := false
+var partial_polygon_components: Array[PackedVector2Array] = []
 var reservation_draw_mode := false
 var reservation_draw_points := PackedVector2Array()
 var pointer := Vector2.ZERO
@@ -232,6 +234,8 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	partial_reservation_id = ""
 	partial_polygon_mode = false
 	partial_polygon_points.clear()
+	partial_multi_component_mode = false
+	partial_polygon_components.clear()
 	menu.hide()
 	last_birth_count = shown_world.buildings.size()
 	zoom_target = 0.88
@@ -318,7 +322,7 @@ func _make_menu() -> void:
 		verbs.add_child(button)
 	box.add_child(verbs)
 	var public_row := HBoxContainer.new()
-	for item in [["建公园","park"],["文化设施","civic"],["局部公园","partial_park"],["局部文化馆","partial_civic"],["自由局部公园","free_partial_park"],["自由局部文化馆","free_partial_civic"],["搬迁公共设施","relocate_public"],["留地","reserve"],["自由留地","free_reserve"],["释放留地","release_reservation"],["连接两岸","bridge"]]:
+	for item in [["建公园","park"],["文化设施","civic"],["局部公园","partial_park"],["局部文化馆","partial_civic"],["自由局部公园","free_partial_park"],["自由局部文化馆","free_partial_civic"],["自由分块公园","free_multi_partial_park"],["自由分块文化馆","free_multi_partial_civic"],["搬迁公共设施","relocate_public"],["留地","reserve"],["自由留地","free_reserve"],["释放留地","release_reservation"],["连接两岸","bridge"]]:
 		var button := Button.new()
 		button.text = item[0]
 		button.pressed.connect(_verb.bind(item[1]))
@@ -709,6 +713,8 @@ func _gui_input(event: InputEvent) -> void:
 			reservation_draw_points.clear()
 			partial_polygon_mode = false
 			partial_polygon_points.clear()
+			partial_multi_component_mode = false
+			partial_polygon_components.clear()
 			relocation_mode = false
 			relocation_site_id = ""
 			partial_mode = false
@@ -876,6 +882,8 @@ func _planning_menu() -> void:
 	planning_buttons["partial_civic"].disabled = context.get("kind","") != "reservation"
 	planning_buttons["free_partial_park"].disabled = context.get("kind","") != "reservation"
 	planning_buttons["free_partial_civic"].disabled = context.get("kind","") != "reservation"
+	planning_buttons["free_multi_partial_park"].disabled = context.get("kind","") != "reservation"
+	planning_buttons["free_multi_partial_civic"].disabled = context.get("kind","") != "reservation"
 	for verb in ["park","civic"]:
 		var existing := false
 		for site in model.world.public_sites:
@@ -951,7 +959,31 @@ func _partial_position_from_preview(preview: Dictionary, fallback: Vector2) -> V
 
 func _partial_footprint_preview(polygon: PackedVector2Array) -> Dictionary:
 	if partial_reservation_id.is_empty() or partial_kind.is_empty() or polygon.size() < 3: return {}
+	if partial_multi_component_mode:
+		var components := partial_polygon_components.duplicate(true)
+		components.append(polygon.duplicate())
+		return PartialPublic.preview_footprints(shown_world,partial_reservation_id,partial_kind,components)
 	return PartialPublic.preview_footprint(shown_world,partial_reservation_id,partial_kind,polygon)
+
+func _partial_preview_for_draw() -> Dictionary:
+	if partial_multi_component_mode:
+		var components := partial_polygon_components.duplicate(true)
+		if partial_polygon_points.size() >= 3: components.append(partial_polygon_points.duplicate())
+		if components.is_empty(): return {}
+		return PartialPublic.preview_footprints(shown_world,partial_reservation_id,partial_kind,components)
+	return _partial_footprint_preview(partial_polygon_points)
+
+func _partial_preview_polygons(preview: Dictionary) -> Array[PackedVector2Array]:
+	var result: Array[PackedVector2Array] = []
+	var raw_components: Variant = preview.get("target_polygons",preview.get("footprint_components",[]))
+	if raw_components is Array:
+		for raw in raw_components:
+			var polygon := SpatialPlanning.normalize_polygon(raw)
+			if polygon.size() >= 3: result.append(polygon)
+	if result.is_empty() and preview.has("target_polygon"):
+		var legacy := SpatialPlanning.normalize_polygon(preview["target_polygon"])
+		if legacy.size() >= 3: result.append(legacy)
+	return result
 
 func _append_partial_polygon_point(world_position: Vector2) -> void:
 	if not partial_polygon_points.is_empty() and partial_polygon_points[partial_polygon_points.size()-1].distance_to(world_position) < 0.35:
@@ -961,30 +993,56 @@ func _append_partial_polygon_point(world_position: Vector2) -> void:
 		_message("目标足迹已接近起点 · 按 Enter 闭合并预览")
 		return
 	partial_polygon_points.append(world_position)
-	_message(("自由局部公园" if partial_kind == "park" else "自由局部文化馆")+" · 已选%d点 · 继续点击，至少三点后按 Enter 确认；Esc/右键取消" % partial_polygon_points.size())
+	var action := "按 Tab 完成这一块，Enter 提交全部" if partial_multi_component_mode else "至少三点后按 Enter 确认"
+	var title := ("自由分块公园" if partial_kind == "park" else "自由分块文化馆") if partial_multi_component_mode else ("自由局部公园" if partial_kind == "park" else "自由局部文化馆")
+	_message(title+" · 已选%d点 · %s；Esc/右键取消" % [partial_polygon_points.size(),action])
+
+func _finish_partial_component() -> void:
+	if not partial_multi_component_mode: return
+	if partial_polygon_points.size() < 3:
+		_message("当前组件至少需要三个点")
+		return
+	if _partial_polygon_area(partial_polygon_points) < 0.25:
+		_message("当前组件范围太小，请拉开边界")
+		return
+	partial_polygon_components.append(partial_polygon_points.duplicate())
+	partial_polygon_points.clear()
+	_message("已完成第%d块 · 继续点击绘制下一块，按 Tab 收束，Enter 提交全部" % partial_polygon_components.size())
 
 func _submit_partial_polygon() -> void:
 	if not partial_polygon_mode: return
-	if partial_polygon_points.size() < 3:
+	if partial_multi_component_mode and partial_polygon_points.size() >= 3:
+		_finish_partial_component()
+	if partial_polygon_components.is_empty() and partial_polygon_points.size() < 3:
 		_message("自由局部目标至少需要三个点")
 		return
-	if _partial_polygon_area(partial_polygon_points) < 0.25:
-		_message("自由局部目标范围太小，请拉开边界")
-		return
-	var polygon := partial_polygon_points.duplicate()
+	var polygon := partial_polygon_points.duplicate() if partial_polygon_components.is_empty() else partial_polygon_components[0].duplicate()
+	var components: Array[PackedVector2Array] = partial_polygon_components.duplicate(true)
+	if not partial_polygon_components.is_empty():
+		# _finish_partial_component() already moved the active component.
+		polygon = components[0].duplicate()
+	else:
+		components.append(polygon.duplicate())
 	var fallback := _partial_polygon_center(polygon)
-	var preview := _partial_footprint_preview(polygon)
+	var preview := PartialPublic.preview_footprints(shown_world,partial_reservation_id,partial_kind,components) if partial_multi_component_mode else _partial_footprint_preview(polygon)
 	if not bool(preview.get("accepted",false)):
 		_message(str(preview.get("reason","这片目标足迹暂时不能兑现")))
 		return
 	var target_position := _partial_position_from_preview(preview,fallback)
-	var result: Dictionary = model.submit({"kind":partial_kind,"partial":true,"source_reservation_id":partial_reservation_id,
+	var operation := {"kind":partial_kind,"partial":true,"source_reservation_id":partial_reservation_id,
 		"target_polygon":polygon,"target_position":[target_position.x,target_position.y],"position":[target_position.x,target_position.y],
-		"source_revision":str(preview.get("source_revision",""))})
+		"source_revision":str(preview.get("source_revision",""))}
+	if partial_multi_component_mode:
+		operation["target_polygons"] = components.duplicate(true)
+		operation["footprint_components"] = components.duplicate(true)
+	var result: Dictionary = model.submit(operation)
 	if bool(result.get("accepted",false)):
-		_message(("自由局部公园" if partial_kind == "park" else "自由局部文化馆")+"已确认 · 剩余留地保留到下一次规划")
+		var title := ("自由分块公园" if partial_kind == "park" else "自由分块文化馆") if partial_multi_component_mode else ("自由局部公园" if partial_kind == "park" else "自由局部文化馆")
+		_message(title+"已确认 · 剩余留地保留到下一次规划")
 		partial_polygon_mode = false
 		partial_polygon_points.clear()
+		partial_multi_component_mode = false
+		partial_polygon_components.clear()
 		partial_kind = ""
 		partial_reservation_id = ""
 		context.clear()
@@ -1042,6 +1100,8 @@ func _verb(verb: String) -> void:
 	if verb == "free_reserve":
 		partial_polygon_mode = false
 		partial_polygon_points.clear()
+		partial_multi_component_mode = false
+		partial_polygon_components.clear()
 		reservation_draw_mode = true
 		reservation_draw_points.clear()
 		menu.hide()
@@ -1057,9 +1117,27 @@ func _verb(verb: String) -> void:
 		reservation_draw_points.clear()
 		partial_polygon_mode = true
 		partial_polygon_points.clear()
+		partial_multi_component_mode = false
+		partial_polygon_components.clear()
 		partial_mode = false
 		menu.hide()
 		_message(("自由局部公园" if partial_kind == "park" else "自由局部文化馆")+"预影开启 · 左键逐点绘制目标足迹，至少三点后按 Enter 确认；Esc/右键取消")
+		return
+	if verb in ["free_multi_partial_park","free_multi_partial_civic"]:
+		if context.get("kind","") != "reservation" or str(context.get("id","")).is_empty():
+			_message("先点选一片留地，再选择自由分块兑现")
+			return
+		partial_kind = "park" if verb == "free_multi_partial_park" else "civic"
+		partial_reservation_id = str(context["id"])
+		reservation_draw_mode = false
+		reservation_draw_points.clear()
+		partial_polygon_mode = true
+		partial_multi_component_mode = true
+		partial_polygon_points.clear()
+		partial_polygon_components.clear()
+		partial_mode = false
+		menu.hide()
+		_message(("自由分块公园" if partial_kind == "park" else "自由分块文化馆")+"预影开启 · 左键逐点绘制；Tab完成当前块，Enter提交全部，Esc/右键取消")
 		return
 	if verb in ["reserve","release_reservation"] or (verb in ["park","civic"] and context.has("position")):
 		var operation := {"kind":verb}
@@ -1081,6 +1159,8 @@ func _verb(verb: String) -> void:
 		partial_reservation_id = str(context["id"])
 		partial_polygon_mode = false
 		partial_polygon_points.clear()
+		partial_multi_component_mode = false
+		partial_polygon_components.clear()
 		partial_mode = true
 		menu.hide()
 		_message(("局部公园" if partial_kind == "park" else "局部文化馆")+"预影开启 · 点击留地内的位置确认，右键取消")
@@ -1176,6 +1256,8 @@ func _input(event: InputEvent) -> void:
 			if partial_polygon_mode:
 				partial_polygon_mode = false
 				partial_polygon_points.clear()
+				partial_multi_component_mode = false
+				partial_polygon_components.clear()
 				partial_kind = ""
 				partial_reservation_id = ""
 				_message("自由局部目标已取消")
@@ -1189,7 +1271,11 @@ func _input(event: InputEvent) -> void:
 			model.submit({"kind":"focus","community":""})
 		KEY_B: black = not black
 		KEY_G: _verb("bridge")
-		KEY_TAB: _verb("solo")
+		KEY_TAB:
+			if partial_polygon_mode and partial_multi_component_mode:
+				_finish_partial_component()
+			else:
+				_verb("solo")
 		KEY_M: _verb("mute")
 		KEY_F: _verb("focus")
 		KEY_H: _home_city()
@@ -1803,7 +1889,7 @@ func _partial_access_path(preview: Dictionary) -> PackedVector2Array:
 	return PackedVector2Array()
 
 func _partial_preview_label(preview: Dictionary, free_target: bool) -> String:
-	var title := ("自由局部公园" if partial_kind == "park" else "自由局部文化馆") if free_target else ("局部公园" if partial_kind == "park" else "局部文化馆")
+	var title := ("自由分块公园" if partial_kind == "park" else "自由分块文化馆") if partial_multi_component_mode else (("自由局部公园" if partial_kind == "park" else "自由局部文化馆") if free_target else ("局部公园" if partial_kind == "park" else "局部文化馆"))
 	var label := title+"预影 · "+("按 Enter 确认" if free_target else "点击确认")
 	if not bool(preview.get("accepted",false)):
 		return label.replace(" · "+("按 Enter 确认" if free_target else "点击确认")," · "+str(preview.get("reason","位置不可用")))
@@ -1836,7 +1922,16 @@ func _draw_planning_preview() -> void:
 			var source_polygon := _project_polygon(reservation["polygon"])
 			source_polygon.append(source_polygon[0])
 			draw_polyline(source_polygon,Color(0.55,0.72,0.48,0.55),1.3,true)
-		var draw_color := Color("4f9f7b") if partial_polygon_points.size() >= 3 else Color("79966e")
+		var draw_color := Color("4f9f7b") if partial_polygon_points.size() >= 3 or not partial_polygon_components.is_empty() else Color("79966e")
+		for component in partial_polygon_components:
+			var component_polygon := _project_polygon(component)
+			if component_polygon.size() > 1:
+				var component_closed := component_polygon.duplicate()
+				component_closed.append(component_closed[0])
+				draw_polyline(component_closed,Color("4f9f7b",0.88),2.0,true)
+				draw_colored_polygon(component_polygon,Color(0.35,0.78,0.65,0.12))
+			for vertex in component:
+				draw_circle(point(vertex),4.0,Color("4f9f7b",0.95))
 		if partial_polygon_points.size() >= 2:
 			var drawn := _project_polygon(partial_polygon_points)
 			var closed := drawn.duplicate()
@@ -1848,20 +1943,22 @@ func _draw_planning_preview() -> void:
 			draw_line(point(partial_polygon_points[partial_polygon_points.size()-1]),point(world_at(pointer)),Color(draw_color,0.68),1.3,true)
 		for vertex in partial_polygon_points:
 			draw_circle(point(vertex),4.0,Color(draw_color,0.95))
-		var partial_preview := _partial_footprint_preview(partial_polygon_points)
+		var partial_preview := _partial_preview_for_draw()
 		for residual in partial_preview.get("remaining_polygons",[]):
 			var residual_polygon := _project_polygon(residual)
 			draw_colored_polygon(residual_polygon,Color(0.45,0.72,0.48,0.13))
 			if residual_polygon.size() > 1:
 				residual_polygon.append(residual_polygon[0])
 				draw_polyline(residual_polygon,Color(0.42,0.67,0.45,0.40),1.0,true)
-		if partial_preview.has("target_polygon"):
-			var target_polygon := _project_polygon(partial_preview["target_polygon"])
+		var target_polygons := _partial_preview_polygons(partial_preview)
+		if not target_polygons.is_empty():
 			var accepted := bool(partial_preview.get("accepted",false))
-			draw_colored_polygon(target_polygon,Color(0.35,0.78,0.65,0.30) if accepted else Color(0.82,0.36,0.34,0.20))
-			if target_polygon.size() > 1:
-				target_polygon.append(target_polygon[0])
-				draw_polyline(target_polygon,Color("4f9f7b") if accepted else Color("b35e58"),2.0,true)
+			for raw_target in target_polygons:
+				var target_polygon := _project_polygon(raw_target)
+				draw_colored_polygon(target_polygon,Color(0.35,0.78,0.65,0.30) if accepted else Color(0.82,0.36,0.34,0.20))
+				if target_polygon.size() > 1:
+					target_polygon.append(target_polygon[0])
+					draw_polyline(target_polygon,Color("4f9f7b") if accepted else Color("b35e58"),2.0,true)
 			_draw_partial_access_preview(partial_preview)
 			var partial_text := _partial_preview_label(partial_preview,true)
 			draw_string(ThemeDB.fallback_font,point(world_at(pointer))+Vector2(10,-12),partial_text,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("41665b") if accepted else Color("9b4b4b"))
@@ -1947,7 +2044,12 @@ func _draw_public_labels() -> void:
 	if not pointer_inside: return
 	var p := world_at(pointer)
 	for site in shown_world.near_public_sites(p):
-		if not Geometry2D.is_point_in_polygon(p,site["polygon"]): continue
+		var inside := false
+		for component in SpatialPlanning.footprint_components(site):
+			if Geometry2D.is_point_in_polygon(p,component):
+				inside = true
+				break
+		if not inside: continue
 		var center := Vector2(site["position"][0],site["position"][1])
 		draw_string(ThemeDB.fallback_font,point(center)+Vector2(-30,30)*view_zoom,site["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("617b69"))
 

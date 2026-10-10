@@ -1,5 +1,13 @@
 # 共鸣之城：当前项目状态
 
+## 2026-10-11 当前裁定（第161轮）
+
+本轮把局部公共空间扩展为同一公建可由多个彼此分离的简单组件组成：后端以 `target_polygons`/`footprint_components` 保存全部目标，旧 `polygon` 继续指向首组件。每个组件都必须完整落在来源留地内，分别通过占地、真实道路入口、地形和社区校验；组件重叠或接边直接拒绝，入口取所有组件中的最短合法路径，差集逐组件切除并保持面积守恒。公共站点、搬迁、事件、parcel 索引、占地排除、`public_at`、FabricRelations、二进制存档和 City DNA 都遍历全部组件。
+
+Demo 菜单新增“自由分块公园/自由分块文化馆”：点选留地后左键绘制一块，按 Tab 收束，再绘制下一块，Enter 一次提交全部；地图同时显示所有目标组件、残余留地、真实入口道路、目标社区和下一乐句落成提示。单组件自由局部入口与旧存档继续兼容。`tests/round161_multicomponent_public_footprint.gd` 30 项、`tests/round161_multicomponent_ui_audit.gd` 7 项、`tests/round161_save_continue_concave.gd` 25 项、`tests/round161_audio_boundary_concave.gd` 7 项通过；Round155/156/158/159/160 回归继续通过。技术音频证据确认事件、设施激活、80ms 结构接缝和 PCM 跨边界连续，真人完整空间与听感体验仍待试玩。
+
+第161轮 Git 备份：`codex/backup-before-round161`。
+
 ## 2026-10-11 当前裁定（第160轮）
 
 本轮把局部公共空间从简单凸目标扩展为简单、无孔、单组件凹目标足迹：玩家仍在留地内逐点绘制公园或文化馆范围，后端用目标耳切三角逐步切除当前留地，保留无孔简单残余、面积守恒和稳定谱系。顺/逆时针目标、L/U 来源留地、真实道路入口、目标社区、边界事件、80ms 结构音频接缝和 City DNA 均通过。`tests/round160_concave_target_footprint.gd` 43 项、`tests/round160_playability_ui_audit.gd` 9 项通过；Round159/155/156/158 回归继续通过。自交、多孔或多组件目标仍拒绝，真人完整空间/听感体验仍待后续阶段。
