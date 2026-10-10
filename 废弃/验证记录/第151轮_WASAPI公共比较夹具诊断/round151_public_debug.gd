@@ -167,7 +167,3 @@ func gpu_flow(world: ContinuousWorld,available: Array[Dictionary]) -> void:
 	demo.clock.stop_output()
 	demo.free()
 	await process_frame
-
-
-
-
