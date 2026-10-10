@@ -214,7 +214,9 @@ func _musical_block(node: Dictionary, start: int, count: int, rate: int) -> Pack
 	elif terrain == "coastal_plain": steps = [0,5,13,21] if pattern["expression"] == "deep" else [0,3,9,15,22,28]
 	elif terrain == "highland_pass": steps = [0,6,14,22] if pattern["expression"] == "deep" else [0,4,11,18,26]
 	var zone_roles: Array = pattern.get("zone_roles",[])
-	if zone_roles.has("market") and pattern["expression"] != "deep": steps = [0,2,5,9,16,18,22,27]
+	if zone_roles.has("workshop"): steps = [0,6,12,18,24,30] if pattern["expression"] != "deep" else [0,8,16,24]
+	elif zone_roles.has("choir"): steps = [0,8,16,24] if pattern["expression"] == "deep" else [0,4,12,20,28]
+	elif zone_roles.has("market") and pattern["expression"] != "deep": steps = [0,2,5,9,16,18,22,27]
 	elif zone_roles.has("garden"): steps = steps.slice(0,maxi(2,steps.size()-2))
 	elif zone_roles.has("pulse"): steps = [0,4,8,12,16,20,24,28]
 	if pattern["park"]: steps = steps.slice(0,maxi(2,steps.size()-2))

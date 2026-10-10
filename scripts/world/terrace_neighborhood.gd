@@ -94,7 +94,7 @@ static func populate(world: RefCounted) -> void:
 			if world.terrain.valid_footprint(polygon):
 				world.lots.append({"id":"%s-terrace-lot-%d" % [prefix,index+1],
 					"center":[lot_center.x,lot_center.y],"polygon":polygon,
-					"entrance":[x,y],"use":"residential","community_id":cid,"bank":bank,"occupant":""})
+					"entrance":[x,y],"use":"industrial" if index in [2,8] else "residential","community_id":cid,"bank":bank,"occupant":""})
 			if index > 0:
 				var previous := float(ys[index-1])
 				var polygon_block := PackedVector2Array()
@@ -160,7 +160,7 @@ static func populate(world: RefCounted) -> void:
 			var polygon := box(lot_center,half)
 			if world.terrain.valid_footprint(polygon):
 				world.lots.append({"id":"%s-inner-lot-%d" % [prefix,index+1],"center":[lot_center.x,lot_center.y],"polygon":polygon,
-					"entrance":[x,y],"use":"residential","community_id":cid,"bank":bank,"occupant":""})
+					"entrance":[x,y],"use":"industrial" if index in [1,4] else "residential","community_id":cid,"bank":bank,"occupant":""})
 		var inner_site_y: float = float(inner_ys[2])
 		var inner_site_x: float = world.terrain.river_x(inner_site_y)+float(bank)*inner_offset
 		_append_site(world,Vector2(inner_site_x,inner_site_y),Vector2(0.68,0.56),

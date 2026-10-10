@@ -18,7 +18,7 @@ func _run() -> void:
 	var first_car: Dictionary = car.advance(world,0.0)
 	_check(not first_car.is_empty(),"modern car is active in era five")
 	_check(car.path.size() > 1 and not car.destination.is_empty(),"car receives a physical destination path")
-	_check(car.destination_kind in ["commercial","mixed","transit","civic_green"],"car destination belongs to a functional center")
+	_check(car.destination_kind in ["commercial","mixed","workshop","transit","cultural","civic_green"],"car destination belongs to a functional center")
 	_check(not car.purpose.is_empty(),"car carries a readable journey purpose")
 	var car_destination := car.destination
 	for step in range(1,1201): car.advance(world,float(step)*0.1)

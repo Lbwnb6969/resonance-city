@@ -164,7 +164,7 @@ func _car_nodes(city: ContinuousWorld) -> Array[String]:
 func _car_destinations(city: ContinuousWorld) -> Array[String]:
 	var result: Array[String] = []
 	for zone in city.functional_zones:
-		if str(zone.get("role","")) not in ["commercial","mixed","transit","civic_green"]: continue
+		if str(zone.get("role","")) not in ["commercial","mixed","workshop","transit","cultural","civic_green"]: continue
 		for cid in zone.get("community_ids",[]):
 			var center := city.center_for(str(cid))
 			var node_id := str(center.get("node_id",""))
@@ -181,7 +181,7 @@ func _car_destinations(city: ContinuousWorld) -> Array[String]:
 func _node_destination_kind(city: ContinuousWorld,node_id: String) -> String:
 	var best := "road"
 	var best_rank := 99
-	var ranks := {"commercial":0,"mixed":1,"transit":2,"civic_green":3,"residential":4}
+	var ranks := {"commercial":0,"mixed":1,"workshop":2,"transit":3,"cultural":4,"civic_green":5,"residential":6}
 	for zone in city.functional_zones:
 		var role := str(zone.get("role","center"))
 		for cid in zone.get("community_ids",[]):
@@ -210,7 +210,7 @@ func _next_car(city: ContinuousWorld) -> void:
 		if journey["path"].is_empty(): continue
 		destination = target
 		destination_kind = _node_destination_kind(city,target)
-		var labels := {"commercial":"商街","mixed":"混合中心","transit":"换乘","civic_green":"公共绿地","road":"道路","residential":"居住区"}
+		var labels := {"commercial":"商街","mixed":"混合中心","workshop":"工坊带","transit":"换乘","cultural":"文化声场","civic_green":"公共绿地","road":"道路","residential":"居住区"}
 		purpose = "前往"+str(labels.get(destination_kind,"道路"))
 		stop_id = ""
 		passenger_load = 0

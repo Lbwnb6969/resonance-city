@@ -192,7 +192,8 @@ func refresh_functional_zones() -> void:
 	var next: Array[Dictionary] = []
 	var role_specs := [
 		{"role":"residential","title":"居住带","music_role":"home","threshold":2},
-		{"role":"commercial","title":"商贸核心","music_role":"market","threshold":2}
+		{"role":"commercial","title":"商贸核心","music_role":"market","threshold":2},
+		{"role":"industrial","title":"工坊带","music_role":"workshop","threshold":1}
 	]
 	for spec in role_specs:
 		var members: Array[String] = []
@@ -215,6 +216,17 @@ func refresh_functional_zones() -> void:
 	if green_members.size() >= 1 and green_corridors.size() > 0:
 		green_members.sort_custom(func(a: String,b: String) -> bool: return center_order(a) < center_order(b) if center_order(a) != center_order(b) else a < b)
 		next.append({"id":"zone-civic-green","role":"civic_green","title":"公园与公共生活带","music_role":"garden","community_ids":green_members,"building_count":0,"site_ids":green_sites,"line_ids":[]})
+	var cultural_members: Array[String] = []
+	var cultural_sites: Array[String] = []
+	for site in public_sites:
+		if not bool(site.get("active",false)) or str(site.get("kind","")) != "civic": continue
+		var cid := str(site.get("community_id",""))
+		if cid.is_empty() or not ids.has(cid): continue
+		if not cultural_members.has(cid): cultural_members.append(cid)
+		cultural_sites.append(str(site.get("id","")))
+	if cultural_members.size() >= 2:
+		cultural_members.sort_custom(func(a: String,b: String) -> bool: return center_order(a) < center_order(b) if center_order(a) != center_order(b) else a < b)
+		next.append({"id":"zone-cultural-core","role":"cultural","title":"文化声场","music_role":"choir","community_ids":cultural_members,"building_count":0,"site_ids":cultural_sites,"line_ids":[]})
 	var mixed_members: Array[String] = []
 	for cid in ids:
 		var usage := _community_usage(cid)
