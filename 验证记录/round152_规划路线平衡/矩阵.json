@@ -1,0 +1,3522 @@
+{
+	"candidate": {
+		"community_id": "west-1",
+		"position": [
+			13.1373233795166,
+			5.17846345901489
+		],
+		"source_site_id": "west-lot-3-1"
+	},
+	"claims": {
+		"human_listening": "not claimed",
+		"non_dominance": "structural signals only; no subjective winner declared",
+		"pcm_or_wasapi": "not run in this offline matrix",
+		"technical_route_difference": "verified from production growth and public preview metadata"
+	},
+	"contract": "ROUND152-ROUTE-BALANCE/v1",
+	"public_matrix": {
+		"bluegreen/anchor_bloom": {
+			"branches": {
+				"civic": {
+					"affected_communities": [
+						"west-1",
+						"west-2"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 21,
+					"next_action": {
+						"community_targets": [
+							"west-1",
+							"west-2"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 5
+				},
+				"none": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 19,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.304,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "当前以长音融入合奏",
+							"next": "节奏槽已有其他社区使用；改变商业密度或聚焦后再听",
+							"qualified": false,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与9组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 8
+				},
+				"park": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 20,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 6
+				}
+			},
+			"card_id": "anchor_bloom",
+			"plan": "bluegreen"
+		},
+		"bluegreen/infill_pulse": {
+			"branches": {
+				"civic": {
+					"affected_communities": [
+						"west-1",
+						"west-2"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 21,
+					"next_action": {
+						"community_targets": [
+							"west-1",
+							"west-2"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 5
+				},
+				"none": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 19,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.304,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "当前以长音融入合奏",
+							"next": "节奏槽已有其他社区使用；改变商业密度或聚焦后再听",
+							"qualified": false,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与9组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 8
+				},
+				"park": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 20,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 6
+				}
+			},
+			"card_id": "infill_pulse",
+			"plan": "bluegreen"
+		},
+		"bluegreen/road_echo": {
+			"branches": {
+				"civic": {
+					"affected_communities": [
+						"west-1",
+						"west-2"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 21,
+					"next_action": {
+						"community_targets": [
+							"west-1",
+							"west-2"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 5
+				},
+				"none": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 19,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.304,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "当前以长音融入合奏",
+							"next": "节奏槽已有其他社区使用；改变商业密度或聚焦后再听",
+							"qualified": false,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 4栋参与6组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 8
+				},
+				"park": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 20,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 6
+				}
+			},
+			"card_id": "road_echo",
+			"plan": "bluegreen"
+		},
+		"compact/anchor_bloom": {
+			"branches": {
+				"civic": {
+					"affected_communities": [
+						"west-1",
+						"west-2"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 21,
+					"next_action": {
+						"community_targets": [
+							"west-1",
+							"west-2"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.295,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 4栋参与6组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 5
+				},
+				"none": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 19,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.304,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "当前以长音融入合奏",
+							"next": "节奏槽已有其他社区使用；改变商业密度或聚焦后再听",
+							"qualified": false,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与9组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 8
+				},
+				"park": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 20,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.295,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 4栋参与6组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 6
+				}
+			},
+			"card_id": "anchor_bloom",
+			"plan": "compact"
+		},
+		"compact/infill_pulse": {
+			"branches": {
+				"civic": {
+					"affected_communities": [
+						"west-1",
+						"west-2"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 21,
+					"next_action": {
+						"community_targets": [
+							"west-1",
+							"west-2"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.295,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 4栋参与6组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 5
+				},
+				"none": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 19,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.304,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "当前以长音融入合奏",
+							"next": "节奏槽已有其他社区使用；改变商业密度或聚焦后再听",
+							"qualified": false,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与9组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 8
+				},
+				"park": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 20,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.295,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 4栋参与6组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 6
+				}
+			},
+			"card_id": "infill_pulse",
+			"plan": "compact"
+		},
+		"compact/road_echo": {
+			"branches": {
+				"civic": {
+					"affected_communities": [
+						"west-1",
+						"west-2"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 21,
+					"next_action": {
+						"community_targets": [
+							"west-1",
+							"west-2"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.295,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 4栋参与6组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 5
+				},
+				"none": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 19,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.304,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "当前以长音融入合奏",
+							"next": "节奏槽已有其他社区使用；改变商业密度或聚焦后再听",
+							"qualified": false,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 4栋参与6组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 8
+				},
+				"park": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 20,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.295,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 4栋参与6组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 6
+				}
+			},
+			"card_id": "road_echo",
+			"plan": "compact"
+		},
+		"corridor/anchor_bloom": {
+			"branches": {
+				"civic": {
+					"affected_communities": [
+						"west-1",
+						"west-2"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 21,
+					"next_action": {
+						"community_targets": [
+							"west-1",
+							"west-2"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 5
+				},
+				"none": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 19,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.306,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "当前以长音融入合奏",
+							"next": "节奏槽已有其他社区使用；改变商业密度或聚焦后再听",
+							"qualified": false,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 8
+				},
+				"park": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 20,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 6
+				}
+			},
+			"card_id": "anchor_bloom",
+			"plan": "corridor"
+		},
+		"corridor/infill_pulse": {
+			"branches": {
+				"civic": {
+					"affected_communities": [
+						"west-1",
+						"west-2"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 21,
+					"next_action": {
+						"community_targets": [
+							"west-1",
+							"west-2"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 5
+				},
+				"none": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 19,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.306,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "当前以长音融入合奏",
+							"next": "节奏槽已有其他社区使用；改变商业密度或聚焦后再听",
+							"qualified": false,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 8
+				},
+				"park": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 20,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 6
+				}
+			},
+			"card_id": "infill_pulse",
+			"plan": "corridor"
+		},
+		"corridor/road_echo": {
+			"branches": {
+				"civic": {
+					"affected_communities": [
+						"west-1",
+						"west-2"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 21,
+					"next_action": {
+						"community_targets": [
+							"west-1",
+							"west-2"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 5
+				},
+				"none": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 19,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.306,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "当前以长音融入合奏",
+							"next": "节奏槽已有其他社区使用；改变商业密度或聚焦后再听",
+							"qualified": false,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 8
+				},
+				"park": {
+					"affected_communities": [
+						"west-1"
+					],
+					"birth_count": 3,
+					"houses": 27,
+					"max_voices": 20,
+					"next_action": {
+						"community_targets": [
+							"west-1"
+						],
+						"role": "theme",
+						"status": "ready"
+					},
+					"peak": 0.297,
+					"roles": {
+						"bass": {
+							"current": "正在使用低音/深色表达素材",
+							"next": "低音素材已在当前合奏中；继续调整位置或音级听取与主题的关系",
+							"qualified": true,
+							"scheduled": false
+						},
+						"commercial": {
+							"current": "公共空间正在占用节奏入口",
+							"next": "商业/公共节奏素材已就绪，下一拍参与槽位竞争",
+							"qualified": true,
+							"scheduled": false
+						},
+						"response": {
+							"current": "已有跨岸配对，等待来源主题",
+							"next": "跨岸配对已就绪；需要来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": false
+						},
+						"theme": {
+							"current": "正在唱主题 · 正在演奏节奏",
+							"next": "改一栋的音，听这片社区怎样改写主题\n跨河对唱 · 5栋参与8组协和；来源主题会延迟两拍回答，不改变活力；不必建桥\n对唱等待来源主题与唯一应答槽",
+							"qualified": true,
+							"scheduled": true
+						}
+					},
+					"theme_events": 6
+				}
+			},
+			"card_id": "road_echo",
+			"plan": "corridor"
+		}
+	},
+	"route_matrix": {
+		"bluegreen/anchor_bloom/civic": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "anchor_bloom",
+			"center_distance_sum": 1229.213,
+			"charter_card_refs": [
+				"anchor_bloom"
+			],
+			"charter_plan": "bluegreen",
+			"compact_neighbors": 6,
+			"houses": 11,
+			"max_growth_bonus": 25026.276,
+			"plan": "bluegreen",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					8.662,
+					6.991
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "civic",
+			"public_served": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00010",
+				"building-00011",
+				"building-00019",
+				"building-00022",
+				"building-00025",
+				"building-00026",
+				"building-00028",
+				"building-00029",
+				"building-00033"
+			],
+			"road_distance_mean": 1.025
+		},
+		"bluegreen/anchor_bloom/none": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "anchor_bloom",
+			"center_distance_sum": 1319.073,
+			"charter_card_refs": [
+				"anchor_bloom"
+			],
+			"charter_plan": "bluegreen",
+			"compact_neighbors": 8,
+			"houses": 12,
+			"max_growth_bonus": 2381.261,
+			"plan": "bluegreen",
+			"positions": [
+				[
+					13.137,
+					5.178
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					10.716,
+					-0.457
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					9.92,
+					6.818
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": false,
+			"public_kind": "none",
+			"public_served": [],
+			"road_distance_mean": 1.056
+		},
+		"bluegreen/anchor_bloom/park": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "anchor_bloom",
+			"center_distance_sum": 1229.213,
+			"charter_card_refs": [
+				"anchor_bloom"
+			],
+			"charter_plan": "bluegreen",
+			"compact_neighbors": 6,
+			"houses": 11,
+			"max_growth_bonus": 23231.531,
+			"plan": "bluegreen",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					8.662,
+					6.991
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "park",
+			"public_served": [],
+			"road_distance_mean": 1.025
+		},
+		"bluegreen/infill_pulse/civic": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "infill_pulse",
+			"center_distance_sum": 1229.213,
+			"charter_card_refs": [
+				"infill_pulse"
+			],
+			"charter_plan": "bluegreen",
+			"compact_neighbors": 6,
+			"houses": 11,
+			"max_growth_bonus": 20151.673,
+			"plan": "bluegreen",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					8.662,
+					6.991
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "civic",
+			"public_served": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00010",
+				"building-00011",
+				"building-00019",
+				"building-00022",
+				"building-00025",
+				"building-00026",
+				"building-00028",
+				"building-00029",
+				"building-00033"
+			],
+			"road_distance_mean": 1.025
+		},
+		"bluegreen/infill_pulse/none": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "infill_pulse",
+			"center_distance_sum": 1319.073,
+			"charter_card_refs": [
+				"infill_pulse"
+			],
+			"charter_plan": "bluegreen",
+			"compact_neighbors": 8,
+			"houses": 12,
+			"max_growth_bonus": 3500.927,
+			"plan": "bluegreen",
+			"positions": [
+				[
+					13.137,
+					5.178
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					10.716,
+					-0.457
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					9.92,
+					6.818
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": false,
+			"public_kind": "none",
+			"public_served": [],
+			"road_distance_mean": 1.056
+		},
+		"bluegreen/infill_pulse/park": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "infill_pulse",
+			"center_distance_sum": 1229.213,
+			"charter_card_refs": [
+				"infill_pulse"
+			],
+			"charter_plan": "bluegreen",
+			"compact_neighbors": 6,
+			"houses": 11,
+			"max_growth_bonus": 18832.008,
+			"plan": "bluegreen",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					8.662,
+					6.991
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "park",
+			"public_served": [],
+			"road_distance_mean": 1.025
+		},
+		"bluegreen/road_echo/civic": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "road_echo",
+			"center_distance_sum": 1394.368,
+			"charter_card_refs": [
+				"road_echo"
+			],
+			"charter_plan": "bluegreen",
+			"compact_neighbors": 8,
+			"houses": 12,
+			"max_growth_bonus": 21736.314,
+			"plan": "bluegreen",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					8.662,
+					6.991
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					7.662,
+					6.991
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "civic",
+			"public_served": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00010",
+				"building-00011",
+				"building-00019",
+				"building-00022",
+				"building-00025",
+				"building-00026",
+				"building-00028",
+				"building-00029",
+				"building-00031",
+				"building-00034"
+			],
+			"road_distance_mean": 1.024
+		},
+		"bluegreen/road_echo/none": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 3,
+			"card_id": "road_echo",
+			"center_distance_sum": 1319.73,
+			"charter_card_refs": [
+				"road_echo"
+			],
+			"charter_plan": "bluegreen",
+			"compact_neighbors": 8,
+			"houses": 12,
+			"max_growth_bonus": 5225.084,
+			"plan": "bluegreen",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					13.137,
+					5.178
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					9.92,
+					6.818
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": false,
+			"public_kind": "none",
+			"public_served": [],
+			"road_distance_mean": 1.051
+		},
+		"bluegreen/road_echo/park": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "road_echo",
+			"center_distance_sum": 1394.368,
+			"charter_card_refs": [
+				"road_echo"
+			],
+			"charter_plan": "bluegreen",
+			"compact_neighbors": 8,
+			"houses": 12,
+			"max_growth_bonus": 20416.648,
+			"plan": "bluegreen",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					8.662,
+					6.991
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					7.662,
+					6.991
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "park",
+			"public_served": [],
+			"road_distance_mean": 1.024
+		},
+		"compact/anchor_bloom/civic": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "anchor_bloom",
+			"center_distance_sum": 1200.366,
+			"charter_card_refs": [
+				"anchor_bloom"
+			],
+			"charter_plan": "compact",
+			"compact_neighbors": 6,
+			"houses": 11,
+			"max_growth_bonus": 9874.602,
+			"plan": "compact",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					8.662,
+					6.991
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "civic",
+			"public_served": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00010",
+				"building-00011",
+				"building-00019",
+				"building-00022",
+				"building-00025",
+				"building-00028",
+				"building-00029",
+				"building-00031",
+				"building-00033"
+			],
+			"road_distance_mean": 1.046
+		},
+		"compact/anchor_bloom/none": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "anchor_bloom",
+			"center_distance_sum": 1319.073,
+			"charter_card_refs": [
+				"anchor_bloom"
+			],
+			"charter_plan": "compact",
+			"compact_neighbors": 8,
+			"houses": 12,
+			"max_growth_bonus": 3880.334,
+			"plan": "compact",
+			"positions": [
+				[
+					13.137,
+					5.178
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					10.716,
+					-0.457
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					9.92,
+					6.818
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": false,
+			"public_kind": "none",
+			"public_served": [],
+			"road_distance_mean": 1.056
+		},
+		"compact/anchor_bloom/park": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "anchor_bloom",
+			"center_distance_sum": 1200.366,
+			"charter_card_refs": [
+				"anchor_bloom"
+			],
+			"charter_plan": "compact",
+			"compact_neighbors": 6,
+			"houses": 11,
+			"max_growth_bonus": 9399.523,
+			"plan": "compact",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					8.662,
+					6.991
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "park",
+			"public_served": [],
+			"road_distance_mean": 1.046
+		},
+		"compact/infill_pulse/civic": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "infill_pulse",
+			"center_distance_sum": 1221.884,
+			"charter_card_refs": [
+				"infill_pulse"
+			],
+			"charter_plan": "compact",
+			"compact_neighbors": 4,
+			"houses": 11,
+			"max_growth_bonus": 5000.0,
+			"plan": "compact",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.959,
+					7.489
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					7.362,
+					6.991
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "civic",
+			"public_served": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00010",
+				"building-00011",
+				"building-00019",
+				"building-00022",
+				"building-00025",
+				"building-00028",
+				"building-00029",
+				"building-00031",
+				"building-00033"
+			],
+			"road_distance_mean": 1.003
+		},
+		"compact/infill_pulse/none": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "infill_pulse",
+			"center_distance_sum": 1319.073,
+			"charter_card_refs": [
+				"infill_pulse"
+			],
+			"charter_plan": "compact",
+			"compact_neighbors": 8,
+			"houses": 12,
+			"max_growth_bonus": 5000.0,
+			"plan": "compact",
+			"positions": [
+				[
+					13.137,
+					5.178
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					10.716,
+					-0.457
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					9.92,
+					6.818
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": false,
+			"public_kind": "none",
+			"public_served": [],
+			"road_distance_mean": 1.056
+		},
+		"compact/infill_pulse/park": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "infill_pulse",
+			"center_distance_sum": 1221.884,
+			"charter_card_refs": [
+				"infill_pulse"
+			],
+			"charter_plan": "compact",
+			"compact_neighbors": 4,
+			"houses": 11,
+			"max_growth_bonus": 5000.0,
+			"plan": "compact",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.959,
+					7.489
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					7.362,
+					6.991
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "park",
+			"public_served": [],
+			"road_distance_mean": 1.003
+		},
+		"compact/road_echo/civic": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "road_echo",
+			"center_distance_sum": 1455.317,
+			"charter_card_refs": [
+				"road_echo"
+			],
+			"charter_plan": "compact",
+			"compact_neighbors": 11,
+			"houses": 12,
+			"max_growth_bonus": 6724.157,
+			"plan": "compact",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					10.884,
+					-1.498
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.227,
+					-2.273
+				],
+				[
+					12.959,
+					7.489
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					9.92,
+					6.818
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "civic",
+			"public_served": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00010",
+				"building-00011",
+				"building-00019",
+				"building-00022",
+				"building-00025",
+				"building-00028",
+				"building-00029",
+				"building-00031",
+				"building-00032",
+				"building-00034"
+			],
+			"road_distance_mean": 1.018
+		},
+		"compact/road_echo/none": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 3,
+			"card_id": "road_echo",
+			"center_distance_sum": 1319.73,
+			"charter_card_refs": [
+				"road_echo"
+			],
+			"charter_plan": "compact",
+			"compact_neighbors": 8,
+			"houses": 12,
+			"max_growth_bonus": 6724.157,
+			"plan": "compact",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					13.137,
+					5.178
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					9.92,
+					6.818
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": false,
+			"public_kind": "none",
+			"public_served": [],
+			"road_distance_mean": 1.051
+		},
+		"compact/road_echo/park": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "road_echo",
+			"center_distance_sum": 1455.317,
+			"charter_card_refs": [
+				"road_echo"
+			],
+			"charter_plan": "compact",
+			"compact_neighbors": 11,
+			"houses": 12,
+			"max_growth_bonus": 6724.157,
+			"plan": "compact",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.613,
+					13.135
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					10.884,
+					-1.498
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.227,
+					-2.273
+				],
+				[
+					12.959,
+					7.489
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					9.92,
+					6.818
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "park",
+			"public_served": [],
+			"road_distance_mean": 1.018
+		},
+		"corridor/anchor_bloom/civic": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "anchor_bloom",
+			"center_distance_sum": 1250.599,
+			"charter_card_refs": [
+				"anchor_bloom"
+			],
+			"charter_plan": "corridor",
+			"compact_neighbors": 4,
+			"houses": 11,
+			"max_growth_bonus": 17740.07,
+			"plan": "corridor",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					12.959,
+					7.489
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					7.362,
+					6.991
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "civic",
+			"public_served": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00010",
+				"building-00011",
+				"building-00019",
+				"building-00022",
+				"building-00025",
+				"building-00026",
+				"building-00028",
+				"building-00029",
+				"building-00033"
+			],
+			"road_distance_mean": 0.982
+		},
+		"corridor/anchor_bloom/none": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "anchor_bloom",
+			"center_distance_sum": 1199.457,
+			"charter_card_refs": [
+				"anchor_bloom"
+			],
+			"charter_plan": "corridor",
+			"compact_neighbors": 7,
+			"houses": 11,
+			"max_growth_bonus": 11115.467,
+			"plan": "corridor",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					13.137,
+					5.178
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": false,
+			"public_kind": "none",
+			"public_served": [],
+			"road_distance_mean": 1.041
+		},
+		"corridor/anchor_bloom/park": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "anchor_bloom",
+			"center_distance_sum": 1250.599,
+			"charter_card_refs": [
+				"anchor_bloom"
+			],
+			"charter_plan": "corridor",
+			"compact_neighbors": 4,
+			"houses": 11,
+			"max_growth_bonus": 17264.99,
+			"plan": "corridor",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					9.712,
+					6.991
+				],
+				[
+					12.959,
+					7.489
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					7.362,
+					6.991
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "park",
+			"public_served": [],
+			"road_distance_mean": 0.982
+		},
+		"corridor/infill_pulse/civic": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "infill_pulse",
+			"center_distance_sum": 1323.806,
+			"charter_card_refs": [
+				"infill_pulse"
+			],
+			"charter_plan": "corridor",
+			"compact_neighbors": 9,
+			"houses": 11,
+			"max_growth_bonus": 12865.467,
+			"plan": "corridor",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					10.884,
+					-1.498
+				],
+				[
+					12.959,
+					7.489
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					12.227,
+					-2.273
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "civic",
+			"public_served": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00010",
+				"building-00011",
+				"building-00019",
+				"building-00022",
+				"building-00025",
+				"building-00026",
+				"building-00028",
+				"building-00029",
+				"building-00033"
+			],
+			"road_distance_mean": 0.981
+		},
+		"corridor/infill_pulse/none": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "infill_pulse",
+			"center_distance_sum": 1252.392,
+			"charter_card_refs": [
+				"infill_pulse"
+			],
+			"charter_plan": "corridor",
+			"compact_neighbors": 8,
+			"houses": 11,
+			"max_growth_bonus": 12865.467,
+			"plan": "corridor",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					13.137,
+					5.178
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					10.884,
+					-1.498
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": false,
+			"public_kind": "none",
+			"public_served": [],
+			"road_distance_mean": 1.02
+		},
+		"corridor/infill_pulse/park": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "infill_pulse",
+			"center_distance_sum": 1323.806,
+			"charter_card_refs": [
+				"infill_pulse"
+			],
+			"charter_plan": "corridor",
+			"compact_neighbors": 9,
+			"houses": 11,
+			"max_growth_bonus": 12865.467,
+			"plan": "corridor",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					10.884,
+					-1.498
+				],
+				[
+					12.959,
+					7.489
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					12.227,
+					-2.273
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "park",
+			"public_served": [],
+			"road_distance_mean": 0.981
+		},
+		"corridor/road_echo/civic": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "road_echo",
+			"center_distance_sum": 1486.758,
+			"charter_card_refs": [
+				"road_echo"
+			],
+			"charter_plan": "corridor",
+			"compact_neighbors": 11,
+			"houses": 12,
+			"max_growth_bonus": 14450.107,
+			"plan": "corridor",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					10.884,
+					-1.498
+				],
+				[
+					12.959,
+					7.489
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.227,
+					-2.273
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					9.92,
+					6.818
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "civic",
+			"public_served": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00010",
+				"building-00011",
+				"building-00019",
+				"building-00022",
+				"building-00025",
+				"building-00026",
+				"building-00028",
+				"building-00029",
+				"building-00031",
+				"building-00034"
+			],
+			"road_distance_mean": 0.998
+		},
+		"corridor/road_echo/none": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 2,
+			"card_id": "road_echo",
+			"center_distance_sum": 1404.485,
+			"charter_card_refs": [
+				"road_echo"
+			],
+			"charter_plan": "corridor",
+			"compact_neighbors": 10,
+			"houses": 12,
+			"max_growth_bonus": 14450.107,
+			"plan": "corridor",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					13.137,
+					5.178
+				],
+				[
+					13.37,
+					6.745
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					10.884,
+					-1.498
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					9.92,
+					6.818
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": false,
+			"public_kind": "none",
+			"public_served": [],
+			"road_distance_mean": 1.033
+		},
+		"corridor/road_echo/park": {
+			"birth_frames": [
+				1058400,
+				1058400,
+				1058400,
+				1411200,
+				1411200,
+				1411200,
+				1764000,
+				1764000,
+				1764000,
+				2116800,
+				2116800,
+				2116800
+			],
+			"bonus_samples": 1,
+			"card_id": "road_echo",
+			"center_distance_sum": 1486.758,
+			"charter_card_refs": [
+				"road_echo"
+			],
+			"charter_plan": "corridor",
+			"compact_neighbors": 11,
+			"houses": 12,
+			"max_growth_bonus": 14450.107,
+			"plan": "corridor",
+			"positions": [
+				[
+					12.227,
+					-0.723
+				],
+				[
+					13.484,
+					8.399
+				],
+				[
+					19.258,
+					16.417
+				],
+				[
+					10.884,
+					-1.498
+				],
+				[
+					12.959,
+					7.489
+				],
+				[
+					19.258,
+					14.867
+				],
+				[
+					12.227,
+					-2.273
+				],
+				[
+					12.058,
+					15.375
+				],
+				[
+					18.772,
+					14.0
+				],
+				[
+					9.92,
+					6.818
+				],
+				[
+					13.834,
+					15.4
+				],
+				[
+					17.937,
+					5.22
+				]
+			],
+			"public_active": true,
+			"public_kind": "park",
+			"public_served": [],
+			"road_distance_mean": 0.998
+		}
+	},
+	"scope": [
+		"west-1"
+	],
+	"seed": "2026101100000152"
+}
