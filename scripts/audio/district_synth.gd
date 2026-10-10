@@ -876,11 +876,12 @@ func update_city(city: Array, state: Dictionary, marks: Dictionary = {}, events:
 
 # Consumes an audio projection owned by the caller, never live World buildings.
 # Records are read-only here; route and stage state have separate ownership.
-func _update_city_data(city: Array, state: Dictionary, marks: Dictionary, events: Array) -> void:
+func _update_city_data(city: Array, state: Dictionary, marks: Dictionary, events: Array, preparation: Dictionary = {}) -> void:
 	road_marks = marks.duplicate(true)
 	districts = city
-	map_width = 16
-	for d in districts: map_width = maxi(map_width,16+4*maxi(0,int(d.get("era",1))-1))
+	map_width = int(preparation["map_width"]) if not preparation.is_empty() else 16
+	if preparation.is_empty():
+		for d in districts: map_width = maxi(map_width,16+4*maxi(0,int(d.get("era",1))-1))
 	_rebuild_assist_neighbors(city)
 	# The routing list retains its stable order and historical voices. Index only
 	# this update; duplicate IDs still update every matching route as before.
@@ -894,13 +895,15 @@ func _update_city_data(city: Array, state: Dictionary, marks: Dictionary, events
 		var id: String = event["district_id"]
 		if not events_by_id.has(id): events_by_id[id] = []
 		events_by_id[id].append(event)
+	var projection_index := 0
 	for district in city:
 		var id: String = district["district_id"]
 		state[id] = int(district["current_midi"])
 		if not routes_by_id.has(id):
 			_append_district(district)
 			routes_by_id[id] = [routing[-1]]
-		var stereo := _stereo_for(district)
+		var stereo: Vector2 = preparation["stereo"][projection_index] if not preparation.is_empty() else _stereo_for(district)
+		projection_index += 1
 		for route in routes_by_id[id]:
 			for event in events_by_id.get(id,[]): Stage.sync(route["stage"],event)
 			route["stereo"] = stereo

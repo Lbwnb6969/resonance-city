@@ -31,6 +31,9 @@ var bed_table := PackedFloat32Array()
 const SettlementJob = preload("res://scripts/world/world_settlement_job.gd")
 # Private worker projection; omitted from DNA and preview state.
 var prepared_audio_buildings: Array = []
+var prepared_audio_update: Dictionary = {}
+var audio_preparation_stats := {"used":0,"fallback":0}
+const AudioPreparation = preload("res://scripts/audio/community_audio_preparation.gd")
 var prepared_audio_phrase := -1
 var settlement_enabled := false
 var settlement_job: RefCounted
@@ -93,12 +96,14 @@ func _commit_settlement(at: int) -> void:
 		var started := Time.get_ticks_usec()
 		settlement_job.adopt(world)
 		prepared_audio_buildings = settlement_job.audio_buildings
+		prepared_audio_update = settlement_job.audio_preparation
 		prepared_audio_phrase = world.phrase_index
 		settlement_stats["max_commit_ms"] = maxf(settlement_stats["max_commit_ms"],float(Time.get_ticks_usec()-started)/1000.0)
 		settlement_stats["adopted"] += 1
 		_retire_settlement_job()
 	else:
 		prepared_audio_buildings = []
+		prepared_audio_update = {}
 		prepared_audio_phrase = -1
 		world.settle(at)
 		if settlement_enabled: settlement_stats["fallbacks"] += 1
@@ -189,16 +194,18 @@ func _finish_audio_city(city: Array) -> Array:
 		if sound_overrides.has(building["district_id"]):
 			city[i] = building.duplicate(true)
 			city[i]["current_midi"] = sound_overrides[building["district_id"]]
-	for landmark in world.landmarks:
-		var motif: Array = landmark.get("motif",[])
-		var midi := int(motif[0].get("midi",48)) if not motif.is_empty() else 48
-		city.append({"district_id":str(landmark["id"]),"position":landmark["position"],"radius":float(landmark["radius"]),
-			"current_midi":midi,"base_midi":midi,"type":"residential","vitality":100.0,
-			"community_id":"landmark:"+str(landmark["id"]),"family_id":"landmark:"+str(landmark["id"]),
-			"expression":"bright","family_anchor":true,"is_anchor":true,"era":int(landmark.get("era",1)),
-			"form":"央","form_count":0,"birth_frame":int(landmark.get("frame",0)),"voice_level":float(landmark.get("voice_level",0.34)),
-			"landmark":true})
+	city.append_array(AudioPreparation.landmark_records(world.landmarks))
 	return city
+
+func _matching_audio_preparation() -> Dictionary:
+	if prepared_audio_phrase != world.phrase_index or prepared_audio_update.is_empty(): return {}
+	if prepared_audio_update["score_signature"] != [synth.score["pad_gain"],synth.score.get("pad_reference_communities",3.0)]: return {}
+	# Retunes after capture keep their exact sound frame. Rebuild on the main
+	# thread whenever the audible pitch differs from the prepared structural pitch.
+	for building in prepared_audio_buildings:
+		var id: String = building["district_id"]
+		if sound_overrides.has(id) and int(sound_overrides[id]) != int(building["current_midi"]): return {}
+	return prepared_audio_update
 
 func _apply_sound(event: Dictionary) -> void:
 	match str(event["kind"]):
@@ -238,7 +245,9 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			var seam_seconds := 0.08 if structural_change else float(world.cfg["score"]["pitch_glide_seconds"])
 			transition_total = maxi(1,roundi(seam_seconds*rate))
 			transition_remaining = transition_total
-			synth.update_audio_city(_owned_audio_city(),state,{},recent)
+			var audio_preparation := _matching_audio_preparation()
+			audio_preparation_stats["fallback" if audio_preparation.is_empty() else "used"] += 1
+			synth.update_audio_city(_owned_audio_city(),state,{},recent,audio_preparation)
 			var era_events: Array = recent.filter(func(event: Dictionary) -> bool: return str(event.get("kind","")) == "era")
 			if not era_events.is_empty():
 				var era_event: Dictionary = era_events[-1]

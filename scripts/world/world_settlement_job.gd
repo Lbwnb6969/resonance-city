@@ -16,6 +16,8 @@ var result: ContinuousWorld
 var presentation_view: ContinuousWorld
 # Independent sound projection, prepared after settlement and read only after join.
 var audio_buildings: Array = []
+var audio_preparation: Dictionary = {}
+const AudioPreparation = preload("res://scripts/audio/community_audio_preparation.gd")
 var worker_ms := 0.0
 var task_id := -1
 
@@ -54,6 +56,9 @@ func _compute() -> void:
 	presentation_view.resonance = private_city.resonance
 	private_city.settle(commit_frame)
 	audio_buildings = private_city.buildings.duplicate(true)
+	var audio_city := audio_buildings.duplicate()
+	audio_city.append_array(AudioPreparation.landmark_records(private_city.landmarks))
+	audio_preparation = AudioPreparation.build(audio_city,private_city.cfg)
 	result = private_city
 	caches.clear()
 	network_caches.clear()
@@ -86,6 +91,7 @@ func retire() -> void:
 
 func _dispose() -> void:
 	audio_buildings = []
+	audio_preparation = {}
 	result = null
 	presentation_view = null
 	# An adopted presentation may still own the snapshot. Release this reference

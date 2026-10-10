@@ -50,9 +50,28 @@ func update_city(city: Array, state: Dictionary, marks: Dictionary = {}, events:
 	_update_pad_groups(city,state)
 
 # The model supplies a private projection; avoid copying that projection twice.
-func update_audio_city(city: Array, state: Dictionary, marks: Dictionary = {}, events: Array = []) -> void:
-	_update_city_data(city,state,marks,events.filter(func(event: Dictionary) -> bool: return event.has("district_id")))
-	_update_pad_groups(city,state)
+func update_audio_city(city: Array, state: Dictionary, marks: Dictionary = {}, events: Array = [], preparation: Dictionary = {}) -> void:
+	_update_city_data(city,state,marks,events.filter(func(event: Dictionary) -> bool: return event.has("district_id")),preparation)
+	if preparation.is_empty(): _update_pad_groups(city,state)
+	else: _apply_prepared_pad_groups(preparation,state)
+
+func _apply_prepared_pad_groups(preparation: Dictionary, state: Dictionary) -> void:
+	population = preparation["population"].duplicate()
+	targets.merge(preparation["targets"],true)
+	for group in pad_groups.values(): group["active"] = false
+	for key in preparation["groups"]:
+		var ready: Dictionary = preparation["groups"][key]
+		if not pad_groups.has(key):
+			var first: String = ready["members"][0]
+			pad_groups[key] = {"key":key,"cid":ready["cid"],"midi":ready["midi"],"type":ready["type"],
+				"phase":float(state.get("_phase_"+first,0.0)),"level":0.0,"expression":ready["expression"]}
+		var group: Dictionary = pad_groups[key]
+		group["active"] = true
+		group["members"] = ready["members"].duplicate()
+		group["pan_sum"] = ready["pan_sum"]
+		group["stereo"] = ready["stereo"]
+		group["target"] = ready["target"]
+	_retire_quiet_pad_groups()
 
 func _update_pad_groups(city: Array, state: Dictionary) -> void:
 	population.clear()
@@ -81,6 +100,9 @@ func _update_pad_groups(city: Array, state: Dictionary) -> void:
 		var pan: float = float(group["pan_sum"])/group["members"].size()
 		group["stereo"] = Vector2(cos((pan+1.0)*PI/4.0),sin((pan+1.0)*PI/4.0))
 		group["target"] = float(score["pad_gain"])*sqrt(float(group["members"].size())/maxf(6.0,float(population[group["cid"]])))*sqrt(float(score.get("pad_reference_communities",3.0))/maxf(float(score.get("pad_reference_communities",3.0)),population.size()))
+	_retire_quiet_pad_groups()
+
+func _retire_quiet_pad_groups() -> void:
 	# Retiring nodes count during their two-beat fade.
 	while pad_groups.size() > int(score["pad_group_limit"])*2:
 		var quiet := ""
@@ -105,7 +127,15 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
 		if members.size() >= 3 or (has_facility and not members.is_empty()): candidates.append(cid)
 	# Resolve each priority once instead of scanning centers inside every comparison.
 	var priorities: Dictionary = {}
-	for cid in candidates: priorities[cid] = [world.center_rank(cid),world.center_order(cid)]
+	# center_rank/order use the first matching center, including inactive records.
+	# Build that same lookup once; repeated community scans dominate large scores.
+	for index in range(world.centers.size()):
+		var center: Dictionary = world.centers[index]
+		var cid := str(center["community_id"])
+		if not priorities.has(cid):
+			priorities[cid] = [{"primary":0,"secondary":1,"terrace":2}.get(str(center["level"]),3),index]
+	for cid in candidates:
+		if not priorities.has(cid): priorities[cid] = [3,999]
 	candidates.sort_custom(func(a: String,b: String) -> bool:
 		var ar: int = priorities[a][0]
 		var br: int = priorities[b][0]
