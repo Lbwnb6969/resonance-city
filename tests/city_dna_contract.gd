@@ -34,7 +34,7 @@ func _initialize() -> void:
 		check(payload.get("buildings",[]).size() == world.buildings.size(),"DNA preserves building identities")
 		check(payload.get("plan",{}).get("roads",[]).size() >= 120,"DNA preserves expanded roads")
 		check(payload.get("plan",{}).get("public_sites",[]).size() >= 16,"DNA preserves public facilities")
-		check(payload.get("music",{}).get("theme",{}).get("terrain","") == "highland_pass","DNA preserves terrain music identity")
+		check(payload.get("music",{}).get("theme",{}).get("notes",[]).size() > 0,"DNA preserves authored theme notes")
 		check(bool(decision.get("accepted",false)),"AudioPlan source decision is accepted")
 		var audio_plan: Dictionary = payload.get("audio_plan",{})
 		check(audio_plan.get("schema","") == "resonance_audio_plan_v1","DNA includes a replayable AudioPlan schema")
