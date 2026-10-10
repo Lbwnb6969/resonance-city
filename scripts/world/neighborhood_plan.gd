@@ -73,7 +73,9 @@ static func populate(world: RefCounted) -> void:
 		if not world.terrain.valid_footprint(polygon): continue
 		var clear := true
 		for site in world.public_sites:
-			if not Geometry2D.intersect_polygons(polygon,site["polygon"]).is_empty(): clear = false
+			var components: Array = site.get("footprint_components",[site.get("polygon",PackedVector2Array())])
+			for component in components:
+				if not Geometry2D.intersect_polygons(polygon,component).is_empty(): clear = false
 		for road in world.roads:
 			var width := float(cfg["branch_road_half_width"]) if road.get("kind","") == "branch" else float(t["template_road_half_width"])
 			for strip in Geometry2D.offset_polyline(road["path"],width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):

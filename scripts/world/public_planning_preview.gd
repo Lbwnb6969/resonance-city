@@ -157,7 +157,7 @@ static func _opportunity_preview(world: RefCounted,site: Dictionary,choice: Stri
 	}
 
 static func identity(model: ContinuousAudioModel,site: Dictionary) -> Array:
-	return [Charter.version(model.world),model.next_boundary,site.get("source_site_id",""),site.get("polygon",PackedVector2Array()),
+	return [Charter.version(model.world),model.next_boundary,site.get("source_site_id",""),site.get("polygon",PackedVector2Array()),site.get("footprint_components",[]),
 		hash(model.world.pending_actions),hash(model.sound_events),hash(model.sound_overrides),
 		model.synth.focused_community,model.synth.listener_community,model.synth.response_enabled,hash(model.synth.muted_communities),model.synth.gain,hash(model.synth.score)]
 
