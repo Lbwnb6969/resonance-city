@@ -76,6 +76,8 @@ var relocation_site_id := ""
 var partial_mode := false
 var partial_kind := ""
 var partial_reservation_id := ""
+var reservation_draw_mode := false
+var reservation_draw_points := PackedVector2Array()
 var pointer := Vector2.ZERO
 var pointer_inside := false
 var midi := 48
@@ -221,6 +223,8 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	shown_world = model.world
 	selected_id = ""
 	context.clear()
+	reservation_draw_mode = false
+	reservation_draw_points.clear()
 	menu.hide()
 	last_birth_count = shown_world.buildings.size()
 	zoom_target = 0.88
@@ -307,7 +311,7 @@ func _make_menu() -> void:
 		verbs.add_child(button)
 	box.add_child(verbs)
 	var public_row := HBoxContainer.new()
-	for item in [["建公园","park"],["文化设施","civic"],["局部公园","partial_park"],["局部文化馆","partial_civic"],["搬迁公共设施","relocate_public"],["留地","reserve"],["释放留地","release_reservation"],["连接两岸","bridge"]]:
+	for item in [["建公园","park"],["文化设施","civic"],["局部公园","partial_park"],["局部文化馆","partial_civic"],["搬迁公共设施","relocate_public"],["留地","reserve"],["自由留地","free_reserve"],["释放留地","release_reservation"],["连接两岸","bridge"]]:
 		var button := Button.new()
 		button.text = item[0]
 		button.pressed.connect(_verb.bind(item[1]))
@@ -694,6 +698,8 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
 			zoom_target = clampf(zoom_target*(1.12 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.12),0.18 if int(shown_world.cfg["city"].get("regional_count",1)) > 1 else 0.55,1.9)
 		elif event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+			reservation_draw_mode = false
+			reservation_draw_points.clear()
 			relocation_mode = false
 			relocation_site_id = ""
 			partial_mode = false
@@ -704,6 +710,9 @@ func _gui_input(event: InputEvent) -> void:
 			planning_guide.hide_tool()
 			context.clear()
 		elif event.pressed and event.button_index == MOUSE_BUTTON_LEFT and not black:
+			if reservation_draw_mode:
+				_append_reservation_draw_point(world_at(pointer))
+				return
 			if relocation_mode:
 				_submit_relocation_at(world_at(pointer))
 				return
@@ -849,6 +858,7 @@ func _planning_menu() -> void:
 		candidate = model.world.planning_candidate(Vector2(float(context["position"][0]),float(context["position"][1])))
 	var selectable := not candidate.is_empty() and bool(candidate.get("allowed",false))
 	planning_buttons["reserve"].disabled = not selectable or candidate.has("reservation_id") or candidate.has("public_id")
+	planning_buttons["free_reserve"].disabled = false
 	planning_buttons["release_reservation"].disabled = context.get("kind","") != "reservation"
 	planning_buttons["partial_park"].disabled = context.get("kind","") != "reservation"
 	planning_buttons["partial_civic"].disabled = context.get("kind","") != "reservation"
@@ -905,9 +915,56 @@ func _submit_partial_at(target: Vector2) -> void:
 	else:
 		_message(str(result.get("reason","局部兑现未能排入下一句")))
 
+func _reservation_draw_center() -> Vector2:
+	var center := Vector2.ZERO
+	for p in reservation_draw_points: center += p
+	return center/float(maxi(1,reservation_draw_points.size()))
+
+func _reservation_draw_area() -> float:
+	if reservation_draw_points.size() < 3: return 0.0
+	var twice := 0.0
+	for i in range(reservation_draw_points.size()):
+		var a: Vector2 = reservation_draw_points[i]
+		var b: Vector2 = reservation_draw_points[(i+1)%reservation_draw_points.size()]
+		twice += a.x*b.y-b.x*a.y
+	return absf(twice)*0.5
+
+func _append_reservation_draw_point(world_position: Vector2) -> void:
+	if not reservation_draw_points.is_empty() and reservation_draw_points[reservation_draw_points.size()-1].distance_to(world_position) < 0.35:
+		_message("这个点离上一个点太近，请拉开边界")
+		return
+	reservation_draw_points.append(world_position)
+	_message("自由留地 · 已选%d点 · 继续点击，至少三点后按 Enter 确认；Esc/右键取消" % reservation_draw_points.size())
+
+func _submit_free_reservation() -> void:
+	if not reservation_draw_mode: return
+	if reservation_draw_points.size() < 3:
+		_message("自由留地至少需要三个点")
+		return
+	if _reservation_draw_area() < 0.25:
+		_message("自由留地范围太小，请拉开边界")
+		return
+	var polygon := reservation_draw_points.duplicate()
+	var center := _reservation_draw_center()
+	var result: Dictionary = model.submit({"kind":"reserve","position":[center.x,center.y],"polygon":polygon})
+	if bool(result.get("accepted",false)):
+		_message("自由留地已确认 · 下一句保留这片连续空间")
+		reservation_draw_mode = false
+		reservation_draw_points.clear()
+		context.clear()
+		menu.hide()
+	else:
+		_message(str(result.get("reason","这片范围暂时不能留地")))
+
 func _verb(verb: String) -> void:
 	if verb == "planning":
 		planning_guide.open_tool()
+		return
+	if verb == "free_reserve":
+		reservation_draw_mode = true
+		reservation_draw_points.clear()
+		menu.hide()
+		_message("自由留地预影开启 · 左键逐点绘制，至少三点后按 Enter 确认；Esc/右键取消")
 		return
 	if verb in ["reserve","release_reservation"] or (verb in ["park","civic"] and context.has("position")):
 		var operation := {"kind":verb}
@@ -1013,6 +1070,12 @@ func _input(event: InputEvent) -> void:
 			if planning_guide.opened: planning_guide.hide_tool()
 			else: planning_guide.open_tool()
 		KEY_ESCAPE:
+			if reservation_draw_mode:
+				reservation_draw_mode = false
+				reservation_draw_points.clear()
+				_message("自由留地已取消")
+				get_viewport().set_input_as_handled()
+				return
 			_cancel_preview_playback()
 			planning_guide.hide_tool()
 			black = false
@@ -1054,7 +1117,12 @@ func _input(event: InputEvent) -> void:
 			_start_world()
 			clock.start_output(model._mix_frame,{})
 		KEY_SPACE: _request_preview()
-		KEY_ENTER: _confirm_landmark()
+		KEY_ENTER:
+			if reservation_draw_mode:
+				_submit_free_reservation()
+				get_viewport().set_input_as_handled()
+			else:
+				_confirm_landmark()
 		KEY_1: _choose_note(48)
 		KEY_2: _choose_note(50)
 		KEY_3: _choose_note(52)
@@ -1345,7 +1413,7 @@ func _process(delta: float) -> void:
 		var reservation := shown_world.planning_at(p)
 		var site := shown_world.public_at(p)
 		if not reservation.is_empty():
-			tooltip.text = "你留下的空地 · 房屋不会长进来\n点击选择释放、建公园或文化设施"
+			tooltip.text = "你留下的空地 · 房屋不会长进来\n点击选择释放、建公园或文化设施；规划面板也可自由留地"
 		elif not site.is_empty():
 			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路覆盖%d栋\n公园为主题留白" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
 			if site["active"] and site["kind"] == "civic":
@@ -1607,6 +1675,26 @@ func _draw_landmark_preview() -> void:
 		draw_string(ThemeDB.fallback_font,at+Vector2(8,-8)*view_zoom,"预影 · "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("776247"))
 
 func _draw_planning_preview() -> void:
+	if reservation_draw_mode and pointer_inside:
+		var draw_color := Color("4f9f7b") if reservation_draw_points.size() >= 3 else Color("79966e")
+		if reservation_draw_points.size() >= 2:
+			var drawn := _project_polygon(reservation_draw_points)
+			var closed := drawn.duplicate()
+			closed.append(drawn[0])
+			draw_polyline(closed,Color(draw_color,0.88),2.0,true)
+		if reservation_draw_points.size() >= 3:
+			var fill := _project_polygon(reservation_draw_points)
+			draw_colored_polygon(fill,Color(0.35,0.78,0.65,0.16))
+			var current := point(world_at(pointer))
+			draw_line(point(reservation_draw_points[reservation_draw_points.size()-1]),current,Color(draw_color,0.68),1.3,true)
+		for vertex in reservation_draw_points:
+			draw_circle(point(vertex),4.0,Color(draw_color,0.95))
+		var draw_text := "自由留地 · %d点" % reservation_draw_points.size()
+		if reservation_draw_points.size() < 3:
+			draw_text += " · 继续点击，至少三点"
+		else:
+			draw_text += " · 按 Enter 确认 · Esc/右键取消"
+		draw_string(ThemeDB.fallback_font,point(world_at(pointer))+Vector2(10,-12),draw_text,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("41665b"))
 	if partial_mode and not partial_reservation_id.is_empty() and pointer_inside:
 		var partial_preview: Dictionary = PartialPublic.preview(shown_world,partial_reservation_id,partial_kind,world_at(pointer))
 		var reservation: Dictionary = PartialPublic._reservation(shown_world,partial_reservation_id)
