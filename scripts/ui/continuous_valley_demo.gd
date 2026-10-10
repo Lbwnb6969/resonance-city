@@ -774,7 +774,9 @@ func _process(delta: float) -> void:
 	if model == null: return
 	view_zoom = lerpf(view_zoom,zoom_target,1.0-exp(-delta/0.14))
 	pan = pan.lerp(pan_target,1.0-exp(-delta/0.14))
+	var presentation_started := Time.get_ticks_usec()
 	shown_world = model.presentation_world(clock.renderer.transport.audible_frame)
+	_profile_frame("presentation_ms",presentation_started)
 	if preview_thread != null and not preview_thread.is_alive():
 		var pcm: PackedByteArray = preview_thread.wait_to_finish()
 		preview_thread = null

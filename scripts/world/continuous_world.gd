@@ -1474,14 +1474,16 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	index = Index.new()
 	families.clear()
 	for community in communities.values(): community["members"].clear()
-	for lot in lots: lot["occupant"] = ""
+	# Restore occupancy in linear passes. Preserve every matching lot and the
+	# original last-building-wins order, without searching all lots per house.
+	var building_occupants: Dictionary = {}
 	for building in buildings:
 		var id: String = building["district_id"]
 		by_id[id] = building
 		index.put(id,Coupling.position_of(building),float(building["radius"]))
 		communities[building["community_id"]]["members"].append(id)
-		for lot in lots:
-			if lot["id"] == building["lot_id"]: lot["occupant"] = id
+		building_occupants[building["lot_id"]] = id
+	for lot in lots: lot["occupant"] = building_occupants.get(lot["id"],"")
 	families = saved["families"].duplicate(true)
 	pending = saved["pending"].duplicate(true)
 	pending_actions.assign(saved.get("pending_actions",[]).duplicate(true))
@@ -1491,9 +1493,11 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	if saved.has("public_sites"): public_sites.assign(saved["public_sites"].duplicate(true))
 	landmarks.assign(saved.get("landmarks",[]).duplicate(true))
 	landmark_progress = saved.get("landmark_progress",{}).duplicate(true)
-	for landmark in landmarks:
-		for lot in lots:
-			if str(lot.get("landmark_id","")) == str(landmark.get("id","")): lot["occupant"] = str(landmark["id"])
+	var landmark_occupants: Dictionary = {}
+	for landmark in landmarks: landmark_occupants[str(landmark.get("id",""))] = str(landmark["id"])
+	for lot in lots:
+		var landmark_id := str(lot.get("landmark_id",""))
+		if landmark_occupants.has(landmark_id): lot["occupant"] = landmark_occupants[landmark_id]
 	events.assign(saved["events"].duplicate(true))
 	bridge = bool(saved["bridge"])
 	if bridge and not roads.any(func(r: Dictionary) -> bool: return r["bridge"]):

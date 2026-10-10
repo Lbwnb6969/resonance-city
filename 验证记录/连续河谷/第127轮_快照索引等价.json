@@ -1,0 +1,149 @@
+{
+	"checks": {
+		"audible_old_city": true,
+		"coastal_plain_derived": true,
+		"coastal_plain_identity_lookup": true,
+		"coastal_plain_no_derived_derived": true,
+		"coastal_plain_no_derived_identity_lookup": true,
+		"coastal_plain_no_derived_physical_graph": true,
+		"coastal_plain_no_derived_snapshot": true,
+		"coastal_plain_physical_graph": true,
+		"coastal_plain_snapshot": true,
+		"coastal_plain_source_isolation": true,
+		"dna_old_city": true,
+		"dna_pcm": true,
+		"duplicate_occupants_derived": true,
+		"duplicate_occupants_identity_lookup": true,
+		"duplicate_occupants_physical_graph": true,
+		"duplicate_occupants_snapshot": true,
+		"exact_reveal": true,
+		"forest_ridge_derived": true,
+		"forest_ridge_identity_lookup": true,
+		"forest_ridge_no_derived_derived": true,
+		"forest_ridge_no_derived_identity_lookup": true,
+		"forest_ridge_no_derived_physical_graph": true,
+		"forest_ridge_no_derived_snapshot": true,
+		"forest_ridge_physical_graph": true,
+		"forest_ridge_snapshot": true,
+		"forest_ridge_source_isolation": true,
+		"highland_pass_derived": true,
+		"highland_pass_identity_lookup": true,
+		"highland_pass_no_derived_derived": true,
+		"highland_pass_no_derived_identity_lookup": true,
+		"highland_pass_no_derived_physical_graph": true,
+		"highland_pass_no_derived_snapshot": true,
+		"highland_pass_physical_graph": true,
+		"highland_pass_snapshot": true,
+		"highland_pass_source_isolation": true,
+		"lake_basin_derived": true,
+		"lake_basin_identity_lookup": true,
+		"lake_basin_no_derived_derived": true,
+		"lake_basin_no_derived_identity_lookup": true,
+		"lake_basin_no_derived_physical_graph": true,
+		"lake_basin_no_derived_snapshot": true,
+		"lake_basin_physical_graph": true,
+		"lake_basin_snapshot": true,
+		"lake_basin_source_isolation": true,
+		"legal_607_derived": true,
+		"legal_607_identity_lookup": true,
+		"legal_607_physical_graph": true,
+		"legal_607_snapshot": true,
+		"river_valley_derived": true,
+		"river_valley_identity_lookup": true,
+		"river_valley_no_derived_derived": true,
+		"river_valley_no_derived_identity_lookup": true,
+		"river_valley_no_derived_physical_graph": true,
+		"river_valley_no_derived_snapshot": true,
+		"river_valley_physical_graph": true,
+		"river_valley_snapshot": true,
+		"river_valley_source_isolation": true
+	},
+	"max_pcm_error": 0.0,
+	"passed": true,
+	"timings": [
+		{
+			"buildings": 21,
+			"indexed_ms": 11.275,
+			"lots": 87,
+			"name": "river_valley",
+			"reference_ms": 12.053
+		},
+		{
+			"buildings": 21,
+			"indexed_ms": 3.949,
+			"lots": 87,
+			"name": "river_valley_no_derived",
+			"reference_ms": 3.85
+		},
+		{
+			"buildings": 20,
+			"indexed_ms": 9.274,
+			"lots": 65,
+			"name": "lake_basin",
+			"reference_ms": 9.316
+		},
+		{
+			"buildings": 20,
+			"indexed_ms": 3.473,
+			"lots": 65,
+			"name": "lake_basin_no_derived",
+			"reference_ms": 3.728
+		},
+		{
+			"buildings": 21,
+			"indexed_ms": 10.804,
+			"lots": 97,
+			"name": "forest_ridge",
+			"reference_ms": 10.566
+		},
+		{
+			"buildings": 21,
+			"indexed_ms": 3.653,
+			"lots": 97,
+			"name": "forest_ridge_no_derived",
+			"reference_ms": 4.384
+		},
+		{
+			"buildings": 21,
+			"indexed_ms": 10.147,
+			"lots": 97,
+			"name": "coastal_plain",
+			"reference_ms": 10.57
+		},
+		{
+			"buildings": 21,
+			"indexed_ms": 3.51,
+			"lots": 97,
+			"name": "coastal_plain_no_derived",
+			"reference_ms": 3.659
+		},
+		{
+			"buildings": 21,
+			"indexed_ms": 10.84,
+			"lots": 97,
+			"name": "highland_pass",
+			"reference_ms": 10.734
+		},
+		{
+			"buildings": 21,
+			"indexed_ms": 3.457,
+			"lots": 97,
+			"name": "highland_pass_no_derived",
+			"reference_ms": 3.598
+		},
+		{
+			"buildings": 19,
+			"indexed_ms": 3.56,
+			"lots": 88,
+			"name": "duplicate_occupants",
+			"reference_ms": 3.95
+		},
+		{
+			"buildings": 607,
+			"indexed_ms": 13.266,
+			"lots": 125,
+			"name": "legal_607",
+			"reference_ms": 18.551
+		}
+	]
+}
