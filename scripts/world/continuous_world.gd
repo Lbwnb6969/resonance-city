@@ -997,6 +997,17 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		if kind == "release_reservation":
 			if not planning_reservations.any(func(item: Dictionary) -> bool: return str(item["reservation_id"]) == str(operation.get("id",""))):
 				return {"accepted":false,"reason":"这片留地已经释放"}
+		elif kind == "reserve" and operation.has("polygon"):
+			var raw_polygon_anchor: Array = operation.get("position",[])
+			var polygon_anchor := Vector2.INF
+			if raw_polygon_anchor.size() == 2: polygon_anchor = Vector2(float(raw_polygon_anchor[0]),float(raw_polygon_anchor[1]))
+			var polygon_candidate := SpatialPlanning.polygon_candidate(self,operation["polygon"],polygon_anchor)
+			if polygon_candidate.is_empty(): return {"accepted":false,"reason":"自由留地需要一片连续、非自交且完全落在空置地块内的范围"}
+			if not bool(polygon_candidate.get("allowed",false)): return {"accepted":false,"reason":str(polygon_candidate.get("reason","这片范围暂时不能留地"))}
+			operation = operation.duplicate(true)
+			operation["position"] = polygon_candidate["position"].duplicate()
+			operation["polygon"] = polygon_candidate["polygon"].duplicate()
+			operation["source_site_id"] = polygon_candidate["source_site_id"]
 		else:
 			var p := Vector2(float(operation["position"][0]),float(operation["position"][1]))
 			var candidate := planning_candidate(p)
