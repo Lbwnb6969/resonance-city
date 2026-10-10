@@ -129,13 +129,11 @@ static func _half_plane_polygon(a: Vector2,b: Vector2,keep_left: bool,extent: fl
 	var end := b+direction*extent
 	return PackedVector2Array([start,end,end+normal*extent,start+normal*extent])
 
-static func _residuals(source: PackedVector2Array,footprint: PackedVector2Array) -> Array[PackedVector2Array]:
+static func _residuals_convex(source: PackedVector2Array,footprint: PackedVector2Array) -> Array[PackedVector2Array]:
 	var result: Array[PackedVector2Array] = []
-	# Geometry2D.exclude_polygons/clip_polygons expose a hole contour as a
-	# second polygon.  A hole cannot be stored in the reservation schema, so
-	# split source around each edge of a convex target instead.  At each edge
-	# emit the outside pieces and carry only the inside pieces to the next edge.
-	# This produces disjoint simple residuals for concave historical sources.
+	# Split source around each edge of a convex target.  At each edge emit the
+	# outside pieces and carry only the inside pieces to the next edge.  This
+	# produces disjoint simple residuals without writing a hole contour.
 	var combined_box := SpatialPlanning.bounds(source)
 	for point in footprint: combined_box = combined_box.expand(point)
 	var extent := maxf(combined_box.size.length()*8.0,64.0)
@@ -167,6 +165,98 @@ static func _residuals(source: PackedVector2Array,footprint: PackedVector2Array)
 		return JSON.stringify(a) < JSON.stringify(b))
 	return result
 
+static func _triangulate_target(footprint: PackedVector2Array) -> Array[PackedVector2Array]:
+	var result: Array[PackedVector2Array] = []
+	# Godot's triangulator is most stable with counter-clockwise input.  Keep
+	# the requested winding in the public contract, but triangulate a temporary
+	# canonical copy so clockwise player drawings behave identically.
+	var triangulation_polygon := footprint.duplicate()
+	if _signed_polygon_area(triangulation_polygon) < 0.0: triangulation_polygon.reverse()
+	var indices := Geometry2D.triangulate_polygon(triangulation_polygon)
+	if indices.size() < 3 or indices.size() % 3 != 0: return result
+	for index in range(0,indices.size(),3):
+		var a_index := int(indices[index])
+		var b_index := int(indices[index+1])
+		var c_index := int(indices[index+2])
+		if a_index < 0 or b_index < 0 or c_index < 0 or a_index >= triangulation_polygon.size() or b_index >= triangulation_polygon.size() or c_index >= triangulation_polygon.size():
+			return []
+		var triangle := PackedVector2Array([triangulation_polygon[a_index],triangulation_polygon[b_index],triangulation_polygon[c_index]])
+		if not _is_convex_polygon(triangle): return []
+		result.append(triangle)
+	return result
+
+static func _snap_to_target_vertices(polygon: PackedVector2Array,target: PackedVector2Array) -> PackedVector2Array:
+	# Boolean clipping can move a shared target vertex by a few microns.  Snap
+	# only those near-exact vertices back to the requested polygon so residual
+	# contours never retain a numerical sliver inside the target.
+	var snapped := PackedVector2Array()
+	for point in polygon:
+		var replacement := point
+		for target_point in target:
+			if point.distance_squared_to(target_point) <= 0.00000001:
+				replacement = target_point
+				break
+		snapped.append(replacement)
+	return snapped
+
+static func _residuals_concave(source: PackedVector2Array,footprint: PackedVector2Array) -> Array[PackedVector2Array]:
+	# A concave target is a union of ear triangles.  Subtract the triangles in
+	# sequence, partitioning the current source into outside and inside pieces
+	# at every step.  The next step receives only the outside pieces, while the
+	# inside pieces are discarded as target area.  Final residuals are therefore
+	# disjoint, simple and hole-free even when the target bends inward.
+	var triangles := _triangulate_target(footprint)
+	if triangles.is_empty(): return []
+	var remaining: Array[PackedVector2Array] = [source]
+	for cutter in triangles:
+		var combined_box := SpatialPlanning.bounds(source)
+		for point in cutter: combined_box = combined_box.expand(point)
+		var extent := maxf(combined_box.size.length()*8.0,64.0)
+		var keep_left := _signed_polygon_area(cutter) > 0.0
+		var next_remaining: Array[PackedVector2Array] = []
+		# Keep the half-plane walk identical to the convex path, but process
+		# every current piece independently so no hole contour is introduced.
+		for part in remaining:
+			var inside_parts: Array[PackedVector2Array] = [part]
+			var outside_parts: Array[PackedVector2Array] = []
+			for edge_index in range(cutter.size()):
+				var a := cutter[edge_index]
+				var b := cutter[(edge_index+1)%cutter.size()]
+				var outside_plane := _half_plane_polygon(a,b,not keep_left,extent)
+				var inside_plane := _half_plane_polygon(a,b,keep_left,extent)
+				if outside_plane.size() < 3 or inside_plane.size() < 3: return []
+				var next_inside: Array[PackedVector2Array] = []
+				for current in inside_parts:
+					for fragment in Geometry2D.intersect_polygons(current,outside_plane):
+						if fragment.size() < 3 or _polygon_area(fragment) <= 0.00001: continue
+						if _intersection_area(fragment,cutter) <= 0.00001 and _valid_simple_polygon(fragment): outside_parts.append(fragment)
+					for fragment in Geometry2D.intersect_polygons(current,inside_plane):
+						if fragment.size() >= 3 and _polygon_area(fragment) > 0.00001 and _valid_simple_polygon(fragment): next_inside.append(fragment)
+				inside_parts = next_inside
+			# The outside pieces are the source minus this triangle and become
+			# the input for the next triangle.  The inside pieces are already
+			# covered by the target and are deliberately discarded.
+			next_remaining.append_array(outside_parts)
+		remaining = next_remaining
+	var result: Array[PackedVector2Array] = []
+	for fragment in remaining:
+		var snapped := _snap_to_target_vertices(fragment,footprint)
+		if _valid_simple_polygon(snapped): result.append(snapped)
+	result.sort_custom(func(a: PackedVector2Array,b: PackedVector2Array) -> bool:
+		var ac := SpatialPlanning.bounds(a).get_center()
+		var bc := SpatialPlanning.bounds(b).get_center()
+		if not is_equal_approx(ac.x,bc.x): return ac.x < bc.x
+		if not is_equal_approx(ac.y,bc.y): return ac.y < bc.y
+		var aa := _polygon_area(a)
+		var ba := _polygon_area(b)
+		if not is_equal_approx(aa,ba): return aa < ba
+		return JSON.stringify(a) < JSON.stringify(b))
+	return result
+
+static func _residuals(source: PackedVector2Array,footprint: PackedVector2Array) -> Array[PackedVector2Array]:
+	if _is_convex_polygon(footprint): return _residuals_convex(source,footprint)
+	return _residuals_concave(source,footprint)
+
 static func preview(world: RefCounted,reservation_id: String,kind: String,target_position: Vector2) -> Dictionary:
 	var reservation := _reservation(world,reservation_id)
 	if reservation.is_empty(): return {"accepted":false,"reason":"找不到这片留地","source_reservation_id":reservation_id}
@@ -193,8 +283,8 @@ static func preview_footprint(world: RefCounted,reservation_id: String,kind: Str
 	if not _valid_simple_polygon(source_polygon):
 		base["reason"] = "这片留地不是可继续规划的简单连续范围"
 		return base
-	if not _is_convex_polygon(footprint):
-		base["reason"] = "公共目标足迹当前需要简单凸多边形"
+	if not _valid_simple_polygon(footprint):
+		base["reason"] = "公共目标足迹必须是简单多边形"
 		return base
 	if not _inside(footprint,source_polygon):
 		base["reason"] = "公共目标足迹必须完整留在原留地内"

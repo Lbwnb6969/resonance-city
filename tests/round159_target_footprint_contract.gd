@@ -104,9 +104,9 @@ func _run() -> void:
 	city.planning_reservations.append({"id":invalid_id,"reservation_id":invalid_id,"source_site_id":"round159-invalid-source",
 		"polygon":source,"position":[center.x,center.y],"created_phrase":city.phrase_index})
 	city._refresh_parcel_index()
-	var nonconvex := PackedVector2Array([center+Vector2(-0.5,-0.5),center+Vector2(0.8,-0.5),center+Vector2(0.0,0.0),center+Vector2(0.8,0.5),center+Vector2(-0.5,0.5)])
-	var rejected_nonconvex := PartialPublic.preview_footprint(city,invalid_id,"park",nonconvex)
-	_check(not bool(rejected_nonconvex.get("accepted",false)) and str(rejected_nonconvex.get("reason","")).contains("凸"),"rejects_nonconvex_target_with_explicit_contract")
+	var self_crossing := PackedVector2Array([center+Vector2(-0.5,-0.5),center+Vector2(0.8,0.5),center+Vector2(0.8,-0.5),center+Vector2(-0.5,0.5)])
+	var rejected_invalid := PartialPublic.preview_footprint(city,invalid_id,"park",self_crossing)
+	_check(not bool(rejected_invalid.get("accepted",false)) and str(rejected_invalid.get("reason","")).contains("简单"),"rejects_self_crossing_target_with_explicit_contract")
 	var outside := _diamond(center+Vector2(bounds.size.x*3.0,0.0),Vector2(0.2,0.2))
 	var rejected_outside := PartialPublic.preview_footprint(city,invalid_id,"park",outside)
 	_check(not bool(rejected_outside.get("accepted",false)) and str(rejected_outside.get("reason","")).contains("留地"),"rejects_target_outside_source_reservation")
