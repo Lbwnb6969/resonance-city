@@ -9,6 +9,7 @@ extends RefCounted
 
 const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 const Coupling = preload("res://scripts/world/world_coupling.gd")
+const FabricRelations = preload("res://scripts/world/fabric_relations.gd")
 
 static func _site(world: RefCounted,site_id: String) -> Dictionary:
 	for site in world.public_sites:
@@ -21,7 +22,7 @@ static func _source_revision(world: RefCounted,site: Dictionary) -> String:
 	# relocation preview; the boundary itself may grow buildings. Canonical site
 	# identity, footprint, entrance, use and capacity do detect real edits.
 	var basis := [site.get("id", ""),site.get("frame", 0),site.get("kind", ""),site.get("service_level", 1),
-		site.get("position", []),site.get("polygon", PackedVector2Array()),site.get("entrance", [])]
+		site.get("position", []),site.get("polygon", PackedVector2Array()),site.get("footprint_components",[]),site.get("entrance", [])]
 	return JSON.stringify(basis).sha256_text()
 
 static func _translated_polygon(site: Dictionary,target: Vector2) -> PackedVector2Array:
@@ -29,6 +30,15 @@ static func _translated_polygon(site: Dictionary,target: Vector2) -> PackedVecto
 	var result := PackedVector2Array()
 	for point in site.get("polygon", PackedVector2Array()):
 		result.append(Vector2(point)+target-origin)
+	return result
+
+static func _translated_components(site: Dictionary,target: Vector2) -> Array[PackedVector2Array]:
+	var origin := Vector2(float(site["position"][0]),float(site["position"][1]))
+	var result: Array[PackedVector2Array] = []
+	for component in SpatialPlanning.footprint_components(site):
+		var translated := PackedVector2Array()
+		for point in component: translated.append(Vector2(point)+target-origin)
+		result.append(translated)
 	return result
 
 static func _building_access_position(world: RefCounted,building: Dictionary) -> Vector2:
@@ -105,16 +115,35 @@ static func preview(world: RefCounted,site_id: String,target_position: Vector2) 
 	if not bool(site.get("active",false)):
 		return {"accepted":false,"reason":"设施尚未落成，先完成公共空间营造","source_site_id":site_id}
 	var source_position := Vector2(float(site["position"][0]),float(site["position"][1]))
-	var target_polygon := _translated_polygon(site,target_position)
+	var target_components := _translated_components(site,target_position)
+	var target_polygon := target_components[0] if not target_components.is_empty() else _translated_polygon(site,target_position)
 	if target_polygon.size() < 3:
 		return {"accepted":false,"reason":"设施没有有效占地","source_site_id":site_id}
 	if source_position.distance_squared_to(target_position) < 0.000001:
 		return {"accepted":false,"reason":"请选择不同的合法位置","source_site_id":site_id}
-	var candidate := SpatialPlanning.relocation_candidate(world,site,target_position)
+	var candidate := {"source_site_id":site_id,"public_id":site_id,"position":[target_position.x,target_position.y],
+		"polygon":target_polygon,"footprint_components":target_components,"community_id":FabricRelations.community_for_position(world,target_position)}
+	for component in target_components:
+		var component_candidate := candidate.duplicate(true)
+		component_candidate["polygon"] = component
+		var component_reason := SpatialPlanning.site_reason(world,component_candidate,site_id)
+		if not component_reason.is_empty():
+			candidate["allowed"] = false
+			candidate["reason"] = component_reason
+			break
+	if not candidate.has("reason"):
+		var candidate_access := SpatialPlanning.public_access(world,candidate)
+		if candidate_access.is_empty():
+			candidate["allowed"] = false
+			candidate["reason"] = "新位置没有可达的真实道路入口"
+		else:
+			candidate.merge(candidate_access)
+			candidate["allowed"] = true
+			candidate["reason"] = "可搬迁到这片合法空地"
 	if not bool(candidate.get("allowed",false)):
 		return {"accepted":false,"reason":str(candidate.get("reason","这片空间不可用于搬迁")),"source_site_id":site_id,
 			"source_revision":_source_revision(world,site),"target_position":[target_position.x,target_position.y],
-			"target_polygon":target_polygon}
+			"target_polygon":target_polygon,"target_polygons":target_components.duplicate(true),"footprint_components":target_components.duplicate(true)}
 	var access: Dictionary = candidate
 	var target_entrance := Vector2(float(candidate["entrance"][0]),float(candidate["entrance"][1]))
 	var before_covered: Array = site.get("covered", []).duplicate()
@@ -139,6 +168,7 @@ static func preview(world: RefCounted,site_id: String,target_position: Vector2) 
 		"source_position":site.get("position",[]).duplicate(),"source_entrance":site.get("entrance",[]).duplicate(),
 		"source_community_id":str(site.get("community_id", "")),"target_community_id":str(candidate.get("community_id", "")),
 		"target_position":[target_position.x,target_position.y],"target_polygon":target_polygon,
+		"target_polygons":target_components.duplicate(true),"footprint_components":target_components.duplicate(true),
 		"target_entrance":[target_entrance.x,target_entrance.y],"road_id":str(access.get("road_id",access.get("road", ""))),
 		"target_access_path":candidate.get("access_path",PackedVector2Array()).duplicate(),
 		"covered_before":before_covered,"covered_after":after_covered,"served_before":before_served,
@@ -161,6 +191,8 @@ static func commit(world: RefCounted,operation: Dictionary,frame: int) -> Dictio
 		return {"accepted":false,"reason":"公共设施所在城市已经变化，请重新查看搬迁预影"}
 	if operation.has("target_polygon") and operation["target_polygon"] != current.get("target_polygon",PackedVector2Array()):
 		return {"accepted":false,"reason":"搬迁范围已经变化，请重新查看预影"}
+	if operation.has("target_polygons") and operation["target_polygons"] != current.get("target_polygons",[]):
+		return {"accepted":false,"reason":"搬迁范围已经变化，请重新查看预影"}
 	var site := _site(world,site_id)
 	if site.is_empty(): return {"accepted":false,"reason":"找不到这座公共设施"}
 	var before_position: Array = site.get("position",[]).duplicate()
@@ -168,6 +200,8 @@ static func commit(world: RefCounted,operation: Dictionary,frame: int) -> Dictio
 	var before_community := str(site.get("community_id", ""))
 	site["position"] = current["target_position"].duplicate()
 	site["polygon"] = current["target_polygon"].duplicate()
+	site["target_polygons"] = current.get("target_polygons",[current["target_polygon"]]).duplicate(true)
+	site["footprint_components"] = current.get("footprint_components",site["target_polygons"]).duplicate(true)
 	site["entrance"] = current["target_entrance"].duplicate()
 	site["road_id"] = str(current.get("road_id",site.get("road_id","")))
 	site["access_path"] = current.get("target_access_path",PackedVector2Array()).duplicate()
@@ -177,6 +211,7 @@ static func commit(world: RefCounted,operation: Dictionary,frame: int) -> Dictio
 	world._refresh_public_network(frame)
 	var result := {"accepted":true,"id":site_id,"source_site_id":site_id,"kind":str(site.get("kind", "")),
 		"source_position":before_position,"target_position":site["position"].duplicate(),
+		"target_polygons":site["target_polygons"].duplicate(true),
 		"source_entrance":before_entrance,"target_entrance":site["entrance"].duplicate(),
 		"source_community_id":before_community,"target_community_id":str(site.get("community_id", "")),
 		"covered_before":current.get("covered_before",[]).duplicate(),"covered_after":site.get("covered",[]).duplicate(),
@@ -185,7 +220,7 @@ static func commit(world: RefCounted,operation: Dictionary,frame: int) -> Dictio
 	world.events.append({"kind":"relocate_public","id":site_id,"source_site_id":site_id,
 		"source_position":before_position.duplicate(true),"target_position":site["position"].duplicate(true),
 		"source_entrance":before_entrance.duplicate(true),"target_entrance":site["entrance"].duplicate(true),
-		"source_community_id":before_community,"target_community_id":str(site.get("community_id", "")),
+		"source_community_id":before_community,"target_community_id":str(site.get("community_id", "")),"target_polygons":site["target_polygons"].duplicate(true),"footprint_components":site["footprint_components"].duplicate(true),
 		"covered_before":result["covered_before"].duplicate(true),"covered_after":result["covered_after"].duplicate(true),
 		"served_before":result["served_before"].duplicate(true),"served_after":result["served_after"].duplicate(true),"frame":frame})
 	return result
