@@ -89,4 +89,3 @@ func _run() -> void:
 	demo.queue_free()
 	await process_frame
 	quit(0 if evidence["passed"] else 1)
-
