@@ -120,6 +120,32 @@ static func public_access(world: RefCounted,site: Dictionary) -> Dictionary:
 		best = {"entrance":[q.x,q.y],"road_id":str(segment["road"]["id"]),"access_path":path}
 	return best
 
+## Explain a stale planning intent at the commit boundary. The request was
+## accepted against an earlier preview, so the player needs the actual reason
+## when another growth or operation changed that parcel before the phrase.
+## This is diagnostic state only; it never changes the commit decision.
+static func rejection_reason(world: RefCounted,operation: Dictionary) -> String:
+	var kind := str(operation.get("kind","规划"))
+	if kind == "release_reservation":
+		return "这片留地已经释放，请重新选择空地"
+	if not operation.has("position"):
+		return "规划位置已失效，请重新选择"
+	var raw: Array = operation["position"]
+	var site := candidate(world,Vector2(float(raw[0]),float(raw[1])))
+	if site.is_empty():
+		return "这片空间已经被城市占用，请重新选择"
+	if not bool(site.get("allowed",false)):
+		return str(site.get("reason","这片空间已不可用"))
+	if str(site.get("source_site_id","")) != str(operation.get("source_site_id","")):
+		return "这片空地的来源已变化，请重新选择"
+	if operation.has("polygon") and site.get("polygon",PackedVector2Array()) != operation["polygon"]:
+		return "这片空地的范围已变化，请重新选择"
+	if kind == "reserve" and (site.has("reservation_id") or site.has("public_id")):
+		return "这里已经是留地或公共空间，请选择其他空地"
+	if kind in ["park","civic"] and public_access(world,site).is_empty():
+		return "公共空间的真实入口已被阻断，请先换一片能接入道路的空地"
+	return "规划条件在乐句边界失效，请重新选择"
+
 static func commit(world: RefCounted,operation: Dictionary,frame: int) -> bool:
 	var kind := str(operation["kind"])
 	if kind == "release_reservation":

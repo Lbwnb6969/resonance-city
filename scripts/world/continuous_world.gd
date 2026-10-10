@@ -954,7 +954,9 @@ func settle(frame: int) -> void:
 		if str(op["kind"]) in ["reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position")):
 			if SpatialPlanning.commit(self,op,frame): successful_planning.append(op)
 			else:
-				events.append({"kind":"planning_rejected","event_id":op["event_id"],"frame":frame})
+				events.append({"kind":"planning_rejected","operation_kind":str(op.get("kind","")),"event_id":op["event_id"],
+					"source_site_id":str(op.get("source_site_id","")),"position":op.get("position",[]).duplicate(true),
+					"reason":SpatialPlanning.rejection_reason(self,op),"frame":frame})
 	for op in committed:
 		assert(int(op["frame"]) == frame)
 		if str(op["kind"]) in ["charter","reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position")): continue

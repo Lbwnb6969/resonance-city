@@ -20,6 +20,7 @@ var terrain_family := "river_valley"
 @export var session_persistence := true
 var archive_directory := CityArchive.DIRECTORY
 var last_saved_event_count := -1
+var last_presented_event_count := -1
 var last_checkpoint_phrase := 0
 var model: ContinuousAudioModel
 var shown_world: ContinuousWorld
@@ -242,6 +243,7 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	_sync_buildings()
 	scenery.sync(self)
 	last_saved_event_count = model.world.events.size()
+	last_presented_event_count = model.world.events.size()
 	last_checkpoint_phrase = model.world.phrase_index
 	selected_landmark_candidate = -1
 	planning_guide.reset_for_city()
@@ -955,6 +957,12 @@ func _message(text: String) -> void:
 	notice = text
 	notice_seconds = 6.0
 
+func _planning_rejection_message(event: Dictionary) -> String:
+	var labels := {"reserve":"留地","release_reservation":"释放留地","park":"公园","civic":"文化设施"}
+	var action := str(labels.get(str(event.get("operation_kind","")),"规划"))
+	var reason := str(event.get("reason","规划条件在乐句边界失效，请重新选择"))
+	return action+"没有落定 · "+reason+" · 本次介入槽已保留"
+
 func _flatten_charter_card_refs(raw: Variant, result: Array) -> void:
 	# Planning cards are deliberately read-only here.  Older saves may use a
 	# string, a single dictionary, or a map of card ids to dictionaries.
@@ -1134,6 +1142,16 @@ func _process(delta: float) -> void:
 			pan_target = -Vector2((first.x-first.y)*28,(first.x+first.y)*14)*zoom_target
 		last_birth_count = shown_world.buildings.size()
 		_message("你的声音正在长成城市")
+	# Planning requests are accepted before the boundary, but geometry can change
+	# before commit. Surface the authoritative rejection once the event becomes
+	# audible so the player can choose another parcel immediately.
+	var presented_events: Array = shown_world.events
+	if presented_events.size() < last_presented_event_count:
+		last_presented_event_count = presented_events.size()
+	if presented_events.size() > last_presented_event_count:
+		for event in presented_events.slice(last_presented_event_count):
+			if str(event.get("kind","")) == "planning_rejected": _message(_planning_rejection_message(event))
+		last_presented_event_count = presented_events.size()
 	notice_seconds = maxf(0.0,notice_seconds-delta)
 	ripple_seconds = maxf(0.0,ripple_seconds-delta)
 	planning_guide.sync()
