@@ -387,6 +387,9 @@ func _stop_demand(city: ContinuousWorld,line: Dictionary,stop: String) -> int:
 	for center in city.centers:
 		if str(center.get("node_id","")) != stop: continue
 		var cid := str(center.get("community_id",center.get("node_id","")))
+		var service := city.community_public_service(cid)
+		if int(service.get("cultural_reachable",0)) > 0 and float(service.get("pressure",0.0)) >= 0.5:
+			demand += 1
 		for zone in city.functional_zones:
 			if not zone.get("community_ids",[]).has(cid): continue
 			match str(zone.get("role","")):

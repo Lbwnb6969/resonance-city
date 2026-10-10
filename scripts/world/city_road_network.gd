@@ -8,6 +8,7 @@ var terrain: RefCounted
 var topology := ""
 var route_cache: Dictionary = {}
 var access_cache: Dictionary = {}
+var walking_distance_cache: Dictionary = {}
 
 func rebuild(city_nodes: Dictionary, city_roads: Array, city_terrain: RefCounted) -> void:
 	var identity: Array = []
@@ -20,6 +21,7 @@ func rebuild(city_nodes: Dictionary, city_roads: Array, city_terrain: RefCounted
 	topology = next_topology
 	route_cache.clear()
 	access_cache.clear()
+	walking_distance_cache.clear()
 	adjacency.clear()
 	for id in nodes: adjacency[id] = []
 	for road in roads:
@@ -87,10 +89,13 @@ func access(p: Vector2) -> Dictionary:
 		var along := 0.0
 		for i in range(path.size()-1):
 			var q := Geometry2D.get_closest_point_to_segment(p,path[i],path[i+1])
+			var gap := p.distance_to(q)
+			if gap >= nearest-0.000001:
+				along += path[i].distance_to(path[i+1])
+				continue
 			var connector := PackedVector2Array([p,q])
 			var valid := Geometry2D.intersect_polyline_with_polygon(connector,terrain.water).is_empty()
-			var gap := p.distance_to(q)
-			if valid and gap < nearest-0.000001:
+			if valid:
 				nearest = gap
 				best = {"road":road["id"],"from":road["from"],"to":road["to"],"along":along+path[i].distance_to(q),"length":road["length"],"gap":gap,"position":[q.x,q.y]}
 			along += path[i].distance_to(path[i+1])
@@ -142,6 +147,8 @@ func _road_slice(road: Dictionary, begin: float, end: float) -> PackedVector2Arr
 	return result
 
 func walking_distance(a: Vector2,b: Vector2) -> float:
+	var key := Vector4(a.x,a.y,b.x,b.y)
+	if walking_distance_cache.has(key): return float(walking_distance_cache[key])
 	var aa := access(a)
 	var bb := access(b)
 	if aa.is_empty() or bb.is_empty(): return INF
@@ -149,4 +156,7 @@ func walking_distance(a: Vector2,b: Vector2) -> float:
 	for left in [[aa["from"],aa["along"]],[aa["to"],float(aa["length"])-float(aa["along"])]]:
 		for right in [[bb["from"],bb["along"]],[bb["to"],float(bb["length"])-float(bb["along"])]]:
 			best = minf(best,float(left[1])+float(route(left[0],right[0])["distance"])+float(right[1]))
-	return best+float(aa["gap"])+float(bb["gap"])
+	var distance := best+float(aa["gap"])+float(bb["gap"])
+	walking_distance_cache[key] = distance
+	walking_distance_cache[Vector4(b.x,b.y,a.x,a.y)] = distance
+	return distance

@@ -35,6 +35,9 @@ var transit_lines: Array[Dictionary] = []
 # Smoothed stop activity is a light-weight memory shared by transport, growth,
 # and music; it is not a full economy simulation.
 var transit_demand: Dictionary = {}
+# Service pressure is derived from public coverage and cached within a planning pass.
+var public_service_cache: Dictionary = {}
+var settle_profile: Dictionary = {}
 # Functional districts are derived from active communities and public infrastructure.
 # They provide a stable bridge between city layout, UI language, and musical phrasing.
 var functional_zones: Array[Dictionary] = []
@@ -183,6 +186,82 @@ func _community_usage(cid: String) -> Dictionary:
 		result[kind] = int(result[kind])+1
 	return result
 
+func community_public_service(cid: String) -> Dictionary:
+	return public_service_cache.get(cid,{"member_count":0,"civic_count":0,"park_count":0,
+		"facility_count":0,"cultural_target":0,"cultural_gap":0,"covered_count":0,
+		"cultural_served":0,"coverage_ratio":0.0,"pressure":0.0}).duplicate(true)
+
+func public_service_summary() -> Dictionary:
+	var served := 0
+	var covered := 0
+	var reachable := 0
+	for service in public_service_cache.values():
+		served += int(service.get("cultural_served",0))
+		covered += int(service.get("covered_count",0))
+		reachable += int(service.get("cultural_reachable",0))
+	var facilities := 0
+	var capacity := 0
+	for site in public_sites:
+		if bool(site.get("active",false)) and str(site.get("kind","")) == "civic":
+			facilities += 1
+			capacity += int(site.get("service_capacity",18))
+	return {"members":buildings.size(),"facilities":facilities,"capacity":capacity,
+		"covered":covered,"reachable":reachable,"served":served,"unserved":buildings.size()-served}
+
+func _refresh_public_service() -> void:
+	public_service_cache.clear()
+	var destinations: Dictionary = {}
+	for cid in _active_community_ids():
+		var count: int = communities[cid]["members"].size()
+		public_service_cache[cid] = {"member_count":count,"civic_count":0,"park_count":0,
+			"facility_count":0,"cultural_target":ceili(float(count)/18.0),"cultural_gap":0,
+			"covered_count":0,"cultural_reachable":0,"cultural_served":0,"coverage_ratio":0.0,"pressure":0.0}
+	for site in public_sites:
+		site["service_capacity"] = 18*int(site.get("service_level",1)) if site["kind"] == "civic" else 0
+		site["service_demand"] = 0
+		site["served"] = []
+		if not bool(site.get("active",false)): continue
+		var served_communities: Dictionary = {}
+		for building_id in site.get("covered",[]):
+			if not by_id.has(building_id): continue
+			var cid := str(by_id[building_id]["community_id"])
+			served_communities[cid] = true
+			if not destinations.has(building_id): destinations[building_id] = {"public":true,"civic":[]}
+			if site["kind"] == "civic": destinations[building_id]["civic"].append(site)
+		for cid in served_communities:
+			var service: Dictionary = public_service_cache[cid]
+			var key := "civic_count" if site["kind"] == "civic" else "park_count"
+			service[key] = int(service[key])+1
+			service["facility_count"] = int(service["facility_count"])+1
+	# Each house requests one cultural place. Overflow can use another reachable
+	# facility; neither overlapping catchments nor community splits duplicate users.
+	var ids: Array = destinations.keys()
+	ids.sort()
+	for building_id in ids:
+		var cid := str(by_id[building_id]["community_id"])
+		var service: Dictionary = public_service_cache[cid]
+		service["covered_count"] = int(service["covered_count"])+1
+		var choices: Array = destinations[building_id]["civic"]
+		if choices.is_empty(): continue
+		service["cultural_reachable"] = int(service["cultural_reachable"])+1
+		var position := Coupling.position_of(by_id[building_id])
+		choices.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+			var da := position.distance_squared_to(Vector2(a["entrance"][0],a["entrance"][1]))
+			var db := position.distance_squared_to(Vector2(b["entrance"][0],b["entrance"][1]))
+			return str(a["id"]) < str(b["id"]) if is_equal_approx(da,db) else da < db)
+		choices[0]["service_demand"] = int(choices[0]["service_demand"])+1
+		for site in choices:
+			if site["served"].size() >= int(site["service_capacity"]): continue
+			site["served"].append(building_id)
+			service["cultural_served"] = int(service["cultural_served"])+1
+			break
+	for service in public_service_cache.values():
+		var count := int(service["member_count"])
+		var unserved := count-int(service["cultural_served"])
+		service["cultural_gap"] = ceili(float(unserved)/18.0)
+		service["coverage_ratio"] = float(service["covered_count"])/float(maxi(1,count))
+		service["pressure"] = float(unserved)/float(maxi(1,count))
+
 func record_transit_flow(stop_id: String, boarded: int, alighted: int, transfers: int = 0) -> void:
 	if stop_id.is_empty(): return
 	var key := str(stop_id)
@@ -208,7 +287,12 @@ func _decay_transit_demand() -> void:
 func _community_transit_demand(cid: String) -> float:
 	var center := center_for(cid)
 	if center.is_empty(): return 0.0
-	return transit_demand_score(str(center.get("node_id","")))
+	var demand := transit_demand_score(str(center.get("node_id","")))
+	var service := community_public_service(cid)
+	# Reachable but undersupplied civic services create a bounded trip pressure.
+	if int(service.get("cultural_reachable",0)) > 0:
+		demand = minf(8.0,demand+float(service.get("pressure",0.0))*0.35)
+	return demand
 
 func functional_zone_roles(cid: String) -> Array[String]:
 	var roles: Array[String] = []
@@ -245,7 +329,13 @@ func refresh_functional_zones() -> void:
 		green_sites.append(str(site.get("id","")))
 	if green_members.size() >= 1 and green_corridors.size() > 0:
 		green_members.sort_custom(func(a: String,b: String) -> bool: return center_order(a) < center_order(b) if center_order(a) != center_order(b) else a < b)
-		next.append({"id":"zone-civic-green","role":"civic_green","title":"公园与公共生活带","music_role":"garden","community_ids":green_members,"building_count":0,"site_ids":green_sites,"line_ids":[]})
+		var green_pressure := 0.0
+		var green_covered := 0
+		for cid in green_members:
+			var service := community_public_service(cid)
+			green_pressure += float(service.get("pressure",0.0))
+			green_covered += int(service.get("covered_count",0))
+		next.append({"id":"zone-civic-green","role":"civic_green","title":"公园与公共生活带","music_role":"garden","community_ids":green_members,"building_count":0,"site_ids":green_sites,"line_ids":[],"service_pressure":green_pressure,"covered_count":green_covered})
 	var cultural_members: Array[String] = []
 	var cultural_sites: Array[String] = []
 	for site in public_sites:
@@ -256,7 +346,17 @@ func refresh_functional_zones() -> void:
 		cultural_sites.append(str(site.get("id","")))
 	if cultural_members.size() >= 2:
 		cultural_members.sort_custom(func(a: String,b: String) -> bool: return center_order(a) < center_order(b) if center_order(a) != center_order(b) else a < b)
-		next.append({"id":"zone-cultural-core","role":"cultural","title":"文化声场","music_role":"choir","community_ids":cultural_members,"building_count":0,"site_ids":cultural_sites,"line_ids":[]})
+		var cultural_target := 0
+		var cultural_gap := 0
+		var cultural_pressure := 0.0
+		var cultural_covered := 0
+		for cid in cultural_members:
+			var service := community_public_service(cid)
+			cultural_target += int(service.get("cultural_target",0))
+			cultural_gap += int(service.get("cultural_gap",0))
+			cultural_pressure += float(service.get("pressure",0.0))
+			cultural_covered += int(service.get("covered_count",0))
+		next.append({"id":"zone-cultural-core","role":"cultural","title":"文化声场","music_role":"choir","community_ids":cultural_members,"building_count":0,"site_ids":cultural_sites,"line_ids":[],"cultural_target":cultural_target,"cultural_gap":cultural_gap,"service_pressure":cultural_pressure,"covered_count":cultural_covered})
 	var mixed_members: Array[String] = []
 	for cid in ids:
 		var usage := _community_usage(cid)
@@ -644,7 +744,11 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 	elif kind in ["park","civic"]:
 		var found := false
 		for site in public_sites:
-			if site["id"] == operation.get("id","") and site["kind"] == kind and not site["active"]: found = true
+			if site["id"] != operation.get("id","") or site["kind"] != kind: continue
+			if not site["active"]: found = true
+			elif kind == "civic":
+				if int(site.get("service_level",1)) >= 3: return {"accepted":false,"reason":"文化设施已完成三级扩容"}
+				found = true
 		if not found: return {"accepted":false,"reason":"请在公共保留地营造公园或设施"}
 	else: return {"accepted":false,"reason":"未知操作"}
 	if kind in ["seed","retune"]:
@@ -687,6 +791,8 @@ func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int, reque
 	return id
 
 func settle(frame: int) -> void:
+	var phase_started := Time.get_ticks_usec()
+	settle_profile.clear()
 	phrase_index += 1
 	_decay_transit_demand()
 	_update_landmark_activation(frame)
@@ -726,14 +832,24 @@ func settle(frame: int) -> void:
 			"park","civic":
 				for site in public_sites:
 					if site["id"] != op["id"]: continue
-					site["active"] = true
-					site["frame"] = frame
-					events.append({"kind":op["kind"],"id":site["id"],"frame":frame})
+					if bool(site["active"]) and op["kind"] == "civic":
+						site["service_level"] = mini(3,int(site.get("service_level",1))+1)
+					else:
+						site["active"] = true
+						site["frame"] = frame
+						events.append({"kind":op["kind"],"id":site["id"],"frame":frame})
+	# Facility actions become available to the same phrase's growth search.
+	if committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["civic","park"]):
+		_refresh_public_service()
 	if not lifecycle["ended"]:
 		for family in families:
 			if int(families[family]["created_phrase"]) == phrase_index: continue
 			_grow(family,frame)
+	settle_profile["actions_growth_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
+	phase_started = Time.get_ticks_usec()
 	var split_events := split_oversized_communities(frame)
+	settle_profile["split_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
+	phase_started = Time.get_ticks_usec()
 	var forms_dirty := not committed.is_empty() or buildings.size() != buildings_before_growth or not split_events.is_empty()
 	var modifiers := musicality()
 	var effective := musical_edges(modifiers)
@@ -750,11 +866,17 @@ func settle(frame: int) -> void:
 	elif resonance > float(cfg["harmony"]["gray_exit"]): lifecycle["gray"] = false
 	lifecycle["low_phrases"] = int(lifecycle["low_phrases"])+1 if resonance < float(cfg["harmony"]["gray_entry"]) else 0
 	lifecycle["ended"] = mode != "free" and int(lifecycle["low_phrases"]) >= int(cfg["harmony"]["collapse_phrases"])
+	settle_profile["music_forms_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
+	phase_started = Time.get_ticks_usec()
 	_refresh_public_network(frame)
+	settle_profile["public_network_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
+	phase_started = Time.get_ticks_usec()
 	# Courtyard geometry is a derived visual cache. Rebuilding every phrase made
 	# long growth quadratic; explicit structural actions stay immediate, while
 	# organic growth refreshes on alternating phrases.
-	if forms_dirty and (not committed.is_empty() or phrase_index % 2 == 0): refresh_fabric()
+	var geometry_action := committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["seed","bridge","landmark"])
+	if forms_dirty and (geometry_action or phrase_index % 2 == 0): refresh_fabric()
+	settle_profile["fabric_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
 
 func _transit_growth_bonus(position: Vector2,use: String = "residential") -> float:
 	var bonus := 0.0
@@ -808,6 +930,20 @@ func _land_use_quota_bonus(cid: String,use: String) -> float:
 	var quota := community_land_use_quota(cid)
 	var usage := _community_usage(cid)
 	return maxf(0.0,float(int(quota.get(use,0))-int(usage.get(use,0)))) if quota.has(use) else 0.0
+
+func _public_service_growth_bonus(cid: String,position: Vector2) -> float:
+	if not communities.has(cid): return 0.0
+	var bonus := 0.0
+	for site in public_sites:
+		if not bool(site.get("active",false)) or str(site.get("kind","")) != "civic": continue
+		var capacity := int(site.get("service_capacity",18))
+		var spare: int = capacity-site.get("served",[]).size()
+		if spare <= 0: continue
+		var site_position := Vector2(float(site["entrance"][0]),float(site["entrance"][1]))
+		if position.distance_to(site_position) > float(cfg["city"]["service_walk_radius"]): continue
+		if network.walking_distance(site_position,position) > float(cfg["city"]["service_walk_radius"]): continue
+		bonus = maxf(bonus,float(spare)/float(capacity))
+	return bonus
 
 func _grow(family: String, frame: int) -> void:
 	if str(families[family].get("root","")).is_empty() or not by_id.has(str(families[family].get("root",""))): return
@@ -888,14 +1024,19 @@ func _grow(family: String, frame: int) -> void:
 		var distance := p.distance_squared_to(origin)
 		var transit_bonus := _transit_growth_bonus(p,candidate_use)
 		var quota_bonus := _land_use_quota_bonus(str(check.get("community_id","")),candidate_use)
-		# Tier remains the primary placement rule; land-use deficits and transit
-		# demand break ties, pulling useful growth toward existing functional belts.
-		var growth_score := float(tier_rank)*100000.0+quota_bonus*1000.0+transit_bonus*100.0-distance
+		var base_score := float(tier_rank)*100000.0+quota_bonus*1000.0+transit_bonus*100.0-distance
+		# Service bonus is at most 50; do not query access paths for a candidate
+		# that cannot beat the current winner even at full spare capacity.
+		if base_score+50.0 <= best_growth_score: continue
+		var service_bonus := _public_service_growth_bonus(str(check.get("community_id","")),p)
+		# Tier remains the primary placement rule; land-use deficits, transit
+		# demand, and spare civic capacity break ties inside the same tier.
+		var growth_score := float(tier_rank)*100000.0+quota_bonus*1000.0+transit_bonus*100.0+service_bonus*50.0-distance
 		if growth_score > best_growth_score:
 			best_growth_score = growth_score
 			best_rank = tier_rank
 			best_distance = distance
-			best = {"position":p,"transit_bonus":transit_bonus,"quota_bonus":quota_bonus,"use":candidate_use}
+			best = {"position":p,"transit_bonus":transit_bonus,"quota_bonus":quota_bonus,"service_bonus":service_bonus,"use":candidate_use}
 			best_check = check
 	if best.is_empty():
 		last_reason = "这一家族暂缺可达空地；可以在另一侧播种新主题"
@@ -1304,6 +1445,8 @@ func update_era(frame: int = 0) -> bool:
 	return true
 
 func _refresh_public_network(frame: int = 0) -> void:
+	var coverage_started := Time.get_ticks_usec()
+	public_service_cache.clear()
 	network.rebuild(nodes,roads,terrain)
 	for site in public_sites:
 		var covered: Array[String] = []
@@ -1314,8 +1457,14 @@ func _refresh_public_network(frame: int = 0) -> void:
 				for candidate in lots:
 					if candidate["id"] == building["lot_id"]: lot = candidate
 				var p := Coupling.position_of(building) if lot.is_empty() else Vector2(lot["entrance"][0],lot["entrance"][1])
-				if network.walking_distance(entrance,p) <= float(cfg["city"]["service_walk_radius"]): covered.append(building["district_id"])
+				var radius := float(cfg["city"]["service_walk_radius"])
+				if entrance.distance_squared_to(p) > radius*radius: continue
+				if network.walking_distance(entrance,p) <= radius: covered.append(building["district_id"])
 		site["covered"] = covered
+	settle_profile["coverage_ms"] = float(Time.get_ticks_usec()-coverage_started)/1000.0
+	coverage_started = Time.get_ticks_usec()
+	_refresh_public_service()
+	settle_profile["service_allocation_ms"] = float(Time.get_ticks_usec()-coverage_started)/1000.0
 	var lines: Array[Dictionary] = []
 	if public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "west-civic" and site["active"]):
 		var itinerary: Array = ["west-1","west-2","west-3","west-outer-3","west-outer-2","west-outer-1","west-1"]

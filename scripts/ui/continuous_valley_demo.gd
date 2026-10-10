@@ -506,7 +506,7 @@ func _gui_input(event: InputEvent) -> void:
 				if not site.is_empty():
 					context = {"kind":site["kind"],"id":site["id"]}
 					selected_id = ""
-					menu_info.text = site["name"]+" · 点击下方营造"
+					menu_info.text = site["name"]+(" · 点击公共设施扩容" if site["active"] and site["kind"] == "civic" else " · 点击下方营造")
 					menu.position = Vector2(clampf(pointer.x-100,12,size.x-460),clampf(pointer.y+22,80,size.y-290))
 					menu.show()
 					return
@@ -540,16 +540,17 @@ func _verb(verb: String) -> void:
 	if verb in ["park","civic"]:
 		var site: Dictionary = {}
 		for candidate in shown_world.public_sites:
-			if candidate["kind"] != verb or candidate["active"]: continue
+			if candidate["kind"] != verb: continue
 			if context.get("id","") == candidate["id"]:
 				site = candidate
 				break
-			if site.is_empty(): site = candidate
+			if not candidate["active"] and site.is_empty(): site = candidate
 		if site.is_empty():
 			_message("公共空间已经落成，悬停查看它服务的街区")
 			return
 		var result := model.submit({"kind":verb,"id":site["id"]})
-		_message(site["name"]+"会在下一句落成" if result["accepted"] else result["reason"])
+		var action_label := "会在下一句扩容" if site["active"] and verb == "civic" else "会在下一句落成"
+		_message(site["name"]+action_label if result["accepted"] else result["reason"])
 		menu.hide()
 		return
 	if verb == "bridge":
@@ -721,7 +722,9 @@ func _process(delta: float) -> void:
 	else:
 		var site := shown_world.public_at(p)
 		if not site.is_empty():
-			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路服务%d栋\n公园为主题留白，文化设施让主题更清楚" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
+			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路覆盖%d栋\n公园为主题留白" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
+			if site["active"] and site["kind"] == "civic":
+				tooltip.text = "%s · 文化设施%d级\n覆盖%d栋 · 已服务%d/%d栋\n%s" % [site["name"],int(site.get("service_level",1)),site.get("covered",[]).size(),site.get("served",[]).size(),int(site.get("service_capacity",18)),"点击后选公共设施，下一句扩容" if int(site.get("service_level",1)) < 3 else "三级扩容完成 · 文化主题继续演奏"]
 		else: tooltip.text = "合法陆地都能播种；靠近道路会长得更快\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形 · E扩展城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
 	if menu.visible and pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
@@ -830,7 +833,8 @@ func _draw() -> void:
 		var lead := str(score["theme"].get("cid",""))
 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
 		var decree_slots := " · 政令槽%d" % shown_world.landmark_intervention_slots() if shown_world.landmark_intervention_slots() > 1 else ""
-		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d功能区 · %d条线路 · %d处公共 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.active_community_count(),shown_world.functional_zones.size(),shown_world.transit_lines.size(),shown_world.public_sites.size(),model.world.pending_actions.size(),name,decree_slots]
+		var service := shown_world.public_service_summary()
+		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d功能区 · %d条线路 · 文化%d/%d栋 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.active_community_count(),shown_world.functional_zones.size(),shown_world.transit_lines.size(),int(service.get("served",0)),shown_world.buildings.size(),model.world.pending_actions.size(),name,decree_slots]
 		draw_string(font,Vector2(size.x-760,size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("607974"))
 	var duration := float(model.phrase_frames)
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
@@ -960,6 +964,12 @@ func _draw_public_space() -> void:
 				var pool := PackedVector2Array()
 				for i in range(32): pool.append(p+Vector2(0.4,0.6)+Vector2(cos(TAU*i/32)*0.5,sin(TAU*i/32)*0.35))
 				draw_colored_polygon(_project_polygon(pool),Color("9bb9af"))
+			else:
+				var center := point(Vector2(site["position"][0],site["position"][1]))
+				for level in range(int(site.get("service_level",1))):
+					draw_circle(center+Vector2((level-1)*7,15)*view_zoom,2.2*view_zoom,Color("927851"))
+				if site.get("served",[]).size() >= int(site.get("service_capacity",18)):
+					draw_arc(center,14*view_zoom,0,TAU,32,Color("b58b55"),1.2,true)
 		else:
 			projected.append(projected[0])
 			draw_polyline(projected,Color(0.45,0.59,0.43,0.34),1.1,true)

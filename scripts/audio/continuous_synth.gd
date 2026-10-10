@@ -111,7 +111,8 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
 					facility_rhythm = true
 					break
 		if not chosen.is_empty():
-			rhythms.append({"cid":cid,"midi":int(overrides.get(chosen["district_id"],chosen["current_midi"])),"stereo":_stereo_for(chosen),"expression":chosen["expression"],"facility":facility_rhythm,"terrain":world.terrain.family,"zone_roles":world.functional_zone_roles(cid)})
+			var service_pressure := float(world.community_public_service(cid).get("pressure",0.0))
+			rhythms.append({"cid":cid,"midi":int(overrides.get(chosen["district_id"],chosen["current_midi"])),"stereo":_stereo_for(chosen),"expression":chosen["expression"],"facility":facility_rhythm,"terrain":world.terrain.family,"zone_roles":world.functional_zone_roles(cid),"service_pressure":service_pressure})
 		if rhythms.size() >= int(score["rhythm_slot_limit"]): break
 	# Keep one public place audible even when the two ordinary rhythm slots are full.
 	# This makes a park or civic room a compositional invitation, not only a visual tag.
@@ -125,7 +126,8 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
 			if already_present: continue
 			var facility_building: Dictionary = world.by_id[world.communities[cid]["members"][0]]
 			if rhythms.size() >= int(score["rhythm_slot_limit"]): rhythms.pop_back()
-			rhythms.append({"cid":cid,"midi":int(overrides.get(facility_building["district_id"],facility_building["current_midi"])),"stereo":_stereo_for(facility_building),"expression":facility_building["expression"],"facility":true,"terrain":world.terrain.family,"zone_roles":world.functional_zone_roles(cid)})
+			var service_pressure := float(world.community_public_service(cid).get("pressure",0.0))
+			rhythms.append({"cid":cid,"midi":int(overrides.get(facility_building["district_id"],facility_building["current_midi"])),"stereo":_stereo_for(facility_building),"expression":facility_building["expression"],"facility":true,"terrain":world.terrain.family,"zone_roles":world.functional_zone_roles(cid),"service_pressure":service_pressure})
 			break
 	_sync_rhythm_nodes()
 	theme.clear()
@@ -157,7 +159,7 @@ func _audibility(cid: String) -> float:
 func _sync_rhythm_nodes() -> void:
 	for node in rhythm_nodes.values(): node["active"] = false
 	for part in rhythms:
-		var key := "%s:%d:%s:%s:%s" % [part["cid"],part["midi"],part["expression"],part.get("terrain","river_valley"),JSON.stringify(part.get("zone_roles",[]))]
+		var key := "%s:%d:%s:%s:%s:%s" % [part["cid"],part["midi"],part["expression"],part.get("terrain","river_valley"),JSON.stringify(part.get("zone_roles",[])),float(part.get("service_pressure",0.0)) >= 0.5]
 		if not rhythm_nodes.has(key):
 			rhythm_nodes[key] = part.duplicate(true)
 			rhythm_nodes[key]["key"] = key
@@ -304,7 +306,10 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var target := _audibility(cid) if rhythm["active"] else 0.0
 		if level > 0.00001 or target > 0.0: pulse_count += 1
 		var beat := roundi(rate*0.5)
-		var spacing := beat*4 if rhythm["expression"] == "deep" else beat
+		var spacing: int = beat*4 if rhythm["expression"] == "deep" else beat
+		var service_pressure := float(rhythm.get("service_pressure",0.0))
+		if service_pressure >= 0.5:
+			spacing = beat*2 if rhythm["expression"] == "deep" else beat/2
 		var hz := frequency(int(rhythm["midi"])+12)
 		var phase_shift := 0 if cid.begins_with("west") else beat/2
 		for i in range(count):

@@ -1,0 +1,23 @@
+{
+  "passed": false,
+  "checks": {
+    "click_opens_civic_context": true,
+    "live_expansion_revealed": true,
+    "real_output_no_underruns": false,
+    "shown_level_waits_for_audio": true,
+    "ui_queues_expansion": true
+  },
+  "max_render_ms": 588.791,
+  "max_settle_ms": 563.313,
+  "settle_profile": {
+    "actions_growth_ms": 446.186,
+    "coverage_ms": 94.463,
+    "fabric_ms": 0.002,
+    "music_forms_ms": 17.451,
+    "public_network_ms": 99.559,
+    "service_allocation_ms": 2.292,
+    "split_ms": 0.036
+  },
+  "skips": 160,
+  "summary": {"capacity":162,"covered":129,"facilities":8,"members":129,"reachable":129,"served":125,"unserved":4}
+}
