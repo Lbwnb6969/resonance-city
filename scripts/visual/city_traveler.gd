@@ -22,6 +22,8 @@ var walk_target := Vector2.ZERO
 var stop_id := ""
 var passenger_load := 0
 var passenger_capacity := 12
+# One stable destination stop per rider; this keeps boarding/alighting readable.
+var passenger_destinations: Array[String] = []
 var passengers_boarded := 0
 var passengers_alighted := 0
 var transfer_passengers := 0
@@ -104,7 +106,8 @@ func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dict
 	return {"position":position,"direction":direction,"stopped":wait > 0.0,"destination":destination,
 		"stop_id":stop_id,"passengers":passenger_load,"capacity":passenger_capacity,"priority":_priority(),"purpose":purpose,"destination_kind":destination_kind,
 		"transfer_count":transfer_count,"transfer_target":transfer_target,"transfer_stop":transfer_stop,
-		"boarded":passengers_boarded,"alighted":passengers_alighted,"transfer_passengers":transfer_passengers}
+		"boarded":passengers_boarded,"alighted":passengers_alighted,"transfer_passengers":transfer_passengers,
+		"passenger_destinations":passenger_destinations.duplicate()}
 
 func _is_vehicle() -> bool:
 	return kind in ["carriage","tram","bus","car"]
@@ -294,26 +297,58 @@ func _next_bus(city: ContinuousWorld) -> void:
 	if kind == "car":
 		passenger_load = 0
 		passenger_capacity = 4
+		passenger_destinations.clear()
 		passengers_boarded = 0
 		passengers_alighted = 0
 		transfer_passengers = 0
 		wait = 0.0
 		return
-	var previous_load := passenger_load
+	if passenger_destinations.size() != passenger_load:
+		passenger_destinations.clear()
+		for index in range(passenger_load): passenger_destinations.append("")
+	var previous_load := passenger_destinations.size()
+	var remaining_destinations: Array[String] = []
+	passengers_alighted = 0
+	for rider_destination in passenger_destinations:
+		if str(rider_destination) == stop_id:
+			passengers_alighted += 1
+		else:
+			remaining_destinations.append(str(rider_destination))
+	if did_transfer and passengers_alighted == 0 and not remaining_destinations.is_empty():
+		# A line change is a real journey boundary: one rider reconnects here.
+		remaining_destinations.pop_back()
+		passengers_alighted += 1
 	var demand := _stop_demand(city,line,stop_id)
 	var target_load := clampi(demand,1,passenger_capacity-1)
 	if did_transfer:
-		# A line change is a real journey boundary: some riders leave before
-		# connecting passengers board the next service.
 		target_load = maxi(1,mini(target_load,previous_load-1)) if previous_load > 1 else 1
-	passengers_alighted = maxi(0,previous_load-target_load)
-	var after_alight := previous_load-passengers_alighted
-	passengers_boarded = maxi(0,target_load-after_alight)
-	passenger_load = target_load
+	while remaining_destinations.size() > target_load:
+		remaining_destinations.pop_back()
+		passengers_alighted += 1
+	passengers_boarded = maxi(0,target_load-remaining_destinations.size())
+	passenger_destinations = remaining_destinations
+	passenger_destinations.append_array(_new_passenger_destinations(line,stop_id,passengers_boarded,leg_index))
+	passenger_load = passenger_destinations.size()
 	transfer_passengers = mini(passenger_load,1+posmod(ordinal+leg_index+stop_id.length(),3)) if did_transfer else 0
 	city.record_transit_flow(arrival_stop,passengers_boarded,passengers_alighted,transfer_passengers)
 	var base_dwell := float(city.cfg["city"]["bus_dwell_beats"])*60.0/float(city.cfg["timing"]["bpm"])
 	wait = base_dwell+float(passenger_load)*0.035+float(passengers_boarded+passengers_alighted)*0.018+(0.35 if did_transfer else 0.0)
+
+func _new_passenger_destinations(line: Dictionary,stop: String,count: int,seed: int) -> Array[String]:
+	var result: Array[String] = []
+	if count <= 0: return result
+	var stops: Array = line.get("stops",[])
+	if stops.size() < 2:
+		for index in range(count): result.append("")
+		return result
+	var origin := maxi(0,stops.find(stop))
+	var span := maxi(1,stops.size()-1)
+	for index in range(count):
+		var step := 1+posmod(ordinal+trip+seed+index*2,span)
+		var target := str(stops[posmod(origin+step,stops.size())])
+		if target == stop: target = str(stops[posmod(origin+1,stops.size())])
+		result.append(target)
+	return result
 
 func _stop_demand(city: ContinuousWorld,line: Dictionary,stop: String) -> int:
 	var demand := 2+posmod(stop.length()*7+ordinal*3+leg_index,4)
@@ -435,7 +470,7 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 func snapshot() -> Dictionary:
 	var saved: Dictionary = {}
 	for field in ["kind","ordinal","position","direction","path","lengths","distance","total","last_seconds","wait",
-		"destination","destination_kind","purpose","line_key","line_index","leg_index","initialized","trip","walk_target","stop_id","passenger_load","passenger_capacity","passengers_boarded","passengers_alighted","transfer_passengers","motion_speed","transfer_count","transfer_target","transfer_stop"]: saved[field] = get(field)
+		"destination","destination_kind","purpose","line_key","line_index","leg_index","initialized","trip","walk_target","stop_id","passenger_load","passenger_capacity","passenger_destinations","passengers_boarded","passengers_alighted","transfer_passengers","motion_speed","transfer_count","transfer_target","transfer_stop"]: saved[field] = get(field)
 	return saved.duplicate(true)
 
 func _saved_vector(value: Variant) -> Vector2:
@@ -459,6 +494,7 @@ func restore(saved: Dictionary) -> void:
 			"position","direction","walk_target": set(field,_saved_vector(saved[field]))
 			"path": path = _saved_path(saved[field])
 			"lengths": lengths = _saved_lengths(saved[field])
+			"passenger_destinations": passenger_destinations.assign(saved[field])
 			_: set(field,saved[field])
 
 func _sample(delta_seconds: float = 0.0) -> void:
