@@ -922,7 +922,7 @@ func _sync_buildings() -> void:
 	shadow_layer.scale = Vector2.ONE*view_zoom
 	var display_key := _shown_city_key()+[shown_world.buildings.size(),pitches.hash()]
 	if building_display_key == display_key and sprites.size() == shown_world.buildings.size():
-		var dirty := false
+		var shadow_changes: Array[Dictionary] = []
 		for id in revealing_buildings.keys():
 			var sprite: AudioGrowthMask = sprites[id]
 			sprite.sample_frame(frame-minf(0.0,float(shown_world.by_id[id]["birth_frame"])))
@@ -930,9 +930,9 @@ func _sync_buildings() -> void:
 			if step != int(shadow_records[id]["step"]):
 				shadow_records[id]["progress"] = sprite.progress
 				shadow_records[id]["step"] = step
-				dirty = true
+				shadow_changes.append(shadow_records[id])
 			if sprite.progress >= 1.0: revealing_buildings.erase(id)
-		if dirty: _update_shadows()
+		if not shadow_changes.is_empty(): shadow_layer.update_progress(shadow_changes)
 		return
 	building_display_key = display_key
 	building_sync_count += 1

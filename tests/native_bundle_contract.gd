@@ -87,6 +87,13 @@ func _run() -> void:
 		_check(demo.city_ground_layer.update_count == old_ground_updates and demo.building_sync_count == old_building_syncs and demo.city_ground_layer.city == old_shown,"packed old-world view retains geometry while rebinding data")
 		var history: Array = demo.model.capture_state()["presentation_history"]
 		_check(not history.is_empty() and history.all(func(entry: Dictionary) -> bool: return not entry.has("view") and not entry.has("derived")),"packed runtime view excluded from DNA")
+		demo.clock.renderer.transport.audible_frame = boundary+2205
+		demo.shown_world = demo.model.presentation_world(boundary+2205)
+		demo._sync_buildings()
+		var partial := not demo.revealing_buildings.is_empty()
+		demo.clock.renderer.transport.audible_frame = boundary+4410
+		demo._sync_buildings()
+		_check(partial and demo.shadow_layer.updated_tile_count > 0 and demo.shadow_layer.uploaded_pixels > 0,"packed audible growth updates local shadow tiles")
 		demo.clock.renderer.transport.audible_frame = boundary+33075
 		demo.shown_world = demo.model.presentation_world(boundary+33075)
 		demo._sync_buildings()
@@ -102,10 +109,11 @@ func _run() -> void:
 	await RenderingServer.frame_post_draw
 	var terrain_draws: int = demo.terrain_layer.rebuild_count
 	var ground_draws: int = demo.city_ground_layer.rebuild_count
+	var shadow_updates: int = demo.shadow_layer.rebuild_count
 	demo.pan += Vector2(12,-6)
 	demo._sync_buildings()
 	await RenderingServer.frame_post_draw
-	_check(demo.terrain_layer.rebuild_count == terrain_draws and demo.city_ground_layer.rebuild_count == ground_draws,"packed camera pan reuses retained ground commands")
+	_check(demo.terrain_layer.rebuild_count == terrain_draws and demo.city_ground_layer.rebuild_count == ground_draws and demo.shadow_layer.rebuild_count == shadow_updates,"packed camera pan reuses retained ground and shadow tiles")
 	# Sorting is reused, while alpha and reveal progress are checked per hit.
 	var sprite: Sprite2D = demo.sprites.values()[0]
 	var id: String = demo.sprites.keys()[0]

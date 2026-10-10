@@ -1,0 +1,115 @@
+{
+	"after": 682,
+	"background": {
+		"adopted": 1,
+		"discarded": 2,
+		"fallbacks": 0,
+		"max_capture_ms": 12.441,
+		"max_commit_ms": 0.142,
+		"max_worker_ms": 431.588,
+		"retired": 3,
+		"started": 3
+	},
+	"before": 676,
+	"building_syncs": 3,
+	"buildings_with_two_neighbors": 667,
+	"checks": {
+		"all_buildings_respect_spaces": true,
+		"audible_reveal": true,
+		"background_adoption": true,
+		"camera_projection": true,
+		"grows": true,
+		"majority_form_neighborhoods": true,
+		"native_audio": true,
+		"no_underruns": true,
+		"presentation_backend": true,
+		"shadow_backend": true,
+		"target_scale": true,
+		"voice_budget": true
+	},
+	"concurrent_load": "User reports another game may be running; no other apps stopped",
+	"cpu_max_ms": 32.142,
+	"cpu_p50_ms": 19.4,
+	"cpu_p95_ms": 32.142,
+	"engine_max_fps": 0,
+	"era": 5,
+	"fabric_profile": {
+		"anchor_ms": 65.662,
+		"select_ms": 11.651,
+		"walls_rows_ms": 19.307
+	},
+	"frame_last_ms": {
+		"buildings_ms": 15.269,
+		"draw_ms": 0.194,
+		"interaction_ms": 0.04,
+		"presentation_ms": 0.003,
+		"traffic_ms": 3.795
+	},
+	"frame_max_ms": 66.188,
+	"frame_p50_ms": 16.91,
+	"frame_p95_ms": 19.228,
+	"frame_peaks_ms": {
+		"buildings_ms": 29.577,
+		"draw_ms": 10.302,
+		"interaction_ms": 2.575,
+		"presentation_ms": 1.407,
+		"traffic_ms": 9.049
+	},
+	"frame_samples": 837,
+	"full_shadow_reference": true,
+	"logical_processors": 32,
+	"max_projection_error": 0.0,
+	"max_render_ms": 17.239,
+	"max_settle_ms": 0.154,
+	"max_voices": 70,
+	"native_shadow_batches": 52,
+	"overlay_updates": 3,
+	"passed": true,
+	"presentation": {
+		"prepared": 1,
+		"reconstructed": 0
+	},
+	"profile": {
+		"actions_growth_ms": 105.177,
+		"coverage_ms": 12.19,
+		"fabric_ms": 99.27,
+		"music_forms_ms": 166.161,
+		"public_network_ms": 23.018,
+		"service_allocation_ms": 5.708,
+		"split_ms": 0.062
+	},
+	"reference_scope": "Archived full-city shadow only; current spatial planning, world, worker, display, traffic and audio",
+	"retained_ground": {
+		"city_max_ms": 9.036,
+		"city_rebuilds": 2,
+		"city_updates": 3,
+		"terrain_max_ms": 1.414,
+		"terrain_rebuilds": 1,
+		"water_frames": 945
+	},
+	"retained_shadow_resizes": 2,
+	"screen_refresh_hz": 180.0,
+	"shadow_rebuild_ms": 14.528,
+	"skips": 0,
+	"static_shadow_merges": 1388,
+	"steady_fps": 63.0,
+	"steady_frame_ms": {
+		"buildings_ms": 0.051,
+		"draw_ms": 0.189,
+		"interaction_ms": 0.034,
+		"presentation_ms": 0.003,
+		"traffic_ms": 4.213
+	},
+	"steady_skips": 0,
+	"supply_block": {
+		"begin": 25401439,
+		"capacity": 8191,
+		"count": 256,
+		"render_ms": 17.248,
+		"reserve_frames": 7935,
+		"skips_after_render": 0
+	},
+	"synchronous": false,
+	"vsync_mode": 0,
+	"world_source_sha256": "45611763b8d5880ebb2e2f81318b62ef871f65aa75a0622a39a62ede305ff695"
+}

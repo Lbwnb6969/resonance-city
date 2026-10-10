@@ -1,0 +1,39 @@
+{
+	"checks": 82,
+	"failures": [],
+	"gpu_samples": [
+		{
+			"changed_channels": 220,
+			"label": "reveal 0.125",
+			"max_byte_delta": 1
+		},
+		{
+			"changed_channels": 242,
+			"label": "reveal 0.5",
+			"max_byte_delta": 1
+		},
+		{
+			"changed_channels": 289,
+			"label": "reveal 1.0",
+			"max_byte_delta": 1
+		},
+		{
+			"changed_channels": 193,
+			"label": "camera 0.45",
+			"max_byte_delta": 1
+		},
+		{
+			"changed_channels": 0,
+			"label": "camera 1.0",
+			"max_byte_delta": 0
+		},
+		{
+			"changed_channels": 626,
+			"label": "camera 1.33",
+			"max_byte_delta": 1
+		}
+	],
+	"halo_texels": 1,
+	"passed": true,
+	"tile_size": 512
+}
