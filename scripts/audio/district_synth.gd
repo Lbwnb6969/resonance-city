@@ -877,17 +877,28 @@ func update_city(city: Array, state: Dictionary, marks: Dictionary = {}, events:
 	map_width = 16
 	for d in districts: map_width = maxi(map_width,16+4*maxi(0,int(d.get("era",1))-1))
 	_rebuild_assist_neighbors(city)
+	# The routing list retains its stable order and historical voices. Index only
+	# this update; duplicate IDs still update every matching route as before.
+	var routes_by_id: Dictionary = {}
+	for route in routing:
+		var id: String = route["id"]
+		if not routes_by_id.has(id): routes_by_id[id] = []
+		routes_by_id[id].append(route)
+	var events_by_id: Dictionary = {}
+	for event in events:
+		var id: String = event["district_id"]
+		if not events_by_id.has(id): events_by_id[id] = []
+		events_by_id[id].append(event)
 	for district in city:
 		var id: String = district["district_id"]
 		state[id] = int(district["current_midi"])
-		if not routing.any(func(route: Dictionary) -> bool: return route["id"] == id):
+		if not routes_by_id.has(id):
 			_append_district(district)
-		for route in routing:
-			if route["id"] != id:
-				continue
-			for event in events:
-				if event["district_id"] == id: Stage.sync(route["stage"],event)
-			route["stereo"] = _stereo_for(district)
+			routes_by_id[id] = [routing[-1]]
+		var stereo := _stereo_for(district)
+		for route in routes_by_id[id]:
+			for event in events_by_id.get(id,[]): Stage.sync(route["stage"],event)
+			route["stereo"] = stereo
 
 func set_solo(id: String) -> bool:
 	if not id.is_empty() and not routing.any(func(route: Dictionary) -> bool: return route["id"] == id):
