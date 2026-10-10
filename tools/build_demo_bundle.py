@@ -29,7 +29,7 @@ def audit(pack):
     with zipfile.ZipFile(pack) as archive:
         names = archive.namelist()
         forbidden = [x for x in names if x.startswith(
-            ('资产/', 'tests/', 'tools/', 'native/', '文档/', '验证记录/', '废弃/', '备份/', '交付/', '.git/', '资源/测试/'))
+            ('资产/', 'tests/', 'tools/', 'native/', '文档/', '参考资料/', '验证记录/', '废弃/', '备份/', '交付/', '.git/', '资源/测试/'))
             or (x.startswith('addons/') and not x.startswith('addons/city_audio/'))]
         if forbidden or len(names) != len(set(names)) or archive.testzip():
             raise RuntimeError(f'Invalid resource archive: {forbidden}')

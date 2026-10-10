@@ -109,14 +109,21 @@ func _direct() -> void:
 	var city := model.audio_city()
 	var ready := Preparation.build(city,world.cfg)
 	var a := ContinuousSynth.new(city)
-	var b := copy_reference(a)
+	var b := copy_reference(ContinuousSynth.new(city))
 	var state: Dictionary = {}
 	for district in city: state["_phase_"+district["district_id"]] = 0.123
 	var other := state.duplicate(true)
 	# Repeated route IDs and same-building stage events retain all matches/order.
-	a.routing.append(a.routing[0].duplicate(true))
-	b.routing.append(b.routing[0].duplicate(true))
-	var events: Array = [{"kind":"upgrade","district_id":city[0]["district_id"],"frame":100,"form":"株"},{"kind":"upgrade","district_id":city[0]["district_id"],"frame":200,"form":"群"}]
+	var staged := 0
+	for index in range(a.routing.size()):
+		if not a.routing[index]["stage"].is_empty():
+			staged = index
+			break
+	assert(not a.routing[staged]["stage"].is_empty())
+	a.routing.append(a.routing[staged].duplicate(true))
+	b.routing.append(b.routing[staged].duplicate(true))
+	var stage_id: String = a.routing[staged]["id"]
+	var events: Array = [{"kind":"upgrade","district_id":stage_id,"frame":100,"form":"株"},{"kind":"upgrade","district_id":stage_id,"frame":200,"form":"群"}]
 	a.update_audio_city(city,state,{},events,ready)
 	b.update_audio_city(city,other,{},events)
 	checks["direct state and duplicate routes"] = state == other and a.routing == b.routing
