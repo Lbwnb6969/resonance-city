@@ -13,6 +13,7 @@ const Charter = preload("res://scripts/world/development_charter.gd")
 const RiverResponse = preload("res://scripts/world/river_call_response.gd")
 const PublicRelocation = preload("res://scripts/world/public_site_relocation.gd")
 const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd")
+const TransitPlan = preload("res://scripts/world/transit_planning.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -50,6 +51,9 @@ var landmark_progress: Dictionary = {}
 var network: CityRoadNetwork
 var transit: Dictionary = {}
 var transit_lines: Array[Dictionary] = []
+var authored_transit_stops: Dictionary = {}
+var authored_transit_lines: Array[Dictionary] = []
+var transit_stop_cache: Dictionary = {}
 # Smoothed stop activity is a light-weight memory shared by transport, growth,
 # and music; it is not a full economy simulation.
 var transit_demand: Dictionary = {}
@@ -317,8 +321,11 @@ func _decay_transit_demand() -> void:
 
 func _community_transit_demand(cid: String) -> float:
 	var center := center_for(cid)
-	if center.is_empty(): return 0.0
 	var demand := transit_demand_score(str(center.get("node_id","")))
+	for line in transit_lines:
+		for stop_id in line.get("stops",[]):
+			var stop := transit_stop_record(str(stop_id))
+			if stop.get("community_ids",[]).has(cid): demand = maxf(demand,transit_demand_score(str(stop_id)))
 	var service := community_public_service(cid)
 	# Reachable but undersupplied civic services create a bounded trip pressure.
 	if int(service.get("cultural_reachable",0)) > 0:
@@ -401,10 +408,9 @@ func refresh_functional_zones() -> void:
 		var transit_members: Array[String] = []
 		for cid in ids:
 			var center := center_for(cid)
-			if center.is_empty(): continue
 			var node_id := str(center.get("node_id",""))
 			for line in transit_lines:
-				if line.get("stops",[]).has(node_id) or line.get("itinerary",[]).has(node_id):
+				if line.get("stops",[]).has(node_id) or line.get("itinerary",[]).has(node_id) or line.get("community_ids",[]).has(cid):
 					transit_members.append(cid)
 					break
 		if transit_members.size() >= 2:
@@ -931,6 +937,19 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation["id"] = "scope:"+",".join(scope)
 	elif kind == "retune":
 		if not by_id.has(operation.get("id","")): return {"accepted":false,"reason":"请选择一栋建筑"}
+	elif kind == "transit_line":
+		var transit_plan := transit_plan_preview(operation.get("stop_positions",[]))
+		if not bool(transit_plan.get("accepted",false)): return transit_plan
+		if str(operation.get("source_topology",transit_plan["source_topology"])) != str(transit_plan["source_topology"]):
+			return {"accepted":false,"reason":"道路已经变化，请重新查看线路预影"}
+		operation = operation.duplicate(true)
+		var stop_positions: Array = []
+		for stop in transit_plan["stops"]: stop_positions.append(stop["position"].duplicate())
+		operation["stop_positions"] = stop_positions
+		operation["source_topology"] = transit_plan["source_topology"]
+		# One authored route intent is replaceable while it is still waiting for
+		# the phrase boundary; already settled lines remain independent records.
+		pending_actions = pending_actions.filter(func(op: Dictionary) -> bool: return str(op.get("kind","")) != "transit_line")
 	elif kind == "relocate_public":
 		var site_id := str(operation.get("id",""))
 		var raw_target: Array = operation.get("position",operation.get("target_position",[]))
@@ -1138,6 +1157,10 @@ func settle(frame: int) -> void:
 		assert(int(op["frame"]) == frame)
 		if str(op["kind"]) in ["charter","reserve","release_reservation","relocate_public"] or (str(op["kind"]) in ["park","civic"] and op.has("position")): continue
 		match str(op["kind"]):
+			"transit_line":
+				var result: Dictionary = TransitPlan.commit(self,op,frame)
+				if not bool(result.get("accepted",false)):
+					events.append({"kind":"planning_rejected","operation_kind":"transit_line","event_id":op["event_id"],"reason":result.get("reason","线路未能落定"),"frame":frame})
 			"seed":
 				var p := Vector2(float(op["position"][0]),float(op["position"][1]))
 				if not placement(p)["allowed"]: continue
@@ -1184,6 +1207,8 @@ func settle(frame: int) -> void:
 	# Facility actions become available to the same phrase's growth search.
 	if committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["civic","park","relocate_public"]):
 		_refresh_public_service()
+	if committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) == "transit_line"):
+		_refresh_public_network(frame)
 	if not lifecycle["ended"]:
 		for family in families:
 			if int(families[family]["created_phrase"]) == phrase_index: continue
@@ -1225,15 +1250,20 @@ func settle(frame: int) -> void:
 	if buildings.size() != buildings_before_growth or not split_events.is_empty() or geometry_action: refresh_fabric()
 	settle_profile["fabric_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
 	_commit_transit_flow()
+	# Passenger observations become demand memory only at the phrase boundary;
+	# refresh the derived qualification after that ordered merge so authored stops
+	# can affect the next visible functional-zone summary without a second route build.
+	refresh_functional_zones()
 
 func _transit_growth_bonus(position: Vector2,use: String = "residential") -> float:
 	var bonus := 0.0
 	for line in transit_lines:
 		for stop_id in line.get("stops",[]):
-			if not network.nodes.has(str(stop_id)): continue
-			var node: Array = network.nodes[str(stop_id)]
-			var stop_position := Vector2(float(node[0]),float(node[1]))
-			var distance := position.distance_to(stop_position)
+			var stop := transit_stop_record(str(stop_id))
+			if stop.is_empty(): continue
+			var stop_position := TransitPlan.point(stop["position"])
+			if position.distance_squared_to(stop_position) > 4.5*4.5: continue
+			var distance := network.walking_distance(position,stop_position)
 			if distance > 4.5: continue
 			var local := (4.5-distance)/4.5
 			if use in ["commercial","industrial"]: local *= 1.35
@@ -1726,6 +1756,7 @@ func _update_forms(frame: int, modifiers: Dictionary = {}) -> void:
 
 func snapshot() -> Dictionary:
 	return {"schema_version":2,"generation_version":136,"settings":cfg.duplicate(true),"planning_reservations":planning_reservations.duplicate(true),"development_charters":development_charters.duplicate(true),
+		"authored_transit_stops":authored_transit_stops.duplicate(true),"authored_transit_lines":authored_transit_lines.duplicate(true),
 		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase,"family":terrain.family},
 		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"green_corridors":green_corridors.duplicate(true),"centers":centers.duplicate(true),"communities":communities.duplicate(true)},
 		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"transit_demand":transit_demand.duplicate(true),"transit_flow_pending":transit_flow_pending.duplicate(true),"functional_zones":functional_zones.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"landmarks":landmarks.duplicate(true),"landmark_progress":landmark_progress.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
@@ -1786,6 +1817,9 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	fabric_geometry_identity = ""
 	incident_edge_cache.clear()
 	near_edge_cache.clear()
+	transit_stop_cache.clear()
+	authored_transit_stops = saved.get("authored_transit_stops",{}).duplicate(true)
+	authored_transit_lines.assign(saved.get("authored_transit_lines",[]).duplicate(true))
 	if saved.has("plan"):
 		cfg = saved["settings"].duplicate(true)
 		terrain.cfg = cfg["terrain"]
@@ -1802,6 +1836,10 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 		transit_lines.assign(saved.get("transit_lines",[]).duplicate(true))
 		transit_demand = saved.get("transit_demand",{}).duplicate(true)
 		transit_flow_pending.assign(saved.get("transit_flow_pending",[]).duplicate(true))
+		for observation in transit_flow_pending:
+			observation["boarded"] = int(observation.get("boarded",0))
+			observation["alighted"] = int(observation.get("alighted",0))
+			observation["transfers"] = int(observation.get("transfers",0))
 		functional_zones.assign(saved.get("functional_zones",[]).duplicate(true))
 	buildings.assign(saved["buildings"].duplicate(true))
 	by_id.clear()
@@ -1837,6 +1875,7 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 		if landmark_occupants.has(landmark_id): lot["occupant"] = landmark_occupants[landmark_id]
 	events.assign(saved["events"].duplicate(true))
 	for event in events:
+		if str(event.get("kind","")) == "transit_line": event["event_id"] = int(event.get("event_id",0))
 		if event.has("converted_footprints"): event["converted_footprints"] = _geometry_components_from_json(event["converted_footprints"])
 		if event.has("footprint_components"): event["footprint_components"] = _geometry_components_from_json(event["footprint_components"])
 		if event.has("hole_polygons"): event["hole_polygons"] = _geometry_components_from_json(event["hole_polygons"])
@@ -1862,6 +1901,23 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	rebuild_graph()
 	resonance = coupling.resonance(buildings,musical_edges(musicality()))
 	_refresh_public_network()
+	# JSON DNA can omit the derived event while retaining authored intent. Rebuild
+	# the one authoritative transit event from that intent after routes hydrate.
+	for intent in authored_transit_lines:
+		var intent_id := str(intent.get("id",""))
+		if events.any(func(event: Dictionary) -> bool: return str(event.get("kind","")) == "transit_line" and str(event.get("event_id","")) == str(intent.get("event_id",""))): continue
+		var derived: Dictionary = {}
+		for line in transit_lines:
+			if str(line.get("id","")) == intent_id: derived = line; break
+		if derived.is_empty(): continue
+		events.append({"kind":"transit_line","id":intent_id,"event_id":intent.get("event_id",0),"frame":intent.get("frame",0),"stop_ids":intent.get("stop_ids",[]).duplicate(true),"community_ids":derived.get("community_ids",[]).duplicate(true),"covered_building_ids":derived.get("covered_building_ids",[]).duplicate(true),"source_topology":str(intent.get("source_topology",""))})
+	for operation in pending_actions:
+		if str(operation.get("kind","")) == "transit_line":
+			operation["source_topology"] = network.topology
+			operation["event_id"] = int(operation.get("event_id",0))
+	if str(pending.get("kind","")) == "transit_line":
+		pending["source_topology"] = network.topology
+		pending["event_id"] = int(pending.get("event_id",0))
 	refresh_fabric()
 
 func fork() -> RefCounted:
@@ -1897,6 +1953,7 @@ func update_era(frame: int = 0) -> bool:
 func _refresh_public_network(frame: int = 0) -> void:
 	var coverage_started := Time.get_ticks_usec()
 	public_service_cache.clear()
+	transit_stop_cache.clear()
 	network.rebuild(nodes,roads,terrain)
 	_refresh_road_index()
 	var lots_by_id: Dictionary = {}
@@ -1949,10 +2006,29 @@ func _refresh_public_network(frame: int = 0) -> void:
 			if not public_sites.any(func(site: Dictionary) -> bool: return site["id"] == prefix+side+"-civic" and site["active"]): continue
 			var itinerary: Array = [previous+side+"-4",prefix+side+"-1",prefix+side+"-2",prefix+side+"-3",prefix+side+"-4",prefix+side+"-outer-3",prefix+side+"-outer-2",prefix+side+"-outer-1",prefix+side+"-1",previous+side+"-4"]
 			lines.append(_make_transit_line(prefix+side+"-line","河段接驳线%d" % reach,itinerary,frame))
+	lines.append_array(TransitPlan.derived_lines(self))
 	transit_lines.assign(lines)
 	_annotate_transfers()
 	refresh_functional_zones()
 	transit = transit_lines[0] if not transit_lines.is_empty() else {}
+
+func transit_stop_preview(position: Vector2) -> Dictionary:
+	return TransitPlan.stop_preview(self,position)
+
+func transit_plan_preview(stop_positions: Array) -> Dictionary:
+	return TransitPlan.preview(self,stop_positions)
+
+func transit_stop_record(id: String) -> Dictionary:
+	# Line membership is derived from the current runtime lines: an authored
+	# station may become a transfer point when a later line is committed, so a
+	# stale cached record would hide that relationship from vehicles and UI.
+	var result := TransitPlan.stop_record(self,id)
+	transit_stop_cache[id] = result.duplicate(true)
+	return result
+
+func transit_stop_position(id: String) -> Vector2:
+	var stop := transit_stop_record(id)
+	return TransitPlan.point(stop["position"]) if not stop.is_empty() else Vector2.INF
 
 func _annotate_transfers() -> void:
 	for index in range(transit_lines.size()):

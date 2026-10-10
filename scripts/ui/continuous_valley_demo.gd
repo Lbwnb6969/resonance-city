@@ -8,6 +8,7 @@ const Coupling = preload("res://scripts/world/world_coupling.gd")
 const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 const PublicRelocation = preload("res://scripts/world/public_site_relocation.gd")
 const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd")
+const TransitPlanning = preload("res://scripts/world/transit_planning.gd")
 const Config = preload("res://scripts/world/world_values.gd")
 const GrowthSprite = preload("res://scripts/visual/audio_growth_mask.gd")
 const Shadows = preload("res://scripts/visual/city_shadow_layer.gd")
@@ -83,6 +84,10 @@ var partial_polygon_components: Array[PackedVector2Array] = []
 var partial_courtyard_mode := false
 var partial_hole_drawing := false
 var partial_polygon_holes: Array[PackedVector2Array] = []
+var transit_route_mode := false
+var transit_route_stops: Array[Vector2] = []
+var transit_preview: Dictionary = {}
+var transit_preview_key: Array = []
 var reservation_draw_mode := false
 var reservation_draw_points := PackedVector2Array()
 var pointer := Vector2.ZERO
@@ -242,6 +247,7 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	partial_courtyard_mode = false
 	partial_hole_drawing = false
 	partial_polygon_holes.clear()
+	_clear_transit_route()
 	menu.hide()
 	last_birth_count = shown_world.buildings.size()
 	zoom_target = 0.88
@@ -329,7 +335,7 @@ func _make_menu() -> void:
 	box.add_child(verbs)
 	var public_row := HFlowContainer.new()
 	public_row.custom_minimum_size.x = 560
-	for item in [["建公园","park"],["文化设施","civic"],["局部公园","partial_park"],["局部文化馆","partial_civic"],["自由局部公园","free_partial_park"],["自由局部文化馆","free_partial_civic"],["自由分块公园","free_multi_partial_park"],["自由分块文化馆","free_multi_partial_civic"],["自由内院公园","free_courtyard_park"],["自由内院文化馆","free_courtyard_civic"],["搬迁公共设施","relocate_public"],["留地","reserve"],["自由留地","free_reserve"],["释放留地","release_reservation"],["连接两岸","bridge"]]:
+	for item in [["建公园","park"],["文化设施","civic"],["局部公园","partial_park"],["局部文化馆","partial_civic"],["自由局部公园","free_partial_park"],["自由局部文化馆","free_partial_civic"],["自由分块公园","free_multi_partial_park"],["自由分块文化馆","free_multi_partial_civic"],["自由内院公园","free_courtyard_park"],["自由内院文化馆","free_courtyard_civic"],["搬迁公共设施","relocate_public"],["留地","reserve"],["自由留地","free_reserve"],["释放留地","release_reservation"],["连接两岸","bridge"],["规划公交线路","plan_transit"]]:
 		var button := Button.new()
 		button.text = item[0]
 		button.pressed.connect(_verb.bind(item[1]))
@@ -716,6 +722,7 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
 			zoom_target = clampf(zoom_target*(1.12 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.12),0.18 if int(shown_world.cfg["city"].get("regional_count",1)) > 1 else 0.55,1.9)
 		elif event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+			_clear_transit_route()
 			_clear_partial_draft()
 			reservation_draw_mode = false
 			reservation_draw_points.clear()
@@ -726,6 +733,9 @@ func _gui_input(event: InputEvent) -> void:
 			planning_guide.hide_tool()
 			context.clear()
 		elif event.pressed and event.button_index == MOUSE_BUTTON_LEFT and not black:
+			if transit_route_mode:
+				_append_transit_stop(world_at(pointer))
+				return
 			if reservation_draw_mode:
 				_append_reservation_draw_point(world_at(pointer))
 				return
@@ -898,6 +908,7 @@ func _planning_menu() -> void:
 		if str(site.get("id","")) == str(context.get("id","")):
 			active_public = bool(site.get("active",false)) and str(context.get("kind","")) in ["park","civic"]
 	planning_buttons["relocate_public"].disabled = not active_public
+	planning_buttons["plan_transit"].disabled = false
 
 func _submit_relocation_at(target: Vector2) -> void:
 	if relocation_site_id.is_empty():
@@ -931,6 +942,65 @@ func _submit_partial_at(target: Vector2) -> void:
 		_message(str(preview.get("reason","局部公共空间不可用")))
 		return
 	_submit_partial_operation(_partial_site_from_preview(preview),partial_kind)
+
+func _clear_transit_route() -> void:
+	transit_route_mode = false
+	transit_route_stops.clear()
+	transit_preview.clear()
+	transit_preview_key.clear()
+
+func _transit_route_preview(include_hover := false) -> Dictionary:
+	if model == null or transit_route_stops.is_empty(): return {}
+	var positions: Array = []
+	for stop in transit_route_stops: positions.append([stop.x,stop.y])
+	if include_hover and pointer_inside:
+		var candidate := TransitPlanning.stop_preview(model.world,world_at(pointer))
+		if bool(candidate.get("accepted",false)):
+			var cp := Vector2(float(candidate["position"][0]),float(candidate["position"][1]))
+			if positions.is_empty() or cp.distance_to(transit_route_stops.back()) > 0.18: positions.append([cp.x,cp.y])
+	var key := [model.world.action_serial,model.world.network.topology,positions]
+	if not include_hover and transit_preview_key == key: return transit_preview
+	var result: Dictionary = TransitPlanning.preview(model.world,positions)
+	if not include_hover:
+		transit_preview_key = key
+		transit_preview = result
+	return result
+
+func _append_transit_stop(position: Vector2) -> void:
+	var preview := TransitPlanning.stop_preview(model.world,position)
+	if not bool(preview.get("accepted",false)):
+		_message(str(preview.get("reason","站点需要靠近真实道路")))
+		return
+	var projected := Vector2(float(preview["position"][0]),float(preview["position"][1]))
+	if not transit_route_stops.is_empty() and projected.distance_to(transit_route_stops.back()) <= 0.18:
+		_message("连续两站不能是同一站")
+		return
+	transit_route_stops.append(projected)
+	transit_preview_key.clear()
+	transit_preview.clear()
+	_message("已放置第%d站 · %s" % [transit_route_stops.size(),str(preview.get("road_id",preview.get("road","真实道路")))])
+
+func _remove_last_transit_stop() -> void:
+	if not transit_route_stops.is_empty():
+		transit_route_stops.pop_back()
+		transit_preview_key.clear()
+		transit_preview.clear()
+		_message("已撤回最后一站 · 当前%d站" % transit_route_stops.size())
+
+func _submit_transit_route() -> void:
+	var preview := _transit_route_preview()
+	if not bool(preview.get("accepted",false)):
+		_message(str(preview.get("reason","公交线路至少需要两处真实道路站位")))
+		return
+	var positions: Array = []
+	for stop in transit_route_stops: positions.append([stop.x,stop.y])
+	var result: Dictionary = model.submit({"kind":"transit_line","stop_positions":positions,"source_topology":str(preview.get("source_topology",model.world.network.topology))})
+	if bool(result.get("accepted",false)):
+		_message("公交线路已排入下一乐句 · %d站 · 覆盖%d栋、%d个社区" % [transit_route_stops.size(),preview.get("covered_building_ids",[]).size(),preview.get("community_ids",[]).size()])
+		_clear_transit_route()
+		menu.hide()
+	else:
+		_message(str(result.get("reason","公交线路未能排入下一乐句")))
 
 func _clear_partial_draft() -> void:
 	_invalidate_partial_comparison()
@@ -1174,10 +1244,25 @@ func _submit_free_reservation() -> void:
 		_message(str(result.get("reason","这片范围暂时不能留地")))
 
 func _verb(verb: String) -> void:
-	if verb in ["free_reserve","partial_park","partial_civic","free_partial_park","free_partial_civic","free_multi_partial_park","free_multi_partial_civic","free_courtyard_park","free_courtyard_civic","relocate_public"]:
+	if verb in ["free_reserve","partial_park","partial_civic","free_partial_park","free_partial_civic","free_multi_partial_park","free_multi_partial_civic","free_courtyard_park","free_courtyard_civic","relocate_public","plan_transit"]:
 		planning_guide.hide_tool()
+	if verb != "plan_transit": _clear_transit_route()
 	if verb == "planning":
 		planning_guide.open_tool()
+		return
+	if verb == "plan_transit":
+		_clear_partial_draft()
+		reservation_draw_mode = false
+		reservation_draw_points.clear()
+		relocation_mode = false
+		relocation_site_id = ""
+		transit_route_mode = true
+		transit_route_stops.clear()
+		transit_preview.clear()
+		transit_preview_key.clear()
+		context.clear()
+		menu.hide()
+		_message("公交线路预影开启 · 左键沿真实道路逐站放置，至少两站后按住空格试听，Enter 排入下一乐句；右键取消")
 		return
 	if verb == "free_reserve":
 		partial_polygon_mode = false
@@ -1332,7 +1417,7 @@ func _input(event: InputEvent) -> void:
 		load_city()
 		get_viewport().set_input_as_handled()
 		return
-	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y,KEY_E,KEY_ENTER,KEY_P]: get_viewport().set_input_as_handled()
+	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_BACKSPACE,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y,KEY_E,KEY_ENTER,KEY_P]: get_viewport().set_input_as_handled()
 	if event.keycode == KEY_SPACE and not event.pressed:
 		_cancel_preview_playback()
 		return
@@ -1342,6 +1427,10 @@ func _input(event: InputEvent) -> void:
 			if planning_guide.opened: planning_guide.hide_tool()
 			else: planning_guide.open_tool()
 		KEY_ESCAPE:
+			if transit_route_mode:
+				_clear_transit_route()
+				_message("公交线路预影已取消")
+				return
 			if partial_mode or partial_polygon_mode:
 				_clear_partial_draft()
 				_message("局部公共目标已取消 · 原留地保留")
@@ -1365,6 +1454,8 @@ func _input(event: InputEvent) -> void:
 				_finish_partial_component()
 			else:
 				_verb("solo")
+		KEY_BACKSPACE:
+			if transit_route_mode: _remove_last_transit_stop()
 		KEY_M: _verb("mute")
 		KEY_F: _verb("focus")
 		KEY_H: _home_city()
@@ -1398,7 +1489,9 @@ func _input(event: InputEvent) -> void:
 			clock.start_output(model._mix_frame,{})
 		KEY_SPACE: _request_preview()
 		KEY_ENTER:
-			if planning_guide.opened and planning_guide.stage == "partial_anchor":
+			if transit_route_mode:
+				_submit_transit_route()
+			elif planning_guide.opened and planning_guide.stage == "partial_anchor":
 				_submit_partial_comparison()
 			elif reservation_draw_mode:
 				_submit_free_reservation()
@@ -1522,6 +1615,26 @@ func _planning_status_hint() -> String:
 	return "当前规划 · %s · %s · P重新规划" % [title, card_text]
 
 func _request_preview() -> void:
+	if transit_route_mode:
+		var transit_candidate := _transit_route_preview()
+		if not bool(transit_candidate.get("accepted",false)):
+			_message(str(transit_candidate.get("reason","公交线路至少需要两处真实道路站位")))
+			return
+		var transit_operation := {"kind":"transit_line","stop_positions":transit_candidate.get("stop_positions",[]),"source_topology":str(transit_candidate.get("source_topology",model.world.network.topology))}
+		if transit_operation["stop_positions"].is_empty():
+			for stop in transit_route_stops: transit_operation["stop_positions"].append([stop.x,stop.y])
+		var frozen_transit := model.freeze()
+		var state_transit := clock.renderer.state.duplicate(true)
+		var at_transit := clock.renderer.transport.rendered_frames
+		preview_context_key = [model.world.action_serial,model.world.network.topology,transit_operation["stop_positions"]]
+		preview_public = false
+		preview_requested = true
+		preview_started = false
+		if preview_thread != null: return
+		preview_thread = Thread.new()
+		preview_thread.start(_build_preview.bind(frozen_transit,transit_operation,state_transit,at_transit,preview_context_key.duplicate(true)))
+		_message("线路试听 · %d站、覆盖%d栋 · 松开恢复，Enter 排入下一乐句" % [transit_route_stops.size(),transit_candidate.get("covered_building_ids",[]).size()])
+		return
 	if (partial_mode or partial_polygon_mode) and (not planning_guide.opened or planning_guide.stage != "partial_anchor"):
 		var site := _partial_comparison_site()
 		if site.is_empty(): return
@@ -1567,7 +1680,7 @@ func _build_preview(frozen: ContinuousAudioModel, operation: Dictionary, state: 
 		result["request_key"] = request_key
 		return result
 	var rate := int(Config.load_values()["timing"]["sample_rate"])
-	return {"pcm":Renderer.pcm16(frozen.forecast(operation,state,at,rate*3))}
+	return {"pcm":Renderer.pcm16(frozen.forecast(operation,state,at,rate*3)),"request_key":request_key}
 
 func _play_public_preview() -> void:
 	var variant: Dictionary = planning_guide.comparison["variants"][planning_guide.anchor_kind]
@@ -1631,7 +1744,7 @@ func _process(delta: float) -> void:
 				if preview_requested: _play_public_preview()
 			else: _cancel_preview_playback()
 		elif preview_requested:
-			if not planning_guide.opened: _play_preview_pcm(result["pcm"])
+			if not planning_guide.opened and result.get("request_key",preview_context_key) == preview_context_key: _play_preview_pcm(result["pcm"])
 			else: _cancel_preview_playback()
 	var frame_started := Time.get_ticks_usec()
 	_sync_buildings()
@@ -1661,6 +1774,8 @@ func _process(delta: float) -> void:
 	if presented_events.size() > last_presented_event_count:
 		for event in presented_events.slice(last_presented_event_count):
 			if str(event.get("kind","")) == "planning_rejected": _message(_planning_rejection_message(event))
+			elif str(event.get("kind","")) == "transit_line":
+				_message("公交线路已落定 · %d站 · 覆盖%d栋、%d个社区 · 下一句客流会进入城市节奏" % [event.get("stop_ids",[]).size(),event.get("covered_building_ids",[]).size(),event.get("community_ids",[]).size()])
 		last_presented_event_count = presented_events.size()
 	notice_seconds = maxf(0.0,notice_seconds-delta)
 	ripple_seconds = maxf(0.0,ripple_seconds-delta)
@@ -1680,7 +1795,13 @@ func _process(delta: float) -> void:
 	var bridge_hover := _bridge_preview_at(p)
 	var landmark := shown_world.landmark_at(p)
 	var hover_card_status := ""
-	if not landmark.is_empty():
+	if transit_route_mode:
+		var transit_hover := _transit_route_preview(true)
+		if bool(transit_hover.get("accepted",false)):
+			tooltip.text = "公交线路预影 · %d站\n真实道路 %s · 覆盖%d栋 · %d个社区\n左键加站 · Backspace撤回 · 空格试听 · Enter排入下一乐句 · 右键取消" % [transit_route_stops.size(),str(transit_hover.get("source_topology","")),transit_hover.get("covered_building_ids",[]).size(),transit_hover.get("community_ids",[]).size()]
+		else:
+			tooltip.text = "公交线路预影 · %d站（至少两站）\n左键沿真实道路放置 · Backspace撤回 · 空格试听 · Enter排入下一乐句 · 右键取消" % transit_route_stops.size()
+	elif not landmark.is_empty():
 		var progress := clampf(float(clock.renderer.transport.audible_frame-int(landmark.get("reveal_frame",landmark.get("frame",0))))/float(maxi(1,int(landmark.get("reveal_frames",1)))),0.0,1.0)
 		var effect := "独立长音 · 吸收%d栋 · 动机%d音" % [landmark.get("absorbed_buildings",[]).size(),landmark.get("motif",[]).size()]
 		tooltip.text = "%s · %s\n%s\n落成 %.0f%% · 悬停查看历史" % [str(landmark["name"]),"古典遗产" if int(landmark.get("era",1)) == 1 else "时代地标",effect,progress*100.0]
@@ -1997,6 +2118,23 @@ func _partial_preview_label(preview: Dictionary, free_target: bool) -> String:
 	return label+" · 按住空格比较 · 下一乐句落成 · 入口 %s · %s · 保留%d片留地" % [str(preview.get("road_id","未知道路")),str(preview.get("target_community_id","未知社区")),int(preview.get("remaining_count",0))]
 
 func _draw_planning_preview() -> void:
+	if transit_route_mode and pointer_inside:
+		var transit_draw := _transit_route_preview(true)
+		var route_color := Color("c88942") if bool(transit_draw.get("accepted",false)) else Color("b35e58")
+		for leg in transit_draw.get("legs",[]):
+			var raw_path: PackedVector2Array = leg.get("path",PackedVector2Array())
+			if raw_path.size() > 1:
+				var projected := PackedVector2Array()
+				for p in raw_path: projected.append(point(p,shown_world.terrain.height_at(p)+0.12))
+				draw_polyline(projected,Color(route_color,0.22),7.0*view_zoom,true)
+				draw_polyline(projected,Color(route_color,0.90),2.0*view_zoom,true)
+		for index in range(transit_draw.get("stops",[]).size()):
+			var stop: Dictionary = transit_draw["stops"][index]
+			var p := Vector2(float(stop["position"][0]),float(stop["position"][1]))
+			var screen := point(p,shown_world.terrain.height_at(p)+0.28)
+			draw_circle(screen,7.0*view_zoom,Color(0.98,0.92,0.68,0.92))
+			draw_circle(screen,4.0*view_zoom,Color(route_color,0.95))
+			draw_string(ThemeDB.fallback_font,screen+Vector2(7,-7)*view_zoom,str(index+1),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("604c32"))
 	if reservation_draw_mode and pointer_inside:
 		var draw_color := Color("4f9f7b") if reservation_draw_points.size() >= 3 else Color("79966e")
 		if reservation_draw_points.size() >= 2:
@@ -2123,6 +2261,19 @@ func _draw_planning_preview() -> void:
 			polygon.append(polygon[0])
 			draw_polyline(polygon,Color("789978"),1.8,true)
 	for op in model.world.pending_actions:
+		if str(op.get("kind","")) == "transit_line":
+			var positions: Array = op.get("stop_positions",[])
+			var pending_route := TransitPlanning.preview(shown_world,positions)
+			for leg in pending_route.get("legs",[]):
+				var pending_path: PackedVector2Array = leg.get("path",PackedVector2Array())
+				if pending_path.size() < 2: continue
+				var pending_screen := PackedVector2Array()
+				for p in pending_path: pending_screen.append(point(p,shown_world.terrain.height_at(p)+0.16))
+				draw_polyline(pending_screen,Color(0.80,0.54,0.25,0.72),2.5*view_zoom,true)
+			for stop in pending_route.get("stops",[]):
+				var stop_p := Vector2(float(stop["position"][0]),float(stop["position"][1]))
+				draw_circle(point(stop_p,shown_world.terrain.height_at(stop_p)+0.30),5.5*view_zoom,Color(0.96,0.76,0.35,0.86))
+			continue
 		var polygons: Array[PackedVector2Array] = []
 		if op.has("target_polygon") or op.has("target_polygons"):
 			polygons = _partial_preview_fill_polygons(op)

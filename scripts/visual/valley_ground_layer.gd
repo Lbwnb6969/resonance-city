@@ -173,8 +173,9 @@ func _draw_public_space() -> void:
 				draw_polyline(outline,Color(0.45,0.59,0.43,0.34),1.1/camera_zoom,true)
 	for line in city.transit_lines:
 		for node in line["stops"]:
-			var p: Array = city.nodes[node]
-			var at := _point(Vector2(p[0],p[1]))
+			var stop_position := city.transit_stop_position(str(node))
+			if stop_position == Vector2.INF: continue
+			var at := _point(stop_position)
 			draw_circle(at,3.5*1.0,Color("e9d4a0"))
 			draw_arc(at,4.2*1.0,0,TAU,16,Color("899d87"),1.0/camera_zoom,true)
 
@@ -266,8 +267,9 @@ func _urban_contents() -> Dictionary:
 				int(site.get("service_level",1)),site.get("served",[]).size() >= int(site.get("service_capacity",18))])
 	for line in city.transit_lines:
 		for node in line["stops"]:
-			var p: Array = city.nodes[node]
-			content["public"].append(["stop",Vector2(p[0],p[1])])
+			var p := city.transit_stop_position(str(node))
+			if p == Vector2.INF: continue
+			content["public"].append(["stop",p])
 	for lot in city.lots:
 		if lot["occupant"] != "": content["lots"].append(lot["polygon"])
 	var cache: Dictionary = city.fabric_cache

@@ -15,6 +15,10 @@ var wait := 0.0
 var destination := ""
 var line_key := ""
 var line_index := -1
+# Indices are derived; line identities survive additions and topology rebuilds.
+var assigned_line_id := ""
+# Authored lines keep one vehicle in service while riders transfer at shared stops.
+var service_line_id := ""
 var leg_index := 0
 var initialized := false
 var trip := 0
@@ -106,6 +110,7 @@ func advance(city: ContinuousWorld, seconds: float, traffic: Array = [], physica
 		if absf(output_angle) > output_limit:
 			direction = previous_direction.rotated(signf(output_angle)*output_limit).normalized()
 	return {"position":position,"direction":direction,"stopped":wait > 0.0,"destination":destination,
+		"line_id":assigned_line_id,"service_line_id":service_line_id,
 		"stop_id":stop_id,"passengers":passenger_load,"capacity":passenger_capacity,"priority":_priority(),"purpose":purpose,"destination_kind":destination_kind,
 		"transfer_count":transfer_count,"transfer_target":transfer_target,"transfer_stop":transfer_stop,
 		"boarded":passengers_boarded,"alighted":passengers_alighted,"transfer_passengers":transfer_passengers,
@@ -277,11 +282,26 @@ func _next_car(city: ContinuousWorld) -> void:
 
 func _line(city: ContinuousWorld) -> Dictionary:
 	if city.transit_lines.is_empty(): return {}
-	# Assign vehicles round-robin across every active line, including expanded terrace routes.
-	# Keep the chosen index stable while a line is rebuilt so a traveler reconnects at a stop.
+	var stable_id := service_line_id if not service_line_id.is_empty() else assigned_line_id
+	if not stable_id.is_empty():
+		for index in range(city.transit_lines.size()):
+			if str(city.transit_lines[index].get("id","")) != stable_id: continue
+			line_index = index
+			assigned_line_id = stable_id
+			return city.transit_lines[index]
+		if not service_line_id.is_empty(): return {}
+	# Legacy vehicles start round-robin, then retain the selected stable identity.
 	if line_index < 0 or line_index >= city.transit_lines.size():
 		line_index = posmod(ordinal,city.transit_lines.size())
+	assigned_line_id = str(city.transit_lines[line_index].get("id",""))
 	return city.transit_lines[line_index]
+
+func _stop_route(city: ContinuousWorld,from: String,to: String) -> Dictionary:
+	if city.network.nodes.has(from) and city.network.nodes.has(to):
+		return city.network.route(from,to)
+	if city.transit_stop_record(from).is_empty() or city.transit_stop_record(to).is_empty():
+		return {"distance":INF,"path":PackedVector2Array()}
+	return city.network.walking_route(city.transit_stop_position(from),city.transit_stop_position(to))
 
 func _next_bus(city: ContinuousWorld) -> void:
 	var line := _line(city)
@@ -298,20 +318,22 @@ func _next_bus(city: ContinuousWorld) -> void:
 			transfer_options.append(transfer)
 	if was_initialized and not transfer_options.is_empty() and posmod(ordinal+trip+leg_index,3) == 0:
 		var choice: Dictionary = transfer_options[posmod(transfer_count+ordinal,transfer_options.size())]
-		line_index = int(choice.get("line_index",line_index))
-		line = _line(city)
-		legs = line["legs"]
+		if service_line_id.is_empty():
+			line_index = int(choice.get("line_index",line_index))
+			assigned_line_id = str(choice.get("line_id",""))
+			line = _line(city)
+			legs = line["legs"]
+			line_key = ""
 		transfer_count += 1
-		transfer_target = str(line.get("name",""))
+		transfer_target = str(choice.get("name",line.get("name","")))
 		transfer_stop = arrival_stop
-		purpose = "换乘至"+transfer_target
+		purpose = ("乘客换乘至" if not service_line_id.is_empty() else "换乘至")+transfer_target
 		destination_kind = "transit_transfer"
-		line_key = ""
 		did_transfer = true
 	else:
 		purpose = "沿线接驳"
 		destination_kind = "transit"
-	var next_key := str(line["id"])+":"+str(line.get("edges",[]))
+	var next_key := str(line["id"])+":"+str(line.get("edges",[]))+":"+str(hash(line["legs"]))
 	if line_key != next_key:
 		# Reroute only at the next completed stop; reconnect physically if it left the new line.
 		# The edge signature changes when a bridge, branch, or era network rebuilds,
@@ -323,8 +345,8 @@ func _next_bus(city: ContinuousWorld) -> void:
 				match_index = i
 				break
 		if match_index < 0:
-			var reconnect := city.network.route(destination,legs[0]["from"])
-			if reconnect["path"].is_empty():
+			var reconnect := _stop_route(city,destination,str(legs[0]["from"]))
+			if reconnect["path"].is_empty() or is_inf(float(reconnect["distance"])):
 				# A disconnected replacement line cannot be reached across open water.
 				# Keep the completed stop and retry after a visible pause.
 				line_key = ""
@@ -399,14 +421,15 @@ func _new_passenger_destinations(line: Dictionary,stop: String,count: int,seed: 
 
 func _stop_demand(city: ContinuousWorld,line: Dictionary,stop: String) -> int:
 	var demand := 2+posmod(stop.length()*7+ordinal*3+leg_index,4)
+	var station := city.transit_stop_record(stop)
 	if not line.get("transfer_stops",[]).is_empty():
 		for transfer in line.get("transfer_stops",[]):
 			if str(transfer.get("stop_id","")) == stop:
 				demand += 3
 				break
 	for center in city.centers:
-		if str(center.get("node_id","")) != stop: continue
 		var cid := str(center.get("community_id",center.get("node_id","")))
+		if str(center.get("node_id","")) != stop and not station.get("community_ids",[]).has(cid): continue
 		var service := city.community_public_service(cid)
 		if int(service.get("cultural_reachable",0)) > 0 and float(service.get("pressure",0.0)) >= 0.5:
 			demand += 1
@@ -528,7 +551,7 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 func snapshot() -> Dictionary:
 	var saved: Dictionary = {}
 	for field in ["kind","ordinal","position","direction","path","lengths","distance","total","last_seconds","wait",
-		"destination","destination_kind","purpose","line_key","line_index","leg_index","initialized","trip","walk_target","previous_walk_target","stop_id","passenger_load","passenger_capacity","passenger_destinations","passengers_boarded","passengers_alighted","transfer_passengers","motion_speed","transfer_count","transfer_target","transfer_stop"]: saved[field] = get(field)
+		"destination","destination_kind","purpose","line_key","line_index","assigned_line_id","service_line_id","leg_index","initialized","trip","walk_target","previous_walk_target","stop_id","passenger_load","passenger_capacity","passenger_destinations","passengers_boarded","passengers_alighted","transfer_passengers","motion_speed","transfer_count","transfer_target","transfer_stop"]: saved[field] = get(field)
 	return saved.duplicate(true)
 
 func _saved_vector(value: Variant) -> Vector2:

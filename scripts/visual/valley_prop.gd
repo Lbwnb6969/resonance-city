@@ -146,6 +146,20 @@ func _draw() -> void:
 			draw_arc(Vector2(0,-15),8.2,-2.9,-0.25,14,Color("f1d28a"),1.5,true)
 			draw_line(Vector2(-3.4,-21),Vector2(0,-24),Color("f1d28a"),1.2,true)
 			draw_line(Vector2(0,-24),Vector2(3.4,-21),Color("f1d28a"),1.2,true)
+		if bool(get_meta("authored_stop",false)):
+			draw_line(Vector2(-2.4,-15),Vector2(0,-17.4),Color("f8edcb"),1.0,true)
+			draw_line(Vector2(0,-17.4),Vector2(2.4,-15),Color("f8edcb"),1.0,true)
+		var exchange: Dictionary = get_meta("station_exchange",{})
+		if not exchange.is_empty():
+			draw_arc(Vector2(0,1),10.0,0.15,2.99,15,Color(0.89,0.76,0.45,0.65),1.3,true)
+			for index in range(mini(5,int(exchange.get("boarded",0)))):
+				var waiting := Vector2(-9+index*3,4)
+				draw_circle(waiting-Vector2(0,2.6),0.9,Color("f4dc9d"))
+				draw_line(waiting-Vector2(0,1.5),waiting+Vector2(0,0.5),Color("a79770"),1.2,true)
+			for index in range(mini(4,int(exchange.get("alighted",0)))):
+				draw_circle(Vector2(7+index*2.7,1+index*0.6),1.2,Color("9bb9ae"))
+			if int(exchange.get("transfers",0)) > 0:
+				draw_arc(Vector2(0,-15),10.8,-2.8,-0.35,16,Color("c8b1d2"),1.5,true)
 	elif kind == "walker":
 		var stride := sin(motion*2.7+tone)*0.8 if active else 0.0
 		var facing := _project(direction*0.035)

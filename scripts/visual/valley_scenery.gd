@@ -10,6 +10,9 @@ var site_key: Array = []
 var public_prop_layouts: Dictionary = {}
 var public_prop_keys: Dictionary = {}
 var prop_projections: Dictionary = {}
+var transit_stop_keys: Dictionary = {}
+var active_stop_keys: Dictionary = {}
+var next_vehicle_ordinal := 4
 
 func rebuild(demo: Control) -> void:
 	for node in props.values(): node.queue_free()
@@ -17,6 +20,11 @@ func rebuild(demo: Control) -> void:
 	public_prop_layouts.clear()
 	public_prop_keys.clear()
 	prop_projections.clear()
+	transit_stop_keys.clear()
+	active_stop_keys.clear()
+	site_key.clear()
+	sites.clear()
+	next_vehicle_ordinal = 4
 	for site in demo.shown_world.public_sites:
 		sites[site["id"]] = site
 	var city: ContinuousWorld = demo.shown_world
@@ -40,25 +48,10 @@ func rebuild(demo: Control) -> void:
 		if road.get("kind","") == "branch": continue
 		var p := path[path.size()/2]+Vector2(0.38,0)
 		if city.terrain.land_at(p): _add(demo,"lamp-"+road["id"],p,"lamp",0)
-	# Transit stops are drawn from the same route nodes used by travelers.
-	# Shared stops get one marker so a transfer point reads as one place.
-	var stop_tone := 0
-	for line in city.transit_lines:
-		for stop_id in line.get("stops",[]):
-			var stop_key := "stop-"+str(stop_id)
-			if props.has(stop_key) or not city.network.nodes.has(stop_id): continue
-			var stop_node: Array = city.network.nodes[stop_id]
-			_add(demo,stop_key,Vector2(float(stop_node[0]),float(stop_node[1])),"stop",stop_tone)
-			var shared := false
-			for transfer in line.get("transfer_stops",[]):
-				if str(transfer.get("stop_id","")) == str(stop_id):
-					shared = true
-					break
-			if shared: props[stop_key].set_meta("transfer_stop",true)
-			stop_tone += 1
 	_sync_public_props(demo,city)
 	vehicle_kind = city.vehicle_kind()
 	for i in range(4): _add(demo,"vehicle-%d" % i,Vector2.ZERO,vehicle_kind,i)
+	_sync_transit_props(demo,city)
 	# Private cars only enter the street mix in the modern era; they remain
 	# authored travelers so the era transition does not create a visual burst.
 	for i in range(3): _add(demo,"car-%d" % i,Vector2.ZERO,"car",i+4,"",true)
@@ -83,7 +76,74 @@ func snapshot() -> Dictionary:
 
 func restore(saved: Dictionary) -> void:
 	for key in saved:
-		if props.has(key) and props[key].has_meta("traveler"): props[key].get_meta("traveler").restore(saved[key])
+		if props.has(key) and props[key].has_meta("traveler"):
+			var traveler: CityTraveler = props[key].get_meta("traveler")
+			traveler.restore(saved[key])
+			if not traveler.service_line_id.is_empty(): next_vehicle_ordinal = maxi(next_vehicle_ordinal,traveler.ordinal+1)
+
+func _sync_transit_props(demo: Control,city: ContinuousWorld) -> void:
+	# A station is a road access, including authored positions between road nodes.
+	# Stable station IDs deduplicate signs and retain transfer identity across lines.
+	var wanted: Dictionary = {}
+	var wanted_vehicles: Dictionary = {}
+	var stop_tone := 0
+	for line in city.transit_lines:
+		for stop_value in line.get("stops",[]):
+			var stop_id := str(stop_value)
+			var station := city.transit_stop_record(stop_id)
+			if station.is_empty(): continue
+			var key := "stop-"+stop_id
+			var shared: bool = station.get("line_ids",[]).size() > 1
+			if not shared:
+				shared = line.get("transfer_stops",[]).any(func(transfer: Dictionary) -> bool: return str(transfer.get("stop_id","")) == stop_id)
+			if not wanted.has(key):
+				wanted[key] = true
+				if not props.has(key): _add(demo,key,city.transit_stop_position(stop_id),"stop",stop_tone)
+				stop_tone += 1
+			var stop_position := city.transit_stop_position(stop_id)
+			if not props.has(key): continue
+			if stop_position.is_finite(): props[key].set_meta("world_position",stop_position)
+			props[key].set_meta("stop_id",stop_id)
+			props[key].set_meta("authored_stop",bool(station.get("authored",false)))
+			props[key].set_meta("line_ids",station.get("line_ids",[]).duplicate())
+			props[key].set_meta("transfer_stop",shared)
+			props[key].queue_redraw()
+		if bool(line.get("authored",false)):
+			var line_id := str(line["id"])
+			var vehicle_key := "vehicle-line-"+line_id
+			wanted_vehicles[vehicle_key] = true
+			if not props.has(vehicle_key):
+				_add(demo,vehicle_key,Vector2.ZERO,city.vehicle_kind(),next_vehicle_ordinal)
+				next_vehicle_ordinal += 1
+				var traveler: CityTraveler = props[vehicle_key].get_meta("traveler")
+				traveler.service_line_id = line_id
+				traveler.assigned_line_id = line_id
+				props[vehicle_key].set_meta("authored_line",line_id)
+	for key in transit_stop_keys:
+		if wanted.has(key): continue
+		if props.has(key):
+			props[key].queue_free()
+			props.erase(key)
+			prop_projections.erase(key)
+		active_stop_keys.erase(key)
+	for key in props.keys():
+		if not str(key).begins_with("vehicle-line-") or wanted_vehicles.has(key): continue
+		props[key].queue_free()
+		props.erase(key)
+		prop_projections.erase(key)
+	transit_stop_keys = wanted
+
+func _sync_stop_activity(activity: Dictionary) -> void:
+	var changed: Dictionary = active_stop_keys.duplicate()
+	for key in activity: changed[key] = true
+	for key in changed:
+		if not props.has(key): continue
+		var exchange: Dictionary = activity.get(key,{})
+		if props[key].get_meta("station_exchange",{}) == exchange: continue
+		props[key].set_meta("station_exchange",exchange)
+		props[key].queue_redraw()
+	active_stop_keys.clear()
+	for key in activity: active_stop_keys[key] = true
 
 func _sync_public_props(demo: Control,city: ContinuousWorld) -> void:
 	for site in city.public_sites:
@@ -138,10 +198,8 @@ func _sync_vehicle_kind(city: ContinuousWorld) -> void:
 	var desired := city.vehicle_kind()
 	if desired == vehicle_kind: return
 	vehicle_kind = desired
-	for i in range(4):
-		var key := "vehicle-%d" % i
-		if not props.has(key): continue
-		var prop: ValleyProp = props[key]
+	for prop: ValleyProp in props.values():
+		if prop.kind not in ["carriage","tram","bus"]: continue
 		prop.kind = desired
 		if prop.has_meta("traveler"):
 			var traveler: CityTraveler = prop.get_meta("traveler")
@@ -187,6 +245,7 @@ func sync(demo: Control) -> void:
 		sites.clear()
 		for site in city.public_sites: sites[site["id"]] = site
 		_sync_public_props(demo,city)
+		_sync_transit_props(demo,city)
 	var frame: float = demo.clock.renderer.transport.audible_frame
 	var rate: int = demo.clock.renderer.transport.sample_rate
 	var seconds := frame/rate
@@ -209,6 +268,7 @@ func sync(demo: Control) -> void:
 			"road_to":str(traffic_access.get("to","")),"road_along":float(traffic_access.get("along",0.0)),
 			"road_length":float(traffic_access.get("length",0.0)),"priority":traffic_traveler._priority()})
 	_index_traffic(traffic,accesses)
+	var stop_activity: Dictionary = {}
 	for key in props:
 		var prop: ValleyProp = props[key]
 		var p: Vector2 = prop.get_meta("world_position")
@@ -246,6 +306,16 @@ func sync(demo: Control) -> void:
 				prop.set_meta("transfer_passengers",movement.get("transfer_passengers",0))
 				prop.set_meta("passenger_destinations",movement.get("passenger_destinations",[]))
 				prop.set_meta("world_position",p)
+				prop.set_meta("line_id",movement.get("line_id",""))
+				if prop.kind in ["carriage","tram","bus"] and bool(movement["stopped"]) and not prop.stop_id.is_empty():
+					var stop_key := "stop-"+prop.stop_id
+					var exchange: Dictionary = stop_activity.get(stop_key,{"vehicles":0,"passengers":0,"boarded":0,"alighted":0,"transfers":0})
+					exchange["vehicles"] += 1
+					exchange["passengers"] += int(movement.get("passengers",0))
+					exchange["boarded"] += int(movement.get("boarded",0))
+					exchange["alighted"] += int(movement.get("alighted",0))
+					exchange["transfers"] += int(movement.get("transfer_passengers",0))
+					stop_activity[stop_key] = exchange
 		if prop.has_meta("traveler"):
 			prop.position = WorldProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),city.terrain.height_at(p))
 		else:
@@ -260,3 +330,4 @@ func sync(demo: Control) -> void:
 		# Station signs, lamps, rocks and civic geometry keep their draw commands.
 		# Reveal alpha remains a CanvasItem property; trees/travelers keep animating.
 		if prop.kind in ["tree","bus","carriage","tram","car","walker"]: prop.queue_redraw()
+	_sync_stop_activity(stop_activity)
