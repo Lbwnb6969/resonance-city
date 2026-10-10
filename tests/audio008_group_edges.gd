@@ -3,7 +3,7 @@ extends SceneTree
 const Contract = preload("res://tests/contract_support.gd")
 const Fixtures = preload("res://tests/audio008_fixtures.gd")
 const Synth = preload("res://scripts/audio/district_synth.gd")
-const Before = preload("res://tests/废弃/第60轮前合成器.gd")
+const Before = preload("res://废弃/tests/第60轮前合成器.gd")
 var test: RefCounted
 var results: Array = []
 func _initialize() -> void: call_deferred("_run")

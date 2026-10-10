@@ -1,7 +1,7 @@
 extends SceneTree
 const Contract = preload("res://tests/contract_support.gd")
 const Synth = preload("res://scripts/audio/district_synth.gd")
-const OldSynth = preload("res://tests/废弃/第56轮前合成器.gd")
+const OldSynth = preload("res://废弃/tests/第56轮前合成器.gd")
 const Stage = preload("res://scripts/audio/growth_voice.gd")
 const Values = preload("res://scripts/spec_values.gd")
 const Generator = preload("res://scripts/city/city_generator.gd")

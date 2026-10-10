@@ -8,16 +8,16 @@
 | [spec.fabric](spec.fabric.md) | **落点分层 L1/L2/L3、有机连片（共享山墙/连排/围合庭院）、街墙连续度与社区成形三档** |
 | [spec.terrain](spec.terrain.md) | 地形生成、可建性、规则/声学/玩法三层、地形动词、首片模板 |
 | [spec.harmony](spec.harmony.md) | 音程分、活力、灰噪化迟滞、崩盘；连续权重取space |
-| [spec.city](spec.city.md) | 声部身份、生长E-grow、停滞E4、环形E5-b、叛离、地标E6/E6-b、河谷E7 |
-| [spec.audio](spec.audio.md) | 路由、时钟、合成/校准/声学协议、声部组、编曲槽、连续声像、候选表达、首片A26 |
-| [spec.proposal](spec.proposal.md) | 介入、试听、成本、基础事务、社区工具、地形动作、破坏上限 |
-| [spec.run](spec.run.md) | 种子、乐章、祝福/债务/记忆、时代、三路径、三模式 |
-| [spec.ui](spec.ui.md) | 黑屏/诊断、同步/性能、光影/通知、U16–U21极简界面与尺度聆听 |
+| [spec.city](spec.city.md) | 声部身份、生长E-grow、停滞E4、环形E5-b、叛离、地标E6/E6-b、河谷E7、规划锚点E8 |
+| [spec.audio](spec.audio.md) | 路由、时钟、合成/校准/声学协议、声部组、编曲槽、连续声像、候选表达、首片A26、规划映射A27 |
+| [spec.proposal](spec.proposal.md) | 介入、试听、成本、基础事务、社区工具、地形动作、破坏上限；P10 留地/释放/用途转换、P11 条件机会预览、P12 规划章程/锚点（G5待实施） |
+| [spec.run](spec.run.md) | 种子、乐章、祝福/债务/记忆、时代、三路径、三模式、章程/卡牌时代持续性R11 |
+| [spec.ui](spec.ui.md) | 黑屏/诊断、同步/性能、光影/通知、U16–U22极简界面与首次规划引导 |
 | [spec.asset](spec.asset.md) | 许可、色板、烘焙、质量红线、地形资产、manifest |
 
 ## 实现与验证范围
 
-当前主线是连续河谷。旧格子Demo的27实体、第62轮24栋、第63轮30栋是不同切片预算；70是当前合成器配置硬上限，满预算供音/响度/性能尚未验证。18栋制作开局与14个RenderVoice也不能换算成最终城市规模。完整进度只在PROJECT维护。
+当前主线是连续河谷。旧格子Demo的27实体、第62轮24栋、第63轮30栋是不同切片预算；70是当前实际RenderVoice硬上限，已有实际供音切片；完整响度、长期性能和后期规模仍待验证，范围只取PROJECT。18栋制作开局与14个RenderVoice也不能换算成最终城市规模。完整进度只在PROJECT维护。
 
 技术合同的唯一补充入口是 [19·城市生成管线](../19_城市生成管线.md) 的 WorldSnapshot/WorldDelta/CityProfile 与 [12·声音架构](../12_声音架构.md) 的 AudioPlan/RenderVoice；存档字段和回放边界由 `spec.run` 表 R2b 管辖。外部源码和网址统一见 [参考索引](../参考索引.md)，不在规格表内复制研究报告。
 
@@ -35,6 +35,7 @@
 - 平地排水走priority-flood父图；规则耦合消失不代表混音中的物理拍频消失。
 - **任意合法陆地都能落点，L1/L2/L3 由后果分层，不得拒绝 L3 空地**（spec.fabric 表 FB1）。
 - **形态关系（共享山墙/连排/庭院）不进 R/V，也不合并建筑身份**；连片是视觉层，声学耦合只在 spec.space（spec.fabric §0）。
+- **规划影响是独立关系层**：章程/锚点改变合法候选排序、服务机会和编曲资格；不改 c/R/V，不替代真实道路服务，不绕过 L1/L2/L3 或70声部预算（spec.proposal P12、spec.city E8、spec.audio A27）。
 
 ## 数据生成
 

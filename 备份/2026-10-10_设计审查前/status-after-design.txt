@@ -1,0 +1,19 @@
+ M PROJECT.md
+ M scripts/audio/continuous_synth.gd
+ M scripts/ui/continuous_valley_demo.gd
+ M scripts/visual/city_traveler.gd
+ M scripts/world/continuous_world.gd
+ M 文档/00_设计意图.md
+ M 文档/12_声音架构.md
+ M 文档/13_地形与自然.md
+ M 文档/15_时代与地标.md
+ M 文档/17_美术规格.md
+ M 文档/README.md
+ M 文档/待裁定与依赖.md
+ M 验证记录/连续河谷/基础.json
+ M 验证记录/连续河谷/旧合成器fixture标定.json
+ M 验证记录/连续河谷/第63轮_声音边界.json
+ M 验证记录/连续河谷/第63轮_道路公交.json
+?? tests/round117_public_service_pressure.gd
+?? tests/round117_public_service_pressure.gd.uid
+?? 备份/

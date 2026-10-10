@@ -7,10 +7,10 @@
 		"no_teleport_walker": true,
 		"no_water_before_bridge": true
 	},
-	"max_bus_road_gap": 0.100838221609592,
+	"max_bus_road_gap": 0.100718684494495,
 	"max_step": {
-		"bus": 0.0900020599365234,
-		"walker": 0.0240020789206028
+		"bus": 0.0900008752942085,
+		"walker": 0.0240020900964737
 	},
 	"samples": 2401
 }

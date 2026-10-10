@@ -1,0 +1,11 @@
+Use case: stylized-concept
+Asset type: early playable Godot game visual reference
+Primary request: Create a close but still simple classical neighborhood reference for Resonant City. Use the supplied approved classical-demo images as references. Show 4 to 6 small pale stone buildings on a small pale-green isometric platform: one modest colonnade or arch building, one small civic building, two or three ordinary cream houses with soft terracotta roofs, a few trees, and open paths. It should look like a small prototype scene that can be built from a limited asset kit.
+Scene/backdrop: small quiet classical district, empty pale background
+Style/medium: simple 2.5D isometric game concept art, clean low-poly geometry, Monument-Valley-like color discipline without copying any specific asset
+Composition/framing: medium 3/4 isometric crop, building silhouettes readable, open ground around them
+Lighting/mood: soft warm daylight, low contrast, clear contact shadows
+Color palette:奶白石墙, muted clay roofs, gray-green ground and foliage, restrained blue-gray accents, no more than three hue families
+Materials/textures: simple plaster or stone, a few arches and columns, minimal windows and doors, subtle paper grain
+Constraints: 4–6 buildings, one modest public anchor, simple geometry, no grand classical complex, no UI or text, directly buildable by a small team
+Avoid: photorealism, ornate historical reconstruction, giant temples, crowd scenes, dense decorations, saturated colors, black outlines, watermark

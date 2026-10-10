@@ -1,23 +1,23 @@
 {
 	"birth_jump": 0.0,
 	"boundary": 352800,
-	"dc": "(-0.00002, -0.00001)",
-	"max_adjacent_delta": 0.0208368301391602,
-	"max_render_ms": 107.632,
-	"max_settle_ms": 12.546,
+	"dc": "(-0.000091, -0.000145)",
+	"max_adjacent_delta": 0.0201956573873758,
+	"max_render_ms": 140.422,
+	"max_settle_ms": 40.486,
 	"passed": true,
-	"peak": 0.332030564546585,
-	"preview_duck_start_difference": 0.000155142188305035,
+	"peak": 0.32900482416153,
+	"preview_duck_start_difference": 0.000149416038766503,
 	"retune_jump": 0.0,
-	"rms": 0.134438093729473,
+	"rms": 0.131722631617208,
 	"voices": {
 		"entities": 22,
 		"environment_nodes": 1,
-		"max_render_voices": 17,
+		"max_render_voices": 16,
 		"pad_nodes": 12,
-		"render_voices": 17,
+		"render_voices": 16,
 		"response_nodes": 0,
-		"rhythm_nodes": 3,
+		"rhythm_nodes": 2,
 		"theme_nodes": 1
 	}
 }

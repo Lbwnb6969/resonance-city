@@ -1,0 +1,706 @@
+diff --git a/PROJECT.md b/PROJECT.md
+index 2b5f986..0b1cfdb 100644
+--- a/PROJECT.md
++++ b/PROJECT.md
+@@ -4,7 +4,7 @@
+ 
+ ## 目标与要求
+ 
+-做一座会演奏的城市：连续地形播种/调音，自动沿街生长，最终400–600栋、36–48规划社区和多个功能区；以编曲组织成乐队。好玩易玩、视听反馈优先。无格子、近乎空的界面、声音选择改变城市、山海湖河林参与空间与声音。
++做一座会演奏的城市：连续地形播种/调音，自动沿街生长，最终400–600栋、36–48规划社区和多个功能区；以编曲组织成乐队。好玩易玩、视听反馈优先。无格子、近乎空的界面、声音选择改变城市、山海湖河林参与空间与声音；动态表现采用昼夜先行、季节后置。
+ 
+ 用户补充（2026-10-09）：**涌现是核心目标**；给玩家足够的空间，用可理解、可组合的城市与音乐规则产生丰富结果。五方向取舍已吸收到现行正文；完整分析保留在[玩法与涌现评审归档](文档/废弃/2026-10-09_历史执行与研究/玩法改进评审-涌现与五个方向_2026-10-09.md)，不作为施工 AI 的默认入口。
+ 
+@@ -19,6 +19,7 @@
+ 
+ - 参考项目、固定提交、源码入口和使用边界已集中登记在[参考索引](文档/参考索引.md)；不再把仓库数量、检索过程和源码包统计当作施工状态。
+ - 最新丰富城市要求已深化检索：EXA/Tavily均可用；固定版本包、相关源码和用途见[参考索引](文档/参考索引.md)。现行采用城市/分区/街坊形态预设、蓝绿公共保留区、真实入口路网服务覆盖、线路/站点/接驳分离、建筑组件语法与稳定增量规划；前沿模型仅作离线研究，不替代明确的地块/道路身份。技术合同已归入[19·城市生成管线](文档/19_城市生成管线.md)、[12·声音架构](文档/12_声音架构.md)和 `spec.run`，历史研究稿不再是执行入口。
++- 本次设计审查吸收动态时间层：昼夜从音频绝对帧派生，首版按 90 个乐句/24 分钟运行，先改天空、色板、影子、窗光和环境 Bed，不碰 `c/R/V`、成长、交通或随机流；季节按两天一季后置。完整边界见 [00·设计意图](文档/00_设计意图.md)、[13·地形与自然](文档/13_地形与自然.md)、[15·时代与地标](文档/15_时代与地标.md)、[17·美术规格](文档/17_美术规格.md)。这是设计裁定，尚未宣称代码、资产或真人体验通过。
+ - 主场景已接连续投影/空间索引、河谷与缓坡、两岸道路/桥、63合法临街地块、6稳定规划ID。家族/地块/社区分开；用地独立于音高。6个规划区不等于6成熟社区。
+ - 第63轮可玩小城：18栋街边制作开局（R晴岸、V深流、N空地），4个公共保留地（两座公园、两座文化设施）、4个闭合街坊、主街支路与时代交通线。设施服务按入口到入口步行路网覆盖。行人在房屋/公共设施入口间选目的地；移动体到站停留、沿车道圆角转弯，新桥改线时驶完当前路段并在站点接入，避免瞬移。物理路网与声学耦合分开，桥是唯一跨河边。
+ - 第63轮已接入社区编曲：同社区/音级/用途的长音按组共享相位，2个节奏槽、1个轮换主题槽、桥后单向2拍应答；公园减少主题密度形成留白，文化设施增强主题。实际渲染声部统计写入诊断，当前18栋开局为14个RenderVoice，硬上限70。
+@@ -125,6 +126,7 @@
+ 1. 在 585 栋结构规模上继续验证现代公交与汽车的真人可读性；扩展文化用途配额与票制，并补齐行人转向、信号控制与交叉口体验。
+ 2. 把存档继续扩展成完整City DNA/作品导出；把主题/应答排程做成可回放AudioPlan，在不设建筑数量硬上限的 Demo 上按 80→150 栋等阶段做声部、响度和性能验证，随后接几十社区；增加音乐材料之间的组合因果。
+ 3. 通用地形族、存档/DNA/作品导出、时代/地标/三模式按P1/P2落地；不回到全量验收或每功能重新找库。
++4. 先做 20–30 栋昼夜表现切片：接入音频帧时间、天空/阴影/全城窗光与环境 Bed，并用真人调速验证“动态但不打扰”；昼夜稳定后再排季节资产与季节声床。
+ 
+ 丰富城市按同一Demo递进：两层落定→主支路/真实街坊/公共留地→公园绿带与路网设施覆盖→一条真实线路/站点/移动体。先20–30栋、至少3可辨区域和两条城貌/听感路线，再80–150栋社区编曲，最终400–600栋/36–48社区。新路宽/覆盖/公交定量值需进入权威spec，合成图实验数字不是游戏默认值。
+ 
+@@ -134,10 +136,14 @@
+ 
+ 完整P0尚未完成；扩展台地已有五类地形入口、中心层级、蓝绿廊道、庭院内地 L2 落点、自动功能区派生、意图化汽车/行人、汽车目的地停靠、共享节点路口让行、工业/商业锚点成长配额、公共设施节奏入口、基础交通避让/上下客、公交线路重建接续、共享站点换乘、站点容量交换、公交邻近驱动成长、客流长期需求记忆与密集节奏反馈、个人目的地迁移、成长音频接缝、五时代受限音色过渡、首座地标生命周期、三项古典效果和两项时代Ⅱ效果，地标吸收后的社区主题也会保留历史动机，超过40栋的规划社区会沿邻接图分裂，工业工坊带与文化声场首片已接入；独立地形水文/规划、公共设施编排、庭院真人可辨、完整文化用途配额、完整角色编曲、票制、引水林湖、City DNA完整回放、信号控制、完整遗产视觉/编曲和模式仍在推进；400–600栋长时听感和自然城市组合仍需试玩。其余产品缺口与局部依赖见文档/待裁定与依赖.md，已接切片不能冒充全系统完成。
+ 
++动态时间层的昼夜切片、季节资产、环境声床和真人节奏仍待实施/验证；在此之前不把设计参数当作已接入功能。
++
+ ## 工程与备份
+ 
+ Godot4.7.2官方ed1daf0bf，1440×900 Compatibility。GD/场景改动经本项目Godot MCP，valid:false先修；技能路径C:/Users/Administrator/Desktop/mIDDLEFILE/godot_mcp_toolkit/CompanionSkills/godot-mcp-toolkit/SKILL.md。提交用明确路径，不git add -A；外部CITY-001_layers.json、示意图.import和Python缓存不混入。
+ 
++本次设计审查前工作树已创建 Git 备份分支 `codex/backup-before-dynamic-design-20261010`；差异补丁和未跟踪施工文件副本保存在 `备份/2026-10-10_设计审查前/`。设计终稿另用独立 Git 索引保存为 `refs/backups/dynamic-time-design-20261010`，常规索引和施工代码不纳入本次设计提交。文档差异与新增引用检查通过；游戏代码、美术资产和真人体验仍待实施/验证。
++
+ 第63轮前快照refs/backups/before-playable-city-round63（843ee85）与分支codex/backup-before-playable-city-round63保留；旧脚本/规格/生成器分别存scripts/废弃/2026-10-09_第63轮前/、文档/废弃/2026-10-09_第63轮前/、tools/废弃/2026-10-09_第63轮前/。本轮651efc6及后续声音/路线修订入Git；失败证据移存专用废弃目录。
+ 
+ 第65轮 fabric 实现提交19495d3，备份引用 refs/backups/round65-fabric；L3 空地/连片关系的旧实现不覆盖现行连续世界数据。
+diff --git a/scripts/audio/continuous_synth.gd b/scripts/audio/continuous_synth.gd
+index 52eb390..fcb488e 100644
+--- a/scripts/audio/continuous_synth.gd
++++ b/scripts/audio/continuous_synth.gd
+@@ -111,7 +111,8 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
+ 					facility_rhythm = true
+ 					break
+ 		if not chosen.is_empty():
+-			rhythms.append({"cid":cid,"midi":int(overrides.get(chosen["district_id"],chosen["current_midi"])),"stereo":_stereo_for(chosen),"expression":chosen["expression"],"facility":facility_rhythm,"terrain":world.terrain.family,"zone_roles":world.functional_zone_roles(cid)})
++			var service_pressure := float(world.community_public_service(cid).get("pressure",0.0))
++			rhythms.append({"cid":cid,"midi":int(overrides.get(chosen["district_id"],chosen["current_midi"])),"stereo":_stereo_for(chosen),"expression":chosen["expression"],"facility":facility_rhythm,"terrain":world.terrain.family,"zone_roles":world.functional_zone_roles(cid),"service_pressure":service_pressure})
+ 		if rhythms.size() >= int(score["rhythm_slot_limit"]): break
+ 	# Keep one public place audible even when the two ordinary rhythm slots are full.
+ 	# This makes a park or civic room a compositional invitation, not only a visual tag.
+@@ -125,7 +126,8 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
+ 			if already_present: continue
+ 			var facility_building: Dictionary = world.by_id[world.communities[cid]["members"][0]]
+ 			if rhythms.size() >= int(score["rhythm_slot_limit"]): rhythms.pop_back()
+-			rhythms.append({"cid":cid,"midi":int(overrides.get(facility_building["district_id"],facility_building["current_midi"])),"stereo":_stereo_for(facility_building),"expression":facility_building["expression"],"facility":true,"terrain":world.terrain.family,"zone_roles":world.functional_zone_roles(cid)})
++			var service_pressure := float(world.community_public_service(cid).get("pressure",0.0))
++			rhythms.append({"cid":cid,"midi":int(overrides.get(facility_building["district_id"],facility_building["current_midi"])),"stereo":_stereo_for(facility_building),"expression":facility_building["expression"],"facility":true,"terrain":world.terrain.family,"zone_roles":world.functional_zone_roles(cid),"service_pressure":service_pressure})
+ 			break
+ 	_sync_rhythm_nodes()
+ 	theme.clear()
+@@ -157,7 +159,7 @@ func _audibility(cid: String) -> float:
+ func _sync_rhythm_nodes() -> void:
+ 	for node in rhythm_nodes.values(): node["active"] = false
+ 	for part in rhythms:
+-		var key := "%s:%d:%s:%s:%s" % [part["cid"],part["midi"],part["expression"],part.get("terrain","river_valley"),JSON.stringify(part.get("zone_roles",[]))]
++		var key := "%s:%d:%s:%s:%s:%s" % [part["cid"],part["midi"],part["expression"],part.get("terrain","river_valley"),JSON.stringify(part.get("zone_roles",[])),float(part.get("service_pressure",0.0)) >= 0.5]
+ 		if not rhythm_nodes.has(key):
+ 			rhythm_nodes[key] = part.duplicate(true)
+ 			rhythm_nodes[key]["key"] = key
+@@ -304,7 +306,10 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
+ 		var target := _audibility(cid) if rhythm["active"] else 0.0
+ 		if level > 0.00001 or target > 0.0: pulse_count += 1
+ 		var beat := roundi(rate*0.5)
+-		var spacing := beat*4 if rhythm["expression"] == "deep" else beat
++		var spacing: int = beat*4 if rhythm["expression"] == "deep" else beat
++		var service_pressure := float(rhythm.get("service_pressure",0.0))
++		if service_pressure >= 0.5:
++			spacing = beat*2 if rhythm["expression"] == "deep" else beat/2
+ 		var hz := frequency(int(rhythm["midi"])+12)
+ 		var phase_shift := 0 if cid.begins_with("west") else beat/2
+ 		for i in range(count):
+diff --git a/scripts/ui/continuous_valley_demo.gd b/scripts/ui/continuous_valley_demo.gd
+index fe075f6..5a500d6 100644
+--- a/scripts/ui/continuous_valley_demo.gd
++++ b/scripts/ui/continuous_valley_demo.gd
+@@ -506,7 +506,7 @@ func _gui_input(event: InputEvent) -> void:
+ 				if not site.is_empty():
+ 					context = {"kind":site["kind"],"id":site["id"]}
+ 					selected_id = ""
+-					menu_info.text = site["name"]+" · 点击下方营造"
++					menu_info.text = site["name"]+(" · 点击公共设施扩容" if site["active"] and site["kind"] == "civic" else " · 点击下方营造")
+ 					menu.position = Vector2(clampf(pointer.x-100,12,size.x-460),clampf(pointer.y+22,80,size.y-290))
+ 					menu.show()
+ 					return
+@@ -540,16 +540,17 @@ func _verb(verb: String) -> void:
+ 	if verb in ["park","civic"]:
+ 		var site: Dictionary = {}
+ 		for candidate in shown_world.public_sites:
+-			if candidate["kind"] != verb or candidate["active"]: continue
++			if candidate["kind"] != verb: continue
+ 			if context.get("id","") == candidate["id"]:
+ 				site = candidate
+ 				break
+-			if site.is_empty(): site = candidate
++			if not candidate["active"] and site.is_empty(): site = candidate
+ 		if site.is_empty():
+ 			_message("公共空间已经落成，悬停查看它服务的街区")
+ 			return
+ 		var result := model.submit({"kind":verb,"id":site["id"]})
+-		_message(site["name"]+"会在下一句落成" if result["accepted"] else result["reason"])
++		var action_label := "会在下一句扩容" if site["active"] and verb == "civic" else "会在下一句落成"
++		_message(site["name"]+action_label if result["accepted"] else result["reason"])
+ 		menu.hide()
+ 		return
+ 	if verb == "bridge":
+@@ -721,7 +722,9 @@ func _process(delta: float) -> void:
+ 	else:
+ 		var site := shown_world.public_at(p)
+ 		if not site.is_empty():
+-			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路服务%d栋\n公园为主题留白，文化设施让主题更清楚" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
++			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路覆盖%d栋\n公园为主题留白" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
++			if site["active"] and site["kind"] == "civic":
++				tooltip.text = "%s · 文化设施%d级\n覆盖%d栋 · 已服务%d/%d栋\n%s" % [site["name"],int(site.get("service_level",1)),site.get("covered",[]).size(),site.get("served",[]).size(),int(site.get("service_capacity",18)),"点击后选公共设施，下一句扩容" if int(site.get("service_level",1)) < 3 else "三级扩容完成 · 文化主题继续演奏"]
+ 		else: tooltip.text = "合法陆地都能播种；靠近道路会长得更快\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形 · E扩展城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
+ 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
+ 	if menu.visible and pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
+@@ -830,7 +833,8 @@ func _draw() -> void:
+ 		var lead := str(score["theme"].get("cid",""))
+ 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
+ 		var decree_slots := " · 政令槽%d" % shown_world.landmark_intervention_slots() if shown_world.landmark_intervention_slots() > 1 else ""
+-		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d功能区 · %d条线路 · %d处公共 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.active_community_count(),shown_world.functional_zones.size(),shown_world.transit_lines.size(),shown_world.public_sites.size(),model.world.pending_actions.size(),name,decree_slots]
++		var service := shown_world.public_service_summary()
++		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d功能区 · %d条线路 · 文化%d/%d栋 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.active_community_count(),shown_world.functional_zones.size(),shown_world.transit_lines.size(),int(service.get("served",0)),shown_world.buildings.size(),model.world.pending_actions.size(),name,decree_slots]
+ 		draw_string(font,Vector2(size.x-760,size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("607974"))
+ 	var duration := float(model.phrase_frames)
+ 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
+@@ -960,6 +964,12 @@ func _draw_public_space() -> void:
+ 				var pool := PackedVector2Array()
+ 				for i in range(32): pool.append(p+Vector2(0.4,0.6)+Vector2(cos(TAU*i/32)*0.5,sin(TAU*i/32)*0.35))
+ 				draw_colored_polygon(_project_polygon(pool),Color("9bb9af"))
++			else:
++				var center := point(Vector2(site["position"][0],site["position"][1]))
++				for level in range(int(site.get("service_level",1))):
++					draw_circle(center+Vector2((level-1)*7,15)*view_zoom,2.2*view_zoom,Color("927851"))
++				if site.get("served",[]).size() >= int(site.get("service_capacity",18)):
++					draw_arc(center,14*view_zoom,0,TAU,32,Color("b58b55"),1.2,true)
+ 		else:
+ 			projected.append(projected[0])
+ 			draw_polyline(projected,Color(0.45,0.59,0.43,0.34),1.1,true)
+diff --git a/scripts/visual/city_traveler.gd b/scripts/visual/city_traveler.gd
+index 6d3adc2..b2e227c 100644
+--- a/scripts/visual/city_traveler.gd
++++ b/scripts/visual/city_traveler.gd
+@@ -387,6 +387,9 @@ func _stop_demand(city: ContinuousWorld,line: Dictionary,stop: String) -> int:
+ 	for center in city.centers:
+ 		if str(center.get("node_id","")) != stop: continue
+ 		var cid := str(center.get("community_id",center.get("node_id","")))
++		var service := city.community_public_service(cid)
++		if int(service.get("cultural_reachable",0)) > 0 and float(service.get("pressure",0.0)) >= 0.5:
++			demand += 1
+ 		for zone in city.functional_zones:
+ 			if not zone.get("community_ids",[]).has(cid): continue
+ 			match str(zone.get("role","")):
+diff --git a/scripts/world/continuous_world.gd b/scripts/world/continuous_world.gd
+index b3a2f7e..03eea4d 100644
+--- a/scripts/world/continuous_world.gd
++++ b/scripts/world/continuous_world.gd
+@@ -35,6 +35,8 @@ var transit_lines: Array[Dictionary] = []
+ # Smoothed stop activity is a light-weight memory shared by transport, growth,
+ # and music; it is not a full economy simulation.
+ var transit_demand: Dictionary = {}
++# Service pressure is derived from public coverage and cached within a planning pass.
++var public_service_cache: Dictionary = {}
+ # Functional districts are derived from active communities and public infrastructure.
+ # They provide a stable bridge between city layout, UI language, and musical phrasing.
+ var functional_zones: Array[Dictionary] = []
+@@ -183,6 +185,82 @@ func _community_usage(cid: String) -> Dictionary:
+ 		result[kind] = int(result[kind])+1
+ 	return result
+ 
++func community_public_service(cid: String) -> Dictionary:
++	return public_service_cache.get(cid,{"member_count":0,"civic_count":0,"park_count":0,
++		"facility_count":0,"cultural_target":0,"cultural_gap":0,"covered_count":0,
++		"cultural_served":0,"coverage_ratio":0.0,"pressure":0.0}).duplicate(true)
++
++func public_service_summary() -> Dictionary:
++	var served := 0
++	var covered := 0
++	var reachable := 0
++	for service in public_service_cache.values():
++		served += int(service.get("cultural_served",0))
++		covered += int(service.get("covered_count",0))
++		reachable += int(service.get("cultural_reachable",0))
++	var facilities := 0
++	var capacity := 0
++	for site in public_sites:
++		if bool(site.get("active",false)) and str(site.get("kind","")) == "civic":
++			facilities += 1
++			capacity += int(site.get("service_capacity",18))
++	return {"members":buildings.size(),"facilities":facilities,"capacity":capacity,
++		"covered":covered,"reachable":reachable,"served":served,"unserved":buildings.size()-served}
++
++func _refresh_public_service() -> void:
++	public_service_cache.clear()
++	var destinations: Dictionary = {}
++	for cid in _active_community_ids():
++		var count: int = communities[cid]["members"].size()
++		public_service_cache[cid] = {"member_count":count,"civic_count":0,"park_count":0,
++			"facility_count":0,"cultural_target":ceili(float(count)/18.0),"cultural_gap":0,
++			"covered_count":0,"cultural_reachable":0,"cultural_served":0,"coverage_ratio":0.0,"pressure":0.0}
++	for site in public_sites:
++		site["service_capacity"] = 18*int(site.get("service_level",1)) if site["kind"] == "civic" else 0
++		site["service_demand"] = 0
++		site["served"] = []
++		if not bool(site.get("active",false)): continue
++		var served_communities: Dictionary = {}
++		for building_id in site.get("covered",[]):
++			if not by_id.has(building_id): continue
++			var cid := str(by_id[building_id]["community_id"])
++			served_communities[cid] = true
++			if not destinations.has(building_id): destinations[building_id] = {"public":true,"civic":[]}
++			if site["kind"] == "civic": destinations[building_id]["civic"].append(site)
++		for cid in served_communities:
++			var service: Dictionary = public_service_cache[cid]
++			var key := "civic_count" if site["kind"] == "civic" else "park_count"
++			service[key] = int(service[key])+1
++			service["facility_count"] = int(service["facility_count"])+1
++	# Each house requests one cultural place. Overflow can use another reachable
++	# facility; neither overlapping catchments nor community splits duplicate users.
++	var ids: Array = destinations.keys()
++	ids.sort()
++	for building_id in ids:
++		var cid := str(by_id[building_id]["community_id"])
++		var service: Dictionary = public_service_cache[cid]
++		service["covered_count"] = int(service["covered_count"])+1
++		var choices: Array = destinations[building_id]["civic"]
++		if choices.is_empty(): continue
++		service["cultural_reachable"] = int(service["cultural_reachable"])+1
++		var position := Coupling.position_of(by_id[building_id])
++		choices.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
++			var da := position.distance_squared_to(Vector2(a["entrance"][0],a["entrance"][1]))
++			var db := position.distance_squared_to(Vector2(b["entrance"][0],b["entrance"][1]))
++			return str(a["id"]) < str(b["id"]) if is_equal_approx(da,db) else da < db)
++		choices[0]["service_demand"] = int(choices[0]["service_demand"])+1
++		for site in choices:
++			if site["served"].size() >= int(site["service_capacity"]): continue
++			site["served"].append(building_id)
++			service["cultural_served"] = int(service["cultural_served"])+1
++			break
++	for service in public_service_cache.values():
++		var count := int(service["member_count"])
++		var unserved := count-int(service["cultural_served"])
++		service["cultural_gap"] = ceili(float(unserved)/18.0)
++		service["coverage_ratio"] = float(service["covered_count"])/float(maxi(1,count))
++		service["pressure"] = float(unserved)/float(maxi(1,count))
++
+ func record_transit_flow(stop_id: String, boarded: int, alighted: int, transfers: int = 0) -> void:
+ 	if stop_id.is_empty(): return
+ 	var key := str(stop_id)
+@@ -208,7 +286,12 @@ func _decay_transit_demand() -> void:
+ func _community_transit_demand(cid: String) -> float:
+ 	var center := center_for(cid)
+ 	if center.is_empty(): return 0.0
+-	return transit_demand_score(str(center.get("node_id","")))
++	var demand := transit_demand_score(str(center.get("node_id","")))
++	var service := community_public_service(cid)
++	# Reachable but undersupplied civic services create a bounded trip pressure.
++	if int(service.get("cultural_reachable",0)) > 0:
++		demand = minf(8.0,demand+float(service.get("pressure",0.0))*0.35)
++	return demand
+ 
+ func functional_zone_roles(cid: String) -> Array[String]:
+ 	var roles: Array[String] = []
+@@ -245,18 +328,35 @@ func refresh_functional_zones() -> void:
+ 		green_sites.append(str(site.get("id","")))
+ 	if green_members.size() >= 1 and green_corridors.size() > 0:
+ 		green_members.sort_custom(func(a: String,b: String) -> bool: return center_order(a) < center_order(b) if center_order(a) != center_order(b) else a < b)
+-		next.append({"id":"zone-civic-green","role":"civic_green","title":"公园与公共生活带","music_role":"garden","community_ids":green_members,"building_count":0,"site_ids":green_sites,"line_ids":[]})
++		var green_pressure := 0.0
++		var green_covered := 0
++		for cid in green_members:
++			var service := community_public_service(cid)
++			green_pressure += float(service.get("pressure",0.0))
++			green_covered += int(service.get("covered_count",0))
++		next.append({"id":"zone-civic-green","role":"civic_green","title":"公园与公共生活带","music_role":"garden","community_ids":green_members,"building_count":0,"site_ids":green_sites,"line_ids":[],"service_pressure":green_pressure,"covered_count":green_covered})
+ 	var cultural_members: Array[String] = []
+ 	var cultural_sites: Array[String] = []
+ 	for site in public_sites:
+ 		if not bool(site.get("active",false)) or str(site.get("kind","")) != "civic": continue
+-		var cid := str(site.get("community_id",""))
+-		if cid.is_empty() or not ids.has(cid): continue
+-		if not cultural_members.has(cid): cultural_members.append(cid)
++		for building_id in site.get("covered",[]):
++			if not by_id.has(building_id): continue
++			var cid := str(by_id[building_id]["community_id"])
++			if ids.has(cid) and not cultural_members.has(cid): cultural_members.append(cid)
+ 		cultural_sites.append(str(site.get("id","")))
+ 	if cultural_members.size() >= 2:
+ 		cultural_members.sort_custom(func(a: String,b: String) -> bool: return center_order(a) < center_order(b) if center_order(a) != center_order(b) else a < b)
+-		next.append({"id":"zone-cultural-core","role":"cultural","title":"文化声场","music_role":"choir","community_ids":cultural_members,"building_count":0,"site_ids":cultural_sites,"line_ids":[]})
++		var cultural_target := 0
++		var cultural_gap := 0
++		var cultural_pressure := 0.0
++		var cultural_covered := 0
++		for cid in cultural_members:
++			var service := community_public_service(cid)
++			cultural_target += int(service.get("cultural_target",0))
++			cultural_gap += int(service.get("cultural_gap",0))
++			cultural_pressure += float(service.get("pressure",0.0))
++			cultural_covered += int(service.get("covered_count",0))
++		next.append({"id":"zone-cultural-core","role":"cultural","title":"文化声场","music_role":"choir","community_ids":cultural_members,"building_count":0,"site_ids":cultural_sites,"line_ids":[],"cultural_target":cultural_target,"cultural_gap":cultural_gap,"service_pressure":cultural_pressure,"covered_count":cultural_covered})
+ 	var mixed_members: Array[String] = []
+ 	for cid in ids:
+ 		var usage := _community_usage(cid)
+@@ -644,7 +744,11 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
+ 	elif kind in ["park","civic"]:
+ 		var found := false
+ 		for site in public_sites:
+-			if site["id"] == operation.get("id","") and site["kind"] == kind and not site["active"]: found = true
++			if site["id"] != operation.get("id","") or site["kind"] != kind: continue
++			if not site["active"]: found = true
++			elif kind == "civic":
++				if int(site.get("service_level",1)) >= 3: return {"accepted":false,"reason":"文化设施已完成三级扩容"}
++				found = true
+ 		if not found: return {"accepted":false,"reason":"请在公共保留地营造公园或设施"}
+ 	else: return {"accepted":false,"reason":"未知操作"}
+ 	if kind in ["seed","retune"]:
+@@ -726,9 +830,15 @@ func settle(frame: int) -> void:
+ 			"park","civic":
+ 				for site in public_sites:
+ 					if site["id"] != op["id"]: continue
+-					site["active"] = true
+-					site["frame"] = frame
+-					events.append({"kind":op["kind"],"id":site["id"],"frame":frame})
++					if bool(site["active"]) and op["kind"] == "civic":
++						site["service_level"] = mini(3,int(site.get("service_level",1))+1)
++					else:
++						site["active"] = true
++						site["frame"] = frame
++						events.append({"kind":op["kind"],"id":site["id"],"frame":frame})
++	# Facility actions become available to the same phrase's growth search.
++	if committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["civic","park"]):
++		_refresh_public_service()
+ 	if not lifecycle["ended"]:
+ 		for family in families:
+ 			if int(families[family]["created_phrase"]) == phrase_index: continue
+@@ -809,6 +919,20 @@ func _land_use_quota_bonus(cid: String,use: String) -> float:
+ 	var usage := _community_usage(cid)
+ 	return maxf(0.0,float(int(quota.get(use,0))-int(usage.get(use,0)))) if quota.has(use) else 0.0
+ 
++func _public_service_growth_bonus(cid: String,position: Vector2) -> float:
++	if not communities.has(cid): return 0.0
++	var bonus := 0.0
++	for site in public_sites:
++		if not bool(site.get("active",false)) or str(site.get("kind","")) != "civic": continue
++		var capacity := int(site.get("service_capacity",18))
++		var spare: int = capacity-site.get("served",[]).size()
++		if spare <= 0: continue
++		var site_position := Vector2(float(site["entrance"][0]),float(site["entrance"][1]))
++		if position.distance_to(site_position) > float(cfg["city"]["service_walk_radius"]): continue
++		if network.walking_distance(site_position,position) > float(cfg["city"]["service_walk_radius"]): continue
++		bonus = maxf(bonus,float(spare)/float(capacity))
++	return bonus
++
+ func _grow(family: String, frame: int) -> void:
+ 	if str(families[family].get("root","")).is_empty() or not by_id.has(str(families[family].get("root",""))): return
+ 	if phrase_index < int(families[family].get("next_growth_phrase",0)):
+@@ -888,14 +1012,15 @@ func _grow(family: String, frame: int) -> void:
+ 		var distance := p.distance_squared_to(origin)
+ 		var transit_bonus := _transit_growth_bonus(p,candidate_use)
+ 		var quota_bonus := _land_use_quota_bonus(str(check.get("community_id","")),candidate_use)
+-		# Tier remains the primary placement rule; land-use deficits and transit
+-		# demand break ties, pulling useful growth toward existing functional belts.
+-		var growth_score := float(tier_rank)*100000.0+quota_bonus*1000.0+transit_bonus*100.0-distance
++		var service_bonus := _public_service_growth_bonus(str(check.get("community_id","")),p)
++		# Tier remains the primary placement rule; land-use deficits, transit
++		# demand, and nearby civic pressure break ties inside the same tier.
++		var growth_score := float(tier_rank)*100000.0+quota_bonus*1000.0+transit_bonus*100.0+service_bonus*50.0-distance
+ 		if growth_score > best_growth_score:
+ 			best_growth_score = growth_score
+ 			best_rank = tier_rank
+ 			best_distance = distance
+-			best = {"position":p,"transit_bonus":transit_bonus,"quota_bonus":quota_bonus,"use":candidate_use}
++			best = {"position":p,"transit_bonus":transit_bonus,"quota_bonus":quota_bonus,"service_bonus":service_bonus,"use":candidate_use}
+ 			best_check = check
+ 	if best.is_empty():
+ 		last_reason = "这一家族暂缺可达空地；可以在另一侧播种新主题"
+@@ -1304,6 +1429,7 @@ func update_era(frame: int = 0) -> bool:
+ 	return true
+ 
+ func _refresh_public_network(frame: int = 0) -> void:
++	public_service_cache.clear()
+ 	network.rebuild(nodes,roads,terrain)
+ 	for site in public_sites:
+ 		var covered: Array[String] = []
+@@ -1316,6 +1442,7 @@ func _refresh_public_network(frame: int = 0) -> void:
+ 				var p := Coupling.position_of(building) if lot.is_empty() else Vector2(lot["entrance"][0],lot["entrance"][1])
+ 				if network.walking_distance(entrance,p) <= float(cfg["city"]["service_walk_radius"]): covered.append(building["district_id"])
+ 		site["covered"] = covered
++	_refresh_public_service()
+ 	var lines: Array[Dictionary] = []
+ 	if public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "west-civic" and site["active"]):
+ 		var itinerary: Array = ["west-1","west-2","west-3","west-outer-3","west-outer-2","west-outer-1","west-1"]
+diff --git "a/\346\226\207\346\241\243/00_\350\256\276\350\256\241\346\204\217\345\233\276.md" "b/\346\226\207\346\241\243/00_\350\256\276\350\256\241\346\204\217\345\233\276.md"
+index 205c21a..38d17e0 100644
+--- "a/\346\226\207\346\241\243/00_\350\256\276\350\256\241\346\204\217\345\233\276.md"
++++ "b/\346\226\207\346\241\243/00_\350\256\276\350\256\241\346\204\217\345\233\276.md"
+@@ -24,7 +24,7 @@
+ 
+ ---
+ 
+-## 2. 五条支柱
++## 2. 核心支柱
+ 
+ ### 支柱 A · 声音即地形
+ **地形本身就是声学结构。** 水面隔声、山脊挡声、林地吸高频、平原通透。所以"把工业放在河对岸"不是一个视觉决定，而是一个**物理上真的会改善音景**的决定。
+@@ -76,6 +76,16 @@ City DNA 可完整复现形态和声音。
+ 
+ **这是"好看"的主要引擎**：留白与对比靠地形与不建的地方，层次与城市感靠连片。
+ 
++### 支柱 G · 时间是第二种地形
++
++地形决定城市**在哪里响**，时间决定它**在何时呼吸**。昼夜不是一层装饰滤镜，也不是逼玩家赶工的倒计时；它让同一座城在一局里经历天空、影子、窗光、树木、行人和环境声床的连续变化。
++
++- 第一阶段先做**昼夜**：从音频绝对帧派生连续的晨光、白昼、黄昏和夜间。它改变表现与环境层，不改变落点、R/V、成长候选、音级、交通拓扑、随机流或跨越条件。
++- 后期再做**季节**：把自然的色彩、树冠、地面细节、微动效和环境声床拉到更慢的时间尺度。季节不把本作变成生存或经济模拟，也不收回玩家已经建成的城市。
++- 时间必须让旧社区更有历史感，让新声部更有出场时刻；**城市结构仍由玩家选择，时间只让选择被看见、被听见**。
++
++第一版设计参数见 `17_美术规格.md` §7.1–§7.2；声音边界见 `12_声音架构.md` §6.1。先用昼夜验证动态基调，再引入季节，避免同时增加两条难以辨认的变化来源。
++
+ ---
+ 
+ ## 3. 反支柱（明确不做）
+diff --git "a/\346\226\207\346\241\243/12_\345\243\260\351\237\263\346\236\266\346\236\204.md" "b/\346\226\207\346\241\243/12_\345\243\260\351\237\263\346\236\266\346\236\204.md"
+index 7305e2a..277e100 100644
+--- "a/\346\226\207\346\241\243/12_\345\243\260\351\237\263\346\236\266\346\236\204.md"
++++ "b/\346\226\207\346\241\243/12_\345\243\260\351\237\263\346\236\266\346\236\204.md"
+@@ -262,6 +262,23 @@
+ - **形状恒定，音色换代**：连续/分段/锯齿/包络拍频四种形状是游戏语言；**锯齿类只给工业**
+ - **节拍辅助**：保留（默认开，手动窄带，−6 dB）
+ 
++### 6.1 昼夜与季节的环境层
++
++时间变化要让城市更像一座正在生活的地方，但不能把环境声变成第二套配乐。昼夜和季节都只进入既有的 **Bed 环境槽**与稀疏装饰事件，**不新增常驻 RenderVoice，不改变主调、BPM、R/V 或社区主题**。
++
++| 时间段 | 环境层材料 | 听感职责 |
++|---|---|---|
++| **晨光** | 水声、薄风、少量鸟鸣 | 把城市从静止的长音里唤醒 |
++| **白昼** | 风、水、远处人声与交通空气感 | 承托完整城市活动，不抢旋律 |
++| **黄昏** | 鸟群退场、虫鸣和远处灯火/炉火的低细节 | 把听觉注意力从自然转回街区 |
++| **夜间** | 水声、低风、稀疏钟/灯具回响 | 留出更大的空白，让窗光和低音更清楚 |
++
++- 环境材料在 2–4 拍内做等功率交叉；不使用突然开关、系统提示音或高频循环来制造“时间到了”的感觉。
++- 环境层的总电平仍受 `Bed` 预算和 −16 LUFS / 真峰值余量约束。夜间更安静靠织体退让，不靠把主旋律整体放大。
++- 同一地形的昼夜变化必须保留原有听觉身份：河仍是流动声床，湖仍是镜面支路，林仍吸收高频；时间只改这些材料的音色、密度和事件间距。
++- 季节加入时复用同一环境槽：春的水滴、夏的虫、秋的落叶、冬的空风都是环境层变体，不把每一片林、每一盏灯变成独立长音。
++- 时间事件使用可回放的稳定 `source_id/event_id`，从音频绝对帧排程；试听、Solo/Mute 和旧作品恢复不能改变正式随机流或环境事件历史。
++
+ ---
+ 
+ ## 7. 音乐素材的来源
+diff --git "a/\346\226\207\346\241\243/13_\345\234\260\345\275\242\344\270\216\350\207\252\347\204\266.md" "b/\346\226\207\346\241\243/13_\345\234\260\345\275\242\344\270\216\350\207\252\347\204\266.md"
+index d5bdf34..9e762c3 100644
+--- "a/\346\226\207\346\241\243/13_\345\234\260\345\275\242\344\270\216\350\207\252\347\204\266.md"
++++ "b/\346\226\207\346\241\243/13_\345\234\260\345\275\242\344\270\216\350\207\252\347\204\266.md"
+@@ -95,6 +95,21 @@
+ - 秋色、强拍落叶（旧 U24d 保留）
+ - **玩家植树**：可以在密集区植树降密度（解决"缺留白"缺口）
+ 
++### 3.6 时间让地形呼吸
++
++昼夜和后置季节属于**自然表现层**。它们让同一条河、同一片林和同一个山谷在长时间聆听中有生命，但不偷偷改写地形的规则层或玩法层。
++
++| 地形 | 昼夜表现 | 季节表现 | 不改变的东西 |
++|---|---|---|---|
++| **海** | 白昼读地平线，黄昏出现长条暖反光，夜间保留低亮月色水面 | 只换雾色、岸边植被与远景风感 | 海的边界、不可建性、σ 口径 |
++| **河** | 波光随环境声床流动；黄昏沿桥和岸线出现灯带，夜间水面变暗但不断流 | 春夏水岸更丰，秋冬岸色变轻；不改河道拓扑 | 两岸规则隔断、桥的几何、对唱事件 |
++| **湖** | 天空和建筑倒影随天色连续变化，夜间只留稀薄的城市反光 | 湖岸草木和雾色变化，湖面仍是留白 | 镜面延迟、湖心岛独奏、`O = 0` |
++| **山** | 晨昏强调山脊轮廓，夜间变成可读的深色剪影；云雾低频移动 | 高地先出现霜雪或枯色，低地不被统一铺雪 | 高程、遮挡、σ 放大和等高线生长 |
++| **林** | 白昼树冠摆动最完整，夜间只保留稀疏枝影和少量萤光 | 春发芽、夏浓荫、秋落叶、冬裸枝；每种密度资产都保持同一朝向 | `O = 0.7`、`T = 0.85`、植树动词与留白作用 |
++| **平原/滩涂** | 通过天空、草地和远雾承担大部分变化，避免额外堆装饰 | 地面纹理、花草和农事小物变化 | 可建性、开阔 σ、街坊与落点规则 |
++
++声音上，地形仍提供原有环境声床；昼夜/季节只改变声床的音色、密度和细小事件，具体声部边界见 `12_声音架构.md` §6.1。任何 `O/T/σ`、R/V 或成长判断都不得从天色和季候反推。
++
+ ---
+ 
+ ## 4. 地形生成
+diff --git "a/\346\226\207\346\241\243/15_\346\227\266\344\273\243\344\270\216\345\234\260\346\240\207.md" "b/\346\226\207\346\241\243/15_\346\227\266\344\273\243\344\270\216\345\234\260\346\240\207.md"
+index 8ca0f61..d238c3a 100644
+--- "a/\346\226\207\346\241\243/15_\346\227\266\344\273\243\344\270\216\345\234\260\346\240\207.md"
++++ "b/\346\226\207\346\241\243/15_\346\227\266\344\273\243\344\270\216\345\234\260\346\240\207.md"
+@@ -38,6 +38,15 @@
+ 2. **新的组织方式是"可用"，不是"必须"**：没有任何跨越条件要求玩家使用本时代新解锁的组织方式。
+ 3. **首批实施范围**：P2 先做Ⅰ–Ⅱ两个时代的完整三列；Ⅲ–Ⅴ 按 P2-β 分期，每做一个时代都要先验证它的"新音乐组织方式"在录音里可辨。
+ 
++### 1.2 昼夜与时代夜光
++
++昼夜是全城共享的一条连续表现时间轴，时代只提供这一条时间轴上的**夜光词汇**。它不为每个时代再造一套时间规则，也不在跨越时重置；具体相位、曲线和色板变换见 [17·美术规格](17_美术规格.md) §7.1–§7.2，声音只进入现有环境声床见 [12·声音架构](12_声音架构.md) §6.1。
++
++- `spec.run.md` §2.8 的“夜光”行是时代身份：古典用油灯/火盆，中世纪用火把/灯笼，文艺复兴用烛台街灯与窗烛，工业用煤气灯，现代用电路灯与大片窗光。它们决定形状、密度和暖色材料，不决定昼夜的时间长短。
++- 跨越仪式继续沿用“天空先变、城市错峰一拍”的纪律。跨越发生时保留当前 `day_phase`，先把时代色板与新夜光材料接入，再让城市按既有变换波落定；不能把时代卡片做成一次全屏黑白闪烁。
++- 地标和历史街区保留落成时代的灯具与窗光形状；亮度仍受全城昼夜曲线控制。时代遗产因此在夜间有可辨的来源，而不是被统一的现代霓虹覆盖。
++- 实现顺序固定为“时代基础色板 → 昼夜 LUT → 时代夜光统一层”。任何失谐、锈蚀、缺口和地形识别信号都优先于装饰性暖光。
++
+ ---
+ 
+ ## 2. 跨越（修正 Q09）
+diff --git "a/\346\226\207\346\241\243/17_\347\276\216\346\234\257\350\247\204\346\240\274.md" "b/\346\226\207\346\241\243/17_\347\276\216\346\234\257\350\247\204\346\240\274.md"
+index 07704e6..659270c 100644
+--- "a/\346\226\207\346\241\243/17_\347\276\216\346\234\257\350\247\204\346\240\274.md"
++++ "b/\346\226\207\346\241\243/17_\347\276\216\346\234\257\350\247\204\346\240\274.md"
+@@ -80,6 +80,19 @@
+ - 阴影边缘变硬
+ - 微动效逐一熄灭（先鸟没了，再旗不飘）
+ 
++### 3.2 美术深化：先让城市有自己的性格
++
++美术制作按**城市轮廓与留白 → 街墙/屋顶/庭院 → 光影色彩 → 生活细节**推进。先让玩家看得出自己的布局和声部选择，再增加装饰密度。昼夜与季节沿用这些结构，不把所有城市调成同一种景观。
++
++| 已有城市表达 | 白昼的构图重点 | 入夜后保留的辨认线索 |
++|---|---|---|
++| **深流**（11 §4 路线 A） | 河谷低音带沿等高线铺开，深色屋顶与开阔水面形成长线 | 稀疏、连续的暖窗带映在水边；河谷的低明度体块仍完整 |
++| **织机**（11 §4 路线 B） | 密集商业屋顶有重复节奏，小广场把街墙切出停顿 | 商铺窗光以短段串联，广场保留暗处；灯光密度不能填平留白 |
++| **两岸与山坡** | 河是构图空隙，桥是连接点；坡地用屋顶和等高线读出层次 | 岸线、桥头和台阶形成不同高度的少量亮点，仍能读出隔岸与高差 |
++| **地标与遗产** | 独特轮廓和周围净空承担焦点，同城只保留少量视觉主角 | 保留落成时代的暖光形状，主体通过轮廓辨认，避免依赖更亮的光晕 |
++
++这些是既有城市状态的画法，不新增形态触发条件或音乐效果。按 §6 的尺度退场：整城先读地形和亮暗分区，社区再读连续街墙与庭院，单栋才看门窗细节。自然光变化不能掩盖预影、选中、成长、失谐与缺口；夜间的装饰减速也不能被当作活力下降的诊断。
++
+ ---
+ 
+ ## 4. 城市呼吸清单（保留）
+@@ -136,6 +149,60 @@
+ 
+ **地形光影**：山体投影按同一太阳；水面有菲涅尔高光（受光面更亮）。
+ 
++### 7.1 动态时间层：昼夜先行
++
++**目的**：让城市在持续聆听中发生可感知、可预测、不过度打扰的变化。昼夜是表现层和环境声床的时间轴，第一版不改城市规则。
++
++**实施位置**：本节是现行 P0 静态色板基线之后的下一动态切片设计。P0 仍按 `spec.ui` U14 与 `spec.asset` S6 保持一张 24 槽基础色板、无运行时昼夜换色；接入本节时沿用同一资产和太阳方向，把变换 LUT、统一窗光层和环境 Bed 逐项接入，不能把设计文字当成当前已部署能力。
++
++体验上不常驻显示昼夜进度条或倒计时。玩家从天空、影子、窗光、活动密度和声床的变化读到时间；调速只服务于调试与真人试玩，不成为新的任务提示。
++
++#### 时间口径
++
++- **唯一时间源**：音频绝对帧。`day_phase` 由可听帧和乐句长度计算，不读系统时间，不新建独立的墙钟或随机流。
++- **第一版日长**：90 个乐句 = 24 分钟（120 BPM、每乐句 16 秒），从晨光开始。这个尺度让标准交响曲能经历一段完整的天色弧线，自由共鸣可以继续看见下一天。
++- **可复现计算**：新时间层保存一个 `time_origin_frame`，新作品取起始可听帧，旧作品迁移时取恢复后的首个可听帧。令 `elapsed_frames = audible_frame - time_origin_frame`、`day_frames = 90 × phrase_frames`，则 `day_index = floor(elapsed_frames / day_frames)`，`day_phase = fposmod(elapsed_frames, day_frames) / day_frames`。可听帧沿用 AudioClock，不从墙钟补算；保存/加载同时恢复时间起点和原有音频帧。
++- **连续曲线**：晨光 `0.00–0.12`、白昼 `0.12–0.52`、黄昏 `0.52–0.68`、夜间 `0.68–1.00`。这些是颜色、影子和活动曲线的区间，不是四次硬切换；曲线在区间边界平滑相接。
++- **插值要求**：各段使用平滑缓动（首版用 `smoothstep`）；夜末与次日晨光的端点也必须接合。采样依据可听帧，不用每帧累加进度。
++- **结构同步**：色板控制点沿用 `spec.ui` U3 的小节边界；环境事件沿音乐排程，存档/迁移沿现有提交协议。颜色、雾、影子和窗光在可听帧之间连续插值。天空先行一拍，城市表现随后跟随，不把整幅画面切成离散时段。
++
++#### 四个时间段的画面与动态
++
++| 时间段 | 天空与地面 | 光影与窗光 | 自然与城市呼吸 |
++|---|---|---|---|
++| **晨光** | 灰蓝向淡金过渡，远景雾薄而亮 | 影子长、边缘软；窗光从熄灭缓慢退出 | 鸟群、河面细波、树叶先醒；行人从少到正常 |
++| **白昼** | 低对比的暖灰天光，地形颜色最清楚 | 主光最稳定，接触阴影可读；窗光几乎退出 | 旗帜、烟、车辆和行人维持完整密度 |
++| **黄昏** | 天空先变桃金与灰紫，地面晚一拍跟随 | 影子拉长但**方向不变**；街灯、油灯、窗光成片点亮 | 水面出现长条暖反光，鸟群退场，商业街保留活动 |
++| **夜间** | 深蓝灰而不是纯黑，地形轮廓仍可读 | 主光降为同方向的低强度冷光；暖窗光成为稀疏焦点 | 水面与风声保留，树影和旗帜减速；少量晚归移动体保留生活感 |
++
++#### 动态层的绘制顺序
++
++合成次序沿现有深度关系：**天空/远雾 → 地形/道路/水面反光 → 投影与接触阴影 → 按既有 Y 序排列的建筑、树和移动体 → 经同一遮挡关系裁切的统一窗光/灯具 → 前景稀疏点缀**。旗、烟与建筑锚点一起排序，不能全部画在屋顶前；投影仍在建筑之下。时间变化先作用于天色、色板、影子和窗光，细节只做低频、BPM 对齐的微动。
++
++- 建筑继续使用每时代 24 槽基础色板。昼夜通过基础色板上的连续 LUT 变换完成，在 OKLab 中插值，再检查既有 HSL 明度差红线。窗光用暖色聚焦，面积和亮度仍受柔和对比约束。
++- 一个太阳的方位、三面明暗关系和投影方向不变；昼夜只改变光强、色温、影长和透明度。夜间仍保留极弱的统一接地，避免房子漂浮在黑底上。
++- 窗光、街灯和火盆复用既有全城统一发光层的做法。每个建筑提供稳定 ID 派生的遮罩与相位偏移，点亮/熄灭采用成片缓动；遮罩按建筑、镜头和时代变化更新，天色推进只改统一层参数，不增加逐栋光节点。
++- 失谐、锈蚀和缺口的视觉信号优先级高于昼夜色温：夜间可以更冷，但不能把失谐的冷暖边界洗掉；关闭声音或减弱运动时，时间层仍保留静态信息。
++
++#### 对系统的边界
++
++昼夜首切片只改变天空、色板、阴影、窗光、自然微动和环境声床。它不改变 `c/R/V`、落点层级、成长速率、音级白名单、道路/交通拓扑、介入额度、随机子流或时代跨越条件。活动曲线只调整装饰表现；真实移动体的车速、路径、客流、容量与交通派生编曲照常运行。
++
++启用时在 City DNA 的既有音频时间基准上增加 `time_origin_frame`；`day_index/day_phase` 由它派生，不另存第二份可冲突的状态。旧作品只初始化新时间层为晨光/春季，保留其原有音频进度。动态层失效时使用当前基础色板与阴影。字段迁移与验证入口在实施该切片时归入 `spec.run`；此处不宣称现有 DNA 已支持它。
++
++### 7.2 后置季节层
++
++季节是比昼夜更慢的自然循环，等昼夜切片的画面和听感稳定后再接入。第一版采用**两天一季、四季一轮**：`season_index = floor(day_index / 2) mod 4`，在换季前四分之一天内连续混合。新作品从春季开始，标准交响曲不因一次换季改变学习曲线；自由共鸣持续经营时能看见季节变迁。季节沿用同一时间起点，日长与季长都作为首片调速基准，真人验证后只在本节修订。
++
++| 季节 | 主要视觉材料 | 自然动态与环境声床 | 地形特化 |
++|---|---|---|---|
++| **春** | 新叶、浅绿、湿润地面、少量花色 | 水滴、鸟鸣和柔风；树冠从稀到密 | 河岸与林地先变，海岸只改植被与雾色 |
++| **夏** | 深绿、暖墙、轻薄热雾 | 蝉/虫的稀疏高频、完整树冠摆动 | 湖面与海面高光更长，山谷雾更薄 |
++| **秋** | 琥珀、赭红、干草和落叶 | 落叶只在强拍与风向变化时出现，避免满屏粒子 | 林岭和坡地先换色；水体保持清晰的蓝绿骨架 |
++| **冬** | 枝条、灰蓝、霜色和更明显的暖窗 | 风更空、装饰更少；低频水声与远钟保留 | 高地可有薄霜/雪边，海湾与低地不强行铺雪 |
++
++季节不改变建筑身份、时代归属、音级、R/V、成长或交通规则。季节资产必须复用同一建筑、地形和阴影几何，只替换植被、地面细节、灯具/装饰和环境声床；不做全屏雪雨系统，不把天气随机化成新的玩法压力。
++
+ ---
+ 
+ ## 8. 色板架构（保留旧批准）
+diff --git "a/\346\226\207\346\241\243/README.md" "b/\346\226\207\346\241\243/README.md"
+index 5ba7e8d..5a25261 100644
+--- "a/\346\226\207\346\241\243/README.md"
++++ "b/\346\226\207\346\241\243/README.md"
+@@ -6,7 +6,7 @@
+ |---|---|---|
+ | 接着做工程 | [PROJECT](../PROJECT.md) → [规格索引](01_执行规格/README.md) → [P0](03_任务/P0.md)/[P1](03_任务/P1.md)/[P2](03_任务/P2.md) | 当前实现、下一步、对应规则与验证 |
+ | 运行当前 Demo | [Demo快速开始](Demo快速开始.md) | 连续河谷操作；旧便携包是独立快照 |
+-| 理解设计 | [00_设计意图](00_设计意图.md) → 10–19 阅读稿 | 目标、体验与系统关系；数值取 spec |
++| 理解设计 | [00_设计意图](00_设计意图.md) → 10–19 阅读稿 | 目标、体验与系统关系；数值取 spec；昼夜/季节沿 17 §7.1–§7.2 → 13 §3.6 → 12 §6.1 → 15 §1.2 阅读 |
+ | **查落点与连片** | [spec.fabric](01_执行规格/spec.fabric.md) | **任意陆地落点的三层后果、共享山墙/连排/庭院、街墙连续度** |
+ | 查具体规则 | [十份执行规格](01_执行规格/README.md) | 现行公式、阈值、接口与适用范围 |
+ | 查未定设计 | [待裁定与依赖](待裁定与依赖.md) | 剩余问题、已闭合旧问题、只影响哪些任务 |
+diff --git "a/\346\226\207\346\241\243/\345\276\205\350\243\201\345\256\232\344\270\216\344\276\235\350\265\226.md" "b/\346\226\207\346\241\243/\345\276\205\350\243\201\345\256\232\344\270\216\344\276\235\350\265\226.md"
+index 8d37009..9b1efdf 100644
+--- "a/\346\226\207\346\241\243/\345\276\205\350\243\201\345\256\232\344\270\216\344\276\235\350\265\226.md"
++++ "b/\346\226\207\346\241\243/\345\276\205\350\243\201\345\256\232\344\270\216\344\276\235\350\265\226.md"
+@@ -34,6 +34,7 @@
+ | GAP-THEME | 沿≥6成熟栋、4–8音、真实居民音级、全城唯一Lead的批准方向，补稳定选音/排程及试听/拆组重放协议；A26已有首片主题，不代表完整作者感完成 | 11 §11.2、A20/A26；P1任务19、AUDIO-G2、HUMAN-AUTHOR；G5专管候选表达 |
+ | GAP-LATENCY | ≤0.5s目标保持；尚未渲染拍点与0.12s预填会错过最近拍。实测输入→起变时间，分别统计2拍淡化完成；不能用无爆音证明延迟达标 | U20/A26；P1任务12、UI-G2 |
+ | GAP-TERRAIN | 通用生成补归一化噪声→有符号高程映射、各地形族水文出口与声学遮挡分类；留地/缓坡不能全算隔音墙。原高程/填洼面、父图、√流量河宽、45%可建与8次回退保持 | T1/T2；TERRAIN-001、P1任务1；不阻塞受控河谷 |
++| GAP-TIME | 昼夜先行、季节后置的设计边界已写入 00/12/13/15/17；剩余是首个 20–30 栋切片：从音频绝对帧派生时间、天空/阴影/全城窗光/环境 Bed、旧 City DNA 默认值与真人调速。首版不得改写 `c/R/V`、成长、交通、随机流或时代条件；季节等昼夜稳定后再实施 | 17 §7.1–§7.2、12 §6.1、15 §1.2；不阻塞当前土地配额施工 |
+ | 大城与社区 | 规划ID已有；超过40栋沿局部可建邻接图分裂，81栋至少3区已接入；功能区首层（居住/商贸/公共绿地/混合/换乘）与工业工坊带、文化声场已从社区、用途、绿廊、站点和线路派生；共享站点首片换乘、容量交换、公交邻近成长、带衰减的客流需求记忆、个人目的地迁移和工业/商业锚点成长配额已接入；需求峰值会改换乘节奏角色，70 RenderVoice 预算轮换和多栋成长接缝已接入；完整文化用途配额、票制、满声部供音/真峰值/动态大城性能的真人听感仍待测 | SPACE-003、AUDIO-G3、PERF-001 |
+ | 连续声像/编曲/两层落定 | 公式与第63轮切片已接；完整移动/分组/槽位/尺度验收待完成，旧三档/旧27实体结果不覆盖 | AUDIO-G1/G2/G4、UI-G2/G3 |
+ | 内容与完整流程 | 时代实际色值、历史音色/朝向、三模式、保存/完整DNA/作品导出、连续版时代与地标按P1/P2制作 | 不因待制作标成待裁定；只等待上表具体依赖 |
+diff --git "a/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\345\237\272\347\241\200.json" "b/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\345\237\272\347\241\200.json"
+index 8056515..d4e9ad4 100644
+--- "a/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\345\237\272\347\241\200.json"
++++ "b/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\345\237\272\347\241\200.json"
+@@ -2,7 +2,7 @@
+ 	"buildable_ratio": 0.641493055555556,
+ 	"calibration": {
+ 		"blocks": 77,
+-		"calibration_ms": 2499.756,
++		"calibration_ms": 2248.669,
+ 		"contract_sha256": "1c4968251b745260ddd91f5b9d00a3fb14ad4f0e530b66cfd2b5199629b647e7",
+ 		"duration_seconds": 8.0,
+ 		"gain": 0.972446056358482,
+diff --git "a/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\346\227\247\345\220\210\346\210\220\345\231\250fixture\346\240\207\345\256\232.json" "b/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\346\227\247\345\220\210\346\210\220\345\231\250fixture\346\240\207\345\256\232.json"
+index df28468..0cbf8eb 100644
+--- "a/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\346\227\247\345\220\210\346\210\220\345\231\250fixture\346\240\207\345\256\232.json"
++++ "b/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\346\227\247\345\220\210\346\210\220\345\231\250fixture\346\240\207\345\256\232.json"
+@@ -1,6 +1,6 @@
+ {
+ 	"blocks": 77,
+-	"calibration_ms": 2499.756,
++	"calibration_ms": 2248.669,
+ 	"contract_sha256": "1c4968251b745260ddd91f5b9d00a3fb14ad4f0e530b66cfd2b5199629b647e7",
+ 	"duration_seconds": 8.0,
+ 	"gain": 0.972446056358482,
+diff --git "a/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\347\254\25463\350\275\256_\345\243\260\351\237\263\350\276\271\347\225\214.json" "b/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\347\254\25463\350\275\256_\345\243\260\351\237\263\350\276\271\347\225\214.json"
+index 57da1a9..d6e4fcb 100644
+--- "a/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\347\254\25463\350\275\256_\345\243\260\351\237\263\350\276\271\347\225\214.json"
++++ "b/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\347\254\25463\350\275\256_\345\243\260\351\237\263\350\276\271\347\225\214.json"
+@@ -1,23 +1,23 @@
+ {
+ 	"birth_jump": 0.0,
+ 	"boundary": 352800,
+-	"dc": "(-0.00002, -0.00001)",
+-	"max_adjacent_delta": 0.0208368301391602,
+-	"max_render_ms": 107.632,
+-	"max_settle_ms": 12.546,
++	"dc": "(-0.000091, -0.000145)",
++	"max_adjacent_delta": 0.0201956573873758,
++	"max_render_ms": 140.422,
++	"max_settle_ms": 40.486,
+ 	"passed": true,
+-	"peak": 0.332030564546585,
+-	"preview_duck_start_difference": 0.000155142188305035,
++	"peak": 0.32900482416153,
++	"preview_duck_start_difference": 0.000149416038766503,
+ 	"retune_jump": 0.0,
+-	"rms": 0.134438093729473,
++	"rms": 0.131722631617208,
+ 	"voices": {
+ 		"entities": 22,
+ 		"environment_nodes": 1,
+-		"max_render_voices": 17,
++		"max_render_voices": 16,
+ 		"pad_nodes": 12,
+-		"render_voices": 17,
++		"render_voices": 16,
+ 		"response_nodes": 0,
+-		"rhythm_nodes": 3,
++		"rhythm_nodes": 2,
+ 		"theme_nodes": 1
+ 	}
+ }
+diff --git "a/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\347\254\25463\350\275\256_\351\201\223\350\267\257\345\205\254\344\272\244.json" "b/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\347\254\25463\350\275\256_\351\201\223\350\267\257\345\205\254\344\272\244.json"
+index 355bcc4..1059611 100644
+--- "a/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\347\254\25463\350\275\256_\351\201\223\350\267\257\345\205\254\344\272\244.json"
++++ "b/\351\252\214\350\257\201\350\256\260\345\275\225/\350\277\236\347\273\255\346\262\263\350\260\267/\347\254\25463\350\275\256_\351\201\223\350\267\257\345\205\254\344\272\244.json"
+@@ -7,10 +7,10 @@
+ 		"no_teleport_walker": true,
+ 		"no_water_before_bridge": true
+ 	},
+-	"max_bus_road_gap": 0.100838221609592,
++	"max_bus_road_gap": 0.100718684494495,
+ 	"max_step": {
+-		"bus": 0.0900020599365234,
+-		"walker": 0.0240020789206028
++		"bus": 0.0900008752942085,
++		"walker": 0.0240020900964737
+ 	},
+ 	"samples": 2401
+ }

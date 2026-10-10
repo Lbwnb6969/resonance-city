@@ -171,16 +171,16 @@
   },
   "legacy_audio_contract_sha256": "1c4968251b745260ddd91f5b9d00a3fb14ad4f0e530b66cfd2b5199629b647e7",
   "sources": {
-    "spec.asset.md": "fce93d7410eb7254727245a6dab4ec8b1490e95dddd7887bbab9fbc7ddca5e6b",
-    "spec.audio.md": "85e7a9e8e06b9c331d284db94dc8de18de779eb4ea3f0220fc4f0fb40ed42be3",
-    "spec.city.md": "e7f743f50826891ffa78fe5f518a28aba3041de308e8254066b973c47d72a790",
-    "spec.fabric.md": "a61e0369b0db0005d2a0c3c281a1e2fdb7c658cfbfd0cf0b7d5ea3e764665957",
-    "spec.harmony.md": "ee0cee446c42d4eb155a4fd37c55effedbee7ae9db53c4de68780957978eedc8",
-    "spec.proposal.md": "ed8ff397639b2eec97206e4798aac66f2aeb70612f2edf6de83040e14cc46d4e",
-    "spec.run.md": "74fe9fc6286dfa1d1678ed9efe3510176978130d03ef29d50fa5e74c888c523c",
-    "spec.space.md": "93c84f380965c2e2ade545063f3c8a180e85e33ba14f03fc215f489e4af81505",
-    "spec.terrain.md": "a597f12d5f8c0dfe7ca79bd4adf9e2184b861b84594434d4d329fe0cef924165",
-    "spec.ui.md": "1666b250eb2ed4ab592ab30fcb6ee6ed94b0e692a97d65a70076153bd8a6f1ee"
+    "spec.asset.md": "bf4ac1a2112ee709134c29ecfab88160f2f4e0512de2d262fa36602cfd72eabd",
+    "spec.audio.md": "0174fd44bc2a673dbb7bd58127ce73e99ef318187e1c0dfe87b0607da4fce15e",
+    "spec.city.md": "6b28b78a183d62c6acc6435d31af344e3c6a6d4b92c488418ea1a578f7beeeed",
+    "spec.fabric.md": "22f7b6d43d28ea95f20e2c9cdd08f6f2cb22c7a59accda396f0a0b35b1e13c72",
+    "spec.harmony.md": "6d3b8868d1b0a1f66679a0592b6dab92cd48de6fcddfd7b378fab63a53074c0e",
+    "spec.proposal.md": "2d3e382f84e24a577dfa3214143ce0f2716e297e6b62a4037820438ca0903ecf",
+    "spec.run.md": "ac2d905ffb4a68f867844b8624c5144157aaa4f954e40a48255350461c221c18",
+    "spec.space.md": "81331dd471272cb003e81b5daf01d1ec57722e0566284395cff7bfc644d65e58",
+    "spec.terrain.md": "82a0dbaaef5049a25a7d43f49deb6f33c11e5931a64f9eb27886549a16afca23",
+    "spec.ui.md": "152397a6b926178d7d8363d7bca81e77012a1020637d76443f9620859946aac5"
   },
   "distance_reference": {
     "0": 2.0,

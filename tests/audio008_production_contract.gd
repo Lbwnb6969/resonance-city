@@ -4,7 +4,7 @@ extends SceneTree
 const Contract = preload("res://tests/contract_support.gd")
 const Fixtures = preload("res://tests/audio008_fixtures.gd")
 const Synth = preload("res://scripts/audio/district_synth.gd")
-const Before = preload("res://tests/废弃/第60轮前合成器.gd")
+const Before = preload("res://废弃/tests/第60轮前合成器.gd")
 const Model = preload("res://scripts/audio/city_audio_model.gd")
 const Session = preload("res://scripts/proposals/city_interventions.gd")
 const DIR = "res://验证记录/Demo/AUDIO-008_第60轮/"
@@ -138,5 +138,5 @@ func _run() -> void:
 	var restored := model.fork()
 	test.check(restored.synth.voice_grouping,"Model snapshot/fork retains grouping opt-in")
 	test.check(not Synth.new(Fixtures.static_city(9)).voice_grouping,"Direct/P0 synth defaults to original path")
-	test.details = {"comparisons":comparisons,"benchmarks":benchmarks,"baseline":"tests/废弃/第60轮前合成器.gd from 5ed9d2f; actual previous-source PCM","scope":"Production grouped DSP: PCM <=2e-5 relative, exact individual phase/filter; guard accumulation <=2e-5 relative. No era timbre or human proof"}
+	test.details = {"comparisons":comparisons,"benchmarks":benchmarks,"baseline":"废弃/tests/第60轮前合成器.gd from 5ed9d2f; actual previous-source PCM","scope":"Production grouped DSP: PCM <=2e-5 relative, exact individual phase/filter; guard accumulation <=2e-5 relative. No era timbre or human proof"}
 	test.finish(self,"Production DSP sharing, original-source PCM/state, control splits, event transitions, block boundaries and budget")

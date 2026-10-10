@@ -1,0 +1,11 @@
+Use case: stylized-concept
+Asset type: early playable Godot game visual reference
+Primary request: Create a restrained, buildable early prototype scene for the game Resonant City. Use the supplied current-demo images as visual references for geometry, palette, camera, and density only. Show a small continuous pale-green terrain platform with a simple white path, 4 to 7 small cream houses with muted terracotta roofs, 3 to 5 sparse low-poly trees, and a large amount of empty ground. The scene should feel like the next iteration of a very early playable demo, not a finished city.
+Scene/backdrop: quiet isometric terrain, large negative space, no dramatic background
+Style/medium: simple 2.5D isometric game concept art, clean low-poly geometry, soft ambient occlusion, subtle paper grain
+Composition/framing: wide 3/4 isometric view, readable silhouettes, lots of empty space around the small settlement
+Lighting/mood: soft single sunlight from upper left, low contrast, calm and gently alive
+Color palette: off-white walls, pale gray-green ground, muted terracotta roofs, dusty blue-gray water accents, no more than three hue families
+Materials/textures: flat painted surfaces with very light paper texture, simple windows and doors, soft contact shadows
+Constraints: preserve early-demo simplicity, 4–7 buildings only, sparse trees, buildable geometry, no dense city, no UI, no readable text
+Avoid: photorealism, complex architecture, giant monuments, crowds, traffic simulation, neon, HDR, black outlines, excessive detail, watermark

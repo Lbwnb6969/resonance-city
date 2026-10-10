@@ -1,0 +1,11 @@
+Use case: lighting-weather
+Asset type: early playable Godot game visual reference
+Primary request: Reinterpret the supplied sparse early-demo river scene as a calm dusk version without changing its simple layout. Keep the same small number of cream houses, sparse white paths, trees, pale terrain, and one narrow river. Add only longer soft shadows, a muted gray-blue sky, and a few sparse warm window lights. The scene must remain readable and buildable as an early prototype.
+Scene/backdrop: same sparse isometric river neighborhood at dusk
+Style/medium: simple 2.5D isometric game concept art, clean low-poly geometry, soft painted surfaces
+Composition/framing: wide 3/4 isometric view, preserve open ground and river silhouette
+Lighting/mood: quiet dusk, cool ambient light with restrained warm windows, no dramatic glow
+Color palette: muted gray-blue, pale cream, soft sage, muted terracotta, a few warm amber windows; no neon
+Materials/textures: simple flat surfaces, soft shadows, very light paper grain
+Constraints: change lighting and window glow only, keep the early-demo density and geometry, 4–10 houses, sparse trees, no UI or text
+Avoid: night city skyline, dense lights, cinematic fog, HDR, neon, crowds, photorealism, excessive detail, watermark

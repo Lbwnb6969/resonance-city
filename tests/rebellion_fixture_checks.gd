@@ -71,7 +71,7 @@ static func run(tree: SceneTree) -> void:
 			var reference: Dictionary = renderer.state.duplicate(true)
 			test.check(synth.render_block(restored,restore_at,257,rate) == normal.render_block(reference,restore_at,257,rate) and restored == reference,"Returned rhythm and drone are exact ordinary paths at the same live phase")
 			details.append({"sample_rate":rate,"deviation":deviation,"speed":1.0+deviation,"rhythm_difference_energy":difference,"rhythm_energy":energy,"boundary":boundary,"restore_at":restore_at})
-	var baseline = load("res://tests/废弃/第53轮前混音基线.gd")
+	var baseline = load("res://废弃/tests/第53轮前混音基线.gd")
 	var normal_city: Array = [Schema.create("home","residential",Vector2i(3,8)),Schema.create("shop","commercial",Vector2i(8,8)),Schema.create("factory","industrial",Vector2i(13,8))]
 	var current := Synth.new(normal_city)
 	var prior: RefCounted = baseline.new(normal_city)

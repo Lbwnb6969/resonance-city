@@ -1,0 +1,142 @@
+class_name ValleyTerrain
+extends RefCounted
+## Controlled terrain slice with several playable terrain families sharing the same continuous-world contract.
+const Config = preload("res://scripts/world/world_values.gd")
+var cfg: Dictionary = Config.load_values()["terrain"]
+var noise := FastNoiseLite.new()
+var noise_seed := 0
+var river_phase := 0.0
+var family := "river_valley"
+var water := PackedVector2Array()
+var water_bounds := Rect2()
+var left_bank := PackedVector2Array()
+var right_bank := PackedVector2Array()
+
+static func family_ids() -> Array[String]:
+	return ["river_valley","lake_basin","forest_ridge","coastal_plain","highland_pass"]
+
+static func family_title(value: String) -> String:
+	return {"river_valley":"河谷","lake_basin":"湖盆","forest_ridge":"林岭","coastal_plain":"海湾平原","highland_pass":"高地峡谷"}.get(value,"河谷")
+
+func configure(seed_value: int, phase: float, terrain_family: String = "river_valley") -> void:
+	noise_seed = seed_value
+	river_phase = phase
+	family = terrain_family if family_ids().has(terrain_family) else "river_valley"
+	noise.seed = noise_seed
+	noise.noise_type = FastNoiseLite.TYPE_VALUE
+	noise.fractal_type = FastNoiseLite.FRACTAL_FBM
+	noise.fractal_octaves = int(cfg["noise_octaves"])
+	noise.fractal_gain = float(cfg["noise_gain"])
+	noise.fractal_lacunarity = float(cfg["noise_lacunarity"])
+	noise.frequency = float(cfg["noise_frequency"])
+	var low := float(cfg["template_land_min"])
+	var high := float(cfg.get("template_land_max_y",cfg["template_land_max"]))
+	var high_x := float(cfg["template_land_max"])
+	var samples := ceili((high-low)*2.0)
+	var shore_left := PackedVector2Array()
+	var shore_right := PackedVector2Array()
+	for i in range(samples+1):
+		var y := lerpf(low,high,float(i)/float(samples))
+		shore_left.append(Vector2(river_x(y)-river_width(y),y))
+		shore_right.append(Vector2(river_x(y)+river_width(y),y))
+	water = shore_left.duplicate()
+	for i in range(shore_right.size()-1,-1,-1): water.append(shore_right[i])
+	water_bounds = Rect2(water[0],Vector2.ZERO)
+	for point in water: water_bounds = water_bounds.expand(point)
+	left_bank = PackedVector2Array([Vector2(low,low)])
+	left_bank.append_array(shore_left)
+	left_bank.append(Vector2(low,high))
+	right_bank = PackedVector2Array([Vector2(high_x,low),Vector2(high_x,high)])
+	for i in range(shore_right.size()-1,-1,-1): right_bank.append(shore_right[i])
+
+func river_x(y: float) -> float:
+	var base := float(cfg["template_river_center"])
+	if family == "coastal_plain":
+		base -= 1.1
+	elif family == "highland_pass":
+		base += 0.7
+		return base+1.55*sin(y*0.14+river_phase)+0.42*cos(y*0.37+river_phase)
+	return base+0.8*sin(y*0.19+river_phase)+0.24*sin(y*0.53+river_phase)
+
+func river_width(y: float) -> float:
+	var base := float(cfg["template_river_base_half_width"])
+	match family:
+		"lake_basin":
+			return 2.45+0.55*sin((y-5.0)*0.24+river_phase)+0.22*sin(y*0.61)
+		"forest_ridge":
+			return base*0.78+0.12*sin(y*0.31+river_phase)
+		"coastal_plain":
+			return base*1.35+0.22*sin(y*0.27+river_phase)
+		"highland_pass":
+			return base*0.62+0.16*sin(y*0.44+river_phase)
+		_:
+			return base+(y-float(cfg["template_land_min"]))*float(cfg["template_river_widening"])
+
+func height_at(p: Vector2) -> float:
+	var hill_gain := 1.8
+	var ridge := 0.0
+	match family:
+		"lake_basin":
+			hill_gain = 1.35
+			ridge = 0.22*cos(p.y*0.26+river_phase)
+		"forest_ridge":
+			hill_gain = 3.0
+			ridge = 0.55*sin(p.y*0.21+river_phase)+0.28*cos(p.x*0.17)
+		"coastal_plain":
+			hill_gain = 0.75
+			ridge = 0.08*sin(p.y*0.33)
+		"highland_pass":
+			hill_gain = 4.2
+			ridge = 0.72*cos(p.y*0.18+river_phase)+0.34*sin(p.x*0.23)
+	var hill := hill_gain*exp(-p.distance_squared_to(Vector2(4,2))/60.0)
+	return maxf(0.0,0.28+0.18*noise.get_noise_2dv(p)+hill+ridge)
+
+func land_at(p: Vector2) -> bool:
+	var low := float(cfg["template_land_min"])
+	var high := float(cfg["template_land_max"])
+	if p.x < low or p.x > high or p.y < low or p.y > float(cfg.get("template_land_max_y",high)): return false
+	if p.x < water_bounds.position.x or p.x > water_bounds.end.x or p.y < water_bounds.position.y or p.y > water_bounds.end.y: return true
+	return not Geometry2D.is_point_in_polygon(p,water)
+
+func valid_footprint(polygon: PackedVector2Array) -> bool:
+	for p in polygon:
+		if not land_at(p): return false
+	var bounds := Rect2(polygon[0],Vector2.ZERO)
+	for point in polygon: bounds = bounds.expand(point)
+	return not bounds.intersects(water_bounds,true) or Geometry2D.intersect_polygons(polygon,water).is_empty()
+
+func slope_at(p: Vector2) -> float:
+	var dx := height_at(p+Vector2(0.25,0))-height_at(p-Vector2(0.25,0))
+	var dy := height_at(p+Vector2(0,0.25))-height_at(p-Vector2(0,0.25))
+	return Vector2(dx,dy).length()/0.5
+
+func building_footprint_reason(polygon: PackedVector2Array) -> String:
+	if not valid_footprint(polygon): return "这里是水域或地图边界，需要完整的陆地占地"
+	var bounds := Rect2(polygon[0],Vector2.ZERO)
+	for p in polygon: bounds = bounds.expand(p)
+	var center := bounds.get_center()
+	var samples := polygon.duplicate()
+	samples.append(center)
+	for i in range(polygon.size()): samples.append((polygon[i]+polygon[(i+1)%polygon.size()])*0.5)
+	var shore := float(cfg.get("template_shore_buffer_ratio",0.12))*river_width(center.y)
+	if bounds.grow(shore).intersects(water_bounds,true):
+		for expanded in Geometry2D.offset_polygon(polygon,shore,Geometry2D.JOIN_ROUND):
+			if not Geometry2D.intersect_polygons(expanded,water).is_empty():
+				return "这里是岸线缓冲带，给水岸留出空间"
+	var maximum := float(cfg.get("template_building_max_grade",0.577350269))
+	for p in samples:
+		if slope_at(p) > maximum: return "这里的坡面太陡，房屋需要缓坡"
+	return ""
+
+func environment(_a: Vector2,_b: Vector2,_bridge: bool) -> Dictionary:
+	# Terrain belongs to the city landscape/buildability layer, not the score.
+	# Retain the neutral interface for old diagnostics and imported cities.
+	return {"occlusion":1.0,"terrain_factor":1.0,"sigma_a":1.0,"sigma_b":1.0}
+
+func buildable_ratio() -> float:
+	var count := 0
+	var high := ceili(float(cfg.get("template_land_max_y",cfg["template_land_max"])))+4
+	for y in range(-8,high):
+		for x in range(-8,40):
+			if land_at(Vector2(x+0.5,y+0.5)): count += 1
+	return float(count)/(48.0*float(high+8))
