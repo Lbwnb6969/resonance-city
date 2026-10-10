@@ -126,6 +126,10 @@ func _run() -> void:
 		if str(candidate.get("source_reservation_id","")) == reservation_id: restored_site = candidate
 	_check(restored_site.get("footprint_components",[]).size() == 2,"dna_roundtrips_components")
 	_check(restored.world.public_at(second_center).get("id","") == site.get("id",""),"dna_keeps_second_component_hit_test")
+	var restored_event: Dictionary = {}
+	for candidate in restored.world.events:
+		if bool(candidate.get("partial",false)) and str(candidate.get("source_reservation_id","")) == reservation_id: restored_event = candidate
+	_check(restored_event.get("converted_footprints",[]).size() == 2 and restored_event.get("footprint_components",[]).size() == 2,"dna_roundtrips_component_event")
 	_finish()
 
 func _finish() -> void:
