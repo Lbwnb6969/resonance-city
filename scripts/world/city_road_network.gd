@@ -15,6 +15,9 @@ var access_segments: Dictionary = {}
 var road_lookup: Dictionary = {}
 var access_extent := Rect2()
 var access_candidates := 0
+# Moving positions share a cell candidate set, never a snapped road result.
+var mobile_lookup_enabled := true
+var mobile_candidates: Dictionary = {}
 
 func rebuild(city_nodes: Dictionary, city_roads: Array, city_terrain: RefCounted) -> void:
 	var identity: Array = []
@@ -28,6 +31,7 @@ func rebuild(city_nodes: Dictionary, city_roads: Array, city_terrain: RefCounted
 	route_cache.clear()
 	route_trees.clear()
 	access_cache.clear()
+	mobile_candidates.clear()
 	walking_distance_cache.clear()
 	adjacency.clear()
 	access_index = WorldSpatialIndex.new()
@@ -43,7 +47,7 @@ func rebuild(city_nodes: Dictionary, city_roads: Array, city_terrain: RefCounted
 			var id := "%08d" % ordinal
 			var center := (path[i]+path[i+1])*0.5
 			access_index.put(id,center,length*0.5+0.000001)
-			access_segments[id] = {"road":road,"a":path[i],"b":path[i+1],"along":along}
+			access_segments[id] = {"road":road,"a":path[i],"b":path[i+1],"along":along,"center":center,"radius":length*0.5+0.000001}
 			if ordinal == 0: access_extent = Rect2(path[i],Vector2.ZERO)
 			access_extent = access_extent.expand(path[i]).expand(path[i+1])
 			ordinal += 1
@@ -108,6 +112,9 @@ func road_by_id(id: String) -> Dictionary:
 
 func access(p: Vector2, cache_result: bool = true) -> Dictionary:
 	if cache_result and access_cache.has(p): return access_cache[p]
+	if not cache_result and mobile_lookup_enabled:
+		var local := _mobile_access(p)
+		if not local.is_empty() and float(local["gap"]) < 1.0-0.000001: return local
 	var best: Dictionary = {}
 	var limit := 1.0
 	for corner in [access_extent.position,access_extent.end,Vector2(access_extent.position.x,access_extent.end.y),Vector2(access_extent.end.x,access_extent.position.y)]:
@@ -130,6 +137,29 @@ func access(p: Vector2, cache_result: bool = true) -> Dictionary:
 		if nearest < radius-0.000001 or radius >= limit: break
 		radius = minf(radius*2.0,limit)
 	if cache_result: access_cache[p] = best
+	return best
+
+func _mobile_access(p: Vector2) -> Dictionary:
+	var cell := Vector2i(floori(p.x),floori(p.y))
+	if not mobile_candidates.has(cell):
+		# A unit cell is at most sqrt(0.5) from its center; this contains
+		# every candidate the original radius-one circle can return.
+		mobile_candidates[cell] = access_index.query_circle(Vector2(cell)+Vector2(0.5,0.5),1.0+sqrt(0.5)+0.000001)
+	var best: Dictionary = {}
+	var nearest := INF
+	access_candidates = 0
+	for id in mobile_candidates[cell]:
+		var segment: Dictionary = access_segments[id]
+		var reach := 1.0+float(segment["radius"])
+		if p.distance_squared_to(segment["center"]) > reach*reach: continue
+		access_candidates += 1
+		var q := Geometry2D.get_closest_point_to_segment(p,segment["a"],segment["b"])
+		var gap := p.distance_to(q)
+		if gap >= nearest-0.000001: continue
+		if Rect2(p,q-p).abs().intersects(terrain.water_bounds,true) and not Geometry2D.intersect_polyline_with_polygon(PackedVector2Array([p,q]),terrain.water).is_empty(): continue
+		var road: Dictionary = segment["road"]
+		nearest = gap
+		best = {"road":road["id"],"from":road["from"],"to":road["to"],"along":float(segment["along"])+Vector2(segment["a"]).distance_to(q),"length":road["length"],"gap":gap,"position":[q.x,q.y]}
 	return best
 
 func walking_route(a: Vector2,b: Vector2) -> Dictionary:

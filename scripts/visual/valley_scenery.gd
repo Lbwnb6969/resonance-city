@@ -4,6 +4,7 @@ extends RefCounted
 var props: Dictionary = {}
 var sites: Dictionary = {}
 var vehicle_kind := ""
+var site_key: Array = []
 
 func rebuild(demo: Control) -> void:
 	for node in props.values(): node.queue_free()
@@ -99,6 +100,11 @@ func _sync_vehicle_kind(city: ContinuousWorld) -> void:
 func sync(demo: Control) -> void:
 	var city: ContinuousWorld = demo.shown_world
 	_sync_vehicle_kind(city)
+	var next_site_key := [city,city.phrase_index]
+	if site_key != next_site_key:
+		site_key = next_site_key
+		sites.clear()
+		for site in city.public_sites: sites[site["id"]] = site
 	var frame: float = demo.clock.renderer.transport.audible_frame
 	var rate: int = demo.clock.renderer.transport.sample_rate
 	var seconds := frame/rate
@@ -128,7 +134,7 @@ func sync(demo: Control) -> void:
 			prop.visible = false
 			continue
 		if not site_id.is_empty():
-			var site: Dictionary = city.public_sites.filter(func(s: Dictionary) -> bool: return s["id"] == site_id)[0]
+			var site: Dictionary = sites[site_id]
 			prop.visible = site["active"]
 			prop.reveal = clampf((frame-int(site["frame"]))/(0.5*rate),0.0,1.0)
 		if prop.kind in ["bus","carriage","tram","car","walker"]:
@@ -153,6 +159,8 @@ func sync(demo: Control) -> void:
 		prop.position = WorldProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),city.terrain.height_at(p))
 		prop.scale = Vector2.ONE
 		# Building warmth is shared at the layer; scenery retains its original tint.
-		prop.modulate = Color(1.0/demo.buildings_layer.modulate.r,1.0,1.0,1.0)
+		prop.modulate = Color(1.0/demo.buildings_layer.modulate.r,1.0,1.0,prop.reveal)
 		prop.motion = seconds*TAU/4.0
-		prop.queue_redraw()
+		# Station signs, lamps, rocks and civic geometry keep their draw commands.
+		# Reveal alpha remains a CanvasItem property; trees/travelers keep animating.
+		if prop.kind in ["tree","bus","carriage","tram","car","walker"]: prop.queue_redraw()

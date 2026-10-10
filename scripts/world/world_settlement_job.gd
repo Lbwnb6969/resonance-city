@@ -4,7 +4,7 @@ extends RefCounted
 const World = preload("res://scripts/world/continuous_world.gd")
 const WORLD_CACHE_FIELDS = ["fabric_cache","fabric_anchor_cache","fabric_geometry_identity","edge_cache",
 	"environment_cache","public_service_cache","resonance","planning_revision"]
-const NETWORK_CACHE_FIELDS = ["route_cache","route_trees","access_cache","walking_distance_cache"]
+const NETWORK_CACHE_FIELDS = ["route_cache","route_trees","access_cache","walking_distance_cache","mobile_candidates"]
 var version: Array = []
 var commit_frame := 0
 var snapshot: Dictionary = {}

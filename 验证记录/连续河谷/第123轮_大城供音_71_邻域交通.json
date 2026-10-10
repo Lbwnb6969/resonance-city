@@ -1,0 +1,92 @@
+{
+	"after": 609,
+	"background": {
+		"adopted": 1,
+		"discarded": 2,
+		"fallbacks": 0,
+		"max_capture_ms": 11.156,
+		"max_commit_ms": 0.205,
+		"max_worker_ms": 315.854,
+		"retired": 3,
+		"started": 3
+	},
+	"baseline_traffic": false,
+	"before": 607,
+	"checks": {
+		"audible_reveal": true,
+		"background_adoption": true,
+		"camera_projection": true,
+		"grows": true,
+		"native_audio": true,
+		"no_underruns": true,
+		"target_scale": true,
+		"voice_budget": true
+	},
+	"concurrent_load": "User reports another game may be running; no other apps stopped",
+	"cpu_max_ms": 131.716,
+	"cpu_p50_ms": 19.373,
+	"cpu_p95_ms": 29.956,
+	"era": 5,
+	"fabric_profile": {
+		"anchor_ms": 46.489,
+		"select_ms": 9.802,
+		"walls_rows_ms": 15.946
+	},
+	"frame_last_ms": {
+		"buildings_ms": 14.834,
+		"draw_ms": 0.272,
+		"interaction_ms": 0.181,
+		"traffic_ms": 3.592
+	},
+	"frame_max_ms": 131.776,
+	"frame_p50_ms": 16.805,
+	"frame_p95_ms": 18.861,
+	"frame_peaks_ms": {
+		"buildings_ms": 20.832,
+		"draw_ms": 10.343,
+		"interaction_ms": 8.58,
+		"traffic_ms": 5.394
+	},
+	"frame_samples": 839,
+	"logical_processors": 32,
+	"max_projection_error": 0.0,
+	"max_render_ms": 73.711,
+	"max_settle_ms": 0.227,
+	"max_voices": 70,
+	"passed": true,
+	"profile": {
+		"actions_growth_ms": 67.466,
+		"coverage_ms": 10.877,
+		"fabric_ms": 74.63,
+		"music_forms_ms": 130.558,
+		"public_network_ms": 19.626,
+		"service_allocation_ms": 4.738,
+		"split_ms": 0.056
+	},
+	"retained_ground": {
+		"city_max_ms": 8.61,
+		"city_rebuilds": 3,
+		"terrain_max_ms": 1.361,
+		"terrain_rebuilds": 1,
+		"water_frames": 943
+	},
+	"shadow_rebuild_ms": 14.115,
+	"skips": 0,
+	"steady_fps": 65.0,
+	"steady_frame_ms": {
+		"buildings_ms": 0.11,
+		"draw_ms": 0.307,
+		"interaction_ms": 0.175,
+		"traffic_ms": 4.152
+	},
+	"steady_skips": 0,
+	"supply_block": {
+		"begin": 25401311,
+		"capacity": 8191,
+		"count": 384,
+		"render_ms": 73.721,
+		"reserve_frames": 7807,
+		"skips_after_render": 0
+	},
+	"synchronous": false
+}

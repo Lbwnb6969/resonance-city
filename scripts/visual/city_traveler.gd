@@ -145,12 +145,16 @@ func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array,physi
 	return desired
 
 func _junction_conflict(city: ContinuousWorld,current_access: Dictionary,other: Dictionary) -> bool:
+	# Both positions must be within 0.9 of the same node. Distant or
+	# higher-priority peers cannot block us; skip their endpoint allocations.
+	if int(other.get("priority",0)) >= _priority(): return false
+	var other_position: Vector2 = other.get("position",Vector2.ZERO)
+	if position.distance_squared_to(other_position) > 1.800001*1.800001: return false
 	var current_road := str(current_access.get("road",""))
 	var other_road := str(other.get("road",""))
 	if current_road.is_empty() or other_road.is_empty() or current_road == other_road: return false
 	var current_nodes := [str(current_access.get("from","")),str(current_access.get("to",""))]
 	var other_nodes := [str(other.get("road_from","")),str(other.get("road_to",""))]
-	var other_position: Vector2 = other.get("position",Vector2.ZERO)
 	var other_direction: Vector2 = other.get("direction",Vector2.RIGHT)
 	for node_id in current_nodes:
 		if node_id.is_empty() or not other_nodes.has(node_id) or not city.network.nodes.has(node_id): continue

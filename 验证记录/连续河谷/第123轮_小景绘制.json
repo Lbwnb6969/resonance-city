@@ -1,0 +1,22 @@
+{
+	"cases": [
+		{
+			"frame": 0,
+			"max_rgb_error": 0.0
+		},
+		{
+			"frame": 4410,
+			"max_rgb_error": 0.0
+		},
+		{
+			"frame": 11025,
+			"max_rgb_error": 0.0
+		},
+		{
+			"frame": 66150,
+			"max_rgb_error": 0.0
+		}
+	],
+	"passed": true,
+	"scope": "Exact GPU pixels versus archived scenery at reveal/animation frames"
+}
