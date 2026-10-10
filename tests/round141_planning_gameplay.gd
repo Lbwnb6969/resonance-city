@@ -138,15 +138,30 @@ func compare(base: ContinuousWorld,plan: String,site: Dictionary,label: String) 
 		"anchor_id":anchor.get("anchor_id",""),"covered":anchor.get("covered",[]),"service":world.public_service_summary(),
 		"roles":model.synth.score_snapshot(),"audio_seconds":30,"world_version":Charter.version(world)})
 	await process_frame
+
+func _await_visual_frame() -> void:
+	# Headless has no render pass, so frame_post_draw never emits there.
+	if DisplayServer.get_name() == "headless":
+		await process_frame
+	else:
+		await RenderingServer.frame_post_draw
+
+func _capture_viewport(path: String) -> void:
+	# Dummy/headless rendering has no viewport texture. Keep the gameplay checks
+	# active while making screenshots a best-effort visual artifact.
+	if DisplayServer.get_name() == "headless": return
+	var texture := root.get_texture()
+	if texture != null: texture.get_image().save_png(path)
+
 func gpu_flow() -> void:
 	var demo: ContinuousValleyDemo = load("res://scenes/continuous_valley.tscn").instantiate()
 	demo.session_persistence = false
 	root.add_child(demo)
-	await RenderingServer.frame_post_draw
+	await _await_visual_frame()
 	demo.clock.stop_output()
 	demo.set_process(false)
 	check(demo.planning_guide.visible and demo.planning_guide.stage == "charter","new city shows three charter cards")
-	root.get_texture().get_image().save_png(OUT+"_三章程.png")
+	_capture_viewport(OUT+"_三章程.png")
 	demo.planning_guide.choose_plan("bluegreen")
 	var candidates := pick(demo.model.world)
 	var site: Dictionary = candidates[0]
@@ -156,9 +171,9 @@ func gpu_flow() -> void:
 	demo.pointer = demo.point(p)
 	demo.planning_guide.sync()
 	demo.queue_redraw()
-	await RenderingServer.frame_post_draw
+	await _await_visual_frame()
 	check(demo.planning_guide.stage == "anchor" and not demo.planning_guide.candidate.is_empty(),"anchor footprint influence and capacity preview")
-	root.get_texture().get_image().save_png(OUT+"_选区与锚点.png")
+	_capture_viewport(OUT+"_选区与锚点.png")
 	demo.planning_guide.choose_anchor("civic")
 	check(demo.planning_guide.map_click(p,false) and not demo.planning_guide.opened,"map places selected facility and collapses guide")
 	check(demo.model.world.pending_actions.size() == 2,"charter and anchor queued together")
@@ -174,9 +189,9 @@ func gpu_flow() -> void:
 	demo.planning_guide.sync()
 	demo._sync_buildings()
 	demo.queue_redraw()
-	await RenderingServer.frame_post_draw
+	await _await_visual_frame()
 	check(demo.shown_world.development_charters.size() == 1 and demo.shown_world.public_at(p).get("anchor_id","") != "","GPU scene reveals committed planning")
-	root.get_texture().get_image().save_png(OUT+"_落成.png")
+	_capture_viewport(OUT+"_落成.png")
 	demo.planning_guide.open_tool()
 	check(demo.planning_guide.opened,"P tool can reopen for another community")
 	demo.planning_guide.hide_tool()
