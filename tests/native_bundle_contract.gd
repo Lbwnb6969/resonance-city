@@ -108,6 +108,7 @@ func _run() -> void:
 	for sprite in demo.sprites.values():
 		if sprite.progress >= 1.0: mature_materials[sprite.material] = true
 	_check(mature_materials.size() == 1,"packed mature buildings share one growth material")
+	await RenderingServer.frame_post_draw
 	var retained_projection: Dictionary = demo.city_ground_layer.projected.duplicate(true)
 	_check(not demo.shadow_layer.scaled_masks.is_empty() and demo.shadow_layer.scaled_masks.size() < demo.shadow_layer.patches.size(),"packed shadow patches share resampled alpha")
 	var screen_error := 0.0
