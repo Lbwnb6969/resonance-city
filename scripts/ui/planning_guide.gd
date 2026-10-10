@@ -340,7 +340,18 @@ func _close_after_commit() -> void:
 	demo.queue_redraw()
 
 func _next_action_event_matches(event: Dictionary) -> bool:
-	if next_action.get("state","") != "queued" or str(event.get("kind","")) != "birth": return false
+	if next_action.get("state","") != "queued": return false
+	var event_kind := str(event.get("kind",""))
+	# A public anchor can be the only structural change at its boundary.  The
+	# old follow-up contract listened only for a birth, leaving a valid park or
+	# civic choice queued forever when no house happened to grow in that phrase.
+	# The event is authoritative: it is emitted by the same WorldDelta that
+	# accepted the previewed facility choice.
+	if event_kind in ["park","civic"]:
+		if str(next_action.get("choice","")) != event_kind: return false
+		var expected_public_frame := int(next_action.get("expected_boundary_frame",next_action.get("boundary_frame",-1)))
+		return expected_public_frame < 0 or int(event.get("frame",-1)) == expected_public_frame
+	if event_kind != "birth": return false
 	if not event.has("plan_id") or not event.has("district_id"): return false
 	if not str(next_action.get("plan_id","")).is_empty() and str(event.get("plan_id","")) != str(next_action["plan_id"]): return false
 	var expected_frame := int(next_action.get("expected_boundary_frame",next_action.get("boundary_frame",-1)))
