@@ -428,6 +428,43 @@ func road_environment(a: Vector2,b: Vector2) -> Dictionary:
 	else: environment_cache[key] = result
 	return result
 
+## The first bridge is a real pair of road nodes, rather than a free floating
+## cross-river action.  Keep this read-only snapshot shared by the map preview
+## and the request/settle boundary so a changed road graph can invalidate an
+## old preview without changing the existing bridge commit shape.
+func bridge_preview() -> Dictionary:
+	if bridge:
+		return {"available":false,"built":true,"reason":"桥已经连接","source_topology":network.topology}
+	if not nodes.has("west-2") or not nodes.has("east-2"):
+		return {"available":false,"built":false,"reason":"当前河段没有成对的两岸道路","source_topology":network.topology}
+	var from_node := "west-2"
+	var to_node := "east-2"
+	var from_raw: Array = nodes[from_node]
+	var to_raw: Array = nodes[to_node]
+	var from := Vector2(float(from_raw[0]),float(from_raw[1]))
+	var to := Vector2(float(to_raw[0]),float(to_raw[1]))
+	var road_ids: Array[String] = []
+	for road in roads:
+		if str(road.get("from","")) in [from_node,to_node] or str(road.get("to","")) in [from_node,to_node]:
+			if not bool(road.get("bridge",false)): road_ids.append(str(road.get("id","")))
+	road_ids.sort()
+	var crossing := terrain.environment(from,to,false)
+	var before_route := network.walking_distance(from,to)
+	var community_ids: Array[String] = []
+	for cid in ["west-2","east-2"]:
+		if communities.has(cid): community_ids.append(cid)
+	var community_names: Array[String] = []
+	for cid in community_ids: community_names.append(str(communities[cid].get("name",cid)))
+	var preview_path := PackedVector2Array([from,to])
+	return {"available":true,"built":false,"from_node":from_node,"to_node":to_node,
+		"from_position":[from.x,from.y],"to_position":[to.x,to.y],"path":preview_path,
+		"road_ids":road_ids,"community_ids":community_ids,"community_names":community_names,
+		"source_topology":network.topology,"source_world_version":[phrase_index,action_serial,planning_revision],
+		"crossing_length":from.distance_to(to),"occlusion_before":float(crossing.get("occlusion",0.0)),
+		"route_before":before_route,"route_after":from.distance_to(to),
+		"traffic_before":"河谷环线","traffic_after":"两岸联奏线","vehicle":vehicle_label(),
+		"role":"连接两岸道路与公共服务，下一句重算路网、交通与空间声学"}
+
 func _road_environment(a: Vector2,b: Vector2) -> Dictionary:
 	var result := terrain.environment(a,b,bridge)
 	if float(result["occlusion"]) == 0.0: return result
@@ -884,7 +921,18 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 	elif kind == "retune":
 		if not by_id.has(operation.get("id","")): return {"accepted":false,"reason":"请选择一栋建筑"}
 	elif kind == "bridge":
-		if bridge or pending_actions.any(func(op: Dictionary) -> bool: return op["kind"] == "bridge"): return {"accepted":false,"reason":"桥已经连接或正在等待落定"}
+		var bridge_check := bridge_preview()
+		if not bool(bridge_check.get("available",false)): return {"accepted":false,"reason":str(bridge_check.get("reason","桥位当前不可用"))}
+		if pending_actions.any(func(op: Dictionary) -> bool: return op["kind"] == "bridge"): return {"accepted":false,"reason":"桥已经连接或正在等待落定"}
+		var source_topology := str(operation.get("source_topology",bridge_check.get("source_topology","")))
+		if not source_topology.is_empty() and source_topology != str(bridge_check.get("source_topology","")):
+			return {"accepted":false,"reason":"桥位道路已经变化，请重新查看预影"}
+		operation = operation.duplicate(true)
+		operation["source_topology"] = str(bridge_check.get("source_topology",""))
+		operation["from_node"] = str(bridge_check.get("from_node","west-2"))
+		operation["to_node"] = str(bridge_check.get("to_node","east-2"))
+		operation["from_position"] = bridge_check.get("from_position",[]).duplicate(true)
+		operation["to_position"] = bridge_check.get("to_position",[]).duplicate(true)
 	elif kind == "landmark":
 		var name := str(operation.get("name",""))
 		var status := landmark_status(name)
@@ -1012,13 +1060,24 @@ func settle(frame: int) -> void:
 				costs[op["id"]] = float(Legacy.load_values()["proposals"]["retune_cost"])
 				events.append({"kind":"retune","district_id":op["id"],"frame":frame})
 			"bridge":
+				var bridge_check := bridge_preview()
+				var source_topology := str(op.get("source_topology",""))
+				if not bool(bridge_check.get("available",false)) or (not source_topology.is_empty() and source_topology != str(bridge_check.get("source_topology",""))):
+					events.append({"kind":"planning_rejected","operation_kind":"bridge","event_id":op["event_id"],
+						"source_site_id":"river-bridge","position":op.get("from_position",[]).duplicate(true),
+						"reason":"桥位道路在乐句边界前已变化，请重新查看两岸预影","frame":frame})
+					continue
 				bridge = true
-				var a: Array = nodes["west-2"]
-				var b: Array = nodes["east-2"]
-				roads.append({"id":"river-bridge","from":"west-2","to":"east-2","path":PackedVector2Array([Vector2(a[0],a[1]),Vector2(b[0],b[1])]),"bridge":true})
+				var from_node := str(op.get("from_node","west-2"))
+				var to_node := str(op.get("to_node","east-2"))
+				var a: Array = nodes[from_node]
+				var b: Array = nodes[to_node]
+				roads.append({"id":"river-bridge","from":from_node,"to":to_node,"path":PackedVector2Array([Vector2(a[0],a[1]),Vector2(b[0],b[1])]),"bridge":true})
 				rebuild_graph()
 				network.rebuild(nodes,roads,terrain)
-				events.append({"kind":"bridge","frame":frame})
+				events.append({"kind":"bridge","frame":frame,"from_node":from_node,"to_node":to_node,
+					"source_topology":str(op.get("source_topology","")),"community_ids":["west-2","east-2"],
+					"road_ids":bridge_check.get("road_ids",[]).duplicate(true),"traffic":"两岸联奏线","role":"连接两岸道路与公共服务"})
 			"landmark":
 				_commit_landmark(op,frame)
 			"park","civic":

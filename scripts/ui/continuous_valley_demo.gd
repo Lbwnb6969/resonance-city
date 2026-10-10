@@ -872,8 +872,14 @@ func _verb(verb: String) -> void:
 		menu.hide()
 		return
 	if verb == "bridge":
-		var result := model.submit({"kind":"bridge"})
-		_message("桥会在下一乐句连接两岸" if result["accepted"] else str(result["reason"]))
+		var bridge_preview: Dictionary = model.world.bridge_preview()
+		var operation := {"kind":"bridge"}
+		if bool(bridge_preview.get("available",false)):
+			operation["source_topology"] = str(bridge_preview.get("source_topology",""))
+		var result := model.submit(operation)
+		if result["accepted"]:
+			_message("桥位已确认 · %s · 下一乐句接入路网与交通" % ", ".join(bridge_preview.get("community_names",[])))
+		else: _message(str(result["reason"]))
 		menu.hide()
 		return
 	if verb == "response":
@@ -973,7 +979,7 @@ func _message(text: String) -> void:
 	notice_seconds = 6.0
 
 func _planning_rejection_message(event: Dictionary) -> String:
-	var labels := {"reserve":"留地","release_reservation":"释放留地","park":"公园","civic":"文化设施"}
+	var labels := {"reserve":"留地","release_reservation":"释放留地","park":"公园","civic":"文化设施","bridge":"桥"}
 	var action := str(labels.get(str(event.get("operation_kind","")),"规划"))
 	var reason := str(event.get("reason","规划条件在乐句边界失效，请重新选择"))
 	return action+"没有落定 · "+reason+" · 本次介入槽已保留"
@@ -1146,6 +1152,18 @@ func _hover_placement(p: Vector2) -> Dictionary:
 		hover_placement = model.world.placement(p)
 	return hover_placement
 
+func _bridge_preview_at(p: Vector2) -> Dictionary:
+	if shown_world == null: return {}
+	var preview: Dictionary = shown_world.bridge_preview()
+	if not bool(preview.get("available",false)): return {}
+	var raw_a: Array = preview.get("from_position",[])
+	var raw_b: Array = preview.get("to_position",[])
+	if raw_a.size() != 2 or raw_b.size() != 2: return {}
+	var a := Vector2(float(raw_a[0]),float(raw_a[1]))
+	var b := Vector2(float(raw_b[0]),float(raw_b[1]))
+	var q := Geometry2D.get_closest_point_to_segment(p,a,b)
+	return preview if p.distance_to(q) <= 1.45 else {}
+
 func _process(delta: float) -> void:
 	if model == null: return
 	view_zoom = lerpf(view_zoom,zoom_target,1.0-exp(-delta/0.14))
@@ -1207,6 +1225,7 @@ func _process(delta: float) -> void:
 	hover_id = _hit(pointer) if pointer_inside else ""
 	var p := world_at(pointer)
 	var check := _hover_placement(p)
+	var bridge_hover := _bridge_preview_at(p)
 	var landmark := shown_world.landmark_at(p)
 	var hover_card_status := ""
 	if not landmark.is_empty():
@@ -1223,6 +1242,10 @@ func _process(delta: float) -> void:
 			hover_card_status = card_feedback
 			tooltip.text += "\n"+card_feedback
 		tooltip.text += "\n跨河应答 · "+_response_state_label()+"\n点击查看社区音型、当前声部与下一步机会"
+	elif not bridge_hover.is_empty():
+		var names: Array = bridge_hover.get("community_names",[])
+		var before := "未连通" if is_inf(float(bridge_hover.get("route_before",INF))) else ("%.1f步" % float(bridge_hover.get("route_before",0.0)))
+		tooltip.text = "桥位预影 · %s\n真实道路：%s\n步行 %s → %.1f步 · %s\nG确认；下一乐句接入两岸道路、交通与空间声学" % [" ↔ ".join(names),"、".join(bridge_hover.get("road_ids",[])),before,float(bridge_hover.get("route_after",0.0)),str(bridge_hover.get("traffic_after","两岸联奏线"))]
 	elif check["allowed"]:
 		tooltip.text = "%s\n%s\n点击选音；Shift低八度；按住空格试听" % [str(check["preview"]),note_name(midi)]
 		var lot: String = check["lot_id"]
@@ -1496,6 +1519,7 @@ func _draw_landmark_preview() -> void:
 
 func _draw_planning_preview() -> void:
 	planning_guide.draw_map()
+	_draw_bridge_preview()
 	if menu.visible and context.has("position"):
 		var raw: Array = context["position"]
 		var candidate := model.world.planning_candidate(Vector2(float(raw[0]),float(raw[1])))
@@ -1509,6 +1533,27 @@ func _draw_planning_preview() -> void:
 		var polygon := _project_polygon(op["polygon"])
 		var color := Color(0.65,0.78,0.56,0.55) if op["kind"] != "civic" else Color(0.82,0.73,0.56,0.55)
 		draw_colored_polygon(polygon,color)
+
+func _draw_bridge_preview() -> void:
+	if shown_world == null: return
+	var preview: Dictionary = shown_world.bridge_preview()
+	if not bool(preview.get("available",false)): return
+	var raw_a: Array = preview.get("from_position",[])
+	var raw_b: Array = preview.get("to_position",[])
+	if raw_a.size() != 2 or raw_b.size() != 2: return
+	var a := Vector2(float(raw_a[0]),float(raw_a[1]))
+	var b := Vector2(float(raw_b[0]),float(raw_b[1]))
+	var pa := point(a,shown_world.terrain.height_at(a)+0.18)
+	var pb := point(b,shown_world.terrain.height_at(b)+0.18)
+	var pulse := 0.78+0.18*sin(float(clock.renderer.transport.audible_frame)/float(clock.renderer.transport.sample_rate)*TAU*1.5)
+	var tint := Color(0.68,0.53,0.30,pulse)
+	draw_line(pa,pb,Color(0.93,0.78,0.43,0.18),8.0*view_zoom,true)
+	draw_line(pa,pb,tint,2.0*view_zoom,true)
+	draw_circle(pa,4.5*view_zoom,Color(0.94,0.82,0.50,0.9))
+	draw_circle(pb,4.5*view_zoom,Color(0.94,0.82,0.50,0.9))
+	var label := "桥位预影 · G确认"
+	if not preview.get("community_names",[]).is_empty(): label += " · "+" ↔ ".join(preview["community_names"])
+	draw_string(ThemeDB.fallback_font,(pa+pb)*0.5+Vector2(8,-8)*view_zoom,label,HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("725d39"))
 
 func _draw_public_labels() -> void:
 	if not pointer_inside: return
