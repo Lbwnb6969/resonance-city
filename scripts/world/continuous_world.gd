@@ -10,6 +10,7 @@ const Fabric = preload("res://scripts/world/fabric_relations.gd")
 const Terrace = preload("res://scripts/world/terrace_neighborhood.gd")
 const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 const Charter = preload("res://scripts/world/development_charter.gd")
+const RiverResponse = preload("res://scripts/world/river_call_response.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -1009,7 +1010,8 @@ func settle(frame: int) -> void:
 	var modifiers := musicality()
 	var effective := musical_edges(modifiers)
 	resonance = coupling.resonance(buildings,effective)
-	var vitalities := coupling.vitality(buildings,effective,resonance,costs,modifiers)
+	var river_bonuses := RiverResponse.bonuses(RiverResponse.pairs(self))
+	var vitalities := coupling.vitality(buildings,effective,resonance,costs,modifiers,river_bonuses)
 	for building in buildings: building["vitality"] = vitalities[building["district_id"]]
 	for building in buildings:
 		var bonus := landmark_vitality_bonus(Coupling.position_of(building))+landmark_commercial_bonus(building)
@@ -1860,6 +1862,21 @@ func build_starter(expression: String = "bright") -> void:
 	_refresh_public_network()
 	refresh_fabric()
 	resonance = coupling.resonance(buildings,musical_edges(musicality()))
+
+func community_theme_sources(cid: String) -> Array:
+	var members: Array = communities[cid]["members"].duplicate()
+	members.sort_custom(func(a: String,b: String) -> bool:
+		var aa := Coupling.position_of(by_id[a])
+		var bb := Coupling.position_of(by_id[b])
+		if aa.x+aa.y != bb.x+bb.y: return aa.x+aa.y < bb.x+bb.y
+		return a < b)
+	# Historical motif notes have no surviving house; they cannot fabricate a
+	# current cross-river spatial relation.
+	var sources: Array = []
+	sources.resize(community_theme(cid).size()-members.size())
+	sources.fill("")
+	sources.append_array(members)
+	return sources
 
 func community_theme(cid: String, pitches: Dictionary = {}) -> Array:
 	var members: Array = communities[cid]["members"].duplicate()

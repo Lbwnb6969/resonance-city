@@ -71,9 +71,22 @@ static func opportunity(world: RefCounted,cid: String,score: Dictionary) -> Dict
 		next = "本句全城旋律留白；主题资格保留"
 	else:
 		next = "主题已就绪 · F聚焦或Tab独听，下一拍接入唯一主题槽"
-	if not world.bridge: next += "\n另一种选择 · 连接两岸道路，寻找协和应答"
+	var river_pairs: Array = preload("res://scripts/world/river_call_response.gd").pairs(world)
+	var pair_count := 0
+	var paired_ids: Dictionary = {}
+	for pair in river_pairs:
+		for id in [pair["a"],pair["b"]]:
+			if str(world.by_id[id]["community_id"]) == cid:
+				pair_count += 1
+				paired_ids[id] = true
+	if pair_count > 0:
+		next += "\n跨河对唱 · %d栋参与%d组协和，每组每句双方+2活力；不必建桥" % [paired_ids.size(),pair_count]
+		if not answering: next += "\n对唱等待来源主题与唯一应答槽"
+	elif world.terrain.family not in ["lake_basin","coastal_plain"]:
+		next += "\n对唱机会 · 两岸直线距离小于8、音程协和至少0.85；不必建桥"
 	return {"rule_id":"P11-COMMUNITY-THEME","anchor_ids":facility["anchor_ids"],"community_id":cid,
 		"met_conditions":met,"missing_conditions":missing,"affected_role_ids":["Lead","Rhythm","Response"],
 		"world_version":[world.phrase_index,world.action_serial,world.planning_revision],
+		"river_pairs":pair_count,"river_members":paired_ids.size(),
 		"qualified":bool(state["theme_eligible"]),"playing":playing,"answering":answering,"pulse":pulse,
 		"current": " · ".join(current),"next":next,"status":state,"facility":facility}

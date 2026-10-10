@@ -259,7 +259,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			if not era_events.is_empty():
 				var era_event: Dictionary = era_events[-1]
 				synth.begin_continuous_era_transition(int(era_event.get("frame",at)),int(era_event.get("era",world.era)),rate)
-			synth.configure_score(world,sound_overrides)
+			synth.configure_score(world,sound_overrides,at)
 			synth.set_gray(bool(world.lifecycle["gray"]),at)
 		var until := next_boundary
 		if not sound_events.is_empty(): until = mini(until,int(sound_events[0]["sound_frame"]))
@@ -341,7 +341,7 @@ func freeze() -> ContinuousAudioModel:
 	copy.synth.rhythm_nodes = synth.rhythm_nodes.duplicate(true)
 	copy.synth.musical_nodes = synth.musical_nodes.duplicate(true)
 	copy.synth.update_audio_city(copy.audio_city(),{}, {},[])
-	copy.synth.configure_score(copy.world,copy.sound_overrides)
+	copy.synth.configure_score(copy.world,copy.sound_overrides,rendered_until)
 	copy.synth.restore_eras(synth.era_snapshot())
 	return copy
 

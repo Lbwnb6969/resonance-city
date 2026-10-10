@@ -40,6 +40,20 @@ func _run() -> void:
 	var focused_copy := ContinuousAudioModel.from_state(demo.model.capture_state())
 	focused_copy.synth.focused_community = "west-1"
 	_check(ContinuousAudioModel.from_state(focused_copy.capture_state()).synth.focused_community == "west-1","portable runtime preserves focused community")
+	var river_world: ContinuousWorld = demo.model.world.fork()
+	for i in range(2): river_world.settle((river_world.phrase_index+1)*int(river_world.cfg["timing"]["phrase_frames"]))
+	river_world.bridge = false
+	river_world.rebuild_graph()
+	var river_model := ContinuousAudioModel.new(river_world)
+	var river_relations: Array = preload("res://scripts/world/river_call_response.gd").pairs(river_world)
+	_check(not river_relations.is_empty() and not river_model.synth.response.is_empty() and river_model.synth.response.get("generation",0) == 1,"packed river community answers without a bridge using actual spatial pairs")
+	var river_start: int = river_world.phrase_index*int(river_world.cfg["timing"]["phrase_frames"])
+	var river_events_ok := false
+	for node in river_model.synth.musical_nodes.values():
+		if not node["answer"]: continue
+		var river_events: Array = river_model.synth.musical_events(node,river_start,22050*16,22050)
+		river_events_ok = not river_events.is_empty() and river_events.all(func(e:Dictionary)->bool:return e["generation"] == 1 and e["onset"]-e["source_onset"] == 22050)
+	_check(river_events_ok,"packed response events retain their source and exact two-beat delay")
 	_check(demo.model.synth.native_mixer != null and demo.model.synth.native_enabled,"opening score uses native mixer")
 	_check(ClassDB.class_exists("CityMaskUnion") and demo.shadow_layer.mask_merger != null and demo.shadow_layer.native_batches > 0,"opening shadows use native batch merger")
 	var native_audio := ContinuousAudioModel.from_state(demo.model.capture_state())
