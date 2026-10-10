@@ -1761,9 +1761,6 @@ func _restore_geometry() -> void:
 	if pending.has("target_polygons"): pending["target_polygons"] = _geometry_components_from_json(pending["target_polygons"])
 	if pending.has("footprint_components"): pending["footprint_components"] = _geometry_components_from_json(pending["footprint_components"])
 	if pending.has("target_access_path"): pending["target_access_path"] = _geometry_from_json(pending["target_access_path"])
-	for event in events:
-		if event.has("converted_footprints"): event["converted_footprints"] = _geometry_components_from_json(event["converted_footprints"])
-		if event.has("footprint_components"): event["footprint_components"] = _geometry_components_from_json(event["footprint_components"])
 
 func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	assert(int(saved["schema_version"]) == 2 and saved["seed_hex"] == rng.seed_hex)
