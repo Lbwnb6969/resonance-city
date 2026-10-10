@@ -26,6 +26,7 @@ func _run() -> void:
 	root.add_child(demo)
 	await RenderingServer.frame_post_draw
 	demo.clock.stop_output()
+	demo.set_process(false)
 	_check(demo.model.world.buildings.size() == 18 and demo.sprites.size() == 18,"current continuous main scene builds opening city")
 	_check(demo.model.synth.native_mixer != null and demo.model.synth.native_enabled,"opening score uses native mixer")
 	var textures_ok := true
