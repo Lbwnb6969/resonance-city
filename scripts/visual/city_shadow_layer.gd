@@ -10,6 +10,9 @@ var groups: Dictionary = {}
 var tiles: Dictionary = {}
 var members: Dictionary = {}
 var patches: Dictionary = {}
+# Resampling and alpha depend on texture and raster size, not ground position.
+# Published byte arrays are immutable and shared by positioned patches.
+var scaled_masks: Dictionary = {}
 var mask_images: Dictionary = {}
 var materials: Dictionary = {}
 var rebuild_usec := 0
@@ -48,23 +51,27 @@ func _patch(record: Dictionary, kind: String) -> Dictionary:
   var texture: Texture2D = load(path)
   assert(texture != null,"Missing ground mask: "+path)
   mask_images[path] = texture.get_image()
- var source: Image = mask_images[path].duplicate()
- source.clear_mipmaps()
- source.convert(Image.FORMAT_RGBA8)
+ var original: Image = mask_images[path]
  var scale_mask := base_scale*float(entry["pixels_per_world"])/float(entry[kind+"_pixels_per_world"])
  var resolution: float = cfg["union_resolution"]
  var offset: Array = entry[kind+"_origin"]
  var low := (at-Vector2(offset[0],offset[1])*scale_mask)*resolution
- var extent := Vector2(source.get_size())*scale_mask*resolution
+ var extent := Vector2(original.get_size())*scale_mask*resolution
  var begin := Vector2i(floori(low.x),floori(low.y))
  var end := Vector2i(ceili(low.x+extent.x),ceili(low.y+extent.y))
  var size_px := end-begin
- source.resize(maxi(1,size_px.x),maxi(1,size_px.y),Image.INTERPOLATE_BILINEAR)
- var rgba := source.get_data()
- var alpha := PackedByteArray()
- alpha.resize(size_px.x*size_px.y)
- for i: int in range(alpha.size()): alpha[i] = rgba[i*4+3]
- var patch := {"begin":begin,"size":size_px,"alpha":alpha,"key":key}
+ var mask_key := [path,size_px]
+ if not scaled_masks.has(mask_key):
+  var source: Image = original.duplicate()
+  source.clear_mipmaps()
+  source.convert(Image.FORMAT_RGBA8)
+  source.resize(maxi(1,size_px.x),maxi(1,size_px.y),Image.INTERPOLATE_BILINEAR)
+  var rgba := source.get_data()
+  var alpha := PackedByteArray()
+  alpha.resize(size_px.x*size_px.y)
+  for i: int in range(alpha.size()): alpha[i] = rgba[i*4+3]
+  scaled_masks[mask_key] = alpha
+ var patch := {"begin":begin,"size":size_px,"alpha":scaled_masks[mask_key],"key":key,"mask_key":mask_key}
  patches[key] = patch
  return patch
 
@@ -115,8 +122,12 @@ func update_records(records: Array[Dictionary]) -> void:
     tile["sprite"].queue_free()
     tiles[kind].erase(coord)
    else: _update_tile(tile,coord)
+ var live_masks: Dictionary = {}
  for key in patches.keys():
   if not members["shadow"].has(key) and not members["contact"].has(key): patches.erase(key)
+  else: live_masks[patches[key]["mask_key"]] = true
+ for key in scaled_masks.keys():
+  if not live_masks.has(key): scaled_masks.erase(key)
  if updated_tile_count > 0: rebuild_count += 1
  rebuild_usec = Time.get_ticks_usec()-started
 

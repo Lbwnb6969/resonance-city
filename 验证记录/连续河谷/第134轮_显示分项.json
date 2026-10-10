@@ -1,0 +1,20 @@
+{
+	"buildings": 682,
+	"growth": {
+		"full_setup_ms": 0.14,
+		"layer_sync_ms": 0.039,
+		"overlay_ms": 0.637,
+		"prepare_ground_ms": 0.018,
+		"shadows_ms": 9.342,
+		"sprites_ms": 4.68
+	},
+	"opening": {
+		"full_setup_ms": 0.014,
+		"layer_sync_ms": 0.031,
+		"overlay_ms": 0.464,
+		"prepare_ground_ms": 0.54,
+		"shadows_ms": 55.424,
+		"sprites_ms": 219.929
+	},
+	"urban_draw_ms": 7.389
+}

@@ -5,6 +5,10 @@ var city: ContinuousWorld
 var role := "terrain"
 var key: Array = []
 var projected: Dictionary = {}
+var point_cache: Dictionary = {}
+var drawn_polygons: Dictionary = {}
+var drawn_points: Dictionary = {}
+var terrain_identity: Array = []
 var roads: Array[Dictionary] = []
 var patches: Array[PackedVector2Array] = []
 var contours: Array[PackedVector2Array] = []
@@ -21,8 +25,13 @@ func sync(demo: Control) -> void:
 	visible = not demo.black
 	var geometry_key: Array = [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])] if role == "terrain" else demo._shown_city_key()
 	var next_key := geometry_key+[snappedf(demo.view_zoom,0.00001)]
-	if key == next_key: return
-	if key.is_empty() or key.slice(0,-1) != geometry_key: projected.clear()
+	var next_terrain := [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])]
+	var terrain_changed := terrain_identity != next_terrain
+	if terrain_changed:
+		projected.clear()
+		point_cache.clear()
+		terrain_identity = next_terrain
+	if key == next_key and not terrain_changed: return
 	key = next_key
 	update_count += 1
 	camera_zoom = demo.view_zoom
@@ -32,8 +41,12 @@ func sync(demo: Control) -> void:
 	queue_redraw()
 
 func _point(p: Vector2, height: float = -1.0) -> Vector2:
-	var h := city.terrain.height_at(p) if height < 0.0 else height
-	return IsoProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),h)
+	var point_key := [p,height]
+	if not point_cache.has(point_key):
+		var h := city.terrain.height_at(p) if height < 0.0 else height
+		point_cache[point_key] = IsoProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),h)
+	drawn_points[point_key] = point_cache[point_key]
+	return point_cache[point_key]
 
 func _project_polygon(polygon: PackedVector2Array,height: float = -1.0) -> PackedVector2Array:
 	if not projected.has(height): projected[height] = {}
@@ -42,14 +55,21 @@ func _project_polygon(polygon: PackedVector2Array,height: float = -1.0) -> Packe
 		var points := PackedVector2Array()
 		for p in polygon: points.append(_point(p,height))
 		cache[polygon] = points
+	if not drawn_polygons.has(height): drawn_polygons[height] = {}
+	drawn_polygons[height][polygon] = cache[polygon]
 	return cache[polygon]
 
 func _draw() -> void:
 	if city == null: return
 	var started := Time.get_ticks_usec()
+	drawn_polygons = {}
+	drawn_points = {}
 	rebuild_count += 1
 	if role == "terrain": _draw_terrain()
 	else: _draw_urban()
+	# Retain only geometry read by this draw, not previous city history.
+	projected = drawn_polygons
+	point_cache = drawn_points
 	last_draw_ms = float(Time.get_ticks_usec()-started)/1000.0
 	max_draw_ms = maxf(max_draw_ms,last_draw_ms)
 
@@ -104,7 +124,7 @@ func _draw_green_corridors() -> void:
 
 func _draw_public_space() -> void:
 	for reservation in city.planning_reservations:
-		var polygon := _project_polygon(reservation["polygon"])
+		var polygon := _project_polygon(reservation["polygon"]).duplicate()
 		draw_colored_polygon(polygon,Color(0.78,0.83,0.69,0.36))
 		polygon.append(polygon[0])
 		draw_polyline(polygon,Color(0.40,0.56,0.40,0.72),1.5/camera_zoom,true)
@@ -130,6 +150,7 @@ func _draw_public_space() -> void:
 				if site.get("served",[]).size() >= int(site.get("service_capacity",18)):
 					draw_arc(center,14*1.0,0,TAU,32,Color("b58b55"),1.2/camera_zoom,true)
 		else:
+			projected = projected.duplicate()
 			projected.append(projected[0])
 			draw_polyline(projected,Color(0.45,0.59,0.43,0.34),1.1/camera_zoom,true)
 	for line in city.transit_lines:

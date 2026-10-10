@@ -1,0 +1,36 @@
+{
+	"checks": {
+		"all_manifest_masks_exact": true,
+		"cache_pruned_when_empty": true,
+		"cached_alpha_immutable": true,
+		"false_stage_0": true,
+		"false_stage_1": true,
+		"false_stage_2": true,
+		"false_stage_3": true,
+		"false_stage_4": true,
+		"false_stage_5": true,
+		"false_stage_6": true,
+		"final_cache_pruned": true,
+		"resampling_shared": true,
+		"same_output_after_return": true,
+		"true_stage_0": true,
+		"true_stage_1": true,
+		"true_stage_2": true,
+		"true_stage_3": true,
+		"true_stage_4": true,
+		"true_stage_5": true,
+		"true_stage_6": true
+	},
+	"measurements": [
+		{
+			"ms": 433.25,
+			"reference": true
+		},
+		{
+			"ms": 37.411,
+			"reference": false
+		}
+	],
+	"passed": true,
+	"patches_tested": 108
+}

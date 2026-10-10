@@ -7,6 +7,14 @@ const Transport = preload("res://scripts/audio/sample_transport.gd")
 var STEP_FRAMES: int
 var start_frame := -1
 var progress := 0.0
+static var mature_material: CanvasItemMaterial
+
+static func _mature_material() -> CanvasItemMaterial:
+	if mature_material == null:
+		# Full reveal is the unshaded texture path; built-in vertex tint can batch.
+		mature_material = CanvasItemMaterial.new()
+		mature_material.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
+	return mature_material
 
 func _init() -> void:
 	var transport := Transport.new()
@@ -14,6 +22,9 @@ func _init() -> void:
 
 func _ready() -> void:
 	set_process(use_master_clock)
+	if progress >= 1.0:
+		material = _mature_material()
+		return
 	var shader_material := ShaderMaterial.new()
 	shader_material.shader = load("res://资源/着色器/音频一拍揭示.gdshader")
 	material = shader_material
@@ -30,8 +41,15 @@ func sample_frame(audio_frame: float) -> float:
 	var next_progress := clampf((audio_frame-float(start_frame))/float(STEP_FRAMES),0.0,1.0) if start_frame >= 0 else 0.0
 	if progress == next_progress: return progress
 	progress = next_progress
-	if material is ShaderMaterial:
-		material.set_shader_parameter("growth_progress",progress)
+	if material is ShaderMaterial or (material != null and material == mature_material):
+		if progress >= 1.0:
+			material = _mature_material()
+		else:
+			if material == mature_material:
+				var growing := ShaderMaterial.new()
+				growing.shader = load("res://资源/着色器/音频一拍揭示.gdshader")
+				material = growing
+			material.set_shader_parameter("growth_progress",progress)
 	return progress
 
 func _process(_delta: float) -> void:

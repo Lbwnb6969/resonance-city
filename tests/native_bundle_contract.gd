@@ -104,6 +104,12 @@ func _run() -> void:
 		demo._sync_buildings()
 		_check(not demo._hover_placement(point)["allowed"] and demo._hover_placement(point) == demo.model.world.placement(point),"growth invalidates hover placement")
 		_check(demo.shown_world.phrase_index == 1 and demo.sprites.size() == demo.shown_world.buildings.size(),"committed city revealed at audible frame")
+	var mature_materials: Dictionary = {}
+	for sprite in demo.sprites.values():
+		if sprite.progress >= 1.0: mature_materials[sprite.material] = true
+	_check(mature_materials.size() == 1,"packed mature buildings share one growth material")
+	var retained_projection: Dictionary = demo.city_ground_layer.projected.duplicate(true)
+	_check(not demo.shadow_layer.scaled_masks.is_empty() and demo.shadow_layer.scaled_masks.size() < demo.shadow_layer.patches.size(),"packed shadow patches share resampled alpha")
 	var screen_error := 0.0
 	demo.view_zoom = 0.54
 	demo.pan = Vector2(100,-150)
@@ -112,6 +118,7 @@ func _run() -> void:
 		screen_error = maxf(screen_error,demo.sprites[id].global_position.distance_to(demo.point(WorldCoupling.position_of(demo.shown_world.by_id[id]))))
 	_check(screen_error < 0.001,"packed camera projection")
 	await RenderingServer.frame_post_draw
+	_check(not retained_projection.is_empty() and demo.city_ground_layer.projected == retained_projection,"packed camera redraw retains exact ground projections")
 	var terrain_draws: int = demo.terrain_layer.rebuild_count
 	var ground_draws: int = demo.city_ground_layer.rebuild_count
 	var shadow_updates: int = demo.shadow_layer.rebuild_count
