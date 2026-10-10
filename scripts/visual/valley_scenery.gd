@@ -40,6 +40,12 @@ func rebuild(demo: Control) -> void:
 			if props.has(stop_key) or not city.network.nodes.has(stop_id): continue
 			var stop_node: Array = city.network.nodes[stop_id]
 			_add(demo,stop_key,Vector2(float(stop_node[0]),float(stop_node[1])),"stop",stop_tone)
+			var shared := false
+			for transfer in line.get("transfer_stops",[]):
+				if str(transfer.get("stop_id","")) == str(stop_id):
+					shared = true
+					break
+			if shared: props[stop_key].set_meta("transfer_stop",true)
 			stop_tone += 1
 	for site in city.public_sites:
 		var p := Vector2(site["position"][0],site["position"][1])

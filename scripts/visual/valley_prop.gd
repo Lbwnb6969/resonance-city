@@ -142,6 +142,10 @@ func _draw() -> void:
 		draw_circle(Vector2(0,-15),4.0,Color(0.17,0.24,0.22,0.82))
 		draw_circle(Vector2(0,-15),2.7,sign_color)
 		draw_arc(Vector2(0,-15),5.8,-2.7,-0.45,10,Color(sign_color.r,sign_color.g,sign_color.b,0.45),1.0,true)
+		if bool(get_meta("transfer_stop",false)):
+			draw_arc(Vector2(0,-15),8.2,-2.9,-0.25,14,Color("f1d28a"),1.5,true)
+			draw_line(Vector2(-3.4,-21),Vector2(0,-24),Color("f1d28a"),1.2,true)
+			draw_line(Vector2(0,-24),Vector2(3.4,-21),Color("f1d28a"),1.2,true)
 	elif kind == "walker":
 		var stride := sin(motion*2.7+tone)*0.8 if active else 0.0
 		var facing := _project(direction*0.035)

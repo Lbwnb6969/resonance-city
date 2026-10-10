@@ -29,6 +29,9 @@ var motion_speed := 0.0
 # street layer readable without adding a simulation-heavy economy system.
 var purpose := ""
 var destination_kind := ""
+var transfer_count := 0
+var transfer_target := ""
+var transfer_stop := ""
 
 func _init(agent_kind: String = "walker", index: int = 0) -> void:
 	kind = agent_kind
@@ -96,7 +99,8 @@ func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dict
 		if absf(output_angle) > output_limit:
 			direction = previous_direction.rotated(signf(output_angle)*output_limit).normalized()
 	return {"position":position,"direction":direction,"stopped":wait > 0.0,"destination":destination,
-		"stop_id":stop_id,"passengers":passenger_load,"capacity":passenger_capacity,"priority":_priority(),"purpose":purpose,"destination_kind":destination_kind}
+		"stop_id":stop_id,"passengers":passenger_load,"capacity":passenger_capacity,"priority":_priority(),"purpose":purpose,"destination_kind":destination_kind,
+		"transfer_count":transfer_count,"transfer_target":transfer_target,"transfer_stop":transfer_stop}
 
 func _is_vehicle() -> bool:
 	return kind in ["carriage","tram","bus","car"]
@@ -152,7 +156,9 @@ func _vehicle_lane() -> float:
 	if kind == "carriage": return 0.14
 	if kind == "tram": return 0.08
 	if kind == "car": return 0.07
-	return 0.10
+	# Buses stay close to the road crown on narrow terrace bends; the smaller
+	# offset prevents the water-side shoulder from reading as a shortcut.
+	return 0.05
 
 func _car_nodes(city: ContinuousWorld) -> Array[String]:
 	var result: Array[String] = []
@@ -232,10 +238,31 @@ func _line(city: ContinuousWorld) -> Dictionary:
 func _next_bus(city: ContinuousWorld) -> void:
 	var line := _line(city)
 	if line.is_empty(): return
-	purpose = "沿线接驳"
-	destination_kind = "transit"
+	var arrival_stop := destination
+	var was_initialized := initialized
 	var legs: Array = line["legs"]
 	if legs.is_empty(): return
+	if transfer_count > 0 and not transfer_stop.is_empty(): transfer_stop = ""
+	var transfer_options: Array = []
+	var did_transfer := false
+	for transfer in line.get("transfer_stops",[]):
+		if str(transfer.get("stop_id","")) == arrival_stop:
+			transfer_options.append(transfer)
+	if was_initialized and not transfer_options.is_empty() and posmod(ordinal+trip+leg_index,3) == 0:
+		var choice: Dictionary = transfer_options[posmod(transfer_count+ordinal,transfer_options.size())]
+		line_index = int(choice.get("line_index",line_index))
+		line = _line(city)
+		legs = line["legs"]
+		transfer_count += 1
+		transfer_target = str(line.get("name",""))
+		transfer_stop = arrival_stop
+		purpose = "换乘至"+transfer_target
+		destination_kind = "transit_transfer"
+		line_key = ""
+		did_transfer = true
+	else:
+		purpose = "沿线接驳"
+		destination_kind = "transit"
 	var next_key := str(line["id"])+":"+str(line.get("edges",[]))
 	if line_key != next_key:
 		# Reroute only at the next completed stop; reconnect physically if it left the new line.
@@ -267,7 +294,7 @@ func _next_bus(city: ContinuousWorld) -> void:
 		return
 	passenger_load = 1+posmod(stop_id.length()*13+ordinal*7+leg_index*5,passenger_capacity-1)
 	var base_dwell := float(city.cfg["city"]["bus_dwell_beats"])*60.0/float(city.cfg["timing"]["bpm"])
-	wait = base_dwell+float(passenger_load)*0.035
+	wait = base_dwell+float(passenger_load)*0.035+(0.35 if did_transfer else 0.0)
 
 func _walk_destinations(city: ContinuousWorld) -> Array[Vector2]:
 	var destinations: Array[Vector2] = []
@@ -369,7 +396,7 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 func snapshot() -> Dictionary:
 	var saved: Dictionary = {}
 	for field in ["kind","ordinal","position","direction","path","lengths","distance","total","last_seconds","wait",
-		"destination","destination_kind","purpose","line_key","line_index","leg_index","initialized","trip","walk_target","stop_id","passenger_load","passenger_capacity","motion_speed"]: saved[field] = get(field)
+		"destination","destination_kind","purpose","line_key","line_index","leg_index","initialized","trip","walk_target","stop_id","passenger_load","passenger_capacity","motion_speed","transfer_count","transfer_target","transfer_stop"]: saved[field] = get(field)
 	return saved.duplicate(true)
 
 func _saved_vector(value: Variant) -> Vector2:

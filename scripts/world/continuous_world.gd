@@ -1241,8 +1241,25 @@ func _refresh_public_network(frame: int = 0) -> void:
 		if inner_itinerary.size() > 2:
 			lines.append(_make_transit_line("inland-line","内台接驳线",inner_itinerary,frame))
 	transit_lines.assign(lines)
+	_annotate_transfers()
 	refresh_functional_zones()
-	transit = lines[0] if not lines.is_empty() else {}
+	transit = transit_lines[0] if not transit_lines.is_empty() else {}
+
+func _annotate_transfers() -> void:
+	for index in range(transit_lines.size()):
+		var transfers: Array[Dictionary] = []
+		var stops: Array = transit_lines[index].get("stops",[])
+		for other_index in range(transit_lines.size()):
+			if other_index == index: continue
+			var other: Dictionary = transit_lines[other_index]
+			for stop in stops:
+				if not other.get("stops",[]).has(stop): continue
+				transfers.append({"stop_id":str(stop),"line_id":str(other.get("id","")),"line_index":other_index,"name":str(other.get("name",""))})
+		transfers.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+			if str(a.get("stop_id","")) != str(b.get("stop_id","")):
+				return str(a.get("stop_id","")) < str(b.get("stop_id",""))
+			return int(a.get("line_index",-1)) < int(b.get("line_index",-1)))
+		transit_lines[index]["transfer_stops"] = transfers
 
 func _make_transit_line(id: String, title: String, itinerary: Array, frame: int) -> Dictionary:
 	var legs: Array[Dictionary] = []
