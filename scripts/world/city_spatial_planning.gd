@@ -61,6 +61,72 @@ static func _contains_polygon(container: PackedVector2Array,polygon: PackedVecto
 	if not valid_simple_polygon(container) or not valid_simple_polygon(polygon): return false
 	return is_equal_approx(_intersection_area(container,polygon),polygon_area(polygon))
 
+static func _shared_boundary_length(a: PackedVector2Array,b: PackedVector2Array) -> float:
+	var best := 0.0
+	for i in range(a.size()):
+		var a0: Vector2 = a[i]
+		var a1: Vector2 = a[(i+1)%a.size()]
+		var direction := a1-a0
+		var length := direction.length()
+		if length <= 0.00001: continue
+		direction /= length
+		for j in range(b.size()):
+			var b0: Vector2 = b[j]
+			var b1: Vector2 = b[(j+1)%b.size()]
+			if absf(direction.cross(b0-a0)) > 0.0001 or absf(direction.cross(b1-a0)) > 0.0001: continue
+			var b_start := (b0-a0).dot(direction)
+			var b_end := (b1-a0).dot(direction)
+			var overlap := maxf(0.0,minf(length,maxf(b_start,b_end))-maxf(0.0,minf(b_start,b_end)))
+			best = maxf(best,overlap)
+	return best
+
+static func _canonical_source_lot_ids(value: Variant) -> Array[String]:
+	var ids: Array[String] = []
+	if value is Array:
+		for raw in value:
+			var id := str(raw)
+			if not id.is_empty() and not ids.has(id): ids.append(id)
+	ids.sort()
+	return ids
+
+static func _lot_sources(world: RefCounted,polygon: PackedVector2Array) -> Dictionary:
+	var area := polygon_area(polygon)
+	var source_lots: Array[Dictionary] = []
+	var covered := 0.0
+	for lot in world.lots:
+		var lot_polygon: PackedVector2Array = lot.get("polygon",PackedVector2Array())
+		if lot_polygon.size() < 3: continue
+		var overlap := _intersection_area(lot_polygon,polygon)
+		if overlap <= 0.00001: continue
+		source_lots.append({"id":str(lot.get("id","")),"polygon":lot_polygon,"occupant":str(lot.get("occupant",""))})
+		covered += overlap
+	if source_lots.is_empty(): return {}
+	var source_ids: Array[String] = []
+	for lot in source_lots: source_ids.append(str(lot["id"]))
+	source_ids = _canonical_source_lot_ids(source_ids)
+	var source_site_id := source_ids[0] if source_ids.size() == 1 else "lot-group:"+"|".join(source_ids)
+	for lot in source_lots:
+		if not str(lot["occupant"]).is_empty():
+			return {"allowed":false,"reason":"范围压住已有房屋所在地块，不能覆盖既有作品","source_site_id":source_site_id,"source_lot_ids":source_ids}
+	var area_tolerance := maxf(0.001,area*0.0001)
+	if absf(covered-area) > area_tolerance:
+		return {"allowed":false,"reason":"自由留地必须完整落在相邻空置 lot 的连续范围内","source_site_id":source_site_id,"source_lot_ids":source_ids}
+	if source_lots.size() > 1:
+		var linked: Dictionary = {0:true}
+		var changed := true
+		while changed:
+			changed = false
+			for i in range(source_lots.size()):
+				if not linked.has(i): continue
+				for j in range(source_lots.size()):
+					if linked.has(j): continue
+					if _shared_boundary_length(source_lots[i]["polygon"],source_lots[j]["polygon"]) > 0.01:
+						linked[j] = true
+						changed = true
+		if linked.size() != source_lots.size():
+			return {"allowed":false,"reason":"自由留地必须覆盖相邻且连续的空置 lot","source_site_id":source_site_id,"source_lot_ids":source_ids}
+	return {"allowed":true,"source_site_id":source_site_id,"source_lot_ids":source_ids,"source_polygon":polygon}
+
 static func _representative_point(polygon: PackedVector2Array) -> Vector2:
 	var average := Vector2.ZERO
 	for point in polygon: average += point
@@ -78,18 +144,17 @@ static func polygon_candidate(world: RefCounted,value: Variant,anchor: Vector2 =
 	if not valid_simple_polygon(polygon): return {}
 	var center := anchor if anchor != Vector2.INF and Geometry2D.is_point_in_polygon(anchor,polygon) else _representative_point(polygon)
 	var source: Dictionary = {}
-	for lot in world.lots:
-		if not str(lot.get("occupant","")).is_empty(): continue
-		var lot_polygon: PackedVector2Array = lot.get("polygon",PackedVector2Array())
-		if _contains_polygon(lot_polygon,polygon):
-			source = {"source_site_id":str(lot.get("id","")),"source_polygon":lot_polygon}
-			break
+	var lot_source := _lot_sources(world,polygon)
+	if not lot_source.is_empty():
+		if not bool(lot_source.get("allowed",false)):
+			return {"source_site_id":lot_source.get("source_site_id",""),"source_lot_ids":lot_source.get("source_lot_ids",[]),"polygon":polygon,"position":[center.x,center.y],"reason":str(lot_source.get("reason","这片范围暂时不能留地")),"allowed":false}
+		source = lot_source
 	if source.is_empty():
 		var point_candidate := candidate(world,center)
 		if point_candidate.is_empty() or not _contains_polygon(point_candidate.get("polygon",PackedVector2Array()),polygon): return {}
-		source = {"source_site_id":str(point_candidate.get("source_site_id","")),"source_polygon":point_candidate["polygon"]}
+		source = {"source_site_id":str(point_candidate.get("source_site_id","")),"source_lot_ids":_canonical_source_lot_ids(point_candidate.get("source_lot_ids",[])),"source_polygon":point_candidate["polygon"]}
 	var result := {"source_site_id":source["source_site_id"],"polygon":polygon,"position":[center.x,center.y],
-		"community_id":FabricRelations.community_for_position(world,center)}
+		"source_lot_ids":source.get("source_lot_ids",[]),"community_id":FabricRelations.community_for_position(world,center)}
 	var reason := site_reason(world,result)
 	result["reason"] = reason
 	result["allowed"] = reason.is_empty()
@@ -246,7 +311,7 @@ static func candidate(world: RefCounted,p: Vector2) -> Dictionary:
 	var selected: Dictionary = {}
 	var reservation := reservation_at(world,p)
 	if not reservation.is_empty():
-		selected = {"source_site_id":reservation["source_site_id"],"reservation_id":reservation["reservation_id"],"polygon":reservation["polygon"]}
+		selected = {"source_site_id":reservation["source_site_id"],"source_lot_ids":_canonical_source_lot_ids(reservation.get("source_lot_ids",[])),"reservation_id":reservation["reservation_id"],"polygon":reservation["polygon"]}
 	else:
 		var site: Dictionary = world.public_at(p)
 		if not site.is_empty():
@@ -255,7 +320,7 @@ static func candidate(world: RefCounted,p: Vector2) -> Dictionary:
 		else:
 			for lot in world.near_lots(p):
 				if not str(lot["occupant"]).is_empty() or not Geometry2D.is_point_in_polygon(p,lot["polygon"]): continue
-				selected = {"source_site_id":lot["id"],"polygon":lot["polygon"]}
+				selected = {"source_site_id":lot["id"],"source_lot_ids":[str(lot["id"])],"polygon":lot["polygon"]}
 				break
 			if selected.is_empty():
 				var court := FabricRelations.courtyard_at(world,p)
@@ -312,6 +377,8 @@ static func rejection_reason(world: RefCounted,operation: Dictionary) -> String:
 		if not bool(polygon_site.get("allowed",false)): return str(polygon_site.get("reason","这片范围已不可用"))
 		if str(polygon_site.get("source_site_id","")) != str(operation.get("source_site_id","")):
 			return "自由留地的来源地块已变化，请重新绘制"
+		if operation.has("source_lot_ids") and _canonical_source_lot_ids(polygon_site.get("source_lot_ids",[])) != _canonical_source_lot_ids(operation.get("source_lot_ids",[])):
+			return "自由留地的来源地块已变化，请重新绘制"
 		if polygon_site.get("polygon",PackedVector2Array()) != normalize_polygon(operation["polygon"]):
 			return "自由留地的范围已变化，请重新绘制"
 		return "自由留地条件在乐句边界失效，请重新绘制"
@@ -337,11 +404,18 @@ static func commit(world: RefCounted,operation: Dictionary,frame: int) -> bool:
 	var kind := str(operation["kind"])
 	if kind == "release_reservation":
 		var id := str(operation["id"])
+		var released_source_site_id := ""
+		var released_source_lot_ids: Array[String] = []
+		for item in world.planning_reservations:
+			if str(item.get("reservation_id",item.get("id",""))) == id:
+				released_source_site_id = str(item.get("source_site_id",""))
+				released_source_lot_ids = _canonical_source_lot_ids(item.get("source_lot_ids",[]))
+				break
 		var old_size: int = world.planning_reservations.size()
 		world.planning_reservations = world.planning_reservations.filter(func(item: Dictionary) -> bool: return str(item["reservation_id"]) != id)
 		if world.planning_reservations.size() == old_size: return false
 		world._refresh_parcel_index()
-		world.events.append({"kind":kind,"id":id,"frame":frame})
+		world.events.append({"kind":kind,"id":id,"source_site_id":released_source_site_id,"source_lot_ids":released_source_lot_ids,"frame":frame})
 		return true
 	var site: Dictionary
 	if kind == "reserve" and operation.has("polygon"):
@@ -353,20 +427,21 @@ static func commit(world: RefCounted,operation: Dictionary,frame: int) -> bool:
 		var raw: Array = operation["position"]
 		site = candidate(world,Vector2(float(raw[0]),float(raw[1])))
 	if site.is_empty() or not bool(site["allowed"]) or str(site["source_site_id"]) != str(operation["source_site_id"]): return false
+	if operation.has("source_lot_ids") and _canonical_source_lot_ids(site.get("source_lot_ids",[])) != _canonical_source_lot_ids(operation.get("source_lot_ids",[])): return false
 	if site["polygon"] != operation["polygon"]: return false
 	if kind == "reserve":
 		if site.has("reservation_id") or site.has("public_id"): return false
 		var id := "reservation-%05d" % int(operation["event_id"])
 		world.planning_reservations.append({"id":id,"reservation_id":id,"polygon":site["polygon"].duplicate(),"position":site["position"].duplicate(),
-			"source_site_id":site["source_site_id"],"created_phrase":world.phrase_index})
+			"source_site_id":site["source_site_id"],"source_lot_ids":_canonical_source_lot_ids(site.get("source_lot_ids",[])),"created_phrase":world.phrase_index})
 		world._refresh_parcel_index()
-		world.events.append({"kind":kind,"id":id,"source_site_id":site["source_site_id"],"frame":frame})
+		world.events.append({"kind":kind,"id":id,"source_site_id":site["source_site_id"],"source_lot_ids":_canonical_source_lot_ids(site.get("source_lot_ids",[])),"frame":frame})
 		return true
 	var access := public_access(world,site)
 	if access.is_empty(): return false
 	var new_site := {"id":"player-"+kind+"-%05d" % int(operation["event_id"]),"kind":kind,
 		"name":"自选公园" if kind == "park" else "自选文化馆","polygon":site["polygon"].duplicate(),"position":site["position"].duplicate(),
-		"community_id":site["community_id"],"active":true,"frame":frame,"service_level":1,"player_planned":true,"source_site_id":site["source_site_id"]}
+		"community_id":site["community_id"],"active":true,"frame":frame,"service_level":1,"player_planned":true,"source_site_id":site["source_site_id"],"source_lot_ids":_canonical_source_lot_ids(site.get("source_lot_ids",[]))}
 	new_site.merge(access)
 	var public_id := str(site.get("public_id",""))
 	if not public_id.is_empty(): new_site["id"] = public_id
@@ -382,5 +457,5 @@ static func commit(world: RefCounted,operation: Dictionary,frame: int) -> bool:
 	if not reservation_id.is_empty():
 		world.planning_reservations = world.planning_reservations.filter(func(item: Dictionary) -> bool: return str(item["reservation_id"]) != reservation_id)
 	world._refresh_parcel_index()
-	world.events.append({"kind":kind,"id":new_site["id"],"source_site_id":site["source_site_id"],"converted_reservation":reservation_id,"frame":frame})
+	world.events.append({"kind":kind,"id":new_site["id"],"source_site_id":site["source_site_id"],"source_lot_ids":_canonical_source_lot_ids(site.get("source_lot_ids",[])),"converted_reservation":reservation_id,"frame":frame})
 	return true

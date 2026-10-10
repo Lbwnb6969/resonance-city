@@ -827,7 +827,7 @@ func _split_landmark_reservation(position: Vector2,radius: float,landmark_id: St
 			var part_id := "%s-part-%02d" % [source_id,part+1]
 			var center := SpatialPlanning.bounds(polygon).get_center()
 			planning_reservations.append({"id":part_id,"reservation_id":part_id,"parent_reservation_id":source_id,
-				"source_site_id":reservation.get("source_site_id",""),"polygon":polygon,"position":[center.x,center.y],
+				"source_site_id":reservation.get("source_site_id",""),"source_lot_ids":reservation.get("source_lot_ids",[]).duplicate(true),"polygon":polygon,"position":[center.x,center.y],
 				"created_phrase":reservation.get("created_phrase",phrase_index),"converted_by":landmark_id})
 			fragment_ids.append(part_id)
 			part += 1
@@ -1008,6 +1008,7 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 			operation["position"] = polygon_candidate["position"].duplicate()
 			operation["polygon"] = polygon_candidate["polygon"].duplicate()
 			operation["source_site_id"] = polygon_candidate["source_site_id"]
+			operation["source_lot_ids"] = polygon_candidate.get("source_lot_ids",[]).duplicate(true)
 		else:
 			var p := Vector2(float(operation["position"][0]),float(operation["position"][1]))
 			var candidate := planning_candidate(p)
@@ -1021,6 +1022,7 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 			operation["position"] = candidate["position"].duplicate()
 			operation["polygon"] = candidate["polygon"].duplicate()
 			operation["source_site_id"] = candidate["source_site_id"]
+			operation["source_lot_ids"] = candidate.get("source_lot_ids",[]).duplicate(true)
 		# One replaceable planning intent; the historical demo's other queued verbs remain.
 		pending_actions = pending_actions.filter(func(op: Dictionary) -> bool:
 			return not (str(op["kind"]) in ["reserve","release_reservation","relocate_public"] or (str(op["kind"]) in ["park","civic"] and op.has("position"))))
@@ -1095,7 +1097,7 @@ func settle(frame: int) -> void:
 			if SpatialPlanning.commit(self,op,frame): successful_planning.append(op)
 			else:
 				events.append({"kind":"planning_rejected","operation_kind":str(op.get("kind","")),"event_id":op["event_id"],
-					"source_site_id":str(op.get("source_site_id","")),"position":op.get("position",[]).duplicate(true),
+					"source_site_id":str(op.get("source_site_id","")),"source_lot_ids":op.get("source_lot_ids",[]).duplicate(true),"position":op.get("position",[]).duplicate(true),
 					"reason":SpatialPlanning.rejection_reason(self,op),"frame":frame})
 		elif str(op["kind"]) == "relocate_public":
 			var relocation_result: Dictionary = PublicRelocation.commit(self,op,frame)
