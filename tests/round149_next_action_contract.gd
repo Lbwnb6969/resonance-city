@@ -3,6 +3,10 @@ extends SceneTree
 ## continuation that the UI can execute without mutating the forecast.
 
 const NextAction = preload("res://scripts/world/planning_next_action.gd")
+const World = preload("res://scripts/world/continuous_world.gd")
+const Model = preload("res://scripts/audio/continuous_audio_model.gd")
+const PublicPreview = preload("res://scripts/world/public_planning_preview.gd")
+const Planning = preload("res://scripts/world/city_spatial_planning.gd")
 
 var checks: Dictionary = {}
 
@@ -30,6 +34,15 @@ func preview(choice: String,ready: bool = true) -> Dictionary:
 		"affected_communities":["west-1","east-2"],"anchor_ids":record["anchor_ids"],"communities":[record],
 		"rules":["P11-COMMUNITY-THEME"]}
 
+func real_sites(world: RefCounted,cid: String) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for lot in world.lots:
+		if not str(lot.get("occupant","")).is_empty() or str(lot.get("community_id","")) != cid: continue
+		var candidate: Dictionary = world.planning_candidate(Vector2(float(lot["center"][0]),float(lot["center"][1])))
+		if candidate.is_empty() or not bool(candidate.get("allowed",false)) or candidate.has("public_id"): continue
+		if not Planning.public_access(world,candidate).is_empty(): result.append(candidate)
+	return result
+
 func _run() -> void:
 	var park := NextAction.from_preview(preview("park"))
 	check(park["contract"] == "P11-NEXT-ACTION/v1","versioned contract")
@@ -56,6 +69,22 @@ func _run() -> void:
 		"variants":{"park":{"accepted":true,"opportunity_preview":preview("park")}}}
 	var from_comparison := NextAction.from_comparison(comparison,"park")
 	check(from_comparison["operation"] == park["operation"] and from_comparison["token"] == park["token"],"comparison helper preserves branch contract")
+
+	# Exercise the same contract against the real three-branch preview source.
+	var world := World.new()
+	world.build_starter("bright")
+	for i in range(2): world.settle((world.phrase_index+1)*int(world.cfg["timing"]["phrase_frames"]))
+	var candidates := real_sites(world,"west-1")
+	check(not candidates.is_empty(),"real public candidate exists for next-action integration")
+	if not candidates.is_empty():
+		var model := Model.new(world)
+		var phases: Dictionary = {}
+		var at := world.phrase_index*int(world.cfg["timing"]["phrase_frames"])
+		model.render_block(phases,at,64,int(world.cfg["timing"]["sample_rate"]))
+		var real_comparison: Dictionary = PublicPreview.build(model.freeze(),candidates[0],phases,at)
+		var real_action := NextAction.from_comparison(real_comparison,"park")
+		check(real_action["contract"] == "P11-NEXT-ACTION/v1" and real_action["token"]["source_frame"] == at,"real preview yields versioned next action")
+		check(real_action["target"]["community_id"] != "" and real_action["operation"]["kind"] == "focus","real preview yields community focus operation")
 
 	var failures: Array = []
 	for label in checks:
