@@ -1011,8 +1011,12 @@ func _finish_partial_component() -> void:
 
 func _submit_partial_polygon() -> void:
 	if not partial_polygon_mode: return
-	if partial_multi_component_mode and partial_polygon_points.size() >= 3:
-		_finish_partial_component()
+	if partial_multi_component_mode:
+		if partial_polygon_points.size() > 0 and partial_polygon_points.size() < 3:
+			_message("当前组件至少需要三个点 · 继续绘制或按 Esc 取消")
+			return
+		if partial_polygon_points.size() >= 3:
+			_finish_partial_component()
 	if partial_polygon_components.is_empty() and partial_polygon_points.size() < 3:
 		_message("自由局部目标至少需要三个点")
 		return

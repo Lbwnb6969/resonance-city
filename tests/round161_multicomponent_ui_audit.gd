@@ -36,6 +36,14 @@ func _run() -> void:
 	_check(legacy.size() == 1 and legacy[0] == second,"legacy_single_polygon_preview_stays_compatible")
 	_check(demo.planning_buttons.has("free_multi_partial_park"),"multi_component_park_menu_exists")
 	_check(demo.planning_buttons.has("free_multi_partial_civic"),"multi_component_civic_menu_exists")
+	demo.partial_reservation_id = "reservation-test"
+	demo.partial_polygon_components.clear()
+	demo.partial_polygon_components.append(first)
+	demo.partial_polygon_points = PackedVector2Array([Vector2(4,0),Vector2(5,0)])
+	demo.partial_polygon_mode = true
+	demo._submit_partial_polygon()
+	_check(demo.partial_polygon_components.size() == 1,"incomplete_active_component_not_submitted")
+	_check(demo.notice.contains("当前组件至少需要三个点"),"incomplete_active_component_feedback")
 	print("ROUND161_MULTICOMPONENT_UI_AUDIT checks=%d failures=%s" % [checks,JSON.stringify(failures)])
 	demo.queue_free()
 	await process_frame
