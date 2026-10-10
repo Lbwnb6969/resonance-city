@@ -1,0 +1,35 @@
+{
+  "reason": "Round137 reference script replacement reset persistence flag; only these benchmark-created immutable versions were moved. Older versions preserved.",
+  "files": [
+    {
+      "name": "001791639271_0000000027853911.city",
+      "bytes": 2595277,
+      "sha256": "2db632eee7bd696865c6a72897d6d0bba165e1decae4bbfa37a677df1960f738"
+    },
+    {
+      "name": "001791639271_0000000027435649.city",
+      "bytes": 2595273,
+      "sha256": "93d0ba612b3dd9e8e238609a24db4bc7e381286732df72d07ce47e5ea13445fb"
+    },
+    {
+      "name": "001791639028_0000000024976020.city",
+      "bytes": 2595277,
+      "sha256": "15e6eec9787ded6cd49e23714fd5a54351b6ee1a2e2a95e0f93b684fff6a72d3"
+    },
+    {
+      "name": "001791639028_0000000024569447.city",
+      "bytes": 2595273,
+      "sha256": "26629e67ce0c8820aa4eaa1bb2034c1b1a4d6f6d67ac8a1bafffea67caea51ed"
+    },
+    {
+      "name": "001791639013_0000000008913676.city",
+      "bytes": 163481,
+      "sha256": "81b7b9fc4c18b41eb2a17f966717d2ecac6db80627037557413c0745d20138a5"
+    },
+    {
+      "name": "001791639010_0000000006683140.city",
+      "bytes": 163717,
+      "sha256": "b992a0ade3313cb6b272a4e5e689cfd562471cccb0163be0a7c4840b365459df"
+    }
+  ]
+}

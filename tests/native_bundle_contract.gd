@@ -157,12 +157,33 @@ func _run() -> void:
 	regional_key.shift_pressed = true
 	demo._input(regional_key)
 	demo.clock.stop_output()
+	demo._sync_buildings()
 	var regional_frame := demo.shown_world.phrase_index*int(demo.shown_world.cfg["timing"]["phrase_frames"])
 	_check(demo.shown_world.buildings.size() == 1511 and demo.shown_world.transit_lines.size() == 8 and demo.sprites.size() == 1511,"packed Shift+E opens naturally grown regional sample")
 	_check(demo.clock.renderer.transport.rendered_frames >= regional_frame and demo.clock.renderer.transport.rendered_frames < demo.model.next_boundary,"packed regional audio resumes sample phrase instead of zero")
 	_check(demo.shown_world.terrain.land_at(Vector2(0,110)) and not demo.shown_world.terrain.land_at(Vector2(0,120)) and demo.view_zoom < 0.55,"packed regional terrain and home camera cover all three reaches")
 	await RenderingServer.frame_post_draw
 	root.get_texture().get_image().save_png(output.get_base_dir()+"/三河段大城.png")
+	var names: Node2D = demo.community_label_layer
+	var name_draws: int = names.draw_count
+	var name_layouts: int = names.layout_updates
+	var name_geometry: int = names.geometry_updates
+	demo._sync_buildings()
+	demo.queue_redraw()
+	await RenderingServer.frame_post_draw
+	_check(names.draw_count == name_draws and names.layout_updates == name_layouts,"packed live HUD retains stationary community names")
+	var name_bounds: Array[Rect2] = []
+	var readable: bool = not names.labels.is_empty() and names.labels.size() < names.anchors.size()
+	for label in names.labels:
+		for bounds in name_bounds: readable = readable and not bounds.intersects(label["bounds"])
+		name_bounds.append(label["bounds"])
+	_check(readable,"packed regional labels remove screen overlaps")
+	demo.pan += Vector2(60,-30)
+	demo._sync_buildings()
+	_check(names.geometry_updates == name_geometry and names.layout_updates == name_layouts+1,"packed camera reuses label ground anchors")
+	demo.black = true
+	demo._sync_buildings()
+	_check(not names.visible,"packed black listening hides retained map names")
 	demo.queue_free()
 	await process_frame
 	FileAccess.open(output.get_base_dir()+"/Godot及第三方许可.json",FileAccess.WRITE).store_string(JSON.stringify({"engine":Engine.get_version_info(),"engine_license":Engine.get_license_text(),"third_party_licenses":Engine.get_license_info(),"third_party_copyright":Engine.get_copyright_info()},"\t")+"\n")

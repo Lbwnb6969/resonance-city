@@ -33,6 +33,7 @@ var backdrop: ColorRect
 var terrain_layer: Node2D
 var city_ground_layer: Node2D
 var water_flow: Node2D
+var community_label_layer: Node2D
 var overlay_key: Array = []
 var overlay_candidates: Array[Dictionary] = []
 var overlay_communities: Array[Dictionary] = []
@@ -99,6 +100,7 @@ func _profile_frame(stage: String, started: int) -> void:
 	frame_peaks[stage] = maxf(float(frame_peaks.get(stage,0.0)),elapsed)
 
 func _ready() -> void:
+	if "--isolated-session" in OS.get_cmdline_user_args(): session_persistence = false
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -142,6 +144,10 @@ func _ready() -> void:
 	buildings_layer.name = "Buildings"
 	buildings_layer.y_sort_enabled = true
 	add_child(buildings_layer)
+	community_label_layer = preload("res://scripts/visual/community_label_layer.gd").new()
+	community_label_layer.name = "CommunityNames"
+	community_label_layer.z_index = 50
+	add_child(community_label_layer)
 	tooltip = Label.new()
 	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tooltip.add_theme_font_size_override("font_size",15)
@@ -947,6 +953,7 @@ func _sync_buildings() -> void:
 	water_flow.sync(self)
 	backdrop.color = Color.BLACK if black else Color("ecebe2")
 	_refresh_overlay()
+	_sync_map_labels()
 	var frame := clock.renderer.transport.audible_frame
 	var warmth := 0.03*sin(TAU*frame/float(clock.renderer.transport.sample_rate)/4.0)
 	var pitches := model.audible_pitches()
@@ -1104,7 +1111,7 @@ func _refresh_overlay() -> void:
 		if members.size() < 4: continue
 		var center := Vector2.ZERO
 		for id in members: center += Coupling.position_of(shown_world.by_id[id])
-		overlay_communities.append({"position":center/members.size(),"name":community["name"]})
+		overlay_communities.append({"id":str(community["id"]),"position":center/members.size(),"name":community["name"],"members":members.size()})
 
 func _landmark_candidates() -> Array[Dictionary]:
 	if shown_world == null: return []
@@ -1194,7 +1201,9 @@ func _draw_public_labels() -> void:
 		var center := Vector2(site["position"][0],site["position"][1])
 		draw_string(ThemeDB.fallback_font,point(center)+Vector2(-30,30)*view_zoom,site["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("617b69"))
 
+func _sync_map_labels() -> void:
+	community_label_layer.sync(self)
+
 func _draw_community_names() -> void:
-	if view_zoom >= 1.0: return
-	for community in overlay_communities:
-		draw_string(ThemeDB.fallback_font,point(community["position"])+Vector2(-16,29),community["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(0.40,0.48,0.42,0.72))
+	# CommunityNames retains these commands independently of the live HUD.
+	pass

@@ -96,7 +96,7 @@ def build(engine, output, evidence):
         raise RuntimeError('Isolated scene checks failed: ' + str(result_path))
     # Normal entry uses the actual default audio setup, independently of the external probe.
     run([packaged_engine, '--audio-driver', 'Dummy', '--path', runtime, '--main-pack', pack,
-         '--quit-after', '180'], evidence / '直接启动.log', isolated)
+         '--quit-after', '180', '--', '--isolated-session'], evidence / '直接启动.log', isolated)
     # The isolated probe checks the current main scene; the ordinary startup
     # independently proves that its default entry can run without script errors.
     run([packaged_engine, '--audio-driver', 'Dummy', '--path', runtime, '--main-pack', pack,
