@@ -1,6 +1,7 @@
 class_name ContinuousValleyDemo
 extends Control
 const World = preload("res://scripts/world/continuous_world.gd")
+const PlanningCard = preload("res://scripts/world/planning_card.gd")
 const Model = preload("res://scripts/audio/continuous_audio_model.gd")
 const Projection2D = preload("res://scripts/world/world_projection.gd")
 const Coupling = preload("res://scripts/world/world_coupling.gd")
@@ -930,6 +931,76 @@ func _message(text: String) -> void:
 	notice = text
 	notice_seconds = 6.0
 
+func _flatten_charter_card_refs(raw: Variant, result: Array) -> void:
+	# Planning cards are deliberately read-only here.  Older saves may use a
+	# string, a single dictionary, or a map of card ids to dictionaries.
+	if raw is Array:
+		for item in raw:
+			_flatten_charter_card_refs(item,result)
+		return
+	if raw is Dictionary:
+		var card := raw as Dictionary
+		if card.has("cards"):
+			_flatten_charter_card_refs(card["cards"],result)
+			return
+		if card.has("title") or card.has("name") or card.has("label") or card.has("card_title") or card.has("card_id") or card.has("id"):
+			result.append(card)
+			return
+		for value in card.values():
+			_flatten_charter_card_refs(value,result)
+		return
+	if raw is String and not str(raw).strip_edges().is_empty():
+		result.append(str(raw))
+
+func _planning_card_definition(id: String) -> Dictionary:
+	if id.is_empty(): return {}
+	return PlanningCard.definition(id)
+
+func _card_ref_title(card: Variant) -> String:
+	if card is Dictionary:
+		var data := card as Dictionary
+		for key in ["title","name","label","card_title"]:
+			var value := str(data.get(key,""))
+			if not value.is_empty(): return value
+		for key in ["card_id","id"]:
+			var value := str(data.get(key,""))
+			if not value.is_empty():
+				var definition := _planning_card_definition(value)
+				return str(definition.get("title","变化卡 · "+value))
+		return "本章变化"
+	var definition := _planning_card_definition(str(card))
+	return str(definition.get("title",str(card)))
+
+func _card_ref_remaining(card: Variant, charter: Dictionary) -> String:
+	if shown_world == null: return ""
+	var data: Dictionary = card as Dictionary if card is Dictionary else {}
+	for key in ["remaining_phrases","phrases_left","remaining"]:
+		if data.has(key): return "剩%d乐句" % maxi(0,int(data[key]))
+	for key in ["expires_phrase","until_phrase","end_phrase"]:
+		if data.has(key):
+			var remaining := int(data[key])-shown_world.phrase_index
+			return "已退场" if remaining <= 0 else "剩%d乐句" % remaining
+	var definition := _planning_card_definition(str(card)) if not card is Dictionary else {}
+	if not definition.is_empty() and definition.has("duration_phrases") and charter.has("committed_phrase"):
+		var remaining := int(definition["duration_phrases"])-int(shown_world.phrase_index)+int(charter["committed_phrase"])
+		return "已退场" if remaining <= 0 else "剩%d乐句" % remaining
+	return ""
+
+func _charter_card_feedback(charter: Dictionary) -> String:
+	if charter.is_empty() or not charter.has("card_refs"): return ""
+	var cards: Array = []
+	_flatten_charter_card_refs(charter.get("card_refs",[]),cards)
+	if cards.is_empty(): return ""
+	var labels: Array[String] = []
+	for card in cards:
+		var title := _card_ref_title(card)
+		var remaining := _card_ref_remaining(card,charter)
+		labels.append(title+((" · "+remaining) if not remaining.is_empty() else ""))
+	if labels.size() > 3:
+		labels = labels.slice(0,3)
+		labels.append("+%d张" % (cards.size()-3))
+	return "本章变化 · "+"、".join(labels)
+
 func _request_preview() -> void:
 	var operation := context.duplicate(true)
 	if planning_guide.opened:
@@ -1042,7 +1113,6 @@ func _process(delta: float) -> void:
 	notice_seconds = maxf(0.0,notice_seconds-delta)
 	ripple_seconds = maxf(0.0,ripple_seconds-delta)
 	planning_guide.sync()
-	caption.text = notice if notice_seconds > 0.0 else ""
 	caption.position = Vector2(48,size.y-68)
 	caption.visible = not black
 	tooltip.visible = not black and pointer_inside and not menu.visible
@@ -1056,6 +1126,7 @@ func _process(delta: float) -> void:
 	var p := world_at(pointer)
 	var check := _hover_placement(p)
 	var landmark := shown_world.landmark_at(p)
+	var hover_card_status := ""
 	if not landmark.is_empty():
 		var progress := clampf(float(clock.renderer.transport.audible_frame-int(landmark.get("reveal_frame",landmark.get("frame",0))))/float(maxi(1,int(landmark.get("reveal_frames",1)))),0.0,1.0)
 		var effect := "独立长音 · 吸收%d栋 · 动机%d音" % [landmark.get("absorbed_buildings",[]).size(),landmark.get("motif",[]).size()]
@@ -1065,6 +1136,10 @@ func _process(delta: float) -> void:
 		tooltip.text = "%s · %s · %s\n%s  ·  活力 %.0f\n点击选音   Tab独听社区   F聚焦" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),b["form"],shown_world.communities[b["community_id"]]["name"],b["vitality"]]
 		var charter := World.Charter.for_community(shown_world,str(b["community_id"]))
 		if not charter.is_empty(): tooltip.text += "\n发展章程 · "+str(World.Charter.PLANS[charter["plan_id"]]["title"])+" · P重新规划"
+		var card_feedback := _charter_card_feedback(charter)
+		if not card_feedback.is_empty():
+			hover_card_status = card_feedback
+			tooltip.text += "\n"+card_feedback
 		tooltip.text += "\n跨河应答 · "+_response_state_label()+"\n点击查看社区音型、当前声部与下一步机会"
 	elif check["allowed"]:
 		tooltip.text = "%s\n%s\n点击选音；Shift低八度；按住空格试听" % [str(check["preview"]),note_name(midi)]
@@ -1082,6 +1157,10 @@ func _process(delta: float) -> void:
 			if site["active"] and site["kind"] == "civic":
 				tooltip.text = "%s · 文化设施%d级\n覆盖%d栋 · 已服务%d/%d栋\n%s" % [site["name"],int(site.get("service_level",1)),site.get("covered",[]).size(),site.get("served",[]).size(),int(site.get("service_capacity",18)),"点击后选公共设施，下一句扩容" if int(site.get("service_level",1)) < 3 else "三级扩容完成 · 文化主题继续演奏"]
 		else: tooltip.text = str(check["reason"])+"\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形 · E扩展城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
+	var status_line := notice if notice_seconds > 0.0 else ""
+	if not hover_card_status.is_empty():
+		status_line = hover_card_status if status_line.is_empty() else status_line+" · "+hover_card_status
+	caption.text = status_line
 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
 	if menu.visible:
 		_update_selected_opportunity()

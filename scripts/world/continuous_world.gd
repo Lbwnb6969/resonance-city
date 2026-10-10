@@ -1224,7 +1224,9 @@ func _grow(family: String, frame: int) -> void:
 	if not charter.is_empty():
 		events.back()["charter_id"] = charter["charter_id"]
 		events.back()["plan_id"] = charter["plan_id"]
-	families[family]["next_growth_phrase"] = phrase_index+int(best_check.get("growth_delay",1))
+		events.back()["card_refs"] = charter.get("card_refs",[]).duplicate()
+	var growth_delay := Charter.growth_delay(self,str(best_check.get("community_id","")),p,int(best_check.get("growth_delay",1)),str(best_check.get("tier","L1")))
+	families[family]["next_growth_phrase"] = phrase_index+growth_delay
 
 
 func _community_adjacency(ids: Array) -> Dictionary:

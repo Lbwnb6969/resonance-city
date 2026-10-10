@@ -10,7 +10,7 @@
 | [spec.harmony](spec.harmony.md) | 音程分、活力、灰噪化迟滞、崩盘；连续权重取space |
 | [spec.city](spec.city.md) | 声部身份、生长E-grow、停滞E4、环形E5-b、叛离、地标E6/E6-b、河谷E7、规划锚点E8 |
 | [spec.audio](spec.audio.md) | 路由、时钟、合成/校准/声学协议、声部组、编曲槽、连续声像、候选表达、首片A26、规划映射A27 |
-| [spec.proposal](spec.proposal.md) | 介入、试听、成本、基础事务、社区工具、地形动作、破坏上限；P10 留地/释放/用途转换、P11 条件机会预览、P12 规划章程/锚点（G5待实施） |
+| [spec.proposal](spec.proposal.md) | 介入、试听、成本、基础事务、社区工具、地形动作、破坏上限；P10 留地/释放/用途转换、P11 条件机会预览、P12 规划章程/锚点与首批变化卡（其他关键锚点与体验验证待实施） |
 | [spec.run](spec.run.md) | 种子、乐章、祝福/债务/记忆、时代、三路径、三模式、章程/卡牌时代持续性R11 |
 | [spec.ui](spec.ui.md) | 黑屏/诊断、同步/性能、光影/通知、U16–U22极简界面与首次规划引导 |
 | [spec.asset](spec.asset.md) | 许可、色板、烘焙、质量红线、地形资产、manifest |

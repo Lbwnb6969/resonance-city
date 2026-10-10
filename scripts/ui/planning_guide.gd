@@ -1,6 +1,7 @@
 extends PanelContainer
 ## A transient planning tool. Closing it never removes a committed city choice.
 const Charter = preload("res://scripts/world/development_charter.gd")
+const PlanningCard = preload("res://scripts/world/planning_card.gd")
 const Planning = preload("res://scripts/world/city_spatial_planning.gd")
 const PublicPreview = preload("res://scripts/world/public_planning_preview.gd")
 var comparison: Dictionary = {}
@@ -8,6 +9,7 @@ var comparison_key: Array = []
 var demo: Control
 var stage := "charter"
 var plan_id := ""
+var card_id := ""
 var scope: Array = []
 var anchor_kind := "park"
 var opened := false
@@ -15,6 +17,8 @@ var heading: Label
 var detail: Label
 var actions: HBoxContainer
 var cards: HBoxContainer
+var card_choices: HBoxContainer
+var drawn_card_ids: Array[String] = []
 var confirm: Button
 var candidate: Dictionary = {}
 var preview: Dictionary = {}
@@ -80,6 +84,11 @@ func setup(owner_demo: Control) -> void:
 		button.pressed.connect(choose_plan.bind(id))
 		cards.add_child(button)
 	box.add_child(cards)
+	card_choices = HBoxContainer.new()
+	card_choices.add_theme_constant_override("separation",10)
+	drawn_card_ids = ["infill_pulse","road_echo","anchor_bloom"]
+	_rebuild_card_choices()
+	box.add_child(card_choices)
 	detail = Label.new()
 	detail.custom_minimum_size.x = 720
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -113,6 +122,8 @@ func reset_for_city() -> void:
 	opened = demo.model.world.development_charters.is_empty()
 	causal_feedback_count = 0 if opened else 2
 	stage = "charter"
+	plan_id = ""
+	card_id = ""
 	refresh()
 
 func open_tool() -> void:
@@ -121,6 +132,8 @@ func open_tool() -> void:
 	demo.menu.hide()
 	opened = true
 	stage = "charter"
+	plan_id = ""
+	card_id = ""
 	scope.clear()
 	scope_version.clear()
 	refresh()
@@ -136,6 +149,19 @@ func hide_tool() -> void:
 
 func choose_plan(id: String) -> void:
 	plan_id = id
+	drawn_card_ids = PlanningCard.choices(demo.model.world,plan_id)
+	if drawn_card_ids.is_empty(): drawn_card_ids = [PlanningCard.DEFAULT_ID]
+	card_id = drawn_card_ids[0]
+	_rebuild_card_choices()
+	stage = "card"
+	scope.clear()
+	scope_version.clear()
+	refresh()
+
+func choose_card(id: String) -> void:
+	if not PlanningCard.valid(id): return
+	if not drawn_card_ids.is_empty() and not drawn_card_ids.has(id): return
+	card_id = id
 	stage = "scope"
 	scope.clear()
 	scope_version.clear()
@@ -150,6 +176,7 @@ func choose_anchor(kind: String) -> void:
 
 func refresh() -> void:
 	cards.visible = stage == "charter"
+	card_choices.visible = stage == "card"
 	actions.visible = stage != "charter"
 	confirm.visible = stage == "scope"
 	confirm.disabled = scope.is_empty()
@@ -160,6 +187,9 @@ func refresh() -> void:
 	if stage == "charter":
 		heading.text = "你想让这片城市怎样生长？"
 		detail.text = "先选倾向，再在地图选社区；公园和文化馆由你摆，房屋沿合法空地自动长。"
+	elif stage == "card":
+		heading.text = str(Charter.PLANS[plan_id]["title"]) + " · 选一张章首变化卡"
+		detail.text = "变化卡只影响已有规划关系的候选优先级或生长时机，持续几句后自然退场；不会增加全城活力，也不会锁住公共设施。\n当前默认 · " + str(PlanningCard.CARDS[card_id]["title"]) + "（可直接点地图继续，也可改选下面任意一张）"
 	elif stage == "scope":
 		heading.text = str(Charter.PLANS[plan_id]["title"])+" · 选择社区范围"
 		var names: Array[String] = []
@@ -176,9 +206,27 @@ func refresh() -> void:
 	position = Vector2(maxf(16.0,(demo.size.x-size.x)*0.5),76)
 	visible = opened and not demo.black
 
+func _rebuild_card_choices() -> void:
+	if card_choices == null: return
+	for child in card_choices.get_children(): child.free()
+	for id: String in drawn_card_ids:
+		if not PlanningCard.CARDS.has(id): continue
+		var spec: Dictionary = PlanningCard.CARDS[id]
+		var button := Button.new()
+		button.text = "%s\n\n%s\n取舍 · %s\n持续 · %d句" % [spec["title"],spec["tendency"],spec["tradeoff"],int(spec["duration_phrases"])]
+		button.custom_minimum_size = Vector2(224,132)
+		button.add_theme_font_size_override("font_size",15)
+		button.pressed.connect(choose_card.bind(id))
+		card_choices.add_child(button)
+	card_choices.visible = stage == "card"
+
 func map_click(p: Vector2,multiple: bool) -> bool:
 	if not opened: return false
 	if stage == "charter": return true
+	if stage == "card":
+		# Map-first input accepts the deterministic default card and proceeds;
+		# explicit card buttons can replace it before this click.
+		choose_card(card_id if not card_id.is_empty() else PlanningCard.DEFAULT_ID)
 	if stage == "scope":
 		var cid := FabricRelations.community_for_position(demo.model.world,p)
 		if not demo.model.world.communities.has(cid): return true
@@ -214,11 +262,12 @@ func map_click(p: Vector2,multiple: bool) -> bool:
 
 func commit_scope() -> void:
 	if scope.is_empty(): return
-	var result: Dictionary = demo.model.submit({"kind":"charter","plan_id":plan_id,"community_ids":scope.duplicate()})
+	var result: Dictionary = demo.model.submit({"kind":"charter","plan_id":plan_id,"community_ids":scope.duplicate(),"card_refs":[card_id]})
 	if not bool(result["accepted"]):
 		demo._message(str(result["reason"]))
 		return
 	stage = "anchor"
+	demo._message("章程与变化卡已排入下一乐句 · "+str(PlanningCard.CARDS.get(card_id,{}).get("title","变化卡")))
 	refresh()
 
 func update_candidate(p: Vector2) -> void:
@@ -275,7 +324,13 @@ func sync() -> void:
 			if int(event.get("frame",-1)) != observed_phrase*int(demo.shown_world.cfg["timing"]["phrase_frames"]): continue
 			if causal_feedback_count < 2 and str(event.get("kind","")) == "birth" and event.has("plan_id"):
 				causal_feedback_count += 1
-				demo._message(str(Charter.PLANS[event["plan_id"]]["title"])+" · 新房沿你的规划生长；可继续调音或按P规划下一片社区")
+				var building: Dictionary = demo.shown_world.by_id.get(str(event.get("district_id","")),{})
+				var plan: Dictionary = Charter.PLANS.get(str(event.get("plan_id", "")),{})
+				var title := str(plan.get("title","发展章程"))
+				var kind := "律动街" if str(building.get("type","residential")) == "commercial" else ("工坊" if str(building.get("type","residential")) == "industrial" else "长音房")
+				var shape := str(building.get("form","胚"))
+				var pitch: String = demo.note_name(int(building.get("current_midi",48))) if not building.is_empty() else "待定音级"
+				demo._message("%s · %s以%s落地，%s%s；下一步可继续调音或按P规划下一片社区" % [title,kind,shape,"音级"+pitch+" · " if pitch != "待定音级" else "", "沿你的规划生长"])
 				break
 	if not visible: return
 	if stage == "anchor":
