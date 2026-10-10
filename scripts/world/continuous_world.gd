@@ -661,7 +661,7 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 	pending_actions.append(pending.duplicate(true))
 	return {"accepted":true,"frame":frame,"event_id":action_serial}
 
-func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int) -> String:
+func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int, requested_type: String = "") -> String:
 	var check := placement(p)
 	assert(check["allowed"])
 	var id := "building-%05d" % next_id
@@ -669,6 +669,8 @@ func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int) -> St
 	var type := "residential"
 	for lot in lots:
 		if lot["id"] == check["lot_id"]: type = str(lot["use"])
+	if str(check.get("lot_id","")).is_empty() and requested_type in ["residential","commercial","industrial"]:
+		type = requested_type
 	var building := {"district_id":id,"position":[p.x,p.y],"footprint":[[p.x,p.y]],"radius":cfg["space"]["residential_radius"],
 		"current_midi":midi,"base_midi":midi,"type":type,"vitality":cfg["harmony"]["initial_vitality"],
 		"community_id":check["community_id"],"lot_id":check["lot_id"],"placement_tier":str(check.get("tier","L1")),
@@ -770,6 +772,41 @@ func _transit_growth_bonus(position: Vector2,use: String = "residential") -> flo
 			bonus = maxf(bonus,local)
 	return bonus
 
+func community_land_use_quota(cid: String) -> Dictionary:
+	var result := {"residential":0,"commercial":0,"industrial":0}
+	if not communities.has(cid): return result
+	var member_count: int = communities[cid].get("members",[]).size()
+	var has_commercial_anchor := false
+	var has_industrial_anchor := false
+	for lot in lots:
+		if str(lot.get("community_id","")) != cid: continue
+		if str(lot.get("use","")) == "commercial": has_commercial_anchor = true
+		if str(lot.get("use","")) == "industrial": has_industrial_anchor = true
+	result["residential"] = maxi(2,mini(6,2+member_count/18))
+	if has_commercial_anchor: result["commercial"] = mini(4,2+member_count/20)
+	if has_industrial_anchor: result["industrial"] = mini(4,2+member_count/16)
+	return result
+
+func _near_use_anchor(cid: String,position: Vector2,use: String) -> bool:
+	for lot in lots:
+		if str(lot.get("community_id","")) != cid or str(lot.get("use","")) != use: continue
+		var anchor := Vector2(float(lot["center"][0]),float(lot["center"][1]))
+		if position.distance_to(anchor) <= 5.0: return true
+	return false
+
+func _growth_use_for_candidate(cid: String,position: Vector2,requested: String) -> String:
+	if requested != "residential": return requested
+	var quota := community_land_use_quota(cid)
+	var usage := _community_usage(cid)
+	if int(quota.get("industrial",0)) > int(usage.get("industrial",0)) and _near_use_anchor(cid,position,"industrial"):
+		return "industrial"
+	return requested
+
+func _land_use_quota_bonus(cid: String,use: String) -> float:
+	var quota := community_land_use_quota(cid)
+	var usage := _community_usage(cid)
+	return maxf(0.0,float(int(quota.get(use,0))-int(usage.get(use,0)))) if quota.has(use) else 0.0
+
 func _grow(family: String, frame: int) -> void:
 	if str(families[family].get("root","")).is_empty() or not by_id.has(str(families[family].get("root",""))): return
 	if phrase_index < int(families[family].get("next_growth_phrase",0)):
@@ -822,6 +859,7 @@ func _grow(family: String, frame: int) -> void:
 		var p: Vector2 = Vector2(candidate["position"])
 		var check := placement(p)
 		if not check["allowed"]: continue
+		var candidate_use := _growth_use_for_candidate(str(check.get("community_id","")),p,str(candidate.get("use","residential")))
 		var connected := false
 		for owned in buildings:
 			if owned["family_id"] != family: continue
@@ -832,7 +870,7 @@ func _grow(family: String, frame: int) -> void:
 		if not connected: continue
 		var clashes := false
 		var ranked: Array = []
-		var probe := {"position":[p.x,p.y],"radius":cfg["space"]["residential_radius"],"type":candidate["use"],"current_midi":root["current_midi"],"placement_tier":check["tier"]}
+		var probe := {"position":[p.x,p.y],"radius":cfg["space"]["residential_radius"],"type":candidate_use,"current_midi":root["current_midi"],"placement_tier":check["tier"]}
 		for other_id in index.query_circle(p,float(probe["radius"])+float(cfg["space"]["gap_cutoff"])):
 			var other: Dictionary = by_id[other_id]
 			var weight := coupling.coefficient(probe,other,road_environment(p,Coupling.position_of(other)))
@@ -846,21 +884,22 @@ func _grow(family: String, frame: int) -> void:
 		if clashes: continue
 		var tier_rank := 3 if check["tier"] == "L1" else (2 if check["tier"] == "L2" else 1)
 		var distance := p.distance_squared_to(origin)
-		var transit_bonus := _transit_growth_bonus(p,str(candidate.get("use","residential")))
-		# Tier remains the primary placement rule; transit demand breaks ties and
-		# pulls useful lots toward transfer stops and functional centers.
-		var growth_score := float(tier_rank)*100000.0+transit_bonus*100.0-distance
+		var transit_bonus := _transit_growth_bonus(p,candidate_use)
+		var quota_bonus := _land_use_quota_bonus(str(check.get("community_id","")),candidate_use)
+		# Tier remains the primary placement rule; land-use deficits and transit
+		# demand break ties, pulling useful growth toward existing functional belts.
+		var growth_score := float(tier_rank)*100000.0+quota_bonus*1000.0+transit_bonus*100.0-distance
 		if growth_score > best_growth_score:
 			best_growth_score = growth_score
 			best_rank = tier_rank
 			best_distance = distance
-			best = {"position":p,"transit_bonus":transit_bonus}
+			best = {"position":p,"transit_bonus":transit_bonus,"quota_bonus":quota_bonus,"use":candidate_use}
 			best_check = check
 	if best.is_empty():
 		last_reason = "这一家族暂缺可达空地；可以在另一侧播种新主题"
 		return
 	var p: Vector2 = best["position"]
-	_birth(p,int(root["current_midi"]),family,false,frame)
+	_birth(p,int(root["current_midi"]),family,false,frame,str(best.get("use","residential")))
 	families[family]["next_growth_phrase"] = phrase_index+int(best_check.get("growth_delay",1))
 
 
