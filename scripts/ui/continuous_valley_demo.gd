@@ -71,6 +71,9 @@ var ripple_position := Vector2.ZERO
 var ripple_seconds := 0.0
 var selected_landmark_candidate := -1
 var building_display_key: Array = []
+var building_sync_count := 0
+var overlay_rebuild_count := 0
+var hit_sort_count := 0
 var revealing_buildings: Dictionary = {}
 var building_geometry: Dictionary = {}
 var shadow_records: Dictionary = {}
@@ -476,10 +479,14 @@ func _prepare_ground() -> void:
 		for polygon in Geometry2D.offset_polyline(road["path"],width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):
 			road_draw_polygons.append({"polygon":polygon,"color":Color("d3bb93") if road["bridge"] else Color("f1eee0")})
 
+func _shown_city_key() -> Array:
+	return [model.presentation_token,shown_world.phrase_index]
+
 func _hit(screen: Vector2) -> String:
-	var key := [shown_world,shown_world.phrase_index,sprites.size()]
+	var key := _shown_city_key()+[sprites.size()]
 	if hit_order_key != key:
 		hit_order_key = key
+		hit_sort_count += 1
 		hit_order = sprites.keys()
 		hit_order.sort_custom(func(a: String,b: String) -> bool: return sprites[a].position.y > sprites[b].position.y)
 	for id in hit_order:
@@ -865,7 +872,7 @@ func _sync_buildings() -> void:
 	buildings_layer.modulate = Color(0.96+warmth,1.0,1.0,1.0)
 	shadow_layer.position = origin
 	shadow_layer.scale = Vector2.ONE*view_zoom
-	var display_key := [shown_world,shown_world.phrase_index,shown_world.buildings.size(),pitches.hash()]
+	var display_key := _shown_city_key()+[shown_world.buildings.size(),pitches.hash()]
 	if building_display_key == display_key and sprites.size() == shown_world.buildings.size():
 		var dirty := false
 		for id in revealing_buildings.keys():
@@ -880,6 +887,7 @@ func _sync_buildings() -> void:
 		if dirty: _update_shadows()
 		return
 	building_display_key = display_key
+	building_sync_count += 1
 	revealing_buildings.clear()
 	var terrain_key := [shown_world.terrain.noise_seed,shown_world.terrain.river_phase,shown_world.terrain.family]
 	var shadows_dirty := shadow_terrain_key != terrain_key
@@ -999,9 +1007,10 @@ func _set_expression(value: String) -> void:
 	_message("深流：低音、缓慢脉动与留白" if value == "deep" else "晴岸：明亮主题与商街节奏")
 
 func _refresh_overlay() -> void:
-	var key := [shown_world,shown_world.phrase_index]
+	var key := _shown_city_key()
 	if overlay_key == key: return
 	overlay_key = key
+	overlay_rebuild_count += 1
 	overlay_candidates = shown_world.landmark_candidates()
 	overlay_service = shown_world.public_service_summary()
 	overlay_communities.clear()

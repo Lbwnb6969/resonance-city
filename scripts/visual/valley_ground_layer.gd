@@ -10,6 +10,7 @@ var patches: Array[PackedVector2Array] = []
 var contours: Array[PackedVector2Array] = []
 var camera_zoom := 1.0
 var rebuild_count := 0
+var update_count := 0
 var last_draw_ms := 0.0
 var max_draw_ms := 0.0
 
@@ -18,11 +19,12 @@ func sync(demo: Control) -> void:
 	position = Vector2(demo.size.x*0.5,demo.size.y*0.52)+demo.pan
 	scale = Vector2.ONE*demo.view_zoom
 	visible = not demo.black
-	var geometry_key: Array = [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])] if role == "terrain" else [city,city.phrase_index]
+	var geometry_key: Array = [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])] if role == "terrain" else demo._shown_city_key()
 	var next_key := geometry_key+[snappedf(demo.view_zoom,0.00001)]
 	if key == next_key: return
 	if key.is_empty() or key.slice(0,-1) != geometry_key: projected.clear()
 	key = next_key
+	update_count += 1
 	camera_zoom = demo.view_zoom
 	roads = demo.road_draw_polygons
 	patches = demo.ground_patches

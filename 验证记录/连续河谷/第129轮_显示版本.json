@@ -1,0 +1,109 @@
+{
+	"checks": {
+		"alpha_hit_exact": true,
+		"alpha_hit_visible": true,
+		"audible_retune_tint": true,
+		"before_reveal_bindings": true,
+		"before_reveal_physical_graph": true,
+		"before_reveal_pixels": true,
+		"before_sound_bindings": true,
+		"before_sound_physical_graph": true,
+		"before_sound_pixels": true,
+		"bridge_hidden": true,
+		"bridge_revealed": true,
+		"camera_0.54_bindings": true,
+		"camera_0.54_physical_graph": true,
+		"camera_0.54_pixels": true,
+		"camera_1.2_bindings": true,
+		"camera_1.2_physical_graph": true,
+		"camera_1.2_pixels": true,
+		"growth_bindings": true,
+		"growth_physical_graph": true,
+		"growth_pixels": true,
+		"new_session_invalidates": true,
+		"new_session_same_phrase_bindings": true,
+		"new_session_same_phrase_physical_graph": true,
+		"new_session_same_phrase_pixels": true,
+		"old_view_keeps_commands": true,
+		"old_view_new_object": true,
+		"one_audible_structural_refresh": true,
+		"opening_bindings": true,
+		"opening_physical_graph": true,
+		"opening_pixels": true,
+		"projection_exact": true,
+		"retune_bindings": true,
+		"retune_physical_graph": true,
+		"retune_pixels": true,
+		"runtime_token_not_saved": true,
+		"sound_copy_keeps_commands": true
+	},
+	"images": [
+		{
+			"building_syncs": 1,
+			"ground_updates": 1,
+			"label": "opening",
+			"mean_rgb_error": 0.0,
+			"reference_building_syncs": 1,
+			"reference_ground_updates": 1
+		},
+		{
+			"building_syncs": 1,
+			"ground_updates": 1,
+			"label": "before_reveal",
+			"mean_rgb_error": 0.0,
+			"reference_building_syncs": 2,
+			"reference_ground_updates": 2
+		},
+		{
+			"building_syncs": 2,
+			"ground_updates": 2,
+			"label": "growth",
+			"mean_rgb_error": 0.0,
+			"reference_building_syncs": 3,
+			"reference_ground_updates": 3
+		},
+		{
+			"building_syncs": 2,
+			"ground_updates": 2,
+			"label": "before_sound",
+			"mean_rgb_error": 0.0,
+			"reference_building_syncs": 4,
+			"reference_ground_updates": 4
+		},
+		{
+			"building_syncs": 3,
+			"ground_updates": 2,
+			"label": "retune",
+			"mean_rgb_error": 0.0,
+			"reference_building_syncs": 5,
+			"reference_ground_updates": 5
+		},
+		{
+			"building_syncs": 3,
+			"ground_updates": 3,
+			"label": "camera_0.54",
+			"mean_rgb_error": 0.0,
+			"reference_building_syncs": 5,
+			"reference_ground_updates": 6
+		},
+		{
+			"building_syncs": 3,
+			"ground_updates": 4,
+			"label": "camera_1.2",
+			"mean_rgb_error": 0.0,
+			"reference_building_syncs": 5,
+			"reference_ground_updates": 7
+		},
+		{
+			"building_syncs": 4,
+			"ground_updates": 5,
+			"label": "new_session_same_phrase",
+			"mean_rgb_error": 0.0,
+			"reference_building_syncs": 6,
+			"reference_ground_updates": 8
+		}
+	],
+	"max_projection_error": 0.0,
+	"opening_buildings": 18,
+	"passed": true
+}

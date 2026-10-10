@@ -58,11 +58,20 @@ func _run() -> void:
 		demo.model.prepare_settlement(boundary-22050,22050)
 		while not demo.model.settlement_job.completed(): await process_frame
 		demo.model.prepare_settlement(boundary-22050,22050)
+		demo._sync_buildings()
+		await RenderingServer.frame_post_draw
+		var old_ground_updates: int = demo.city_ground_layer.update_count
+		var old_building_syncs: int = demo.building_sync_count
 		demo.clock.renderer.transport.rendered_frames = boundary
 		demo.clock.renderer.render(512)
 		_check(demo.model.settlement_stats["adopted"] == 1 and demo.model.settlement_stats["fallbacks"] == 0,"packed worker result adopted at original phrase frame")
 		var old_shown := demo.model.presentation_world(boundary-1)
 		_check(demo.model.presentation_stats["prepared"] == 1 and demo.model.presentation_stats["reconstructed"] == 0 and old_shown.phrase_index == 0,"packed prepared old city used before audible boundary")
+		demo.clock.renderer.transport.audible_frame = boundary-1
+		demo.shown_world = old_shown
+		demo._sync_buildings()
+		await RenderingServer.frame_post_draw
+		_check(demo.city_ground_layer.update_count == old_ground_updates and demo.building_sync_count == old_building_syncs and demo.city_ground_layer.city == old_shown,"packed old-world view retains geometry while rebinding data")
 		var history: Array = demo.model.capture_state()["presentation_history"]
 		_check(not history.is_empty() and history.all(func(entry: Dictionary) -> bool: return not entry.has("view") and not entry.has("derived")),"packed runtime view excluded from DNA")
 		demo.clock.renderer.transport.audible_frame = boundary+33075

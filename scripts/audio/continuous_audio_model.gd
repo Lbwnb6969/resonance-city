@@ -13,6 +13,9 @@ var presentation_history: Array[Dictionary] = []
 var presentation_copy: ContinuousWorld
 var presentation_copy_frame := -1
 var presentation_stats := {"prepared":0,"reconstructed":0}
+# A display cache may outlive a model: retain only this small session token.
+# Different World objects for the same audible phrase share the token.
+var presentation_token := RefCounted.new()
 var event_cursor := 0
 var decisions: Array[Dictionary] = []
 var sound_events: Array[Dictionary] = []
