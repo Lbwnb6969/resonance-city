@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+ERROR: NATIVE_BUNDLE_FAIL packed camera redraw retains exact ground projections
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (D:/GODOT/GODOTPRO/共鸣之城/tests/native_bundle_contract.gd:13)
+       [1] _run (D:/GODOT/GODOTPRO/共鸣之城/tests/native_bundle_contract.gd:121)
+NATIVE_BUNDLE_ISOLATED FAIL checks=27
