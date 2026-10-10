@@ -132,7 +132,8 @@ def build(engine, output, evidence):
         '艺术/音乐时代候选状态见快速开始；真人体验仍待用户组织。\n', encoding='utf-8')
     record = {'rule_id': 'ASSET-001', 'status': 'PASS', 'source_commit': subprocess.check_output(
         ['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
-        'build_inputs_sha256': {p:sha(ROOT / p) for p in ['export_presets.cfg', '数据/spec_values.json', 'tools/build_demo_bundle.py', 'tests/native_bundle_contract.gd']},
+        'source_identity_scope': 'Git base commit plus exact working-file fingerprints; runtime data may contain concurrent design updates',
+        'build_inputs_sha256': {p:sha(ROOT / p) for p in ['project.godot', 'export_presets.cfg', '数据/spec_values.json', '数据/world_v2.json', 'tools/build_demo_bundle.py', 'tests/native_bundle_contract.gd']},
         'native_audio_sha256': sha(ROOT / 'addons/city_audio/bin/city_audio.windows.template_release.x86_64.dll'),
         'engine_version': result['engine'], 'engine_sha256': sha(engine),
         'pack_sha256': sha(pack), 'pack_size_bytes': pack.stat().st_size,
@@ -142,7 +143,7 @@ def build(engine, output, evidence):
         'scope': 'Local portable engine + resource pack; actual GPU isolated scenes and default entry; Dummy, not human listening or long stress'}
     (evidence / '构建记录.json').write_text(json.dumps(record, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     (output / '构建身份.json').write_text(json.dumps({k:record[k] for k in (
-        'source_commit', 'engine_version', 'engine_sha256', 'pack_sha256', 'scope')}, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        'source_commit', 'source_identity_scope', 'build_inputs_sha256', 'engine_version', 'engine_sha256', 'pack_sha256', 'scope')}, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     with zipfile.ZipFile(shipping, 'w', zipfile.ZIP_DEFLATED) as archive:
         for path in sorted(output.rglob('*')):
             if path.is_file():

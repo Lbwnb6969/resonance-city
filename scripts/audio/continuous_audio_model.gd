@@ -24,6 +24,72 @@ var transition_total := 0
 var max_render_ms := 0.0
 var max_settle_ms := 0.0
 var bed_table := PackedFloat32Array()
+const SettlementJob = preload("res://scripts/world/world_settlement_job.gd")
+var settlement_enabled := false
+var settlement_job: RefCounted
+var retiring_settlements: Array[RefCounted] = []
+var settlement_stats := {"started":0,"adopted":0,"discarded":0,"fallbacks":0,"retired":0,
+	"max_capture_ms":0.0,"max_worker_ms":0.0,"max_commit_ms":0.0}
+
+func _settlement_version() -> Array:
+	return [world.phrase_index,world.action_serial,world.planning_revision,world.mode,world.profile,
+		hash(world.pending_actions),hash(world.pending)]
+
+func enable_background_settlement() -> void:
+	settlement_enabled = true
+
+func close_background_settlement() -> void:
+	settlement_enabled = false
+	if settlement_job != null:
+		settlement_job.join()
+		_retire_settlement_job()
+	for job in retiring_settlements: job.join()
+	retiring_settlements.clear()
+
+func _retire_settlement_job() -> void:
+	settlement_job.retire()
+	retiring_settlements.append(settlement_job)
+	settlement_job = null
+
+func prepare_settlement(at: int, rate: int) -> void:
+	if not settlement_enabled: return
+	for i in range(retiring_settlements.size()-1,-1,-1):
+		if retiring_settlements[i].completed():
+			retiring_settlements[i].join()
+			retiring_settlements.remove_at(i)
+			settlement_stats["retired"] += 1
+	var version := _settlement_version()
+	if settlement_job != null:
+		if settlement_job.task_id >= 0:
+			if not settlement_job.completed(): return
+			settlement_job.join()
+			settlement_stats["max_worker_ms"] = maxf(settlement_stats["max_worker_ms"],settlement_job.worker_ms)
+		if settlement_job.version != version or settlement_job.commit_frame != next_boundary:
+			settlement_stats["discarded"] += 1
+			_retire_settlement_job()
+		else: return
+	# Two seconds of preparation do not add queued PCM or change input timing.
+	if next_boundary-at > rate*2: return
+	var started := Time.get_ticks_usec()
+	settlement_job = SettlementJob.new()
+	settlement_job.start(world,version,next_boundary)
+	settlement_stats["started"] += 1
+	settlement_stats["max_capture_ms"] = maxf(settlement_stats["max_capture_ms"],float(Time.get_ticks_usec()-started)/1000.0)
+
+func _commit_settlement(at: int) -> void:
+	var prepared: bool = settlement_job != null and settlement_job.commit_frame == at and settlement_job.version == _settlement_version()
+	if prepared and (settlement_job.task_id < 0 or settlement_job.completed()):
+		settlement_job.join()
+		settlement_stats["max_worker_ms"] = maxf(settlement_stats["max_worker_ms"],settlement_job.worker_ms)
+		var started := Time.get_ticks_usec()
+		settlement_job.adopt(world)
+		settlement_stats["max_commit_ms"] = maxf(settlement_stats["max_commit_ms"],float(Time.get_ticks_usec()-started)/1000.0)
+		settlement_stats["adopted"] += 1
+		_retire_settlement_job()
+	else:
+		world.settle(at)
+		if settlement_enabled: settlement_stats["fallbacks"] += 1
+
 
 func _init(city_world: ContinuousWorld, fixed_gain: float = 1.0) -> void:
 	world = city_world
@@ -127,7 +193,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		if at == next_boundary:
 			_record_presentation(at)
 			var settle_us := Time.get_ticks_usec()
-			world.settle(at)
+			_commit_settlement(at)
 			max_settle_ms = maxf(max_settle_ms,float(Time.get_ticks_usec()-settle_us)/1000.0)
 			changed = true
 			next_boundary += phrase_frames

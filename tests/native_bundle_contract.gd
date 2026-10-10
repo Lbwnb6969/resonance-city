@@ -44,8 +44,13 @@ func _run() -> void:
 		var accepted := demo.model.submit({"kind":"seed","position":[point.x,point.y],"midi":48})
 		_check(accepted["accepted"],"packed player operation accepted")
 		var boundary := demo.model.next_boundary
+		demo.model.enable_background_settlement()
+		demo.model.prepare_settlement(boundary-22050,22050)
+		while not demo.model.settlement_job.completed(): await process_frame
+		demo.model.prepare_settlement(boundary-22050,22050)
 		demo.clock.renderer.transport.rendered_frames = boundary
 		demo.clock.renderer.render(512)
+		_check(demo.model.settlement_stats["adopted"] == 1 and demo.model.settlement_stats["fallbacks"] == 0,"packed worker result adopted at original phrase frame")
 		demo.clock.renderer.transport.audible_frame = boundary+33075
 		demo.shown_world = demo.model.presentation_world(boundary+33075)
 		demo._sync_buildings()

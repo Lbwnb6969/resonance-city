@@ -1,0 +1,83 @@
+{
+	"after": 609,
+	"background": {
+		"adopted": 1,
+		"discarded": 2,
+		"fallbacks": 0,
+		"max_capture_ms": 95.53,
+		"max_commit_ms": 44.962,
+		"max_worker_ms": 344.485,
+		"started": 3
+	},
+	"before": 607,
+	"checks": {
+		"audible_reveal": true,
+		"background_adoption": true,
+		"camera_projection": true,
+		"grows": true,
+		"native_audio": true,
+		"no_underruns": true,
+		"target_scale": true,
+		"voice_budget": true
+	},
+	"concurrent_load": "User reports another game may be running; no other apps stopped",
+	"cpu_max_ms": 173.779,
+	"cpu_p50_ms": 41.902,
+	"cpu_p95_ms": 168.139,
+	"era": 5,
+	"fabric_profile": {
+		"anchor_ms": 48.656,
+		"select_ms": 10.405,
+		"walls_rows_ms": 17.379
+	},
+	"frame_last_ms": {
+		"buildings_ms": 16.77,
+		"draw_ms": 7.755,
+		"interaction_ms": 0.218,
+		"traffic_ms": 5.72
+	},
+	"frame_max_ms": 200.167,
+	"frame_p50_ms": 36.456,
+	"frame_p95_ms": 42.42,
+	"frame_peaks_ms": {
+		"buildings_ms": 23.282,
+		"draw_ms": 25.201,
+		"interaction_ms": 7.275,
+		"traffic_ms": 14.018
+	},
+	"frame_samples": 376,
+	"logical_processors": 32,
+	"max_projection_error": 0.0,
+	"max_render_ms": 126.107,
+	"max_settle_ms": 44.99,
+	"max_voices": 70,
+	"passed": true,
+	"profile": {
+		"actions_growth_ms": 73.87,
+		"coverage_ms": 11.828,
+		"fabric_ms": 78.978,
+		"music_forms_ms": 143.754,
+		"public_network_ms": 21.235,
+		"service_allocation_ms": 4.885,
+		"split_ms": 0.053
+	},
+	"shadow_rebuild_ms": 15.945,
+	"skips": 0,
+	"steady_fps": 30.0,
+	"steady_frame_ms": {
+		"buildings_ms": 0.115,
+		"draw_ms": 8.007,
+		"interaction_ms": 0.225,
+		"traffic_ms": 7.931
+	},
+	"steady_skips": 0,
+	"supply_block": {
+		"begin": 25401439,
+		"capacity": 8191,
+		"count": 768,
+		"render_ms": 126.118,
+		"reserve_frames": 7423,
+		"skips_after_render": 0
+	},
+	"synchronous": false
+}

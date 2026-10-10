@@ -46,6 +46,8 @@ var transit_lines: Array[Dictionary] = []
 # Smoothed stop activity is a light-weight memory shared by transport, growth,
 # and music; it is not a full economy simulation.
 var transit_demand: Dictionary = {}
+# Ephemeral task version; snapshots restore without pending worker tasks.
+var planning_revision := 0
 # Service pressure is derived from public coverage and cached within a planning pass.
 var public_service_cache: Dictionary = {}
 var settle_profile: Dictionary = {}
@@ -275,6 +277,7 @@ func _refresh_public_service() -> void:
 
 func record_transit_flow(stop_id: String, boarded: int, alighted: int, transfers: int = 0) -> void:
 	if stop_id.is_empty(): return
+	planning_revision += 1
 	var key := str(stop_id)
 	var record: Dictionary = transit_demand.get(key,{"score":0.0,"boarded":0,"alighted":0,"transfers":0,"visits":0})
 	var activity := float(maxi(0,boarded)+maxi(0,alighted))+float(maxi(0,transfers))*1.5

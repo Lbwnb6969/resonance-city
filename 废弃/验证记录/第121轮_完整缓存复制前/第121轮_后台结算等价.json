@@ -1,0 +1,189 @@
+{
+	"cases": [
+		{
+			"background": {
+				"adopted": 1,
+				"discarded": 0,
+				"fallbacks": 0,
+				"max_capture_ms": 0.65,
+				"max_commit_ms": 1.385,
+				"max_worker_ms": 26.731,
+				"started": 1
+			},
+			"buildings": 21,
+			"main_settle_ms": 1.392,
+			"name": "river_valley",
+			"pcm_error": 0.0,
+			"sync_settle_ms": 17.161
+		},
+		{
+			"background": {
+				"adopted": 1,
+				"discarded": 0,
+				"fallbacks": 0,
+				"max_capture_ms": 0.494,
+				"max_commit_ms": 0.782,
+				"max_worker_ms": 23.069,
+				"started": 1
+			},
+			"buildings": 20,
+			"main_settle_ms": 0.791,
+			"name": "lake_basin",
+			"pcm_error": 0.0,
+			"sync_settle_ms": 16.466
+		},
+		{
+			"background": {
+				"adopted": 1,
+				"discarded": 0,
+				"fallbacks": 0,
+				"max_capture_ms": 0.452,
+				"max_commit_ms": 0.993,
+				"max_worker_ms": 23.818,
+				"started": 1
+			},
+			"buildings": 21,
+			"main_settle_ms": 1.0,
+			"name": "forest_ridge",
+			"pcm_error": 0.0,
+			"sync_settle_ms": 19.119
+		},
+		{
+			"background": {
+				"adopted": 1,
+				"discarded": 0,
+				"fallbacks": 0,
+				"max_capture_ms": 0.574,
+				"max_commit_ms": 0.908,
+				"max_worker_ms": 22.917,
+				"started": 1
+			},
+			"buildings": 21,
+			"main_settle_ms": 0.917,
+			"name": "coastal_plain",
+			"pcm_error": 0.0,
+			"sync_settle_ms": 16.308
+		},
+		{
+			"background": {
+				"adopted": 1,
+				"discarded": 0,
+				"fallbacks": 0,
+				"max_capture_ms": 0.498,
+				"max_commit_ms": 0.676,
+				"max_worker_ms": 25.135,
+				"started": 1
+			},
+			"buildings": 21,
+			"main_settle_ms": 0.682,
+			"name": "highland_pass",
+			"pcm_error": 0.0,
+			"sync_settle_ms": 21.714
+		},
+		{
+			"background": {
+				"adopted": 0,
+				"discarded": 0,
+				"fallbacks": 1,
+				"max_capture_ms": 0.564,
+				"max_commit_ms": 0.0,
+				"max_worker_ms": 22.736,
+				"started": 1
+			},
+			"buildings": 21,
+			"main_settle_ms": 16.7,
+			"name": "late_retune",
+			"pcm_error": 0.0,
+			"sync_settle_ms": 17.686
+		},
+		{
+			"background": {
+				"adopted": 0,
+				"discarded": 0,
+				"fallbacks": 1,
+				"max_capture_ms": 0.5,
+				"max_commit_ms": 0.0,
+				"max_worker_ms": 21.682,
+				"started": 1
+			},
+			"buildings": 21,
+			"main_settle_ms": 15.677,
+			"name": "late_flow",
+			"pcm_error": 0.0,
+			"sync_settle_ms": 16.912
+		},
+		{
+			"background": {
+				"adopted": 0,
+				"discarded": 0,
+				"fallbacks": 1,
+				"max_capture_ms": 0.649,
+				"max_commit_ms": 0.0,
+				"max_worker_ms": 31.1,
+				"started": 1
+			},
+			"buildings": 21,
+			"main_settle_ms": 17.296,
+			"name": "late_cancel",
+			"pcm_error": 0.0,
+			"sync_settle_ms": 16.79
+		}
+	],
+	"checks": {
+		"close_running_task": true,
+		"coastal_plain_adopted": true,
+		"coastal_plain_fabric": true,
+		"coastal_plain_identity": true,
+		"coastal_plain_pcm": true,
+		"coastal_plain_reveal": true,
+		"coastal_plain_world": true,
+		"dna_no_task": true,
+		"forest_ridge_adopted": true,
+		"forest_ridge_fabric": true,
+		"forest_ridge_identity": true,
+		"forest_ridge_pcm": true,
+		"forest_ridge_reveal": true,
+		"forest_ridge_world": true,
+		"highland_pass_adopted": true,
+		"highland_pass_fabric": true,
+		"highland_pass_identity": true,
+		"highland_pass_pcm": true,
+		"highland_pass_reveal": true,
+		"highland_pass_world": true,
+		"lake_basin_adopted": true,
+		"lake_basin_fabric": true,
+		"lake_basin_identity": true,
+		"lake_basin_pcm": true,
+		"lake_basin_reveal": true,
+		"lake_basin_world": true,
+		"late_cancel_discard": true,
+		"late_cancel_fabric": true,
+		"late_cancel_fallback": true,
+		"late_cancel_identity": true,
+		"late_cancel_pcm": true,
+		"late_cancel_reveal": true,
+		"late_cancel_world": true,
+		"late_flow_discard": true,
+		"late_flow_fabric": true,
+		"late_flow_fallback": true,
+		"late_flow_identity": true,
+		"late_flow_pcm": true,
+		"late_flow_reveal": true,
+		"late_flow_world": true,
+		"late_retune_discard": true,
+		"late_retune_fabric": true,
+		"late_retune_fallback": true,
+		"late_retune_identity": true,
+		"late_retune_pcm": true,
+		"late_retune_reveal": true,
+		"late_retune_world": true,
+		"river_valley_adopted": true,
+		"river_valley_fabric": true,
+		"river_valley_identity": true,
+		"river_valley_pcm": true,
+		"river_valley_reveal": true,
+		"river_valley_world": true
+	},
+	"max_pcm_error": 0.0,
+	"passed": true
+}

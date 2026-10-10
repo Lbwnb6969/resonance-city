@@ -277,6 +277,8 @@ static func _select_courtyards(world: RefCounted, anchors: Dictionary) -> Array:
 				duplicate = true
 				break
 		if not duplicate:
+			# Cached court geometry is immutable after publication; annotate a selection copy.
+			candidate = candidate.duplicate()
 			candidate["community_id"] = community_id
 			selected.append(candidate)
 			counts[community_id] = int(counts.get(community_id,0))+1

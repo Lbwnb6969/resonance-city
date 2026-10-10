@@ -44,6 +44,9 @@ func start_output(source: Callable, initial_state: Dictionary, saved_renderer: D
 	renderer = Renderer.new()
 	if player.stream == null: player.stream = _new_generator()
 	renderer.source = source
+	var provider: Object = source.get_object() if source.is_valid() else null
+	if is_instance_valid(provider) and provider.has_method("enable_background_settlement"):
+		provider.enable_background_settlement()
 	renderer.state = initial_state.duplicate(true)
 	resume_fade_left = 0
 	if not saved_renderer.is_empty():
@@ -80,6 +83,9 @@ func _update_audible() -> void:
 	underruns = playback.get_skips()
 
 func _fill_buffer() -> void:
+	var provider: Object = renderer.source.get_object() if renderer.source.is_valid() else null
+	if is_instance_valid(provider) and provider.has_method("prepare_settlement"):
+		provider.prepare_settlement(renderer.transport.rendered_frames,renderer.transport.sample_rate)
 	var available := playback.get_frames_available()
 	while available > 0:
 		var started := Time.get_ticks_usec()
@@ -105,6 +111,10 @@ func stop_output() -> void:
 		player.stop()
 		player.stream = null
 	playback = null
+	if renderer != null:
+		var provider: Object = renderer.source.get_object() if renderer.source.is_valid() else null
+		if is_instance_valid(provider) and provider.has_method("close_background_settlement"):
+			provider.close_background_settlement()
 	output_stopped.emit()
 
 func _exit_tree() -> void:
