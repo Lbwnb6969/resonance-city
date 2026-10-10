@@ -296,8 +296,82 @@ func accept_comparison(payload: Dictionary,request_key: Array) -> bool:
 	update_candidate(demo.world_at(demo.pointer))
 	return true
 
+func _comparison_role_map_items(mapping: Dictionary) -> Array:
+	var aliases := {"Lead":["Lead","theme"],"Bass":["Bass","bass"],
+		"Rhythm":["Rhythm","commercial","rhythm"],"Response":["Response","response"]}
+	var result: Array = []
+	for role: String in ["Lead","Bass","Rhythm","Response"]:
+		for key: String in aliases[role]:
+			if mapping.has(key) and mapping[key] is Dictionary:
+				result.append(mapping[key])
+				break
+	return result
+
+func _comparison_opportunity_items(variant: Dictionary) -> Array:
+	# New preview workers may expose a dedicated opportunity_preview payload. The
+	# old public comparison contract keeps the same data under opportunities, so
+	# the panel accepts both without inventing role audio for a missing payload.
+	var source: Variant = variant.get("opportunity_preview",null)
+	if source == null: source = variant.get("opportunities",[])
+	if source is Dictionary:
+		var object: Dictionary = source
+		if object.has("communities") and object["communities"] is Array: source = object["communities"]
+		elif object.has("roles") and object["roles"] is Array: source = object["roles"]
+		elif object.has("opportunities"): source = object["opportunities"]
+		elif object.has("role_opportunities") and object["role_opportunities"] is Dictionary:
+			source = _comparison_role_map_items(object["role_opportunities"])
+		else:
+			var direct: Array = []
+			for role: String in ["Lead","Bass","Rhythm","Response"]:
+				if object.has(role) and object[role] is Dictionary: direct.append(object[role])
+			source = direct
+	if not source is Array: return []
+	var entries: Array = source
+	# public_planning_preview currently returns one community opportunity per
+	# entry; select the first community's structured role rows for this compact
+	# branch panel. A future direct role-array payload falls through unchanged.
+	for raw in entries:
+		if not raw is Dictionary: continue
+		var community: Dictionary = raw
+		if community.has("roles") and community["roles"] is Array: return community["roles"]
+		if community.has("roles") and community["roles"] is Dictionary:
+			var role_rows: Array = _comparison_role_map_items(community["roles"])
+			if not role_rows.is_empty(): return role_rows
+		if community.has("role_opportunities") and community["role_opportunities"] is Dictionary:
+			var roles: Array = _comparison_role_map_items(community["role_opportunities"])
+			if not roles.is_empty(): return roles
+		if community.has("opportunities") and community["opportunities"] is Array:
+			return community["opportunities"]
+	return entries
+
+func _comparison_role_item(items: Array,role: String) -> Dictionary:
+	var ids := {
+		"Lead":["Lead","P11-COMMUNITY-THEME","主题","社区主题"],
+		"Bass":["Bass","P11-BASS","P11-BASS-EXPRESSION","低音","低音表达"],
+		"Rhythm":["Rhythm","P11-RHYTHM","P11-COMMERCIAL-RHYTHM","节奏","商业律动"],
+		"Response":["Response","P11-RESPONSE","P11-RIVER-RESPONSE","应答","跨岸应答"]}
+	for raw in items:
+		if not raw is Dictionary: continue
+		var item: Dictionary = raw
+		if str(item.get("role","")) == role: return item
+		for key: String in ["rule_id","title","name"]:
+			if ids[role].has(str(item.get(key,""))): return item
+	return {}
+
+func _comparison_role_line(items: Array,role: String) -> String:
+	var labels := {"Bass":"低音表达","Rhythm":"商业律动","Response":"跨岸应答"}
+	var item := _comparison_role_item(items,role)
+	if item.is_empty():
+		return "%s · 待条件 · 现 暂无本分支机会快照 · 下 重新试听后查看真实条件" % labels[role]
+	var qualification: Variant = item.get("qualification",{})
+	var qualified := bool(item.get("qualified",qualification.get("qualified",false) if qualification is Dictionary else false))
+	var current := str(item.get("current","暂未生成" )).replace("\n","；")
+	var next := str(item.get("next","继续规划后刷新" )).replace("\n","；")
+	return "%s · %s · 现 %s · 下 %s" % [labels[role],"已就绪" if qualified else "待条件",current,next]
+
 func _show_comparison() -> void:
-	var lines: Array[String] = ["下一句真实对照 · 同一快照 / 同一增益 / 各3秒；点击地图才确认"]
+	var lines: Array[String] = ["下一句真实对照 · 同一快照 / 同一增益 / 各3秒；点击地图才确认",
+		"机会行只读同一分支的结构条件；试听是完整合奏，不承诺单独声部未来音频"]
 	for kind: String in ["none","park","civic"]:
 		var variant: Dictionary = comparison["variants"][kind]
 		var title := str({"none":"暂不建","park":"公园","civic":"文化馆"}[kind])
@@ -310,9 +384,16 @@ func _show_comparison() -> void:
 		if kind == "civic":
 			service = "本馆%d/%d栋 · 全城净增%d栋服务" % [variant["anchor"].get("served",[]).size(),int(variant["anchor"].get("service_capacity",18)),variant["newly_served_ids"].size()-variant["lost_service_ids"].size()]
 		lines.append(prefix+title+" · 下一句%d栋 · " % int(variant["houses"])+service+" · "+role)
+		var opportunity_items := _comparison_opportunity_items(variant)
+		for role_id: String in ["Bass","Rhythm","Response"]:
+			lines.append("　"+_comparison_role_line(opportunity_items,role_id))
 	var chosen: Dictionary = comparison["variants"][anchor_kind]
-	if chosen["accepted"] and not chosen["opportunities"].is_empty():
-		lines.append("下一步 · "+str(chosen["opportunities"][0]["next"]))
+	if chosen["accepted"]:
+		var chosen_items := _comparison_opportunity_items(chosen)
+		var chosen_theme := _comparison_role_item(chosen_items,"Lead")
+		if chosen_theme.is_empty() and not chosen_items.is_empty(): chosen_theme = chosen_items[0]
+		if not chosen_theme.is_empty() and not str(chosen_theme.get("next","")).is_empty():
+			lines.append("下一步 · "+str(chosen_theme["next"]))
 	lines.append("不建保留正常成长；公园/文化馆占用这片空地。新选择替换待落定公共规划。")
 	detail.text = "\n".join(lines)
 
