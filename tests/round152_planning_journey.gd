@@ -81,6 +81,22 @@ func _run() -> void:
 	var bare_audio := render(Model.new(bare))
 	check(planned_audio.size() == bare_audio.size() and planned_audio.size() > 0, "journey renders a comparable short score")
 	check(max_difference(planned_audio, bare_audio) > 0.0001, "public planning changes the rendered score")
+	var scene: PackedScene = load("res://scenes/continuous_valley.tscn")
+	var demo = scene.instantiate()
+	demo.session_persistence = false
+	root.add_child(demo)
+	await process_frame
+	await process_frame
+	demo.clock.stop_output()
+	demo.set_process(false)
+	check(str(demo._planning_status_hint()).begins_with("P规划"), "fresh Demo keeps the planning entry visible")
+	var ui_cid := str(demo.model.world.buildings[0]["community_id"])
+	var ui_cards := PlanningCard.choices(demo.model.world, "compact")
+	check(demo.model.submit({"kind":"charter", "plan_id":"compact", "community_ids":[ui_cid], "card_refs":[str(ui_cards[0])]})["accepted"], "UI status fixture queues a charter")
+	check(str(demo._planning_status_hint()).begins_with("待播规划"), "queued planning is visible after the panel closes")
+	demo.queue_free()
+	await process_frame
+	await process_frame
 	var failures: Array[String] = []
 	for label in checks:
 		if not checks[label]: failures.append(label)
