@@ -105,6 +105,7 @@ func sync(demo: Control) -> void:
 	# Share the previous frame's physical positions so travelers yield at the same road point.
 	# Priority is deterministic, keeping opposing traffic from deadlocking at a bend.
 	var traffic: Array = []
+	var accesses: Dictionary = {}
 	for traffic_key in props:
 		var traffic_prop: ValleyProp = props[traffic_key]
 		if not traffic_prop.has_meta("traveler"): continue
@@ -112,6 +113,7 @@ func sync(demo: Control) -> void:
 		var traffic_traveler: CityTraveler = traffic_prop.get_meta("traveler")
 		if not traffic_traveler.initialized: continue
 		var traffic_access: Dictionary = city.network.access(traffic_traveler.position,false)
+		accesses[traffic_key] = {"position":traffic_traveler.position,"topology":city.network.topology,"access":traffic_access}
 		traffic.append({"kind":traffic_traveler.kind,"ordinal":traffic_traveler.ordinal,
 			"position":traffic_traveler.position,"direction":traffic_traveler.direction,
 			"road":str(traffic_access.get("road","")),"road_from":str(traffic_access.get("from","")),
@@ -131,7 +133,7 @@ func sync(demo: Control) -> void:
 			prop.reveal = clampf((frame-int(site["frame"]))/(0.5*rate),0.0,1.0)
 		if prop.kind in ["bus","carriage","tram","car","walker"]:
 			var traveler: CityTraveler = prop.get_meta("traveler")
-			var movement := traveler.advance(city,seconds,traffic)
+			var movement := traveler.advance(city,seconds,traffic,accesses.get(key,{}))
 			prop.visible = not movement.is_empty()
 			if prop.visible:
 				p = movement["position"]

@@ -44,7 +44,7 @@ func _init(agent_kind: String = "walker", index: int = 0) -> void:
 	kind = agent_kind
 	ordinal = index
 
-func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dictionary:
+func advance(city: ContinuousWorld, seconds: float, traffic: Array = [], physical_access: Dictionary = {}) -> Dictionary:
 	if kind == "car" and city.era < 5: return {}
 	if kind in ["carriage","tram","bus"] and _line(city).is_empty(): return {}
 	if kind == "car" and city.network.nodes.is_empty(): return {}
@@ -85,7 +85,7 @@ func advance(city: ContinuousWorld, seconds: float, traffic: Array = []) -> Dict
 			continue
 		var speed := maxf(motion_speed,0.05)
 		var desired: float = minf(elapsed,maxf(0.0,total-distance)/speed)
-		var allowed: float = _traffic_distance(city,desired,traffic)
+		var allowed: float = _traffic_distance(city,desired,traffic,physical_access)
 		if desired > 0.000001 and allowed <= 0.000001:
 			# Higher-priority traffic keeps moving; the follower yields for a short visible pause.
 			wait = maxf(wait,minf(elapsed,0.08))
@@ -118,9 +118,11 @@ func _priority() -> int:
 	var kind_rank: int = int({"carriage":0,"tram":1,"bus":2,"car":3,"walker":4}.get(kind,5))
 	return ordinal*8+int(kind_rank)
 
-func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array) -> float:
+func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array,physical_access: Dictionary = {}) -> float:
 	if desired <= 0.000001 or traffic.is_empty(): return desired
-	var access: Dictionary = city.network.access(position,false)
+	# Reuse only this frame's exact-position query; after initialization/turning
+	# or a topology change the normal nearest-road query remains authoritative.
+	var access: Dictionary = physical_access["access"] if physical_access.get("position") == position and physical_access.get("topology") == city.network.topology else city.network.access(position,false)
 	var road: String = str(access.get("road",""))
 	if road.is_empty(): return desired
 	for other in traffic:

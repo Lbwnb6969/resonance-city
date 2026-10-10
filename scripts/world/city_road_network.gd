@@ -123,7 +123,7 @@ func access(p: Vector2, cache_result: bool = true) -> Dictionary:
 			var q := Geometry2D.get_closest_point_to_segment(p,segment["a"],segment["b"])
 			var gap := p.distance_to(q)
 			if gap >= nearest-0.000001: continue
-			if not Geometry2D.intersect_polyline_with_polygon(PackedVector2Array([p,q]),terrain.water).is_empty(): continue
+			if Rect2(p,q-p).abs().intersects(terrain.water_bounds,true) and not Geometry2D.intersect_polyline_with_polygon(PackedVector2Array([p,q]),terrain.water).is_empty(): continue
 			var road: Dictionary = segment["road"]
 			nearest = gap
 			best = {"road":road["id"],"from":road["from"],"to":road["to"],"along":float(segment["along"])+Vector2(segment["a"]).distance_to(q),"length":road["length"],"gap":gap,"position":[q.x,q.y]}

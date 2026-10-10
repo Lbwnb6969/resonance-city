@@ -14,3 +14,10 @@
 
 # Local Python bytecode from evidence tooling.
 /tools/__pycache__/
+
+# Native audio source and playable DLL are tracked; compiler intermediates are not.
+/native/city_audio/.sconsign.dblite
+/native/city_audio/src/*.obj
+/native/city_audio/src/*.obj.import
+/addons/city_audio/bin/*.exp
+/addons/city_audio/bin/*.lib

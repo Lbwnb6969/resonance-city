@@ -18,6 +18,9 @@ var pitch_overrides: Dictionary = {}
 var population: Dictionary = {}
 var last_voice_count := 0
 var max_voice_count := 0
+# The score/state stays in GDScript; selected wavetable voices share one native block.
+var native_enabled := true
+var native_mixer: RefCounted = ClassDB.instantiate("CityPadMixer") if ClassDB.class_exists("CityPadMixer") else null
 
 func begin_continuous_era_transition(frame: int,target_era: int,rate: int) -> void:
 	var duration := maxi(1,roundi(4.0*60.0*float(rate)/120.0))
@@ -249,6 +252,9 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 	var fade_frames := float(score["control_fade_beats"])*60.0*rate/120.0
 	var retired: Array = []
 	var active_count := 0
+	var native_keys: Array[String] = []
+	var native_tables: Array = []
+	var native_controls := PackedFloat64Array()
 	# Reserve slots for the environment and musical overlays before rendering pads.
 	# Large cities can have more valid community/type/pitch groups than the 70-voice
 	# budget; rotate the stable group set instead of asserting or producing a spike.
@@ -281,6 +287,11 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		if selected and (level > 0.00001 or target > 0.0): active_count += 1
 		# Linear amplitude ramps with continuous oscillator phase; no replayed PCM.
 		var step := float(score["pad_gain"])/fade_frames
+		if selected and native_enabled and native_mixer != null:
+			native_keys.append(key)
+			native_tables.append(table)
+			native_controls.append_array(PackedFloat64Array([phase,level,target,hz/rate,stereo.x,stereo.y,target_stereo.x,target_stereo.y,step,1.0/(float(score["pitch_glide_seconds"])*rate),gain]))
+			continue
 		if not selected:
 			# Virtual groups retain oscillator time without a per-sample render loop.
 			level = move_toward(level,0.0,step*count)
@@ -316,6 +327,23 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		if group["active"]:
 			for id in group["members"]: state["_phase_"+id] = phase
 		elif level <= 0.00001: retired.append(key)
+	if not native_keys.is_empty():
+		var mixed: Array = native_mixer.call("render_pads",output,native_tables,native_controls)
+		output = mixed[0]
+		native_controls = mixed[1]
+		if capture_drone: captured_drone = output.duplicate()
+		for voice in range(native_keys.size()):
+			var key: String = native_keys[voice]
+			var group: Dictionary = pad_groups[key]
+			var phase := native_controls[voice*11]
+			var level := native_controls[voice*11+1]
+			state["_pad_phase_"+key] = phase
+			state["_pad_level_"+key] = level
+			state["_pad_stereo_"+key] = Vector2(native_controls[voice*11+4],native_controls[voice*11+5])
+			group["level"] = level
+			if group["active"]:
+				for id in group["members"]: state["_phase_"+id] = phase
+			elif level <= 0.00001: retired.append(key)
 	for key in retired: pad_groups.erase(key)
 	var retiring_rhythms: Array = []
 	var pulse_count := 0

@@ -74,6 +74,10 @@ var ground_patches: Array[PackedVector2Array] = []
 var ground_contours: Array[PackedVector2Array] = []
 var frame_profile: Dictionary = {}
 var frame_peaks: Dictionary = {}
+var hit_order: Array = []
+var hit_order_key: Array = []
+var hover_placement_key: Array = []
+var hover_placement: Dictionary = {}
 
 func _profile_frame(stage: String, started: int) -> void:
 	var elapsed := float(Time.get_ticks_usec()-started)/1000.0
@@ -443,9 +447,12 @@ func _prepare_ground() -> void:
 			road_draw_polygons.append({"polygon":polygon,"color":Color("d3bb93") if road["bridge"] else Color("f1eee0")})
 
 func _hit(screen: Vector2) -> String:
-	var ordered: Array = sprites.keys()
-	ordered.sort_custom(func(a: String,b: String) -> bool: return sprites[a].position.y > sprites[b].position.y)
-	for id in ordered:
+	var key := [shown_world,shown_world.phrase_index,sprites.size()]
+	if hit_order_key != key:
+		hit_order_key = key
+		hit_order = sprites.keys()
+		hit_order.sort_custom(func(a: String,b: String) -> bool: return sprites[a].position.y > sprites[b].position.y)
+	for id in hit_order:
 		var sprite: AudioGrowthMask = sprites[id]
 		if sprite.progress <= 0.0: continue
 		var local := sprite.to_local(screen)-sprite.offset
@@ -726,6 +733,13 @@ func _build_preview(frozen: ContinuousAudioModel, operation: Dictionary, state: 
 	var rate := int(Config.load_values()["timing"]["sample_rate"])
 	return Renderer.pcm16(frozen.forecast(operation,state,at,rate*3))
 
+func _hover_placement(p: Vector2) -> Dictionary:
+	var key := [model.world,model.world.phrase_index,model.world.action_serial,p]
+	if hover_placement_key != key:
+		hover_placement_key = key
+		hover_placement = model.world.placement(p)
+	return hover_placement
+
 func _process(delta: float) -> void:
 	if model == null: return
 	view_zoom = lerpf(view_zoom,zoom_target,1.0-exp(-delta/0.14))
@@ -776,7 +790,7 @@ func _process(delta: float) -> void:
 	if black: menu.hide()
 	hover_id = _hit(pointer) if pointer_inside else ""
 	var p := world_at(pointer)
-	var check := model.world.placement(p)
+	var check := _hover_placement(p)
 	var landmark := shown_world.landmark_at(p)
 	if not landmark.is_empty():
 		var progress := clampf(float(clock.renderer.transport.audible_frame-int(landmark.get("reveal_frame",landmark.get("frame",0))))/float(maxi(1,int(landmark.get("reveal_frames",1)))),0.0,1.0)

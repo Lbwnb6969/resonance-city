@@ -1,0 +1,63 @@
+{
+	"after": 609,
+	"before": 607,
+	"checks": {
+		"audible_reveal": true,
+		"camera_projection": true,
+		"grows": true,
+		"native_audio": true,
+		"no_underruns": true,
+		"target_scale": true,
+		"voice_budget": true
+	},
+	"era": 5,
+	"fabric_profile": {
+		"anchor_ms": 44.92,
+		"select_ms": 8.993,
+		"walls_rows_ms": 15.44
+	},
+	"frame_last_ms": {
+		"buildings_ms": 14.812,
+		"draw_ms": 7.058,
+		"interaction_ms": 2.514,
+		"traffic_ms": 6.233
+	},
+	"frame_peaks_ms": {
+		"buildings_ms": 24.908,
+		"draw_ms": 21.176,
+		"interaction_ms": 4.334,
+		"traffic_ms": 11.995
+	},
+	"max_projection_error": 0.0,
+	"max_render_ms": 299.284,
+	"max_settle_ms": 225.248,
+	"max_voices": 70,
+	"passed": true,
+	"profile": {
+		"actions_growth_ms": 62.817,
+		"coverage_ms": 10.556,
+		"fabric_ms": 71.892,
+		"music_forms_ms": 69.638,
+		"public_network_ms": 19.47,
+		"service_allocation_ms": 4.757,
+		"split_ms": 0.066
+	},
+	"shadow_rebuild_ms": 14.053,
+	"skips": 0,
+	"steady_fps": 30.0,
+	"steady_frame_ms": {
+		"buildings_ms": 0.102,
+		"draw_ms": 7.006,
+		"interaction_ms": 2.45,
+		"traffic_ms": 9.214
+	},
+	"steady_skips": 0,
+	"supply_block": {
+		"begin": 25401439,
+		"capacity": 8191,
+		"count": 256,
+		"render_ms": 299.294,
+		"reserve_frames": 7935,
+		"skips_after_render": 0
+	}
+}
