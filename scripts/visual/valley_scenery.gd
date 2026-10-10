@@ -1,5 +1,7 @@
 class_name ValleyScenery
 extends RefCounted
+const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
+const PublicGeometry = preload("res://scripts/visual/public_space_visual_geometry.gd")
 ## Props share the building depth sort and the same audio frame as the river and city.
 var props: Dictionary = {}
 var sites: Dictionary = {}
@@ -28,7 +30,7 @@ func rebuild(demo: Control) -> void:
 		for lot in city.lots:
 			if p.distance_to(Vector2(lot["center"][0],lot["center"][1])) < 1.25: clear = false
 		for site in city.public_sites:
-			if Geometry2D.is_point_in_polygon(p,site["polygon"]): clear = false
+			if SpatialPlanning.point_in_footprint(site,p): clear = false
 		var access := city.network.access(p)
 		if not access.is_empty() and float(access["gap"]) < 0.6: clear = false
 		if clear: _add(demo,"grove-%d" % i,p,"rock" if i%13 == 0 else "tree",i)
@@ -86,7 +88,7 @@ func restore(saved: Dictionary) -> void:
 func _sync_public_props(demo: Control,city: ContinuousWorld) -> void:
 	for site in city.public_sites:
 		var id := str(site["id"])
-		var layout := [site["position"],site["polygon"],site["kind"]]
+		var layout := [site["position"],PublicGeometry.identity(site),site["kind"],bool(site.get("player_planned",false))]
 		if public_prop_layouts.get(id,[]) == layout: continue
 		for key in public_prop_keys.get(id,[]):
 			if props.has(key):
@@ -95,23 +97,36 @@ func _sync_public_props(demo: Control,city: ContinuousWorld) -> void:
 				prop_projections.erase(key)
 		public_prop_layouts[id] = layout.duplicate()
 		var keys: Array[String] = []
-		var p := Vector2(float(site["position"][0]),float(site["position"][1]))
-		if site["kind"] == "civic":
-			_add(demo,id,p,"civic",0,id)
-			if bool(site.get("player_planned",false)):
-				var box := _polygon_bounds(site["polygon"])
-				props[id].set_meta("public_scale",minf(1.0,minf(box.size.x,box.size.y)/1.1))
-			keys.append(id)
-		else:
-			var box := _polygon_bounds(site["polygon"])
-			for i in range(8):
-				var offset := Vector2(-1.1+(i%2)*2.2,-1.4+(i/2)*0.9)
-				if bool(site.get("player_planned",false)) or box.size.x < 2.4 or box.size.y < 3.2:
-					offset = Vector2((-0.35 if i%2 == 0 else 0.35)*box.size.x,(-0.33+(i/2)*0.22)*box.size.y)
-				if not Geometry2D.is_point_in_polygon(p+offset,site["polygon"]): continue
-				var key := "%s-tree-%d" % [id,i]
-				_add(demo,key,p+offset,"tree",i,id)
-				keys.append(key)
+		var holes := SpatialPlanning.footprint_holes(site)
+		var component_index := 0
+		for component in PublicGeometry.components(site):
+			var p: Vector2 = component["position"]
+			var polygon: PackedVector2Array = component["outer"]
+			var component_id := id if component_index == 0 else "%s-part-%d" % [id,component_index]
+			if site["kind"] == "civic":
+				_add(demo,component_id,p,"civic",component_index,id)
+				# The civic base fits inside a radius of 0.7 world units.
+				props[component_id].set_meta("public_scale",minf(1.0,float(component["clearance"])/0.7))
+				keys.append(component_id)
+			else:
+				var box := _polygon_bounds(polygon)
+				var before := keys.size()
+				for i in range(8):
+					var candidate := p+Vector2(-1.1+(i%2)*2.2,-1.4+(i/2)*0.9)
+					if bool(site.get("player_planned",false)) or box.size.x < 2.4 or box.size.y < 3.2:
+						candidate = box.get_center()+Vector2((-0.35 if i%2 == 0 else 0.35)*box.size.x,(-0.33+(i/2)*0.22)*box.size.y)
+					var available := PublicGeometry.clearance(polygon,holes,candidate)
+					if available <= 0.00001: continue
+					var key := "%s-tree-%d" % [component_id,i]
+					_add(demo,key,candidate,"tree",i+component_index*8,id)
+					props[key].set_meta("public_scale",minf(1.0,available/0.5))
+					keys.append(key)
+				if keys.size() == before:
+					var key := component_id+"-tree-0"
+					_add(demo,key,p,"tree",component_index*8,id)
+					props[key].set_meta("public_scale",minf(1.0,float(component["clearance"])/0.5))
+					keys.append(key)
+			component_index += 1
 		public_prop_keys[id] = keys
 
 func _polygon_bounds(polygon: PackedVector2Array) -> Rect2:

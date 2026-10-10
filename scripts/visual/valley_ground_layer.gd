@@ -1,6 +1,7 @@
 extends Node2D
 const Coupling = preload("res://scripts/world/world_coupling.gd")
 const IsoProjection = preload("res://scripts/world/world_projection.gd")
+const PublicGeometry = preload("res://scripts/visual/public_space_visual_geometry.gd")
 var city: ContinuousWorld
 var role := "terrain"
 var key: Array = []
@@ -151,30 +152,25 @@ func _draw_public_space() -> void:
 		polygon.append(polygon[0])
 		draw_polyline(polygon,Color(0.40,0.56,0.40,0.72),1.5/camera_zoom,true)
 	for site in city.public_sites:
-		var polygon: PackedVector2Array = site["polygon"]
-		var projected := _project_polygon(polygon)
-		if site["active"]:
-			var color := Color("bacda7") if site["kind"] == "park" else Color("ded5b9")
-			draw_colored_polygon(projected,color)
-			if site["kind"] == "park":
-				var p := Vector2(site["position"][0],site["position"][1])
-				var walk := PackedVector2Array([p+Vector2(-2,0.1),p+Vector2(0.2,-0.25),p+Vector2(2,0.15)])
-				for part in Geometry2D.intersect_polyline_with_polygon(walk,polygon):
-					draw_polyline(_project_polygon(part),Color("e6e2c9"),3.4*1.0,true)
-				var pool := PackedVector2Array()
-				for i in range(32): pool.append(p+Vector2(0.4,0.6)+Vector2(cos(TAU*i/32)*0.5,sin(TAU*i/32)*0.35))
-				for clipped_pool in Geometry2D.intersect_polygons(pool,polygon):
-					draw_colored_polygon(_project_polygon(clipped_pool),Color("9bb9af"))
+		for component in PublicGeometry.components(site):
+			if site["active"]:
+				var color := Color("bacda7") if site["kind"] == "park" else Color("ded5b9")
+				for piece in component["pieces"]: draw_colored_polygon(_project_polygon(piece),color)
+				if site["kind"] == "park":
+					var details := PublicGeometry.park_details(component)
+					for path in details["paths"]: draw_colored_polygon(_project_polygon(path),Color("e6e2c9"))
+					for pool in details["pools"]: draw_colored_polygon(_project_polygon(pool),Color("9bb9af"))
+				else:
+					var center := _point(component["position"])
+					var mark_scale := minf(1.0,float(component["clearance"])/0.9)
+					for level in range(int(site.get("service_level",1))):
+						draw_circle(center+Vector2((level-1)*7,15)*mark_scale,2.2*mark_scale,Color("927851"))
+					if site.get("served",[]).size() >= int(site.get("service_capacity",18)):
+						draw_arc(center,14*mark_scale,0,TAU,32,Color("b58b55"),1.2/camera_zoom,true)
 			else:
-				var center := _point(Vector2(site["position"][0],site["position"][1]))
-				for level in range(int(site.get("service_level",1))):
-					draw_circle(center+Vector2((level-1)*7,15)*1.0,2.2*1.0,Color("927851"))
-				if site.get("served",[]).size() >= int(site.get("service_capacity",18)):
-					draw_arc(center,14*1.0,0,TAU,32,Color("b58b55"),1.2/camera_zoom,true)
-		else:
-			projected = projected.duplicate()
-			projected.append(projected[0])
-			draw_polyline(projected,Color(0.45,0.59,0.43,0.34),1.1/camera_zoom,true)
+				var outline := _project_polygon(component["outer"]).duplicate()
+				outline.append(outline[0])
+				draw_polyline(outline,Color(0.45,0.59,0.43,0.34),1.1/camera_zoom,true)
 	for line in city.transit_lines:
 		for node in line["stops"]:
 			var p: Array = city.nodes[node]
@@ -260,12 +256,13 @@ func _urban_contents() -> Dictionary:
 			content["corridors"].append([corridor["path"],float(corridor.get("width",0.24))])
 	for reservation in city.planning_reservations: content["public"].append(["reserve",reservation["polygon"]])
 	for site in city.public_sites:
+		var footprint := PublicGeometry.identity(site)
 		if not site["active"]:
-			content["public"].append(["inactive",site["polygon"]])
+			content["public"].append(["inactive",footprint])
 		elif site["kind"] == "park":
-			content["public"].append(["park",site["polygon"],Vector2(site["position"][0],site["position"][1])])
+			content["public"].append(["park",footprint,Vector2(site["position"][0],site["position"][1])])
 		else:
-			content["public"].append(["civic",site["polygon"],Vector2(site["position"][0],site["position"][1]),
+			content["public"].append(["civic",footprint,Vector2(site["position"][0],site["position"][1]),
 				int(site.get("service_level",1)),site.get("served",[]).size() >= int(site.get("service_capacity",18))])
 	for line in city.transit_lines:
 		for node in line["stops"]:
