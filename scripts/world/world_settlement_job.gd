@@ -3,7 +3,8 @@ extends RefCounted
 ## Cache containers are private; published geometry/path/edge records are immutable.
 const World = preload("res://scripts/world/continuous_world.gd")
 const WORLD_CACHE_FIELDS = ["fabric_cache","fabric_anchor_cache","fabric_geometry_identity","edge_cache",
-	"environment_cache","public_service_cache","resonance","planning_revision"]
+	"environment_cache","environment_pending","public_service_cache","resonance","planning_revision"]
+const FROZEN_CACHE_FIELDS = ["edge_cache","environment_cache","environment_pending"]
 const NETWORK_CACHE_FIELDS = ["route_cache","route_trees","access_cache","walking_distance_cache","mobile_candidates"]
 var version: Array = []
 var commit_frame := 0
@@ -22,7 +23,10 @@ func start(city: ContinuousWorld, key: Array, frame: int) -> void:
 	snapshot = city.snapshot()
 	for field in WORLD_CACHE_FIELDS:
 		var value: Variant = city.get(field)
-		caches[field] = value.duplicate() if value is Dictionary else value
+		if field in FROZEN_CACHE_FIELDS:
+			value.make_read_only()
+			caches[field] = value
+		else: caches[field] = value.duplicate() if value is Dictionary else value
 	for field in NETWORK_CACHE_FIELDS:
 		network_caches[field] = city.network.get(field).duplicate()
 	task_id = WorkerThreadPool.add_task(_compute,false,"City phrase settlement")
@@ -33,7 +37,10 @@ func _compute() -> void:
 	private_city.restore(snapshot,false)
 	# restore reconstructs membership in building order; preserve the live planning order.
 	private_city.communities = snapshot["plan"]["communities"].duplicate(true)
-	for field in WORLD_CACHE_FIELDS: private_city.set(field,caches[field])
+	for field in WORLD_CACHE_FIELDS:
+		private_city.set(field,caches[field].duplicate() if field in FROZEN_CACHE_FIELDS else caches[field])
+	private_city.environment_cache.merge(private_city.environment_pending,true)
+	private_city.environment_pending = {}
 	for field in NETWORK_CACHE_FIELDS: private_city.network.set(field,network_caches[field])
 	# The old audible city follows restore semantics (including member order),
 	# while the input snapshot retains the original serializable world order.

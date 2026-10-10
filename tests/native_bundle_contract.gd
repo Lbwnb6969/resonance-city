@@ -69,6 +69,10 @@ func _run() -> void:
 		var boundary := demo.model.next_boundary
 		demo.model.enable_background_settlement()
 		demo.model.prepare_settlement(boundary-22050,22050)
+		var base_environment := demo.model.world.environment_cache
+		var base_count := base_environment.size()
+		demo.model.world.road_environment(Vector2(3.123,4.567),Vector2(7.891,10.123))
+		_check(base_environment.is_read_only() and demo.model.world.edge_cache.is_read_only() and base_environment.size() == base_count and not demo.model.world.environment_pending.is_empty(),"packed worker freezes roots while new queries use private delta")
 		while not demo.model.settlement_job.completed(): await process_frame
 		demo.model.prepare_settlement(boundary-22050,22050)
 		demo._sync_buildings()

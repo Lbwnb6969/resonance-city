@@ -57,6 +57,8 @@ var settle_profile: Dictionary = {}
 # They provide a stable bridge between city layout, UI language, and musical phrasing.
 var functional_zones: Array[Dictionary] = []
 var environment_cache: Dictionary = {}
+# Queries made while a worker owns the frozen base remain private to this World.
+var environment_pending: Dictionary = {}
 var mode := "free"
 var profile := "bright"
 var action_serial := 0
@@ -406,9 +408,13 @@ func refresh_functional_zones() -> void:
 
 func road_environment(a: Vector2,b: Vector2) -> Dictionary:
 	var key := Vector4(a.x,a.y,b.x,b.y)
+	if environment_pending.has(key): return environment_pending[key]
 	if environment_cache.has(key): return environment_cache[key]
 	var result := _road_environment(a,b)
-	environment_cache[key] = result
+	if environment_cache.is_read_only():
+		if environment_pending.is_read_only(): environment_pending = environment_pending.duplicate()
+		environment_pending[key] = result
+	else: environment_cache[key] = result
 	return result
 
 func _road_environment(a: Vector2,b: Vector2) -> Dictionary:
@@ -426,6 +432,7 @@ func edges() -> Array:
 	return edge_cache.values()
 
 func _cache_entity(id: String) -> void:
+	if edge_cache.is_read_only(): edge_cache = edge_cache.duplicate()
 	incident_edge_cache.erase(id)
 	near_edge_cache.erase(id)
 	var a: Dictionary = by_id[id]
@@ -511,8 +518,9 @@ func near_road_segments(p: Vector2,reach: float) -> Array[Dictionary]:
 
 func rebuild_graph() -> void:
 	_refresh_road_index()
-	environment_cache.clear()
-	edge_cache.clear()
+	environment_cache = {}
+	environment_pending = {}
+	edge_cache = {}
 	incident_edge_cache.clear()
 	near_edge_cache.clear()
 	for building in buildings: _cache_entity(building["district_id"])
@@ -1524,6 +1532,9 @@ func _restore_geometry() -> void:
 
 func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	assert(int(saved["schema_version"]) == 2 and saved["seed_hex"] == rng.seed_hex)
+	environment_cache = {}
+	environment_pending = {}
+	edge_cache = {}
 	road_index_identity = ""
 	parcel_index_identity = ""
 	fabric_anchor_cache.clear()
