@@ -1,0 +1,344 @@
+{
+  "build_record_base_commit": "2d635691a9fe9a6cbfd62425460866f4779292c9",
+  "verified_code_commit": "9ee369c3bff1dfa76f52bd75d8b87c24b1a27075",
+  "source_fingerprints_match": true,
+  "script_count": 67,
+  "checks": {
+    "scripts/audio/audio_clock.gd": {
+      "build_input_sha256": "ab4e3c174905d45c30f5c87747d6eb89ff719eb48fec0cf3a5e0a89a5497dde9",
+      "git_bytes_sha256": "ab4e3c174905d45c30f5c87747d6eb89ff719eb48fec0cf3a5e0a89a5497dde9",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/city_audio_model.gd": {
+      "build_input_sha256": "1f6ff97206527bc911e5742690e1c5c9a05c33441f4b4a29f27626ebfc6ab347",
+      "git_bytes_sha256": "1f6ff97206527bc911e5742690e1c5c9a05c33441f4b4a29f27626ebfc6ab347",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/community_audio_preparation.gd": {
+      "build_input_sha256": "d303e879321b8a2ef48eda21cd391cc48d3822e6339c1013e270f63127c9e219",
+      "git_bytes_sha256": "d303e879321b8a2ef48eda21cd391cc48d3822e6339c1013e270f63127c9e219",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/continuous_audio_model.gd": {
+      "build_input_sha256": "ef1b70e289efda3063ab76f03d062d1f61bb037f6f52d01b1f4ecda1012720c7",
+      "git_bytes_sha256": "ef1b70e289efda3063ab76f03d062d1f61bb037f6f52d01b1f4ecda1012720c7",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/continuous_synth.gd": {
+      "build_input_sha256": "b0a451f889b3001518bedea17481f11f9356582554ba8628e5ccdadf8c5c1fa5",
+      "git_bytes_sha256": "b0a451f889b3001518bedea17481f11f9356582554ba8628e5ccdadf8c5c1fa5",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/district_synth.gd": {
+      "build_input_sha256": "1c8b4184dd1eee874453c86cc8dfc14c6cdc5dd3bfb0e177ab6573c381403057",
+      "git_bytes_sha256": "1c8b4184dd1eee874453c86cc8dfc14c6cdc5dd3bfb0e177ab6573c381403057",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/era_voice.gd": {
+      "build_input_sha256": "7fff0784ce740d5958aeb3d74b0f3ac7ed2b84eae8f3fb84d4bb5d57aa3da5f9",
+      "git_bytes_sha256": "7fff0784ce740d5958aeb3d74b0f3ac7ed2b84eae8f3fb84d4bb5d57aa3da5f9",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/growth_voice.gd": {
+      "build_input_sha256": "5164d77715fc3ed891f07793d030f37943da620bedfe575719fa4ae9caff9ec7",
+      "git_bytes_sha256": "5164d77715fc3ed891f07793d030f37943da620bedfe575719fa4ae9caff9ec7",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/listening_fixtures.gd": {
+      "build_input_sha256": "ba8ff1d2627eb7a3d931dba26747731226f3d61bb8459eeb823e8bb0b0955d4b",
+      "git_bytes_sha256": "ba8ff1d2627eb7a3d931dba26747731226f3d61bb8459eeb823e8bb0b0955d4b",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/loudness_calibration.gd": {
+      "build_input_sha256": "1d287cc4217cf8c4bab7b0925daa81d34fb20357f9a3c41d9658a485486a33ae",
+      "git_bytes_sha256": "1d287cc4217cf8c4bab7b0925daa81d34fb20357f9a3c41d9658a485486a33ae",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/preview_audio_output.gd": {
+      "build_input_sha256": "d46cdd9ebfaceb077a5dbc4efb6dec83204d94da755f921b68f038d6b9f76682",
+      "git_bytes_sha256": "d46cdd9ebfaceb077a5dbc4efb6dec83204d94da755f921b68f038d6b9f76682",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/sample_renderer.gd": {
+      "build_input_sha256": "97c43e599a8b1d63b92d7ea984bf816e294fa91379ad41e7999b70b434478235",
+      "git_bytes_sha256": "97c43e599a8b1d63b92d7ea984bf816e294fa91379ad41e7999b70b434478235",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/sample_transport.gd": {
+      "build_input_sha256": "46663ce215af87af54e96f02ff60ae91641c8799c9d5833493d73e79f1ea7bb9",
+      "git_bytes_sha256": "46663ce215af87af54e96f02ff60ae91641c8799c9d5833493d73e79f1ea7bb9",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/audio/voice_group_budget.gd": {
+      "build_input_sha256": "3c7e78f8c886fb8f9713cac4f946694ebe4cf3cb0214164a8d9c7146aa8b8742",
+      "git_bytes_sha256": "bb79963225cbfdfee95111b5a32716b60d320748114d3e600c3d5ca572cac9ca",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/city/city_era.gd": {
+      "build_input_sha256": "596f830cceea0456eb6d1b75704a8506e783a2e079994cb244af5fc9492f241b",
+      "git_bytes_sha256": "596f830cceea0456eb6d1b75704a8506e783a2e079994cb244af5fc9492f241b",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/city/city_generator.gd": {
+      "build_input_sha256": "0358029bc20fd1ea991ba9fd0412b5f9ed369a1e1e80ddf796fad1cf21cc0ab6",
+      "git_bytes_sha256": "0358029bc20fd1ea991ba9fd0412b5f9ed369a1e1e80ddf796fad1cf21cc0ab6",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/city/city_growth.gd": {
+      "build_input_sha256": "77626316f1feb91d9fdc120a5d88c1e3bbe1cf40487f4fd5480e302ba6ec4a2c",
+      "git_bytes_sha256": "77626316f1feb91d9fdc120a5d88c1e3bbe1cf40487f4fd5480e302ba6ec4a2c",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/city/city_ring.gd": {
+      "build_input_sha256": "650d3438b1461b839a153f3d0a3114ec3090a867afbf833658ef0b5242d0eba3",
+      "git_bytes_sha256": "650d3438b1461b839a153f3d0a3114ec3090a867afbf833658ef0b5242d0eba3",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/city/city_roads.gd": {
+      "build_input_sha256": "332daa5eb7556f639e6a909ba8d2584f94c26e473b71013236b8ac108bfad840",
+      "git_bytes_sha256": "332daa5eb7556f639e6a909ba8d2584f94c26e473b71013236b8ac108bfad840",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/city/district_schema.gd": {
+      "build_input_sha256": "02eff517250ad6ea2d0d38066c99239b70481d60e05ec6e4d5a43d73e9209302",
+      "git_bytes_sha256": "02eff517250ad6ea2d0d38066c99239b70481d60e05ec6e4d5a43d73e9209302",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/city/harmony.gd": {
+      "build_input_sha256": "3ccf3390198105ab427277e6b34ea93dabcf9aafab7b6d7c6e06be5c71b75fec",
+      "git_bytes_sha256": "3ccf3390198105ab427277e6b34ea93dabcf9aafab7b6d7c6e06be5c71b75fec",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/city/named_random.gd": {
+      "build_input_sha256": "67817fdc4ea53f6de0f02d96621e4056bdd909c73c02dee002d2ab0f0b936678",
+      "git_bytes_sha256": "67817fdc4ea53f6de0f02d96621e4056bdd909c73c02dee002d2ab0f0b936678",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/proposals/city_interventions.gd": {
+      "build_input_sha256": "e6a39a076feb8e07f9c6223f01b9fb664eb22eed0e25aca14795749b7ae29ed9",
+      "git_bytes_sha256": "e6a39a076feb8e07f9c6223f01b9fb664eb22eed0e25aca14795749b7ae29ed9",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/proposals/proposal_preview.gd": {
+      "build_input_sha256": "b2d0561e5817d021e54d1e6fffffc9900cf825a868a5ac67caf6dbd35f362d5b",
+      "git_bytes_sha256": "b2d0561e5817d021e54d1e6fffffc9900cf825a868a5ac67caf6dbd35f362d5b",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/spec_values.gd": {
+      "build_input_sha256": "ed339c9c735a6cfcdc50eb12be80ee257f09e63efc0c95bb3715d1cf438823f1",
+      "git_bytes_sha256": "ed339c9c735a6cfcdc50eb12be80ee257f09e63efc0c95bb3715d1cf438823f1",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/ui/continuous_valley_demo.gd": {
+      "build_input_sha256": "11fbaa17ee57d5b46823f2bdbf3ccc90cc6e974cf6788c493730527ededbd550",
+      "git_bytes_sha256": "11fbaa17ee57d5b46823f2bdbf3ccc90cc6e974cf6788c493730527ededbd550",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/ui/era_presentation.gd": {
+      "build_input_sha256": "c356e24d24e0b5a93d406d8c84d6de61ca28c46fbd7fbb6608d219498e571340",
+      "git_bytes_sha256": "c356e24d24e0b5a93d406d8c84d6de61ca28c46fbd7fbb6608d219498e571340",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/ui/formation_notice.gd": {
+      "build_input_sha256": "484588899c21d16f0aed0e7e443e2ddcffb31f21efeb64dc3da24bb37d188985",
+      "git_bytes_sha256": "484588899c21d16f0aed0e7e443e2ddcffb31f21efeb64dc3da24bb37d188985",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/ui/listening_session.gd": {
+      "build_input_sha256": "b2b660ce28e8fc0595bb274b7e985b1a8077500605753b55b542ae5b448b1d4d",
+      "git_bytes_sha256": "b2b660ce28e8fc0595bb274b7e985b1a8077500605753b55b542ae5b448b1d4d",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/ui/p0_main.gd": {
+      "build_input_sha256": "1fb615c06397bb8725c390d1cdb0e80ee96375a2ac1e85ab45a855db213ddeb8",
+      "git_bytes_sha256": "1fb615c06397bb8725c390d1cdb0e80ee96375a2ac1e85ab45a855db213ddeb8",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/ui/planning_guide.gd": {
+      "build_input_sha256": "5d40a7a7f9400e6b6c8cce7e83a18901a2b9b89a9ac9dbe2d81a26736ee3ebb8",
+      "git_bytes_sha256": "5d40a7a7f9400e6b6c8cce7e83a18901a2b9b89a9ac9dbe2d81a26736ee3ebb8",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/ui/proposal_presentation.gd": {
+      "build_input_sha256": "5d5dfe2ced422a50e409e28a853f4b55bc37485ae939980f6d26755e10d7070b",
+      "git_bytes_sha256": "5d5dfe2ced422a50e409e28a853f4b55bc37485ae939980f6d26755e10d7070b",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/audio_growth_mask.gd": {
+      "build_input_sha256": "c4a01c24e45883c2eb5da441fad36e6ed9ac046da410c217ae7d0ce4f4208e5e",
+      "git_bytes_sha256": "c4a01c24e45883c2eb5da441fad36e6ed9ac046da410c217ae7d0ce4f4208e5e",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/boundary_diagnosis.gd": {
+      "build_input_sha256": "99c1c3d2ccc881cfde24416f5d6f9a2b7a7e201ab61e6f79c3af09f87e5f5b37",
+      "git_bytes_sha256": "99c1c3d2ccc881cfde24416f5d6f9a2b7a7e201ab61e6f79c3af09f87e5f5b37",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/city_demo_view.gd": {
+      "build_input_sha256": "08510b7f6c406d72a9489957c6036d6a57a2406b086da60bffff6703618520b9",
+      "git_bytes_sha256": "08510b7f6c406d72a9489957c6036d6a57a2406b086da60bffff6703618520b9",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/city_performance_fixture.gd": {
+      "build_input_sha256": "ecba4a6f8c2a480bfc623d1975b40a96528211637b1fb552ff3f6f990abfcab2",
+      "git_bytes_sha256": "ecba4a6f8c2a480bfc623d1975b40a96528211637b1fb552ff3f6f990abfcab2",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/city_shadow_layer.gd": {
+      "build_input_sha256": "0822dcb00466900437959ae15d8616cb6c0b97b0ba99ba82f99a43986195a6e7",
+      "git_bytes_sha256": "0822dcb00466900437959ae15d8616cb6c0b97b0ba99ba82f99a43986195a6e7",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/city_traveler.gd": {
+      "build_input_sha256": "5cd3b3604e948d6119aaffe2aac83ed07c0e074603a42e1033c0893602b7b3e0",
+      "git_bytes_sha256": "5cd3b3604e948d6119aaffe2aac83ed07c0e074603a42e1033c0893602b7b3e0",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/community_label_layer.gd": {
+      "build_input_sha256": "802ed47a1f0bbce78c6beeba1316da38aa4f77e2435b6dbab594ec077f383c7f",
+      "git_bytes_sha256": "802ed47a1f0bbce78c6beeba1316da38aa4f77e2435b6dbab594ec077f383c7f",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/community_landscape.gd": {
+      "build_input_sha256": "119ee65bbe404dbc8d9a5ad1d914287507b0751ad8016820ba4d289e21f130a4",
+      "git_bytes_sha256": "119ee65bbe404dbc8d9a5ad1d914287507b0751ad8016820ba4d289e21f130a4",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/ring_overlay.gd": {
+      "build_input_sha256": "3b5f9de09814061f0db2ed3f72fa2f23eb1c1a33f3060145a1eb0ed735552f3a",
+      "git_bytes_sha256": "3b5f9de09814061f0db2ed3f72fa2f23eb1c1a33f3060145a1eb0ed735552f3a",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/style_frame.gd": {
+      "build_input_sha256": "23aa226ce2b2a12dcf63ea7837621a8388aaf814565e1453d43c1a64987b2439",
+      "git_bytes_sha256": "23aa226ce2b2a12dcf63ea7837621a8388aaf814565e1453d43c1a64987b2439",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/valley_ground_layer.gd": {
+      "build_input_sha256": "964e96b1f8487df54e46385a6c00f96e1e61e4db5d3123c9c3d566217a6ba3d1",
+      "git_bytes_sha256": "964e96b1f8487df54e46385a6c00f96e1e61e4db5d3123c9c3d566217a6ba3d1",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/valley_prop.gd": {
+      "build_input_sha256": "3e17f23a4a80dad71c3f8778821dd3e2aa8778948143216ae70516b95b4f37b1",
+      "git_bytes_sha256": "3e17f23a4a80dad71c3f8778821dd3e2aa8778948143216ae70516b95b4f37b1",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/valley_scenery.gd": {
+      "build_input_sha256": "e3db47023138703225595325f608078f0eb77a3f774c0cb741447069a8f634f2",
+      "git_bytes_sha256": "e3db47023138703225595325f608078f0eb77a3f774c0cb741447069a8f634f2",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/visual/valley_water_flow.gd": {
+      "build_input_sha256": "99ec3fa41d63298975eeac5fe8f6e83164b540249fc80b6692d93b35f669a27d",
+      "git_bytes_sha256": "99ec3fa41d63298975eeac5fe8f6e83164b540249fc80b6692d93b35f669a27d",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/city_archive.gd": {
+      "build_input_sha256": "e0fbd86c7943aeefdbf3a18c01bed39c7330a6ce46c255fe2525c4be313704e6",
+      "git_bytes_sha256": "e0fbd86c7943aeefdbf3a18c01bed39c7330a6ce46c255fe2525c4be313704e6",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/city_road_network.gd": {
+      "build_input_sha256": "4c54b441ae46d4d01ed14b38036c4c4446f3a411537864ce43d7a725eed7c9d2",
+      "git_bytes_sha256": "4c54b441ae46d4d01ed14b38036c4c4446f3a411537864ce43d7a725eed7c9d2",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/city_spatial_planning.gd": {
+      "build_input_sha256": "fae5bcbae366028f7a8b3f7f24116aa6112e9fcc73474e4255243a2ed92a776f",
+      "git_bytes_sha256": "fae5bcbae366028f7a8b3f7f24116aa6112e9fcc73474e4255243a2ed92a776f",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/community_frontage.gd": {
+      "build_input_sha256": "c36ab65d197deef8ef3ad9c796c934fd22fe9499072ee8608c2e04a99fcc24d7",
+      "git_bytes_sha256": "c36ab65d197deef8ef3ad9c796c934fd22fe9499072ee8608c2e04a99fcc24d7",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/community_music_rules.gd": {
+      "build_input_sha256": "24e8a8e2347ee79e44816c307f019ed5f0a785e19db7871b13c7f259fcf3519c",
+      "git_bytes_sha256": "24e8a8e2347ee79e44816c307f019ed5f0a785e19db7871b13c7f259fcf3519c",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/continuous_world.gd": {
+      "build_input_sha256": "5110f491f3517543a10a0159f879752ccd573c57882b21266e61320824c0d892",
+      "git_bytes_sha256": "7ca2d8f38212fc56826c3b0b58225280ee74961e5afb200749faf4b061fe7b99",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/development_charter.gd": {
+      "build_input_sha256": "36ed477526fdd9fa6fec9feb3ca7926c934d4428be444dbc49f3acaa3831758d",
+      "git_bytes_sha256": "36ed477526fdd9fa6fec9feb3ca7926c934d4428be444dbc49f3acaa3831758d",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/fabric_relations.gd": {
+      "build_input_sha256": "f2e1f199d1db6bf4856653d856b231c9a22f9c45d25ffaefb077593f97e491dd",
+      "git_bytes_sha256": "f2e1f199d1db6bf4856653d856b231c9a22f9c45d25ffaefb077593f97e491dd",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/garden_neighborhood.gd": {
+      "build_input_sha256": "52cf3e8ea4626f71e5169492cd09572b0227a2a2acc568109a5b9316b7edc273",
+      "git_bytes_sha256": "52cf3e8ea4626f71e5169492cd09572b0227a2a2acc568109a5b9316b7edc273",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/neighborhood_plan.gd": {
+      "build_input_sha256": "2b8e3bcae96a2002550fcd440b39f68beeccc909ecd4fb24f9fe5a3e51813fdf",
+      "git_bytes_sha256": "2b8e3bcae96a2002550fcd440b39f68beeccc909ecd4fb24f9fe5a3e51813fdf",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/public_planning_preview.gd": {
+      "build_input_sha256": "6a8df9865f607b507b0c1a3b7b32b2d9ed800130b2a7cd02206b366eb32dc228",
+      "git_bytes_sha256": "6a8df9865f607b507b0c1a3b7b32b2d9ed800130b2a7cd02206b366eb32dc228",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/regional_neighborhood.gd": {
+      "build_input_sha256": "3a76c2ff6c219e6773a1488afb2f5f08e4bde7fef2907b1fd879d90de578383e",
+      "git_bytes_sha256": "3a76c2ff6c219e6773a1488afb2f5f08e4bde7fef2907b1fd879d90de578383e",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/river_call_response.gd": {
+      "build_input_sha256": "c7eb847c39dc3a32a29a670d3bee56e5e6b461c95fa9019112c7d5a31e74c56f",
+      "git_bytes_sha256": "c7eb847c39dc3a32a29a670d3bee56e5e6b461c95fa9019112c7d5a31e74c56f",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/terrace_neighborhood.gd": {
+      "build_input_sha256": "462671bfde2985b6e12abce3f3b1f4fec869e62b65604718ff012346a62885ba",
+      "git_bytes_sha256": "462671bfde2985b6e12abce3f3b1f4fec869e62b65604718ff012346a62885ba",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/terrain_drainage.gd": {
+      "build_input_sha256": "92eb329d123ede7a494f8b2af4f050e810903a22a3836b888c88e7051f7d6c38",
+      "git_bytes_sha256": "92eb329d123ede7a494f8b2af4f050e810903a22a3836b888c88e7051f7d6c38",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/valley_terrain.gd": {
+      "build_input_sha256": "b598291c74f5d2575404aedd09c9530c0b491c7d4aa8980096085637c83c16fd",
+      "git_bytes_sha256": "b598291c74f5d2575404aedd09c9530c0b491c7d4aa8980096085637c83c16fd",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/world_coupling.gd": {
+      "build_input_sha256": "5328d3b7a891d5f4c4649a6045a61f9c20c95ce8f901c181458fbaababd32305",
+      "git_bytes_sha256": "5328d3b7a891d5f4c4649a6045a61f9c20c95ce8f901c181458fbaababd32305",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/world_projection.gd": {
+      "build_input_sha256": "9695356be91170243f9b20b4587c5173760c966f0473f364a1b37098bce1aa2f",
+      "git_bytes_sha256": "9695356be91170243f9b20b4587c5173760c966f0473f364a1b37098bce1aa2f",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/world_settlement_job.gd": {
+      "build_input_sha256": "cd9b26574f8e4c1f35dbbc301482436bc459b59f13885c0902102ce082156705",
+      "git_bytes_sha256": "cd9b26574f8e4c1f35dbbc301482436bc459b59f13885c0902102ce082156705",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/world_spatial_index.gd": {
+      "build_input_sha256": "8596ddefc465617abfec951299c2a07f96cff7cf4ac20926b9cf9dcc82ebb8dc",
+      "git_bytes_sha256": "8596ddefc465617abfec951299c2a07f96cff7cf4ac20926b9cf9dcc82ebb8dc",
+      "equal_after_line_ending_normalization": true
+    },
+    "scripts/world/world_values.gd": {
+      "build_input_sha256": "e89a54464b19ce2597cf306993a09f7d9df8fa079f4cda11cb0a6c44e3d8bac6",
+      "git_bytes_sha256": "e89a54464b19ce2597cf306993a09f7d9df8fa079f4cda11cb0a6c44e3d8bac6",
+      "equal_after_line_ending_normalization": true
+    }
+  },
+  "note": "构建记录保存启动构建时的Git基线和逐文件指纹；随后保存的代码提交与全部输入脚本逐一对照一致，仅允许CRLF/LF差异。运行包内容不因Git提交而修改。"
+}
