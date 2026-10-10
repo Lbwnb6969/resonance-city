@@ -246,6 +246,25 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 	var fade_frames := float(score["control_fade_beats"])*60.0*rate/120.0
 	var retired: Array = []
 	var active_count := 0
+	# Reserve slots for the environment and musical overlays before rendering pads.
+	# Large cities can have more valid community/type/pitch groups than the 70-voice
+	# budget; rotate the stable group set instead of asserting or producing a spike.
+	var pad_budget := maxi(0,int(score["render_voice_limit"])-1-rhythm_nodes.size()-musical_nodes.size())
+	var pad_candidates: Array[String] = []
+	for key in pad_groups:
+		var group: Dictionary = pad_groups[key]
+		var level := float(state.get("_pad_level_"+key,group["level"]))
+		if bool(group["active"]) or level > 0.00001: pad_candidates.append(str(key))
+	pad_candidates.sort_custom(func(a: String,b: String) -> bool:
+		var ga: Dictionary = pad_groups[a]
+		var gb: Dictionary = pad_groups[b]
+		if bool(ga["active"]) != bool(gb["active"]): return bool(ga["active"])
+		var la := float(state.get("_pad_level_"+a,ga["level"]))
+		var lb := float(state.get("_pad_level_"+b,gb["level"]))
+		if not is_equal_approx(la,lb): return la > lb
+		return a < b)
+	var render_keys: Dictionary = {}
+	for index in range(mini(pad_budget,pad_candidates.size())): render_keys[pad_candidates[index]] = true
 	for key in pad_groups:
 		var group: Dictionary = pad_groups[key]
 		var target := float(group.get("target",0.0))*_audibility(group["cid"]) if group["active"] else 0.0
@@ -255,15 +274,17 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var target_stereo: Vector2 = group.get("stereo",Vector2.ONE*sqrt(0.5))
 		var stereo: Vector2 = state.get("_pad_stereo_"+key,target_stereo)
 		var table: PackedFloat32Array = tables[group["type"]]
-		if level > 0.00001 or target > 0.0: active_count += 1
+		var selected := render_keys.has(key)
+		if selected and (level > 0.00001 or target > 0.0): active_count += 1
 		# Linear amplitude ramps with continuous oscillator phase; no replayed PCM.
 		var step := float(score["pad_gain"])/fade_frames
 		for i in range(count):
-			level = move_toward(level,target,step)
-			stereo = stereo.lerp(target_stereo,1.0/(float(score["pitch_glide_seconds"])*rate))
-			var sample := _table_wave(table,phase)*level*gain*stereo
-			output[i] += sample
-			if capture_drone: captured_drone[i] += sample
+			level = move_toward(level,target if selected else 0.0,step)
+			if selected:
+				stereo = stereo.lerp(target_stereo,1.0/(float(score["pitch_glide_seconds"])*rate))
+				var sample := _table_wave(table,phase)*level*gain*stereo
+				output[i] += sample
+				if capture_drone: captured_drone[i] += sample
 			phase = fposmod(phase+hz/rate,1.0)
 		state["_pad_stereo_"+key] = stereo
 		state["_pad_level_"+key] = level
@@ -321,7 +342,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 	last_voice_count = active_count+pulse_count+theme_count+response_count+1
 	max_voice_count = maxi(max_voice_count,last_voice_count)
 	assert(last_voice_count <= int(score["render_voice_limit"]))
-	voice_group_stats = {"entities":districts.size(),"pad_nodes":active_count,"rhythm_nodes":pulse_count,"theme_nodes":theme_count,"response_nodes":response_count,"environment_nodes":1,"render_voices":last_voice_count,"max_render_voices":max_voice_count}
+	voice_group_stats = {"entities":districts.size(),"pad_nodes":active_count,"rhythm_nodes":pulse_count,"theme_nodes":theme_count,"response_nodes":response_count,"environment_nodes":1,"render_voices":last_voice_count,"max_render_voices":max_voice_count,"voice_budget":int(score["render_voice_limit"]),"budget_shed":maxi(0,pad_candidates.size()-mini(pad_budget,pad_candidates.size()))}
 	return output
 
 func score_snapshot() -> Dictionary:
