@@ -87,6 +87,51 @@ static func _record_summary(record: Dictionary) -> Dictionary:
 		}
 	return summary
 
+static func _target_for_record(record: Dictionary, fallback_anchor_ids: Array = []) -> Dictionary:
+	var summary := _record_summary(record)
+	var selected_role := ""
+	var selected: Dictionary = {}
+	for alias in ROLE_ORDER:
+		if not summary.has(alias): continue
+		if bool(summary[alias].get("qualified",false)):
+			selected_role = alias
+			selected = summary[alias]
+			break
+	if selected_role.is_empty():
+		for alias in ROLE_ORDER:
+			if summary.has(alias):
+				selected_role = alias
+				selected = summary[alias]
+				break
+	var anchor_ids := _as_string_array(fallback_anchor_ids)
+	for raw in record.get("anchor_ids",[]):
+		var anchor := str(raw)
+		if not anchor.is_empty() and not anchor_ids.has(anchor): anchor_ids.append(anchor)
+	var adjustable_ids: Array[String] = []
+	for alias in ["bass","commercial"]:
+		if not summary.has(alias): continue
+		for raw in summary[alias].get("anchor_ids",[]):
+			var id := str(raw)
+			if not id.is_empty() and not adjustable_ids.has(id): adjustable_ids.append(id)
+	return {
+		"community_id":str(record.get("community_id","")),
+		"roles":summary,
+		"role":selected_role,
+		"role_id":str(selected.get("role",ROLE_IDS.get(selected_role,""))),
+		"qualification":selected.get("qualification",{}).duplicate(true) if not selected.is_empty() else {},
+		"anchor_id":str(anchor_ids[0]) if not anchor_ids.is_empty() else "",
+		"anchor_ids":anchor_ids,
+		"adjustable_ids":adjustable_ids,
+	}
+
+static func community_target(action: Dictionary, community_id: String) -> Dictionary:
+	var targets: Variant = action.get("community_targets",{})
+	if targets is Dictionary and targets.has(community_id) and targets[community_id] is Dictionary:
+		return targets[community_id].duplicate(true)
+	if str(action.get("community_id","")) == community_id and action.get("target",{}) is Dictionary:
+		return action["target"].duplicate(true)
+	return {}
+
 static func _fallback_record(preview: Dictionary) -> Dictionary:
 	var records: Array = preview.get("communities",[])
 	if records.is_empty(): return {}
@@ -103,6 +148,15 @@ static func _action_from_preview(preview: Dictionary, variant: Dictionary, choic
 				var cid := str(raw.get("community_id",""))
 				if not cid.is_empty() and not affected.has(cid): affected.append(cid)
 	var record := _fallback_record(preview)
+	var community_targets: Dictionary = {}
+	for raw in records:
+		if not raw is Dictionary: continue
+		var raw_cid := str(raw.get("community_id",""))
+		if raw_cid.is_empty(): continue
+		# The preview-level anchor list is an aggregate.  Do not copy it into
+		# every community target or a birth on the second community could point
+		# at the first community's public site.
+		community_targets[raw_cid] = _target_for_record(raw,[])
 	var cid := str(record.get("community_id",affected[0] if not affected.is_empty() else ""))
 	var summary := _record_summary(record)
 	var selected_role := ""
@@ -119,16 +173,8 @@ static func _action_from_preview(preview: Dictionary, variant: Dictionary, choic
 				selected_role = alias
 				selected = summary[alias]
 				break
-	var anchor_ids := _as_string_array(preview.get("anchor_ids",[]))
-	for raw in record.get("anchor_ids",[]):
-		var anchor := str(raw)
-		if not anchor.is_empty() and not anchor_ids.has(anchor): anchor_ids.append(anchor)
-	var adjustable_ids: Array[String] = []
-	for alias in ["bass","commercial"]:
-		if not summary.has(alias): continue
-		for raw in summary[alias].get("anchor_ids",[]):
-			var id := str(raw)
-			if not id.is_empty() and not adjustable_ids.has(id): adjustable_ids.append(id)
+	var primary_target := _target_for_record(record,preview.get("anchor_ids",[]))
+	if not cid.is_empty() and not community_targets.has(cid): community_targets[cid] = primary_target.duplicate(true)
 	var action_kind := "replan"
 	# The headline state follows the community theme qualification.  Bass,
 	# rhythm and response can still provide a useful focus target while the main
@@ -151,9 +197,9 @@ static func _action_from_preview(preview: Dictionary, variant: Dictionary, choic
 	var target := {
 		"community_id":cid,
 		"community_ids":affected,
-		"anchor_id":str(anchor_ids[0]) if not anchor_ids.is_empty() else "",
-		"anchor_ids":anchor_ids,
-		"adjustable_ids":adjustable_ids,
+		"anchor_id":primary_target.get("anchor_id",""),
+		"anchor_ids":primary_target.get("anchor_ids",[]),
+		"adjustable_ids":primary_target.get("adjustable_ids",[]),
 		"role":selected_role,
 		"role_id":str(selected.get("role",ROLE_IDS.get(selected_role,""))),
 	}
@@ -169,6 +215,7 @@ static func _action_from_preview(preview: Dictionary, variant: Dictionary, choic
 		"community_id":cid,
 		"affected_communities":affected,
 		"roles":summary,
+		"community_targets":community_targets,
 		"qualification":selected.get("qualification",{}).duplicate(true) if not selected.is_empty() else {},
 		"world_version":token["world_version"].duplicate(true),
 		"source_frame":token["source_frame"],
@@ -198,6 +245,7 @@ static func from_comparison(comparison: Dictionary, choice: String) -> Dictionar
 static func is_current(action: Dictionary, world_version: Array, audible_frame: int = -1) -> bool:
 	if action.get("contract","") != CONTRACT: return false
 	var token: Dictionary = action.get("token",{})
+	if token.is_empty() or world_version.is_empty() or not token.has("world_version"): return false
 	if token.get("world_version",[]) != world_version: return false
 	if audible_frame >= 0 and int(token.get("boundary_frame",-1)) >= 0 and audible_frame > int(token["boundary_frame"]): return false
 	return true

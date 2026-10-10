@@ -320,6 +320,14 @@ func _queue_next_action(variant: Dictionary) -> void:
 		data = next_action_from_variant(variant,candidate)
 	if data.get("community_id","") == "" and candidate.has("community_id"): data["community_id"] = str(candidate["community_id"])
 	if data.get("affected_communities",[]).is_empty() and data.get("community_id","") != "": data["affected_communities"] = [data["community_id"]]
+	# Keep the live commit identity beside the read-only preview token.  The
+	# preview branch has its own world copy; action_serial is the small stable
+	# piece that lets us reject another operation queued after this choice while
+	# still allowing the expected phrase boundary to advance phrase_index.
+	data["queued_world_version"] = Charter.version(demo.model.world)
+	data["plan_id"] = plan_id
+	data["expected_boundary_frame"] = int(data.get("boundary_frame",demo.model.next_boundary))
+	data["scope"] = scope.duplicate()
 	data["state"] = "queued"
 	next_action = data
 
@@ -334,10 +342,43 @@ func _close_after_commit() -> void:
 func _next_action_event_matches(event: Dictionary) -> bool:
 	if next_action.get("state","") != "queued" or str(event.get("kind","")) != "birth": return false
 	if not event.has("plan_id") or not event.has("district_id"): return false
+	if not str(next_action.get("plan_id","")).is_empty() and str(event.get("plan_id","")) != str(next_action["plan_id"]): return false
+	var expected_frame := int(next_action.get("expected_boundary_frame",next_action.get("boundary_frame",-1)))
+	if expected_frame >= 0 and int(event.get("frame",-1)) != expected_frame: return false
 	if demo.shown_world == null or not demo.shown_world.by_id.has(str(event["district_id"])): return false
 	var cid := str(demo.shown_world.by_id[str(event["district_id"])].get("community_id",""))
 	var ids: Array = next_action.get("affected_communities",[])
-	return ids.is_empty() or ids.has(cid)
+	if ids.is_empty() or ids.has(cid): return true
+	# A community may have split since the preview.  Treat a descendant as part
+	# of its planned parent scope, while still rejecting unrelated districts.
+	for owner in ids:
+		if Charter.in_scope(demo.shown_world,cid,[str(owner)]): return true
+	return false
+
+func _expire_next_action_if_stale() -> void:
+	if next_action.get("state","") != "queued" or demo.shown_world == null: return
+	var queued: Array = next_action.get("queued_world_version",[])
+	var current := Charter.version(demo.model.world)
+	# action_serial changes for every accepted operation.  A later operation
+	# means this follow-up no longer identifies the same planning transaction.
+	if queued.size() >= 2 and current.size() >= 2 and int(queued[1]) != int(current[1]):
+		next_action["state"] = "expired"
+		next_action["reason"] = "城市已经排入另一项操作，这条规划提示已过期"
+		stage = "feedback"
+		opened = true
+		visible = not demo.black
+		refresh()
+		return
+	var boundary := int(next_action.get("expected_boundary_frame",next_action.get("boundary_frame",-1)))
+	var phrase_frames := int(demo.shown_world.cfg["timing"]["phrase_frames"])
+	var now_frame: int = int(demo.shown_world.phrase_index)*phrase_frames
+	if boundary >= 0 and now_frame > boundary:
+		next_action["state"] = "expired"
+		next_action["reason"] = "规划边界已经过去，未兑现的提示已清除"
+		stage = "feedback"
+		opened = true
+		visible = not demo.black
+		refresh()
 
 func _activate_next_action(event: Dictionary) -> void:
 	var id := str(event.get("district_id",""))
@@ -352,6 +393,15 @@ func _activate_next_action(event: Dictionary) -> void:
 	var cid := str(next_action.get("community_id",""))
 	if not id.is_empty() and demo.shown_world != null and demo.shown_world.by_id.has(id):
 		cid = str(demo.shown_world.by_id[id].get("community_id",cid))
+	var local_target := NextAction.community_target(next_action,cid)
+	if not local_target.is_empty():
+		next_action["target"] = local_target.duplicate(true)
+		next_action["roles"] = local_target.get("roles",{}).duplicate(true)
+		next_action["qualification"] = local_target.get("qualification",{}).duplicate(true)
+		next_action["role"] = local_target.get("role","")
+		next_action["role_id"] = local_target.get("role_id","")
+		next_action["anchor_id"] = local_target.get("anchor_id","")
+		next_action["anchor_ids"] = local_target.get("anchor_ids",[]).duplicate()
 	next_action["state"] = "ready"
 	next_action["building_id"] = id
 	next_action["community_id"] = cid
@@ -362,6 +412,8 @@ func _activate_next_action(event: Dictionary) -> void:
 	demo._message("规划结果已经落地 · 下一次行动由你选择")
 
 func _next_action_detail() -> String:
+	if next_action.get("state","") == "expired":
+		return str(next_action.get("reason","上一项规划提示已过期"))+"；按P重新规划另一片社区。"
 	var choice: String = str({"park":"公园","civic":"文化馆","none":"暂不建设"}.get(str(next_action.get("choice","")),"公共规划"))
 	var community_name: String = str(next_action.get("community_id",""))
 	if demo != null and demo.shown_world != null:
@@ -539,6 +591,7 @@ func sync() -> void:
 	visible = opened and not demo.black
 	if observed_phrase != demo.shown_world.phrase_index:
 		observed_phrase = demo.shown_world.phrase_index
+		_expire_next_action_if_stale()
 		for event in demo.shown_world.events:
 			if int(event.get("frame",-1)) != observed_phrase*int(demo.shown_world.cfg["timing"]["phrase_frames"]): continue
 			if _next_action_event_matches(event):
