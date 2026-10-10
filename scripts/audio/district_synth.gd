@@ -872,8 +872,13 @@ func _render_grouped_block(state: Dictionary, start: int, count: int, rate: int)
 	return block
 
 func update_city(city: Array, state: Dictionary, marks: Dictionary = {}, events: Array = []) -> void:
+	_update_city_data(city.duplicate(true),state,marks,events)
+
+# Consumes an audio projection owned by the caller, never live World buildings.
+# Records are read-only here; route and stage state have separate ownership.
+func _update_city_data(city: Array, state: Dictionary, marks: Dictionary, events: Array) -> void:
 	road_marks = marks.duplicate(true)
-	districts = city.duplicate(true)
+	districts = city
 	map_width = 16
 	for d in districts: map_width = maxi(map_width,16+4*maxi(0,int(d.get("era",1))-1))
 	_rebuild_assist_neighbors(city)

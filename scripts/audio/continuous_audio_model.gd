@@ -29,6 +29,9 @@ var max_render_ms := 0.0
 var max_settle_ms := 0.0
 var bed_table := PackedFloat32Array()
 const SettlementJob = preload("res://scripts/world/world_settlement_job.gd")
+# Private worker projection; omitted from DNA and preview state.
+var prepared_audio_buildings: Array = []
+var prepared_audio_phrase := -1
 var settlement_enabled := false
 var settlement_job: RefCounted
 var retiring_settlements: Array[RefCounted] = []
@@ -89,10 +92,14 @@ func _commit_settlement(at: int) -> void:
 		settlement_stats["max_worker_ms"] = maxf(settlement_stats["max_worker_ms"],settlement_job.worker_ms)
 		var started := Time.get_ticks_usec()
 		settlement_job.adopt(world)
+		prepared_audio_buildings = settlement_job.audio_buildings
+		prepared_audio_phrase = world.phrase_index
 		settlement_stats["max_commit_ms"] = maxf(settlement_stats["max_commit_ms"],float(Time.get_ticks_usec()-started)/1000.0)
 		settlement_stats["adopted"] += 1
 		_retire_settlement_job()
 	else:
+		prepared_audio_buildings = []
+		prepared_audio_phrase = -1
 		world.settle(at)
 		if settlement_enabled: settlement_stats["fallbacks"] += 1
 
@@ -169,9 +176,19 @@ func _record_presentation(at: int) -> void:
 			"service":world.public_service_cache.duplicate(true),"resonance":world.resonance}})
 
 func audio_city() -> Array:
-	var city := world.buildings.duplicate(true)
-	for building in city:
-		if sound_overrides.has(building["district_id"]): building["current_midi"] = sound_overrides[building["district_id"]]
+	# Public callers receive independent building data as before.
+	return _finish_audio_city(world.buildings.duplicate(true))
+
+func _owned_audio_city() -> Array:
+	if prepared_audio_phrase != world.phrase_index: return audio_city()
+	return _finish_audio_city(prepared_audio_buildings.duplicate())
+
+func _finish_audio_city(city: Array) -> Array:
+	for i in range(city.size()):
+		var building: Dictionary = city[i]
+		if sound_overrides.has(building["district_id"]):
+			city[i] = building.duplicate(true)
+			city[i]["current_midi"] = sound_overrides[building["district_id"]]
 	for landmark in world.landmarks:
 		var motif: Array = landmark.get("motif",[])
 		var midi := int(motif[0].get("midi",48)) if not motif.is_empty() else 48
@@ -221,7 +238,7 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			var seam_seconds := 0.08 if structural_change else float(world.cfg["score"]["pitch_glide_seconds"])
 			transition_total = maxi(1,roundi(seam_seconds*rate))
 			transition_remaining = transition_total
-			synth.update_city(audio_city(),state,{},recent)
+			synth.update_audio_city(_owned_audio_city(),state,{},recent)
 			var era_events: Array = recent.filter(func(event: Dictionary) -> bool: return str(event.get("kind","")) == "era")
 			if not era_events.is_empty():
 				var era_event: Dictionary = era_events[-1]
@@ -303,7 +320,7 @@ func freeze() -> ContinuousAudioModel:
 	copy.synth.pad_groups = synth.pad_groups.duplicate(true)
 	copy.synth.rhythm_nodes = synth.rhythm_nodes.duplicate(true)
 	copy.synth.musical_nodes = synth.musical_nodes.duplicate(true)
-	copy.synth.update_city(copy.audio_city(),{}, {},[])
+	copy.synth.update_audio_city(copy.audio_city(),{}, {},[])
 	copy.synth.configure_score(copy.world,copy.sound_overrides)
 	copy.synth.restore_eras(synth.era_snapshot())
 	return copy

@@ -42,6 +42,14 @@ func _rebuild_assist_neighbors(city: Array) -> void:
 
 func update_city(city: Array, state: Dictionary, marks: Dictionary = {}, events: Array = []) -> void:
 	super(city,state,marks,events.filter(func(event: Dictionary) -> bool: return event.has("district_id")))
+	_update_pad_groups(city,state)
+
+# The model supplies a private projection; avoid copying that projection twice.
+func update_audio_city(city: Array, state: Dictionary, marks: Dictionary = {}, events: Array = []) -> void:
+	_update_city_data(city,state,marks,events.filter(func(event: Dictionary) -> bool: return event.has("district_id")))
+	_update_pad_groups(city,state)
+
+func _update_pad_groups(city: Array, state: Dictionary) -> void:
 	population.clear()
 	for district in city:
 		var cid: String = district["community_id"]
@@ -90,12 +98,15 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}) -> void
 			return bool(site.get("active",false)) and str(site.get("community_id","")) == cid and str(site.get("kind","")) in ["park","civic"])
 		# A public site gives a small community a musical doorway before it has three houses.
 		if members.size() >= 3 or (has_facility and not members.is_empty()): candidates.append(cid)
+	# Resolve each priority once instead of scanning centers inside every comparison.
+	var priorities: Dictionary = {}
+	for cid in candidates: priorities[cid] = [world.center_rank(cid),world.center_order(cid)]
 	candidates.sort_custom(func(a: String,b: String) -> bool:
-		var ar := current_world.center_rank(a)
-		var br := current_world.center_rank(b)
+		var ar: int = priorities[a][0]
+		var br: int = priorities[b][0]
 		if ar != br: return ar < br
-		var ao := current_world.center_order(a)
-		var bo := current_world.center_order(b)
+		var ao: int = priorities[a][1]
+		var bo: int = priorities[b][1]
 		if ao != bo: return ao < bo
 		return a < b)
 	rhythms.clear()

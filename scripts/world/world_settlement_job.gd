@@ -14,6 +14,8 @@ var network_caches: Dictionary = {}
 var result: ContinuousWorld
 # Built on the worker from the exact input snapshot; never serialized as an object.
 var presentation_view: ContinuousWorld
+# Independent sound projection, prepared after settlement and read only after join.
+var audio_buildings: Array = []
 var worker_ms := 0.0
 var task_id := -1
 
@@ -51,6 +53,7 @@ func _compute() -> void:
 	presentation_view.public_service_cache = private_city.public_service_cache.duplicate(true)
 	presentation_view.resonance = private_city.resonance
 	private_city.settle(commit_frame)
+	audio_buildings = private_city.buildings.duplicate(true)
 	result = private_city
 	caches.clear()
 	network_caches.clear()
@@ -76,6 +79,7 @@ func retire() -> void:
 	task_id = WorkerThreadPool.add_task(_dispose,false,"City snapshot retirement")
 
 func _dispose() -> void:
+	audio_buildings = []
 	result = null
 	presentation_view = null
 	# An adopted presentation may still own the snapshot. Release this reference

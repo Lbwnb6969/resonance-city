@@ -82,6 +82,7 @@ func _run() -> void:
 		demo.clock.renderer.transport.rendered_frames = boundary
 		demo.clock.renderer.render(512)
 		_check(demo.model.settlement_stats["adopted"] == 1 and demo.model.settlement_stats["fallbacks"] == 0,"packed worker result adopted at original phrase frame")
+		_check(demo.model.prepared_audio_phrase == demo.model.world.phrase_index and demo.model.prepared_audio_buildings == demo.model.world.buildings and not demo.model.capture_state().has("prepared_audio_buildings"),"packed worker audio projection adopted without entering DNA")
 		var old_shown := demo.model.presentation_world(boundary-1)
 		_check(demo.model.presentation_stats["prepared"] == 1 and demo.model.presentation_stats["reconstructed"] == 0 and old_shown.phrase_index == 0,"packed prepared old city used before audible boundary")
 		demo.clock.renderer.transport.audible_frame = boundary-1
