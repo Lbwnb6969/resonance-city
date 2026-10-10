@@ -107,9 +107,9 @@ static func exclusion(world: RefCounted,polygon: PackedVector2Array,ignore_reser
 			return "占地不能压进公园或文化设施"
 	return ""
 
-static func site_reason(world: RefCounted,candidate: Dictionary) -> String:
+static func site_reason(world: RefCounted,candidate: Dictionary,ignore_public_id: String = "") -> String:
 	var polygon: PackedVector2Array = candidate["polygon"]
-	var reason := exclusion(world,polygon,str(candidate.get("reservation_id","")),str(candidate.get("public_id","")))
+	var reason := exclusion(world,polygon,str(candidate.get("reservation_id","")),ignore_public_id if not ignore_public_id.is_empty() else str(candidate.get("public_id","")))
 	if not reason.is_empty(): return reason
 	var box := bounds(polygon)
 	var center := box.get_center()
@@ -123,6 +123,29 @@ static func site_reason(world: RefCounted,candidate: Dictionary) -> String:
 		for strip in Geometry2D.offset_polyline(PackedVector2Array([segment["a"],segment["b"]]),width,Geometry2D.JOIN_ROUND,Geometry2D.END_ROUND):
 			if overlaps(polygon,strip): return "这片范围压住道路，请选择街道旁的空地"
 	return ""
+
+static func relocation_candidate(world: RefCounted,source_site: Dictionary,target_position: Vector2) -> Dictionary:
+	var source_id := str(source_site.get("id", ""))
+	var source_position := Vector2(float(source_site["position"][0]),float(source_site["position"][1]))
+	var polygon := PackedVector2Array()
+	for point in source_site.get("polygon",PackedVector2Array()):
+		polygon.append(Vector2(point)+target_position-source_position)
+	var candidate := {"source_site_id":source_id,"public_id":source_id,"position":[target_position.x,target_position.y],
+		"polygon":polygon,"community_id":FabricRelations.community_for_position(world,target_position)}
+	var reason := site_reason(world,candidate,source_id)
+	if not reason.is_empty():
+		candidate["allowed"] = false
+		candidate["reason"] = reason
+		return candidate
+	var access := public_access(world,candidate)
+	if access.is_empty():
+		candidate["allowed"] = false
+		candidate["reason"] = "新位置没有可达的真实道路入口"
+		return candidate
+	candidate.merge(access)
+	candidate["allowed"] = true
+	candidate["reason"] = "可搬迁到这片合法空地"
+	return candidate
 
 static func reservation_at(world: RefCounted,p: Vector2) -> Dictionary:
 	for item in world.near_planning_reservations(p):
