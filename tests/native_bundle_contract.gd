@@ -63,6 +63,13 @@ func _run() -> void:
 	for id in demo.sprites:
 		screen_error = maxf(screen_error,demo.sprites[id].global_position.distance_to(demo.point(WorldCoupling.position_of(demo.shown_world.by_id[id]))))
 	_check(screen_error < 0.001,"packed camera projection")
+	await RenderingServer.frame_post_draw
+	var terrain_draws: int = demo.terrain_layer.rebuild_count
+	var ground_draws: int = demo.city_ground_layer.rebuild_count
+	demo.pan += Vector2(12,-6)
+	demo._sync_buildings()
+	await RenderingServer.frame_post_draw
+	_check(demo.terrain_layer.rebuild_count == terrain_draws and demo.city_ground_layer.rebuild_count == ground_draws,"packed camera pan reuses retained ground commands")
 	# Sorting is reused, while alpha and reveal progress are checked per hit.
 	var sprite: Sprite2D = demo.sprites.values()[0]
 	var id: String = demo.sprites.keys()[0]

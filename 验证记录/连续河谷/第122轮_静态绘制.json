@@ -1,0 +1,36 @@
+{
+	"checks": {
+		"appearance_0.54": true,
+		"appearance_0.88": true,
+		"appearance_1.2": true,
+		"black_hides_all_ground": true,
+		"bridge_invalidates_city_ground": true,
+		"camera_keeps_world": true,
+		"not_revealed_early": true,
+		"pan_reuses_draw_commands": true,
+		"projection": true,
+		"water_keeps_animating": true
+	},
+	"city_rebuilds": 7,
+	"max_projection_error": 0.0,
+	"passed": true,
+	"pixel_cases": [
+		{
+			"changed_fraction": 0.000246913580246914,
+			"mean_rgb_error": 0.0000313160638075797,
+			"zoom": 0.88
+		},
+		{
+			"changed_fraction": 0.000117283950617284,
+			"mean_rgb_error": 0.0000173565712853224,
+			"zoom": 0.54
+		},
+		{
+			"changed_fraction": 0.0,
+			"mean_rgb_error": 0.00000172678114455423,
+			"zoom": 1.2
+		}
+	],
+	"terrain_rebuilds": 5,
+	"water_frames": 12
+}

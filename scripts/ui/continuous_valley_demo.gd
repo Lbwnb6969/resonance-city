@@ -8,6 +8,8 @@ const Config = preload("res://scripts/world/world_values.gd")
 const GrowthSprite = preload("res://scripts/visual/audio_growth_mask.gd")
 const Shadows = preload("res://scripts/visual/city_shadow_layer.gd")
 const Renderer = preload("res://scripts/audio/sample_renderer.gd")
+const GroundLayer = preload("res://scripts/visual/valley_ground_layer.gd")
+const WaterFlow = preload("res://scripts/visual/valley_water_flow.gd")
 var scenery := ValleyScenery.new()
 var expression := "bright"
 var starter := true
@@ -27,6 +29,14 @@ var asset_images: Dictionary = {}
 var sprites: Dictionary = {}
 var buildings_layer: Node2D
 var shadow_layer: CityShadowLayer
+var backdrop: ColorRect
+var terrain_layer: Node2D
+var city_ground_layer: Node2D
+var water_flow: Node2D
+var overlay_key: Array = []
+var overlay_candidates: Array[Dictionary] = []
+var overlay_communities: Array[Dictionary] = []
+var overlay_service: Dictionary = {}
 var tooltip: Label
 var caption: Label
 var menu: PanelContainer
@@ -95,6 +105,26 @@ func _ready() -> void:
 		assets[entry["category"]] = entry
 		textures[entry["category"]] = load("res://"+str(entry["texture"]))
 		asset_images[entry["category"]] = textures[entry["category"]].get_image()
+	backdrop = ColorRect.new()
+	backdrop.name = "Backdrop"
+	backdrop.z_index = -40
+	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	backdrop.color = Color("ecebe2")
+	add_child(backdrop)
+	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	terrain_layer = GroundLayer.new()
+	terrain_layer.name = "RetainedTerrain"
+	terrain_layer.z_index = -30
+	add_child(terrain_layer)
+	water_flow = WaterFlow.new()
+	water_flow.name = "WaterFlow"
+	water_flow.z_index = -29
+	add_child(water_flow)
+	city_ground_layer = GroundLayer.new()
+	city_ground_layer.name = "RetainedCityGround"
+	city_ground_layer.role = "urban"
+	city_ground_layer.z_index = -28
+	add_child(city_ground_layer)
 	shadow_layer = Shadows.new()
 	shadow_layer.name = "GroundShadows"
 	add_child(shadow_layer)
@@ -819,6 +849,11 @@ func _process(delta: float) -> void:
 
 func _sync_buildings() -> void:
 	_prepare_ground()
+	terrain_layer.sync(self)
+	city_ground_layer.sync(self)
+	water_flow.sync(self)
+	backdrop.color = Color.BLACK if black else Color("ecebe2")
+	_refresh_overlay()
 	var frame := clock.renderer.transport.audible_frame
 	var warmth := 0.03*sin(TAU*frame/float(clock.renderer.transport.sample_rate)/4.0)
 	var pitches := model.audible_pitches()
@@ -899,48 +934,19 @@ func _update_shadows() -> void:
 
 func _draw() -> void:
 	var draw_started := Time.get_ticks_usec()
-	draw_rect(Rect2(Vector2.ZERO,size),Color("ecebe2"))
-	if black:
-		draw_rect(Rect2(Vector2.ZERO,size),Color.BLACK)
-		return
+	if black: return
 	if shown_world == null: return
-	var sea := PackedVector2Array([Vector2(-8,-8),Vector2(40,-8),Vector2(40,40),Vector2(-8,40)])
-	var family := shown_world.terrain.family
-	var water_color := Color("78a4ad") if family == "river_valley" else (Color("719ca8") if family == "lake_basin" else (Color("82aab0") if family == "coastal_plain" else (Color("5f8192") if family == "highland_pass" else Color("6e9c9a"))))
-	var left_color := Color("e9e1cb") if family != "forest_ridge" and family != "highland_pass" else (Color("9eafad") if family == "highland_pass" else Color("b7c8a4"))
-	var right_color := Color("e0e5d6") if family != "coastal_plain" and family != "highland_pass" else (Color("c4d0cc") if family == "highland_pass" else Color("e5d9bd"))
-	draw_colored_polygon(_project_polygon(sea,0.0),Color("9bbcc0"))
-	draw_colored_polygon(_project_polygon(shown_world.terrain.left_bank),left_color)
-	draw_colored_polygon(_project_polygon(shown_world.terrain.right_bank),right_color)
-	_draw_ground_details()
-	# Contours share cached world geometry with the ground patches.
-	for contour in ground_contours:
-		draw_polyline(_project_polygon(contour),Color(0.54,0.64,0.49,0.16),1.0,true)
-	draw_colored_polygon(_project_polygon(shown_world.terrain.water,0.0),water_color)
 	var flow := float(clock.renderer.transport.audible_frame)/float(clock.renderer.transport.sample_rate)
-	for i in range(18):
-		var y := -3.0+fposmod(float(i)*2.1+flow*0.35,38.0)
-		var x := shown_world.terrain.river_x(y)
-		var span := 0.4 if family != "lake_basin" else 0.8
-		draw_line(point(Vector2(x-span,y),0.0),point(Vector2(x+span,y+0.12),0.0),Color(0.8,0.91,0.9,0.28),1.0*view_zoom,true)
-	if family == "lake_basin":
-		for i in range(6):
-			var ripple := Vector2(shown_world.terrain.river_x(10.0+i*3.2),10.0+i*3.2)
-			draw_arc(point(ripple,0.01),0.38+0.08*sin(flow*2.0+i),0,TAU,20,Color(0.86,0.93,0.9,0.22),0.8*view_zoom,true)
-	for road in road_draw_polygons:
-		draw_colored_polygon(_project_polygon(road["polygon"]),road["color"])
-	_draw_center_markers()
-	_draw_green_corridors()
-	_draw_public_space()
+	_draw_community_names()
+	_draw_public_labels()
 	_draw_landmarks()
 	_draw_landmark_preview()
-	for lot in shown_world.lots:
-		var center := Vector2(lot["center"][0],lot["center"][1])
-		if lot["occupant"] != "":
-			draw_colored_polygon(_project_polygon(lot["polygon"]),Color(0.68,0.73,0.57,0.2))
-		elif pointer_inside and center.distance_to(world_at(pointer)) < 1.0:
-			draw_colored_polygon(_project_polygon(lot["polygon"]),Color(0.9,0.94,0.8,0.5))
-	_draw_fabric_overlay()
+	if pointer_inside:
+		var pointer_world := world_at(pointer)
+		for lot in shown_world.lots:
+			var center := Vector2(lot["center"][0],lot["center"][1])
+			if lot["occupant"] == "" and center.distance_to(pointer_world) < 1.0:
+				draw_colored_polygon(_project_polygon(lot["polygon"]),Color(0.9,0.94,0.8,0.5))
 	if shown_world.buildings.is_empty():
 		var target: Dictionary = shown_world.lots[mini(18,shown_world.lots.size()-1)]
 		var p := Vector2(target["center"][0],target["center"][1])
@@ -960,11 +966,10 @@ func _draw() -> void:
 	draw_string(font,Vector2(47,67),shown_world.terrain_title()+" · 晴岸合奏" if expression == "bright" else shown_world.terrain_title()+" · 深流慢板",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("758c85"))
 	_draw_landmark_bar()
 	if not black:
-		var score: Dictionary = model.synth.score_snapshot()
-		var lead := str(score["theme"].get("cid",""))
+		var lead := str(model.synth.theme.get("cid",""))
 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
 		var decree_slots := " · 政令槽%d" % shown_world.landmark_intervention_slots() if shown_world.landmark_intervention_slots() > 1 else ""
-		var service := shown_world.public_service_summary()
+		var service := overlay_service
 		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d功能区 · %d条线路 · 文化%d/%d栋 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.active_community_count(),shown_world.functional_zones.size(),shown_world.transit_lines.size(),int(service.get("served",0)),shown_world.buildings.size(),model.world.pending_actions.size(),name,decree_slots]
 		draw_string(font,Vector2(size.x-760,size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("607974"))
 	var duration := float(model.phrase_frames)
@@ -991,9 +996,24 @@ func _set_expression(value: String) -> void:
 	low_octave.button_pressed = value == "deep"
 	_message("深流：低音、缓慢脉动与留白" if value == "deep" else "晴岸：明亮主题与商街节奏")
 
+func _refresh_overlay() -> void:
+	var key := [shown_world,shown_world.phrase_index]
+	if overlay_key == key: return
+	overlay_key = key
+	overlay_candidates = shown_world.landmark_candidates()
+	overlay_service = shown_world.public_service_summary()
+	overlay_communities.clear()
+	for community in shown_world.communities.values():
+		var members: Array = community["members"]
+		if members.size() < 4: continue
+		var center := Vector2.ZERO
+		for id in members: center += Coupling.position_of(shown_world.by_id[id])
+		overlay_communities.append({"position":center/members.size(),"name":community["name"]})
+
 func _landmark_candidates() -> Array[Dictionary]:
 	if shown_world == null: return []
-	return shown_world.landmark_candidates()
+	_refresh_overlay()
+	return overlay_candidates
 
 func _draw_landmarks() -> void:
 	var frame := int(clock.renderer.transport.audible_frame)
@@ -1055,99 +1075,15 @@ func _draw_landmark_preview() -> void:
 		draw_line(at+Vector2(0,-5)*view_zoom,at+Vector2(0,5)*view_zoom,Color(tint,0.75),1.1*view_zoom,true)
 		draw_string(ThemeDB.fallback_font,at+Vector2(8,-8)*view_zoom,"预影 · "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("776247"))
 
-func _draw_center_markers() -> void:
-	for center in shown_world.centers:
-		if not bool(center.get("active",true)): continue
-		var p := Vector2(float(center["position"][0]),float(center["position"][1]))
-		var level := str(center.get("level","terrace"))
-		var color := Color("b28b53") if level == "primary" else (Color("6e9290") if level == "secondary" else Color("829b69"))
-		var radius := 5.8 if level == "primary" else (4.4 if level == "secondary" else 3.0)
-		draw_circle(point(p,shown_world.terrain.height_at(p)+0.08),radius*view_zoom,Color(color,0.24))
-		draw_arc(point(p,shown_world.terrain.height_at(p)+0.09),radius*view_zoom,0,TAU,24,color,1.4*view_zoom,true)
-		if level != "terrace":
-			draw_circle(point(p,shown_world.terrain.height_at(p)+0.10),1.6*view_zoom,color)
+func _draw_public_labels() -> void:
+	if not pointer_inside: return
+	var p := world_at(pointer)
+	for site in shown_world.near_public_sites(p):
+		if not Geometry2D.is_point_in_polygon(p,site["polygon"]): continue
+		var center := Vector2(site["position"][0],site["position"][1])
+		draw_string(ThemeDB.fallback_font,point(center)+Vector2(-30,30)*view_zoom,site["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("617b69"))
 
-func _draw_green_corridors() -> void:
-	for corridor in shown_world.green_corridors:
-		if not bool(corridor.get("active",true)): continue
-		var path: PackedVector2Array = corridor["path"]
-		if path.size() < 2: continue
-		var width := float(corridor.get("width",0.24))
-		for polygon in Geometry2D.offset_polyline(path,width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):
-			draw_colored_polygon(_project_polygon(polygon,0.012),Color(0.55,0.69,0.43,0.36))
-		draw_polyline(_project_polygon(path,0.025),Color(0.48,0.62,0.39,0.64),2.2*view_zoom,true)
-		for i in range(0,path.size(),2):
-			var p := path[i]
-			draw_circle(point(p,0.04),2.4*view_zoom,Color(0.38,0.56,0.35,0.72))
-
-func _draw_public_space() -> void:
-	var font := ThemeDB.fallback_font
-	for site in shown_world.public_sites:
-		var polygon: PackedVector2Array = site["polygon"]
-		var projected := _project_polygon(polygon)
-		if site["active"]:
-			var color := Color("bacda7") if site["kind"] == "park" else Color("ded5b9")
-			draw_colored_polygon(projected,color)
-			if site["kind"] == "park":
-				var p := Vector2(site["position"][0],site["position"][1])
-				var walk := PackedVector2Array([p+Vector2(-2,0.1),p+Vector2(0.2,-0.25),p+Vector2(2,0.15)])
-				for part in Geometry2D.intersect_polyline_with_polygon(walk,polygon):
-					draw_polyline(_project_polygon(part),Color("e6e2c9"),3.4*view_zoom,true)
-				var pool := PackedVector2Array()
-				for i in range(32): pool.append(p+Vector2(0.4,0.6)+Vector2(cos(TAU*i/32)*0.5,sin(TAU*i/32)*0.35))
-				draw_colored_polygon(_project_polygon(pool),Color("9bb9af"))
-			else:
-				var center := point(Vector2(site["position"][0],site["position"][1]))
-				for level in range(int(site.get("service_level",1))):
-					draw_circle(center+Vector2((level-1)*7,15)*view_zoom,2.2*view_zoom,Color("927851"))
-				if site.get("served",[]).size() >= int(site.get("service_capacity",18)):
-					draw_arc(center,14*view_zoom,0,TAU,32,Color("b58b55"),1.2,true)
-		else:
-			projected.append(projected[0])
-			draw_polyline(projected,Color(0.45,0.59,0.43,0.34),1.1,true)
-		if pointer_inside and Geometry2D.is_point_in_polygon(world_at(pointer),polygon):
-			var p := Vector2(site["position"][0],site["position"][1])
-			draw_string(font,point(p)+Vector2(-30,30)*view_zoom,site["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("617b69"))
-	for line in shown_world.transit_lines:
-		for node in line["stops"]:
-			var p: Array = shown_world.nodes[node]
-			var at := point(Vector2(p[0],p[1]))
-			draw_circle(at,3.5*view_zoom,Color("e9d4a0"))
-			draw_arc(at,4.2*view_zoom,0,TAU,16,Color("899d87"),1.0,true)
-
-func _draw_fabric_overlay() -> void:
-	var cache: Dictionary = shown_world.fabric_cache
-	for courtyard in cache.get("courtyards",[]):
-		var center := Vector2(float(courtyard["center"][0]),float(courtyard["center"][1]))
-		var polygon: PackedVector2Array = courtyard.get("polygon",PackedVector2Array())
-		if polygon.size() < 3:
-			polygon = PackedVector2Array([center+Vector2(-0.58,0),center+Vector2(0,-0.42),center+Vector2(0.58,0),center+Vector2(0,0.42)])
-		var closed := polygon.duplicate()
-		closed.append(closed[0])
-		draw_colored_polygon(_project_polygon(polygon,0.01),Color(0.82,0.78,0.60,0.18))
-		draw_polyline(_project_polygon(closed,0.015),Color(0.74,0.66,0.48,0.50),1.1*view_zoom,true)
-		draw_circle(point(center,0.025),2.0*view_zoom,Color(0.88,0.80,0.52,0.56))
-	for relation in cache.get("shared_walls",[]):
-		if not shown_world.by_id.has(relation["a"]) or not shown_world.by_id.has(relation["b"]): continue
-		var a := point(Coupling.position_of(shown_world.by_id[relation["a"]]),shown_world.terrain.height_at(Coupling.position_of(shown_world.by_id[relation["a"]]))+0.04)
-		var b := point(Coupling.position_of(shown_world.by_id[relation["b"]]),shown_world.terrain.height_at(Coupling.position_of(shown_world.by_id[relation["b"]]))+0.04)
-		draw_line(a,b,Color(0.74,0.52,0.31,0.72),2.1*view_zoom,true)
-	for row in cache.get("rows",[]):
-		var members: Array = row["members"]
-		for i in range(members.size()-1):
-			if not shown_world.by_id.has(members[i]) or not shown_world.by_id.has(members[i+1]): continue
-			var a := point(Coupling.position_of(shown_world.by_id[members[i]]),0.05)
-			var b := point(Coupling.position_of(shown_world.by_id[members[i+1]]),0.05)
-			draw_line(a,b,Color(0.62,0.67,0.49,0.42),1.4*view_zoom,true)
-
-func _draw_ground_details() -> void:
-	# Broad patches retain the same seeded geometry across camera motion.
-	for ring in ground_patches:
-		draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.12))
-	for community in shown_world.communities.values():
-		if community["members"].size() < 4: continue
-		var center := Vector2.ZERO
-		for id in community["members"]: center += Coupling.position_of(shown_world.by_id[id])
-		center /= community["members"].size()
-		if view_zoom < 1.0:
-			draw_string(ThemeDB.fallback_font,point(center)+Vector2(-16,29),community["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(0.40,0.48,0.42,0.72))
+func _draw_community_names() -> void:
+	if view_zoom >= 1.0: return
+	for community in overlay_communities:
+		draw_string(ThemeDB.fallback_font,point(community["position"])+Vector2(-16,29),community["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(0.40,0.48,0.42,0.72))
