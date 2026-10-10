@@ -17,6 +17,29 @@ static func normalize_polygon(value: Variant) -> PackedVector2Array:
 				polygon.append(Vector2(float(raw[0]),float(raw[1])))
 	return polygon
 
+## Public sites written before multi-component footprints only have `polygon`.
+## New sites carry `footprint_components`; always expose a normalized array so
+## occupancy, hit-testing and broad-phase indexing cannot miss later pieces.
+static func footprint_components(record: Dictionary) -> Array[PackedVector2Array]:
+	var result: Array[PackedVector2Array] = []
+	var raw_components: Variant = record.get("footprint_components",record.get("target_polygons",[]))
+	if raw_components is Array and not raw_components.is_empty():
+		for raw in raw_components:
+			var component := normalize_polygon(raw)
+			if component.size() >= 3: result.append(component)
+	if result.is_empty():
+		var legacy := normalize_polygon(record.get("polygon",PackedVector2Array()))
+		if legacy.size() >= 3: result.append(legacy)
+	return result
+
+static func footprint_bounds(record: Dictionary) -> Rect2:
+	var components := footprint_components(record)
+	if components.is_empty(): return Rect2()
+	var result := bounds(components[0])
+	for index in range(1,components.size()):
+		for point in components[index]: result = result.expand(point)
+	return result
+
 static func polygon_area(polygon: PackedVector2Array) -> float:
 	if polygon.size() < 3: return 0.0
 	var area := 0.0
@@ -258,8 +281,9 @@ static func exclusion(world: RefCounted,polygon: PackedVector2Array,ignore_reser
 		if disc_hits(polygon,center,float(landmark.get("radius",1.0))):
 			return "这里是地标占地，给地标留出完整空间"
 	for site in world.near_public_sites(p,reach):
-		if str(site["id"]) != ignore_public and overlaps(polygon,site["polygon"]):
-			return "占地不能压进公园或文化设施"
+		if str(site["id"]) == ignore_public: continue
+		for component in footprint_components(site):
+			if overlaps(polygon,component): return "占地不能压进公园或文化设施"
 	return ""
 
 static func site_reason(world: RefCounted,candidate: Dictionary,ignore_public_id: String = "") -> String:
@@ -338,30 +362,30 @@ static func candidate(world: RefCounted,p: Vector2) -> Dictionary:
 	return selected
 
 static func public_access(world: RefCounted,site: Dictionary) -> Dictionary:
-	var polygon: PackedVector2Array = site["polygon"]
-	var center := bounds(polygon).get_center()
-	var raw_position: Array = site.get("position",[])
-	if raw_position.size() == 2:
-		var candidate_position := Vector2(float(raw_position[0]),float(raw_position[1]))
-		if Geometry2D.is_point_in_polygon(candidate_position,polygon): center = candidate_position
 	var best: Dictionary = {}
 	var distance := INF
-	for segment in world.near_road_segments(center,3.0):
-		if bool(segment["road"].get("bridge",false)): continue
-		var q := Geometry2D.get_closest_point_to_segment(center,segment["a"],segment["b"])
-		var gap := center.distance_to(q)
-		if gap >= distance or gap > 3.0: continue
-		var path := PackedVector2Array([center,q])
-		if not Geometry2D.intersect_polyline_with_polygon(path,world.terrain.water).is_empty(): continue
-		var blocked := false
-		for id in world.index.query_circle((center+q)*0.5,gap*0.5):
-			var building: Dictionary = world.by_id[id]
-			if WorldCoupling.position_of(building).distance_to(Geometry2D.get_closest_point_to_segment(WorldCoupling.position_of(building),center,q)) < float(building["radius"]):
-				blocked = true
-				break
-		if blocked: continue
-		distance = gap
-		best = {"entrance":[q.x,q.y],"road_id":str(segment["road"]["id"]),"access_path":path}
+	for polygon in footprint_components(site):
+		var center := bounds(polygon).get_center()
+		var raw_position: Array = site.get("position",[])
+		if raw_position.size() == 2:
+			var candidate_position := Vector2(float(raw_position[0]),float(raw_position[1]))
+			if Geometry2D.is_point_in_polygon(candidate_position,polygon): center = candidate_position
+		for segment in world.near_road_segments(center,3.0):
+			if bool(segment["road"].get("bridge",false)): continue
+			var q := Geometry2D.get_closest_point_to_segment(center,segment["a"],segment["b"])
+			var gap := center.distance_to(q)
+			if gap >= distance or gap > 3.0: continue
+			var path := PackedVector2Array([center,q])
+			if not Geometry2D.intersect_polyline_with_polygon(path,world.terrain.water).is_empty(): continue
+			var blocked := false
+			for id in world.index.query_circle((center+q)*0.5,gap*0.5):
+				var building: Dictionary = world.by_id[id]
+				if WorldCoupling.position_of(building).distance_to(Geometry2D.get_closest_point_to_segment(WorldCoupling.position_of(building),center,q)) < float(building["radius"]):
+					blocked = true
+					break
+			if blocked: continue
+			distance = gap
+			best = {"entrance":[q.x,q.y],"road_id":str(segment["road"]["id"]),"access_path":path}
 	return best
 
 ## Explain a stale planning intent at the commit boundary. The request was

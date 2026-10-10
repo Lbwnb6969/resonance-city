@@ -51,7 +51,9 @@ static func on_road(world: RefCounted, p: Vector2, radius: float) -> bool:
 
 static func reserved(world: RefCounted, p: Vector2) -> bool:
 	for site in world.near_public_sites(p):
-		if Geometry2D.is_point_in_polygon(p,site["polygon"]): return true
+		var components: Array = site.get("footprint_components",[site.get("polygon",PackedVector2Array())])
+		for component in components:
+			if Geometry2D.is_point_in_polygon(p,component): return true
 	return false
 
 static func community_for_position(world: RefCounted, p: Vector2) -> String:
@@ -160,7 +162,7 @@ static func rebuild(world: RefCounted) -> Dictionary:
 	world.fabric_profile["walls_rows_ms"] = float(Time.get_ticks_usec()-started)/1000.0
 	started = Time.get_ticks_usec()
 	var geometry: Array = [str(world.terrain.water),world.terrain.cfg["template_land_min"],world.terrain.cfg["template_land_max"]]
-	for site in world.public_sites: geometry.append([site["id"],site["polygon"]])
+	for site in world.public_sites: geometry.append([site["id"],site.get("polygon",PackedVector2Array()),site.get("footprint_components",[])])
 	var identity := JSON.stringify(geometry)
 	if identity != world.fabric_geometry_identity:
 		world.fabric_geometry_identity = identity
