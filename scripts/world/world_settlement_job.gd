@@ -68,12 +68,18 @@ func join() -> void:
 	task_id = -1
 
 func adopt(city: ContinuousWorld) -> void:
+	# Observations after capture affect the next phrase, so merge them in order
+	# after the prepared growth. Never discard a full job for a passenger arrival.
+	var captured_count: int = snapshot.get("transit_flow_pending",[]).size()
+	var late_flow: Array = city.transit_flow_pending.slice(captured_count).duplicate(true)
 	# Keep the public World identity: UI, transport and tests can retain references.
 	for property in city.get_script().get_script_property_list():
 		var field := str(property["name"])
 		var previous: Variant = city.get(field)
 		city.set(field,result.get(field))
 		result.set(field,previous)
+	city.transit_flow_pending.assign(late_flow)
+	city._commit_transit_flow()
 
 func retire() -> void:
 	task_id = WorkerThreadPool.add_task(_dispose,false,"City snapshot retirement")

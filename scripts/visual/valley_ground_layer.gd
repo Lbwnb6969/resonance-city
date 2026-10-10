@@ -74,7 +74,8 @@ func _draw() -> void:
 	max_draw_ms = maxf(max_draw_ms,last_draw_ms)
 
 func _draw_terrain() -> void:
-	var sea := PackedVector2Array([Vector2(-8,-8),Vector2(40,-8),Vector2(40,40),Vector2(-8,40)])
+	var high_y := float(city.terrain.cfg.get("template_land_max_y",city.terrain.cfg["template_land_max"]))+4.0
+	var sea := PackedVector2Array([Vector2(-8,-8),Vector2(40,-8),Vector2(40,high_y),Vector2(-8,high_y)])
 	var family := city.terrain.family
 	var water_color := Color("78a4ad") if family == "river_valley" else (Color("719ca8") if family == "lake_basin" else (Color("82aab0") if family == "coastal_plain" else (Color("5f8192") if family == "highland_pass" else Color("6e9c9a"))))
 	var left_color := Color("e9e1cb") if family != "forest_ridge" and family != "highland_pass" else (Color("9eafad") if family == "highland_pass" else Color("b7c8a4"))

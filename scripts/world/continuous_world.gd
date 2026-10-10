@@ -48,6 +48,8 @@ var transit_lines: Array[Dictionary] = []
 # Smoothed stop activity is a light-weight memory shared by transport, growth,
 # and music; it is not a full economy simulation.
 var transit_demand: Dictionary = {}
+# Stop observations commit after growth; the next phrase consumes this pressure.
+var transit_flow_pending: Array[Dictionary] = []
 # Ephemeral task version; snapshots restore without pending worker tasks.
 var planning_revision := 0
 # Service pressure is derived from public coverage and cached within a planning pass.
@@ -281,17 +283,23 @@ func _refresh_public_service() -> void:
 
 func record_transit_flow(stop_id: String, boarded: int, alighted: int, transfers: int = 0) -> void:
 	if stop_id.is_empty(): return
-	planning_revision += 1
-	var key := str(stop_id)
-	var record: Dictionary = transit_demand.get(key,{"score":0.0,"boarded":0,"alighted":0,"transfers":0,"visits":0})
-	var activity := float(maxi(0,boarded)+maxi(0,alighted))+float(maxi(0,transfers))*1.5
-	# Event counts remain inspectable; score is a bounded, decaying pressure signal.
-	record["score"] = minf(8.0,float(record.get("score",0.0))*0.985+activity*0.35)
-	record["boarded"] = int(record.get("boarded",0))+maxi(0,boarded)
-	record["alighted"] = int(record.get("alighted",0))+maxi(0,alighted)
-	record["transfers"] = int(record.get("transfers",0))+maxi(0,transfers)
-	record["visits"] = int(record.get("visits",0))+1
-	transit_demand[key] = record
+	transit_flow_pending.append({"stop_id":stop_id,"boarded":boarded,"alighted":alighted,"transfers":transfers})
+
+func _commit_transit_flow() -> void:
+	for observation in transit_flow_pending:
+		var key := str(observation["stop_id"])
+		var record: Dictionary = transit_demand.get(key,{"score":0.0,"boarded":0,"alighted":0,"transfers":0,"visits":0})
+		var boarded := maxi(0,int(observation["boarded"]))
+		var alighted := maxi(0,int(observation["alighted"]))
+		var transfers := maxi(0,int(observation["transfers"]))
+		var activity := float(boarded+alighted)+float(transfers)*1.5
+		record["score"] = minf(8.0,float(record.get("score",0.0))*0.985+activity*0.35)
+		record["boarded"] = int(record.get("boarded",0))+boarded
+		record["alighted"] = int(record.get("alighted",0))+alighted
+		record["transfers"] = int(record.get("transfers",0))+transfers
+		record["visits"] = int(record.get("visits",0))+1
+		transit_demand[key] = record
+	transit_flow_pending = []
 
 func transit_demand_score(stop_id: String) -> float:
 	return clampf(float(transit_demand.get(str(stop_id),{}).get("score",0.0)),0.0,8.0)
@@ -1011,6 +1019,7 @@ func settle(frame: int) -> void:
 	var geometry_action := committed.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["seed","bridge","landmark"])
 	if forms_dirty and (geometry_action or phrase_index % 2 == 0): refresh_fabric()
 	settle_profile["fabric_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
+	_commit_transit_flow()
 
 func _transit_growth_bonus(position: Vector2,use: String = "residential") -> float:
 	var bonus := 0.0
@@ -1504,10 +1513,10 @@ func _update_forms(frame: int, modifiers: Dictionary = {}) -> void:
 			events.append({"kind":"upgrade","district_id":building["district_id"],"frame":frame,"form":target})
 
 func snapshot() -> Dictionary:
-	return {"schema_version":2,"generation_version":130,"settings":cfg.duplicate(true),"planning_reservations":planning_reservations.duplicate(true),
+	return {"schema_version":2,"generation_version":136,"settings":cfg.duplicate(true),"planning_reservations":planning_reservations.duplicate(true),
 		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase,"family":terrain.family},
 		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"green_corridors":green_corridors.duplicate(true),"centers":centers.duplicate(true),"communities":communities.duplicate(true)},
-		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"transit_demand":transit_demand.duplicate(true),"functional_zones":functional_zones.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"landmarks":landmarks.duplicate(true),"landmark_progress":landmark_progress.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
+		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"transit_demand":transit_demand.duplicate(true),"transit_flow_pending":transit_flow_pending.duplicate(true),"functional_zones":functional_zones.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"landmarks":landmarks.duplicate(true),"landmark_progress":landmark_progress.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
 		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,"expanded_plan":expanded_plan,
 		"next_id":next_id,"families":families.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_reason":last_reason}
 
@@ -1556,6 +1565,7 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 		transit = saved["transit"].duplicate(true)
 		transit_lines.assign(saved.get("transit_lines",[]).duplicate(true))
 		transit_demand = saved.get("transit_demand",{}).duplicate(true)
+		transit_flow_pending.assign(saved.get("transit_flow_pending",[]).duplicate(true))
 		functional_zones.assign(saved.get("functional_zones",[]).duplicate(true))
 	buildings.assign(saved["buildings"].duplicate(true))
 	by_id.clear()
@@ -1690,6 +1700,13 @@ func _refresh_public_network(frame: int = 0) -> void:
 		inner_itinerary.append("west-1")
 		if inner_itinerary.size() > 2:
 			lines.append(_make_transit_line("inland-line","内台接驳线",inner_itinerary,frame))
+	for reach in range(1,int(cfg["city"].get("regional_count",1))):
+		var prefix := "reach-%d-" % reach
+		var previous := "" if reach == 1 else "reach-%d-" % (reach-1)
+		for side: String in ["west","east"]:
+			if not public_sites.any(func(site: Dictionary) -> bool: return site["id"] == prefix+side+"-civic" and site["active"]): continue
+			var itinerary: Array = [previous+side+"-4",prefix+side+"-1",prefix+side+"-2",prefix+side+"-3",prefix+side+"-4",prefix+side+"-outer-3",prefix+side+"-outer-2",prefix+side+"-outer-1",prefix+side+"-1",previous+side+"-4"]
+			lines.append(_make_transit_line(prefix+side+"-line","河段接驳线%d" % reach,itinerary,frame))
 	transit_lines.assign(lines)
 	_annotate_transfers()
 	refresh_functional_zones()
@@ -1738,6 +1755,20 @@ func expand_plan() -> void:
 	network.rebuild(nodes,roads,terrain)
 	_refresh_public_network()
 	refresh_fabric()
+
+static func regional_sample() -> ContinuousWorld:
+	var record: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://数据/demo_regional_city.json"))
+	var raw := Marshalls.base64_to_raw(record["world_zstd_base64"]).decompress(int(record["world_bytes"]),FileAccess.COMPRESSION_ZSTD)
+	var saved: Dictionary = bytes_to_var(raw)
+	var city := ContinuousWorld.new(saved["seed_hex"],false)
+	city.restore(saved)
+	return city
+
+func build_regional_town(count: int = 3) -> void:
+	if int(cfg["city"].get("regional_count",1)) > 1: return
+	expand_plan()
+	preload("res://scripts/world/regional_neighborhood.gd").populate(self,count)
+	build_town()
 
 func build_expanded_town() -> void:
 	expand_plan()

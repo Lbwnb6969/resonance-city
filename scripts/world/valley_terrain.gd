@@ -30,11 +30,13 @@ func configure(seed_value: int, phase: float, terrain_family: String = "river_va
 	noise.fractal_lacunarity = float(cfg["noise_lacunarity"])
 	noise.frequency = float(cfg["noise_frequency"])
 	var low := float(cfg["template_land_min"])
-	var high := float(cfg["template_land_max"])
+	var high := float(cfg.get("template_land_max_y",cfg["template_land_max"]))
+	var high_x := float(cfg["template_land_max"])
+	var samples := ceili((high-low)*2.0)
 	var shore_left := PackedVector2Array()
 	var shore_right := PackedVector2Array()
-	for i in range(81):
-		var y := lerpf(low,high,float(i)/80.0)
+	for i in range(samples+1):
+		var y := lerpf(low,high,float(i)/float(samples))
 		shore_left.append(Vector2(river_x(y)-river_width(y),y))
 		shore_right.append(Vector2(river_x(y)+river_width(y),y))
 	water = shore_left.duplicate()
@@ -44,7 +46,7 @@ func configure(seed_value: int, phase: float, terrain_family: String = "river_va
 	left_bank = PackedVector2Array([Vector2(low,low)])
 	left_bank.append_array(shore_left)
 	left_bank.append(Vector2(low,high))
-	right_bank = PackedVector2Array([Vector2(high,low),Vector2(high,high)])
+	right_bank = PackedVector2Array([Vector2(high_x,low),Vector2(high_x,high)])
 	for i in range(shore_right.size()-1,-1,-1): right_bank.append(shore_right[i])
 
 func river_x(y: float) -> float:
@@ -92,7 +94,7 @@ func height_at(p: Vector2) -> float:
 func land_at(p: Vector2) -> bool:
 	var low := float(cfg["template_land_min"])
 	var high := float(cfg["template_land_max"])
-	if p.x < low or p.x > high or p.y < low or p.y > high: return false
+	if p.x < low or p.x > high or p.y < low or p.y > float(cfg.get("template_land_max_y",high)): return false
 	if p.x < water_bounds.position.x or p.x > water_bounds.end.x or p.y < water_bounds.position.y or p.y > water_bounds.end.y: return true
 	return not Geometry2D.is_point_in_polygon(p,water)
 
@@ -146,7 +148,8 @@ func environment(a: Vector2,b: Vector2,bridge: bool) -> Dictionary:
 
 func buildable_ratio() -> float:
 	var count := 0
-	for y in range(-8,40):
+	var high := ceili(float(cfg.get("template_land_max_y",cfg["template_land_max"])))+4
+	for y in range(-8,high):
 		for x in range(-8,40):
 			if land_at(Vector2(x+0.5,y+0.5)): count += 1
-	return float(count)/(48.0*48.0)
+	return float(count)/(48.0*float(high+8))

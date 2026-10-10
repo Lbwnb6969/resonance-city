@@ -1,0 +1,744 @@
+{
+	"active_communities": 147,
+	"all_legal": true,
+	"bounds": "[P: (-3.657755, -3.585853), S: (39.29561, 119.2359)]",
+	"buildings": 1511,
+	"communities": 150,
+	"compact": 1455,
+	"history": [
+		{
+			"buildings": 386,
+			"phrase": 1,
+			"profile": {
+				"actions_growth_ms": 584.381,
+				"coverage_ms": 27.453,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 23.646,
+				"public_network_ms": 70.377,
+				"service_allocation_ms": 18.51,
+				"split_ms": 0.11
+			},
+			"settle_ms": 678.741
+		},
+		{
+			"buildings": 460,
+			"phrase": 2,
+			"profile": {
+				"actions_growth_ms": 453.672,
+				"coverage_ms": 27.56,
+				"fabric_ms": 72.26,
+				"music_forms_ms": 35.093,
+				"public_network_ms": 72.522,
+				"service_allocation_ms": 19.762,
+				"split_ms": 0.112
+			},
+			"settle_ms": 634.024
+		},
+		{
+			"buildings": 518,
+			"phrase": 3,
+			"profile": {
+				"actions_growth_ms": 432.219,
+				"coverage_ms": 28.01,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 41.124,
+				"public_network_ms": 73.842,
+				"service_allocation_ms": 20.323,
+				"split_ms": 0.122
+			},
+			"settle_ms": 547.656
+		},
+		{
+			"buildings": 552,
+			"phrase": 4,
+			"profile": {
+				"actions_growth_ms": 367.108,
+				"coverage_ms": 30.308,
+				"fabric_ms": 84.037,
+				"music_forms_ms": 40.236,
+				"public_network_ms": 78.763,
+				"service_allocation_ms": 21.85,
+				"split_ms": 0.124
+			},
+			"settle_ms": 570.809
+		},
+		{
+			"buildings": 588,
+			"phrase": 5,
+			"profile": {
+				"actions_growth_ms": 423.16,
+				"coverage_ms": 30.52,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 43.583,
+				"public_network_ms": 78.309,
+				"service_allocation_ms": 21.526,
+				"split_ms": 0.126
+			},
+			"settle_ms": 545.713
+		},
+		{
+			"buildings": 609,
+			"phrase": 6,
+			"profile": {
+				"actions_growth_ms": 354.109,
+				"coverage_ms": 28.378,
+				"fabric_ms": 82.229,
+				"music_forms_ms": 38.446,
+				"public_network_ms": 74.739,
+				"service_allocation_ms": 20.873,
+				"split_ms": 0.125
+			},
+			"settle_ms": 550.122
+		},
+		{
+			"buildings": 636,
+			"phrase": 7,
+			"profile": {
+				"actions_growth_ms": 410.244,
+				"coverage_ms": 31.165,
+				"fabric_ms": 0.001,
+				"music_forms_ms": 39.85,
+				"public_network_ms": 78.674,
+				"service_allocation_ms": 21.601,
+				"split_ms": 0.119
+			},
+			"settle_ms": 529.416
+		},
+		{
+			"buildings": 662,
+			"phrase": 8,
+			"profile": {
+				"actions_growth_ms": 441.719,
+				"coverage_ms": 34.874,
+				"fabric_ms": 98.457,
+				"music_forms_ms": 49.766,
+				"public_network_ms": 86.496,
+				"service_allocation_ms": 22.628,
+				"split_ms": 0.142
+			},
+			"settle_ms": 677.213
+		},
+		{
+			"buildings": 683,
+			"phrase": 9,
+			"profile": {
+				"actions_growth_ms": 401.633,
+				"coverage_ms": 33.38,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 43.159,
+				"public_network_ms": 82.529,
+				"service_allocation_ms": 21.647,
+				"split_ms": 0.128
+			},
+			"settle_ms": 528.2
+		},
+		{
+			"buildings": 707,
+			"phrase": 10,
+			"profile": {
+				"actions_growth_ms": 523.874,
+				"coverage_ms": 34.667,
+				"fabric_ms": 95.695,
+				"music_forms_ms": 50.85,
+				"public_network_ms": 85.343,
+				"service_allocation_ms": 22.629,
+				"split_ms": 0.139
+			},
+			"settle_ms": 756.612
+		},
+		{
+			"buildings": 726,
+			"phrase": 11,
+			"profile": {
+				"actions_growth_ms": 449.518,
+				"coverage_ms": 35.237,
+				"fabric_ms": 0.001,
+				"music_forms_ms": 51.69,
+				"public_network_ms": 86.046,
+				"service_allocation_ms": 23.042,
+				"split_ms": 0.146
+			},
+			"settle_ms": 588.19
+		},
+		{
+			"buildings": 746,
+			"phrase": 12,
+			"profile": {
+				"actions_growth_ms": 523.349,
+				"coverage_ms": 34.433,
+				"fabric_ms": 110.491,
+				"music_forms_ms": 39.26,
+				"public_network_ms": 84.631,
+				"service_allocation_ms": 21.892,
+				"split_ms": 0.135
+			},
+			"settle_ms": 758.69
+		},
+		{
+			"buildings": 766,
+			"phrase": 13,
+			"profile": {
+				"actions_growth_ms": 434.353,
+				"coverage_ms": 37.306,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 47.404,
+				"public_network_ms": 90.282,
+				"service_allocation_ms": 23.817,
+				"split_ms": 0.124
+			},
+			"settle_ms": 573.103
+		},
+		{
+			"buildings": 785,
+			"phrase": 14,
+			"profile": {
+				"actions_growth_ms": 481.887,
+				"coverage_ms": 39.461,
+				"fabric_ms": 118.318,
+				"music_forms_ms": 52.786,
+				"public_network_ms": 91.155,
+				"service_allocation_ms": 23.404,
+				"split_ms": 0.158
+			},
+			"settle_ms": 745.49
+		},
+		{
+			"buildings": 805,
+			"phrase": 15,
+			"profile": {
+				"actions_growth_ms": 452.329,
+				"coverage_ms": 37.646,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 45.274,
+				"public_network_ms": 89.893,
+				"service_allocation_ms": 23.73,
+				"split_ms": 0.125
+			},
+			"settle_ms": 588.587
+		},
+		{
+			"buildings": 824,
+			"phrase": 16,
+			"profile": {
+				"actions_growth_ms": 438.69,
+				"coverage_ms": 37.851,
+				"fabric_ms": 115.542,
+				"music_forms_ms": 55.89,
+				"public_network_ms": 88.952,
+				"service_allocation_ms": 22.871,
+				"split_ms": 0.147
+			},
+			"settle_ms": 700.53
+		},
+		{
+			"buildings": 843,
+			"phrase": 17,
+			"profile": {
+				"actions_growth_ms": 406.643,
+				"coverage_ms": 38.296,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 52.465,
+				"public_network_ms": 87.447,
+				"service_allocation_ms": 22.172,
+				"split_ms": 0.129
+			},
+			"settle_ms": 547.714
+		},
+		{
+			"buildings": 864,
+			"phrase": 18,
+			"profile": {
+				"actions_growth_ms": 417.887,
+				"coverage_ms": 39.257,
+				"fabric_ms": 132.068,
+				"music_forms_ms": 55.503,
+				"public_network_ms": 88.824,
+				"service_allocation_ms": 22.863,
+				"split_ms": 0.127
+			},
+			"settle_ms": 695.785
+		},
+		{
+			"buildings": 883,
+			"phrase": 19,
+			"profile": {
+				"actions_growth_ms": 459.515,
+				"coverage_ms": 43.383,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 68.288,
+				"public_network_ms": 94.224,
+				"service_allocation_ms": 23.293,
+				"split_ms": 0.14
+			},
+			"settle_ms": 623.398
+		},
+		{
+			"buildings": 904,
+			"phrase": 20,
+			"profile": {
+				"actions_growth_ms": 439.062,
+				"coverage_ms": 38.638,
+				"fabric_ms": 142.383,
+				"music_forms_ms": 67.062,
+				"public_network_ms": 87.264,
+				"service_allocation_ms": 22.129,
+				"split_ms": 0.137
+			},
+			"settle_ms": 737.489
+		},
+		{
+			"buildings": 923,
+			"phrase": 21,
+			"profile": {
+				"actions_growth_ms": 433.91,
+				"coverage_ms": 40.955,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 67.918,
+				"public_network_ms": 91.142,
+				"service_allocation_ms": 22.912,
+				"split_ms": 0.175
+			},
+			"settle_ms": 594.81
+		},
+		{
+			"buildings": 944,
+			"phrase": 22,
+			"profile": {
+				"actions_growth_ms": 439.264,
+				"coverage_ms": 43.437,
+				"fabric_ms": 155.167,
+				"music_forms_ms": 81.083,
+				"public_network_ms": 96.313,
+				"service_allocation_ms": 24.131,
+				"split_ms": 0.141
+			},
+			"settle_ms": 773.682
+		},
+		{
+			"buildings": 962,
+			"phrase": 23,
+			"profile": {
+				"actions_growth_ms": 433.55,
+				"coverage_ms": 43.583,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 81.886,
+				"public_network_ms": 94.692,
+				"service_allocation_ms": 23.489,
+				"split_ms": 0.13
+			},
+			"settle_ms": 611.806
+		},
+		{
+			"buildings": 982,
+			"phrase": 24,
+			"profile": {
+				"actions_growth_ms": 548.907,
+				"coverage_ms": 44.014,
+				"fabric_ms": 160.083,
+				"music_forms_ms": 80.656,
+				"public_network_ms": 97.547,
+				"service_allocation_ms": 24.533,
+				"split_ms": 0.134
+			},
+			"settle_ms": 888.966
+		},
+		{
+			"buildings": 1000,
+			"phrase": 25,
+			"profile": {
+				"actions_growth_ms": 398.856,
+				"coverage_ms": 44.296,
+				"fabric_ms": 0.001,
+				"music_forms_ms": 77.873,
+				"public_network_ms": 94.553,
+				"service_allocation_ms": 23.483,
+				"split_ms": 0.123
+			},
+			"settle_ms": 573.427
+		},
+		{
+			"buildings": 1020,
+			"phrase": 26,
+			"profile": {
+				"actions_growth_ms": 431.913,
+				"coverage_ms": 48.561,
+				"fabric_ms": 188.302,
+				"music_forms_ms": 94.681,
+				"public_network_ms": 101.22,
+				"service_allocation_ms": 24.338,
+				"split_ms": 0.146
+			},
+			"settle_ms": 819.644
+		},
+		{
+			"buildings": 1038,
+			"phrase": 27,
+			"profile": {
+				"actions_growth_ms": 478.122,
+				"coverage_ms": 48.904,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 96.327,
+				"public_network_ms": 102.851,
+				"service_allocation_ms": 26.136,
+				"split_ms": 0.284
+			},
+			"settle_ms": 679.674
+		},
+		{
+			"buildings": 1059,
+			"phrase": 28,
+			"profile": {
+				"actions_growth_ms": 454.717,
+				"coverage_ms": 47.206,
+				"fabric_ms": 191.034,
+				"music_forms_ms": 102.303,
+				"public_network_ms": 99.35,
+				"service_allocation_ms": 24.052,
+				"split_ms": 0.139
+			},
+			"settle_ms": 849.54
+		},
+		{
+			"buildings": 1078,
+			"phrase": 29,
+			"profile": {
+				"actions_growth_ms": 404.728,
+				"coverage_ms": 46.034,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 91.83,
+				"public_network_ms": 99.232,
+				"service_allocation_ms": 25.175,
+				"split_ms": 0.123
+			},
+			"settle_ms": 597.98
+		},
+		{
+			"buildings": 1098,
+			"phrase": 30,
+			"profile": {
+				"actions_growth_ms": 412.811,
+				"coverage_ms": 47.037,
+				"fabric_ms": 193.646,
+				"music_forms_ms": 104.919,
+				"public_network_ms": 98.225,
+				"service_allocation_ms": 23.734,
+				"split_ms": 0.132
+			},
+			"settle_ms": 812.271
+		},
+		{
+			"buildings": 1116,
+			"phrase": 31,
+			"profile": {
+				"actions_growth_ms": 394.906,
+				"coverage_ms": 48.739,
+				"fabric_ms": 0.003,
+				"music_forms_ms": 113.846,
+				"public_network_ms": 102.646,
+				"service_allocation_ms": 24.739,
+				"split_ms": 0.169
+			},
+			"settle_ms": 614.126
+		},
+		{
+			"buildings": 1137,
+			"phrase": 32,
+			"profile": {
+				"actions_growth_ms": 435.72,
+				"coverage_ms": 47.418,
+				"fabric_ms": 201.451,
+				"music_forms_ms": 120.33,
+				"public_network_ms": 98.726,
+				"service_allocation_ms": 24.106,
+				"split_ms": 0.127
+			},
+			"settle_ms": 858.868
+		},
+		{
+			"buildings": 1154,
+			"phrase": 33,
+			"profile": {
+				"actions_growth_ms": 392.269,
+				"coverage_ms": 47.259,
+				"fabric_ms": 0.003,
+				"music_forms_ms": 115.916,
+				"public_network_ms": 97.675,
+				"service_allocation_ms": 23.659,
+				"split_ms": 0.123
+			},
+			"settle_ms": 608.903
+		},
+		{
+			"buildings": 1175,
+			"phrase": 34,
+			"profile": {
+				"actions_growth_ms": 446.689,
+				"coverage_ms": 51.672,
+				"fabric_ms": 212.244,
+				"music_forms_ms": 136.379,
+				"public_network_ms": 105.855,
+				"service_allocation_ms": 25.319,
+				"split_ms": 0.134
+			},
+			"settle_ms": 904.102
+		},
+		{
+			"buildings": 1193,
+			"phrase": 35,
+			"profile": {
+				"actions_growth_ms": 408.055,
+				"coverage_ms": 52.328,
+				"fabric_ms": 0.109,
+				"music_forms_ms": 132.587,
+				"public_network_ms": 107.615,
+				"service_allocation_ms": 25.638,
+				"split_ms": 0.16
+			},
+			"settle_ms": 651.403
+		},
+		{
+			"buildings": 1213,
+			"phrase": 36,
+			"profile": {
+				"actions_growth_ms": 518.865,
+				"coverage_ms": 51.341,
+				"fabric_ms": 201.326,
+				"music_forms_ms": 128.851,
+				"public_network_ms": 102.971,
+				"service_allocation_ms": 23.951,
+				"split_ms": 0.135
+			},
+			"settle_ms": 954.94
+		},
+		{
+			"buildings": 1231,
+			"phrase": 37,
+			"profile": {
+				"actions_growth_ms": 392.932,
+				"coverage_ms": 51.315,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 139.56,
+				"public_network_ms": 103.294,
+				"service_allocation_ms": 24.169,
+				"split_ms": 0.14
+			},
+			"settle_ms": 639.077
+		},
+		{
+			"buildings": 1253,
+			"phrase": 38,
+			"profile": {
+				"actions_growth_ms": 440.353,
+				"coverage_ms": 53.257,
+				"fabric_ms": 235.15,
+				"music_forms_ms": 145.463,
+				"public_network_ms": 108.915,
+				"service_allocation_ms": 25.601,
+				"split_ms": 0.126
+			},
+			"settle_ms": 932.881
+		},
+		{
+			"buildings": 1269,
+			"phrase": 39,
+			"profile": {
+				"actions_growth_ms": 385.757,
+				"coverage_ms": 52.378,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 140.903,
+				"public_network_ms": 109.586,
+				"service_allocation_ms": 27.312,
+				"split_ms": 0.164
+			},
+			"settle_ms": 639.556
+		},
+		{
+			"buildings": 1291,
+			"phrase": 40,
+			"profile": {
+				"actions_growth_ms": 443.932,
+				"coverage_ms": 53.642,
+				"fabric_ms": 221.769,
+				"music_forms_ms": 157.505,
+				"public_network_ms": 107.539,
+				"service_allocation_ms": 25.442,
+				"split_ms": 0.125
+			},
+			"settle_ms": 934.326
+		},
+		{
+			"buildings": 1307,
+			"phrase": 41,
+			"profile": {
+				"actions_growth_ms": 376.595,
+				"coverage_ms": 53.877,
+				"fabric_ms": 0.007,
+				"music_forms_ms": 163.088,
+				"public_network_ms": 112.555,
+				"service_allocation_ms": 27.519,
+				"split_ms": 0.146
+			},
+			"settle_ms": 655.757
+		},
+		{
+			"buildings": 1329,
+			"phrase": 42,
+			"profile": {
+				"actions_growth_ms": 505.87,
+				"coverage_ms": 58.783,
+				"fabric_ms": 263.351,
+				"music_forms_ms": 198.367,
+				"public_network_ms": 116.232,
+				"service_allocation_ms": 26.8,
+				"split_ms": 0.144
+			},
+			"settle_ms": 1088.306
+		},
+		{
+			"buildings": 1345,
+			"phrase": 43,
+			"profile": {
+				"actions_growth_ms": 413.017,
+				"coverage_ms": 69.638,
+				"fabric_ms": 0.003,
+				"music_forms_ms": 197.457,
+				"public_network_ms": 129.119,
+				"service_allocation_ms": 28.888,
+				"split_ms": 0.143
+			},
+			"settle_ms": 743.569
+		},
+		{
+			"buildings": 1368,
+			"phrase": 44,
+			"profile": {
+				"actions_growth_ms": 516.515,
+				"coverage_ms": 58.176,
+				"fabric_ms": 255.538,
+				"music_forms_ms": 193.198,
+				"public_network_ms": 112.299,
+				"service_allocation_ms": 25.411,
+				"split_ms": 0.137
+			},
+			"settle_ms": 1081.344
+		},
+		{
+			"buildings": 1382,
+			"phrase": 45,
+			"profile": {
+				"actions_growth_ms": 377.311,
+				"coverage_ms": 63.331,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 186.519,
+				"public_network_ms": 124.38,
+				"service_allocation_ms": 28.78,
+				"split_ms": 0.141
+			},
+			"settle_ms": 692.969
+		},
+		{
+			"buildings": 1404,
+			"phrase": 46,
+			"profile": {
+				"actions_growth_ms": 511.58,
+				"coverage_ms": 67.589,
+				"fabric_ms": 285.185,
+				"music_forms_ms": 232.555,
+				"public_network_ms": 129.528,
+				"service_allocation_ms": 30.91,
+				"split_ms": 0.136
+			},
+			"settle_ms": 1164.124
+		},
+		{
+			"buildings": 1418,
+			"phrase": 47,
+			"profile": {
+				"actions_growth_ms": 404.765,
+				"coverage_ms": 63.675,
+				"fabric_ms": 0.003,
+				"music_forms_ms": 210.841,
+				"public_network_ms": 123.629,
+				"service_allocation_ms": 27.338,
+				"split_ms": 0.152
+			},
+			"settle_ms": 743.757
+		},
+		{
+			"buildings": 1440,
+			"phrase": 48,
+			"profile": {
+				"actions_growth_ms": 653.7,
+				"coverage_ms": 61.18,
+				"fabric_ms": 247.243,
+				"music_forms_ms": 230.257,
+				"public_network_ms": 114.778,
+				"service_allocation_ms": 25.965,
+				"split_ms": 0.145
+			},
+			"settle_ms": 1250.338
+		},
+		{
+			"buildings": 1454,
+			"phrase": 49,
+			"profile": {
+				"actions_growth_ms": 374.121,
+				"coverage_ms": 66.737,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 197.976,
+				"public_network_ms": 128.022,
+				"service_allocation_ms": 29.985,
+				"split_ms": 0.134
+			},
+			"settle_ms": 704.125
+		},
+		{
+			"buildings": 1475,
+			"phrase": 50,
+			"profile": {
+				"actions_growth_ms": 503.241,
+				"coverage_ms": 60.207,
+				"fabric_ms": 164.371,
+				"music_forms_ms": 353.134,
+				"public_network_ms": 124.233,
+				"service_allocation_ms": 30.496,
+				"split_ms": 1096.736
+			},
+			"settle_ms": 2245.132
+		},
+		{
+			"buildings": 1490,
+			"phrase": 51,
+			"profile": {
+				"actions_growth_ms": 449.262,
+				"coverage_ms": 60.987,
+				"fabric_ms": 0.002,
+				"music_forms_ms": 318.928,
+				"public_network_ms": 124.468,
+				"service_allocation_ms": 29.771,
+				"split_ms": 1028.9
+			},
+			"settle_ms": 1925.249
+		},
+		{
+			"buildings": 1511,
+			"phrase": 52,
+			"profile": {
+				"actions_growth_ms": 494.355,
+				"coverage_ms": 69.893,
+				"fabric_ms": 200.231,
+				"music_forms_ms": 366.52,
+				"public_network_ms": 130.455,
+				"service_allocation_ms": 29.153,
+				"split_ms": 1007.155
+			},
+			"settle_ms": 2202.549
+		}
+	],
+	"max_settle_ms": 2245.132,
+	"overlap_pairs": 0,
+	"phrase": 52,
+	"reached_1500": true,
+	"source_sha256": "cc5d819622dd8b2b542876b6c2b40ab95d84cf7fa80f2eb2a945a247b365a081",
+	"total_ms": 42321.14
+}

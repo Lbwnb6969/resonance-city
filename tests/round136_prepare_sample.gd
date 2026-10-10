@@ -1,0 +1,22 @@
+extends SceneTree
+const World = preload("res://scripts/world/continuous_world.gd")
+func _initialize() -> void: call_deferred("_run")
+func _run() -> void:
+	var saved: Dictionary = FileAccess.open("res://.git/任务备份/round136/scale_final.bin",FileAccess.READ).get_var()
+	var growth: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://验证记录/连续河谷/第136轮_三河段合法成长规模.json"))
+	assert(growth["reached_1500"] and growth["all_legal"] and growth["overlap_pairs"] == 0)
+	var raw := var_to_bytes(saved)
+	var payload := raw.compress(FileAccess.COMPRESSION_ZSTD)
+	var record := {"kind":"authored_regional_growth_sample","generation_version":136,"growth_phrases":saved["phrase_index"],"buildings":saved["buildings"].size(),"world_bytes":raw.size(),"source_sha256":growth["source_sha256"],"world_zstd_base64":Marshalls.raw_to_base64(payload)}
+	var text := JSON.stringify(record)
+	var parsed: Dictionary = JSON.parse_string(text)
+	var restored: Dictionary = bytes_to_var(Marshalls.base64_to_raw(parsed["world_zstd_base64"]).decompress(int(parsed["world_bytes"]),FileAccess.COMPRESSION_ZSTD))
+	assert(restored == saved)
+	var city := World.new(restored["seed_hex"],false)
+	city.restore(restored)
+	var reference := World.new(saved["seed_hex"],false)
+	reference.restore(saved)
+	assert(city.snapshot() == reference.snapshot())
+	FileAccess.open("res://数据/demo_regional_city.json",FileAccess.WRITE).store_string(text+"\n")
+	print("REGIONAL_SAMPLE buildings=",city.buildings.size()," phrase=",city.phrase_index," bytes=",text.length()," binary_snapshot_exact=true")
+	quit()

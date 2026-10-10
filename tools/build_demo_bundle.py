@@ -51,7 +51,8 @@ def audit(pack):
                                  'source_sha256': entry['texture_sha256'],
                                  'packed_path': target, 'packed_sha256': digest,
                                  'license': entry['license']})
-        for path in ['数据/spec_values.json', '数据/world_v2.json', '数据/listening_fixtures.json']:
+        for path in ['数据/spec_values.json', '数据/world_v2.json', '数据/listening_fixtures.json',
+                     '数据/demo_regional_city.json']:
             if archive.read(path) != (ROOT / path).read_bytes():
                 raise RuntimeError('Stale runtime data: ' + path)
     return {'files': names, 'textures': textures, 'forbidden': forbidden}
@@ -127,13 +128,13 @@ def build(engine, output, evidence):
         '双击启动Demo.cmd；风格/古典小景为独立艺术样稿入口。\n'
         '请保持运行环境文件夹完整；无需Godot安装或开发工程。\n'
         '本地Windows x86_64运行包，附带现有Godot引擎；不是发行模板生成的EXE。\n'
-        '滚轮缩放，中键拖动，Home复位；选中房屋后可聚焦。B黑屏，Esc返回。\n'
+        'Shift+E进入三河段大城；滚轮缩放，中键拖动，H看全城。B黑屏，Esc返回。\n'
         '真人测试结果使用Godot原user://位置，与开发机共享同名应用数据。\n'
         '艺术/音乐时代候选状态见快速开始；真人体验仍待用户组织。\n', encoding='utf-8')
     record = {'rule_id': 'ASSET-001', 'status': 'PASS', 'source_commit': subprocess.check_output(
         ['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
         'source_identity_scope': 'Git base commit plus exact working-file fingerprints; runtime data may contain concurrent design updates',
-        'build_inputs_sha256': {p:sha(ROOT / p) for p in ['project.godot', 'export_presets.cfg', '数据/spec_values.json', '数据/world_v2.json', 'tools/build_demo_bundle.py', 'tests/native_bundle_contract.gd']},
+        'build_inputs_sha256': {p:sha(ROOT / p) for p in ['project.godot', 'export_presets.cfg', '数据/spec_values.json', '数据/world_v2.json', '数据/demo_regional_city.json', 'tools/build_demo_bundle.py', 'tests/native_bundle_contract.gd']},
         'native_audio_sha256': sha(ROOT / 'addons/city_audio/bin/city_audio.windows.template_release.x86_64.dll'),
         'engine_version': result['engine'], 'engine_sha256': sha(engine),
         'pack_sha256': sha(pack), 'pack_size_bytes': pack.stat().st_size,

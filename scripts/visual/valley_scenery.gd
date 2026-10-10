@@ -208,7 +208,13 @@ func sync(demo: Control) -> void:
 			prop.reveal = clampf((frame-int(site["frame"]))/(0.5*rate),0.0,1.0)
 		if prop.kind in ["bus","carriage","tram","car","walker"]:
 			var traveler: CityTraveler = prop.get_meta("traveler")
+			var flow_start := city.transit_flow_pending.size()
 			var movement := traveler.advance(city,seconds,traffic,accesses.get(key,{}))
+			if city != demo.model.world:
+				# Routes follow the still-audible city; new observations belong to the live world.
+				for observation in city.transit_flow_pending.slice(flow_start):
+					demo.model.world.transit_flow_pending.append(observation.duplicate())
+				city.transit_flow_pending.resize(flow_start)
 			prop.visible = not movement.is_empty()
 			if prop.visible:
 				p = movement["position"]

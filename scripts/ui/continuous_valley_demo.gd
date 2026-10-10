@@ -168,16 +168,17 @@ func _ready() -> void:
 	if not session_persistence or not load_city(true): clock.start_output(model._mix_frame,{})
 	mouse_exited.connect(func() -> void: pointer_inside = false)
 
-func _start_world(saved: Dictionary = {}) -> void:
+func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null) -> void:
 	_stop_preview()
 	clock.stop_output()
 	for sprite in sprites.values(): sprite.queue_free()
 	sprites.clear()
 	if saved.is_empty():
-		var world := World.new("2026100900000062",true,terrain_family)
-		if expanded_town_starter: world.build_expanded_town()
-		elif town_starter: world.build_town()
-		elif starter: world.build_starter(expression)
+		var world := example_world if example_world != null else World.new("2026100900000062",true,terrain_family)
+		if example_world == null:
+			if expanded_town_starter: world.build_expanded_town()
+			elif town_starter: world.build_town()
+			elif starter: world.build_starter(expression)
 		model = Model.new(world,fixed_gain)
 	else:
 		model = Model.from_state(saved["model"])
@@ -210,6 +211,13 @@ func _start_world(saved: Dictionary = {}) -> void:
 	if saved.has("renderer"):
 		clock.renderer.restore(saved["renderer"])
 		clock.renderer.transport.audible_frame = float(clock.renderer.transport.rendered_frames)
+	if example_world != null:
+		var start_frame := shown_world.phrase_index*int(shown_world.cfg["timing"]["phrase_frames"])
+		clock.renderer.transport.rendered_frames = start_frame
+		clock.renderer.transport.audible_frame = float(start_frame)
+		_home_city()
+		view_zoom = zoom_target
+		pan = pan_target
 	_sync_buildings()
 	scenery.sync(self)
 	last_saved_event_count = model.world.events.size()
@@ -301,6 +309,11 @@ func _make_menu() -> void:
 	expanded_button.tooltip_text = "48个规划社区、内外台地支路、绿廊与150栋以上成长起点"
 	expanded_button.pressed.connect(_start_expanded_town)
 	box.add_child(expanded_button)
+	var regional_button := Button.new()
+	regional_button.text = "三河段大城 · Shift+E"
+	regional_button.tooltip_text = "进入1500栋以上自然成长样本；可继续成长、调音和规划公共空间，当前作品先保存"
+	regional_button.pressed.connect(_start_regional_town)
+	box.add_child(regional_button)
 	var terrain_button := Button.new()
 	terrain_button.text = "切换地形族 · Y"
 	terrain_button.tooltip_text = "河谷、湖盆、林岭、海湾平原、高地峡谷共享连续城市操作"
@@ -323,6 +336,29 @@ func _cycle_terrain() -> void:
 
 func _save_before_switch() -> void:
 	if session_persistence and model != null and clock.active: save_city("切换前保存")
+
+func _start_regional_town() -> void:
+	_save_before_switch()
+	starter = true
+	town_starter = true
+	expanded_town_starter = true
+	expression = "bright"
+	_start_world({},World.regional_sample())
+	clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
+	_message("三河段大城 · %d栋 · %d个社区 · 滚轮放大查看街坊，H看全城" % [shown_world.buildings.size(),shown_world.active_community_count()])
+
+func _home_city() -> void:
+	zoom_target = 0.88
+	pan_target = Vector2(0,70)
+	if int(shown_world.cfg["city"].get("regional_count",1)) == 1: return
+	var low := float(shown_world.terrain.cfg["template_land_min"])
+	var high_x := float(shown_world.terrain.cfg["template_land_max"])
+	var high_y := float(shown_world.terrain.cfg["template_land_max_y"])
+	var bounds := Rect2(Projection2D.to_screen(Vector2(low,low)-Vector2(16,16),Vector2.ZERO,1.0),Vector2.ZERO)
+	for p: Vector2 in [Vector2(low,high_y),Vector2(high_x,low),Vector2(high_x,high_y)]:
+		bounds = bounds.expand(Projection2D.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0))
+	zoom_target = minf(0.88,minf((size.x-120.0)/bounds.size.x,(size.y-180.0)/bounds.size.y))
+	pan_target = -bounds.get_center()*zoom_target+Vector2(0,30)
 
 func _start_expanded_town() -> void:
 	_save_before_switch()
@@ -597,7 +633,7 @@ func _gui_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_MIDDLE:
 			dragging = event.pressed
 		elif event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
-			zoom_target = clampf(zoom_target*(1.12 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.12),0.55,1.9)
+			zoom_target = clampf(zoom_target*(1.12 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.12),0.18 if int(shown_world.cfg["city"].get("regional_count",1)) > 1 else 0.55,1.9)
 		elif event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
 			model.cancel_pending()
 			menu.hide()
@@ -752,12 +788,12 @@ func _input(event: InputEvent) -> void:
 		KEY_TAB: _verb("solo")
 		KEY_M: _verb("mute")
 		KEY_F: _verb("focus")
-		KEY_H:
-			zoom_target = 0.88
-			pan_target = Vector2(0,70)
+		KEY_H: _home_city()
 		KEY_T: _start_town()
 		KEY_Y: _cycle_terrain()
-		KEY_E: _start_expanded_town()
+		KEY_E:
+			if event.shift_pressed: _start_regional_town()
+			else: _start_expanded_town()
 		KEY_N:
 			_save_before_switch()
 			town_starter = false

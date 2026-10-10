@@ -21,8 +21,9 @@ func _draw() -> void:
 	if city == null: return
 	draws += 1
 	var family := city.terrain.family
-	for i in range(18):
-		var y := -3.0+fposmod(float(i)*2.1+seconds*0.35,38.0)
+	var length := float(city.terrain.cfg.get("template_land_max_y",city.terrain.cfg["template_land_max"]))+2.0
+	for i in range(floori(length/2.1)):
+		var y := -3.0+fposmod(float(i)*2.1+seconds*0.35,length)
 		var x := city.terrain.river_x(y)
 		var span := 0.4 if family != "lake_basin" else 0.8
 		draw_line(_point(Vector2(x-span,y),0.0),_point(Vector2(x+span,y+0.12),0.0),Color(0.8,0.91,0.9,0.28),1.0,true)
