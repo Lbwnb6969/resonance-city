@@ -45,6 +45,17 @@ func _pan_for(district: Dictionary) -> float:
 	var config: Dictionary = WorldConfig.load_values()["space"]
 	return clampf((float(p[0])-float(p[1]))/float(config["pan_divisor"]),-float(config["pan_limit"]),float(config["pan_limit"]))
 
+func _response_stereo(world: ContinuousWorld, part: Dictionary, fallback: Vector2) -> Vector2:
+	# A response is rendered from the receiving buildings' position.  RiverResponse
+	# deliberately stays in the world layer, so attach the audio-only stereo route
+	# here after the source/receiver relation has been selected.
+	var receivers: Array = part.get("receiver_ids",[])
+	for receiver_id in receivers:
+		var id := str(receiver_id)
+		if id.is_empty() or not world.by_id.has(id): continue
+		return _stereo_for(world.by_id[id])
+	return fallback
+
 func _rebuild_assist_neighbors(city: Array) -> void:
 	assist_neighbors.clear()
 	for district in city: assist_neighbors[district["district_id"]] = []
@@ -206,6 +217,8 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}, at: int
 	# pitches and placement. One response is derived from the lead schedule.
 	if response_enabled:
 		response = RiverResponse.reply(world,theme,RiverResponse.pairs(world,pitch_overrides),pitch_overrides)
+		if not response.is_empty():
+			response["stereo"] = _response_stereo(world,response,theme.get("stereo",Vector2.ONE/sqrt(2.0)))
 	_sync_musical_nodes(at)
 
 func _audibility(cid: String) -> float:

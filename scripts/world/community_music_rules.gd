@@ -80,7 +80,7 @@ static func opportunity(world: RefCounted,cid: String,score: Dictionary) -> Dict
 				pair_count += 1
 				paired_ids[id] = true
 	if pair_count > 0:
-		next += "\n跨河对唱 · %d栋参与%d组协和，每组每句双方+2活力；不必建桥" % [paired_ids.size(),pair_count]
+		next += "\n跨河对唱 · %d栋参与%d组协和；来源主题会延迟两拍回答，不改变活力；不必建桥" % [paired_ids.size(),pair_count]
 		if not answering: next += "\n对唱等待来源主题与唯一应答槽"
 	elif world.terrain.family not in ["lake_basin","coastal_plain"]:
 		next += "\n对唱机会 · 两岸直线距离小于8、音程协和至少0.85；不必建桥"

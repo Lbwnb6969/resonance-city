@@ -135,6 +135,10 @@ func _init(city_world: ContinuousWorld, fixed_gain: float = 1.0) -> void:
 func submit(operation: Dictionary) -> Dictionary:
 	var kind := str(operation.get("kind",""))
 	var beat := next_boundary if rendered_until == 0 else (rendered_until/beat_frames+1)*beat_frames
+	# Response A/B is a beat-level listening control.  At startup no sample has
+	# been rendered yet, so the first writable beat is beat_frames rather than
+	# the first structural phrase boundary.
+	if kind == "response": beat = (rendered_until/beat_frames+1)*beat_frames
 	if kind in ["solo","mute","focus","response"]:
 		var event := operation.duplicate(true)
 		event["sound_frame"] = beat

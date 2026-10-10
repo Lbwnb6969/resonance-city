@@ -43,6 +43,7 @@ var caption: Label
 var menu: PanelContainer
 var menu_info: Label
 var planning_buttons: Dictionary = {}
+var response_button: Button
 var planning_guide: PanelContainer
 const MusicRules = preload("res://scripts/world/community_music_rules.gd")
 var opportunity_key: Array = []
@@ -288,6 +289,9 @@ func _make_menu() -> void:
 	for item in [["独听社区","solo"],["静音社区","mute"],["聚焦","focus"],["跨河应答","response"],["规划社区 · P","planning"]]:
 		var button := Button.new()
 		button.text = item[0]
+		if item[1] == "response":
+			response_button = button
+			button.tooltip_text = "全城唯一跨河应答槽；切换在下一拍生效"
 		button.pressed.connect(_verb.bind(item[1]))
 		verbs.add_child(button)
 	box.add_child(verbs)
@@ -749,7 +753,35 @@ func _update_selected_opportunity() -> void:
 		shown_world.communities[cid]["name"],selected_opportunity["current"],"  ".join(displayed),
 		" …" if notes.size() > 8 else "",selected_opportunity["next"],
 		"公园给主题留白" if selected_opportunity["facility"]["park"] else ("文化馆实际服务%d栋" % int(selected_opportunity["facility"]["served"]) if selected_opportunity["facility"]["civic"] else "可自由选择留白、文化或商业布局")]
-	menu_info.text += "\n点击音级改编 · F聚焦主题 · Tab独听 · Esc回合奏"
+	menu_info.text += "\n跨河应答 · "+_response_state_label()+"\n点击音级改编 · F聚焦主题 · Tab独听 · Esc回合奏"
+
+func _pending_response() -> Dictionary:
+	var pending: Dictionary = {}
+	if model == null: return pending
+	for event in model.sound_events:
+		if str(event.get("kind", "")) == "response": pending = event
+	return pending
+
+func _response_state_label() -> String:
+	if model == null: return "状态未知"
+	var current_enabled := bool(model.synth.response_enabled)
+	var enabled := current_enabled
+	var pending := _pending_response()
+	if not pending.is_empty():
+		enabled = bool(pending.get("enabled", enabled))
+		var frames_left := int(pending.get("sound_frame", 0))-int(clock.renderer.transport.audible_frame)
+		if frames_left > 0:
+			var rate := maxi(1, int(clock.renderer.transport.sample_rate))
+			var seconds := float(frames_left)/float(rate)
+			return "当前%s · 下一拍%s（%.1fs）" % ["开启" if current_enabled else "关闭", "开启" if enabled else "关闭", seconds]
+	return "开启" if current_enabled else "关闭"
+
+func _response_button_text() -> String:
+	if model == null: return "跨河应答"
+	var pending := _pending_response()
+	if not pending.is_empty():
+		return "跨河应答 · 下一拍%s" % ("开启" if bool(pending.get("enabled",true)) else "关闭")
+	return "跨河应答 · "+("开" if bool(model.synth.response_enabled) else "关")
 
 func _planning_menu() -> void:
 	var candidate: Dictionary = {}
@@ -803,11 +835,11 @@ func _verb(verb: String) -> void:
 		menu.hide()
 		return
 	if verb == "response":
-		var enabled := not model.synth.response_enabled
-		for pending in model.sound_events:
-			if str(pending.get("kind","")) == "response": enabled = not bool(pending.get("enabled",true))
+		var pending := _pending_response()
+		var enabled := not bool(model.synth.response_enabled)
+		if not pending.is_empty(): enabled = not bool(pending.get("enabled",true))
 		var result := model.submit({"kind":"response","enabled":enabled})
-		_message(("跨河应答将在下一拍开启" if enabled else "跨河应答将在下一拍关闭") if result["accepted"] else str(result.get("reason","")))
+		_message(("跨河应答："+("开启" if enabled else "关闭")+" · 下一拍生效") if result["accepted"] else str(result.get("reason","")))
 		menu.hide()
 		return
 	if selected_id.is_empty(): return
@@ -1017,6 +1049,9 @@ func _process(delta: float) -> void:
 	shadow_layer.visible = not black
 	buildings_layer.visible = not black
 	if black: menu.hide()
+	if response_button != null:
+		response_button.text = _response_button_text()
+		response_button.tooltip_text = "全城唯一跨河应答槽："+_response_state_label()+"；点击后在下一拍切换"
 	hover_id = _hit(pointer) if pointer_inside else ""
 	var p := world_at(pointer)
 	var check := _hover_placement(p)
@@ -1030,7 +1065,7 @@ func _process(delta: float) -> void:
 		tooltip.text = "%s · %s · %s\n%s  ·  活力 %.0f\n点击选音   Tab独听社区   F聚焦" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),b["form"],shown_world.communities[b["community_id"]]["name"],b["vitality"]]
 		var charter := World.Charter.for_community(shown_world,str(b["community_id"]))
 		if not charter.is_empty(): tooltip.text += "\n发展章程 · "+str(World.Charter.PLANS[charter["plan_id"]]["title"])+" · P重新规划"
-		tooltip.text += "\n点击查看社区音型、当前声部与下一步机会"
+		tooltip.text += "\n跨河应答 · "+_response_state_label()+"\n点击查看社区音型、当前声部与下一步机会"
 	elif check["allowed"]:
 		tooltip.text = "%s\n%s\n点击选音；Shift低八度；按住空格试听" % [str(check["preview"]),note_name(midi)]
 		var lot: String = check["lot_id"]
