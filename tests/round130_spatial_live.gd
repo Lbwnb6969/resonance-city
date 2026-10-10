@@ -40,6 +40,10 @@ func _run() -> void:
 	demo.clock.stop_output()
 	demo.set_process(false)
 	demo.set_process_input(false)
+	# Empty charter cities open the planning guide for new players. This legacy
+	# spatial-menu contract exercises the direct map menu, so close the transient
+	# guide explicitly before clicking the candidate.
+	demo.planning_guide.hide_tool()
 	var p := Vector2.ZERO
 	var found := false
 	for lot in demo.model.world.lots:
