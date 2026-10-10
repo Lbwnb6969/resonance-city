@@ -1,6 +1,7 @@
 class_name CityArchive
 extends RefCounted
 ## Immutable checkpoints. Publish by rename only after a complete flushed write.
+const AudioModel = preload("res://scripts/audio/continuous_audio_model.gd")
 const DIRECTORY := "user://resonance_cities"
 const MAGIC := "RESONANCE_CITY_1\n"
 
@@ -123,6 +124,104 @@ static func read_dna(path: String) -> Dictionary:
 	if not parsed.has("runtime") or not parsed["runtime"] is Dictionary or not parsed["runtime"].has("model"):
 		return {"ok":false,"reason":"DNA缺少可恢复运行时"}
 	return {"ok":true,"dna":parsed,"model":parsed["runtime"]["model"],"renderer":parsed["runtime"].get("renderer",{}),"view":parsed["runtime"].get("view",{}),"path":path}
+
+static func _audio_source(source: Variant) -> Dictionary:
+	if source is String:
+		return read_dna(str(source))
+	if not source is Dictionary:
+		return {"ok":false,"reason":"AudioPlan来源不是DNA路径或对象"}
+	var value: Dictionary = source
+	if value.has("dna") and value["dna"] is Dictionary:
+		value = value["dna"]
+	if value.has("runtime") and value["runtime"] is Dictionary and value["runtime"].has("model"):
+		return {"ok":true,"dna":value,"model":value["runtime"]["model"],"renderer":value["runtime"].get("renderer",{}),"view":value["runtime"].get("view",{})}
+	if value.has("model") and value["model"] is Dictionary:
+		return {"ok":true,"dna":{},"model":value["model"],"renderer":value.get("renderer",{}),"view":value.get("view",{})}
+	return {"ok":false,"reason":"AudioPlan缺少runtime.model"}
+
+static func validate_audio_plan(source: Variant) -> Dictionary:
+	var loaded := _audio_source(source)
+	if not bool(loaded.get("ok",false)): return loaded
+	var dna: Dictionary = loaded.get("dna",{})
+	var plan: Dictionary = dna.get("audio_plan",{})
+	if plan.is_empty() or str(plan.get("schema","")) != "resonance_audio_plan_v1":
+		return {"ok":false,"reason":"AudioPlan版本不支持"}
+	var model: Dictionary = loaded.get("model",{})
+	var world: Dictionary = model.get("world",{})
+	var timing: Dictionary = world.get("settings",{}).get("timing",{})
+	var phrase_frames := int(plan.get("phrase_frames",0))
+	var sample_rate := int(plan.get("sample_rate",0))
+	if phrase_frames <= 0 or sample_rate <= 0:
+		return {"ok":false,"reason":"AudioPlan缺少有效时间基准"}
+	if phrase_frames != int(timing.get("phrase_frames",0)) or sample_rate != int(timing.get("sample_rate",0)):
+		return {"ok":false,"reason":"AudioPlan时间基准与运行时不一致"}
+	var sound_events: Array = plan.get("sound_events",[])
+	var previous_sound_frame := -1
+	for event in sound_events:
+		if not event is Dictionary or not event.has("sound_frame"):
+			return {"ok":false,"reason":"AudioPlan声音事件缺少sound_frame"}
+		var frame := int(event["sound_frame"])
+		if frame < previous_sound_frame:
+			return {"ok":false,"reason":"AudioPlan声音事件未按时间排序"}
+		previous_sound_frame = frame
+	var renderer: Dictionary = loaded.get("renderer",{})
+	var transport: Dictionary = renderer.get("transport",{}) if renderer is Dictionary else {}
+	var rendered_until := int(model.get("rendered_until",0))
+	if transport.has("rendered_frames") and int(transport["rendered_frames"]) != rendered_until:
+		return {"ok":false,"reason":"AudioPlan与PCM渲染游标不一致"}
+	return {"ok":true,"dna":dna,"model":model,"renderer":renderer,"plan":plan,
+		"phrase_frames":phrase_frames,"sample_rate":sample_rate,
+		"rendered_until":rendered_until,"sound_event_count":sound_events.size(),
+		"decision_count":(plan.get("decisions",[]) as Array).size()}
+
+static func _pcm_digest(block: PackedVector2Array) -> String:
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(block.to_byte_array())
+	return hash.finish().hex_encode()
+
+static func _hydrate_replay_state(value: Variant) -> Variant:
+	if value is Dictionary:
+		var result: Dictionary = {}
+		for key in value:
+			var name := str(key)
+			if name.begins_with("_pad_stereo_") and value[key] is Array and value[key].size() >= 2:
+				result[key] = Vector2(float(value[key][0]),float(value[key][1]))
+			else:
+				result[key] = _hydrate_replay_state(value[key])
+		return result
+	if value is Array:
+		var result_array: Array = []
+		for item in value: result_array.append(_hydrate_replay_state(item))
+		return result_array
+	return value
+
+static func replay_audio_plan(source: Variant, frame_count: int = 0, initial_state: Dictionary = {}) -> Dictionary:
+	var checked := validate_audio_plan(source)
+	if not bool(checked.get("ok",false)): return checked
+	var model: ContinuousAudioModel = AudioModel.from_state(checked["model"])
+	var rate := int(checked["sample_rate"])
+	var start := int(model.rendered_until)
+	var count := frame_count if frame_count > 0 else mini(int(checked["phrase_frames"]),1024)
+	if count <= 0: return {"ok":false,"reason":"回放长度必须大于零"}
+	var state := initial_state.duplicate(true)
+	if state.is_empty():
+		var renderer: Dictionary = checked.get("renderer",{})
+		state = renderer.get("state",{}).duplicate(true) if renderer is Dictionary else {}
+	state = _hydrate_replay_state(state)
+	var pcm := model.render_block(state,start,count,rate)
+	var peak := 0.0
+	var energy := 0.0
+	for sample in pcm:
+		peak = maxf(peak,maxf(absf(sample.x),absf(sample.y)))
+		energy += sample.length_squared()
+	var summary := {"schema":"resonance_audio_replay_v1","start_frame":start,
+		"end_frame":start+pcm.size(),"sample_rate":rate,"frames":pcm.size(),
+		"sha256":_pcm_digest(pcm),"peak":peak,
+		"rms":sqrt(energy/float(maxi(1,pcm.size()*2))),
+		"sound_event_count":int(checked["sound_event_count"]),
+		"decision_count":int(checked["decision_count"])}
+	return {"ok":true,"pcm":pcm,"state":state,"model":model,"summary":summary}
 
 static func read(path: String) -> Dictionary:
 	var file := FileAccess.open(path,FileAccess.READ)
