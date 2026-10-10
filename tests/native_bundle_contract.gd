@@ -190,6 +190,13 @@ func _run() -> void:
 	demo.black = true
 	demo._sync_buildings()
 	_check(not names.visible,"packed black listening hides retained map names")
+	var phase_state: Dictionary = demo.clock.renderer.state.duplicate(true)
+	var audio_at: int = demo.clock.renderer.transport.rendered_frames
+	demo.model.synth.render_block(phase_state,audio_at,22050,22050)
+	demo.model.synth.render_block(phase_state,audio_at+22050,512,22050)
+	var priority_sorts: int = demo.model.synth.pad_priority_sorts
+	demo.model.synth.render_block(phase_state,audio_at+22562,512,22050)
+	_check(demo.model.synth.pad_priority_sorts == priority_sorts and demo.model.synth.last_voice_count <= 70,"packed settled voice priorities reuse sort within the voice budget")
 	demo.queue_free()
 	await process_frame
 	FileAccess.open(output.get_base_dir()+"/Godot及第三方许可.json",FileAccess.WRITE).store_string(JSON.stringify({"engine":Engine.get_version_info(),"engine_license":Engine.get_license_text(),"third_party_licenses":Engine.get_license_info(),"third_party_copyright":Engine.get_copyright_info()},"\t")+"\n")

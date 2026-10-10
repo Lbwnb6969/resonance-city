@@ -18,6 +18,11 @@ var pitch_overrides: Dictionary = {}
 var population: Dictionary = {}
 var last_voice_count := 0
 var max_voice_count := 0
+# Derived selection cache; never part of score, phase or DNA state.
+var pad_priority_input: Array[String] = []
+var pad_priority_values: Dictionary = {}
+var pad_priority_sorted: Array[String] = []
+var pad_priority_sorts := 0
 # The score/state stays in GDScript; selected wavetable voices share one native block.
 var native_enabled := true
 var native_mixer: RefCounted = ClassDB.instantiate("CityPadMixer") if ClassDB.class_exists("CityPadMixer") else null
@@ -271,24 +276,36 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 	# budget; rotate the stable group set instead of asserting or producing a spike.
 	var pad_budget := maxi(0,int(score["render_voice_limit"])-1-rhythm_nodes.size()-musical_nodes.size())
 	var pad_candidates: Array[String] = []
+	# Evaluate each priority once per block; sorting must not repeatedly rebuild
+	# state keys and resolve group dictionaries. Preserve the comparator and order.
+	var priorities: Dictionary = {}
 	for key in pad_groups:
 		var group: Dictionary = pad_groups[key]
 		var level := float(state.get("_pad_level_"+key,group["level"]))
-		if bool(group["active"]) or level > 0.00001: pad_candidates.append(str(key))
-	pad_candidates.sort_custom(func(a: String,b: String) -> bool:
-		var ga: Dictionary = pad_groups[a]
-		var gb: Dictionary = pad_groups[b]
-		if bool(ga["active"]) != bool(gb["active"]): return bool(ga["active"])
-		var la := float(state.get("_pad_level_"+a,ga["level"]))
-		var lb := float(state.get("_pad_level_"+b,gb["level"]))
-		if not is_equal_approx(la,lb): return la > lb
-		return a < b)
+		var active := bool(group["active"])
+		priorities[key] = [active,level]
+		if active or level > 0.00001: pad_candidates.append(str(key))
+	if pad_candidates == pad_priority_input and priorities == pad_priority_values:
+		pad_candidates = pad_priority_sorted
+	else:
+		pad_priority_input = pad_candidates.duplicate()
+		pad_priority_values = priorities
+		pad_candidates.sort_custom(func(a: String,b: String) -> bool:
+			var pa: Array = priorities[a]
+			var pb: Array = priorities[b]
+			if pa[0] != pb[0]: return pa[0]
+			var la: float = pa[1]
+			var lb: float = pb[1]
+			if not is_equal_approx(la,lb): return la > lb
+			return a < b)
+		pad_priority_sorted = pad_candidates.duplicate()
+		pad_priority_sorts += 1
 	var render_keys: Dictionary = {}
 	for index in range(mini(pad_budget,pad_candidates.size())): render_keys[pad_candidates[index]] = true
 	for key in pad_groups:
 		var group: Dictionary = pad_groups[key]
 		var target := float(group.get("target",0.0))*_audibility(group["cid"]) if group["active"] else 0.0
-		var level := float(state.get("_pad_level_"+key,group["level"]))
+		var level: float = priorities[key][1]
 		var phase := float(state.get("_pad_phase_"+key,group["phase"]))
 		var hz := frequency(int(group["midi"]))
 		var target_stereo: Vector2 = group.get("stereo",Vector2.ONE*sqrt(0.5))
