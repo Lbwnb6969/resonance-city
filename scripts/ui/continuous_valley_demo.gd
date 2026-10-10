@@ -1055,10 +1055,16 @@ func _planning_status_hint() -> String:
 	var pending_labels: Array[String] = []
 	for operation in model.world.pending_actions:
 		var kind := str(operation.get("kind", ""))
-		var label: String = str({"charter":"章程", "park":"公园", "civic":"文化馆", "reserve":"留地", "release_reservation":"释放留地"}.get(kind, ""))
+		var label: String = str({"charter":"章程", "park":"公园", "civic":"文化馆", "reserve":"留地", "release_reservation":"释放留地", "bridge":"跨河连接"}.get(kind, ""))
 		if not str(label).is_empty(): pending_labels.append(str(label))
 	if not pending_labels.is_empty():
 		return "待播规划 · %s · 下一个乐句落定" % "、".join(pending_labels)
+	# A bridge is a structural player choice whose one-shot toast expires after
+	# a few seconds. Keep the resulting road and acoustic connection in the
+	# persistent caption so the planning cause remains visible while the city
+	# continues to grow.
+	if model.world.bridge:
+		return "跨河已连接 · 两岸道路与合奏已接通 · P继续规划"
 	if model.world.development_charters.is_empty():
 		return "P规划：选章程 → 变化卡 → 社区 → 公共空间"
 	var charter: Dictionary = model.world.development_charters[0]
