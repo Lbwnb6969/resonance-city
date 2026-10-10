@@ -72,7 +72,9 @@ func _run() -> void:
 	for event in restored.world.events:
 		if str(event.get("kind","")) == "planning_rejected": restored_rejection = event
 	_check(restored_rejection.get("reason","") == rejected.get("reason",""),"conflict_reason_survives_state_roundtrip")
-	var message := Demo.new()._planning_rejection_message(rejected)
+	var demo := Demo.new()
+	var message := demo._planning_rejection_message(rejected)
+	demo.free()
 	_check(message.contains("留地没有落定") and message.contains("介入槽"),"ui_message_exposes_rejection_and_next_step")
 	var passed := checks.values().all(func(ok: bool) -> bool: return ok)
 	print("ROUND151_P10_CONFLICT ",JSON.stringify({"passed":passed,"checks":checks}))
