@@ -1,0 +1,1 @@
+首次规划合约的JSON往返错误地直接JSON.stringify含Vector2的快照。正式City DNA使用CityArchive._json_value转换；修正测试输入后重跑，不修改生产几何解析。首次其余33项通过，含GPU交互和实际成长差异。

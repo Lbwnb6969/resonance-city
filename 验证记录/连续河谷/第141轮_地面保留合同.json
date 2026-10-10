@@ -1,0 +1,569 @@
+{
+	"checks": {
+		"black listening hides every part": true,
+		"black restore retains content and projections": true,
+		"black restored exact pixels": true,
+		"center moved affected parts": true,
+		"center moved exact pixels": true,
+		"civic level and saturation affected parts": true,
+		"civic level and saturation exact pixels": true,
+		"coastal_plain camera shares local transforms": true,
+		"coastal_plain growth exact pixels": true,
+		"coastal_plain opening exact pixels": true,
+		"coastal_plain pan affected parts": true,
+		"coastal_plain pan exact pixels": true,
+		"coastal_plain zoom affected parts": true,
+		"coastal_plain zoom exact pixels": true,
+		"corridor original geometry changed affected parts": true,
+		"corridor original geometry changed exact pixels": true,
+		"draw leaves world unchanged": true,
+		"fabric building moved affected parts": true,
+		"fabric building moved exact pixels": true,
+		"fabric removed affected parts": true,
+		"fabric removed exact pixels": true,
+		"forest_ridge camera shares local transforms": true,
+		"forest_ridge growth exact pixels": true,
+		"forest_ridge opening exact pixels": true,
+		"forest_ridge pan affected parts": true,
+		"forest_ridge pan exact pixels": true,
+		"forest_ridge zoom affected parts": true,
+		"forest_ridge zoom exact pixels": true,
+		"genuine natural growth": true,
+		"highland_pass camera shares local transforms": true,
+		"highland_pass growth exact pixels": true,
+		"highland_pass opening exact pixels": true,
+		"highland_pass pan affected parts": true,
+		"highland_pass pan exact pixels": true,
+		"highland_pass zoom affected parts": true,
+		"highland_pass zoom exact pixels": true,
+		"lake_basin camera shares local transforms": true,
+		"lake_basin growth exact pixels": true,
+		"lake_basin opening exact pixels": true,
+		"lake_basin pan affected parts": true,
+		"lake_basin pan exact pixels": true,
+		"lake_basin zoom affected parts": true,
+		"lake_basin zoom exact pixels": true,
+		"occupied lot original polygon changed affected parts": true,
+		"occupied lot original polygon changed exact pixels": true,
+		"public activation affected parts": true,
+		"public activation exact pixels": true,
+		"regional1511 exact pixels": true,
+		"regional1525 growth affected parts": true,
+		"regional1525 growth exact pixels": true,
+		"removed geometry cache pruned": true,
+		"reservation affected parts": true,
+		"reservation exact pixels": true,
+		"river_valley camera shares local transforms": true,
+		"river_valley growth exact pixels": true,
+		"river_valley opening exact pixels": true,
+		"river_valley pan affected parts": true,
+		"river_valley pan exact pixels": true,
+		"river_valley zoom affected parts": true,
+		"river_valley zoom exact pixels": true,
+		"road color affected parts": true,
+		"road color exact pixels": true,
+		"terrain changed exact pixels": true,
+		"terrain invalidates retained parts": true
+	},
+	"max_pixel_difference": 0,
+	"passed": true,
+	"samples": [
+		{
+			"byte_difference": 0,
+			"draw_ms": 2.04,
+			"label": "river_valley opening",
+			"old_draw_ms": 2.03,
+			"part_draws": {
+				"centers": 1,
+				"corridors": 1,
+				"fabric": 1,
+				"lots": 1,
+				"public": 1,
+				"roads": 1
+			},
+			"prepare_ms": 0.154
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.181,
+			"label": "river_valley growth",
+			"old_draw_ms": 0.898,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 1,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 0.06
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.181,
+			"label": "river_valley pan",
+			"old_draw_ms": 0.898,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 0.06
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.225,
+			"label": "river_valley zoom",
+			"old_draw_ms": 0.75,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 1,
+				"roads": 0
+			},
+			"prepare_ms": 0.111
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 1.931,
+			"label": "lake_basin opening",
+			"old_draw_ms": 1.753,
+			"part_draws": {
+				"centers": 1,
+				"corridors": 1,
+				"fabric": 1,
+				"lots": 1,
+				"public": 1,
+				"roads": 1
+			},
+			"prepare_ms": 0.178
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.0,
+			"label": "lake_basin growth",
+			"old_draw_ms": 0.829,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 0.054
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.0,
+			"label": "lake_basin pan",
+			"old_draw_ms": 0.829,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 0.054
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.212,
+			"label": "lake_basin zoom",
+			"old_draw_ms": 0.622,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 1,
+				"roads": 0
+			},
+			"prepare_ms": 0.093
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 1.999,
+			"label": "forest_ridge opening",
+			"old_draw_ms": 2.258,
+			"part_draws": {
+				"centers": 1,
+				"corridors": 1,
+				"fabric": 1,
+				"lots": 1,
+				"public": 1,
+				"roads": 1
+			},
+			"prepare_ms": 0.187
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.176,
+			"label": "forest_ridge growth",
+			"old_draw_ms": 0.828,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 1,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 0.075
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.176,
+			"label": "forest_ridge pan",
+			"old_draw_ms": 0.828,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 0.075
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.216,
+			"label": "forest_ridge zoom",
+			"old_draw_ms": 0.68,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 1,
+				"roads": 0
+			},
+			"prepare_ms": 0.103
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 2.108,
+			"label": "coastal_plain opening",
+			"old_draw_ms": 1.833,
+			"part_draws": {
+				"centers": 1,
+				"corridors": 1,
+				"fabric": 1,
+				"lots": 1,
+				"public": 1,
+				"roads": 1
+			},
+			"prepare_ms": 0.159
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.163,
+			"label": "coastal_plain growth",
+			"old_draw_ms": 0.914,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 1,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 0.063
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.163,
+			"label": "coastal_plain pan",
+			"old_draw_ms": 0.914,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 0.063
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.286,
+			"label": "coastal_plain zoom",
+			"old_draw_ms": 0.783,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 1,
+				"roads": 0
+			},
+			"prepare_ms": 0.112
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 2.131,
+			"label": "highland_pass opening",
+			"old_draw_ms": 1.994,
+			"part_draws": {
+				"centers": 1,
+				"corridors": 1,
+				"fabric": 1,
+				"lots": 1,
+				"public": 1,
+				"roads": 1
+			},
+			"prepare_ms": 0.163
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.153,
+			"label": "highland_pass growth",
+			"old_draw_ms": 0.836,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 1,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 0.064
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.153,
+			"label": "highland_pass pan",
+			"old_draw_ms": 0.836,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 0.064
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.217,
+			"label": "highland_pass zoom",
+			"old_draw_ms": 0.677,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 1,
+				"roads": 0
+			},
+			"prepare_ms": 0.102
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 31.764,
+			"label": "regional1511",
+			"old_draw_ms": 33.883,
+			"part_draws": {
+				"centers": 1,
+				"corridors": 1,
+				"fabric": 1,
+				"lots": 1,
+				"public": 1,
+				"roads": 1
+			},
+			"prepare_ms": 2.54
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.0,
+			"label": "regional1525 growth",
+			"old_draw_ms": 17.185,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 2.45
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 2.842,
+			"label": "center moved",
+			"old_draw_ms": 16.194,
+			"part_draws": {
+				"centers": 1,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 2.464
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.7,
+			"label": "corridor original geometry changed",
+			"old_draw_ms": 16.959,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 1,
+				"fabric": 0,
+				"lots": 0,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 2.36
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 2.65,
+			"label": "public activation",
+			"old_draw_ms": 16.638,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 1,
+				"roads": 0
+			},
+			"prepare_ms": 2.375
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 2.474,
+			"label": "civic level and saturation",
+			"old_draw_ms": 16.568,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 1,
+				"roads": 0
+			},
+			"prepare_ms": 2.423
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 2.486,
+			"label": "reservation",
+			"old_draw_ms": 16.233,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 1,
+				"roads": 0
+			},
+			"prepare_ms": 2.341
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 2.347,
+			"label": "road color",
+			"old_draw_ms": 16.349,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 0,
+				"public": 0,
+				"roads": 1
+			},
+			"prepare_ms": 2.386
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 1.327,
+			"label": "occupied lot original polygon changed",
+			"old_draw_ms": 16.222,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 0,
+				"lots": 1,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 2.527
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 7.478,
+			"label": "fabric building moved",
+			"old_draw_ms": 16.39,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 1,
+				"lots": 0,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 3.106
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 0.226,
+			"label": "fabric removed",
+			"old_draw_ms": 8.93,
+			"part_draws": {
+				"centers": 0,
+				"corridors": 0,
+				"fabric": 1,
+				"lots": 0,
+				"public": 0,
+				"roads": 0
+			},
+			"prepare_ms": 0.661
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 17.663,
+			"label": "terrain changed",
+			"old_draw_ms": 17.638,
+			"part_draws": {
+				"centers": 1,
+				"corridors": 1,
+				"fabric": 1,
+				"lots": 1,
+				"public": 1,
+				"roads": 1
+			},
+			"prepare_ms": 0.801
+		},
+		{
+			"byte_difference": 0,
+			"draw_ms": 9.766,
+			"label": "black restored",
+			"old_draw_ms": 17.638,
+			"part_draws": {
+				"centers": 1,
+				"corridors": 1,
+				"fabric": 1,
+				"lots": 1,
+				"public": 1,
+				"roads": 1
+			},
+			"prepare_ms": 0.801
+		}
+	],
+	"scope": "GPU exact RGBA comparison with archived single CanvasItem: five terrain families, natural 1511→1525 growth, six independent parts, mutations/removal/camera and black view",
+	"source_sha256": "964e96b1f8487df54e46385a6c00f96e1e61e4db5d3123c9c3d566217a6ba3d1"
+}

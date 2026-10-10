@@ -43,6 +43,7 @@ var caption: Label
 var menu: PanelContainer
 var menu_info: Label
 var planning_buttons: Dictionary = {}
+var planning_guide: PanelContainer
 var low_octave: CheckBox
 var light_player: AudioStreamPlayer
 var preview_player: AudioStreamPlayer
@@ -161,6 +162,9 @@ func _ready() -> void:
 	caption.z_index = 100
 	add_child(caption)
 	_make_menu()
+	planning_guide = preload("res://scripts/ui/planning_guide.gd").new()
+	add_child(planning_guide)
+	planning_guide.setup(self)
 	light_player = AudioStreamPlayer.new()
 	light_player.volume_db = -8.0
 	add_child(light_player)
@@ -229,6 +233,7 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	last_saved_event_count = model.world.events.size()
 	last_checkpoint_phrase = model.world.phrase_index
 	selected_landmark_candidate = -1
+	planning_guide.reset_for_city()
 	_message("%s · %d栋 · %d个社区" % [shown_world.terrain_title(),shown_world.buildings.size(),shown_world.active_community_count()] if not saved.is_empty() else ("%s · 林荫交响 · 完整河谷起点，可继续生长" % shown_world.terrain_title() if town_starter else ("%s · 晴岸合奏 · 18栋制作示例" % shown_world.terrain_title() if starter and expression == "bright" else ("%s · 深流慢板 · 低音与留白" % shown_world.terrain_title() if starter else "%s · 空地开局 · 点击街边播下第一段声音" % shown_world.terrain_title()))))
 
 func _make_menu() -> void:
@@ -269,7 +274,7 @@ func _make_menu() -> void:
 		expressions.add_child(button)
 	box.add_child(expressions)
 	var verbs := HBoxContainer.new()
-	for item in [["独听社区","solo"],["静音社区","mute"],["聚焦","focus"]]:
+	for item in [["独听社区","solo"],["静音社区","mute"],["聚焦","focus"],["规划社区 · P","planning"]]:
 		var button := Button.new()
 		button.text = item[0]
 		button.pressed.connect(_verb.bind(item[1]))
@@ -643,8 +648,10 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
 			model.cancel_pending()
 			menu.hide()
+			planning_guide.hide_tool()
 			context.clear()
 		elif event.pressed and event.button_index == MOUSE_BUTTON_LEFT and not black:
+			if planning_guide.map_click(world_at(pointer),Input.is_key_pressed(KEY_SHIFT)): return
 			var landmark_index := _landmark_candidate_at(pointer)
 			if landmark_index >= 0:
 				_select_landmark_candidate(landmark_index)
@@ -721,6 +728,9 @@ func _planning_menu() -> void:
 		planning_buttons[verb].disabled = not selectable and not existing
 
 func _verb(verb: String) -> void:
+	if verb == "planning":
+		planning_guide.open_tool()
+		return
 	if verb in ["reserve","release_reservation"] or (verb in ["park","civic"] and context.has("position")):
 		var operation := {"kind":verb}
 		if verb == "release_reservation": operation["id"] = context.get("id","")
@@ -778,14 +788,18 @@ func _input(event: InputEvent) -> void:
 		load_city()
 		get_viewport().set_input_as_handled()
 		return
-	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y,KEY_E,KEY_ENTER]: get_viewport().set_input_as_handled()
+	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y,KEY_E,KEY_ENTER,KEY_P]: get_viewport().set_input_as_handled()
 	if event.keycode == KEY_SPACE and not event.pressed:
 		preview_requested = false
 		preview_player.stop()
 		return
 	if not event.pressed: return
 	match event.keycode:
+		KEY_P:
+			if planning_guide.opened: planning_guide.hide_tool()
+			else: planning_guide.open_tool()
 		KEY_ESCAPE:
+			planning_guide.hide_tool()
 			black = false
 			menu.hide()
 			model.submit({"kind":"solo","community":""})
@@ -836,8 +850,12 @@ func _message(text: String) -> void:
 	notice_seconds = 6.0
 
 func _request_preview() -> void:
-	if preview_thread != null or context.get("kind","seed") not in ["seed","retune"]: return
+	if preview_thread != null: return
 	var operation := context.duplicate(true)
+	if planning_guide.opened:
+		if planning_guide.stage != "anchor" or planning_guide.candidate.is_empty(): return
+		operation = {"kind":planning_guide.anchor_kind,"position":planning_guide.candidate["position"].duplicate()}
+	elif context.get("kind","seed") not in ["seed","retune"]: return
 	if operation.is_empty():
 		var p := world_at(pointer)
 		if not model.world.placement(p)["allowed"]: return
@@ -905,6 +923,7 @@ func _process(delta: float) -> void:
 		_message("你的声音正在长成城市")
 	notice_seconds = maxf(0.0,notice_seconds-delta)
 	ripple_seconds = maxf(0.0,ripple_seconds-delta)
+	planning_guide.sync()
 	caption.text = notice if notice_seconds > 0.0 else ""
 	caption.position = Vector2(48,size.y-68)
 	caption.visible = not black
@@ -923,6 +942,8 @@ func _process(delta: float) -> void:
 	elif not hover_id.is_empty():
 		var b: Dictionary = shown_world.by_id[hover_id]
 		tooltip.text = "%s · %s · %s\n%s  ·  活力 %.0f\n点击选音   Tab独听社区   F聚焦" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),b["form"],shown_world.communities[b["community_id"]]["name"],b["vitality"]]
+		var charter := World.Charter.for_community(shown_world,str(b["community_id"]))
+		if not charter.is_empty(): tooltip.text += "\n发展章程 · "+str(World.Charter.PLANS[charter["plan_id"]]["title"])+" · P重新规划"
 	elif check["allowed"]:
 		tooltip.text = "%s\n%s\n点击选音；Shift低八度；按住空格试听" % [str(check["preview"]),note_name(midi)]
 		var lot: String = check["lot_id"]
@@ -1188,6 +1209,7 @@ func _draw_landmark_preview() -> void:
 		draw_string(ThemeDB.fallback_font,at+Vector2(8,-8)*view_zoom,"预影 · "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("776247"))
 
 func _draw_planning_preview() -> void:
+	planning_guide.draw_map()
 	if menu.visible and context.has("position"):
 		var raw: Array = context["position"]
 		var candidate := model.world.planning_candidate(Vector2(float(raw[0]),float(raw[1])))

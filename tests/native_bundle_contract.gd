@@ -28,6 +28,14 @@ func _run() -> void:
 	demo.clock.stop_output()
 	demo.set_process(false)
 	_check(demo.model.world.buildings.size() == 18 and demo.sprites.size() == 18,"current continuous main scene builds opening city")
+	_check(demo.planning_guide.visible and demo.planning_guide.cards.get_child_count() == 3,"portable opening offers three development charters")
+	demo.planning_guide.hide_tool()
+	var charter_city: ContinuousWorld = demo.model.world.fork()
+	var scope: Array = [charter_city.communities.keys()[0]]
+	var charter_request := charter_city.request({"kind":"charter","plan_id":"compact","community_ids":scope},int(charter_city.cfg["timing"]["phrase_frames"]))
+	charter_city.Charter.commit(charter_city,charter_city.pending_actions.back(),int(charter_city.cfg["timing"]["phrase_frames"]))
+	var resumed: ContinuousWorld = charter_city.fork()
+	_check(charter_request["accepted"] and resumed.development_charters == charter_city.development_charters and resumed.Charter.for_community(resumed,str(scope[0]))["plan_id"] == "compact","portable charter operation and snapshot persistence")
 	_check(demo.model.synth.native_mixer != null and demo.model.synth.native_enabled,"opening score uses native mixer")
 	_check(ClassDB.class_exists("CityMaskUnion") and demo.shadow_layer.mask_merger != null and demo.shadow_layer.native_batches > 0,"opening shadows use native batch merger")
 	var native_audio := ContinuousAudioModel.from_state(demo.model.capture_state())
@@ -115,7 +123,7 @@ func _run() -> void:
 		if sprite.progress >= 1.0: mature_materials[sprite.material] = true
 	_check(mature_materials.size() == 1,"packed mature buildings share one growth material")
 	await RenderingServer.frame_post_draw
-	var retained_projection: Dictionary = demo.city_ground_layer.projected.duplicate(true)
+	var retained_projection: Dictionary = demo.city_ground_layer.urban_parts["public"].projected.duplicate(true)
 	_check(not demo.shadow_layer.scaled_masks.is_empty() and demo.shadow_layer.scaled_masks.size() < demo.shadow_layer.patches.size(),"packed shadow patches share resampled alpha")
 	var screen_error := 0.0
 	demo.view_zoom = 0.54
@@ -125,7 +133,7 @@ func _run() -> void:
 		screen_error = maxf(screen_error,demo.sprites[id].global_position.distance_to(demo.point(WorldCoupling.position_of(demo.shown_world.by_id[id]))))
 	_check(screen_error < 0.001,"packed camera projection")
 	await RenderingServer.frame_post_draw
-	_check(not retained_projection.is_empty() and demo.city_ground_layer.projected == retained_projection,"packed camera redraw retains exact ground projections")
+	_check(not retained_projection.is_empty() and demo.city_ground_layer.urban_parts["public"].projected == retained_projection,"packed camera redraw retains exact ground projections")
 	var terrain_draws: int = demo.terrain_layer.rebuild_count
 	var ground_draws: int = demo.city_ground_layer.rebuild_count
 	var shadow_updates: int = demo.shadow_layer.rebuild_count
@@ -197,6 +205,12 @@ func _run() -> void:
 	var priority_sorts: int = demo.model.synth.pad_priority_sorts
 	demo.model.synth.render_block(phase_state,audio_at+22562,512,22050)
 	_check(demo.model.synth.pad_priority_sorts == priority_sorts and demo.model.synth.last_voice_count <= 70,"packed settled voice priorities reuse sort within the voice budget")
+	demo.black = false
+	demo._sync_buildings()
+	await RenderingServer.frame_post_draw
+	var regional_ground_draws: Dictionary = {}
+	for part_name in demo.city_ground_layer.urban_parts:
+		regional_ground_draws[part_name] = demo.city_ground_layer.urban_parts[part_name].rebuild_count
 	demo.model.enable_background_settlement()
 	demo.model.prepare_settlement(demo.model.next_boundary-22050,22050)
 	while not demo.model.settlement_job.completed(): await process_frame
@@ -204,6 +218,12 @@ func _run() -> void:
 	var growth_at: int = demo.model.next_boundary
 	demo.model.render_block(phase_state,growth_at-64,128,22050)
 	_check(int(demo.model.audio_preparation_stats["used"]) > 0 and demo.model.prepared_audio_update["stereo"].size() == demo.model.audio_city().size() and demo.model.synth.last_voice_count <= 70,"packed worker sound groups commit on the regional growth boundary within the voice budget")
+	demo.clock.renderer.transport.rendered_frames = growth_at+64
+	demo.clock.renderer.transport.audible_frame = growth_at+64
+	demo.shown_world = demo.model.presentation_world(growth_at+64)
+	demo._sync_buildings()
+	await RenderingServer.frame_post_draw
+	_check(demo.city_ground_layer.urban_parts.size() == 6 and regional_ground_draws.keys().all(func(part_name: String) -> bool: return demo.city_ground_layer.urban_parts[part_name].rebuild_count == regional_ground_draws[part_name]),"packed regional growth retains six unchanged urban drawing parts")
 	demo.queue_free()
 	await process_frame
 	FileAccess.open(output.get_base_dir()+"/Godot及第三方许可.json",FileAccess.WRITE).store_string(JSON.stringify({"engine":Engine.get_version_info(),"engine_license":Engine.get_license_text(),"third_party_licenses":Engine.get_license_info(),"third_party_copyright":Engine.get_copyright_info()},"\t")+"\n")

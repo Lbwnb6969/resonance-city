@@ -1,0 +1,1168 @@
+{
+	"checks": {
+		"GPU scene reveals committed planning": true,
+		"JSON DNA geometry and charter round trip": false,
+		"P tool can reopen for another community": true,
+		"anchor footprint influence and capacity preview": true,
+		"anchor identity and footprint committed": true,
+		"anchor preview uses actual entrance coverage": true,
+		"cancel removes intent without changing true city": true,
+		"charter and anchor queued together": true,
+		"charter queued at phrase boundary": true,
+		"derived influence consumes no formal RNG": true,
+		"different-anchor-bluegreen growth respects public footprint": true,
+		"different-anchor-bluegreen ordinary growth continues": true,
+		"invalid charter leaves world and RNG untouched": true,
+		"invalid scope leaves world untouched": true,
+		"legacy city defaults to no charter": true,
+		"local charter overrides inherited choice": true,
+		"map places selected facility and collapses guide": true,
+		"map selects real stable community": true,
+		"new city shows three charter cards": true,
+		"real footprint and civic capacity": true,
+		"real planning forecast preserves live city and RNG": true,
+		"same anchor different charter changes actual growth": true,
+		"same charter different anchor changes actual growth": true,
+		"same-anchor-bluegreen growth respects public footprint": true,
+		"same-anchor-bluegreen ordinary growth continues": true,
+		"same-anchor-compact growth respects public footprint": true,
+		"same-anchor-compact ordinary growth continues": true,
+		"same-anchor-corridor growth respects public footprint": true,
+		"same-anchor-corridor ordinary growth continues": true,
+		"scope canonical; no premature charter": true,
+		"snapshot retains charter and canonical anchors": true,
+		"split community inherits parent charter": true,
+		"two real vacant anchor sites": true,
+		"worker adopts charter": true
+	},
+	"comparisons": [
+		{
+			"anchor_id": "player-park-00002",
+			"audio_seconds": 30,
+			"buildings": 47,
+			"covered": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00007",
+				"building-00008",
+				"building-00009",
+				"building-00010",
+				"building-00011",
+				"building-00012",
+				"building-00019",
+				"building-00020",
+				"building-00022",
+				"building-00023",
+				"building-00025",
+				"building-00026",
+				"building-00028",
+				"building-00029",
+				"building-00031",
+				"building-00032",
+				"building-00034",
+				"building-00035",
+				"building-00037",
+				"building-00039",
+				"building-00040",
+				"building-00042",
+				"building-00044",
+				"building-00045",
+				"building-00047"
+			],
+			"label": "same-anchor-compact",
+			"positions": [
+				[
+					10.7152280807495,
+					0.377162158489227
+				],
+				[
+					13.1152276992798,
+					0.363238245248795
+				],
+				[
+					11.1388177871704,
+					1.95959460735321
+				],
+				[
+					13.5388174057007,
+					2.05003499984741
+				],
+				[
+					11.5047883987427,
+					3.54827332496643
+				],
+				[
+					13.9047889709473,
+					3.57273769378662
+				],
+				[
+					11.558012008667,
+					17.9502258300781
+				],
+				[
+					14.1323041915894,
+					10.0584936141968
+				],
+				[
+					14.2396125793457,
+					11.536301612854
+				],
+				[
+					14.4277143478394,
+					14.0
+				],
+				[
+					11.8968276977539,
+					16.4093036651611
+				],
+				[
+					14.2968273162842,
+					16.3818473815918
+				],
+				[
+					18.7580127716064,
+					17.9884834289551
+				],
+				[
+					18.9323043823242,
+					9.96388912200928
+				],
+				[
+					21.3323040008545,
+					9.95230770111084
+				],
+				[
+					19.0396118164063,
+					11.624529838562
+				],
+				[
+					21.4396114349365,
+					11.5835390090942
+				],
+				[
+					19.2277145385742,
+					14.0
+				],
+				[
+					14.1069059371948,
+					5.16688203811646
+				],
+				[
+					14.2396125793457,
+					13.0863018035889
+				],
+				[
+					21.4396114349365,
+					13.1335391998291
+				],
+				[
+					13.5388174057007,
+					4.40003490447998
+				],
+				[
+					13.6721801757813,
+					17.4343032836914
+				],
+				[
+					19.2277145385742,
+					15.0500001907349
+				],
+				[
+					14.1459712982178,
+					6.77885389328003
+				],
+				[
+					14.1166572570801,
+					8.43689155578613
+				],
+				[
+					19.0968265533447,
+					16.4601860046387
+				],
+				[
+					10.7152280807495,
+					-1.17283773422241
+				],
+				[
+					14.2968273162842,
+					15.3318471908569
+				],
+				[
+					18.9166564941406,
+					8.39459991455078
+				],
+				[
+					12.7652282714844,
+					-1.17283773422241
+				],
+				[
+					12.4971809387207,
+					15.3991432189941
+				],
+				[
+					19.4416561126709,
+					7.48527336120605
+				],
+				[
+					11.2402276992798,
+					-2.08216428756714
+				],
+				[
+					13.6721801757813,
+					18.984302520752
+				],
+				[
+					19.2277145385742,
+					12.7000007629395
+				],
+				[
+					11.6221799850464,
+					18.984302520752
+				],
+				[
+					18.7580127716064,
+					19.5384826660156
+				],
+				[
+					14.670970916748,
+					7.68818044662476
+				],
+				[
+					13.147180557251,
+					19.8936290740967
+				],
+				[
+					19.4416561126709,
+					5.93527317047119
+				]
+			],
+			"roles": {
+				"pads": [
+					"west-1:residential:48",
+					"west-1:residential:55",
+					"west-1:residential:52",
+					"west-2:commercial:52",
+					"west-2:residential:52",
+					"west-2:residential:48",
+					"west-2:commercial:55",
+					"east-2:residential:55",
+					"east-2:commercial:52",
+					"east-2:commercial:48",
+					"east-1:residential:55",
+					"east-3:residential:55"
+				],
+				"response": {},
+				"rhythms": [
+					{
+						"cid": "west-2",
+						"expression": "bright",
+						"facility": false,
+						"midi": 52,
+						"service_pressure": 0.333333333333333,
+						"stereo": "(0.933398, 0.358844)",
+						"terrain": "river_valley",
+						"zone_roles": [
+							"home",
+							"market",
+							"center"
+						]
+					},
+					{
+						"cid": "west-1",
+						"expression": "bright",
+						"facility": true,
+						"midi": 48,
+						"service_pressure": 0.5,
+						"stereo": "(0.156434, 0.987688)",
+						"terrain": "river_valley",
+						"zone_roles": [
+							"home"
+						]
+					}
+				],
+				"theme": {
+					"center": {},
+					"cid": "west-1",
+					"civic": false,
+					"expression": "bright",
+					"notes": [
+						48,
+						55,
+						52
+					],
+					"park": true,
+					"stereo": "(0.156434, 0.987688)",
+					"terrain": "river_valley",
+					"zone_roles": [
+						"home"
+					]
+				},
+				"voices": {
+					"budget_shed": 0,
+					"entities": 47,
+					"environment_nodes": 1,
+					"max_render_voices": 18,
+					"pad_nodes": 12,
+					"render_voices": 18,
+					"response_nodes": 0,
+					"rhythm_nodes": 3,
+					"theme_nodes": 2,
+					"voice_budget": 70
+				}
+			},
+			"service": {
+				"capacity": 18,
+				"covered": 31,
+				"facilities": 1,
+				"members": 47,
+				"reachable": 24,
+				"served": 18,
+				"unserved": 29
+			},
+			"world_version": [
+				12,
+				2,
+				0
+			]
+		},
+		{
+			"anchor_id": "player-park-00002",
+			"audio_seconds": 30,
+			"buildings": 48,
+			"covered": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00007",
+				"building-00008",
+				"building-00009",
+				"building-00010",
+				"building-00011",
+				"building-00012",
+				"building-00019",
+				"building-00020",
+				"building-00022",
+				"building-00023",
+				"building-00025",
+				"building-00026",
+				"building-00028",
+				"building-00029",
+				"building-00031",
+				"building-00032",
+				"building-00034",
+				"building-00036",
+				"building-00040",
+				"building-00043",
+				"building-00044",
+				"building-00045",
+				"building-00047",
+				"building-00048"
+			],
+			"label": "same-anchor-corridor",
+			"positions": [
+				[
+					10.7152280807495,
+					0.377162158489227
+				],
+				[
+					13.1152276992798,
+					0.363238245248795
+				],
+				[
+					11.1388177871704,
+					1.95959460735321
+				],
+				[
+					13.5388174057007,
+					2.05003499984741
+				],
+				[
+					11.5047883987427,
+					3.54827332496643
+				],
+				[
+					13.9047889709473,
+					3.57273769378662
+				],
+				[
+					11.558012008667,
+					17.9502258300781
+				],
+				[
+					14.1323041915894,
+					10.0584936141968
+				],
+				[
+					14.2396125793457,
+					11.536301612854
+				],
+				[
+					14.4277143478394,
+					14.0
+				],
+				[
+					11.8968276977539,
+					16.4093036651611
+				],
+				[
+					14.2968273162842,
+					16.3818473815918
+				],
+				[
+					18.7580127716064,
+					17.9884834289551
+				],
+				[
+					18.9323043823242,
+					9.96388912200928
+				],
+				[
+					21.3323040008545,
+					9.95230770111084
+				],
+				[
+					19.0396118164063,
+					11.624529838562
+				],
+				[
+					21.4396114349365,
+					11.5835390090942
+				],
+				[
+					19.2277145385742,
+					14.0
+				],
+				[
+					12.4905796051025,
+					-0.647838175296783
+				],
+				[
+					14.2396125793457,
+					13.0863018035889
+				],
+				[
+					18.7580127716064,
+					19.5384826660156
+				],
+				[
+					13.5388174057007,
+					4.40003490447998
+				],
+				[
+					13.6073045730591,
+					9.14916706085205
+				],
+				[
+					21.4396114349365,
+					13.1335391998291
+				],
+				[
+					14.1069059371948,
+					5.16688203811646
+				],
+				[
+					12.4218273162842,
+					15.4999771118164
+				],
+				[
+					18.9166564941406,
+					8.39459991455078
+				],
+				[
+					14.1459712982178,
+					6.77885389328003
+				],
+				[
+					11.558012008667,
+					19.0002250671387
+				],
+				[
+					19.4416561126709,
+					7.48527336120605
+				],
+				[
+					10.4405794143677,
+					-0.647838354110718
+				],
+				[
+					14.2396125793457,
+					15.1363019943237
+				],
+				[
+					19.4416561126709,
+					5.93527317047119
+				],
+				[
+					10.5080118179321,
+					19.0002250671387
+				],
+				[
+					19.0968265533447,
+					16.4601860046387
+				],
+				[
+					10.9655790328979,
+					-1.55716502666473
+				],
+				[
+					19.5646114349365,
+					12.5338563919067
+				],
+				[
+					8.25222587585449,
+					18.3999996185303
+				],
+				[
+					19.621826171875,
+					15.5508594512939
+				]
+			],
+			"roles": {
+				"pads": [
+					"west-1:residential:48",
+					"west-1:residential:55",
+					"west-1:residential:52",
+					"west-2:commercial:52",
+					"west-2:residential:52",
+					"west-2:residential:48",
+					"west-2:commercial:55",
+					"east-2:residential:55",
+					"east-2:commercial:52",
+					"east-2:commercial:48",
+					"east-1:residential:55",
+					"west-3:residential:52"
+				],
+				"response": {},
+				"rhythms": [
+					{
+						"cid": "west-2",
+						"expression": "bright",
+						"facility": false,
+						"midi": 52,
+						"service_pressure": 0.333333333333333,
+						"stereo": "(0.933398, 0.358844)",
+						"terrain": "river_valley",
+						"zone_roles": [
+							"home",
+							"market",
+							"center"
+						]
+					},
+					{
+						"cid": "west-1",
+						"expression": "bright",
+						"facility": true,
+						"midi": 48,
+						"service_pressure": 0.5,
+						"stereo": "(0.156434, 0.987688)",
+						"terrain": "river_valley",
+						"zone_roles": [
+							"home"
+						]
+					}
+				],
+				"theme": {
+					"center": {},
+					"cid": "west-1",
+					"civic": false,
+					"expression": "bright",
+					"notes": [
+						48,
+						55,
+						52
+					],
+					"park": true,
+					"stereo": "(0.156434, 0.987688)",
+					"terrain": "river_valley",
+					"zone_roles": [
+						"home"
+					]
+				},
+				"voices": {
+					"budget_shed": 0,
+					"entities": 48,
+					"environment_nodes": 1,
+					"max_render_voices": 18,
+					"pad_nodes": 12,
+					"render_voices": 18,
+					"response_nodes": 0,
+					"rhythm_nodes": 3,
+					"theme_nodes": 2,
+					"voice_budget": 70
+				}
+			},
+			"service": {
+				"capacity": 18,
+				"covered": 32,
+				"facilities": 1,
+				"members": 48,
+				"reachable": 25,
+				"served": 18,
+				"unserved": 30
+			},
+			"world_version": [
+				12,
+				2,
+				0
+			]
+		},
+		{
+			"anchor_id": "player-park-00002",
+			"audio_seconds": 30,
+			"buildings": 50,
+			"covered": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00007",
+				"building-00008",
+				"building-00009",
+				"building-00010",
+				"building-00011",
+				"building-00012",
+				"building-00019",
+				"building-00020",
+				"building-00022",
+				"building-00023",
+				"building-00025",
+				"building-00026",
+				"building-00028",
+				"building-00029",
+				"building-00031",
+				"building-00032",
+				"building-00034",
+				"building-00035",
+				"building-00037",
+				"building-00041",
+				"building-00044",
+				"building-00046",
+				"building-00047",
+				"building-00049"
+			],
+			"label": "same-anchor-bluegreen",
+			"positions": [
+				[
+					10.7152280807495,
+					0.377162158489227
+				],
+				[
+					13.1152276992798,
+					0.363238245248795
+				],
+				[
+					11.1388177871704,
+					1.95959460735321
+				],
+				[
+					13.5388174057007,
+					2.05003499984741
+				],
+				[
+					11.5047883987427,
+					3.54827332496643
+				],
+				[
+					13.9047889709473,
+					3.57273769378662
+				],
+				[
+					11.558012008667,
+					17.9502258300781
+				],
+				[
+					14.1323041915894,
+					10.0584936141968
+				],
+				[
+					14.2396125793457,
+					11.536301612854
+				],
+				[
+					14.4277143478394,
+					14.0
+				],
+				[
+					11.8968276977539,
+					16.4093036651611
+				],
+				[
+					14.2968273162842,
+					16.3818473815918
+				],
+				[
+					18.7580127716064,
+					17.9884834289551
+				],
+				[
+					18.9323043823242,
+					9.96388912200928
+				],
+				[
+					21.3323040008545,
+					9.95230770111084
+				],
+				[
+					19.0396118164063,
+					11.624529838562
+				],
+				[
+					21.4396114349365,
+					11.5835390090942
+				],
+				[
+					19.2277145385742,
+					14.0
+				],
+				[
+					14.1069059371948,
+					5.16688203811646
+				],
+				[
+					14.2396125793457,
+					13.0863018035889
+				],
+				[
+					18.9166564941406,
+					8.39459991455078
+				],
+				[
+					13.5388174057007,
+					4.40003490447998
+				],
+				[
+					13.6073045730591,
+					9.14916706085205
+				],
+				[
+					19.4416561126709,
+					7.48527336120605
+				],
+				[
+					14.1459712982178,
+					6.77885389328003
+				],
+				[
+					11.8968276977539,
+					14.8593034744263
+				],
+				[
+					19.4044513702393,
+					12.7585391998291
+				],
+				[
+					10.7152280807495,
+					-1.17283773422241
+				],
+				[
+					11.558012008667,
+					19.0002250671387
+				],
+				[
+					18.7580127716064,
+					19.5384826660156
+				],
+				[
+					12.7652282714844,
+					-1.17283773422241
+				],
+				[
+					14.2396125793457,
+					15.4363021850586
+				],
+				[
+					19.0968265533447,
+					16.4601860046387
+				],
+				[
+					13.6209716796875,
+					7.68818044662476
+				],
+				[
+					10.5080118179321,
+					19.0002250671387
+				],
+				[
+					19.4044513702393,
+					15.1085395812988
+				],
+				[
+					11.2402276992798,
+					-2.08216428756714
+				],
+				[
+					21.4544506072998,
+					12.7585391998291
+				],
+				[
+					8.25222587585449,
+					18.3999996185303
+				],
+				[
+					18.9069061279297,
+					5.25576066970825
+				]
+			],
+			"roles": {
+				"pads": [
+					"west-1:residential:48",
+					"west-1:residential:55",
+					"west-1:residential:52",
+					"west-2:commercial:52",
+					"west-2:residential:52",
+					"west-2:residential:48",
+					"west-2:commercial:55",
+					"east-2:residential:55",
+					"east-2:commercial:52",
+					"east-2:commercial:48",
+					"east-1:residential:55"
+				],
+				"response": {},
+				"rhythms": [
+					{
+						"cid": "west-2",
+						"expression": "bright",
+						"facility": false,
+						"midi": 52,
+						"service_pressure": 0.375,
+						"stereo": "(0.933398, 0.358844)",
+						"terrain": "river_valley",
+						"zone_roles": [
+							"home",
+							"market",
+							"center"
+						]
+					},
+					{
+						"cid": "west-1",
+						"expression": "bright",
+						"facility": true,
+						"midi": 48,
+						"service_pressure": 0.5,
+						"stereo": "(0.156434, 0.987688)",
+						"terrain": "river_valley",
+						"zone_roles": [
+							"home"
+						]
+					}
+				],
+				"theme": {
+					"center": {},
+					"cid": "west-1",
+					"civic": false,
+					"expression": "bright",
+					"notes": [
+						48,
+						55,
+						52
+					],
+					"park": true,
+					"stereo": "(0.156434, 0.987688)",
+					"terrain": "river_valley",
+					"zone_roles": [
+						"home"
+					]
+				},
+				"voices": {
+					"budget_shed": 0,
+					"entities": 50,
+					"environment_nodes": 1,
+					"max_render_voices": 16,
+					"pad_nodes": 11,
+					"render_voices": 16,
+					"response_nodes": 0,
+					"rhythm_nodes": 2,
+					"theme_nodes": 2,
+					"voice_budget": 70
+				}
+			},
+			"service": {
+				"capacity": 18,
+				"covered": 32,
+				"facilities": 1,
+				"members": 50,
+				"reachable": 26,
+				"served": 18,
+				"unserved": 32
+			},
+			"world_version": [
+				12,
+				2,
+				0
+			]
+		},
+		{
+			"anchor_id": "player-park-00002",
+			"audio_seconds": 30,
+			"buildings": 51,
+			"covered": [
+				"building-00013",
+				"building-00030",
+				"building-00033"
+			],
+			"label": "different-anchor-bluegreen",
+			"positions": [
+				[
+					10.7152280807495,
+					0.377162158489227
+				],
+				[
+					13.1152276992798,
+					0.363238245248795
+				],
+				[
+					11.1388177871704,
+					1.95959460735321
+				],
+				[
+					13.5388174057007,
+					2.05003499984741
+				],
+				[
+					11.5047883987427,
+					3.54827332496643
+				],
+				[
+					13.9047889709473,
+					3.57273769378662
+				],
+				[
+					11.558012008667,
+					17.9502258300781
+				],
+				[
+					14.1323041915894,
+					10.0584936141968
+				],
+				[
+					14.2396125793457,
+					11.536301612854
+				],
+				[
+					14.4277143478394,
+					14.0
+				],
+				[
+					11.8968276977539,
+					16.4093036651611
+				],
+				[
+					14.2968273162842,
+					16.3818473815918
+				],
+				[
+					18.7580127716064,
+					17.9884834289551
+				],
+				[
+					18.9323043823242,
+					9.96388912200928
+				],
+				[
+					21.3323040008545,
+					9.95230770111084
+				],
+				[
+					19.0396118164063,
+					11.624529838562
+				],
+				[
+					21.4396114349365,
+					11.5835390090942
+				],
+				[
+					19.2277145385742,
+					14.0
+				],
+				[
+					11.7069063186646,
+					5.22309827804565
+				],
+				[
+					14.2396125793457,
+					13.0863018035889
+				],
+				[
+					18.9166564941406,
+					8.39459991455078
+				],
+				[
+					11.7459707260132,
+					6.73682165145874
+				],
+				[
+					13.6073045730591,
+					9.14916706085205
+				],
+				[
+					19.4416561126709,
+					7.48527336120605
+				],
+				[
+					14.1069059371948,
+					5.16688203811646
+				],
+				[
+					11.8968276977539,
+					14.8593034744263
+				],
+				[
+					19.4044513702393,
+					12.7585391998291
+				],
+				[
+					14.1459712982178,
+					6.77885389328003
+				],
+				[
+					11.558012008667,
+					19.0002250671387
+				],
+				[
+					18.7580127716064,
+					19.5384826660156
+				],
+				[
+					10.7152280807495,
+					-1.17283773422241
+				],
+				[
+					14.2396125793457,
+					15.4363021850586
+				],
+				[
+					19.0968265533447,
+					16.4601860046387
+				],
+				[
+					12.7652282714844,
+					-1.17283773422241
+				],
+				[
+					10.5080118179321,
+					19.0002250671387
+				],
+				[
+					19.4044513702393,
+					15.1085395812988
+				],
+				[
+					11.2402276992798,
+					-2.08216428756714
+				],
+				[
+					21.4544506072998,
+					12.7585391998291
+				],
+				[
+					8.25222587585449,
+					18.3999996185303
+				],
+				[
+					18.9069061279297,
+					5.25576066970825
+				]
+			],
+			"roles": {
+				"pads": [
+					"west-1:residential:48",
+					"west-1:residential:55",
+					"west-1:residential:52",
+					"west-2:commercial:52",
+					"west-2:residential:52",
+					"west-2:residential:48",
+					"west-2:commercial:55",
+					"east-2:residential:55",
+					"east-2:commercial:52",
+					"east-2:commercial:48",
+					"east-1:residential:55"
+				],
+				"response": {},
+				"rhythms": [
+					{
+						"cid": "west-2",
+						"expression": "bright",
+						"facility": false,
+						"midi": 52,
+						"service_pressure": 0.4375,
+						"stereo": "(0.933398, 0.358844)",
+						"terrain": "river_valley",
+						"zone_roles": [
+							"home",
+							"market",
+							"center"
+						]
+					},
+					{
+						"cid": "east-2",
+						"expression": "bright",
+						"facility": false,
+						"midi": 55,
+						"service_pressure": 1.0,
+						"stereo": "(0.670611, 0.741809)",
+						"terrain": "river_valley",
+						"zone_roles": [
+							"home",
+							"market",
+							"center"
+						]
+					}
+				],
+				"theme": {
+					"center": {},
+					"cid": "west-1",
+					"civic": false,
+					"expression": "bright",
+					"notes": [
+						48,
+						55,
+						52
+					],
+					"park": false,
+					"stereo": "(0.156434, 0.987688)",
+					"terrain": "river_valley",
+					"zone_roles": [
+						"home"
+					]
+				},
+				"voices": {
+					"budget_shed": 0,
+					"entities": 51,
+					"environment_nodes": 1,
+					"max_render_voices": 16,
+					"pad_nodes": 11,
+					"render_voices": 16,
+					"response_nodes": 0,
+					"rhythm_nodes": 2,
+					"theme_nodes": 2,
+					"voice_budget": 70
+				}
+			},
+			"service": {
+				"capacity": 18,
+				"covered": 36,
+				"facilities": 1,
+				"members": 51,
+				"reachable": 27,
+				"served": 18,
+				"unserved": 33
+			},
+			"world_version": [
+				12,
+				2,
+				0
+			]
+		}
+	],
+	"scope": "First charter/scope/public anchor slice; cards and human listening pending",
+	"status": "FAIL"
+}

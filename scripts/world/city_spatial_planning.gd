@@ -149,6 +149,8 @@ static func commit(world: RefCounted,operation: Dictionary,frame: int) -> bool:
 		"community_id":site["community_id"],"active":true,"frame":frame,"service_level":1,"player_planned":true,"source_site_id":site["source_site_id"]}
 	new_site.merge(access)
 	var public_id := str(site.get("public_id",""))
+	if not public_id.is_empty(): new_site["id"] = public_id
+	preload("res://scripts/world/development_charter.gd").mark_anchor(world,new_site,str(site.get("reservation_id","")))
 	if not public_id.is_empty():
 		for old in world.public_sites:
 			if str(old["id"]) == public_id:

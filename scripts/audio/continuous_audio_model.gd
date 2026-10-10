@@ -399,7 +399,8 @@ static func from_state(saved: Dictionary) -> ContinuousAudioModel:
 
 func forecast(operation: Dictionary, state: Dictionary, at: int, duration: int) -> PackedVector2Array:
 	var preview_model := freeze()
-	preview_model.cancel_pending()
+	# Facility comparisons include the queued charter and other structural intent.
+	if str(operation.get("kind","")) not in ["park","civic"]: preview_model.cancel_pending()
 	preview_model.rendered_until = at
 	var result := preview_model.submit(operation)
 	if not result["accepted"]: return PackedVector2Array()

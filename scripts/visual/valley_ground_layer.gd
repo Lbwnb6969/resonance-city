@@ -17,9 +17,16 @@ var rebuild_count := 0
 var update_count := 0
 var last_draw_ms := 0.0
 var max_draw_ms := 0.0
+# Independent CanvasItems retain exact draw contents in the original layer order.
+var urban_parts: Dictionary = {}
+var last_prepare_ms := 0.0
+var max_prepare_ms := 0.0
+var last_part_draw_frame := -1
+const URBAN_PARTS = ["roads","centers","corridors","public","lots","fabric"]
 
 func sync(demo: Control) -> void:
 	city = demo.shown_world
+	for part in urban_parts.values(): part.city = city
 	position = Vector2(demo.size.x*0.5,demo.size.y*0.52)+demo.pan
 	scale = Vector2.ONE*demo.view_zoom
 	visible = not demo.black
@@ -38,7 +45,9 @@ func sync(demo: Control) -> void:
 	roads = demo.road_draw_polygons
 	patches = demo.ground_patches
 	contours = demo.ground_contours
-	queue_redraw()
+	if role == "urban":
+		_sync_urban_parts(terrain_changed)
+	else: queue_redraw()
 
 func _point(p: Vector2, height: float = -1.0) -> Vector2:
 	var point_key := [p,height]
@@ -60,18 +69,27 @@ func _project_polygon(polygon: PackedVector2Array,height: float = -1.0) -> Packe
 	return cache[polygon]
 
 func _draw() -> void:
-	if city == null: return
+	if city == null or (role == "urban" and not urban_parts.is_empty()): return
 	var started := Time.get_ticks_usec()
 	drawn_polygons = {}
 	drawn_points = {}
 	rebuild_count += 1
-	if role == "terrain": _draw_terrain()
-	else: _draw_urban()
+	match role:
+		"terrain": _draw_terrain()
+		"roads":
+			for road in roads: draw_colored_polygon(_project_polygon(road["polygon"]),road["color"])
+		"centers": _draw_center_markers()
+		"corridors": _draw_green_corridors()
+		"public": _draw_public_space()
+		"lots": _draw_occupied_lots()
+		"fabric": _draw_fabric_overlay()
+		_: _draw_urban()
 	# Retain only geometry read by this draw, not previous city history.
 	projected = drawn_polygons
 	point_cache = drawn_points
 	last_draw_ms = float(Time.get_ticks_usec()-started)/1000.0
 	max_draw_ms = maxf(max_draw_ms,last_draw_ms)
+	if role in URBAN_PARTS: get_parent().call("_record_part_draw",last_draw_ms)
 
 func _draw_terrain() -> void:
 	var high_y := float(city.terrain.cfg.get("template_land_max_y",city.terrain.cfg["template_land_max"]))+4.0
@@ -93,10 +111,13 @@ func _draw_urban() -> void:
 	_draw_center_markers()
 	_draw_green_corridors()
 	_draw_public_space()
+	_draw_occupied_lots()
+	_draw_fabric_overlay()
+
+func _draw_occupied_lots() -> void:
 	for lot in city.lots:
 		if lot["occupant"] != "":
 			draw_colored_polygon(_project_polygon(lot["polygon"]),Color(0.68,0.73,0.57,0.2))
-	_draw_fabric_overlay()
 
 func _draw_center_markers() -> void:
 	for center in city.centers:
@@ -185,3 +206,83 @@ func _draw_fabric_overlay() -> void:
 			var a := _point(Coupling.position_of(city.by_id[members[i]]),0.05)
 			var b := _point(Coupling.position_of(city.by_id[members[i+1]]),0.05)
 			draw_line(a,b,Color(0.62,0.67,0.49,0.42),1.4*1.0,true)
+
+func _sync_urban_parts(terrain_changed: bool) -> void:
+	var began := Time.get_ticks_usec()
+	var contents := _urban_contents()
+	last_draw_ms = 0.0
+	var changed := false
+	for name in URBAN_PARTS:
+		if not urban_parts.has(name):
+			var part: Node2D = get_script().new()
+			part.name = "Ground_"+name
+			part.role = name
+			add_child(part)
+			urban_parts[name] = part
+		var part: Node2D = urban_parts[name]
+		part.city = city
+		part.roads = roads
+		part.camera_zoom = camera_zoom
+		var content_key: Array = [terrain_identity,contents[name]]
+		# Public outline widths are screen-constant. Other urban marks scale with
+		# their parent, so camera motion/zoom reuses their exact draw commands.
+		if name == "public": content_key.append(camera_zoom)
+		if not terrain_changed and part.key == content_key: continue
+		if terrain_changed:
+			part.projected.clear()
+			part.point_cache.clear()
+		part.key = content_key
+		part.update_count += 1
+		part.queue_redraw()
+		changed = true
+	if changed: rebuild_count += 1
+	last_prepare_ms = float(Time.get_ticks_usec()-began)/1000.0
+	max_prepare_ms = maxf(max_prepare_ms,last_prepare_ms)
+
+func _record_part_draw(milliseconds: float) -> void:
+	var frame := Engine.get_process_frames()
+	if last_part_draw_frame != frame:
+		last_part_draw_frame = frame
+		last_draw_ms = 0.0
+	last_draw_ms += milliseconds
+	max_draw_ms = maxf(max_draw_ms,last_draw_ms)
+
+func _urban_contents() -> Dictionary:
+	# Snapshot only values that affect commands, in their exact draw order.
+	# Fresh arrays own the signature; packed geometry uses value semantics.
+	var content := {"roads":[],"centers":[],"corridors":[],"public":[],"lots":[],"fabric":[]}
+	for road in roads: content["roads"].append([road["polygon"],road["color"]])
+	for center in city.centers:
+		if bool(center.get("active",true)):
+			content["centers"].append([Vector2(float(center["position"][0]),float(center["position"][1])),str(center.get("level","terrace"))])
+	for corridor in city.green_corridors:
+		if bool(corridor.get("active",true)) and corridor["path"].size() >= 2:
+			content["corridors"].append([corridor["path"],float(corridor.get("width",0.24))])
+	for reservation in city.planning_reservations: content["public"].append(["reserve",reservation["polygon"]])
+	for site in city.public_sites:
+		if not site["active"]:
+			content["public"].append(["inactive",site["polygon"]])
+		elif site["kind"] == "park":
+			content["public"].append(["park",site["polygon"],Vector2(site["position"][0],site["position"][1])])
+		else:
+			content["public"].append(["civic",site["polygon"],Vector2(site["position"][0],site["position"][1]),
+				int(site.get("service_level",1)),site.get("served",[]).size() >= int(site.get("service_capacity",18))])
+	for line in city.transit_lines:
+		for node in line["stops"]:
+			var p: Array = city.nodes[node]
+			content["public"].append(["stop",Vector2(p[0],p[1])])
+	for lot in city.lots:
+		if lot["occupant"] != "": content["lots"].append(lot["polygon"])
+	var cache: Dictionary = city.fabric_cache
+	for courtyard in cache.get("courtyards",[]):
+		content["fabric"].append(["court",Vector2(float(courtyard["center"][0]),float(courtyard["center"][1])),
+			courtyard.get("polygon",PackedVector2Array())])
+	for relation in cache.get("shared_walls",[]):
+		if not city.by_id.has(relation["a"]) or not city.by_id.has(relation["b"]): continue
+		content["fabric"].append(["wall",Coupling.position_of(city.by_id[relation["a"]]),Coupling.position_of(city.by_id[relation["b"]])])
+	for row in cache.get("rows",[]):
+		var members: Array = row["members"]
+		for index in range(members.size()-1):
+			if not city.by_id.has(members[index]) or not city.by_id.has(members[index+1]): continue
+			content["fabric"].append(["row",Coupling.position_of(city.by_id[members[index]]),Coupling.position_of(city.by_id[members[index+1]])])
+	return content

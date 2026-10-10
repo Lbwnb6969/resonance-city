@@ -9,6 +9,7 @@ const Legacy = preload("res://scripts/spec_values.gd")
 const Fabric = preload("res://scripts/world/fabric_relations.gd")
 const Terrace = preload("res://scripts/world/terrace_neighborhood.gd")
 const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
+const Charter = preload("res://scripts/world/development_charter.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -40,6 +41,7 @@ var green_corridors: Array[Dictionary] = []
 var centers: Array[Dictionary] = []
 var public_sites: Array[Dictionary] = []
 var planning_reservations: Array[Dictionary] = []
+var development_charters: Array[Dictionary] = []
 var landmarks: Array[Dictionary] = []
 var landmark_progress: Dictionary = {}
 var network: CityRoadNetwork
@@ -835,6 +837,16 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation = operation.duplicate(true)
 		operation["lot_id"] = check["lot_id"]
 		operation["placement_tier"] = check["tier"]
+	elif kind == "charter":
+		var reason := Charter.reason(self,operation)
+		if not reason.is_empty(): return {"accepted":false,"reason":reason}
+		operation = operation.duplicate(true)
+		var scope: Array = []
+		for cid in operation["community_ids"]:
+			if not scope.has(str(cid)): scope.append(str(cid))
+		scope.sort()
+		operation["community_ids"] = scope
+		operation["id"] = "scope:"+",".join(scope)
 	elif kind == "retune":
 		if not by_id.has(operation.get("id","")): return {"accepted":false,"reason":"请选择一栋建筑"}
 	elif kind == "bridge":
@@ -937,13 +949,14 @@ func settle(frame: int) -> void:
 	# Public space is reserved before any queued seed or natural growth in this phrase.
 	var successful_planning: Array[Dictionary] = []
 	for op in committed:
+		if str(op["kind"]) == "charter": Charter.commit(self,op,frame)
 		if str(op["kind"]) in ["reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position")):
 			if SpatialPlanning.commit(self,op,frame): successful_planning.append(op)
 			else:
 				events.append({"kind":"planning_rejected","event_id":op["event_id"],"frame":frame})
 	for op in committed:
 		assert(int(op["frame"]) == frame)
-		if str(op["kind"]) in ["reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position")): continue
+		if str(op["kind"]) in ["charter","reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position")): continue
 		match str(op["kind"]):
 			"seed":
 				var p := Vector2(float(op["position"][0]),float(op["position"][1]))
@@ -990,7 +1003,7 @@ func settle(frame: int) -> void:
 	settle_profile["split_ms"] = float(Time.get_ticks_usec()-phase_started)/1000.0
 	phase_started = Time.get_ticks_usec()
 	var musical_action := committed.any(func(op: Dictionary) -> bool:
-		return str(op["kind"]) not in ["reserve","release_reservation"] and not (str(op["kind"]) in ["park","civic"] and op.has("position")))
+		return str(op["kind"]) not in ["charter","reserve","release_reservation"] and not (str(op["kind"]) in ["park","civic"] and op.has("position")))
 	musical_action = musical_action or successful_planning.any(func(op: Dictionary) -> bool: return str(op["kind"]) in ["park","civic"])
 	var forms_dirty := musical_action or buildings.size() != buildings_before_growth or not split_events.is_empty()
 	var modifiers := musicality()
@@ -1162,7 +1175,8 @@ func _grow(family: String, frame: int) -> void:
 			if p.distance_to(Coupling.position_of(neighbor)) > 1.8: continue
 			if str(neighbor["community_id"]) == cid or str(neighbor["family_id"]) == family: compact_neighbors += 1
 		var compact_bonus := float(mini(6,compact_neighbors))*float(cfg["city"].get("growth_compact_neighbor_weight",10000.0))
-		var base_score := float(tier_rank)*100000.0+compact_bonus+quota_bonus*1000.0+transit_bonus*100.0-distance
+		var planning_bonus := Charter.growth_bonus(self,cid,p,compact_neighbors)
+		var base_score := float(tier_rank)*100000.0+compact_bonus+quota_bonus*1000.0+transit_bonus*100.0+planning_bonus-distance
 		# Exact upper bound: acoustic checks cannot rescue a candidate whose
 		# placement score plus the maximum civic bonus cannot beat the winner.
 		if base_score+50.0 <= best_growth_score: continue
@@ -1204,6 +1218,10 @@ func _grow(family: String, frame: int) -> void:
 		return
 	var p: Vector2 = best["position"]
 	_birth(p,int(root["current_midi"]),family,false,frame,str(best.get("use","residential")))
+	var charter := Charter.for_community(self,str(best_check["community_id"]))
+	if not charter.is_empty():
+		events.back()["charter_id"] = charter["charter_id"]
+		events.back()["plan_id"] = charter["plan_id"]
 	families[family]["next_growth_phrase"] = phrase_index+int(best_check.get("growth_delay",1))
 
 
@@ -1513,7 +1531,7 @@ func _update_forms(frame: int, modifiers: Dictionary = {}) -> void:
 			events.append({"kind":"upgrade","district_id":building["district_id"],"frame":frame,"form":target})
 
 func snapshot() -> Dictionary:
-	return {"schema_version":2,"generation_version":136,"settings":cfg.duplicate(true),"planning_reservations":planning_reservations.duplicate(true),
+	return {"schema_version":2,"generation_version":136,"settings":cfg.duplicate(true),"planning_reservations":planning_reservations.duplicate(true),"development_charters":development_charters.duplicate(true),
 		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase,"family":terrain.family},
 		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"green_corridors":green_corridors.duplicate(true),"centers":centers.duplicate(true),"communities":communities.duplicate(true)},
 		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"transit_demand":transit_demand.duplicate(true),"transit_flow_pending":transit_flow_pending.duplicate(true),"functional_zones":functional_zones.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"landmarks":landmarks.duplicate(true),"landmark_progress":landmark_progress.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
@@ -1590,6 +1608,7 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	action_serial = int(saved.get("action_serial",0))
 	if saved.has("public_sites"): public_sites.assign(saved["public_sites"].duplicate(true))
 	planning_reservations.assign(saved.get("planning_reservations",[]).duplicate(true))
+	development_charters.assign(saved.get("development_charters",[]).duplicate(true))
 	landmarks.assign(saved.get("landmarks",[]).duplicate(true))
 	landmark_progress = saved.get("landmark_progress",{}).duplicate(true)
 	_restore_geometry()
