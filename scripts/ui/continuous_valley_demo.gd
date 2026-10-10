@@ -750,11 +750,35 @@ func _update_selected_opportunity() -> void:
 	var notes := shown_world.community_theme(cid,model.audible_pitches())
 	var displayed: Array[String] = []
 	for pitch in notes.slice(0,8): displayed.append(note_name(int(pitch)))
+	var opportunity_lines := _opportunity_lines(selected_opportunity)
+	var next_text := str(selected_opportunity.get("next",""))
+	if not opportunity_lines.is_empty(): next_text = "\n".join(opportunity_lines)
 	menu_info.text = "%s · %s\n音型 · %s%s\n%s\n%s" % [
-		shown_world.communities[cid]["name"],selected_opportunity["current"],"  ".join(displayed),
-		" …" if notes.size() > 8 else "",selected_opportunity["next"],
+		shown_world.communities[cid]["name"],str(selected_opportunity.get("current","当前以长音融入合奏")),"  ".join(displayed),
+		" …" if notes.size() > 8 else "",next_text,
 		"公园给主题留白" if selected_opportunity["facility"]["park"] else ("文化馆实际服务%d栋" % int(selected_opportunity["facility"]["served"]) if selected_opportunity["facility"]["civic"] else "可自由选择留白、文化或商业布局")]
 	menu_info.text += "\n跨河应答 · "+_response_state_label()+"\n点击音级改编 · F聚焦主题 · Tab独听 · Esc回合奏"
+
+func _opportunity_lines(opportunity: Dictionary) -> Array[String]:
+	var rows_variant: Variant = opportunity.get("opportunities",[])
+	if not rows_variant is Array: return []
+	var lines: Array[String] = []
+	for raw in rows_variant:
+		if not raw is Dictionary: continue
+		var item: Dictionary = raw
+		var title := str(item.get("title",item.get("name","")))
+		if title.is_empty():
+			var rule_id := str(item.get("rule_id",""))
+			title = {"P11-BASS":"低音","P11-BASS-EXPRESSION":"低音表达","P11-RHYTHM":"商业律动","P11-COMMERCIAL-RHYTHM":"商业律动","P11-RESPONSE":"跨岸应答","P11-RIVER-RESPONSE":"跨岸应答"}.get(rule_id,"下一步机会")
+		var parts: Array[String] = []
+		if item.has("qualified"): parts.append("已就绪" if bool(item["qualified"]) else "待条件")
+		var current := str(item.get("current","")).replace("\n","；")
+		var next := str(item.get("next","")).replace("\n","；")
+		if not current.is_empty(): parts.append("现 "+current)
+		if not next.is_empty(): parts.append("下 "+next)
+		if parts.is_empty(): lines.append(title)
+		else: lines.append(title+" · "+" · ".join(parts))
+	return lines
 
 func _pending_response() -> Dictionary:
 	var pending: Dictionary = {}
