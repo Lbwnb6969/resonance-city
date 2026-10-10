@@ -125,7 +125,9 @@ func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array) -> f
 	if road.is_empty(): return desired
 	for other in traffic:
 		if str(other.get("kind","")) == kind and int(other.get("ordinal",-1)) == ordinal: continue
-		if str(other.get("road","")) != road: continue
+		if str(other.get("road","")) != road:
+			if _junction_conflict(city,access,other): return 0.0
+			continue
 		var other_position: Vector2 = other.get("position",Vector2.ZERO)
 		var gap: float = position.distance_to(other_position)
 		var other_direction: Vector2 = other.get("direction",Vector2.RIGHT)
@@ -139,6 +141,26 @@ func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array) -> f
 		elif not same_way and gap < 0.48 and int(other.get("priority",0)) < _priority():
 			return 0.0
 	return desired
+
+func _junction_conflict(city: ContinuousWorld,current_access: Dictionary,other: Dictionary) -> bool:
+	var current_road := str(current_access.get("road",""))
+	var other_road := str(other.get("road",""))
+	if current_road.is_empty() or other_road.is_empty() or current_road == other_road: return false
+	var current_nodes := [str(current_access.get("from","")),str(current_access.get("to",""))]
+	var other_nodes := [str(other.get("road_from","")),str(other.get("road_to",""))]
+	var other_position: Vector2 = other.get("position",Vector2.ZERO)
+	var other_direction: Vector2 = other.get("direction",Vector2.RIGHT)
+	for node_id in current_nodes:
+		if node_id.is_empty() or not other_nodes.has(node_id) or not city.network.nodes.has(node_id): continue
+		var point_data: Array = city.network.nodes[node_id]
+		var junction := Vector2(float(point_data[0]),float(point_data[1]))
+		if position.distance_to(junction) > 0.9 or other_position.distance_to(junction) > 0.9: continue
+		var current_heading := (junction-position).normalized()
+		var other_heading := (junction-other_position).normalized()
+		if current_heading.length_squared() < 0.00001 or other_heading.length_squared() < 0.00001: continue
+		if direction.dot(current_heading) < -0.1 or other_direction.dot(other_heading) < -0.1: continue
+		return int(other.get("priority",0)) < _priority()
+	return false
 
 func _acceleration() -> float:
 	if kind == "car": return 3.8

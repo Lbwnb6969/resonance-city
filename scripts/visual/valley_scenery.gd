@@ -114,7 +114,9 @@ func sync(demo: Control) -> void:
 		var traffic_access: Dictionary = city.network.access(traffic_traveler.position)
 		traffic.append({"kind":traffic_traveler.kind,"ordinal":traffic_traveler.ordinal,
 			"position":traffic_traveler.position,"direction":traffic_traveler.direction,
-			"road":str(traffic_access.get("road","")),"priority":traffic_traveler._priority()})
+			"road":str(traffic_access.get("road","")),"road_from":str(traffic_access.get("from","")),
+			"road_to":str(traffic_access.get("to","")),"road_along":float(traffic_access.get("along",0.0)),
+			"road_length":float(traffic_access.get("length",0.0)),"priority":traffic_traveler._priority()})
 	for key in props:
 		var prop: ValleyProp = props[key]
 		var p: Vector2 = prop.get_meta("world_position")
