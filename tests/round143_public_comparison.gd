@@ -87,9 +87,21 @@ func _run() -> void:
 	FileAccess.open(OUT+".json",FileAccess.WRITE).store_string(JSON.stringify(report,"\t")+"\n")
 	print("PUBLIC_COMPARISON ",report["status"]," checks=",checks.size())
 	quit(0 if ok else 1)
-func wait_preview(demo: ContinuousValleyDemo) -> void:
+func pin_pointer(demo: ContinuousValleyDemo,p: Vector2) -> void:
+	# The production guide invalidates a comparison when the cursor moves to a
+	# different map location. Keep the automated real-output path on the chosen
+	# site while the worker is running; otherwise the host desktop cursor can
+	# move the candidate and make this evidence test race with the UI by design.
+	demo.pointer = demo.point(p)
+	demo.pointer_inside = true
+	Input.warp_mouse(demo.pointer)
+
+func wait_preview(demo: ContinuousValleyDemo,p: Vector2) -> void:
 	var end := Time.get_ticks_msec()+12000
-	while demo.preview_thread != null and Time.get_ticks_msec() < end: await process_frame
+	while demo.preview_thread != null and Time.get_ticks_msec() < end:
+		pin_pointer(demo,p)
+		await process_frame
+		pin_pointer(demo,p)
 	check(demo.preview_thread == null,"preview worker finishes")
 func gpu_flow(world: ContinuousWorld,available: Array[Dictionary]) -> void:
 	var demo: ContinuousValleyDemo = load("res://scenes/continuous_valley.tscn").instantiate()
@@ -110,15 +122,18 @@ func gpu_flow(world: ContinuousWorld,available: Array[Dictionary]) -> void:
 	demo._request_preview()
 	demo.model.submit({"kind":"charter","plan_id":"compact","community_ids":["west-1"]})
 	demo._request_preview()
-	await wait_preview(demo)
+	await wait_preview(demo,p)
 	check(guide.comparison.is_empty() and not demo.preview_started,"late worker keeps captured identity after newer request and is rejected")
 	demo._request_preview()
-	await wait_preview(demo)
+	await wait_preview(demo,p)
 	check(guide.comparison.has("variants") and guide.comparison["variants"].size() == 3 and demo.preview_started,"actual Space worker returns three public choices and plays chosen PCM")
 	check(guide.detail.text.contains("暂不建") and guide.detail.text.contains("全城净增") and guide.detail.text.contains("下一步"),"planning guide exposes actual service tradeoffs and next opportunity")
-	for kind: String in ["none","park","civic"]:
-		guide.choose_anchor(kind)
-		check(demo.preview_player.stream.data == guide.comparison["variants"][kind]["pcm"] and demo.preview_thread == null,kind+" switches same captured PCM without resimulation")
+	if guide.comparison.has("variants") and demo.preview_player.stream != null:
+		for kind: String in ["none","park","civic"]:
+			guide.choose_anchor(kind)
+			check(demo.preview_player.stream.data == guide.comparison["variants"][kind]["pcm"] and demo.preview_thread == null,kind+" switches same captured PCM without resimulation")
+	else:
+		for kind: String in ["none","park","civic"]: check(false,kind+" switches same captured PCM without resimulation")
 	check(demo.model.world.rng.snapshot() == held_rng and demo.model.world.buildings.size() == world.buildings.size(),"preview and instant comparison never grow live city")
 	var release := InputEventKey.new()
 	release.keycode = KEY_SPACE
@@ -144,7 +159,7 @@ func gpu_flow(world: ContinuousWorld,available: Array[Dictionary]) -> void:
 	demo.context = {"kind":"retune","id":world.communities["west-1"]["members"][0]}
 	demo._request_preview()
 	guide.open_tool()
-	await wait_preview(demo)
+	await wait_preview(demo,p)
 	check(not demo.preview_player.playing and not demo.preview_duck_owned,"generic preview finishing after planning opens is discarded")
 	guide.choose_plan("bluegreen")
 	guide.map_click(p,false)
@@ -158,7 +173,7 @@ func gpu_flow(world: ContinuousWorld,available: Array[Dictionary]) -> void:
 	demo.clock.renderer.transport.audible_frame = live_at
 	demo.clock.start_output(demo.model._mix_frame,{},demo.clock.renderer.snapshot())
 	demo._request_preview()
-	await wait_preview(demo)
+	await wait_preview(demo,p)
 	check(demo.preview_started,"public comparison plays alongside real output")
 	await create_timer(3.5).timeout
 	check(demo.clock.underruns == 0 and demo.shown_world.phrase_index > world.phrase_index,"actual WASAPI public preview crosses normal growth without skips")
