@@ -19,6 +19,8 @@ var leg_index := 0
 var initialized := false
 var trip := 0
 var walk_target := Vector2.ZERO
+# Keep one previous stop so a pedestrian does not ping-pong between two doors.
+var previous_walk_target := Vector2.ZERO
 var stop_id := ""
 var passenger_load := 0
 var passenger_capacity := 12
@@ -229,7 +231,10 @@ func _next_car(city: ContinuousWorld) -> void:
 		passenger_load = 0
 		passenger_capacity = 4
 		_set_path(journey["path"],_vehicle_lane())
-		wait = 0.15+float(posmod(ordinal+trip,3))*0.05
+		var destination_dwell := 0.34+float(posmod(ordinal+trip,4))*0.16
+		if destination_kind in ["commercial","civic_green","cultural"]:
+			destination_dwell += 0.18
+		wait = destination_dwell
 		trip += 1
 		return
 	wait = 0.2
@@ -411,19 +416,27 @@ func _next_walk(city: ContinuousWorld) -> void:
 	if destinations.is_empty():
 		profile = "local"
 		destinations = _walk_destinations(city)
+	if destinations.is_empty(): return
+	var arrived_at := walk_target
 	trip += 1
-	for offset in range(destinations.size()):
-		var candidate: Vector2 = destinations[(ordinal*3+trip*7+offset)%destinations.size()]
-		if candidate.distance_to(walk_target) < 0.4: continue
-		var journey: Dictionary = city.network.walking_route(walk_target,candidate)
-		if is_inf(float(journey["distance"])): continue
-		walk_target = candidate
-		destination = "entrance"
-		destination_kind = profile
-		purpose = {"market":"去商街","garden":"去公园","civic":"去公共设施","home":"回家","local":"附近漫步"}.get(profile,"附近漫步")
-		_set_path(journey["path"],0.22)
-		wait = 0.6+float(ordinal%4)*0.2
-		return
+	var selected := false
+	for attempt in range(2):
+		for offset in range(destinations.size()):
+			var candidate: Vector2 = destinations[(ordinal*3+trip*7+offset)%destinations.size()]
+			if candidate.distance_to(arrived_at) < 0.4: continue
+			if attempt == 0 and destinations.size() > 2 and previous_walk_target != Vector2.ZERO and candidate.distance_to(previous_walk_target) < 0.4: continue
+			var journey: Dictionary = city.network.walking_route(arrived_at,candidate)
+			if is_inf(float(journey["distance"])): continue
+			previous_walk_target = arrived_at
+			walk_target = candidate
+			destination = "entrance"
+			destination_kind = profile
+			purpose = {"market":"去商街","garden":"去公园","civic":"去公共设施","home":"回家","local":"附近漫步"}.get(profile,"附近漫步")
+			_set_path(journey["path"],0.22)
+			wait = 0.6+float(ordinal%4)*0.2
+			selected = true
+			break
+		if selected: return
 
 func _set_path(center: PackedVector2Array, lane: float) -> void:
 	var shifted := PackedVector2Array()
@@ -470,7 +483,7 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 func snapshot() -> Dictionary:
 	var saved: Dictionary = {}
 	for field in ["kind","ordinal","position","direction","path","lengths","distance","total","last_seconds","wait",
-		"destination","destination_kind","purpose","line_key","line_index","leg_index","initialized","trip","walk_target","stop_id","passenger_load","passenger_capacity","passenger_destinations","passengers_boarded","passengers_alighted","transfer_passengers","motion_speed","transfer_count","transfer_target","transfer_stop"]: saved[field] = get(field)
+		"destination","destination_kind","purpose","line_key","line_index","leg_index","initialized","trip","walk_target","previous_walk_target","stop_id","passenger_load","passenger_capacity","passenger_destinations","passengers_boarded","passengers_alighted","transfer_passengers","motion_speed","transfer_count","transfer_target","transfer_stop"]: saved[field] = get(field)
 	return saved.duplicate(true)
 
 func _saved_vector(value: Variant) -> Vector2:
