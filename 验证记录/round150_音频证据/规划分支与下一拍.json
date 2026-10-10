@@ -1,0 +1,141 @@
+{
+  "boundary_frame": 1058400,
+  "branches": {
+    "civic": {
+      "accepted": true,
+      "affected_communities": [
+        "west-1",
+        "west-2"
+      ],
+      "boundary_frame": 1058400,
+      "pcm_bytes": 264600,
+      "pcm_samples": 66150,
+      "peak": 0.284676656392102,
+      "rms": 0.0937363867475258,
+      "rules": [
+        "P11-COMMUNITY-THEME",
+        "P11-BASS-EXPRESSION",
+        "P11-COMMERCIAL-RHYTHM",
+        "P11-RIVER-RESPONSE"
+      ],
+      "source_frame": 705664
+    },
+    "none": {
+      "accepted": true,
+      "affected_communities": [
+        "west-1"
+      ],
+      "boundary_frame": 1058400,
+      "pcm_bytes": 264600,
+      "pcm_samples": 66150,
+      "peak": 0.291848506118961,
+      "rms": 0.0939371760378752,
+      "rules": [
+        "P11-COMMUNITY-THEME",
+        "P11-BASS-EXPRESSION",
+        "P11-COMMERCIAL-RHYTHM",
+        "P11-RIVER-RESPONSE"
+      ],
+      "source_frame": 705664
+    },
+    "park": {
+      "accepted": true,
+      "affected_communities": [
+        "west-1"
+      ],
+      "boundary_frame": 1058400,
+      "pcm_bytes": 264600,
+      "pcm_samples": 66150,
+      "peak": 0.289742728965117,
+      "rms": 0.0937371849028588,
+      "rules": [
+        "P11-COMMUNITY-THEME",
+        "P11-BASS-EXPRESSION",
+        "P11-COMMERCIAL-RHYTHM",
+        "P11-RIVER-RESPONSE"
+      ],
+      "source_frame": 705664
+    }
+  },
+  "candidate": {
+    "community_id": "west-1",
+    "position": [
+      13.4987964630127,
+      5.26122617721558
+    ],
+    "source_site_id": "west-lot-3-1"
+  },
+  "claims": {
+    "equivalent_offline_pcm": "verified by the production ContinuousAudioModel and public_planning_preview path",
+    "human_listening": "not claimed",
+    "same_snapshot": "verified by shared source_version/source_frame/boundary_frame",
+    "wasapi_device_clock": "not run"
+  },
+  "contract": "ROUND150_AUDIO_EVIDENCE/v1",
+  "next_beat_controls": {
+    "expected_beat": 716625,
+    "focus_community": "west-1",
+    "focus_sound_frame": 716625,
+    "requested_at": 716626,
+    "retune_id": "building-00001",
+    "retune_midi": 52,
+    "retune_sound_frame": 716625
+  },
+  "pairwise_pcm_difference": {
+    "none_vs_civic": {
+      "max_abs": 0.076418347727897,
+      "mean_abs": 0.00418165816358833,
+      "samples": 132300
+    },
+    "none_vs_park": {
+      "max_abs": 0.101596118045595,
+      "mean_abs": 0.00442343142416617,
+      "samples": 132300
+    },
+    "park_vs_civic": {
+      "max_abs": 0.0411999877925962,
+      "mean_abs": 0.00232560661420064,
+      "samples": 132300
+    }
+  },
+  "sample_rate": 22050,
+  "seconds": 3,
+  "seed": "2026101100000150",
+  "source_frame": 705664,
+  "source_version": [
+    [
+      2,
+      1,
+      0
+    ],
+    1058400,
+    "west-lot-3-1",
+    [
+      [
+        12.8787965774536,
+        4.62122631072998
+      ],
+      [
+        14.1187963485718,
+        4.62122631072998
+      ],
+      [
+        14.1187963485718,
+        5.90122604370117
+      ],
+      [
+        12.8787965774536,
+        5.90122604370117
+      ]
+    ],
+    955031377,
+    598030696,
+    2697048408,
+    "",
+    "",
+    true,
+    2697048408,
+    1.0,
+    2595210385
+  ]
+}
