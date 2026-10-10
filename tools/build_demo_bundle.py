@@ -51,7 +51,7 @@ def audit(pack):
                                  'source_sha256': entry['texture_sha256'],
                                  'packed_path': target, 'packed_sha256': digest,
                                  'license': entry['license']})
-        for path in ['数据/spec_values.json', '数据/listening_fixtures.json']:
+        for path in ['数据/spec_values.json', '数据/world_v2.json', '数据/listening_fixtures.json']:
             if archive.read(path) != (ROOT / path).read_bytes():
                 raise RuntimeError('Stale runtime data: ' + path)
     return {'files': names, 'textures': textures, 'forbidden': forbidden}
