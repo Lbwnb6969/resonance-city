@@ -6,6 +6,8 @@ var roads: Array = []
 var adjacency: Dictionary = {}
 var terrain: RefCounted
 var topology := ""
+# Exact runtime generation identity for per-frame access reuse; never serialized.
+var access_token := RefCounted.new()
 var route_cache: Dictionary = {}
 var route_trees: Dictionary = {}
 var access_cache: Dictionary = {}
@@ -28,6 +30,7 @@ func rebuild(city_nodes: Dictionary, city_roads: Array, city_terrain: RefCounted
 	terrain = city_terrain
 	if next_topology == topology: return
 	topology = next_topology
+	access_token = RefCounted.new()
 	route_cache.clear()
 	route_trees.clear()
 	access_cache.clear()

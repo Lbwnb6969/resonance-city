@@ -7,12 +7,14 @@ var vehicle_kind := ""
 var site_key: Array = []
 var public_prop_layouts: Dictionary = {}
 var public_prop_keys: Dictionary = {}
+var prop_projections: Dictionary = {}
 
 func rebuild(demo: Control) -> void:
 	for node in props.values(): node.queue_free()
 	props.clear()
 	public_prop_layouts.clear()
 	public_prop_keys.clear()
+	prop_projections.clear()
 	for site in demo.shown_world.public_sites:
 		sites[site["id"]] = site
 	var city: ContinuousWorld = demo.shown_world
@@ -90,6 +92,7 @@ func _sync_public_props(demo: Control,city: ContinuousWorld) -> void:
 			if props.has(key):
 				props[key].queue_free()
 				props.erase(key)
+				prop_projections.erase(key)
 		public_prop_layouts[id] = layout.duplicate()
 		var keys: Array[String] = []
 		var p := Vector2(float(site["position"][0]),float(site["position"][1]))
@@ -130,6 +133,36 @@ func _sync_vehicle_kind(city: ContinuousWorld) -> void:
 			traveler.kind = desired
 			traveler.line_key = ""
 
+func _index_traffic(traffic: Array,accesses: Dictionary) -> void:
+	# One frame, no persistent position cache. Same-road following has no radius
+	# limit; different roads can only conflict within two 0.9-unit node reaches.
+	var by_road: Dictionary = {}
+	var cells: Dictionary = {}
+	for i in range(traffic.size()):
+		var agent: Dictionary = traffic[i]
+		var road: String = agent["road"]
+		var p: Vector2 = agent["position"]
+		var cell := Vector2i(floori(p.x/2.0),floori(p.y/2.0))
+		if not by_road.has(road): by_road[road] = []
+		if not cells.has(cell): cells[cell] = []
+		by_road[road].append(i)
+		cells[cell].append(i)
+	for physical in accesses.values():
+		var road := str(physical["access"].get("road",""))
+		var p: Vector2 = physical["position"]
+		var cell := Vector2i(floori(p.x/2.0),floori(p.y/2.0))
+		var selected: Dictionary = {}
+		for i in by_road.get(road,[]): selected[i] = true
+		for dy in range(-1,2):
+			for dx in range(-1,2):
+				for i in cells.get(cell+Vector2i(dx,dy),[]):
+					if p.distance_squared_to(traffic[i]["position"]) <= 1.800001*1.800001: selected[i] = true
+		var indices: Array = selected.keys()
+		indices.sort()
+		var nearby: Array = []
+		for i in indices: nearby.append(traffic[i])
+		physical["traffic"] = nearby
+
 func sync(demo: Control) -> void:
 	var city: ContinuousWorld = demo.shown_world
 	_sync_vehicle_kind(city)
@@ -142,6 +175,7 @@ func sync(demo: Control) -> void:
 	var frame: float = demo.clock.renderer.transport.audible_frame
 	var rate: int = demo.clock.renderer.transport.sample_rate
 	var seconds := frame/rate
+	var terrain_key := [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family]
 	# Share the previous frame's physical positions so travelers yield at the same road point.
 	# Priority is deterministic, keeping opposing traffic from deadlocking at a bend.
 	var traffic: Array = []
@@ -153,12 +187,13 @@ func sync(demo: Control) -> void:
 		var traffic_traveler: CityTraveler = traffic_prop.get_meta("traveler")
 		if not traffic_traveler.initialized: continue
 		var traffic_access: Dictionary = city.network.access(traffic_traveler.position,false)
-		accesses[traffic_key] = {"position":traffic_traveler.position,"topology":city.network.topology,"access":traffic_access}
+		accesses[traffic_key] = {"position":traffic_traveler.position,"topology_token":city.network.access_token,"access":traffic_access}
 		traffic.append({"kind":traffic_traveler.kind,"ordinal":traffic_traveler.ordinal,
 			"position":traffic_traveler.position,"direction":traffic_traveler.direction,
 			"road":str(traffic_access.get("road","")),"road_from":str(traffic_access.get("from","")),
 			"road_to":str(traffic_access.get("to","")),"road_along":float(traffic_access.get("along",0.0)),
 			"road_length":float(traffic_access.get("length",0.0)),"priority":traffic_traveler._priority()})
+	_index_traffic(traffic,accesses)
 	for key in props:
 		var prop: ValleyProp = props[key]
 		var p: Vector2 = prop.get_meta("world_position")
@@ -190,7 +225,13 @@ func sync(demo: Control) -> void:
 				prop.set_meta("transfer_passengers",movement.get("transfer_passengers",0))
 				prop.set_meta("passenger_destinations",movement.get("passenger_destinations",[]))
 				prop.set_meta("world_position",p)
-		prop.position = WorldProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),city.terrain.height_at(p))
+		if prop.has_meta("traveler"):
+			prop.position = WorldProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),city.terrain.height_at(p))
+		else:
+			var projection_key := [terrain_key,p]
+			if not prop_projections.has(key) or prop_projections[key]["key"] != projection_key:
+				prop_projections[key] = {"key":projection_key,"position":WorldProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),city.terrain.height_at(p))}
+			prop.position = prop_projections[key]["position"]
 		prop.scale = Vector2.ONE*float(prop.get_meta("public_scale",1.0))
 		# Building warmth is shared at the layer; scenery retains its original tint.
 		prop.modulate = Color(1.0/demo.buildings_layer.modulate.r,1.0,1.0,prop.reveal)

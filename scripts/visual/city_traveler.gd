@@ -122,12 +122,20 @@ func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array,physi
 	if desired <= 0.000001 or traffic.is_empty(): return desired
 	# Reuse only this frame's exact-position query; after initialization/turning
 	# or a topology change the normal nearest-road query remains authoritative.
-	var access: Dictionary = physical_access["access"] if physical_access.get("position") == position and physical_access.get("topology") == city.network.topology else city.network.access(position,false)
+	var same_topology: bool = physical_access["topology_token"] == city.network.access_token if physical_access.has("topology_token") else physical_access.get("topology") == city.network.topology
+	var physical_valid: bool = physical_access.get("position") == position and same_topology
+	var access: Dictionary = physical_access["access"] if physical_valid else city.network.access(position,false)
+	if physical_valid: traffic = physical_access.get("traffic",traffic)
 	var road: String = str(access.get("road",""))
 	if road.is_empty(): return desired
+	var priority := _priority()
+	var vehicle := _is_vehicle()
 	for other in traffic:
 		if str(other.get("kind","")) == kind and int(other.get("ordinal",-1)) == ordinal: continue
 		if str(other.get("road","")) != road:
+			if int(other.get("priority",0)) >= priority: continue
+			var other_position: Vector2 = other.get("position",Vector2.ZERO)
+			if position.distance_squared_to(other_position) > 1.800001*1.800001: continue
 			if _junction_conflict(city,access,other): return 0.0
 			continue
 		var other_position: Vector2 = other.get("position",Vector2.ZERO)
@@ -138,9 +146,9 @@ func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array,physi
 		var other_kind := str(other.get("kind",""))
 		var other_is_vehicle := other_kind in ["carriage","tram","bus","car"]
 		if same_way and ahead:
-			var safe: float = 0.52 if (_is_vehicle() or other_is_vehicle) else 0.34
+			var safe: float = 0.52 if (vehicle or other_is_vehicle) else 0.34
 			if gap < safe+desired: return maxf(0.0,gap-safe)
-		elif not same_way and gap < 0.48 and int(other.get("priority",0)) < _priority():
+		elif not same_way and gap < 0.48 and int(other.get("priority",0)) < priority:
 			return 0.0
 	return desired
 
@@ -316,6 +324,12 @@ func _next_bus(city: ContinuousWorld) -> void:
 				break
 		if match_index < 0:
 			var reconnect := city.network.route(destination,legs[0]["from"])
+			if reconnect["path"].is_empty():
+				# A disconnected replacement line cannot be reached across open water.
+				# Keep the completed stop and retry after a visible pause.
+				line_key = ""
+				wait = 1.0
+				return
 			destination = legs[0]["from"]
 			leg_index = 0
 			_set_path(reconnect["path"],_vehicle_lane())

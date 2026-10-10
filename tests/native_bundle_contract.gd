@@ -139,6 +139,16 @@ func _run() -> void:
 			if not hit.is_empty(): break
 		if not hit.is_empty(): break
 	_check(not hit.is_empty(),"cached depth order preserves alpha hit after camera move")
+	demo.scenery.sync(demo)
+	var scenery_positions := true
+	for prop in demo.scenery.props.values():
+		var p: Vector2 = prop.get_meta("world_position")
+		if prop.visible: scenery_positions = scenery_positions and prop.global_position.distance_to(demo.point(p)) < 0.001
+	_check(not demo.scenery.prop_projections.is_empty() and scenery_positions,"packed static scenery projection cache matches moving props and camera")
+	var sample_traffic: Array = [{"road":"a","position":Vector2.ZERO},{"road":"a","position":Vector2(10,10)},{"road":"b","position":Vector2(0.5,0)},{"road":"b","position":Vector2(10,10)}]
+	var sample_access := {"agent":{"position":Vector2.ZERO,"access":{"road":"a"}}}
+	demo.scenery._index_traffic(sample_traffic,sample_access)
+	_check(sample_access["agent"]["traffic"] == sample_traffic.slice(0,3),"packed traffic index retains ordered same-road and nearby junction agents")
 	await RenderingServer.frame_post_draw
 	root.get_texture().get_image().save_png(output.get_base_dir()+"/运行包Demo.png")
 	demo.queue_free()
