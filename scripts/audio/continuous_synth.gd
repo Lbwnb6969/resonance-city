@@ -218,6 +218,7 @@ func _musical_block(node: Dictionary, start: int, count: int, rate: int) -> Pack
 	elif zone_roles.has("choir"): steps = [0,8,16,24] if pattern["expression"] == "deep" else [0,4,12,20,28]
 	elif zone_roles.has("market") and pattern["expression"] != "deep": steps = [0,2,5,9,16,18,22,27]
 	elif zone_roles.has("garden"): steps = steps.slice(0,maxi(2,steps.size()-2))
+	elif zone_roles.has("pulse_dense"): steps = [0,2,4,8,10,12,16,18,20,24,26,28]
 	elif zone_roles.has("pulse"): steps = [0,4,8,12,16,20,24,28]
 	if pattern["park"]: steps = steps.slice(0,maxi(2,steps.size()-2))
 	var first_cycle := floori(float(start-delay)/period)-1

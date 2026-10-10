@@ -32,6 +32,9 @@ var landmark_progress: Dictionary = {}
 var network: CityRoadNetwork
 var transit: Dictionary = {}
 var transit_lines: Array[Dictionary] = []
+# Smoothed stop activity is a light-weight memory shared by transport, growth,
+# and music; it is not a full economy simulation.
+var transit_demand: Dictionary = {}
 # Functional districts are derived from active communities and public infrastructure.
 # They provide a stable bridge between city layout, UI language, and musical phrasing.
 var functional_zones: Array[Dictionary] = []
@@ -180,6 +183,33 @@ func _community_usage(cid: String) -> Dictionary:
 		result[kind] = int(result[kind])+1
 	return result
 
+func record_transit_flow(stop_id: String, boarded: int, alighted: int, transfers: int = 0) -> void:
+	if stop_id.is_empty(): return
+	var key := str(stop_id)
+	var record: Dictionary = transit_demand.get(key,{"score":0.0,"boarded":0,"alighted":0,"transfers":0,"visits":0})
+	var activity := float(maxi(0,boarded)+maxi(0,alighted))+float(maxi(0,transfers))*1.5
+	# Event counts remain inspectable; score is a bounded, decaying pressure signal.
+	record["score"] = minf(8.0,float(record.get("score",0.0))*0.985+activity*0.35)
+	record["boarded"] = int(record.get("boarded",0))+maxi(0,boarded)
+	record["alighted"] = int(record.get("alighted",0))+maxi(0,alighted)
+	record["transfers"] = int(record.get("transfers",0))+maxi(0,transfers)
+	record["visits"] = int(record.get("visits",0))+1
+	transit_demand[key] = record
+
+func transit_demand_score(stop_id: String) -> float:
+	return clampf(float(transit_demand.get(str(stop_id),{}).get("score",0.0)),0.0,8.0)
+
+func _decay_transit_demand() -> void:
+	for stop_id in transit_demand:
+		var record: Dictionary = transit_demand[stop_id]
+		record["score"] = float(record.get("score",0.0))*0.94
+		transit_demand[stop_id] = record
+
+func _community_transit_demand(cid: String) -> float:
+	var center := center_for(cid)
+	if center.is_empty(): return 0.0
+	return transit_demand_score(str(center.get("node_id","")))
+
 func functional_zone_roles(cid: String) -> Array[String]:
 	var roles: Array[String] = []
 	for zone in functional_zones:
@@ -248,7 +278,14 @@ func refresh_functional_zones() -> void:
 					break
 		if transit_members.size() >= 2:
 			var line_ids: Array = transit_lines.map(func(line: Dictionary) -> String: return str(line.get("id","")))
-			next.append({"id":"zone-transit-hub","role":"transit","title":"换乘节点","music_role":"pulse","community_ids":transit_members,"building_count":0,"site_ids":[],"line_ids":line_ids})
+			var demand_total := 0.0
+			var demand_peak := 0.0
+			for cid in transit_members:
+				var local_demand := _community_transit_demand(cid)
+				demand_total += local_demand
+				demand_peak = maxf(demand_peak,local_demand)
+			var demand_average := demand_total/float(transit_members.size())
+			next.append({"id":"zone-transit-hub","role":"transit","title":"换乘节点","music_role":"pulse_dense" if demand_peak >= 2.5 else "pulse","community_ids":transit_members,"building_count":0,"site_ids":[],"line_ids":line_ids,"transit_demand":demand_average,"peak_demand":demand_peak})
 	functional_zones = next
 
 func road_environment(a: Vector2,b: Vector2) -> Dictionary:
@@ -649,6 +686,7 @@ func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int) -> St
 
 func settle(frame: int) -> void:
 	phrase_index += 1
+	_decay_transit_demand()
 	_update_landmark_activation(frame)
 	update_era(frame)
 	var costs: Dictionary = {}
@@ -1127,7 +1165,7 @@ func snapshot() -> Dictionary:
 	return {"schema_version":2,"generation_version":66,"settings":cfg.duplicate(true),
 		"terrain_state":{"noise_seed":terrain.noise_seed,"river_phase":terrain.river_phase,"family":terrain.family},
 		"plan":{"lots":lots.duplicate(true),"roads":roads.duplicate(true),"nodes":nodes.duplicate(true),"blocks":blocks.duplicate(true),"green_corridors":green_corridors.duplicate(true),"centers":centers.duplicate(true),"communities":communities.duplicate(true)},
-		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"functional_zones":functional_zones.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"landmarks":landmarks.duplicate(true),"landmark_progress":landmark_progress.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
+		"transit":transit.duplicate(true),"transit_lines":transit_lines.duplicate(true),"transit_demand":transit_demand.duplicate(true),"functional_zones":functional_zones.duplicate(true),"mode":mode,"profile":profile,"action_serial":action_serial,"public_sites":public_sites.duplicate(true),"landmarks":landmarks.duplicate(true),"landmark_progress":landmark_progress.duplicate(true),"pending_actions":pending_actions.duplicate(true),"seed_hex":rng.seed_hex,"rng":rng.snapshot(),"buildings":buildings.duplicate(true),
 		"pending":pending.duplicate(true),"events":events.duplicate(true),"bridge":bridge,"phrase_index":phrase_index,"era":era,"expanded_plan":expanded_plan,
 		"next_id":next_id,"families":families.duplicate(true),"lifecycle":lifecycle.duplicate(true),"last_reason":last_reason}
 
@@ -1147,6 +1185,7 @@ func restore(saved: Dictionary) -> void:
 		communities = plan["communities"].duplicate(true)
 		transit = saved["transit"].duplicate(true)
 		transit_lines.assign(saved.get("transit_lines",[]).duplicate(true))
+		transit_demand = saved.get("transit_demand",{}).duplicate(true)
 		functional_zones.assign(saved.get("functional_zones",[]).duplicate(true))
 	buildings.assign(saved["buildings"].duplicate(true))
 	by_id.clear()

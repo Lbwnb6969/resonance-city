@@ -311,6 +311,7 @@ func _next_bus(city: ContinuousWorld) -> void:
 	passengers_boarded = maxi(0,target_load-after_alight)
 	passenger_load = target_load
 	transfer_passengers = mini(passenger_load,1+posmod(ordinal+leg_index+stop_id.length(),3)) if did_transfer else 0
+	city.record_transit_flow(arrival_stop,passengers_boarded,passengers_alighted,transfer_passengers)
 	var base_dwell := float(city.cfg["city"]["bus_dwell_beats"])*60.0/float(city.cfg["timing"]["bpm"])
 	wait = base_dwell+float(passenger_load)*0.035+float(passengers_boarded+passengers_alighted)*0.018+(0.35 if did_transfer else 0.0)
 
@@ -329,6 +330,9 @@ func _stop_demand(city: ContinuousWorld,line: Dictionary,stop: String) -> int:
 			match str(zone.get("role","")):
 				"commercial","workshop","cultural","transit": demand += 2
 				"civic_green": demand += 1
+	# Passenger flow creates a bounded memory: busy stops keep attracting journeys
+	# for later phrases, then decay with the world's musical clock.
+	demand += mini(3,roundi(city.transit_demand_score(stop)/2.0))
 	return clampi(demand,1,maxi(1,passenger_capacity-1))
 
 func _walk_destinations(city: ContinuousWorld) -> Array[Vector2]:
