@@ -258,14 +258,7 @@ func _event_wave(pitch: int, expression: String, rate: int) -> PackedFloat32Arra
 	theme_waves[key] = wave
 	return wave
 
-func _musical_block(node: Dictionary, start: int, count: int, rate: int) -> PackedFloat32Array:
-	var output := PackedFloat32Array()
-	output.resize(count)
-	var pattern: Dictionary = node["pattern"]
-	var part: Dictionary = node["part"]
-	var beat := roundi(rate*0.5)
-	var period := beat*32
-	var delay := beat*2 if node["answer"] else 0
+func musical_steps(pattern: Dictionary) -> Array:
 	var steps: Array = [0,8,16,24] if pattern["expression"] == "deep" else [0,3,6,10,16,19,22,27]
 	var terrain := str(pattern.get("terrain","river_valley"))
 	if terrain == "lake_basin": steps = [0,6,12,20] if pattern["expression"] == "deep" else [0,2,7,13,20,25]
@@ -280,6 +273,17 @@ func _musical_block(node: Dictionary, start: int, count: int, rate: int) -> Pack
 	elif zone_roles.has("pulse_dense"): steps = [0,2,4,8,10,12,16,18,20,24,26,28]
 	elif zone_roles.has("pulse"): steps = [0,4,8,12,16,20,24,28]
 	if pattern["park"]: steps = steps.slice(0,maxi(2,steps.size()-2))
+	return steps
+
+func _musical_block(node: Dictionary, start: int, count: int, rate: int) -> PackedFloat32Array:
+	var output := PackedFloat32Array()
+	output.resize(count)
+	var pattern: Dictionary = node["pattern"]
+	var part: Dictionary = node["part"]
+	var beat := roundi(rate*0.5)
+	var period := beat*32
+	var delay := beat*2 if node["answer"] else 0
+	var steps := musical_steps(pattern)
 	var first_cycle := floori(float(start-delay)/period)-1
 	var last_cycle := floori(float(start+count-delay)/period)
 	for cycle in range(first_cycle,last_cycle+1):

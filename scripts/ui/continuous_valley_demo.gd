@@ -55,6 +55,12 @@ var preview_thread: Thread
 var preview_requested := false
 var preview_started := false
 var preview_skips := 0
+var preview_public := false
+var preview_context_key: Array = []
+var preview_duck_owned := false
+var preview_saved_ducking := false
+var preview_saved_release := 0
+const PublicPreview = preload("res://scripts/world/public_planning_preview.gd")
 var fixed_gain := 1.0
 var selected_id := ""
 var hover_id := ""
@@ -395,9 +401,17 @@ func _start_town() -> void:
 	_start_world()
 	clock.start_output(model._mix_frame,{})
 
-func _stop_preview() -> void:
+func _cancel_preview_playback() -> void:
 	preview_requested = false
 	preview_started = false
+	if is_instance_valid(preview_player): preview_player.stop()
+	if preview_duck_owned and model != null:
+		model.synth.ducking = preview_saved_ducking
+		model.synth.duck_release_at = preview_saved_release
+	preview_duck_owned = false
+
+func _stop_preview() -> void:
+	_cancel_preview_playback()
 	if preview_thread != null:
 		preview_thread.wait_to_finish()
 		preview_thread = null
@@ -816,8 +830,7 @@ func _input(event: InputEvent) -> void:
 		return
 	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y,KEY_E,KEY_ENTER,KEY_P]: get_viewport().set_input_as_handled()
 	if event.keycode == KEY_SPACE and not event.pressed:
-		preview_requested = false
-		preview_player.stop()
+		_cancel_preview_playback()
 		return
 	if not event.pressed: return
 	match event.keycode:
@@ -825,6 +838,7 @@ func _input(event: InputEvent) -> void:
 			if planning_guide.opened: planning_guide.hide_tool()
 			else: planning_guide.open_tool()
 		KEY_ESCAPE:
+			_cancel_preview_playback()
 			planning_guide.hide_tool()
 			black = false
 			menu.hide()
@@ -877,12 +891,24 @@ func _message(text: String) -> void:
 	notice_seconds = 6.0
 
 func _request_preview() -> void:
-	if preview_thread != null: return
 	var operation := context.duplicate(true)
 	if planning_guide.opened:
-		if planning_guide.stage != "anchor" or planning_guide.candidate.is_empty(): return
-		operation = {"kind":planning_guide.anchor_kind,"position":planning_guide.candidate["position"].duplicate()}
+		if planning_guide.stage != "anchor": return
+		planning_guide.update_candidate(world_at(pointer))
+		preview_context_key = planning_guide.comparison_identity()
+		if preview_context_key.is_empty(): return
+		preview_public = true
+		preview_requested = true
+		if not planning_guide.comparison.is_empty() and planning_guide.comparison_key == preview_context_key:
+			_play_public_preview()
+			return
+		if preview_thread != null: return
+		operation = {"kind":"public_compare","candidate":planning_guide.candidate.duplicate(true)}
 	elif context.get("kind","seed") not in ["seed","retune"]: return
+	else:
+		if preview_thread != null: return
+		preview_public = false
+		preview_context_key.clear()
 	if operation.is_empty():
 		var p := world_at(pointer)
 		if not model.world.placement(p)["allowed"]: return
@@ -894,11 +920,41 @@ func _request_preview() -> void:
 	preview_requested = true
 	preview_started = false
 	preview_thread = Thread.new()
-	preview_thread.start(_build_preview.bind(frozen,operation,state,at))
+	preview_thread.start(_build_preview.bind(frozen,operation,state,at,preview_context_key.duplicate(true)))
 
-func _build_preview(frozen: ContinuousAudioModel, operation: Dictionary, state: Dictionary, at: int) -> PackedByteArray:
+func _build_preview(frozen: ContinuousAudioModel, operation: Dictionary, state: Dictionary, at: int, request_key: Array) -> Dictionary:
+	if operation["kind"] == "public_compare":
+		var result := PublicPreview.build(frozen,operation["candidate"],state,at)
+		result["request_key"] = request_key
+		return result
 	var rate := int(Config.load_values()["timing"]["sample_rate"])
-	return Renderer.pcm16(frozen.forecast(operation,state,at,rate*3))
+	return {"pcm":Renderer.pcm16(frozen.forecast(operation,state,at,rate*3))}
+
+func _play_public_preview() -> void:
+	var variant: Dictionary = planning_guide.comparison["variants"][planning_guide.anchor_kind]
+	if not variant["accepted"]:
+		_message(str(variant["reason"]))
+		_cancel_preview_playback()
+		return
+	_play_preview_pcm(variant["pcm"])
+
+func _play_preview_pcm(pcm: PackedByteArray) -> void:
+	if pcm.is_empty(): return
+	var stream := AudioStreamWAV.new()
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	stream.mix_rate = int(Config.load_values()["timing"]["sample_rate"])
+	stream.stereo = true
+	stream.data = pcm
+	preview_player.stream = stream
+	preview_player.play()
+	preview_started = true
+	preview_skips = clock.underruns
+	if not preview_duck_owned:
+		preview_saved_ducking = model.synth.ducking
+		preview_saved_release = model.synth.duck_release_at
+		preview_duck_owned = true
+	model.synth.ducking = true
+	model.synth.duck_release_at = clock.renderer.transport.rendered_frames+stream.mix_rate*3
 
 func _hover_placement(p: Vector2) -> Dictionary:
 	var key := [model.world,model.world.phrase_index,model.world.action_serial,p]
@@ -915,20 +971,15 @@ func _process(delta: float) -> void:
 	shown_world = model.presentation_world(clock.renderer.transport.audible_frame)
 	_profile_frame("presentation_ms",presentation_started)
 	if preview_thread != null and not preview_thread.is_alive():
-		var pcm: PackedByteArray = preview_thread.wait_to_finish()
+		var result: Dictionary = preview_thread.wait_to_finish()
 		preview_thread = null
-		if preview_requested and not pcm.is_empty():
-			var stream := AudioStreamWAV.new()
-			stream.format = AudioStreamWAV.FORMAT_16_BITS
-			stream.mix_rate = int(Config.load_values()["timing"]["sample_rate"])
-			stream.stereo = true
-			stream.data = pcm
-			preview_player.stream = stream
-			preview_player.play()
-			preview_started = true
-			preview_skips = clock.underruns
-			model.synth.ducking = true
-			model.synth.duck_release_at = clock.renderer.transport.rendered_frames+stream.mix_rate*3
+		if result.has("variants"):
+			if planning_guide.accept_comparison(result,result["request_key"]):
+				if preview_requested: _play_public_preview()
+			else: _cancel_preview_playback()
+		elif preview_requested:
+			if not planning_guide.opened: _play_preview_pcm(result["pcm"])
+			else: _cancel_preview_playback()
 	var frame_started := Time.get_ticks_usec()
 	_sync_buildings()
 	_profile_frame("buildings_ms",frame_started)

@@ -64,6 +64,9 @@ func _run() -> void:
 	if found:
 		var private_city: ContinuousWorld = demo.model.world.fork()
 		var planning_site := private_city.planning_candidate(point)
+		var public_model := ContinuousAudioModel.new(private_city,demo.fixed_gain)
+		var comparison := demo.PublicPreview.build(public_model.freeze(),planning_site,{},audio_frame)
+		_check(comparison["variants"].size() == 3 and comparison["variants"]["none"]["pcm"].size() == audio_rate*3*4 and comparison["variants"]["park"]["accepted"] and comparison["variants"]["civic"]["accepted"] and public_model.world.buildings.size() == 18,"portable public comparison renders three real choices without changing city")
 		var planned := false
 		if not planning_site.is_empty() and bool(planning_site["allowed"]):
 			var action := private_city.request({"kind":"reserve","position":[point.x,point.y]},int(private_city.cfg["timing"]["phrase_frames"]))

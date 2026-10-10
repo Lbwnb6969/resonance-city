@@ -165,6 +165,12 @@ func cancel_pending() -> void:
 	sound_events.clear()
 	world.pending = world.pending_actions[-1].duplicate(true) if not world.pending_actions.is_empty() else {}
 
+func cancel_planning() -> void:
+	world.pending_actions = world.pending_actions.filter(func(op: Dictionary) -> bool:
+		return str(op["kind"]) not in ["reserve","release_reservation"] and not (str(op["kind"]) in ["park","civic"] and op.has("position")))
+	world.pending = world.pending_actions[-1].duplicate(true) if not world.pending_actions.is_empty() else {}
+	decisions.append({"requested_frame":rendered_until,"operation":{"kind":"cancel_planning"},"sound_frame":-1,"structure_frame":-1})
+
 func _mix_frame(_state: Dictionary, _at: int, _rate: int) -> Vector2:
 	return Vector2.ZERO
 
