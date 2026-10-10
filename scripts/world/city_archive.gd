@@ -134,6 +134,7 @@ static func _audio_source(source: Variant) -> Dictionary:
 	if value.has("dna") and value["dna"] is Dictionary:
 		value = value["dna"]
 	if value.has("runtime") and value["runtime"] is Dictionary and value["runtime"].has("model"):
+		if not value["runtime"]["model"] is Dictionary: return {"ok":false,"reason":"AudioPlan的runtime.model格式不支持"}
 		return {"ok":true,"dna":value,"model":value["runtime"]["model"],"renderer":value["runtime"].get("renderer",{}),"view":value["runtime"].get("view",{})}
 	if value.has("model") and value["model"] is Dictionary:
 		return {"ok":true,"dna":{},"model":value["model"],"renderer":value.get("renderer",{}),"view":value.get("view",{})}
@@ -146,16 +147,25 @@ static func validate_audio_plan(source: Variant) -> Dictionary:
 	var plan: Dictionary = dna.get("audio_plan",{})
 	if plan.is_empty() or str(plan.get("schema","")) != "resonance_audio_plan_v1":
 		return {"ok":false,"reason":"AudioPlan版本不支持"}
-	var model: Dictionary = loaded.get("model",{})
-	var world: Dictionary = model.get("world",{})
-	var timing: Dictionary = world.get("settings",{}).get("timing",{})
+	var model_value: Variant = loaded.get("model",{})
+	if not model_value is Dictionary: return {"ok":false,"reason":"AudioPlan运行时模型格式不支持"}
+	var model: Dictionary = model_value
+	var world_value: Variant = model.get("world",{})
+	if not world_value is Dictionary: return {"ok":false,"reason":"AudioPlan缺少WorldSnapshot"}
+	var world: Dictionary = world_value
+	var settings_value: Variant = world.get("settings",{})
+	if not settings_value is Dictionary or not settings_value.get("timing",{}) is Dictionary:
+		return {"ok":false,"reason":"AudioPlan缺少时间设置"}
+	var timing: Dictionary = settings_value["timing"]
 	var phrase_frames := int(plan.get("phrase_frames",0))
 	var sample_rate := int(plan.get("sample_rate",0))
 	if phrase_frames <= 0 or sample_rate <= 0:
 		return {"ok":false,"reason":"AudioPlan缺少有效时间基准"}
 	if phrase_frames != int(timing.get("phrase_frames",0)) or sample_rate != int(timing.get("sample_rate",0)):
 		return {"ok":false,"reason":"AudioPlan时间基准与运行时不一致"}
-	var sound_events: Array = plan.get("sound_events",[])
+	var sound_events_value: Variant = plan.get("sound_events",[])
+	if not sound_events_value is Array: return {"ok":false,"reason":"AudioPlan声音事件格式不支持"}
+	var sound_events: Array = sound_events_value
 	var previous_sound_frame := -1
 	for event in sound_events:
 		if not event is Dictionary or not event.has("sound_frame"):
@@ -164,15 +174,23 @@ static func validate_audio_plan(source: Variant) -> Dictionary:
 		if frame < previous_sound_frame:
 			return {"ok":false,"reason":"AudioPlan声音事件未按时间排序"}
 		previous_sound_frame = frame
-	var renderer: Dictionary = loaded.get("renderer",{})
-	var transport: Dictionary = renderer.get("transport",{}) if renderer is Dictionary else {}
+	var renderer_value: Variant = loaded.get("renderer",{})
+	if not renderer_value is Dictionary: return {"ok":false,"reason":"AudioPlan渲染器快照格式不支持"}
+	var renderer: Dictionary = renderer_value
+	var transport_value: Variant = renderer.get("transport",{})
+	if not transport_value is Dictionary and not transport_value == null:
+		return {"ok":false,"reason":"AudioPlan渲染游标格式不支持"}
+	var transport: Dictionary = transport_value if transport_value is Dictionary else {}
 	var rendered_until := int(model.get("rendered_until",0))
 	if transport.has("rendered_frames") and int(transport["rendered_frames"]) != rendered_until:
 		return {"ok":false,"reason":"AudioPlan与PCM渲染游标不一致"}
+	var decisions_value: Variant = plan.get("decisions",[])
+	if not decisions_value is Array: return {"ok":false,"reason":"AudioPlan决策记录格式不支持"}
+	var decisions: Array = decisions_value
 	return {"ok":true,"dna":dna,"model":model,"renderer":renderer,"plan":plan,
 		"phrase_frames":phrase_frames,"sample_rate":sample_rate,
 		"rendered_until":rendered_until,"sound_event_count":sound_events.size(),
-		"decision_count":(plan.get("decisions",[]) as Array).size()}
+		"decision_count":decisions.size()}
 
 static func _pcm_digest(block: PackedVector2Array) -> String:
 	var hash := HashingContext.new()
