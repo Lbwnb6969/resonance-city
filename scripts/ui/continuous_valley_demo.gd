@@ -1782,6 +1782,33 @@ func _draw_landmark_preview() -> void:
 		draw_line(at+Vector2(0,-5)*view_zoom,at+Vector2(0,5)*view_zoom,Color(tint,0.75),1.1*view_zoom,true)
 		draw_string(ThemeDB.fallback_font,at+Vector2(8,-8)*view_zoom,"预影 · "+str(candidate["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("776247"))
 
+func _draw_partial_access_preview(preview: Dictionary) -> void:
+	## Keep the public target's real road connection visible while the player
+	## is still drawing.  The target and remainder are already shown as filled
+	## polygons; this line makes the access decision legible on a busy map.
+	if not bool(preview.get("accepted",false)): return
+	var path := _partial_access_path(preview)
+	if path.size() < 2: return
+	var projected := _project_polygon(path)
+	draw_polyline(projected,Color("b18b55",0.92),2.4,true)
+	draw_circle(projected[0],4.5,Color("4f9f7b",0.95))
+	draw_circle(projected[projected.size()-1],4.5,Color("b18b55",0.95))
+	var road_id := str(preview.get("road_id",""))
+	if not road_id.is_empty():
+		draw_string(ThemeDB.fallback_font,projected[projected.size()-1]+Vector2(7,-6),"入口 · "+road_id,HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("776247"))
+
+func _partial_access_path(preview: Dictionary) -> PackedVector2Array:
+	var raw_path: Variant = preview.get("target_access_path",PackedVector2Array())
+	if raw_path is PackedVector2Array: return raw_path
+	return PackedVector2Array()
+
+func _partial_preview_label(preview: Dictionary, free_target: bool) -> String:
+	var title := ("自由局部公园" if partial_kind == "park" else "自由局部文化馆") if free_target else ("局部公园" if partial_kind == "park" else "局部文化馆")
+	var label := title+"预影 · "+("按 Enter 确认" if free_target else "点击确认")
+	if not bool(preview.get("accepted",false)):
+		return label.replace(" · "+("按 Enter 确认" if free_target else "点击确认")," · "+str(preview.get("reason","位置不可用")))
+	return label+" · 下一乐句落成 · 入口 %s · %s · 保留%d片留地" % [str(preview.get("road_id","未知道路")),str(preview.get("target_community_id","未知社区")),int(preview.get("remaining_count",0))]
+
 func _draw_planning_preview() -> void:
 	if reservation_draw_mode and pointer_inside:
 		var draw_color := Color("4f9f7b") if reservation_draw_points.size() >= 3 else Color("79966e")
@@ -1835,8 +1862,8 @@ func _draw_planning_preview() -> void:
 			if target_polygon.size() > 1:
 				target_polygon.append(target_polygon[0])
 				draw_polyline(target_polygon,Color("4f9f7b") if accepted else Color("b35e58"),2.0,true)
-			var partial_text := ("自由局部公园" if partial_kind == "park" else "自由局部文化馆")+"预影 · "+("按 Enter 确认" if accepted else str(partial_preview.get("reason","继续绘制目标足迹")))
-			if accepted: partial_text += " · 保留%d片留地 · %s" % [int(partial_preview.get("remaining_count",0)),str(partial_preview.get("target_community_id","未知社区"))]
+			_draw_partial_access_preview(partial_preview)
+			var partial_text := _partial_preview_label(partial_preview,true)
 			draw_string(ThemeDB.fallback_font,point(world_at(pointer))+Vector2(10,-12),partial_text,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("41665b") if accepted else Color("9b4b4b"))
 	if partial_mode and not partial_reservation_id.is_empty() and pointer_inside:
 		var partial_preview: Dictionary = PartialPublic.preview(shown_world,partial_reservation_id,partial_kind,world_at(pointer))
@@ -1858,8 +1885,8 @@ func _draw_planning_preview() -> void:
 			if target_polygon.size() > 1:
 				target_polygon.append(target_polygon[0])
 				draw_polyline(target_polygon,Color("4f9f7b") if accepted else Color("b35e58"),2.0,true)
-			var partial_text := ("局部公园" if partial_kind == "park" else "局部文化馆")+"预影 · "+("点击确认" if accepted else str(partial_preview.get("reason","位置不可用")))
-			if accepted: partial_text += " · 保留%d片留地 · %s" % [int(partial_preview.get("remaining_count",0)),str(partial_preview.get("target_community_id","未知社区"))]
+			_draw_partial_access_preview(partial_preview)
+			var partial_text := _partial_preview_label(partial_preview,false)
 			draw_string(ThemeDB.fallback_font,point(world_at(pointer))+Vector2(10,-12),partial_text,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("41665b") if accepted else Color("9b4b4b"))
 	if relocation_mode and not relocation_site_id.is_empty() and pointer_inside:
 		var relocation_preview: Dictionary = PublicRelocation.preview(shown_world,relocation_site_id,world_at(pointer))
