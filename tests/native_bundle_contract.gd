@@ -61,6 +61,10 @@ func _run() -> void:
 		demo.clock.renderer.transport.rendered_frames = boundary
 		demo.clock.renderer.render(512)
 		_check(demo.model.settlement_stats["adopted"] == 1 and demo.model.settlement_stats["fallbacks"] == 0,"packed worker result adopted at original phrase frame")
+		var old_shown := demo.model.presentation_world(boundary-1)
+		_check(demo.model.presentation_stats["prepared"] == 1 and demo.model.presentation_stats["reconstructed"] == 0 and old_shown.phrase_index == 0,"packed prepared old city used before audible boundary")
+		var history: Array = demo.model.capture_state()["presentation_history"]
+		_check(not history.is_empty() and history.all(func(entry: Dictionary) -> bool: return not entry.has("view") and not entry.has("derived")),"packed runtime view excluded from DNA")
 		demo.clock.renderer.transport.audible_frame = boundary+33075
 		demo.shown_world = demo.model.presentation_world(boundary+33075)
 		demo._sync_buildings()

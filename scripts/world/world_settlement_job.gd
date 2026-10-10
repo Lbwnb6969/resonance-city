@@ -11,6 +11,8 @@ var snapshot: Dictionary = {}
 var caches: Dictionary = {}
 var network_caches: Dictionary = {}
 var result: ContinuousWorld
+# Built on the worker from the exact input snapshot; never serialized as an object.
+var presentation_view: ContinuousWorld
 var worker_ms := 0.0
 var task_id := -1
 
@@ -33,9 +35,16 @@ func _compute() -> void:
 	private_city.communities = snapshot["plan"]["communities"].duplicate(true)
 	for field in WORLD_CACHE_FIELDS: private_city.set(field,caches[field])
 	for field in NETWORK_CACHE_FIELDS: private_city.network.set(field,network_caches[field])
+	# The old audible city follows restore semantics (including member order),
+	# while the input snapshot retains the original serializable world order.
+	presentation_view = World.new(snapshot["seed_hex"],false)
+	presentation_view.restore(snapshot,false)
+	presentation_view.fabric_cache = private_city.fabric_cache.duplicate(true)
+	presentation_view.edge_cache = private_city.edge_cache.duplicate(true)
+	presentation_view.public_service_cache = private_city.public_service_cache.duplicate(true)
+	presentation_view.resonance = private_city.resonance
 	private_city.settle(commit_frame)
 	result = private_city
-	snapshot.clear()
 	caches.clear()
 	network_caches.clear()
 	worker_ms = float(Time.get_ticks_usec()-started)/1000.0
@@ -61,6 +70,9 @@ func retire() -> void:
 
 func _dispose() -> void:
 	result = null
-	snapshot.clear()
+	presentation_view = null
+	# An adopted presentation may still own the snapshot. Release this reference
+	# instead of clearing a published dictionary that is waiting to be heard.
+	snapshot = {}
 	caches.clear()
 	network_caches.clear()

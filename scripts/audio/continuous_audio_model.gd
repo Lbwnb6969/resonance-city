@@ -12,6 +12,7 @@ var rendered_until := 0
 var presentation_history: Array[Dictionary] = []
 var presentation_copy: ContinuousWorld
 var presentation_copy_frame := -1
+var presentation_stats := {"prepared":0,"reconstructed":0}
 var event_cursor := 0
 var decisions: Array[Dictionary] = []
 var sound_events: Array[Dictionary] = []
@@ -76,9 +77,11 @@ func prepare_settlement(at: int, rate: int) -> void:
 	settlement_stats["started"] += 1
 	settlement_stats["max_capture_ms"] = maxf(settlement_stats["max_capture_ms"],float(Time.get_ticks_usec()-started)/1000.0)
 
+func _settlement_ready(at: int) -> bool:
+	return settlement_job != null and settlement_job.commit_frame == at and settlement_job.version == _settlement_version() and (settlement_job.task_id < 0 or settlement_job.completed())
+
 func _commit_settlement(at: int) -> void:
-	var prepared: bool = settlement_job != null and settlement_job.commit_frame == at and settlement_job.version == _settlement_version()
-	if prepared and (settlement_job.task_id < 0 or settlement_job.completed()):
+	if _settlement_ready(at):
 		settlement_job.join()
 		settlement_stats["max_worker_ms"] = maxf(settlement_stats["max_worker_ms"],settlement_job.worker_ms)
 		var started := Time.get_ticks_usec()
@@ -152,6 +155,12 @@ func _mix_frame(_state: Dictionary, _at: int, _rate: int) -> Vector2:
 
 func _record_presentation(at: int) -> void:
 	if not presentation_history.is_empty() and int(presentation_history[-1]["frame"]) == at: return
+	if _settlement_ready(at):
+		settlement_job.join()
+		presentation_history.append({"frame":at,"before":settlement_job.snapshot,
+			"pitches":sound_overrides.duplicate(true),"view":settlement_job.presentation_view})
+		presentation_stats["prepared"] += 1
+		return
 	presentation_history.append({"frame":at,"before":world.snapshot(),"pitches":sound_overrides.duplicate(true),
 		"derived":{"fabric":world.fabric_cache.duplicate(true),"edges":world.edge_cache.duplicate(true),
 			"service":world.public_service_cache.duplicate(true),"resonance":world.resonance}})
@@ -254,14 +263,18 @@ func presentation_world(audible_frame: float) -> ContinuousWorld:
 		return world
 	var entry: Dictionary = presentation_history[0]
 	if presentation_copy == null or presentation_copy_frame != int(entry["frame"]):
-		presentation_copy = World.new(world.rng.seed_hex,false)
-		var derived: Dictionary = entry.get("derived",{})
-		presentation_copy.restore(entry["before"],derived.is_empty())
-		if not derived.is_empty():
-			presentation_copy.fabric_cache = derived["fabric"].duplicate(true)
-			presentation_copy.edge_cache = derived["edges"].duplicate(true)
-			presentation_copy.public_service_cache = derived["service"].duplicate(true)
-			presentation_copy.resonance = float(derived["resonance"])
+		if entry.has("view"):
+			presentation_copy = entry["view"]
+		else:
+			presentation_copy = World.new(world.rng.seed_hex,false)
+			var derived: Dictionary = entry.get("derived",{})
+			presentation_copy.restore(entry["before"],derived.is_empty())
+			if not derived.is_empty():
+				presentation_copy.fabric_cache = derived["fabric"].duplicate(true)
+				presentation_copy.edge_cache = derived["edges"].duplicate(true)
+				presentation_copy.public_service_cache = derived["service"].duplicate(true)
+				presentation_copy.resonance = float(derived["resonance"])
+			presentation_stats["reconstructed"] += 1
 		presentation_copy_frame = int(entry["frame"])
 	presentation_copy.pending = world.pending.duplicate(true)
 	return presentation_copy
@@ -311,9 +324,14 @@ static func _hydrate_stereo(value: Variant) -> Variant:
 	return value
 
 func capture_state() -> Dictionary:
-	# Derived presentation geometry is a short-lived live cache, not DNA state.
-	var history := presentation_history.duplicate(true)
-	for entry in history: entry.erase("derived")
+	# Strip runtime objects/caches before copying serializable history. The old
+	# input snapshot remains immutable even when the display view gains flow.
+	var history: Array[Dictionary] = []
+	for entry in presentation_history:
+		var saved_entry := entry.duplicate()
+		saved_entry.erase("derived")
+		saved_entry.erase("view")
+		history.append(saved_entry.duplicate(true))
 	var mix: Dictionary = {}
 	for field in SAVED_SYNTH_FIELDS: mix[field] = synth.get(field)
 	return {"world":world.snapshot(),"gain":synth.gain,"next_boundary":next_boundary,"rendered_until":rendered_until,

@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6571
+[MCPRegistry] runtime port 6571 registered for d:/godot/godotpro/共鸣之城
+PENDING_WORKER {"checks":{"close_joins_worker":true,"input_reference_survives_disposal":true,"old_city_exact":true,"pcm_exact":true,"waiting_worker_falls_back":true,"world_exact":true},"max_pcm_error":0.0,"passed":true}
