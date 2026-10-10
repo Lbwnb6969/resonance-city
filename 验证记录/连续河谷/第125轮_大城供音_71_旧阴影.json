@@ -1,0 +1,94 @@
+{
+	"after": 609,
+	"background": {
+		"adopted": 1,
+		"discarded": 2,
+		"fallbacks": 0,
+		"max_capture_ms": 10.714,
+		"max_commit_ms": 0.146,
+		"max_worker_ms": 307.577,
+		"retired": 3,
+		"started": 3
+	},
+	"baseline_shadow": true,
+	"before": 607,
+	"checks": {
+		"audible_reveal": true,
+		"background_adoption": true,
+		"camera_projection": true,
+		"grows": true,
+		"native_audio": true,
+		"no_underruns": true,
+		"target_scale": true,
+		"voice_budget": true
+	},
+	"concurrent_load": "User reports another game may be running; no other apps stopped",
+	"cpu_max_ms": 80.282,
+	"cpu_p50_ms": 19.483,
+	"cpu_p95_ms": 28.259,
+	"era": 5,
+	"fabric_profile": {
+		"anchor_ms": 44.983,
+		"select_ms": 9.822,
+		"walls_rows_ms": 16.105
+	},
+	"frame_last_ms": {
+		"buildings_ms": 17.694,
+		"draw_ms": 0.208,
+		"interaction_ms": 0.031,
+		"traffic_ms": 3.704
+	},
+	"frame_max_ms": 81.073,
+	"frame_p50_ms": 17.056,
+	"frame_p95_ms": 19.255,
+	"frame_peaks_ms": {
+		"buildings_ms": 26.767,
+		"draw_ms": 9.588,
+		"interaction_ms": 2.314,
+		"traffic_ms": 9.45
+	},
+	"frame_samples": 828,
+	"logical_processors": 32,
+	"max_projection_error": 0.0,
+	"max_render_ms": 26.756,
+	"max_settle_ms": 0.167,
+	"max_voices": 70,
+	"passed": true,
+	"profile": {
+		"actions_growth_ms": 62.881,
+		"coverage_ms": 10.855,
+		"fabric_ms": 73.3,
+		"music_forms_ms": 126.285,
+		"public_network_ms": 19.354,
+		"service_allocation_ms": 4.56,
+		"split_ms": 0.049
+	},
+	"retained_ground": {
+		"city_max_ms": 8.815,
+		"city_rebuilds": 3,
+		"terrain_max_ms": 1.457,
+		"terrain_rebuilds": 1,
+		"water_frames": 931
+	},
+	"retained_shadow_resizes": 0,
+	"shadow_rebuild_ms": 16.763,
+	"skips": 0,
+	"static_shadow_merges": 0,
+	"steady_fps": 50.0,
+	"steady_frame_ms": {
+		"buildings_ms": 0.047,
+		"draw_ms": 0.185,
+		"interaction_ms": 0.031,
+		"traffic_ms": 4.472
+	},
+	"steady_skips": 0,
+	"supply_block": {
+		"begin": 25401311,
+		"capacity": 8191,
+		"count": 384,
+		"render_ms": 26.765,
+		"reserve_frames": 7807,
+		"skips_after_render": 0
+	},
+	"synchronous": false
+}

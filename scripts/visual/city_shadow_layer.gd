@@ -12,6 +12,8 @@ var static_cache: Dictionary = {}
 var last_key := ""
 var rebuild_usec := 0
 var rebuild_count := 0
+var static_merge_count := 0
+var retained_resize_count := 0
 func _ready() -> void:
  cfg = Values.load_values()["lighting"]
  for kind in ["shadow","contact"]:
@@ -90,20 +92,34 @@ func update_records(records: Array[Dictionary]) -> void:
    if item["progress"] == int(cfg["progress_steps"]): completed[item["patch"]["key"]] = item["patch"]
   var cached: Dictionary = static_cache.get(kind,{})
   var previous: Dictionary = cached.get("members",{})
-  var can_extend: bool = cached.get("low",Vector2i(-2147483647,-2147483647)) == low and cached.get("size",Vector2i.ZERO) == size_px
+  var can_extend := not cached.is_empty()
   if can_extend:
    for key in previous:
     if not completed.has(key):
      can_extend = false
      break
   var base: PackedByteArray
-  if can_extend: base = cached["data"]
+  if can_extend:
+   if cached["low"] == low and cached["size"] == size_px:
+    base = cached["data"]
+   else:
+    # Mature coverage is unchanged when the union bounds move or resize.
+    # Copy it in native code, clipping zero margins if a partial patch retires.
+    var old_size: Vector2i = cached["size"]
+    var old_mask := Image.create_from_data(old_size.x,old_size.y,false,Image.FORMAT_R8,cached["data"])
+    var resized := Image.create(size_px.x,size_px.y,false,Image.FORMAT_R8)
+    resized.fill(Color(0,0,0,0))
+    resized.blit_rect(old_mask,Rect2i(Vector2i.ZERO,old_size),cached["low"]-low)
+    base = resized.get_data()
+    retained_resize_count += 1
   else:
    base = PackedByteArray()
    base.resize(size_px.x*size_px.y)
    base.fill(0)
   for key in completed:
-   if not can_extend or not previous.has(key): _merge(base,size_px.x,low,completed[key],int(cfg["progress_steps"]))
+   if not can_extend or not previous.has(key):
+    _merge(base,size_px.x,low,completed[key],int(cfg["progress_steps"]))
+    static_merge_count += 1
   static_cache[kind] = {"low":low,"size":size_px,"members":completed,"data":base}
   var union: PackedByteArray = static_cache[kind]["data"].duplicate()
   for item in active:
