@@ -522,7 +522,7 @@ func _refresh_parcel_index() -> void:
 	var identity: Array = []
 	for group in [lots,public_sites,planning_reservations]:
 		for record in group:
-			identity.append([record["id"],record["polygon"],SpatialPlanning.footprint_components(record)])
+			identity.append([record["id"],record["polygon"],SpatialPlanning.footprint_components(record),SpatialPlanning.footprint_holes(record)])
 	var next_identity := JSON.stringify(identity)
 	if next_identity == parcel_index_identity: return
 	parcel_index_identity = next_identity
@@ -946,6 +946,10 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation["position"] = relocation["target_position"].duplicate(true)
 		operation["target_position"] = relocation["target_position"].duplicate(true)
 		operation["target_polygon"] = relocation["target_polygon"].duplicate()
+		operation["target_polygons"] = relocation.get("target_polygons",[relocation["target_polygon"]]).duplicate(true)
+		operation["footprint_components"] = relocation.get("footprint_components",operation["target_polygons"]).duplicate(true)
+		operation["hole_polygons"] = relocation.get("hole_polygons",[]).duplicate(true)
+		operation["target_holes"] = relocation.get("target_holes",operation["hole_polygons"]).duplicate(true)
 		operation["target_entrance"] = relocation["target_entrance"].duplicate(true)
 		operation["target_access_path"] = relocation.get("target_access_path",PackedVector2Array())
 		operation["target_community_id"] = str(relocation.get("target_community_id",relocation.get("target_community", "")))
@@ -953,12 +957,13 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 	elif kind in ["park","civic"] and bool(operation.get("partial",false)):
 		var reservation_id := str(operation.get("source_reservation_id",operation.get("reservation_id","")))
 		var partial: Dictionary = {}
+		var requested_holes: Variant = operation.get("hole_polygons",operation.get("target_holes",[]))
 		if operation.has("target_polygons"):
-			partial = PartialPublic.preview_footprints(self,reservation_id,kind,operation["target_polygons"])
+			partial = PartialPublic.preview_footprints(self,reservation_id,kind,operation["target_polygons"],requested_holes)
 		elif operation.has("footprint_components"):
-			partial = PartialPublic.preview_footprints(self,reservation_id,kind,operation["footprint_components"])
+			partial = PartialPublic.preview_footprints(self,reservation_id,kind,operation["footprint_components"],requested_holes)
 		elif operation.has("target_polygon"):
-			partial = PartialPublic.preview_footprint(self,reservation_id,kind,operation["target_polygon"])
+			partial = PartialPublic.preview_footprints(self,reservation_id,kind,[operation["target_polygon"]],requested_holes)
 		else:
 			var raw_target: Array = operation.get("position",operation.get("target_position",[]))
 			if raw_target.size() != 2: return {"accepted":false,"reason":"请选择局部公共空间的位置"}
@@ -975,6 +980,8 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation["target_polygon"] = partial["target_polygon"].duplicate()
 		operation["target_polygons"] = partial.get("target_polygons",[partial["target_polygon"]]).duplicate(true)
 		operation["footprint_components"] = partial.get("footprint_components",operation["target_polygons"]).duplicate(true)
+		operation["hole_polygons"] = partial.get("hole_polygons",[]).duplicate(true)
+		operation["target_holes"] = partial.get("target_holes",operation["hole_polygons"]).duplicate(true)
 		operation["target_entrance"] = partial["target_entrance"].duplicate(true)
 		operation["target_access_path"] = partial.get("target_access_path",PackedVector2Array())
 		operation["source_revision"] = str(partial.get("source_revision",""))
@@ -1745,6 +1752,8 @@ func _restore_geometry() -> void:
 			if item.has("polygon"): item["polygon"] = _geometry_from_json(item["polygon"])
 			if item.has("target_polygons"): item["target_polygons"] = _geometry_components_from_json(item["target_polygons"])
 			if item.has("footprint_components"): item["footprint_components"] = _geometry_components_from_json(item["footprint_components"])
+			if item.has("hole_polygons"): item["hole_polygons"] = _geometry_components_from_json(item["hole_polygons"])
+			if item.has("target_holes"): item["target_holes"] = _geometry_components_from_json(item["target_holes"])
 			if item.has("access_path"): item["access_path"] = _geometry_from_json(item["access_path"])
 	for group in [roads,green_corridors,transit_lines]:
 		for item in group:
@@ -1755,11 +1764,15 @@ func _restore_geometry() -> void:
 		if item.has("target_polygon"): item["target_polygon"] = _geometry_from_json(item["target_polygon"])
 		if item.has("target_polygons"): item["target_polygons"] = _geometry_components_from_json(item["target_polygons"])
 		if item.has("footprint_components"): item["footprint_components"] = _geometry_components_from_json(item["footprint_components"])
+		if item.has("hole_polygons"): item["hole_polygons"] = _geometry_components_from_json(item["hole_polygons"])
+		if item.has("target_holes"): item["target_holes"] = _geometry_components_from_json(item["target_holes"])
 		if item.has("target_access_path"): item["target_access_path"] = _geometry_from_json(item["target_access_path"])
 	if pending.has("polygon"): pending["polygon"] = _geometry_from_json(pending["polygon"])
 	if pending.has("target_polygon"): pending["target_polygon"] = _geometry_from_json(pending["target_polygon"])
 	if pending.has("target_polygons"): pending["target_polygons"] = _geometry_components_from_json(pending["target_polygons"])
 	if pending.has("footprint_components"): pending["footprint_components"] = _geometry_components_from_json(pending["footprint_components"])
+	if pending.has("hole_polygons"): pending["hole_polygons"] = _geometry_components_from_json(pending["hole_polygons"])
+	if pending.has("target_holes"): pending["target_holes"] = _geometry_components_from_json(pending["target_holes"])
 	if pending.has("target_access_path"): pending["target_access_path"] = _geometry_from_json(pending["target_access_path"])
 
 func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
@@ -1826,6 +1839,8 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	for event in events:
 		if event.has("converted_footprints"): event["converted_footprints"] = _geometry_components_from_json(event["converted_footprints"])
 		if event.has("footprint_components"): event["footprint_components"] = _geometry_components_from_json(event["footprint_components"])
+		if event.has("hole_polygons"): event["hole_polygons"] = _geometry_components_from_json(event["hole_polygons"])
+		if event.has("target_holes"): event["target_holes"] = _geometry_components_from_json(event["target_holes"])
 	bridge = bool(saved["bridge"])
 	if bridge and not roads.any(func(r: Dictionary) -> bool: return r["bridge"]):
 		var a: Array = nodes["west-2"]
@@ -1971,8 +1986,7 @@ func _make_transit_line(id: String, title: String, itinerary: Array, frame: int)
 
 func public_at(p: Vector2) -> Dictionary:
 	for site in public_sites:
-		for component in SpatialPlanning.footprint_components(site):
-			if Geometry2D.is_point_in_polygon(p,component): return site
+		if SpatialPlanning.point_in_footprint(site,p): return site
 	return {}
 
 func expand_plan() -> void:

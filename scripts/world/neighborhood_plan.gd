@@ -1,6 +1,7 @@
 class_name NeighborhoodPlan
 extends RefCounted
 ## Stable street-front parcels and closed neighborhoods; public reservations precede plots.
+const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 static func box(p: Vector2,half: Vector2) -> PackedVector2Array:
 	return PackedVector2Array([p-half,p+Vector2(half.x,-half.y),p+half,p+Vector2(-half.x,half.y)])
 
@@ -73,9 +74,7 @@ static func populate(world: RefCounted) -> void:
 		if not world.terrain.valid_footprint(polygon): continue
 		var clear := true
 		for site in world.public_sites:
-			var components: Array = site.get("footprint_components",[site.get("polygon",PackedVector2Array())])
-			for component in components:
-				if not Geometry2D.intersect_polygons(polygon,component).is_empty(): clear = false
+			if SpatialPlanning.overlaps_footprint(polygon,site): clear = false
 		for road in world.roads:
 			var width := float(cfg["branch_road_half_width"]) if road.get("kind","") == "branch" else float(t["template_road_half_width"])
 			for strip in Geometry2D.offset_polyline(road["path"],width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):

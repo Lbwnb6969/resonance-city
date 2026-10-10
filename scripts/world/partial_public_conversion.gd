@@ -115,6 +115,38 @@ static func _normalize_target_components(value: Variant) -> Array[PackedVector2A
 		if not component.is_empty(): result.append(component)
 	return result
 
+static func _normalize_holes(value: Variant) -> Array[PackedVector2Array]:
+	var result: Array[PackedVector2Array] = []
+	if value is PackedVector2Array:
+		var single := SpatialPlanning.normalize_polygon(value)
+		if not single.is_empty(): result.append(single)
+		return result
+	if not value is Array or value.is_empty(): return result
+	var first: Variant = value[0]
+	var nested := first is PackedVector2Array
+	if first is Array and not first.is_empty(): nested = first[0] is Array or first[0] is PackedVector2Array or first[0] is Vector2
+	if not nested:
+		var single := SpatialPlanning.normalize_polygon(value)
+		if not single.is_empty(): result.append(single)
+		return result
+	for raw in value:
+		var hole := SpatialPlanning.normalize_polygon(raw)
+		if not hole.is_empty(): result.append(hole)
+	return result
+
+static func _point_in_holes(p: Vector2,holes: Array[PackedVector2Array]) -> bool:
+	for hole in holes:
+		if Geometry2D.is_point_in_polygon(p,hole): return true
+	return false
+
+static func _representative_for_components(components: Array[PackedVector2Array],holes: Array[PackedVector2Array]) -> Vector2:
+	for component in components:
+		var candidate := _representative_point(component)
+		if not _point_in_holes(candidate,holes): return candidate
+		for point in component:
+			if not _point_in_holes(point,holes): return point
+	return _representative_point(components[0]) if not components.is_empty() else Vector2.ZERO
+
 static func _components_share_boundary(a: PackedVector2Array,b: PackedVector2Array) -> bool:
 	for i in range(a.size()):
 		var a0 := a[i]
@@ -341,16 +373,18 @@ static func preview_footprint(world: RefCounted,reservation_id: String,kind: Str
 ## terrain, buildings, roads and access; the shortest legal component entrance
 ## becomes the stable facility entrance.  Residuals are partitioned into
 ## simple polygons after subtracting each component in order.
-static func preview_footprints(world: RefCounted,reservation_id: String,kind: String,target_polygons: Variant) -> Dictionary:
+static func preview_footprints(world: RefCounted,reservation_id: String,kind: String,target_polygons: Variant,target_holes: Variant = []) -> Dictionary:
 	var reservation := _reservation(world,reservation_id)
 	if reservation.is_empty(): return {"accepted":false,"reason":"找不到这片留地","source_reservation_id":reservation_id}
 	if kind not in ["park","civic"]: return {"accepted":false,"reason":"局部兑现只支持公园或文化设施","source_reservation_id":reservation_id}
 	var source_polygon: PackedVector2Array = reservation.get("polygon",PackedVector2Array())
 	var components := _normalize_target_components(target_polygons)
+	var holes := _normalize_holes(target_holes)
 	var source_revision := _source_revision(reservation)
 	var base := {"source_reservation_id":reservation_id,"source_revision":source_revision,
 		"target_polygon":components[0] if not components.is_empty() else PackedVector2Array(),
-		"target_polygons":components.duplicate(true),"footprint_components":components.duplicate(true)}
+		"target_polygons":components.duplicate(true),"footprint_components":components.duplicate(true),
+		"hole_polygons":holes.duplicate(true),"target_holes":holes.duplicate(true)}
 	if not _valid_simple_polygon(source_polygon):
 		base["reason"] = "这片留地不是可继续规划的简单连续范围"
 		return base
@@ -360,20 +394,43 @@ static func preview_footprints(world: RefCounted,reservation_id: String,kind: St
 	if components.size() > 1 and not _components_are_disjoint(components):
 		base["reason"] = "公共目标的多个组件必须彼此分离"
 		return base
+	for hole in holes:
+		if not _valid_simple_polygon(hole):
+			base["reason"] = "公共目标孔洞必须是简单多边形"
+			return base
+		var containing := 0
+		for component in components:
+			if _inside(hole,component) and not _components_share_boundary(hole,component): containing += 1
+		if containing != 1:
+			base["reason"] = "公共目标孔洞必须完整落在且只落在一个外环内"
+			return base
+	for i in range(holes.size()):
+		for j in range(i+1,holes.size()):
+			if _intersection_area(holes[i],holes[j]) > 0.00001 or _components_share_boundary(holes[i],holes[j]):
+				base["reason"] = "公共目标孔洞必须彼此分离"
+				return base
 	for component in components:
 		if not _inside(component,source_polygon):
 			base["reason"] = "公共目标足迹必须完整留在原留地内"
 			return base
 	var access: Dictionary = {}
-	var representative := Vector2.ZERO
+	var representative := _representative_for_components(components,holes)
 	var target_community_ids: Array[String] = []
 	var candidate_reason := ""
 	var best_path_length := INF
 	for component in components:
+		var component_holes: Array[PackedVector2Array] = []
+		for hole in holes:
+			if _inside(hole,component): component_holes.append(hole)
 		var component_representative := _representative_point(component)
+		if _point_in_holes(component_representative,holes):
+			for point in component:
+				if not _point_in_holes(point,holes):
+					component_representative = point
+					break
 		var candidate := {"source_site_id":str(reservation.get("source_site_id","")),"reservation_id":reservation_id,
 			"position":[component_representative.x,component_representative.y],"polygon":component,
-			"community_id":FabricRelations.community_for_position(world,component_representative)}
+			"community_id":FabricRelations.community_for_position(world,component_representative),"hole_polygons":component_holes.duplicate(true),"target_holes":component_holes.duplicate(true)}
 		var reason := SpatialPlanning.site_reason(world,candidate,reservation_id)
 		if not reason.is_empty():
 			candidate_reason = reason
@@ -390,7 +447,7 @@ static func preview_footprints(world: RefCounted,reservation_id: String,kind: St
 		if path_length < best_path_length:
 			best_path_length = path_length
 			access = component_access
-			representative = component_representative
+			representative = path[0] if not path.is_empty() else component_representative
 	if not candidate_reason.is_empty():
 		base["reason"] = candidate_reason
 		return base
@@ -398,6 +455,7 @@ static func preview_footprints(world: RefCounted,reservation_id: String,kind: St
 		base["reason"] = "局部公共空间没有可达的真实道路入口"
 		return base
 	var residuals := _subtract_components(source_polygon,components)
+	for hole in holes: residuals.append(hole.duplicate())
 	if residuals.is_empty():
 		base["reason"] = "局部兑现必须保留一片可继续规划的剩余留地"
 		return base
@@ -405,6 +463,11 @@ static func preview_footprints(world: RefCounted,reservation_id: String,kind: St
 	for fragment in residuals: residual_area += _polygon_area(fragment)
 	var target_area := 0.0
 	for component in components: target_area += _polygon_area(component)
+	for hole in holes:
+		target_area -= _polygon_area(hole)
+		# The intentionally empty interior remains an independently plannable
+		# residual parcel. This keeps source area conservation without introducing
+		# a hole contour into the existing simple-polygon residual contract.
 	var source_area := _polygon_area(source_polygon)
 	var area_tolerance := 0.0001*maxf(1.0,source_area)
 	if absf(source_area-target_area-residual_area) > area_tolerance:
@@ -415,6 +478,7 @@ static func preview_footprints(world: RefCounted,reservation_id: String,kind: St
 		"source_revision":source_revision,"source_site_id":str(reservation.get("source_site_id","")),
 		"kind":kind,"target_position":[representative.x,representative.y],"target_polygon":components[0].duplicate(),
 		"target_polygons":components.duplicate(true),"footprint_components":components.duplicate(true),
+		"hole_polygons":holes.duplicate(true),"target_holes":holes.duplicate(true),
 		"target_entrance":access["entrance"].duplicate(),"target_access_path":access.get("access_path",PackedVector2Array()).duplicate(),
 		"road_id":str(access.get("road_id","")),"target_community_id":str(FabricRelations.community_for_position(world,representative)),
 		"target_community_ids":target_community_ids,"root_reservation_id":_root_reservation_id(world,reservation_id,reservation),
@@ -424,13 +488,14 @@ static func preview_footprints(world: RefCounted,reservation_id: String,kind: St
 static func commit(world: RefCounted,operation: Dictionary,frame: int) -> Dictionary:
 	var reservation_id := str(operation.get("source_reservation_id",operation.get("reservation_id","")))
 	var kind := str(operation.get("facility_kind",operation.get("kind",""))).replace("partial_","")
+	var operation_holes: Variant = operation.get("hole_polygons",operation.get("target_holes",[]))
 	var current: Dictionary = {}
 	if operation.has("target_polygons"):
-		current = preview_footprints(world,reservation_id,kind,operation["target_polygons"])
+		current = preview_footprints(world,reservation_id,kind,operation["target_polygons"],operation_holes)
 	elif operation.has("footprint_components"):
-		current = preview_footprints(world,reservation_id,kind,operation["footprint_components"])
+		current = preview_footprints(world,reservation_id,kind,operation["footprint_components"],operation_holes)
 	elif operation.has("target_polygon"):
-		current = preview_footprint(world,reservation_id,kind,operation["target_polygon"])
+		current = preview_footprints(world,reservation_id,kind,[operation["target_polygon"]],operation_holes)
 	else:
 		var raw: Array = operation.get("target_position",operation.get("position",[]))
 		if raw.size() != 2: return {"accepted":false,"reason":"局部兑现位置缺失"}
@@ -444,6 +509,10 @@ static func commit(world: RefCounted,operation: Dictionary,frame: int) -> Dictio
 		return {"accepted":false,"reason":"局部兑现范围已经变化，请重新查看预影"}
 	if operation.has("target_polygon") and not operation.has("target_polygons") and operation["target_polygon"] != current["target_polygon"]:
 		return {"accepted":false,"reason":"局部兑现范围已经变化，请重新查看预影"}
+	if operation.has("hole_polygons") and _normalize_holes(operation["hole_polygons"]) != current.get("hole_polygons",[]):
+		return {"accepted":false,"reason":"局部兑现孔洞已经变化，请重新查看预影"}
+	if operation.has("target_holes") and _normalize_holes(operation["target_holes"]) != current.get("target_holes",[]):
+		return {"accepted":false,"reason":"局部兑现孔洞已经变化，请重新查看预影"}
 	var reservation := _reservation(world,reservation_id)
 	if reservation.is_empty(): return {"accepted":false,"reason":"留地已经释放"}
 	var event_id := int(operation.get("event_id",0))
@@ -453,6 +522,7 @@ static func commit(world: RefCounted,operation: Dictionary,frame: int) -> Dictio
 	var site := {"id":site_id,"kind":kind,"name":"局部公园" if kind == "park" else "局部文化馆",
 		"polygon":current["target_polygon"].duplicate(),"position":current["target_position"].duplicate(),
 		"target_polygons":current["target_polygons"].duplicate(true),"footprint_components":current["footprint_components"].duplicate(true),
+		"hole_polygons":current.get("hole_polygons",[]).duplicate(true),"target_holes":current.get("target_holes",[]).duplicate(true),
 		"entrance":current["target_entrance"].duplicate(),"road_id":str(current.get("road_id","")),
 		"access_path":current.get("target_access_path",PackedVector2Array()).duplicate(),
 		"community_id":str(current.get("target_community_id","")),"target_community_ids":current.get("target_community_ids",[]).duplicate(),"active":true,"frame":frame,
@@ -491,10 +561,11 @@ static func commit(world: RefCounted,operation: Dictionary,frame: int) -> Dictio
 		"target_community_ids":site.get("target_community_ids",[]).duplicate(),
 		"source_revision":str(current.get("source_revision","")),"source_polygon":reservation.get("polygon",PackedVector2Array()).duplicate(),"converted_footprint":site["polygon"].duplicate(),
 		"converted_footprints":site["target_polygons"].duplicate(true),"footprint_components":site["footprint_components"].duplicate(true),
+		"hole_polygons":site.get("hole_polygons",[]).duplicate(true),"target_holes":site.get("target_holes",[]).duplicate(true),
 		"target_entrance":site["entrance"].duplicate(true),"road_id":site["road_id"],"target_access_path":site["access_path"].duplicate(),"remaining_reservation_ids":remaining_ids.duplicate(),
 		"remaining_polygons":remaining.map(func(item: Dictionary) -> Variant: return item["polygon"].duplicate()),
 		"covered_before":[],"covered_after":site.get("covered",[]).duplicate(),"served_before":[],"served_after":site.get("served",[]).duplicate(),
 		"service_before":service_before,"service_after":world.public_service_cache.duplicate(true),"service_delta":service_delta,"affected_communities":affected,"frame":frame})
 	return {"accepted":true,"id":site_id,"source_reservation_id":reservation_id,"remaining_reservation_ids":remaining_ids,
 		"target_position":site["position"].duplicate(),"target_polygon":site["polygon"].duplicate(),"target_community_ids":site.get("target_community_ids",[]).duplicate(),
-		"target_polygons":site["target_polygons"].duplicate(true),"frame":frame}
+		"target_polygons":site["target_polygons"].duplicate(true),"hole_polygons":site.get("hole_polygons",[]).duplicate(true),"target_holes":site.get("target_holes",[]).duplicate(true),"frame":frame}
