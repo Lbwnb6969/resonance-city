@@ -307,7 +307,7 @@ func musical_events(node: Dictionary, start: int, count: int, rate: int) -> Arra
 			var source_ids: Array = pattern.get("source_ids",[])
 			var source_id := str(source_ids[note_index]) if note_index < source_ids.size() else ""
 			var source_pitch := int(pattern["notes"][note_index])
-			var source_event := "%s:%d:%d:%s:%d" % [pattern["cid"],cycle,index,source_id,source_pitch]
+			var source_event := "%s:%d:%d:%s:%d" % [pattern["cid"],source_onset,index,source_id,source_pitch]
 			var receiver_ids: Array = part.get("receiver_ids",[])
 			var receiver_id := str(receiver_ids[note_index]) if note_index < receiver_ids.size() else ""
 			pitch += 24 if pitch < 48 else 12

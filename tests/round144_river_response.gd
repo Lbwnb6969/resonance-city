@@ -79,6 +79,10 @@ func _run() -> void:
 		else: lead_node = node
 	var lead_events := synth.musical_events(lead_node,start,duration,rate)
 	var reply_events := synth.musical_events(reply_node,start,duration,rate)
+	var changed_pattern: Dictionary = lead_node.duplicate(true)
+	changed_pattern["pattern"]["zone_roles"] = ["pulse"]
+	var changed_events := synth.musical_events(changed_pattern,start,duration,rate)
+	check(lead_events[1]["source_id"] == changed_events[1]["source_id"] and lead_events[1]["onset"] != changed_events[1]["onset"] and lead_events[1]["event_id"] != changed_events[1]["event_id"],"changing rhythmic spacing creates distinct original event identities")
 	var source_events: Dictionary = {}
 	for event in lead_events: source_events[event["event_id"]] = event
 	check(not reply_events.is_empty() and reply_events.all(func(e:Dictionary)->bool:

@@ -51,6 +51,7 @@
 		"all response pairs meet exact geometry and harmony while absent from R edges": true,
 		"audible semitone override cannot retain obsolete response": true,
 		"both ends receive two vitality per relation": true,
+		"changing rhythmic spacing creates distinct original event identities": true,
 		"community opportunity reveals real response and no-bridge rule": true,
 		"each sounded reply has its actual qualifying house pair": true,
 		"every reply references one actual original event exactly two beats earlier": true,
@@ -206,32 +207,32 @@
 	],
 	"reply_events": [
 		{
-			"event_id": "reply:west-1:2:5:building-00019:48:building-00021",
+			"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
 			"generation": 1,
 			"onset": 937125,
 			"pitch": 67,
 			"receiver_id": "building-00021",
-			"source_event_id": "west-1:2:5:building-00019:48",
+			"source_event_id": "west-1:915075:5:building-00019:48",
 			"source_id": "building-00019",
 			"source_onset": 915075
 		},
 		{
-			"event_id": "reply:west-1:2:6:building-00006:48:building-00021",
+			"event_id": "reply:west-1:948150:6:building-00006:48:building-00021",
 			"generation": 1,
 			"onset": 970200,
 			"pitch": 67,
 			"receiver_id": "building-00021",
-			"source_event_id": "west-1:2:6:building-00006:48",
+			"source_event_id": "west-1:948150:6:building-00006:48",
 			"source_id": "building-00006",
 			"source_onset": 948150
 		},
 		{
-			"event_id": "reply:west-1:2:7:building-00022:48:building-00021",
+			"event_id": "reply:west-1:1003275:7:building-00022:48:building-00021",
 			"generation": 1,
 			"onset": 1025325,
 			"pitch": 79,
 			"receiver_id": "building-00021",
-			"source_event_id": "west-1:2:7:building-00022:48",
+			"source_event_id": "west-1:1003275:7:building-00022:48",
 			"source_id": "building-00022",
 			"source_onset": 1003275
 		}
@@ -397,82 +398,82 @@
 	},
 	"source_events": [
 		{
-			"event_id": "west-1:2:0:building-00001:48",
+			"event_id": "west-1:705600:0:building-00001:48",
 			"generation": 0,
 			"onset": 705600,
 			"pitch": 60,
 			"receiver_id": "",
-			"source_event_id": "west-1:2:0:building-00001:48",
+			"source_event_id": "west-1:705600:0:building-00001:48",
 			"source_id": "building-00001",
 			"source_onset": 705600
 		},
 		{
-			"event_id": "west-1:2:1:building-00003:55",
+			"event_id": "west-1:738675:1:building-00003:55",
 			"generation": 0,
 			"onset": 738675,
 			"pitch": 67,
 			"receiver_id": "",
-			"source_event_id": "west-1:2:1:building-00003:55",
+			"source_event_id": "west-1:738675:1:building-00003:55",
 			"source_id": "building-00003",
 			"source_onset": 738675
 		},
 		{
-			"event_id": "west-1:2:2:building-00002:48",
+			"event_id": "west-1:771750:2:building-00002:48",
 			"generation": 0,
 			"onset": 771750,
 			"pitch": 60,
 			"receiver_id": "",
-			"source_event_id": "west-1:2:2:building-00002:48",
+			"source_event_id": "west-1:771750:2:building-00002:48",
 			"source_id": "building-00002",
 			"source_onset": 771750
 		},
 		{
-			"event_id": "west-1:2:3:building-00005:52",
+			"event_id": "west-1:815850:3:building-00005:52",
 			"generation": 0,
 			"onset": 815850,
 			"pitch": 76,
 			"receiver_id": "",
-			"source_event_id": "west-1:2:3:building-00005:52",
+			"source_event_id": "west-1:815850:3:building-00005:52",
 			"source_id": "building-00005",
 			"source_onset": 815850
 		},
 		{
-			"event_id": "west-1:2:4:building-00004:48",
+			"event_id": "west-1:882000:4:building-00004:48",
 			"generation": 0,
 			"onset": 882000,
 			"pitch": 60,
 			"receiver_id": "",
-			"source_event_id": "west-1:2:4:building-00004:48",
+			"source_event_id": "west-1:882000:4:building-00004:48",
 			"source_id": "building-00004",
 			"source_onset": 882000
 		},
 		{
-			"event_id": "west-1:2:5:building-00019:48",
+			"event_id": "west-1:915075:5:building-00019:48",
 			"generation": 0,
 			"onset": 915075,
 			"pitch": 60,
 			"receiver_id": "",
-			"source_event_id": "west-1:2:5:building-00019:48",
+			"source_event_id": "west-1:915075:5:building-00019:48",
 			"source_id": "building-00019",
 			"source_onset": 915075
 		},
 		{
-			"event_id": "west-1:2:6:building-00006:48",
+			"event_id": "west-1:948150:6:building-00006:48",
 			"generation": 0,
 			"onset": 948150,
 			"pitch": 60,
 			"receiver_id": "",
-			"source_event_id": "west-1:2:6:building-00006:48",
+			"source_event_id": "west-1:948150:6:building-00006:48",
 			"source_id": "building-00006",
 			"source_onset": 948150
 		},
 		{
-			"event_id": "west-1:2:7:building-00022:48",
+			"event_id": "west-1:1003275:7:building-00022:48",
 			"generation": 0,
 			"onset": 1003275,
 			"pitch": 72,
 			"receiver_id": "",
-			"source_event_id": "west-1:2:7:building-00022:48",
+			"source_event_id": "west-1:1003275:7:building-00022:48",
 			"source_id": "building-00022",
 			"source_onset": 1003275
 		}
