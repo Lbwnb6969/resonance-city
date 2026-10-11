@@ -5,6 +5,7 @@ const PlanningCard = preload("res://scripts/world/planning_card.gd")
 const Planning = preload("res://scripts/world/city_spatial_planning.gd")
 const PublicPreview = preload("res://scripts/world/public_planning_preview.gd")
 const NextAction = preload("res://scripts/world/planning_next_action.gd")
+const TransitPlanning = preload("res://scripts/world/transit_planning.gd")
 var comparison: Dictionary = {}
 var comparison_key: Array = []
 var demo: Control
@@ -146,6 +147,23 @@ func setup(owner_demo: Control) -> void:
 		actions.add_child(button)
 	box.add_child(actions)
 	hide()
+
+## Read-only entry point for the route UI.  The main Demo owns pointer input
+## and route drawing; keeping this adapter here lets the planning guide and
+## any future compact card use exactly the same coverage/community contract.
+func transit_preview_feedback(payload: Dictionary, settled := false) -> Dictionary:
+	if demo == null or demo.model == null or demo.model.world == null: return {}
+	var summary := TransitPlanning.coverage_summary(demo.model.world,payload)
+	summary["text"] = TransitPlanning.coverage_text(summary,"线路已落定" if settled else "线路预影")
+	summary["settled"] = settled
+	return summary
+
+func transit_line_feedback(line: Dictionary) -> Dictionary:
+	return transit_preview_feedback(line,true)
+
+func transit_feedback_text(payload: Dictionary, settled := false) -> String:
+	var summary := transit_preview_feedback(payload,settled)
+	return str(summary.get("text",""))
 
 func reset_for_city() -> void:
 	scope.clear()

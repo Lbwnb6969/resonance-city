@@ -5,6 +5,17 @@ const STOP_MERGE_DISTANCE := 0.18
 const STOP_ACCESS_DISTANCE := 0.85
 const WALK_RADIUS := 4.5
 
+const MUSIC_ROLE_TITLES := {
+	"home":"居住声部",
+	"market":"商贸律动",
+	"workshop":"工坊低音",
+	"garden":"公共绿地",
+	"choir":"文化声场",
+	"center":"混合中心",
+	"pulse":"换乘律动",
+	"pulse_dense":"密集换乘律动"
+}
+
 static func point(raw: Variant) -> Vector2:
 	return raw if raw is Vector2 else Vector2(float(raw[0]),float(raw[1]))
 
@@ -67,6 +78,147 @@ static func _coverage(world: RefCounted, stops: Array) -> Dictionary:
 	covered.sort()
 	communities.sort()
 	return {"covered_building_ids":covered,"community_ids":communities}
+
+## Build the read-only coverage contract shared by route preview, settled lines,
+## and the planning guide.  The route itself remains authoritative; this helper
+## only counts real walking access and describes the communities already touched
+## by that route.  In particular, a center with no house yet is reported as a
+## future catchment instead of being turned into a fabricated building.
+static func coverage_summary(world: RefCounted, payload: Dictionary) -> Dictionary:
+	var stop_records: Array[Dictionary] = []
+	var seen_stops: Dictionary = {}
+	for raw_stop in payload.get("stops",payload.get("route_stops",[])):
+		var record: Dictionary = {}
+		if raw_stop is Dictionary:
+			record = raw_stop.duplicate(true)
+		else:
+			var raw_stop_id := str(raw_stop)
+			if raw_stop_id.is_empty() or seen_stops.has(raw_stop_id): continue
+			if world.has_method("transit_stop_record"):
+				record = world.transit_stop_record(raw_stop_id)
+			if record.is_empty() and world.nodes.has(raw_stop_id):
+				record = stop_preview(world,point(world.nodes[raw_stop_id]))
+		if record.is_empty(): continue
+		var stop_id := str(record.get("id",raw_stop if not raw_stop is Dictionary else ""))
+		if stop_id.is_empty(): stop_id = "stop-%d" % stop_records.size()
+		if seen_stops.has(stop_id): continue
+		seen_stops[stop_id] = true
+		record["id"] = stop_id
+		stop_records.append(record)
+
+	var covered_ids: Array[String] = []
+	for raw_id in payload.get("covered_building_ids",[]):
+		var id := str(raw_id)
+		if not id.is_empty() and not covered_ids.has(id): covered_ids.append(id)
+	if covered_ids.is_empty() and not stop_records.is_empty():
+		covered_ids.assign(_coverage(world,stop_records).get("covered_building_ids",[]))
+	covered_ids.sort()
+
+	var community_ids: Array[String] = []
+	for raw_id in payload.get("community_ids",[]):
+		var id := str(raw_id)
+		if not id.is_empty() and not community_ids.has(id): community_ids.append(id)
+	if community_ids.is_empty() and not stop_records.is_empty():
+		community_ids.assign(_coverage(world,stop_records).get("community_ids",[]))
+
+	var covered_set: Dictionary = {}
+	for id in covered_ids: covered_set[id] = true
+	var total_by_community: Dictionary = {}
+	var covered_by_community: Dictionary = {}
+	for building in world.buildings:
+		var id := str(building.get("district_id",building.get("id","")))
+		var cid := str(building.get("community_id",""))
+		if cid.is_empty(): continue
+		total_by_community[cid] = int(total_by_community.get(cid,0))+1
+		if covered_set.has(id): covered_by_community[cid] = int(covered_by_community.get(cid,0))+1
+
+	# A stop may reach an existing community even when the caller only retained
+	# covered house IDs.  Preserve the stop-level community evidence here.
+	for stop in stop_records:
+		for raw_id in stop.get("community_ids",[]):
+			var cid := str(raw_id)
+			if not cid.is_empty() and not community_ids.has(cid): community_ids.append(cid)
+	community_ids.sort()
+
+	var transfer_stop_ids: Array[String] = []
+	for raw_transfer in payload.get("transfer_stops",[]):
+		var transfer_id := str(raw_transfer.get("stop_id",raw_transfer) if raw_transfer is Dictionary else raw_transfer)
+		if not transfer_id.is_empty() and not transfer_stop_ids.has(transfer_id): transfer_stop_ids.append(transfer_id)
+	if transfer_stop_ids.is_empty() and not stop_records.is_empty():
+		for stop in stop_records:
+			var stop_id := str(stop.get("id",""))
+			if stop_id.is_empty(): continue
+			var line_ids: Array = stop.get("line_ids",[])
+			if line_ids.size() > 1: transfer_stop_ids.append(stop_id)
+	transfer_stop_ids.sort()
+
+	var line_ids: Array[String] = []
+	for raw_id in payload.get("line_ids",[]):
+		var line_id := str(raw_id)
+		if not line_id.is_empty() and not line_ids.has(line_id): line_ids.append(line_id)
+	var role := "社区往返线"
+	var route_mode := str(payload.get("route_mode",""))
+	if not transfer_stop_ids.is_empty(): role = "换乘走廊"
+	elif community_ids.size() > 1: role = "跨社区接驳"
+	elif route_mode == "loop": role = "社区环线"
+
+	var length := float(payload.get("length",0.0))
+	if length <= 0.0:
+		for leg in payload.get("legs",[]): length += float(leg.get("length",0.0))
+	var communities: Array[Dictionary] = []
+	var all_music_roles: Array[String] = []
+	for cid in community_ids:
+		var total := int(total_by_community.get(cid,0))
+		var covered := int(covered_by_community.get(cid,0))
+		var roles: Array[String] = []
+		if world.has_method("functional_zone_roles"):
+			roles.assign(world.functional_zone_roles(cid))
+		roles.sort()
+		for music_role in roles:
+			if not all_music_roles.has(music_role): all_music_roles.append(music_role)
+		var line_membership: Array[String] = []
+		for line in world.transit_lines:
+			if line.get("community_ids",[]).has(cid) or line.get("line_community_ids",[]).has(cid):
+				var line_id := str(line.get("id",""))
+				if not line_id.is_empty() and not line_membership.has(line_id): line_membership.append(line_id)
+		var demand := 0.0
+		for stop in stop_records:
+			if not stop.get("community_ids",[]).has(cid): continue
+			var stop_id := str(stop.get("id",""))
+			demand = maxf(demand,float(world.transit_demand.get(stop_id,{}).get("score",0.0)))
+		var hint := ""
+		if total <= 0: hint = "社区中心进入步行范围，后续成长可接入"
+		elif covered >= total: hint = "现有房屋全部接入"
+		elif covered > 0: hint = "仍有%d栋房屋在站点步行范围外" % (total-covered)
+		else: hint = "当前房屋尚未接入站点步行范围"
+		communities.append({"id":cid,"name":str(world.communities.get(cid,{}).get("name",cid)),
+			"covered_building_count":covered,"existing_building_count":total,
+			"coverage_ratio":float(covered)/float(total) if total > 0 else 0.0,
+			"future_catchment":total == 0,"roles":roles,"line_ids":line_membership,
+			"demand":demand,"hint":hint})
+	all_music_roles.sort()
+	var role_titles: Array[String] = []
+	for music_role in all_music_roles:
+		role_titles.append(str(MUSIC_ROLE_TITLES.get(music_role,music_role)))
+	return {"covered_building_ids":covered_ids,"community_ids":community_ids,
+		"covered_building_count":covered_ids.size(),"community_count":community_ids.size(),
+		"stop_count":stop_records.size(),"stop_ids":stop_records.map(func(stop: Dictionary) -> String: return str(stop.get("id",""))),
+		"leg_count":payload.get("legs",[]).size(),"route_length":length,"route_mode":route_mode,
+		"line_ids":line_ids,"transfer_stop_ids":transfer_stop_ids,"route_role":role,
+		"music_roles":all_music_roles,"music_role_titles":role_titles,"communities":communities}
+
+static func coverage_text(summary: Dictionary, heading := "线路覆盖") -> String:
+	var lines: Array[String] = ["%s · %d站 · %s · 覆盖%d栋、%d个社区" % [heading,
+		int(summary.get("stop_count",0)),str(summary.get("route_role","社区往返线")),
+		int(summary.get("covered_building_count",0)),int(summary.get("community_count",0))]]
+	var role_titles: Array = summary.get("music_role_titles",[])
+	if not role_titles.is_empty(): lines.append("当前社区角色 · "+"、".join(role_titles))
+	for community in summary.get("communities",[]):
+		var covered := int(community.get("covered_building_count",0))
+		var total := int(community.get("existing_building_count",0))
+		lines.append("　%s · %d/%d栋 · %s" % [str(community.get("name",community.get("id",""))),covered,total,str(community.get("hint",""))])
+	if not summary.get("transfer_stop_ids",[]).is_empty(): lines.append("换乘站 · %d处 · 后续可与其他线路接续" % summary["transfer_stop_ids"].size())
+	return "\n".join(lines)
 
 static func stop_record(world: RefCounted, id: String) -> Dictionary:
 	var result: Dictionary = {}
@@ -156,6 +308,11 @@ static func preview(world: RefCounted, positions: Array) -> Dictionary:
 	var result := {"accepted":true,"stops":stops,"stop_ids":stop_ids,"legs":legs,"path":path,"edges":edges,"directional_edges":directional_edges,
 		"length":length,"route_mode":"loop" if closed else "out_and_back","source_topology":world.network.topology}
 	result.merge(_coverage(world,stops),true)
+	var stop_positions: Array = []
+	for stop in stops: stop_positions.append(stop["position"].duplicate())
+	result["stop_positions"] = stop_positions
+	result["coverage"] = coverage_summary(world,result)
+	result["route_role"] = result["coverage"].get("route_role","社区往返线")
 	return result
 
 static func commit(world: RefCounted, operation: Dictionary, frame: int) -> Dictionary:
@@ -173,6 +330,8 @@ static func commit(world: RefCounted, operation: Dictionary, frame: int) -> Dict
 		"route_mode":plan["route_mode"],"frame":frame,"event_id":operation["event_id"],"source_topology":plan["source_topology"]})
 	world.events.append({"kind":"transit_line","id":id,"event_id":operation["event_id"],"frame":frame,"stop_ids":chosen_ids,
 		"community_ids":plan["community_ids"].duplicate(),"covered_building_ids":plan["covered_building_ids"].duplicate(),"source_topology":plan["source_topology"]})
+	world.events.back()["coverage"] = plan.get("coverage",coverage_summary(world,plan)).duplicate(true)
+	world.events.back()["route_role"] = str(plan.get("route_role","社区往返线"))
 	return {"accepted":true,"id":id}
 
 static func derived_lines(world: RefCounted) -> Array[Dictionary]:
@@ -189,7 +348,9 @@ static func derived_lines(world: RefCounted) -> Array[Dictionary]:
 			positions.append(positions[0])
 		var plan := preview(world,positions)
 		if not bool(plan.get("accepted",false)): continue
+		var coverage := plan.get("coverage",coverage_summary(world,plan))
 		result.append({"id":intent["id"],"name":intent["name"],"authored":true,"frame":intent["frame"],"stops":plan["stop_ids"],
 			"intent_stop_ids":intent["stop_ids"].duplicate(),"route_stops":plan["stop_ids"].duplicate(),"route_mode":plan["route_mode"],"legs":plan["legs"],"path":plan["path"],"edges":plan["edges"],
-			"directional_edges":plan["directional_edges"],"community_ids":plan["community_ids"],"covered_building_ids":plan["covered_building_ids"]})
+			"directional_edges":plan["directional_edges"],"community_ids":plan["community_ids"],"covered_building_ids":plan["covered_building_ids"],
+			"coverage":coverage,"route_role":coverage.get("route_role","社区往返线")})
 	return result
