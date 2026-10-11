@@ -324,6 +324,10 @@ func presentation_world(audible_frame: float) -> ContinuousWorld:
 func audible_score() -> Dictionary:
 	return synth.score_snapshot() if presentation_history.is_empty() else presentation_history[0].get("score",{}).duplicate(true)
 
+func audible_theme() -> Dictionary:
+	var theme: Dictionary = synth.theme if presentation_history.is_empty() else presentation_history[0].get("score",{}).get("theme",{})
+	return theme.duplicate(true)
+
 func audible_pitches() -> Dictionary:
 	return sound_overrides if presentation_history.is_empty() else presentation_history[0]["pitches"]
 

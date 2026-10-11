@@ -24,6 +24,8 @@ var anchor_kind := "park"
 var opened := false
 var heading: Label
 var detail: Label
+var theme_rework_button: Button
+var charter_theme_key: Array = []
 var actions: HBoxContainer
 var cards: HBoxContainer
 var card_choices: HBoxContainer
@@ -120,6 +122,9 @@ func setup(owner_demo: Control) -> void:
 	detail.add_theme_color_override("font_color",Color("51665c"))
 	detail.add_theme_font_size_override("font_size",15)
 	box.add_child(detail)
+	theme_rework_button = Button.new()
+	theme_rework_button.pressed.connect(_take_theme_building)
+	box.add_child(theme_rework_button)
 	next_action_row = HBoxContainer.new()
 	next_action_row.add_theme_constant_override("separation",8)
 	next_action_button = Button.new()
@@ -335,6 +340,10 @@ func refresh() -> void:
 	if comparison.is_empty(): _clear_comparison_community()
 	cards.visible = stage == "charter"
 	card_choices.visible = stage == "card"
+	var audible_theme: Dictionary = demo.model.audible_theme()
+	charter_theme_key = [str(audible_theme.get("cid","")),audible_theme.get("source_ids",[])]
+	var has_theme_house: bool = audible_theme.get("source_ids",[]).any(func(raw_id: Variant) -> bool: return demo.shown_world.by_id.has(str(raw_id)))
+	theme_rework_button.visible = stage == "charter" and has_theme_house
 	actions.visible = stage != "charter"
 	confirm.visible = stage == "scope"
 	next_action_row.visible = opened and stage == "feedback" and next_action.get("state","") == "ready"
@@ -352,6 +361,11 @@ func refresh() -> void:
 	if stage == "charter":
 		heading.text = "你想让这片城市怎样生长？"
 		detail.text = "先选倾向，再在地图选社区；公园和文化馆由你摆，房屋沿合法空地自动长。"
+		if not audible_theme.is_empty():
+			var theme_cid := str(audible_theme.get("cid",""))
+			var theme_name := str(demo.shown_world.communities.get(theme_cid,{}).get("name","当前社区"))
+			theme_rework_button.text = "改编"+theme_name+"主题 · 自己选一个音"
+			detail.text += "\n"+theme_name+"已有主题；可以先改一个音，也可继续安排公共空间。"
 		var source_hint := _scope_source_hint()
 		if not source_hint.is_empty(): detail.text += "\n"+source_hint+"；选完章程和变化卡后会带入社区范围。"
 	elif stage == "card":
@@ -685,6 +699,33 @@ func _next_action_detail() -> String:
 				hint = str(row["next"]).replace("\n","；")+"\n点击下方定位这片社区，继续由你决定。"
 				break
 	return "%s · %s\n%s\n%s" % [choice,community_name,hint,"规划影响已经兑现，下一步可以改一栋的音、聚焦主题或重新规划另一片社区。"]
+
+func _take_theme_building() -> void:
+	var theme: Dictionary = demo.model.audible_theme()
+	var sources: Array = theme.get("source_ids",[])
+	var id := ""
+	for raw_id in sources:
+		if demo.shown_world.by_id.has(str(raw_id)):
+			id = str(raw_id)
+			break
+	if id.is_empty(): return
+	# Prefer a real source that will sing after the next writable beat. This
+	# locates a house; its pitch and listening controls remain the player's choice.
+	var start: int = (demo.model.rendered_until/demo.model.beat_frames+1)*demo.model.beat_frames
+	var first_onset := int(demo.model.next_boundary)
+	for node in demo.model.synth.musical_nodes.values():
+		if bool(node["answer"]) or not bool(node.get("active",false)) or str(node["pattern"]["cid"]) != str(theme.get("cid","")): continue
+		for event in demo.model.synth.musical_events(node,start,maxi(0,first_onset-start),int(demo.model.world.cfg["timing"]["sample_rate"])):
+			var source_id := str(event["source_id"])
+			if int(event["onset"]) < start or int(event["onset"]) >= first_onset or not sources.has(source_id) or not demo.shown_world.by_id.has(source_id): continue
+			id = source_id
+			first_onset = int(event["onset"])
+	hide_tool()
+	demo.selected_id = id
+	demo.context = {"kind":"retune","id":id}
+	_focus_planning_position(demo.shown_world.by_id[id]["position"])
+	demo._show_context_menu()
+	demo.queue_redraw()
 
 func _take_next_action() -> void:
 	if next_action.get("state","") != "ready": return
@@ -1033,6 +1074,10 @@ func sync() -> void:
 				demo._message("%s · %s以%s落地，%s%s；下一步可继续调音或按P规划下一片社区" % [title,kind,shape,"音级"+pitch+" · " if pitch != "待定音级" else "", "沿你的规划生长"])
 				if not bool(next_action.get("partial",false)): break
 	if not visible: return
+	if stage == "charter":
+		var audible_theme: Dictionary = demo.model.audible_theme()
+		var theme_key: Array = [str(audible_theme.get("cid","")),audible_theme.get("source_ids",[])]
+		if theme_key != charter_theme_key: refresh()
 	if stage in ["anchor","partial_anchor"]:
 		var next_comparison_key := comparison_identity()
 		if not comparison.is_empty() and next_comparison_key != comparison_key:

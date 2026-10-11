@@ -2493,6 +2493,14 @@ func build_starter(expression: String = "bright") -> void:
 	refresh_fabric()
 	resonance = coupling.resonance(buildings,musical_edges(musicality()))
 
+func build_rework_starter(expression: String = "bright") -> void:
+	# Reach the same naturally mature slice used by the playable audio example.
+	# Ordinary settlement owns growth, forms, service and theme eligibility;
+	# this entry only advances the existing small starter by two phrases.
+	build_starter(expression)
+	var phrase := int(cfg["timing"]["phrase_frames"])
+	for index in range(2): settle((phrase_index+1)*phrase)
+
 func community_theme_sources(cid: String) -> Array:
 	var members: Array = communities[cid]["members"].duplicate()
 	members.sort_custom(func(a: String,b: String) -> bool:

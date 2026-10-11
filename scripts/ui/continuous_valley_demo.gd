@@ -210,7 +210,7 @@ func _ready() -> void:
 	clock = get_node("/root/AudioClock") as AudibleAudioClock
 	_start_world()
 	_warm_notes()
-	if not session_persistence or not load_city(true): clock.start_output(model._mix_frame,{})
+	if not session_persistence or not load_city(true): clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
 	mouse_exited.connect(func() -> void: pointer_inside = false)
 
 func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null) -> void:
@@ -223,7 +223,7 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 		if example_world == null:
 			if expanded_town_starter: world.build_expanded_town()
 			elif town_starter: world.build_town()
-			elif starter: world.build_starter(expression)
+			elif starter: world.build_rework_starter(expression)
 		model = Model.new(world,fixed_gain)
 	else:
 		model = Model.from_state(saved["model"])
@@ -236,6 +236,9 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	shown_world = model.world
 	selected_id = ""
 	context.clear()
+	relocation_mode = false
+	relocation_site_id = ""
+	transit_station_focus_id = ""
 	reservation_draw_mode = false
 	reservation_draw_points.clear()
 	partial_mode = false
@@ -269,10 +272,12 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	if saved.has("renderer"):
 		clock.renderer.restore(saved["renderer"])
 		clock.renderer.transport.audible_frame = float(clock.renderer.transport.rendered_frames)
-	if example_world != null:
+	if saved.is_empty() and shown_world.phrase_index > 0:
 		var start_frame := shown_world.phrase_index*int(shown_world.cfg["timing"]["phrase_frames"])
+		model.rendered_until = start_frame
 		clock.renderer.transport.rendered_frames = start_frame
 		clock.renderer.transport.audible_frame = float(start_frame)
+	if example_world != null:
 		_home_city()
 		view_zoom = zoom_target
 		pan = pan_target
@@ -283,7 +288,15 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	last_checkpoint_phrase = model.world.phrase_index
 	selected_landmark_candidate = -1
 	planning_guide.reset_for_city()
-	_message("%s · %d栋 · %d个社区" % [shown_world.terrain_title(),shown_world.buildings.size(),shown_world.active_community_count()] if not saved.is_empty() else ("%s · 林荫交响 · 完整河谷起点，可继续生长" % shown_world.terrain_title() if town_starter else ("%s · 晴岸合奏 · 18栋制作示例" % shown_world.terrain_title() if starter and expression == "bright" else ("%s · 深流慢板 · 低音与留白" % shown_world.terrain_title() if starter else "%s · 空地开局 · 点击街边播下第一段声音" % shown_world.terrain_title()))))
+	if not saved.is_empty():
+		_message("%s · %d栋 · %d个社区" % [shown_world.terrain_title(),shown_world.buildings.size(),shown_world.active_community_count()])
+	elif town_starter:
+		_message("%s · 林荫交响 · 完整河谷起点，可继续生长" % shown_world.terrain_title())
+	elif starter:
+		planning_guide.hide_tool()
+		_message("%s · %s · %d栋可改编街坊 · 点击房屋改音，P继续规划" % [shown_world.terrain_title(),"晴岸合奏" if expression == "bright" else "深流慢板",shown_world.buildings.size()])
+	else:
+		_message("%s · 空地开局 · 点击街边播下第一段声音" % shown_world.terrain_title())
 
 func _make_menu() -> void:
 	menu = PanelContainer.new()
@@ -296,16 +309,23 @@ func _make_menu() -> void:
 	style.content_margin_top = 12
 	style.content_margin_bottom = 12
 	menu.add_theme_stylebox_override("panel",style)
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.follow_focus = true
+	menu.add_child(scroll)
+	menu.set_meta("scroll",scroll)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation",8)
-	menu.add_child(box)
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(box)
+	menu.set_meta("content",box)
 	menu_info = Label.new()
-	menu_info.custom_minimum_size.x = 560
 	menu_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	menu_info.add_theme_color_override("font_color",Color("435c59"))
 	menu_info.add_theme_font_size_override("font_size",16)
 	box.add_child(menu_info)
-	var notes := HBoxContainer.new()
+	var notes := HFlowContainer.new()
 	for choice: int in [48,50,52,55,57]:
 		var button := Button.new()
 		button.text = {48:"地基 · C",50:"张力 · D",52:"暖和 · E",55:"开阔 · G",57:"伸展 · A"}[choice]
@@ -316,15 +336,15 @@ func _make_menu() -> void:
 	box.add_child(notes)
 	low_octave = CheckBox.new()
 	low_octave.text = "低八度 · 深流"
-	box.add_child(low_octave)
-	var expressions := HBoxContainer.new()
+	var expressions := HFlowContainer.new()
+	expressions.add_child(low_octave)
 	for item in [["晴岸合奏","bright"],["深流慢板","deep"]]:
 		var button := Button.new()
 		button.text = item[0]
 		button.pressed.connect(_set_expression.bind(item[1]))
 		expressions.add_child(button)
 	box.add_child(expressions)
-	var verbs := HBoxContainer.new()
+	var verbs := HFlowContainer.new()
 	for item in [["独听社区","solo"],["静音社区","mute"],["聚焦","focus"],["跨河应答","response"],["规划社区 · P","planning"]]:
 		var button := Button.new()
 		button.text = item[0]
@@ -334,8 +354,26 @@ func _make_menu() -> void:
 		button.pressed.connect(_verb.bind(item[1]))
 		verbs.add_child(button)
 	box.add_child(verbs)
+	var details_toggle := Button.new()
+	details_toggle.text = "声部详细条件 · 展开 / 收起"
+	details_toggle.toggle_mode = true
+	box.add_child(details_toggle)
+	var details := Label.new()
+	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	details.add_theme_color_override("font_color",Color("51665c"))
+	details.add_theme_font_size_override("font_size",14)
+	details.hide()
+	box.add_child(details)
+	details_toggle.toggled.connect(func(expanded: bool) -> void:
+		details.visible = expanded
+		_planning_menu())
+	menu.set_meta("details_toggle",details_toggle)
+	menu.set_meta("details_label",details)
+	var public_toggle := Button.new()
+	public_toggle.text = "公共空间与公交工具 · 展开 / 收起"
+	public_toggle.toggle_mode = true
+	box.add_child(public_toggle)
 	var public_row := HFlowContainer.new()
-	public_row.custom_minimum_size.x = 560
 	for item in [["建公园","park"],["文化设施","civic"],["局部公园","partial_park"],["局部文化馆","partial_civic"],["自由局部公园","free_partial_park"],["自由局部文化馆","free_partial_civic"],["自由分块公园","free_multi_partial_park"],["自由分块文化馆","free_multi_partial_civic"],["自由内院公园","free_courtyard_park"],["自由内院文化馆","free_courtyard_civic"],["搬迁公共设施","relocate_public"],["留地","reserve"],["自由留地","free_reserve"],["释放留地","release_reservation"],["连接两岸","bridge"],["规划公交线路","plan_transit"]]:
 		var button := Button.new()
 		button.text = item[0]
@@ -343,7 +381,25 @@ func _make_menu() -> void:
 		public_row.add_child(button)
 		planning_buttons[item[1]] = button
 	box.add_child(public_row)
-	var archive_row := HBoxContainer.new()
+	public_toggle.toggled.connect(func(expanded: bool) -> void:
+		public_row.visible = expanded
+		_planning_menu())
+	menu.set_meta("public_toggle",public_toggle)
+	menu.set_meta("public_tools",public_row)
+	var city_toggle := Button.new()
+	city_toggle.text = "作品与城市入口 · 展开 / 收起"
+	city_toggle.toggle_mode = true
+	box.add_child(city_toggle)
+	var city_tools := VBoxContainer.new()
+	city_tools.add_theme_constant_override("separation",8)
+	city_tools.hide()
+	box.add_child(city_tools)
+	city_toggle.toggled.connect(func(expanded: bool) -> void:
+		city_tools.visible = expanded
+		_planning_menu())
+	menu.set_meta("city_toggle",city_toggle)
+	menu.set_meta("city_tools",city_tools)
+	var archive_row := HFlowContainer.new()
 	for item in [["存一版 · Ctrl+S","save"],["继续上次 · F9","load"]]:
 		var button := Button.new()
 		button.text = item[0]
@@ -352,39 +408,40 @@ func _make_menu() -> void:
 			else: load_city()
 			menu.hide())
 		archive_row.add_child(button)
-	box.add_child(archive_row)
-	var dna_row := HBoxContainer.new()
+	city_tools.add_child(archive_row)
+	var dna_row := HFlowContainer.new()
 	var dna_button := Button.new()
 	dna_button.text = "继续最近DNA"
 	dna_button.tooltip_text = "从最近导出的 City DNA JSON 恢复城市、音乐与镜头"
 	dna_button.pressed.connect(load_dna)
 	dna_row.add_child(dna_button)
-	box.add_child(dna_row)
+	city_tools.add_child(dna_row)
 	var export_button := Button.new()
 	export_button.text = "导出城市DNA · Ctrl+Shift+E"
 	export_button.tooltip_text = "导出可读的城市、地形、道路、设施、交通与音乐编曲 JSON"
+	export_button.clip_text = true
 	export_button.pressed.connect(export_dna)
-	box.add_child(export_button)
+	city_tools.add_child(export_button)
 	var town_button := Button.new()
 	town_button.text = "林荫交响 · T"
 	town_button.tooltip_text = "切换到完整河谷起点；当前作品先保存，之后仍可继续生长"
 	town_button.pressed.connect(_start_town)
-	box.add_child(town_button)
+	city_tools.add_child(town_button)
 	var expanded_button := Button.new()
 	expanded_button.text = "多中心街坊 · E"
 	expanded_button.tooltip_text = "48个规划社区、内外台地支路、绿廊与150栋以上成长起点"
 	expanded_button.pressed.connect(_start_expanded_town)
-	box.add_child(expanded_button)
+	city_tools.add_child(expanded_button)
 	var regional_button := Button.new()
 	regional_button.text = "三河段大城 · Shift+E"
 	regional_button.tooltip_text = "进入1500栋以上自然成长样本；可继续成长、调音和规划公共空间，当前作品先保存"
 	regional_button.pressed.connect(_start_regional_town)
-	box.add_child(regional_button)
+	city_tools.add_child(regional_button)
 	var terrain_button := Button.new()
 	terrain_button.text = "切换地形族 · Y"
 	terrain_button.tooltip_text = "河谷、湖盆、林岭、海湾平原、高地峡谷共享连续城市操作"
 	terrain_button.pressed.connect(_cycle_terrain)
-	box.add_child(terrain_button)
+	city_tools.add_child(terrain_button)
 	add_child(menu)
 	menu.hide()
 
@@ -397,8 +454,8 @@ func _cycle_terrain() -> void:
 	starter = true
 	expression = "bright"
 	_start_world()
-	clock.start_output(model._mix_frame,{})
-	_message("已切换到"+shown_world.terrain_title()+" · 规划、声音与时代交通保留")
+	clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
+	_message("已切换到"+shown_world.terrain_title()+" · 新地形城市已准备，P选择发展方向")
 
 func _save_before_switch() -> void:
 	if session_persistence and model != null and clock.active: save_city("切换前保存")
@@ -433,7 +490,7 @@ func _start_expanded_town() -> void:
 	expanded_town_starter = true
 	expression = "bright"
 	_start_world()
-	clock.start_output(model._mix_frame,{})
+	clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
 	_message("多中心街坊 · "+str(shown_world.active_community_count())+"个社区 · "+str(shown_world.buildings.size())+"栋起点")
 
 func _start_town() -> void:
@@ -443,7 +500,7 @@ func _start_town() -> void:
 	expanded_town_starter = false
 	expression = "bright"
 	_start_world()
-	clock.start_output(model._mix_frame,{})
+	clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
 
 func _cancel_preview_playback() -> void:
 	preview_requested = false
@@ -822,6 +879,17 @@ func _choose_note(choice: int) -> void:
 	else: _message(result["reason"])
 
 func _show_context_menu() -> void:
+	var retuning: bool = context.get("kind","") == "retune"
+	var details_toggle: Button = menu.get_meta("details_toggle")
+	details_toggle.set_pressed_no_signal(false)
+	(menu.get_meta("details_label") as Label).hide()
+	var public_toggle: Button = menu.get_meta("public_toggle")
+	public_toggle.set_pressed_no_signal(not retuning)
+	(menu.get_meta("public_tools") as Control).visible = not retuning
+	var city_toggle: Button = menu.get_meta("city_toggle")
+	city_toggle.set_pressed_no_signal(false)
+	(menu.get_meta("city_tools") as Control).hide()
+	(menu.get_meta("scroll") as ScrollContainer).scroll_vertical = 0
 	opportunity_key.clear()
 	_update_selected_opportunity()
 	_planning_menu()
@@ -843,11 +911,14 @@ func _update_selected_opportunity() -> void:
 	var opportunity_lines := _opportunity_lines(selected_opportunity)
 	var next_text := str(selected_opportunity.get("next",""))
 	if not opportunity_lines.is_empty(): next_text = "\n".join(opportunity_lines)
-	menu_info.text = "%s · %s\n音型 · %s%s\n%s\n%s" % [
-		shown_world.communities[cid]["name"],str(selected_opportunity.get("current","当前以长音融入合奏")),"  ".join(displayed),
-		" …" if notes.size() > 8 else "",next_text,
-		"公园给主题留白" if selected_opportunity["facility"]["park"] else ("文化馆实际服务%d栋" % int(selected_opportunity["facility"]["served"]) if selected_opportunity["facility"]["civic"] else "可自由选择留白、文化或商业布局")]
-	menu_info.text += "\n跨河应答 · "+_response_state_label()+"\n点击音级改编 · F聚焦主题 · Tab独听 · Esc回合奏"
+	var building: Dictionary = shown_world.by_id[selected_id]
+	var pitch := int(model.audible_pitches().get(selected_id,building["current_midi"]))
+	menu_info.text = "%s · %s\n这栋 · %s · %s\n音型 · %s%s\n选音改编 · 下一拍换音；F聚焦 · Tab独听\n详细条件 · 低音表达 / 商业律动 / 跨岸应答" % [
+		shown_world.communities[cid]["name"],str(selected_opportunity.get("current","当前以长音融入合奏")),
+		note_name(pitch),str(building["form"]),"  ".join(displayed)," …" if notes.size() > 8 else ""]
+	var details: Label = menu.get_meta("details_label")
+	details.text = next_text+"\n"+("公园给主题留白" if selected_opportunity["facility"]["park"] else ("文化馆实际服务%d栋" % int(selected_opportunity["facility"]["served"]) if selected_opportunity["facility"]["civic"] else "可自由选择留白、文化或商业布局"))
+	details.text += "\n跨河应答 · "+_response_state_label()+"\nEsc回到全城合奏"
 
 func _opportunity_lines(opportunity: Dictionary) -> Array[String]:
 	var rows_variant: Variant = opportunity.get("opportunities",[])
@@ -899,6 +970,16 @@ func _response_button_text() -> String:
 	return "跨河应答 · "+("开" if bool(model.synth.response_enabled) else "关")
 
 func _planning_menu() -> void:
+	var retuning: bool = context.get("kind","") == "retune"
+	(menu.get_meta("details_toggle") as Button).visible = retuning
+	(menu.get_meta("details_label") as Label).visible = retuning and (menu.get_meta("details_toggle") as Button).button_pressed
+	# The same menu remains usable when details are expanded or the window is
+	# small. Flow rows wrap; only content beyond the available height scrolls.
+	var scroll: ScrollContainer = menu.get_meta("scroll")
+	var box: VBoxContainer = menu.get_meta("content")
+	var width := maxf(1.0,minf(560.0,size.x-52.0))
+	box.custom_minimum_size.x = maxf(1.0,width-18.0)
+	scroll.custom_minimum_size = Vector2(width,minf(box.get_combined_minimum_size().y,maxf(1.0,minf(520.0,size.y-106.0))))
 	var candidate: Dictionary = {}
 	if context.has("position"):
 		candidate = model.world.planning_candidate(Vector2(float(context["position"][0]),float(context["position"][1])))
@@ -1713,7 +1794,7 @@ func _input(event: InputEvent) -> void:
 			expanded_town_starter = false
 			starter = false
 			_start_world()
-			clock.start_output(model._mix_frame,{})
+			clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
 		KEY_V:
 			_save_before_switch()
 			town_starter = false
@@ -1721,7 +1802,7 @@ func _input(event: InputEvent) -> void:
 			starter = true
 			expression = "deep"
 			_start_world()
-			clock.start_output(model._mix_frame,{})
+			clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
 		KEY_R:
 			_save_before_switch()
 			town_starter = false
@@ -1729,7 +1810,7 @@ func _input(event: InputEvent) -> void:
 			starter = true
 			expression = "bright"
 			_start_world()
-			clock.start_output(model._mix_frame,{})
+			clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
 		KEY_SPACE: _request_preview()
 		KEY_ENTER:
 			if transit_route_mode:
