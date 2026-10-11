@@ -103,28 +103,28 @@
 			"after": 22,
 			"before": 7,
 			"family": "lake_basin",
-			"new_with_two_neighbors": 7
+			"new_with_two_neighbors": 9
 		},
 		{
-			"after": 39,
+			"after": 38,
 			"before": 18,
 			"family": "forest_ridge",
-			"new_with_two_neighbors": 13
+			"new_with_two_neighbors": 14
 		},
 		{
 			"after": 39,
 			"before": 18,
 			"family": "coastal_plain",
-			"new_with_two_neighbors": 13
+			"new_with_two_neighbors": 15
 		},
 		{
 			"after": 38,
 			"before": 18,
 			"family": "highland_pass",
-			"new_with_two_neighbors": 12
+			"new_with_two_neighbors": 13
 		}
 	],
 	"max_pcm_error": 0.0,
 	"passed": true,
-	"resonance_roundoff": 0.000000000000014210854715202
+	"resonance_roundoff": 0.0
 }

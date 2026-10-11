@@ -1,0 +1,24 @@
+{
+  "adapter": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "audio_driver": "WASAPI",
+  "checks": {
+    "default_city_has_real_existing_culture_site": true,
+    "production_public_click_exposes_reuse_on_first_menu_screen": false,
+    "production_rework_selects_real_mature_theme_source": true,
+    "real_window_uses_physical_wasapi": true
+  },
+  "display_backend": "Windows",
+  "failures": [
+    "production_public_click_exposes_reuse_on_first_menu_screen"
+  ],
+  "observations": {},
+  "output": {
+    "advanced_frames": 0.0,
+    "after": 706841.302004929,
+    "before": 706841.302004929,
+    "underruns_after": 0,
+    "underruns_before": 0
+  },
+  "passed": false,
+  "scope": "Production default city mouse/menu/Space/choice/confirmation callbacks and physical culture→park→culture boundaries; no manual model render, settlement, saved user work or human listening claim"
+}

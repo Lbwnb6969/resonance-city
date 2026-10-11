@@ -388,9 +388,13 @@ func _musical_block(node: Dictionary, start: int, count: int, rate: int, contrib
 			var public_cid := str(node["pattern"].get("cid",node["part"]["cid"]))
 			if current_world != null:
 				for site in current_world.public_sites:
-					if not bool(site.get("active",false)) or str(site.get("community_id","")) != public_cid: continue
+					if not bool(site.get("active",false)): continue
 					var public_kind := str(site.get("kind",""))
 					if public_kind not in ["park","civic"]: continue
+					var belongs := str(site.get("community_id","")) == public_cid
+					var serves: bool = public_kind == "civic" and site.get("served",[]).any(func(id: Variant) -> bool:
+						return current_world.by_id.has(str(id)) and str(current_world.by_id[str(id)].get("community_id","")) == public_cid)
+					if not belongs and not serves: continue
 					public_site_ids.append(str(site.get("id","")))
 					public_site_kinds.append(public_kind)
 			segment["public_site_ids"] = public_site_ids

@@ -7,6 +7,7 @@ const Projection2D = preload("res://scripts/world/world_projection.gd")
 const Coupling = preload("res://scripts/world/world_coupling.gd")
 const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 const PublicRelocation = preload("res://scripts/world/public_site_relocation.gd")
+const PublicReuse = preload("res://scripts/world/public_site_reuse.gd")
 const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd")
 const TransitPlanning = preload("res://scripts/world/transit_planning.gd")
 const Config = preload("res://scripts/world/world_values.gd")
@@ -365,6 +366,12 @@ func _make_menu() -> void:
 		button.pressed.connect(_verb.bind(item[1]))
 		verbs.add_child(button)
 	box.add_child(verbs)
+	var reuse_button := Button.new()
+	reuse_button.text = "原位改用 · 试听"
+	reuse_button.tooltip_text = "固定现有占地，比较保留当前用途、公园与文化馆"
+	reuse_button.pressed.connect(_verb.bind("reuse_public"))
+	planning_buttons["reuse_public"] = reuse_button
+	box.add_child(reuse_button)
 	var details_toggle := Button.new()
 	details_toggle.text = "声部详细条件 · 展开 / 收起"
 	details_toggle.toggle_mode = true
@@ -982,6 +989,12 @@ func _response_button_text() -> String:
 
 func _planning_menu() -> void:
 	var retuning: bool = context.get("kind","") == "retune"
+	var active_public := false
+	for site in model.world.public_sites:
+		if str(site.get("id","")) == str(context.get("id","")):
+			active_public = bool(site.get("active",false)) and str(context.get("kind","")) in ["park","civic"]
+	planning_buttons["reuse_public"].visible = active_public
+	planning_buttons["reuse_public"].disabled = not active_public
 	(menu.get_meta("details_toggle") as Button).visible = retuning
 	(menu.get_meta("details_label") as Label).visible = retuning and (menu.get_meta("details_toggle") as Button).button_pressed
 	# The same menu remains usable when details are expanded or the window is
@@ -1012,10 +1025,6 @@ func _planning_menu() -> void:
 			if str(site["id"]) == str(context.get("id","")) and bool(site["active"]) and verb == "civic" and str(site["kind"]) == "civic":
 				existing = int(site.get("service_level",1)) < 3
 		planning_buttons[verb].disabled = not selectable and not existing
-	var active_public := false
-	for site in model.world.public_sites:
-		if str(site.get("id","")) == str(context.get("id","")):
-			active_public = bool(site.get("active",false)) and str(context.get("kind","")) in ["park","civic"]
 	planning_buttons["relocate_public"].disabled = not active_public
 	planning_buttons["plan_transit"].disabled = false
 	if context.get("kind","") == "transit_station":
@@ -1376,6 +1385,35 @@ func _submit_partial_comparison() -> void:
 		return
 	_submit_partial_operation(planning_guide.candidate.duplicate(true),planning_guide.anchor_kind)
 
+func _submit_public_reuse() -> void:
+	if not planning_guide.opened or planning_guide.stage != "reuse_anchor": return
+	if not planning_guide.public_reuse_is_current():
+		planning_guide.hide_tool()
+		_message("这处公共空间已经变化，请重新点选用途")
+		return
+	if planning_guide.anchor_kind == "none":
+		var site_id := str(planning_guide.reuse_site["public_id"])
+		model.cancel_public_reuse(site_id)
+		if bool(planning_guide.next_action.get("reuse",false)) and planning_guide.next_action.get("public_id","") == site_id and planning_guide.next_action.get("state","") == "queued":
+			planning_guide.next_action.clear()
+		planning_guide.hide_tool()
+		_message("保留当前用途 · 现有公共空间继续运行")
+		return
+	var site: Dictionary = planning_guide.reuse_site.duplicate(true)
+	var kind: String = planning_guide.anchor_kind
+	var operation := {"kind":kind,"reuse":true,"id":str(site["public_id"]),
+		"position":site["position"].duplicate(),"source_revision":str(site["source_revision"])}
+	var result: Dictionary = model.submit(operation)
+	if not bool(result.get("accepted",false)):
+		_message(str(result.get("reason","这处公共空间未能排入下一句")))
+		return
+	planning_guide.queue_public_reuse_action(site,result)
+	context.clear()
+	ripple_position = Vector2(float(site["position"][0]),float(site["position"][1]))
+	ripple_seconds = 0.6
+	menu.hide()
+	_message("原位改用已确认 · 下一句改作"+("公园" if kind == "park" else "文化馆")+"，原占地与设施身份保留")
+
 func _submit_partial_operation(site: Dictionary,kind: String) -> void:
 	var operation := {"kind":kind,"partial":true,"source_reservation_id":site.get("source_reservation_id",partial_reservation_id),
 		"position":site.get("position",[]).duplicate(),"target_position":site.get("position",[]).duplicate(),
@@ -1572,6 +1610,21 @@ func _verb(verb: String) -> void:
 		planning_guide.hide_tool()
 	if verb != "plan_transit": _clear_transit_route()
 	if verb != "plan_transit": transit_station_focus_id = ""
+	if verb == "reuse_public":
+		var site := PublicReuse.candidate(model.world,str(context.get("id","")))
+		if not bool(site.get("allowed",false)):
+			_message(str(site.get("reason","先点一处已落成的公园或文化馆")))
+			return
+		_clear_partial_draft()
+		reservation_draw_mode = false
+		reservation_draw_points.clear()
+		relocation_mode = false
+		relocation_site_id = ""
+		selected_id = ""
+		context.clear()
+		planning_guide.begin_public_reuse(site)
+		_message("已固定现有公共空间 · 按住空格比较用途，确认后下一句改用；Esc取消")
+		return
 	if verb == "planning":
 		if not station_context.is_empty() and not station_record.is_empty():
 			planning_guide.open_tool_from_transit_station({"id":transit_anchor_id,"record":station_record})
@@ -1828,6 +1881,8 @@ func _input(event: InputEvent) -> void:
 				_submit_transit_route()
 			elif planning_guide.opened and planning_guide.stage == "partial_anchor":
 				_submit_partial_comparison()
+			elif planning_guide.opened and planning_guide.stage == "reuse_anchor":
+				_submit_public_reuse()
 			elif reservation_draw_mode:
 				_submit_free_reservation()
 				get_viewport().set_input_as_handled()
@@ -1979,7 +2034,7 @@ func _request_preview() -> void:
 		_message("这一范围已固定 · 按住空格比较，按钮切换用途，Enter 确认")
 	var operation := context.duplicate(true)
 	if planning_guide.opened:
-		if planning_guide.stage not in ["anchor","partial_anchor"]: return
+		if planning_guide.stage not in ["anchor","partial_anchor","reuse_anchor"]: return
 		if planning_guide.stage == "anchor": planning_guide.update_candidate(world_at(pointer))
 		preview_context_key = planning_guide.comparison_identity()
 		if preview_context_key.is_empty(): return
@@ -2028,6 +2083,8 @@ func _play_public_preview() -> void:
 	_play_preview_pcm(variant["pcm"])
 	if planning_guide.stage == "partial_anchor":
 		_message(str({"none":"暂不兑现","park":"公园","civic":"文化馆"}[planning_guide.anchor_kind])+"试听 · 松开恢复原合奏，Enter 确认这一范围")
+	elif planning_guide.stage == "reuse_anchor":
+		_message(str({"none":"保留当前用途","park":"公园","civic":"文化馆"}[planning_guide.anchor_kind])+"试听 · 松开恢复原合奏，确认后下一句原位改用")
 
 func _play_preview_pcm(pcm: PackedByteArray) -> void:
 	if pcm.is_empty(): return
@@ -2079,6 +2136,8 @@ func _process(delta: float) -> void:
 		if result.has("variants"):
 			if planning_guide.accept_comparison(result,result["request_key"]):
 				if preview_requested: _play_public_preview()
+			elif preview_requested and planning_guide.opened and planning_guide.stage == "reuse_anchor" and planning_guide.public_reuse_is_current():
+				_request_preview()
 			else: _cancel_preview_playback()
 		elif preview_requested:
 			if not planning_guide.opened and result.get("request_key",preview_context_key) == preview_context_key: _play_preview_pcm(result["pcm"])

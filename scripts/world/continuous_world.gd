@@ -12,6 +12,7 @@ const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 const Charter = preload("res://scripts/world/development_charter.gd")
 const RiverResponse = preload("res://scripts/world/river_call_response.gd")
 const PublicRelocation = preload("res://scripts/world/public_site_relocation.gd")
+const PublicReuse = preload("res://scripts/world/public_site_reuse.gd")
 const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd")
 const TransitPlan = preload("res://scripts/world/transit_planning.gd")
 var cfg: Dictionary = Config.load_values()
@@ -843,6 +844,9 @@ func planning_candidate(p: Vector2) -> Dictionary:
 func public_site_relocation_preview(site_id: String,target_position: Vector2) -> Dictionary:
 	return PublicRelocation.preview(self,site_id,target_position)
 
+func public_site_reuse_candidate(site_id: String) -> Dictionary:
+	return PublicReuse.candidate(self,site_id)
+
 func planning_at(p: Vector2) -> Dictionary:
 	return SpatialPlanning.reservation_at(self,p)
 
@@ -1243,6 +1247,22 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation["target_access_path"] = relocation.get("target_access_path",PackedVector2Array())
 		operation["target_community_id"] = str(relocation.get("target_community_id",relocation.get("target_community", "")))
 		operation["source_revision"] = str(relocation.get("source_revision",""))
+		pending_actions = pending_actions.filter(func(op: Dictionary) -> bool: return not bool(op.get("reuse",false)))
+	elif kind in ["park","civic"] and bool(operation.get("reuse",false)):
+		var reuse := PublicReuse.validate(self,operation)
+		if not bool(reuse.get("accepted",false)): return reuse
+		operation = operation.duplicate(true)
+		operation["id"] = str(reuse["public_id"])
+		operation["position"] = reuse["position"].duplicate(true)
+		operation["source_site_id"] = str(reuse["source_site_id"])
+		operation["source_revision"] = str(reuse["source_revision"])
+		operation.erase("partial")
+		for key: String in ["polygon","footprint_components","target_polygons","hole_polygons","target_holes"]:
+			if reuse.has(key): operation[key] = reuse[key].duplicate(true) if reuse[key] is Array else reuse[key].duplicate()
+		# Reuse shares the one replaceable public-planning intent. Unrelated
+		# charters, retunes and authored transit decisions remain queued.
+		pending_actions = pending_actions.filter(func(op: Dictionary) -> bool:
+			return not (str(op["kind"]) in ["reserve","release_reservation","relocate_public"] or (str(op["kind"]) in ["park","civic"] and (op.has("position") or str(op.get("id","")) == str(operation["id"])))))
 	elif kind in ["park","civic"] and bool(operation.get("partial",false)):
 		var reservation_id := str(operation.get("source_reservation_id",operation.get("reservation_id","")))
 		var partial: Dictionary = {}
@@ -1274,6 +1294,7 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation["target_entrance"] = partial["target_entrance"].duplicate(true)
 		operation["target_access_path"] = partial.get("target_access_path",PackedVector2Array())
 		operation["source_revision"] = str(partial.get("source_revision",""))
+		pending_actions = pending_actions.filter(func(op: Dictionary) -> bool: return not bool(op.get("reuse",false)))
 	elif kind == "bridge":
 		var bridge_check := bridge_preview()
 		if not bool(bridge_check.get("available",false)): return {"accepted":false,"reason":str(bridge_check.get("reason","桥位当前不可用"))}
@@ -1345,6 +1366,10 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 				if int(site.get("service_level",1)) >= 3: return {"accepted":false,"reason":"文化设施已完成三级扩容"}
 				found = true
 		if not found: return {"accepted":false,"reason":"请在公共保留地营造公园或设施"}
+		# A later legacy expansion of this same site replaces its queued reuse;
+		# two operations captured from the old use cannot both edit one facility.
+		pending_actions = pending_actions.filter(func(op: Dictionary) -> bool:
+			return not (bool(op.get("reuse",false)) and str(op.get("id","")) == str(operation.get("id",""))))
 	else: return {"accepted":false,"reason":"未知操作"}
 	if kind in ["seed","retune"]:
 		var midi := int(operation["midi"])
@@ -1403,7 +1428,14 @@ func settle(frame: int) -> void:
 	var successful_planning: Array[Dictionary] = []
 	for op in committed:
 		if str(op["kind"]) == "charter": Charter.commit(self,op,frame)
-		if str(op["kind"]) in ["reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position") and not bool(op.get("partial",false))):
+		if str(op["kind"]) in ["park","civic"] and bool(op.get("reuse",false)):
+			var reuse_result := PublicReuse.commit(self,op,frame)
+			if bool(reuse_result.get("accepted",false)): successful_planning.append(op)
+			else:
+				events.append({"kind":"planning_rejected","operation_kind":str(op["kind"]),"reuse":true,
+					"event_id":int(op["event_id"]),"source_site_id":str(op["id"]),"position":op["position"].duplicate(true),
+					"reason":str(reuse_result.get("reason","这处公共设施已变化，请重新比较用途")),"frame":frame})
+		elif str(op["kind"]) in ["reserve","release_reservation"] or (str(op["kind"]) in ["park","civic"] and op.has("position") and not bool(op.get("partial",false))):
 			if SpatialPlanning.commit(self,op,frame): successful_planning.append(op)
 			else:
 				events.append({"kind":"planning_rejected","operation_kind":str(op.get("kind","")),"event_id":op["event_id"],
@@ -2252,15 +2284,15 @@ func _refresh_public_network(frame: int = 0) -> void:
 	_refresh_public_service()
 	settle_profile["service_allocation_ms"] = float(Time.get_ticks_usec()-coverage_started)/1000.0
 	var lines: Array[Dictionary] = []
-	if public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "west-civic" and site["active"]):
+	if public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "west-civic" and site["active"] and site["kind"] == "civic"):
 		var itinerary: Array = ["west-1","west-2","west-3","west-outer-3","west-outer-2","west-outer-1","west-1"]
 		if bridge: itinerary = ["west-1","west-2","east-2","east-1","east-2","east-3","east-2","west-2","west-3","west-2","west-1"]
 		lines.append(_make_transit_line("valley-line","两岸联奏线" if bridge else "河谷环线",itinerary,frame))
-	if public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "east-civic" and site["active"]):
+	if public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "east-civic" and site["active"] and site["kind"] == "civic"):
 		var itinerary: Array = ["east-1","east-2","east-3","east-outer-3","east-outer-2","east-outer-1","east-1"]
 		if nodes.has("east-garden-1"): itinerary = ["east-1","east-2","east-3","east-outer-3","east-garden-3","east-garden-2","east-garden-1","east-outer-1","east-1"]
 		lines.append(_make_transit_line("garden-line","林荫支线",itinerary,frame))
-	if expanded_plan and public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "west-civic" and site["active"]):
+	if expanded_plan and public_sites.any(func(site: Dictionary) -> bool: return site["id"] == "west-civic" and site["active"] and site["kind"] == "civic"):
 		var terrace_itinerary: Array = ["west-1"]
 		var index := 1
 		while nodes.has("west-terrace-node-%d" % index):
@@ -2281,7 +2313,7 @@ func _refresh_public_network(frame: int = 0) -> void:
 		var prefix := "reach-%d-" % reach
 		var previous := "" if reach == 1 else "reach-%d-" % (reach-1)
 		for side: String in ["west","east"]:
-			if not public_sites.any(func(site: Dictionary) -> bool: return site["id"] == prefix+side+"-civic" and site["active"]): continue
+			if not public_sites.any(func(site: Dictionary) -> bool: return site["id"] == prefix+side+"-civic" and site["active"] and site["kind"] == "civic"): continue
 			var itinerary: Array = [previous+side+"-4",prefix+side+"-1",prefix+side+"-2",prefix+side+"-3",prefix+side+"-4",prefix+side+"-outer-3",prefix+side+"-outer-2",prefix+side+"-outer-1",prefix+side+"-1",previous+side+"-4"]
 			lines.append(_make_transit_line(prefix+side+"-line","河段接驳线%d" % reach,itinerary,frame))
 	lines.append_array(TransitPlan.derived_lines(self))

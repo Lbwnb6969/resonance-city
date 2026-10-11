@@ -180,6 +180,14 @@ func cancel_planning() -> void:
 	world.pending = world.pending_actions[-1].duplicate(true) if not world.pending_actions.is_empty() else {}
 	decisions.append({"requested_frame":rendered_until,"operation":{"kind":"cancel_planning"},"sound_frame":-1,"structure_frame":-1})
 
+func cancel_public_reuse(site_id: String) -> void:
+	var remaining := world.pending_actions.filter(func(op: Dictionary) -> bool:
+		return not (bool(op.get("reuse",false)) and str(op.get("id","")) == site_id))
+	if remaining.size() == world.pending_actions.size(): return
+	world.pending_actions = remaining
+	world.pending = remaining[-1].duplicate(true) if not remaining.is_empty() else {}
+	decisions.append({"requested_frame":rendered_until,"operation":{"kind":"cancel_public_reuse","id":site_id},"sound_frame":-1,"structure_frame":-1})
+
 func _mix_frame(_state: Dictionary, _at: int, _rate: int) -> Vector2:
 	return Vector2.ZERO
 

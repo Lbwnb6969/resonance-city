@@ -1,0 +1,68 @@
+{
+  "adapter": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "audio_driver": "WASAPI",
+  "checks": {
+    "civic_actual_theme_metadata_tracks_current_cultural_service": true,
+    "civic_physical_boundary_preserves_identity_land_and_investment": true,
+    "civic_real_confirmation_queues_reuse_without_relocating": true,
+    "civic_real_device_reaches_reused_site_and_actual_theme": true,
+    "civic_visible_use_waits_for_real_device_boundary": true,
+    "default_city_has_real_existing_culture_site": true,
+    "park_actual_theme_metadata_tracks_current_cultural_service": true,
+    "park_conversion_does_not_invent_a_foreign_community_theme_mark": true,
+    "park_physical_boundary_preserves_identity_land_and_investment": true,
+    "park_real_confirmation_queues_reuse_without_relocating": true,
+    "park_real_device_reaches_reused_site_and_actual_theme": true,
+    "park_visible_use_waits_for_real_device_boundary": true,
+    "production_menu_opens_fixed_reuse_target_and_default_retention": true,
+    "production_public_click_exposes_reuse_on_first_menu_screen": true,
+    "production_rework_selects_real_mature_theme_source": true,
+    "production_space_starts_fixed_reuse_three_branch_preview": false,
+    "real_window_uses_physical_wasapi": true,
+    "releasing_space_restores_live_audio_and_retains_real_site": true,
+    "retention_confirmation_changes_no_public_site": true,
+    "reuse_choices_live_screenshot_saved": true,
+    "reuse_civic_live_screenshot_saved": true,
+    "reuse_keeps_existing_render_voice_budget": true,
+    "reuse_park_live_screenshot_saved": true,
+    "reuse_preview_and_two_real_settlements_add_no_underrun": true,
+    "second_reuse_continues_in_same_city_next_phrase": true
+  },
+  "display_backend": "Windows",
+  "failures": [
+    "production_space_starts_fixed_reuse_three_branch_preview"
+  ],
+  "observations": {
+    "civic": {
+      "audible_frame": 1411217.49630493,
+      "boundary": 1411200,
+      "marked": true,
+      "public_ids": [
+        "west-civic"
+      ],
+      "served": 17,
+      "site_id": "west-civic",
+      "site_kind": "civic",
+      "theme_event": "west-1:1411200:0:building-00003:55"
+    },
+    "park": {
+      "audible_frame": 1058469.34130493,
+      "boundary": 1058400,
+      "marked": false,
+      "public_ids": [],
+      "served": 0,
+      "site_id": "west-civic",
+      "site_kind": "park",
+      "theme_event": "west-1:1058400:0:building-00006:48"
+    }
+  },
+  "output": {
+    "advanced_frames": 705478.25105,
+    "after": 1411860.16435493,
+    "before": 706381.913304929,
+    "underruns_after": 0,
+    "underruns_before": 0
+  },
+  "passed": false,
+  "scope": "Production default city mouse/menu/Space/choice/confirmation callbacks and physical culture→park→culture boundaries; no manual model render, settlement, saved user work or human listening claim"
+}

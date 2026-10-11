@@ -252,12 +252,16 @@ static func _opportunity_preview(world: RefCounted,site: Dictionary,choice: Stri
 static func identity(model: ContinuousAudioModel,site: Dictionary) -> Array:
 	return [Charter.version(model.world),model.next_boundary,site.get("source_site_id",""),site.get("polygon",PackedVector2Array()),site.get("footprint_components",[]),
 		bool(site.get("partial",false)),site.get("source_reservation_id",site.get("reservation_id","")),site.get("source_revision",""),
+		bool(site.get("reuse",false)),site.get("public_id",""),
 		site.get("target_polygons",[]),site.get("target_polygon",PackedVector2Array()),site.get("hole_polygons",[]),site.get("target_holes",[]),
 		site.get("position",[]),site.get("target_position",[]),site.get("community_id",""),site.get("planning_scope",[]),
 		hash(model.world.pending_actions),hash(model.sound_events),hash(model.sound_overrides),
 		model.synth.focused_community,model.synth.listener_community,model.synth.response_enabled,hash(model.synth.muted_communities),model.synth.gain,hash(model.synth.score)].duplicate(true)
 
 static func _operation(site: Dictionary,kind: String) -> Dictionary:
+	if bool(site.get("reuse",false)):
+		return {"kind":kind,"reuse":true,"id":str(site["public_id"]),
+			"position":site["position"].duplicate(),"source_revision":str(site["source_revision"])}
 	if not bool(site.get("partial",false)): return {"kind":kind,"position":site["position"].duplicate()}
 	# The painted target is one authored decision shared by both facility
 	# choices. Passing only its position would select the entire source parcel.
@@ -293,7 +297,8 @@ static func build(source: ContinuousAudioModel,site: Dictionary,state: Dictionar
 	# P10 has one replaceable public-planning slot. Remove that slot in every
 	# branch, retaining the charter, all seed/retune intent and sound controls.
 	var common := source.freeze()
-	common.cancel_planning()
+	if bool(site.get("reuse",false)): common.cancel_public_reuse(str(site["public_id"]))
+	else: common.cancel_planning()
 	for kind: String in ["none","park","civic"]:
 		var branch := common.freeze()
 		var phases := state.duplicate(true)
@@ -310,6 +315,11 @@ static func build(source: ContinuousAudioModel,site: Dictionary,state: Dictionar
 				return e.get("kind","") == "planning_rejected" and int(e.get("event_id",-1)) == int(request["event_id"]))
 		var anchor: Dictionary = {}
 		if kind != "none": anchor = _committed_anchor(branch.world,site,kind,int(request["event_id"]),boundary)
+		elif bool(site.get("reuse",false)):
+			for existing in branch.world.public_sites:
+				if str(existing.get("id","")) == str(site["public_id"]):
+					anchor = existing.duplicate(true)
+					break
 		accepted = accepted and (kind == "none" or not anchor.is_empty())
 		var score := branch.synth.score_snapshot()
 		var theme: Dictionary = score["theme"]

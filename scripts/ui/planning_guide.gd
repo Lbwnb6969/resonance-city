@@ -4,6 +4,7 @@ const Charter = preload("res://scripts/world/development_charter.gd")
 const PlanningCard = preload("res://scripts/world/planning_card.gd")
 const Planning = preload("res://scripts/world/city_spatial_planning.gd")
 const PublicPreview = preload("res://scripts/world/public_planning_preview.gd")
+const PublicReuse = preload("res://scripts/world/public_site_reuse.gd")
 const NextAction = preload("res://scripts/world/planning_next_action.gd")
 const TransitPlanning = preload("res://scripts/world/transit_planning.gd")
 var comparison: Dictionary = {}
@@ -34,6 +35,8 @@ var confirm: Button
 var candidate: Dictionary = {}
 ## A player-drawn conversion is a fixed target, independent of the pointer.
 var partial_site: Dictionary = {}
+## An existing facility stays fixed even when the pointer leaves its parcel.
+var reuse_site: Dictionary = {}
 var preview: Dictionary = {}
 var preview_key: Array = []
 var scope_polygons: Array[PackedVector2Array] = []
@@ -158,7 +161,7 @@ func setup(owner_demo: Control) -> void:
 	actions = HBoxContainer.new()
 	confirm = Button.new()
 	confirm.text = "确认社区范围 → 摆放锚点"
-	confirm.pressed.connect(commit_scope)
+	confirm.pressed.connect(_confirm_stage)
 	actions.add_child(confirm)
 	for item in [["暂不建设","none"],["公园 · 留白","park"],["文化馆 · 主题","civic"]]:
 		var button := Button.new()
@@ -199,6 +202,7 @@ func reset_for_city() -> void:
 	_clear_comparison_community()
 	candidate.clear()
 	partial_site.clear()
+	reuse_site.clear()
 	observed_phrase = demo.shown_world.phrase_index
 	opened = demo.model.world.development_charters.is_empty()
 	causal_feedback_count = 0 if opened else 2
@@ -210,6 +214,7 @@ func reset_for_city() -> void:
 
 func open_tool() -> void:
 	partial_site.clear()
+	reuse_site.clear()
 	comparison.clear()
 	comparison_key.clear()
 	_clear_comparison_community()
@@ -270,11 +275,13 @@ func hide_tool() -> void:
 	hide()
 	candidate.clear()
 	partial_site.clear()
+	reuse_site.clear()
 	demo.queue_redraw()
 
 ## Keep every component, courtyard and source revision exactly as authored.
 ## The demo owns submission; this panel only chooses and compares branches.
 func begin_partial_comparison(site: Dictionary,selected_kind: String) -> void:
+	reuse_site.clear()
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
 	comparison_key.clear()
@@ -300,6 +307,39 @@ func begin_partial_comparison(site: Dictionary,selected_kind: String) -> void:
 	demo.menu.hide()
 	refresh()
 	demo.queue_redraw()
+
+func begin_public_reuse(site: Dictionary) -> void:
+	if demo.preview_public: demo._cancel_preview_playback()
+	comparison.clear()
+	comparison_key.clear()
+	_clear_comparison_community()
+	preview_key.clear()
+	preview.clear()
+	partial_site.clear()
+	reuse_site = site.duplicate(true)
+	candidate = reuse_site.duplicate(true)
+	anchor_kind = "none"
+	plan_id = ""
+	card_id = ""
+	scope.clear()
+	scope_polygons.clear()
+	scope_seed.clear()
+	scope_source.clear()
+	scope_version.clear()
+	stage = "reuse_anchor"
+	opened = true
+	demo.menu.hide()
+	refresh()
+	demo.queue_redraw()
+
+func public_reuse_is_current() -> bool:
+	if reuse_site.is_empty(): return false
+	var current := PublicReuse.candidate(demo.model.world,str(reuse_site.get("public_id","")))
+	return bool(current.get("allowed",false)) and str(current.get("source_revision","")) == str(reuse_site.get("source_revision",""))
+
+func _confirm_stage() -> void:
+	if stage == "reuse_anchor": demo._submit_public_reuse()
+	else: commit_scope()
 
 func clear_partial_comparison() -> void:
 	if stage != "partial_anchor" and partial_site.is_empty(): return
@@ -341,7 +381,7 @@ func choose_anchor(kind: String) -> void:
 	anchor_kind = kind
 	preview_key.clear()
 	refresh()
-	if stage in ["anchor","partial_anchor"]: update_candidate(demo.world_at(demo.pointer))
+	if stage in ["anchor","partial_anchor","reuse_anchor"]: update_candidate(demo.world_at(demo.pointer))
 	if demo.preview_requested and not comparison.is_empty(): demo._request_preview()
 
 func refresh() -> void:
@@ -353,9 +393,10 @@ func refresh() -> void:
 	var has_theme_house: bool = audible_theme.get("source_ids",[]).any(func(raw_id: Variant) -> bool: return demo.shown_world.by_id.has(str(raw_id)))
 	theme_rework_button.visible = stage == "charter" and has_theme_house
 	actions.visible = stage != "charter"
-	confirm.visible = stage == "scope"
+	confirm.visible = stage in ["scope","reuse_anchor"]
+	confirm.text = "确认原位改用" if stage == "reuse_anchor" else "确认社区范围 → 摆放锚点"
 	next_action_row.visible = opened and stage == "feedback" and next_action.get("state","") == "ready"
-	var partial_feedback := next_action_row.visible and bool(next_action.get("partial",false))
+	var partial_feedback := next_action_row.visible and (bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false)))
 	var combo_ids := _combo_community_ids()
 	next_combo_button.visible = next_action_row.visible and combo_ids.size() > 1
 	if next_combo_button.visible:
@@ -365,10 +406,11 @@ func refresh() -> void:
 	next_partial_row.visible = partial_feedback
 	next_reservation_button.visible = partial_feedback and not next_action.get("remaining_reservation_ids",[]).is_empty()
 	next_served_button.visible = partial_feedback and not next_action.get("served_building_ids",[]).is_empty()
-	confirm.disabled = scope.is_empty()
+	confirm.disabled = not public_reuse_is_current() if stage == "reuse_anchor" else scope.is_empty()
 	for i in range(1,actions.get_child_count()):
 		var button: Button = actions.get_child(i)
-		button.visible = stage in ["anchor","partial_anchor"]
+		button.visible = stage in ["anchor","partial_anchor","reuse_anchor"]
+		if str(button.get_meta("anchor_kind")) == "none": button.text = "保留当前用途" if stage == "reuse_anchor" else "暂不建设"
 		button.set_pressed_no_signal(button.get_meta("anchor_kind") == anchor_kind)
 	if stage == "charter":
 		heading.text = "你想让这片城市怎样生长？"
@@ -401,6 +443,9 @@ func refresh() -> void:
 	elif stage == "partial_anchor":
 		heading.text = "这一片由你安排 · "+str({"park":"公园","civic":"文化馆","none":"暂不兑现"}[anchor_kind])
 		_update_partial_detail()
+	elif stage == "reuse_anchor":
+		heading.text = "原位改用 · "+str({"park":"公园","civic":"文化馆","none":"保留当前用途"}[anchor_kind])
+		_update_reuse_detail()
 	else:
 		heading.text = str(Charter.PLANS[plan_id]["title"])+" · "+{"park":"摆放公园","civic":"摆放文化馆","none":"暂不建设"}[anchor_kind]
 		detail.text = "移动到所选社区的空置地块或公共候选地。\n按住空格比较不建、公园、文化馆；选择一种后点击地图确认。"
@@ -426,6 +471,9 @@ func _rebuild_card_choices() -> void:
 
 func map_click(p: Vector2,multiple: bool) -> bool:
 	if not opened: return false
+	if stage == "reuse_anchor":
+		if Planning.point_in_footprint(reuse_site,p): demo._submit_public_reuse()
+		return true
 	if stage == "partial_anchor": return true
 	if stage == "charter": return true
 	if stage == "feedback": return true
@@ -537,12 +585,27 @@ func queue_partial_action(site: Dictionary,result: Dictionary) -> void:
 	next_action["affected_communities"] = affected
 	_close_after_commit()
 
+func queue_public_reuse_action(site: Dictionary,result: Dictionary) -> void:
+	if not bool(result.get("accepted",false)): return
+	candidate = site.duplicate(true)
+	_queue_next_action({})
+	next_action["reuse"] = true
+	next_action["plan_id"] = ""
+	next_action["choice"] = anchor_kind
+	next_action["public_id"] = str(site["public_id"])
+	next_action["source_revision"] = str(site["source_revision"])
+	next_action["event_id"] = int(result.get("event_id",-1))
+	next_action["expected_boundary_frame"] = int(result.get("frame",demo.model.next_boundary))
+	_close_after_commit()
+
 func _close_after_commit() -> void:
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
 	comparison_key.clear()
 	_clear_comparison_community()
 	partial_site.clear()
+	reuse_site.clear()
+	candidate.clear()
 	opened = false
 	hide()
 	demo.queue_redraw()
@@ -550,6 +613,12 @@ func _close_after_commit() -> void:
 func _next_action_event_matches(event: Dictionary) -> bool:
 	if next_action.get("state","") != "queued": return false
 	var event_kind := str(event.get("kind",""))
+	if bool(next_action.get("reuse",false)):
+		return event_kind == str(next_action.get("choice","")) and bool(event.get("reuse",false)) \
+			and str(event.get("id","")) == str(next_action.get("public_id","")) \
+			and str(event.get("source_revision","")) == str(next_action.get("source_revision","")) \
+			and int(event.get("event_id",-2)) == int(next_action.get("event_id",-1)) \
+			and int(event.get("frame",-1)) == int(next_action.get("expected_boundary_frame",-2))
 	if bool(next_action.get("partial",false)):
 		if event_kind != str(next_action.get("choice","")) or not bool(event.get("partial",false)): return false
 		if str(event.get("source_reservation_id","")) != str(next_action.get("source_reservation_id","")): return false
@@ -608,7 +677,7 @@ func _expire_next_action_if_stale() -> void:
 		refresh()
 
 func _activate_next_action(event: Dictionary) -> void:
-	if bool(next_action.get("partial",false)):
+	if bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false)):
 		_activate_partial_next_action(event)
 		return
 	var id := str(event.get("district_id",""))
@@ -667,7 +736,7 @@ func _activate_partial_next_action(event: Dictionary) -> void:
 	stage = "feedback"
 	opened = true
 	refresh()
-	demo._message("局部公共空间已经落成 · 继续规划余地，或查看实际服务")
+	demo._message("公共空间已经原位改用 · 可继续比较用途或查看实际服务" if bool(next_action.get("reuse",false)) else "局部公共空间已经落成 · 继续规划余地，或查看实际服务")
 
 func _partial_public_site(id: String) -> Dictionary:
 	if demo.shown_world == null: return {}
@@ -692,6 +761,11 @@ func _next_action_detail() -> String:
 	var community_name: String = str(next_action.get("community_id",""))
 	if demo != null and demo.shown_world != null:
 		community_name = str(demo.shown_world.communities.get(str(next_action.get("community_id","")),{}).get("name",community_name))
+	if bool(next_action.get("reuse",false)):
+		var lines: Array[String] = ["%s · %s · 已原位改用" % [choice,community_name],"原占地、内院与设施身份保留；可再次比较用途。"]
+		if str(next_action.get("choice","")) == "civic": lines.append("当前实际服务%d栋房屋；可定位其中一栋继续调音。" % next_action.get("served_building_ids",[]).size())
+		lines.append("定位公建继续经营；文化馆仍可扩容，移动位置使用搬迁。")
+		return "\n".join(lines)
 	if bool(next_action.get("partial",false)):
 		var remaining_count: int = next_action.get("remaining_reservation_ids",[]).size()
 		var served_count: int = next_action.get("served_building_ids",[]).size()
@@ -774,7 +848,7 @@ func _take_theme_building() -> void:
 
 func _take_next_action() -> void:
 	if next_action.get("state","") != "ready": return
-	if bool(next_action.get("partial",false)):
+	if bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false)):
 		_take_partial_public()
 		return
 	var id := str(next_action.get("building_id",""))
@@ -837,7 +911,7 @@ func _take_remaining_reservation() -> void:
 	hide_tool()
 
 func _take_served_building() -> void:
-	if next_action.get("state","") != "ready" or not bool(next_action.get("partial",false)): return
+	if next_action.get("state","") != "ready" or not (bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false))): return
 	var site := _partial_public_site(str(next_action.get("public_id","")))
 	for raw_id in next_action.get("served_building_ids",[]):
 		var id := str(raw_id)
@@ -870,6 +944,9 @@ func update_candidate(p: Vector2) -> void:
 	if stage == "partial_anchor":
 		_update_partial_detail()
 		return
+	if stage == "reuse_anchor":
+		_update_reuse_detail()
+		return
 	candidate = demo.model.world.planning_candidate(p)
 	preview.clear()
 	if candidate.is_empty(): return
@@ -892,8 +969,18 @@ func _update_partial_detail() -> void:
 	detail.text += "暂不兑现会保留来源留地；公园/文化馆只占用画好的范围，内院仍可继续规划。"
 	if not comparison.is_empty() and comparison_key == comparison_identity(): _show_comparison()
 
+func _update_reuse_detail() -> void:
+	var current := "公园" if str(reuse_site.get("current_kind","")) == "park" else "文化馆"
+	detail.text = "当前用途 · %s · 固定%d块原占地、%d处内院\n" % [current,Planning.footprint_components(reuse_site).size(),Planning.footprint_holes(reuse_site).size()]
+	detail.text += "按住空格比较保留、公园、文化馆；按钮切换同一时刻的3秒完整合奏。\n"
+	detail.text += "点击确认或原占地排入下一句，Esc取消。保留当前用途不改变设施；文化馆原有扩容仍可使用。"
+	if not comparison.is_empty() and comparison_key == comparison_identity(): _show_comparison()
+
 func comparison_identity() -> Array:
 	if not opened: return []
+	if stage == "reuse_anchor":
+		if not public_reuse_is_current(): return []
+		return [demo.model.presentation_token]+PublicPreview.identity(demo.model,reuse_site)
 	if stage == "partial_anchor":
 		if partial_site.is_empty() or not bool(partial_site.get("allowed",false)): return []
 		return [demo.model.presentation_token]+PublicPreview.identity(demo.model,partial_site)
@@ -1047,13 +1134,16 @@ func _comparison_role_line(items: Array,role: String) -> String:
 func _show_comparison() -> void:
 	_sync_comparison_communities()
 	var partial := stage == "partial_anchor"
+	var reuse := stage == "reuse_anchor"
 	var lines: Array[String] = ["下一句真实对照 · 同一时刻 / 同一增益 / 各3秒",
 		"试听是完整合奏 · 切换下方方案对比，点击地图确认"]
 	if partial: lines = ["同一范围 · 试听是完整合奏 · 每种3秒 · Enter 确认这一范围"]
+	if reuse: lines = ["同一原占地 · 每种3秒完整合奏 · 按住空格试听，确认后下一句改用"]
 	if not comparison_community_id.is_empty(): lines.append("查看 · "+_comparison_community_name(comparison_community_id)+" · 当前方案的声部条件")
 	for kind: String in ["none","park","civic"]:
 		var variant: Dictionary = comparison["variants"][kind]
 		var title := str({"none":"暂不建","park":"公园","civic":"文化馆"}[kind])
+		if reuse and kind == "none": title = "保留当前用途"
 		var prefix := "● " if kind == anchor_kind else "   "
 		if not variant["accepted"]:
 			lines.append(prefix+title+" · "+str(variant["reason"]))
@@ -1070,7 +1160,7 @@ func _show_comparison() -> void:
 			var combo_message := str(raw_combo.get("message",raw_combo.get("next","")))
 			if not combo_message.is_empty(): lines.append("组合听觉机会 · "+combo_message)
 		var chosen_items := _comparison_opportunity_items(chosen)
-		if partial:
+		if partial or reuse:
 			var baseline: Dictionary = comparison["variants"].get("none",{})
 			var baseline_pcm: Variant = baseline.get("pcm",null)
 			var same_audio := false
@@ -1086,7 +1176,7 @@ func _show_comparison() -> void:
 						all_same = all_same and other.get("pcm",PackedByteArray()) == baseline_pcm
 					same_audio = compared > 0 and all_same
 			if same_audio: lines.append("这3秒合奏相同；空间与服务按上方方案变化，声音仍需下列条件。")
-		lines.append(str({"none":"暂不兑现" if partial else "暂不建设","park":"公园","civic":"文化馆"}[anchor_kind])+" · 当前机会")
+		lines.append(str({"none":"保留当前用途" if reuse else "暂不兑现" if partial else "暂不建设","park":"公园","civic":"文化馆"}[anchor_kind])+" · 当前机会")
 		for role_id: String in ["Bass","Rhythm","Response"]:
 			lines.append(_comparison_role_line(chosen_items,role_id))
 		var chosen_theme := _comparison_role_item(chosen_items,"Lead")
@@ -1094,6 +1184,7 @@ func _show_comparison() -> void:
 		if not chosen_theme.is_empty() and not str(chosen_theme.get("next","")).is_empty():
 			lines.append("下一步 · "+str(chosen_theme["next"]))
 	if partial: lines.append("暂不兑现保留来源留地；公园/文化馆只占画好的范围，内院和余地继续保留。")
+	elif reuse: lines.append("保留沿用当前用途；改用保留原占地、内院和设施身份，下一乐句生效。")
 	else: lines.append("不建保留正常成长；公园/文化馆占用这片空地。新选择替换待落定公共规划。")
 	detail.text = "\n".join(lines)
 
@@ -1104,7 +1195,7 @@ func sync() -> void:
 		_expire_next_action_if_stale()
 		for event in demo.shown_world.events:
 			if int(event.get("frame",-1)) != observed_phrase*int(demo.shown_world.cfg["timing"]["phrase_frames"]): continue
-			if bool(next_action.get("partial",false)) and next_action.get("state","") == "queued" and str(event.get("kind","")) == "planning_rejected" and int(event.get("event_id",-2)) == int(next_action.get("event_id",-1)):
+			if (bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false))) and next_action.get("state","") == "queued" and str(event.get("kind","")) == "planning_rejected" and int(event.get("event_id",-2)) == int(next_action.get("event_id",-1)):
 				next_action["state"] = "expired"
 				next_action["reason"] = "这片公共规划没有落定 · "+str(event.get("reason","请重新选择留地"))
 				stage = "feedback"
@@ -1121,13 +1212,17 @@ func sync() -> void:
 				var shape := str(building.get("form","胚"))
 				var pitch: String = demo.note_name(int(building.get("current_midi",48))) if not building.is_empty() else "待定音级"
 				demo._message("%s · %s以%s落地，%s%s；下一步可继续调音或按P规划下一片社区" % [title,kind,shape,"音级"+pitch+" · " if pitch != "待定音级" else "", "沿你的规划生长"])
-				if not bool(next_action.get("partial",false)): break
+				if not (bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false))): break
 	if not visible: return
 	if stage == "charter":
 		var audible_theme: Dictionary = demo.model.audible_theme()
 		var theme_key: Array = [str(audible_theme.get("cid","")),audible_theme.get("source_ids",[])]
 		if theme_key != charter_theme_key: refresh()
-	if stage in ["anchor","partial_anchor"]:
+	if stage == "reuse_anchor" and not public_reuse_is_current():
+		hide_tool()
+		demo._message("这处公共空间已经变化，请重新点选用途")
+		return
+	if stage in ["anchor","partial_anchor","reuse_anchor"]:
 		var next_comparison_key := comparison_identity()
 		if not comparison.is_empty() and next_comparison_key != comparison_key:
 			comparison.clear()
@@ -1135,7 +1230,7 @@ func sync() -> void:
 			_clear_comparison_community()
 			if demo.preview_public: demo._cancel_preview_playback()
 		var p: Vector2 = demo.world_at(demo.pointer)
-		var key: Array = [comparison_identity(),anchor_kind,not comparison.is_empty()] if stage == "partial_anchor" else [p,Charter.version(demo.model.world),anchor_kind,not comparison.is_empty()]
+		var key: Array = [comparison_identity(),anchor_kind,not comparison.is_empty()] if stage in ["partial_anchor","reuse_anchor"] else [p,Charter.version(demo.model.world),anchor_kind,not comparison.is_empty()]
 		if key != preview_key:
 			update_candidate(p)
 			preview_key = key
@@ -1151,6 +1246,17 @@ func sync() -> void:
 
 func draw_map() -> void:
 	if not visible: return
+	if stage == "reuse_anchor":
+		var tint := Color("729b70")
+		var fill_site := candidate.duplicate()
+		fill_site["target_polygons"] = Planning.footprint_components(candidate)
+		for fill in demo._partial_preview_fill_polygons(fill_site):
+			demo.draw_colored_polygon(demo._project_polygon(fill),Color(tint,0.3))
+		for world_polygon in Planning.footprint_components(candidate)+Planning.footprint_holes(candidate):
+			var polygon: PackedVector2Array = demo._project_polygon(world_polygon)
+			polygon.append(polygon[0])
+			demo.draw_polyline(polygon,tint,2.0,true)
+		return
 	for world_polygon in scope_polygons:
 		var polygon: PackedVector2Array = demo._project_polygon(world_polygon)
 		demo.draw_colored_polygon(polygon,Color(0.55,0.72,0.57,0.16))
