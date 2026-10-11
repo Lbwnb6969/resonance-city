@@ -1,0 +1,196 @@
+{
+  "checks": {
+    "common_authored_sound_position_is_real_and_continuous": true,
+    "common_first_composition_planning_intents_are_accepted": true,
+    "deep_author_root_retune_is_accepted": true,
+    "deep_birth_and_retune_map_events_are_recorded": true,
+    "deep_city_dna_audio_plan_remains_replayable": true,
+    "deep_city_dna_export_writes": true,
+    "deep_city_dna_exports_authored_family_and_expression": true,
+    "deep_city_dna_exports_retune_override_and_event": true,
+    "deep_city_dna_is_readable": true,
+    "deep_city_dna_restores_authored_root_and_pitch": true,
+    "deep_city_dna_restores_keep_land_and_theme_source": true,
+    "deep_ctrl_s_checkpoint_writes": true,
+    "deep_expression_seed_is_accepted": true,
+    "deep_f9_finds_latest_checkpoint": true,
+    "deep_f9_restores_authored_identity_and_retune": true,
+    "deep_f9_restores_keep_land_family_and_reservation": true,
+    "deep_f9_restores_map_events_and_theme_source": true,
+    "deep_keep_land_state_is_preserved_only_for_warm": true,
+    "deep_retune_changes_the_actual_theme_source_at_its_map_house": true,
+    "deep_retuned_pitch_is_current_and_override_is_durable": true,
+    "deep_saved_route_has_real_authored_root": true,
+    "warm_author_root_retune_is_accepted": true,
+    "warm_birth_and_retune_map_events_are_recorded": true,
+    "warm_city_dna_audio_plan_remains_replayable": true,
+    "warm_city_dna_export_writes": true,
+    "warm_city_dna_exports_authored_family_and_expression": true,
+    "warm_city_dna_exports_retune_override_and_event": true,
+    "warm_city_dna_is_readable": true,
+    "warm_city_dna_restores_authored_root_and_pitch": true,
+    "warm_city_dna_restores_keep_land_and_theme_source": true,
+    "warm_ctrl_s_checkpoint_writes": true,
+    "warm_expression_seed_is_accepted": true,
+    "warm_f9_finds_latest_checkpoint": true,
+    "warm_f9_restores_authored_identity_and_retune": true,
+    "warm_f9_restores_keep_land_family_and_reservation": true,
+    "warm_f9_restores_map_events_and_theme_source": true,
+    "warm_keep_land_state_is_preserved_only_for_warm": true,
+    "warm_retune_changes_the_actual_theme_source_at_its_map_house": true,
+    "warm_retuned_pitch_is_current_and_override_is_durable": true,
+    "warm_saved_route_has_real_authored_root": true,
+    "weave_author_root_retune_is_accepted": true,
+    "weave_birth_and_retune_map_events_are_recorded": true,
+    "weave_city_dna_audio_plan_remains_replayable": true,
+    "weave_city_dna_export_writes": true,
+    "weave_city_dna_exports_authored_family_and_expression": true,
+    "weave_city_dna_exports_retune_override_and_event": true,
+    "weave_city_dna_is_readable": true,
+    "weave_city_dna_restores_authored_root_and_pitch": true,
+    "weave_city_dna_restores_keep_land_and_theme_source": true,
+    "weave_ctrl_s_checkpoint_writes": true,
+    "weave_expression_seed_is_accepted": true,
+    "weave_f9_finds_latest_checkpoint": true,
+    "weave_f9_restores_authored_identity_and_retune": true,
+    "weave_f9_restores_keep_land_family_and_reservation": true,
+    "weave_f9_restores_map_events_and_theme_source": true,
+    "weave_keep_land_state_is_preserved_only_for_warm": true,
+    "weave_retune_changes_the_actual_theme_source_at_its_map_house": true,
+    "weave_retuned_pitch_is_current_and_override_is_durable": true,
+    "weave_saved_route_has_real_authored_root": true
+  },
+  "evidence": {
+    "routes": {
+      "deep": {
+        "audio_plan": {
+          "decision_count": 4,
+          "ok": true,
+          "phrase_frames": 352800,
+          "sample_rate": 22050,
+          "sound_event_count": 0
+        },
+        "base_midi": 36,
+        "birth_event": {
+          "district_id": "building-00028",
+          "frame": 705600,
+          "kind": "birth"
+        },
+        "checkpoint": "user://round183_authored_archive_deep_2196077/001791705158_0000000002196725.city",
+        "current_midi": 40,
+        "dna": "user://round183_authored_archive_deep_2196077/exports/001791705158_0000000002302310.dna.json",
+        "expression": "deep",
+        "family_id": "family-00028",
+        "reservation_id": "",
+        "retune_event": {
+          "district_id": "building-00028",
+          "frame": 1058400,
+          "kind": "retune"
+        },
+        "root_id": "building-00028",
+        "theme_sources": [
+          "building-00029",
+          "building-00001",
+          "building-00028",
+          "building-00032",
+          "building-00003",
+          "building-00002",
+          "building-00005",
+          "building-00004",
+          "building-00007",
+          "building-00006",
+          "building-00008",
+          "building-00025",
+          "building-00026"
+        ]
+      },
+      "warm": {
+        "audio_plan": {
+          "decision_count": 4,
+          "ok": true,
+          "phrase_frames": 352800,
+          "sample_rate": 22050,
+          "sound_event_count": 0
+        },
+        "base_midi": 48,
+        "birth_event": {
+          "district_id": "building-00028",
+          "frame": 705600,
+          "kind": "birth"
+        },
+        "checkpoint": "user://round183_authored_archive_warm_4504666/001791705160_0000000004505237.city",
+        "current_midi": 52,
+        "dna": "user://round183_authored_archive_warm_4504666/exports/001791705161_0000000004647499.dna.json",
+        "expression": "warm",
+        "family_id": "family-00028",
+        "reservation_id": "reservation-00003",
+        "retune_event": {
+          "district_id": "building-00028",
+          "frame": 1058400,
+          "kind": "retune"
+        },
+        "root_id": "building-00028",
+        "theme_sources": [
+          "building-00029",
+          "building-00001",
+          "building-00028",
+          "building-00032",
+          "building-00003",
+          "building-00002",
+          "building-00005",
+          "building-00004",
+          "building-00007",
+          "building-00006",
+          "building-00008",
+          "building-00025",
+          "building-00026"
+        ]
+      },
+      "weave": {
+        "audio_plan": {
+          "decision_count": 4,
+          "ok": true,
+          "phrase_frames": 352800,
+          "sample_rate": 22050,
+          "sound_event_count": 0
+        },
+        "base_midi": 60,
+        "birth_event": {
+          "district_id": "building-00028",
+          "frame": 705600,
+          "kind": "birth"
+        },
+        "checkpoint": "user://round183_authored_archive_weave_3058533/001791705159_0000000003059209.city",
+        "current_midi": 64,
+        "dna": "user://round183_authored_archive_weave_3058533/exports/001791705159_0000000003209764.dna.json",
+        "expression": "weave",
+        "family_id": "family-00028",
+        "reservation_id": "",
+        "retune_event": {
+          "district_id": "building-00028",
+          "frame": 1058400,
+          "kind": "retune"
+        },
+        "root_id": "building-00028",
+        "theme_sources": [
+          "building-00029",
+          "building-00001",
+          "building-00028",
+          "building-00032",
+          "building-00003",
+          "building-00002",
+          "building-00005",
+          "building-00004",
+          "building-00007",
+          "building-00006",
+          "building-00008",
+          "building-00025",
+          "building-00026"
+        ]
+      }
+    }
+  },
+  "failures": [],
+  "passed": true,
+  "scope": "Ctrl+S/F9 binary and City DNA preserve real authored expression, root retune, keep-land reservation, theme source and map events. No human listening claim."
+}
