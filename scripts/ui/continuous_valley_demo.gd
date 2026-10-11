@@ -40,6 +40,7 @@ var terrain_layer: Node2D
 var city_ground_layer: Node2D
 var water_flow: Node2D
 var community_label_layer: Node2D
+var music_activity_layer: Node2D
 var overlay_key: Array = []
 var overlay_candidates: Array[Dictionary] = []
 var overlay_communities: Array[Dictionary] = []
@@ -184,6 +185,10 @@ func _ready() -> void:
 	community_label_layer.name = "CommunityNames"
 	community_label_layer.z_index = 50
 	add_child(community_label_layer)
+	music_activity_layer = preload("res://scripts/visual/city_music_activity_layer.gd").new()
+	music_activity_layer.name = "MusicActivity"
+	music_activity_layer.z_index = 60
+	add_child(music_activity_layer)
 	tooltip = Label.new()
 	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tooltip.add_theme_font_size_override("font_size",15)
@@ -233,6 +238,7 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 		expanded_town_starter = bool(model.world.expanded_plan)
 		terrain_family = str(model.world.terrain.family)
 		fixed_gain = model.synth.gain
+	model.enable_music_activity()
 	shown_world = model.world
 	selected_id = ""
 	context.clear()
@@ -294,7 +300,7 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 		_message("%s · 林荫交响 · 完整河谷起点，可继续生长" % shown_world.terrain_title())
 	elif starter:
 		planning_guide.hide_tool()
-		_message("%s · %s · %d栋可改编街坊 · 点击房屋改音，P继续规划" % [shown_world.terrain_title(),"晴岸合奏" if expression == "bright" else "深流慢板",shown_world.buildings.size()])
+		_message("%s · %d栋 · 单圈主题，双虚圈应答 · 点房屋改音，P规划" % [shown_world.terrain_title(),shown_world.buildings.size()])
 	else:
 		_message("%s · 空地开局 · 点击街边播下第一段声音" % shown_world.terrain_title())
 
@@ -2075,6 +2081,7 @@ func _process(delta: float) -> void:
 	var frame_started := Time.get_ticks_usec()
 	_sync_buildings()
 	_profile_frame("buildings_ms",frame_started)
+	music_activity_layer.sync(self)
 	frame_started = Time.get_ticks_usec()
 	scenery.sync(self)
 	_profile_frame("traffic_ms",frame_started)
@@ -2362,7 +2369,7 @@ func _draw() -> void:
 	draw_string(font,Vector2(47,67),shown_world.terrain_title()+" · 晴岸合奏" if expression == "bright" else shown_world.terrain_title()+" · 深流慢板",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("758c85"))
 	_draw_landmark_bar()
 	if not black:
-		var lead := str(model.synth.theme.get("cid",""))
+		var lead := str(model.audible_theme().get("cid",""))
 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
 		var decree_slots := " · 政令槽%d" % shown_world.landmark_intervention_slots() if shown_world.landmark_intervention_slots() > 1 else ""
 		var service := overlay_service

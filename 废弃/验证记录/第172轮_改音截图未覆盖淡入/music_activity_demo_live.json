@@ -1,0 +1,311 @@
+{
+	"adapter": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+	"audio_driver": "WASAPI",
+	"checks": {
+		"black_listening_keeps_physical_audio_running": true,
+		"future_preview_does_not_submit_a_city_decision": true,
+		"future_preview_hides_current_city_activity_instead_of_visualizing_forecast": true,
+		"held_space_requests_production_future_pcm_preview": true,
+		"lead_mark_belongs_to_actual_source_house_with_lead_style": true,
+		"lead_mark_is_short_and_matches_audible_rendered_pcm_event": true,
+		"music_black_listening_live_screenshot_saved": true,
+		"music_black_listening_live_window_draws": true,
+		"music_lead_live_screenshot_saved": true,
+		"music_lead_live_window_draws": true,
+		"music_preview_hidden_live_screenshot_saved": true,
+		"music_preview_hidden_live_window_draws": true,
+		"music_reply_live_screenshot_saved": true,
+		"music_reply_live_window_draws": true,
+		"opening_response_uses_real_cross_river_pairing": true,
+		"opening_theme_has_natural_mature_conditions": true,
+		"original_physical_cursor_continues_and_only_current_actual_events_return": true,
+		"physical_cursor_advances_during_window_verification": true,
+		"pitch_button_submits_same_real_source_retune": true,
+		"player_pitch_uses_next_writable_real_beat": true,
+		"production_b_restores_city_activity_layer": true,
+		"production_black_listening_hides_city_music_marks": true,
+		"production_default_mature_small_city_is_playing": true,
+		"production_enables_actual_music_activity_before_live_rendering": true,
+		"production_future_preview_reaches_physical_player": true,
+		"production_p_exposes_real_theme_source_shortcut": true,
+		"real_audible_lead_reaches_map_source": true,
+		"real_audible_reply_reaches_map_receiver": true,
+		"real_house_pitch_choice_is_available": true,
+		"real_window_uses_physical_wasapi": true,
+		"releasing_space_restores_original_live_activity_layer": true,
+		"reply_mark_matches_actual_pcm_instead_of_future_schedule": true,
+		"reply_mark_uses_actual_receiver_after_two_beats_with_reply_style": true,
+		"same_real_source_sings_player_pitch_and_displays_new_note": false,
+		"small_city_live_verification_adds_no_underruns": true,
+		"source_shortcut_opens_existing_house_pitch_menu": true,
+		"stopped_output_clears_city_music_marks": true
+	},
+	"display_backend": "Windows",
+	"edit": {
+		"new_pitch": 52,
+		"old_pitch": 48,
+		"requested_frame": 945599,
+		"sound_frame": 948150,
+		"source_id": "building-00006",
+		"tuned_mark": {}
+	},
+	"engine": "4.7.2-stable (official)",
+	"failures": [
+		"same_real_source_sings_player_pitch_and_displays_new_note"
+	],
+	"observations": {
+		"music_black_listening_live": {
+			"actual_rows": [
+				{
+					"cid": "east-1",
+					"end_frame": 1160933,
+					"event_id": "reply:west-1:1124550:2:building-00025:48:building-00021",
+					"generation": 1,
+					"onset": 1146600,
+					"pitch": 67,
+					"receiver_id": "building-00021",
+					"render_end": 1160933,
+					"render_start": 1146600,
+					"source_event_id": "west-1:1124550:2:building-00025:48",
+					"source_id": "building-00025",
+					"source_onset": 1124550,
+					"strength": 0.00214533936036438
+				}
+			],
+			"audible_frame": 1158159.97485493,
+			"black": true,
+			"buildings": 27,
+			"device_frame": 1158159.97485493,
+			"layer_visible": false,
+			"marks": [],
+			"phrase": 3,
+			"preview_requested": false,
+			"preview_started": false,
+			"rendered_frame": 1166527,
+			"underruns": 0
+		},
+		"music_lead_live": {
+			"actual_rows": [
+				{
+					"cid": "west-1",
+					"end_frame": 753008,
+					"event_id": "west-1:738675:1:building-00003:55",
+					"generation": 0,
+					"onset": 738675,
+					"pitch": 67,
+					"receiver_id": "",
+					"render_end": 746943,
+					"render_start": 738675,
+					"source_event_id": "west-1:738675:1:building-00003:55",
+					"source_id": "building-00003",
+					"source_onset": 738675,
+					"strength": 0.0162866536908803
+				}
+			],
+			"audible_frame": 738746.553654929,
+			"black": false,
+			"buildings": 24,
+			"device_frame": 738746.553654929,
+			"layer_visible": true,
+			"marks": [
+				{
+					"alpha": 0.647622421894082,
+					"cid": "west-1",
+					"end_frame": 753008,
+					"event_id": "west-1:738675:1:building-00003:55",
+					"generation": 0,
+					"note": "G",
+					"onset": 738675,
+					"performer_id": "building-00003",
+					"pitch": 67,
+					"position": [
+						946.176025390625,
+						292.294616699219
+					],
+					"radius": 11.4815368155594,
+					"receiver_id": "",
+					"render_end": 746943,
+					"render_start": 738675,
+					"role": "lead",
+					"source_event_id": "west-1:738675:1:building-00003:55",
+					"source_id": "building-00003",
+					"source_onset": 738675,
+					"strength": 0.0162866536908803
+				}
+			],
+			"phrase": 2,
+			"preview_requested": false,
+			"preview_started": false,
+			"rendered_frame": 746943,
+			"underruns": 0
+		},
+		"music_preview_hidden_live": {
+			"actual_rows": [
+				{
+					"cid": "west-1",
+					"end_frame": 1182983,
+					"event_id": "west-1:1168650:3:building-00001:48",
+					"generation": 0,
+					"onset": 1168650,
+					"pitch": 72,
+					"receiver_id": "",
+					"render_end": 1178431,
+					"render_start": 1168650,
+					"source_event_id": "west-1:1168650:3:building-00001:48",
+					"source_id": "building-00001",
+					"source_onset": 1168650,
+					"strength": 0.0390676901272242
+				}
+			],
+			"audible_frame": 1170664.88045493,
+			"black": false,
+			"buildings": 27,
+			"device_frame": 1170664.88045493,
+			"layer_visible": false,
+			"marks": [],
+			"phrase": 3,
+			"preview_requested": true,
+			"preview_started": true,
+			"rendered_frame": 1178943,
+			"underruns": 0
+		},
+		"music_reply_live": {
+			"actual_rows": [
+				{
+					"cid": "east-1",
+					"end_frame": 951458,
+					"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+					"generation": 1,
+					"onset": 937125,
+					"pitch": 67,
+					"receiver_id": "building-00021",
+					"render_end": 945599,
+					"render_start": 937125,
+					"source_event_id": "west-1:915075:5:building-00019:48",
+					"source_id": "building-00019",
+					"source_onset": 915075,
+					"strength": 0.0110053878346028
+				}
+			],
+			"audible_frame": 937226.418254929,
+			"black": false,
+			"buildings": 24,
+			"device_frame": 937226.418254929,
+			"layer_visible": true,
+			"marks": [
+				{
+					"alpha": 0.436534137242295,
+					"cid": "east-1",
+					"end_frame": 951458,
+					"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+					"generation": 1,
+					"note": "G",
+					"onset": 937125,
+					"performer_id": "building-00021",
+					"pitch": 67,
+					"position": [
+						979.263427734375,
+						475.698272705078
+					],
+					"radius": 11.4988731819993,
+					"receiver_id": "building-00021",
+					"render_end": 945599,
+					"render_start": 937125,
+					"role": "reply",
+					"source_event_id": "west-1:915075:5:building-00019:48",
+					"source_id": "building-00019",
+					"source_onset": 915075,
+					"strength": 0.0110053878346028
+				}
+			],
+			"phrase": 2,
+			"preview_requested": false,
+			"preview_started": false,
+			"rendered_frame": 945599,
+			"underruns": 0
+		},
+		"preview_released": {
+			"actual_rows": [
+				{
+					"cid": "west-1",
+					"end_frame": 1182983,
+					"event_id": "west-1:1168650:3:building-00001:48",
+					"generation": 0,
+					"onset": 1168650,
+					"pitch": 72,
+					"receiver_id": "",
+					"render_end": 1178431,
+					"render_start": 1168650,
+					"source_event_id": "west-1:1168650:3:building-00001:48",
+					"source_id": "building-00001",
+					"source_onset": 1168650,
+					"strength": 0.0374202456576725
+				}
+			],
+			"audible_frame": 1170854.62020493,
+			"black": false,
+			"buildings": 27,
+			"device_frame": 1170854.62020493,
+			"layer_visible": true,
+			"marks": [
+				{
+					"alpha": 0.720027558826045,
+					"cid": "west-1",
+					"end_frame": 1182983,
+					"event_id": "west-1:1168650:3:building-00001:48",
+					"generation": 0,
+					"note": "C",
+					"onset": 1168650,
+					"performer_id": "building-00001",
+					"pitch": 72,
+					"position": [
+						720.278076171875,
+						295.661804199219
+					],
+					"radius": 19.5132981416804,
+					"receiver_id": "",
+					"render_end": 1178431,
+					"render_start": 1168650,
+					"role": "lead",
+					"source_event_id": "west-1:1168650:3:building-00001:48",
+					"source_id": "building-00001",
+					"source_onset": 1168650,
+					"strength": 0.0374202456576725
+				}
+			],
+			"phrase": 3,
+			"preview_requested": false,
+			"preview_started": false,
+			"rendered_frame": 1179199,
+			"underruns": 0
+		},
+		"reply_wait_window": {
+			"audible_frame": 738746.553654929,
+			"capture_alpha": 0.3,
+			"maximum_seconds": 14.9967549362844,
+			"next_boundary": 1058400,
+			"scheduled_reply_onsets": [
+				937125,
+				970200,
+				1025325
+			],
+			"wait_until_frame": 1058400.0
+		}
+	},
+	"output_window": {
+		"advanced_frames": 464505.31885,
+		"audible_after": 1170854.62020493,
+		"audible_before": 706349.301354929,
+		"sample_rate": 22050,
+		"underruns_after": 0,
+		"underruns_before": 0
+	},
+	"passed": false,
+	"scope": "One production mature default city, physical WASAPI clock, rendered Lead/Reply marks, P/source/note callbacks, B and held Space. No fabricated eligibility, manual settlement, future-PCM map activity, large-city performance or human-listening claim",
+	"screenshots": {
+		"music_black_listening_live": "res://验证记录/round172_真实演奏来源/music_black_listening_live.png",
+		"music_lead_live": "res://验证记录/round172_真实演奏来源/music_lead_live.png",
+		"music_preview_hidden_live": "res://验证记录/round172_真实演奏来源/music_preview_hidden_live.png",
+		"music_reply_live": "res://验证记录/round172_真实演奏来源/music_reply_live.png"
+	}
+}

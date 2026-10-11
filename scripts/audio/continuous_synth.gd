@@ -30,6 +30,9 @@ var pad_priority_sorts := 0
 # The score/state stays in GDScript; selected wavetable voices share one native block.
 var native_enabled := true
 var native_mixer: RefCounted = ClassDB.instantiate("CityPadMixer") if ClassDB.class_exists("CityPadMixer") else null
+# Opt-in render telemetry. These fields are absent from saved/frozen synth state.
+var capture_music_activity := false
+var captured_music_segments: Array[Dictionary] = []
 
 func begin_continuous_era_transition(frame: int,target_era: int,rate: int) -> void:
 	var duration := maxi(1,roundi(4.0*60.0*float(rate)/120.0))
@@ -325,7 +328,7 @@ func musical_events(node: Dictionary, start: int, count: int, rate: int) -> Arra
 				"generation":1 if node["answer"] else 0,"source_onset":source_onset,"onset":onset,"pitch":pitch})
 	return result
 
-func _musical_block(node: Dictionary, start: int, count: int, rate: int) -> PackedFloat32Array:
+func _musical_block(node: Dictionary, start: int, count: int, rate: int, contribution: Dictionary = {}) -> PackedFloat32Array:
 	var output := PackedFloat32Array()
 	output.resize(count)
 	for event in musical_events(node,start,count,rate):
@@ -333,10 +336,22 @@ func _musical_block(node: Dictionary, start: int, count: int, rate: int) -> Pack
 		var wave := _event_wave(int(event["pitch"]),node["pattern"]["expression"],rate)
 		var begin := maxi(start,onset)
 		var finish := mini(start+count,onset+wave.size())
+		if not contribution.is_empty() and finish > begin:
+			var segment := event.duplicate()
+			segment.merge(contribution)
+			segment["end_frame"] = onset+wave.size()
+			segment["render_start"] = begin
+			segment["render_end"] = finish
+			segment["expression"] = str(node["pattern"]["expression"])
+			segment["node_key"] = str(node["key"])
+			segment["cid"] = str(node["part"]["cid"])
+			segment["rate"] = rate
+			captured_music_segments.append(segment)
 		for at in range(begin,finish): output[at-start] += wave[at-onset]
 	return output
 
 func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
+	if capture_music_activity: captured_music_segments.clear()
 	if current_world == null and pad_groups.is_empty():
 		return super.render_block(state,start,count,rate)
 	var output := PackedVector2Array()
@@ -492,10 +507,14 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		if level > 0.00001 or target > 0.0:
 			if node["answer"]: response_count += 1
 			else: theme_count += 1
-		var wave := _musical_block(node,start,count,rate)
 		var amplitude := float(score["response_gain"] if node["answer"] else score["theme_gain"])*gain
 		if not node["answer"] and pattern["civic"]: amplitude *= 1.15
 		var stereo: Vector2 = part["stereo"]
+		var contribution: Dictionary = {}
+		if capture_music_activity:
+			contribution = {"level_frame":start,"level_from":level,"target":target,"fade_step":1.0/fade_frames,
+				"amplitude":absf(amplitude),"stereo_gain":stereo.length()}
+		var wave := _musical_block(node,start,count,rate,contribution)
 		for i in range(count):
 			level = move_toward(level,target,1.0/fade_frames)
 			output[i] += wave[i]*level*amplitude*stereo

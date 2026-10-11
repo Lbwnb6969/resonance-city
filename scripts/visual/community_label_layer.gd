@@ -30,7 +30,7 @@ func sync(demo: Control) -> void:
 				"position":IsoProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),city.terrain.height_at(p)),
 				"size":Vector2(font.get_string_size(community["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,12).x,font.get_height(12))})
 	var selected := str(city.by_id.get(demo.selected_id,{}).get("community_id",""))
-	var lead := str(demo.model.synth.theme.get("cid",""))
+	var lead := str(demo.model.audible_theme().get("cid",""))
 	var next_layout: Array = geometry_key+[demo.size,demo.pan,demo.view_zoom,selected,lead]
 	if layout_key == next_layout:
 		last_sync_ms = float(Time.get_ticks_usec()-started)/1000.0
