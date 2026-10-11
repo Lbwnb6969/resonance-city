@@ -86,12 +86,12 @@ static func text(feedback: Dictionary) -> String:
 	var expression := str(feedback.get("expression_label", "声音"))
 	var type_label := str(feedback.get("type_label", "建筑"))
 	var note := str(feedback.get("note", "·"))
-	var suffix := "%s · %s · %s" % [community, expression, note]
-	if bool(feedback.get("authored", false)):
-		return "你的%s第%d栋%s已长成 · %s" % [expression, int(feedback.get("family_index", 1)), type_label, suffix]
-	var label := "%s栋%s已长成" % [community, type_label]
-	if not expression.is_empty(): label += " · " + expression
+	var activity_suffix := ""
 	var roles: Array = feedback.get("activity_roles", [])
-	if not roles.is_empty(): label += " · " + "/".join(roles) + "已在此处响起"
-	return label + " · 音源 " + str(feedback.get("district_id", "")) + " · " + note
+	if not roles.is_empty(): activity_suffix = " · " + "/".join(roles) + "已在此处响起"
+	if bool(feedback.get("authored", false)):
+		return "你的%s第%d栋%s已长成 · %s · %s · 音源 %s%s" % [expression, int(feedback.get("family_index", 1)), type_label, community, note, str(feedback.get("district_id", "")), activity_suffix]
+	var label := "%s · 一栋%s已长成" % [community, type_label]
+	if not expression.is_empty(): label += " · " + expression
+	return label + " · 音源 " + str(feedback.get("district_id", "")) + " · " + note + activity_suffix
 

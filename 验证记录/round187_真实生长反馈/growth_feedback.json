@@ -3,7 +3,7 @@
     "authored_birth_is_marked_from_real_family": true,
     "authored_feedback_exposes_real_community_type_and_pitch": true,
     "authored_feedback_keeps_real_building_and_family_order": true,
-    "authored_text_names_route_community_and_actual_birth": true,
+    "authored_text_names_route_community_source_and_actual_activity": true,
     "feedback_query_does_not_mutate_world": true,
     "missing_birth_identity_has_no_invented_feedback": true,
     "ordinary_birth_does_not_claim_player_authorship": true,
