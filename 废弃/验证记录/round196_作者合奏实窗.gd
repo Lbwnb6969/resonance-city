@@ -214,5 +214,3 @@ func _finish() -> void:
 	demo.queue_free()
 	await process_frame
 	quit(0 if failures.is_empty() else 1)
-
-
