@@ -572,7 +572,7 @@ func refresh() -> void:
 		button.set_pressed_no_signal(button.get_meta("anchor_kind") == anchor_kind)
 	if stage == "charter":
 		heading.text = "你想让这片城市怎样生长？"
-		detail.text = "先选倾向，再在地图选社区；公园和文化馆由你摆，房屋沿合法空地自动长。"
+		detail.text = "先选倾向，再在地图选社区；公园、文化馆或留地由你安排，房屋沿合法空地自动长。"
 		if _first_composition_mode():
 			heading.text = "写第一段 · 先选发展章程" if authored.is_empty() else "再写一段 · 选择生长方向"
 			detail.text = "选一种生长方向，再点一片社区。公园、文化馆或留地由你安排，随后亲自选一个声音。"

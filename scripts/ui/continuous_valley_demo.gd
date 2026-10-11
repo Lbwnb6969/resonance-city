@@ -2683,6 +2683,13 @@ func _planning_status_hint() -> String:
 		if not str(label).is_empty(): pending_labels.append(str(label))
 	if not pending_labels.is_empty():
 		return "待播规划 · %s · 下一乐句落定" % "、".join(pending_labels)
+	# The first authored community deliberately asks for one audible retune
+	# before opening the next composition. Keep that causal handoff visible after
+	# the transient toast fades, so the small top-left entry is understandable.
+	if first_composition_mode:
+		var authored := _first_authored_state()
+		if not authored.is_empty() and bool(authored.get("theme_eligible",false)) and not bool(authored.get("root_heard_retune",false)):
+			return "%s已成熟 · 改一个音并听见它，下一段入口就会出现 · 点击左上按钮" % str(authored.get("community_name","你的社区"))
 	# A bridge is a structural player choice whose one-shot toast expires after
 	# a few seconds. Keep the resulting road and acoustic connection in the
 	# persistent caption so the planning cause remains visible while the city
@@ -2848,6 +2855,16 @@ func _hover_placement(p: Vector2) -> Dictionary:
 		hover_placement_key = key
 		hover_placement = model.world.placement(p)
 	return hover_placement
+
+func _pending_reservation_at(p: Vector2) -> Dictionary:
+	## A queued reserve is already the player's visible choice, even though the
+	## WorldDelta has not reached the next phrase boundary yet. Keep hover and
+	## drawing on the same pending geometry so it cannot read as a buildable lot.
+	if model == null or model.world == null: return {}
+	for operation: Dictionary in model.world.pending_actions:
+		if str(operation.get("kind", "")) != "reserve": continue
+		if SpatialPlanning.point_in_footprint(operation,p): return operation
+	return {}
 
 func _bridge_preview_at(p: Vector2) -> Dictionary:
 	if shown_world == null: return {}
@@ -3033,17 +3050,20 @@ func _process(delta: float) -> void:
 		var names: Array = bridge_hover.get("community_names",[])
 		var before := "未连通" if is_inf(float(bridge_hover.get("route_before",INF))) else ("%.1f步" % float(bridge_hover.get("route_before",0.0)))
 		tooltip.text = "桥位预影 · %s\n真实道路：%s\n步行 %s → %.1f步 · %s\nG确认；下一乐句接入两岸道路、交通与空间声学" % [" ↔ ".join(names),"、".join(bridge_hover.get("road_ids",[])),before,float(bridge_hover.get("route_after",0.0)),str(bridge_hover.get("traffic_after","两岸联奏线"))]
-	elif check["allowed"]:
-		tooltip.text = "%s\n%s\n点击选音；Shift低八度；按住空格试听" % [str(check["preview"]),note_name(midi)]
-		var lot: String = check["lot_id"]
-		hover_seconds = hover_seconds+delta if lot == last_hover_lot else 0.0
-		if lot != last_hover_lot: last_hover_lot = lot
-		if hover_seconds > 0.18 and hover_seconds < 0.18+delta: _light_note(midi+12 if midi < 48 else midi)
 	else:
+		var pending_reservation := _pending_reservation_at(p)
 		var reservation := shown_world.planning_at(p)
 		var site := shown_world.public_at(p)
-		if not reservation.is_empty():
+		if not pending_reservation.is_empty():
+			tooltip.text = "待留地 · 下一句普通成长绕开这里\n当前合奏保持不变；留地本身不新增声音\n边界落定后可继续保持、释放或改作公园/文化馆"
+		elif not reservation.is_empty():
 			tooltip.text = "你留下的空地 · 房屋不会长进来\n点击选择释放、建公园或文化设施；规划面板也可自由留地"
+		elif check["allowed"]:
+			tooltip.text = "%s\n%s\n点击选音；Shift低八度；按住空格试听" % [str(check["preview"]),note_name(midi)]
+			var lot: String = check["lot_id"]
+			hover_seconds = hover_seconds+delta if lot == last_hover_lot else 0.0
+			if lot != last_hover_lot: last_hover_lot = lot
+			if hover_seconds > 0.18 and hover_seconds < 0.18+delta: _light_note(midi+12 if midi < 48 else midi)
 		elif not site.is_empty():
 			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路覆盖%d栋\n公园为主题留白" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
 			if site["active"] and site["kind"] == "civic":
@@ -3581,6 +3601,18 @@ func _draw_planning_preview() -> void:
 			for stop in pending_route.get("stops",[]):
 				var stop_p := Vector2(float(stop["position"][0]),float(stop["position"][1]))
 				draw_circle(point(stop_p,shown_world.terrain.height_at(stop_p)+0.30),5.5*view_zoom,Color(0.96,0.76,0.35,0.86))
+			continue
+		if str(op.get("kind", "")) == "reserve":
+			var reserve_color := Color("849b78")
+			var reserve_components := SpatialPlanning.footprint_components(op)
+			for reserve_polygon in reserve_components:
+				var projected_reserve := _project_polygon(reserve_polygon)
+				draw_colored_polygon(projected_reserve,Color(reserve_color,0.24))
+				var closed_reserve := projected_reserve.duplicate()
+				closed_reserve.append(closed_reserve[0])
+				draw_polyline(closed_reserve,Color(reserve_color,0.92),2.0,true)
+			var reserve_center := SpatialPlanning.bounds(reserve_components[0]).get_center() if not reserve_components.is_empty() else Vector2.ZERO
+			draw_string(ThemeDB.fallback_font,point(reserve_center)+Vector2(9,-9),"待留地 · 下一句绕开",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("536d56"))
 			continue
 		var polygons: Array[PackedVector2Array] = []
 		if op.has("target_polygon") or op.has("target_polygons"):

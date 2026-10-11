@@ -79,7 +79,7 @@ func sync() -> void:
 			action = "theme"
 			disabled = false
 			text = "%s · 改写你种下的%s" % [community,expression]
-			tooltip_text = "回到你亲自种下的房屋，改一个音；不替你选择或提交"
+			tooltip_text = "回到你亲自种下的房屋，改一个音并听见它；听见后开放下一段规划"
 		else:
 			var continuation: Dictionary = continuation_state.get("action",{})
 			if bool(continuation.get("available",false)) and str(continuation.get("kind","")) in ["root","reservation","community","child"]:
@@ -103,7 +103,7 @@ func sync() -> void:
 		action = "planning"
 		disabled = false
 		text = "写第一段 · 选择发展章程"
-		tooltip_text = "先决定一片社区怎样生长，再亲自放置公园或文化馆"
+		tooltip_text = "先决定一片社区怎样生长，再安排公园、文化馆或留地"
 		var audible_seconds: float = (demo.clock.renderer.transport.audible_frame-origin_frame)/float(demo.clock.renderer.transport.sample_rate)
 		visible = not _blocked() and audible_seconds >= 10.0
 	_place_entry()
