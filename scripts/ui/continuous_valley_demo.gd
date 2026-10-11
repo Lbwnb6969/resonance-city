@@ -18,6 +18,7 @@ const FirstAuthoredWork = preload("res://scripts/world/first_authored_work.gd")
 const FirstAuthoredContinuation = preload("res://scripts/world/first_authored_continuation.gd")
 const FirstAuthoredRouteResult = preload("res://scripts/ui/first_authored_route_result.gd")
 const FirstExpressionComparisonCard = preload("res://scripts/ui/first_expression_comparison_card.gd")
+const GrowthFeedback = preload("res://scripts/world/growth_feedback.gd")
 const PlayerExpression = preload("res://scripts/world/player_expression.gd")
 const ExpressionPreview = preload("res://scripts/world/expression_preview.gd")
 const Config = preload("res://scripts/world/world_values.gd")
@@ -2725,7 +2726,10 @@ func _process(delta: float) -> void:
 		last_presented_event_count = presented_events.size()
 	if presented_events.size() > last_presented_event_count:
 		for event in presented_events.slice(last_presented_event_count):
-			if str(event.get("kind","")) == "planning_rejected": _message(_planning_rejection_message(event))
+			if str(event.get("kind","")) == "birth":
+				var birth_feedback := GrowthFeedback.for_birth(shown_world,event,model.audible_pitches(),model.audible_music_activity(clock.renderer.transport.audible_frame))
+				if not birth_feedback.is_empty(): _message(GrowthFeedback.text(birth_feedback))
+			elif str(event.get("kind","")) == "planning_rejected": _message(_planning_rejection_message(event))
 			elif str(event.get("kind","")) == "transit_line":
 				var event_communities := _transit_community_names(event.get("community_ids",[]))
 				var event_community_text := "、".join(event_communities) if not event_communities.is_empty() else "%d个社区" % event.get("community_ids",[]).size()
