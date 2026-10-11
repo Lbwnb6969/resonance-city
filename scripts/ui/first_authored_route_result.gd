@@ -30,7 +30,8 @@ static func _rhythm_result(work: Dictionary,score: Dictionary,definition: Dictio
 	# A community can retain an older rhythm source while the newest authored
 	# family is waiting for its next slot. When score exposes that real source,
 	# describe its own pattern instead of attributing it to the selected root.
-	var source_expression := expression if not bool(actual.get("player_expression",false)) else str(actual.get("expression",expression))
+	var actual_expression := str(actual.get("expression",""))
+	var source_expression := actual_expression if not actual_expression.is_empty() else expression
 	var source_definition := PlayerExpression.definition(source_expression)
 	if source_definition.is_empty(): source_definition = definition
 	var offset := int(source_definition.get("rhythm_offset",0))

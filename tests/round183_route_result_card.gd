@@ -31,14 +31,17 @@ func _run() -> void:
 	var deep := _work("deep",36,4)
 	var weave := _work("weave",64,7)
 	var warm := _work("warm",52,6,"reservation-00042")
-	var weave_score := {"rhythms":[{"cid":"west-1","midi":64,"source_id":"building-00028"}],
+	var weave_score := {"rhythms":[{"cid":"west-1","midi":64,"source_id":"building-00028","expression":"weave"}],
 		"theme":{"cid":"west-1","source_ids":["building-00028"]},"response":{"cid":"west-1"}}
+	var mixed_score := {"rhythms":[{"cid":"west-1","midi":36,"source_id":"building-00041","expression":"deep","player_expression":false}]}
 	var warm_score := {"theme":{"cid":"west-1","source_ids":["building-00028"]}}
 	var before := weave.duplicate(true)
 	var card := Card.summary(weave,weave_score)
 	check(bool(card["available"]) and card["route"] == "weave","settled_route_is_available")
 	check(card["register"]["current_label"] == "E4" and card["register"]["base_label"] == "C4" and card["register"]["changed"],"retuned_register_uses_actual_current_and_birth_pitch")
 	check(card["rhythm"]["active"] and card["rhythm"]["pitch_label"] == "E5" and is_equal_approx(float(card["rhythm"]["spacing_beats"]),0.5),"actual_rhythm_reports_real_slot_pitch_spacing_and_tail")
+	var mixed_card := Card.summary(weave,mixed_score)
+	check(mixed_card["rhythm"]["source_expression"] == "deep" and str(mixed_card["rhythm"]["text"]).contains("每4.00拍"),"mixed_slot_reports_explicit_actual_route")
 	check(str(card["theme"]["next"]).contains("改一个音"),"theme_next_step_points_to_actual_root_rewrite")
 	check(weave == before,"summary_does_not_mutate_supplied_work")
 	var warm_card := Card.summary(warm,warm_score)
