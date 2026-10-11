@@ -50,7 +50,17 @@ func sync() -> void:
 		if bool(authored_state.get("root_heard_retune",false)):
 			heard_root = root_id
 		if heard_root == root_id and bool(authored_state.get("theme_eligible",false)):
-			hide()
+			if bool(continuation_state.get("reservation_active",false)):
+				action = "continuation"
+				text = "照看你留下的空地 · "+str(authored_state["community_name"])
+				tooltip_text = "保留留白，或亲自把它营造成公共空间"
+			else:
+				action = "compose"
+				text = "再写一段 · 选择一片街坊"
+				tooltip_text = "重新选发展方向与社区，让另一段声音与这段合奏"
+			disabled = false
+			visible = not _blocked()
+			_place_entry()
 			return
 		var community := str(authored_state["community_name"])
 		var expression := str(EXPRESSIONS.get(str(authored_state["expression"]),"声音"))
@@ -85,8 +95,11 @@ func sync() -> void:
 		tooltip_text = "先决定一片社区怎样生长，再亲自放置公园或文化馆"
 		var audible_seconds: float = (demo.clock.renderer.transport.audible_frame-origin_frame)/float(demo.clock.renderer.transport.sample_rate)
 		visible = not _blocked() and audible_seconds >= 10.0
+	_place_entry()
+
+func _place_entry() -> void:
 	reset_size()
-	position = Vector2(24,maxf(24,demo.size.y-size.y-24))
+	position = Vector2(24,90)
 
 func _blocked() -> bool:
 	return demo.black or demo.menu.visible or demo.planning_guide.opened or get_tree().paused or not demo.clock.active or demo.clock.player.stream_paused
@@ -102,6 +115,11 @@ func _has_started_work() -> bool:
 
 func _begin() -> void:
 	if not bool(demo.get("first_composition_mode")) or disabled or _blocked(): return
+	if action == "compose":
+		hide()
+		if demo.has_method("_begin_next_composition"): demo._begin_next_composition()
+		else: demo.planning_guide.open_tool()
+		return
 	if action == "theme":
 		var current: Dictionary = demo._first_authored_state()
 		if str(current.get("root_id","")) != str(authored_state.get("root_id","")) or not bool(current.get("theme_eligible",false)):

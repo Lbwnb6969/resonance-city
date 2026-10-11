@@ -86,7 +86,10 @@ func _run() -> void:
 	check(guide.visible,"theme_entry_remains_until_actual_root_is_heard")
 	demo.authored = _state("building-00001",true,true)
 	guide.sync()
-	check(not guide.visible and guide.heard_root == "building-00001","actual_audible_retune_stops_repeated_theme_invitation")
+	check(guide.visible and guide.action == "compose" and guide.heard_root == "building-00001","actual_audible_retune_replaces_theme_invitation_with_next_composition")
+	guide.emit_signal("pressed")
+	check(demo.planning_guide.opened and not guide.visible,"next_composition_returns_to_real_planning_without_auto_choice")
+	demo.planning_guide.opened = false
 	demo.authored = _state("building-00002",true,false)
 	guide.sync()
 	check(guide.visible and guide.authored_state["root_id"] == "building-00002","restored_or_new_author_root_can_receive_its_own_entry")

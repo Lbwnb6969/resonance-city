@@ -233,6 +233,13 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}, at: int
 	var has_civic := bool(facility["civic"])
 	theme = {"cid":selected,"notes":notes,"expression":world.community_expression(selected),"player_expression":not author.is_empty(),"park":has_park,"civic":has_civic,"center":current_world.center_for(selected).duplicate(true),"zone_roles":world.functional_zone_roles(selected),"stereo":_stereo_for(first)}
 	theme["source_ids"] = world.community_theme_sources(selected)
+	if not author.is_empty():
+		# Keep every actual resident note, opening this authored motif with the
+		# real root rather than waiting for its late geometric position.
+		var author_index: int = theme["source_ids"].find(str(author["district_id"]))
+		if author_index > 0:
+			theme["source_ids"].push_front(theme["source_ids"].pop_at(author_index))
+			theme["notes"].push_front(theme["notes"].pop_at(author_index))
 	# The river supplies a spatial opportunity; the player still authors the
 	# pitches and placement. One response is derived from the lead schedule.
 	if response_enabled:
@@ -303,22 +310,24 @@ func _sync_musical_nodes(at: int) -> void:
 			node["retired_at"] = at
 		node["active"] = false
 	if theme.is_empty(): return
-	_register_musical_node(theme,theme,false,at,previous)
-	if not response.is_empty(): _register_musical_node(response,theme,true,at,previous)
+	var lead := _register_musical_node(theme,theme,false,at,previous)
+	if not response.is_empty(): _register_musical_node(response,theme,true,at,previous,int(lead.get("source_origin",lead["born_at"])))
 
-func _musical_signature(part: Dictionary, pattern: Dictionary, answer: bool) -> String:
+func _musical_signature(part: Dictionary, pattern: Dictionary, answer: bool,source_origin: int = -1) -> String:
 	# Replies must carry the exact source pitch as well as the receiving pitch.
-	return JSON.stringify([part["cid"],part["notes"],part.get("source_ids",[]),part.get("receiver_ids",[]),
+	var identity := [part["cid"],part["notes"],part.get("source_ids",[]),part.get("receiver_ids",[]),
 		part["stereo"],pattern["cid"],pattern["notes"],pattern.get("source_ids",[]),
-		pattern["expression"],pattern["park"],pattern["civic"],pattern.get("zone_roles",[]),bool(pattern.get("player_expression",false)),answer])
+		pattern["expression"],pattern["park"],pattern["civic"],pattern.get("zone_roles",[]),bool(pattern.get("player_expression",false)),answer]
+	if answer and bool(pattern.get("player_expression",false)): identity.append(source_origin)
+	return JSON.stringify(identity)
 
-func _register_musical_node(part: Dictionary, pattern: Dictionary, answer: bool, at: int, previous: Array[Dictionary] = []) -> void:
-	var signature := _musical_signature(part,pattern,answer)
+func _register_musical_node(part: Dictionary, pattern: Dictionary, answer: bool, at: int, previous: Array[Dictionary] = [],source_origin: int = -1) -> Dictionary:
+	var signature := _musical_signature(part,pattern,answer,source_origin)
 	var key := ""
 	var predecessor := ""
 	for old in previous:
 		if bool(old["answer"]) != answer: continue
-		if _musical_signature(old["part"],old["pattern"],answer) == signature:
+		if _musical_signature(old["part"],old["pattern"],answer,int(old.get("source_origin",-1))) == signature:
 			key = str(old["key"])
 			# Keep the audible lifecycle and phase, while refreshing runtime-only
 			# presentation metadata such as the current public-site identity.
@@ -337,6 +346,7 @@ func _register_musical_node(part: Dictionary, pattern: Dictionary, answer: bool,
 			incarnation += 1
 			key = signature+"@%d:%d" % [at,incarnation]
 		musical_nodes[key] = {"key":key,"part":part.duplicate(true),"pattern":pattern.duplicate(true),"answer":answer,"born_at":at}
+		if bool(pattern.get("player_expression",false)): musical_nodes[key]["source_origin"] = source_origin if answer else at
 		if not predecessor.is_empty(): musical_nodes[key]["handoff_from"] = predecessor
 	musical_nodes[key].erase("retired_at")
 	musical_nodes[key]["active"] = true
@@ -346,6 +356,7 @@ func _register_musical_node(part: Dictionary, pattern: Dictionary, answer: bool,
 		var pitch := _theme_pitch(int(note),0,pattern)
 		_event_wave(pitch,str(pattern["expression"]),int(values["timing"]["sample_rate"]),bool(pattern.get("player_expression",false)))
 		_event_wave(pitch+12,str(pattern["expression"]),int(values["timing"]["sample_rate"]),bool(pattern.get("player_expression",false)))
+	return musical_nodes[key]
 
 func warm_score() -> void:
 	var rate := int(values["timing"]["sample_rate"])
@@ -419,11 +430,20 @@ func musical_events(node: Dictionary, start: int, count: int, rate: int) -> Arra
 	var first_cycle := floori(float(start-delay)/period)-1
 	var last_cycle := floori(float(start+count-delay)/period)
 	var notes: Array = part["notes"]
+	var first_slot := 0
+	if bool(pattern.get("player_expression",false)):
+		var origin := int(node.get("source_origin",node.get("born_at",0)))
+		var origin_cycle := floori(float(origin)/period)
+		first_slot = (origin_cycle+1)*steps.size()
+		for slot in range(steps.size()):
+			if origin_cycle*period+int(steps[slot])*beat >= origin:
+				first_slot = origin_cycle*steps.size()+slot
+				break
 	for cycle in range(first_cycle,last_cycle+1):
 		for index in range(steps.size()):
 			var source_onset := cycle*period+int(steps[index])*beat
 			if source_onset < int(node.get("born_at",0)) or source_onset >= int(node.get("retired_at",9223372036854775807)): continue
-			var note_index := posmod(cycle*steps.size()+index,notes.size())
+			var note_index := posmod(cycle*steps.size()+index-first_slot,notes.size())
 			var pitch := int(notes[note_index])
 			if pitch < 0: continue
 			var source_ids: Array = pattern.get("source_ids",[])

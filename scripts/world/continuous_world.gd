@@ -18,6 +18,7 @@ const TransitPlan = preload("res://scripts/world/transit_planning.gd")
 const TransitCharterAnchor = preload("res://scripts/world/transit_charter_anchor.gd")
 const TransitLineRework = preload("res://scripts/world/transit_line_rework.gd")
 const FirstComposition = preload("res://scripts/world/first_composition.gd")
+const AuthoredStreetGrowth = preload("res://scripts/world/authored_street_growth.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -1685,6 +1686,7 @@ func _grow(family: String, frame: int) -> void:
 	var owned_positions: Array[Vector2] = []
 	for owned in buildings:
 		if str(owned["family_id"]) == family: owned_positions.append(Coupling.position_of(owned))
+	if families[family].has("growth_house_limit") and owned_positions.size() >= int(families[family]["growth_house_limit"]): return
 	var frontier: Array[Vector2] = []
 	var frontier_start := maxi(0,owned_positions.size()-4)
 	for index in range(frontier_start,owned_positions.size()): frontier.append(owned_positions[index])
@@ -1712,6 +1714,8 @@ func _grow(family: String, frame: int) -> void:
 				court_near_frontier = true
 				break
 		if court_near_frontier: candidates.append({"position":court_center,"use":"residential","courtyard_id":str(courtyard["id"])})
+	if bool(families[family].get("player_expression",false)):
+		candidates.append_array(AuthoredStreetGrowth.candidates(self,frontier,str(families[family].get("expression",""))))
 	# L3 candidates make the city grow into open land instead of exhausting a parcel grid.
 	for origin_point in frontier:
 		for radius: float in [1.05,1.55,2.05,2.35]:
@@ -1751,6 +1755,9 @@ func _grow(family: String, frame: int) -> void:
 		var compact_bonus := float(mini(6,compact_neighbors))*float(cfg["city"].get("growth_compact_neighbor_weight",10000.0))
 		var planning_bonus := Charter.growth_bonus(self,cid,p,compact_neighbors)
 		var base_score := float(tier_rank)*100000.0+compact_bonus+quota_bonus*1000.0+transit_bonus*100.0+planning_bonus-distance
+		# Keep the player's street readable before filling a more distant parcel.
+		# Eligibility, real land, reservations and acoustic clashes still decide.
+		if bool(candidate.get("authored_frontage",false)): base_score += 1000000.0
 		# Exact upper bound: acoustic checks cannot rescue a candidate whose
 		# placement score plus the maximum civic bonus cannot beat the winner.
 		if base_score+50.0 <= best_growth_score: continue
@@ -1778,7 +1785,7 @@ func _grow(family: String, frame: int) -> void:
 			if float(coupling.interval(int(root["current_midi"]),int(by_id[neighbor["id"]]["current_midi"]))["score"]) <= 0.05: clashes = true
 		if clashes: continue
 		var service_bonus := _public_service_growth_bonus(str(check.get("community_id","")),p)
-		# Tier remains primary; compact community infill precedes use/transit/service ties.
+		# Ordinary growth keeps tier priority; compact infill precedes other ties.
 		# This placement preference does not alter acoustic coupling or R/V.
 		var growth_score := base_score+service_bonus*50.0
 		if growth_score > best_growth_score:

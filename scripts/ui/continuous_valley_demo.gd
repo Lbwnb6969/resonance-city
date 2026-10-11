@@ -73,6 +73,7 @@ var water_flow: Node2D
 var community_label_layer: Node2D
 var music_activity_layer: Node2D
 var public_space_activity_layer: Node2D
+var authored_reservation_layer: Node2D
 var overlay_key: Array = []
 var overlay_candidates: Array[Dictionary] = []
 var overlay_communities: Array[Dictionary] = []
@@ -235,6 +236,9 @@ func _ready() -> void:
 	music_activity_layer.name = "MusicActivity"
 	music_activity_layer.z_index = 60
 	add_child(music_activity_layer)
+	authored_reservation_layer = preload("res://scripts/visual/authored_reservation_layer.gd").new()
+	authored_reservation_layer.name = "AuthoredReservation"
+	add_child(authored_reservation_layer)
 	public_space_activity_layer = preload("res://scripts/visual/public_space_activity_layer.gd").new()
 	public_space_activity_layer.name = "PublicSpaceActivity"
 	public_space_activity_layer.z_index = 59
@@ -480,6 +484,21 @@ func _make_menu() -> void:
 		verbs.add_child(button)
 	box.add_child(verbs)
 	menu.set_meta("listening_verbs",verbs)
+	var compose_more := Button.new()
+	compose_more.text = "再写一段 · 选择一片街坊"
+	compose_more.pressed.connect(_begin_next_composition)
+	box.add_child(compose_more)
+	menu.set_meta("compose_more",compose_more)
+	var reservation_choices := HFlowContainer.new()
+	for item in [["保持留白 · 回到城市","keep"],["这里建公园","park"],["这里建文化馆","civic"]]:
+		var button := Button.new()
+		button.text = item[0]
+		button.pressed.connect(func() -> void:
+			if item[1] == "keep": menu.hide()
+			else: _verb(item[1]))
+		reservation_choices.add_child(button)
+	box.add_child(reservation_choices)
+	menu.set_meta("authored_reservation_choices",reservation_choices)
 	var reuse_button := Button.new()
 	reuse_button.text = "原位改用 · 试听"
 	reuse_button.tooltip_text = "固定现有占地，比较保留当前用途、公园与文化馆"
@@ -1024,13 +1043,14 @@ func _gui_input(event: InputEvent) -> void:
 				_select_landmark_candidate(landmark_index)
 				menu.hide()
 				return
-			var id := _hit(pointer)
+			var authored_target: Dictionary = authored_reservation_layer.hit_reservation(pointer)
+			var id := _hit(pointer) if authored_target.is_empty() else ""
 			if not id.is_empty():
 				selected_id = id
 				context = {"kind":"retune","id":id}
 				menu_info.text = "给这栋建筑换一个音"
 			else:
-				var p := world_at(pointer)
+				var p: Vector2 = world_at(pointer) if authored_target.is_empty() else authored_target["position"]
 				var reservation := shown_world.planning_at(p)
 				if not reservation.is_empty():
 					context = {"kind":"reservation","id":reservation["reservation_id"],"position":reservation["position"].duplicate()}
@@ -1132,6 +1152,7 @@ func _begin_first_authored_continuation() -> bool:
 		planning_guide.hide_tool()
 		selected_id = ""
 		context = {"kind":"reservation","id":reservation_id,"position":raw.duplicate()}
+		menu_info.text = "你留下的空地 · "+str(work["community_name"])+"\n继续保留呼吸的位置，或亲自营造公共空间"
 		planning_guide._focus_planning_position(raw)
 		_show_context_menu()
 		_message(str(work["community_name"])+" · 已定位真实留地，继续规划或释放")
@@ -1154,7 +1175,23 @@ func _begin_first_authored_continuation() -> bool:
 		return true
 	return false
 
-func _begin_first_sound_choice(cid: String,at: Vector2 = Vector2.INF) -> bool:
+func _begin_next_composition() -> void:
+	_cancel_preview_playback()
+	model.submit({"kind":"focus","community":""})
+	selected_id = ""
+	context.clear()
+	menu.hide()
+	_home_city()
+	planning_guide.open_tool()
+	_message("再写一段 · 选发展方向，再在地图选择街坊；让不同声音一起演奏")
+
+func _authored_reservation_context() -> bool:
+	if not first_composition_mode or context.get("kind","") != "reservation": return false
+	var id := str(context.get("id",""))
+	return shown_world.families.values().any(func(family: Dictionary) -> bool:
+		return bool(family.get("player_expression",false)) and not id.is_empty() and str(family.get("expression_reservation_id","")) == id)
+
+func _begin_first_sound_choice(cid: String,_at: Vector2 = Vector2.INF) -> bool:
 	var choices: Array = FirstComposition.opportunities(shown_world).get("seed_candidates",[])
 	var candidate: Dictionary = {}
 	for possible: Dictionary in choices:
@@ -1166,14 +1203,8 @@ func _begin_first_sound_choice(cid: String,at: Vector2 = Vector2.INF) -> bool:
 		return false
 	var raw: Array = candidate["position"]
 	var position := Vector2(float(raw[0]),float(raw[1]))
-	if at != Vector2.INF:
-		var distance := position.distance_squared_to(at)
-		for lot: Dictionary in shown_world.lots:
-			if str(lot.get("community_id","")) != cid: continue
-			var p := Vector2(float(lot["center"][0]),float(lot["center"][1]))
-			if p.distance_squared_to(at) < distance and bool(model.world.placement(p)["allowed"]):
-				position = p
-				distance = p.distance_squared_to(at)
+	# Use the street opportunity, including continuous land beside a real
+	# block. A closer lot to the civic anchor can be a disconnected road end.
 	planning_guide.hide_tool()
 	selected_id = ""
 	context = {"kind":"seed","position":[position.x,position.y],"community_id":cid,"first_composition":true}
@@ -1315,8 +1346,8 @@ func _show_context_menu() -> void:
 	details_toggle.set_pressed_no_signal(false)
 	(menu.get_meta("details_label") as Label).hide()
 	var public_toggle: Button = menu.get_meta("public_toggle")
-	public_toggle.set_pressed_no_signal(not retuning and not _expression_context())
-	(menu.get_meta("public_tools") as Control).visible = not retuning and not _expression_context()
+	public_toggle.set_pressed_no_signal(not retuning and not _expression_context() and not _authored_reservation_context())
+	(menu.get_meta("public_tools") as Control).visible = public_toggle.button_pressed
 	var city_toggle: Button = menu.get_meta("city_toggle")
 	city_toggle.set_pressed_no_signal(false)
 	(menu.get_meta("city_tools") as Control).hide()
@@ -1331,7 +1362,7 @@ func _show_context_menu() -> void:
 	menu.show()
 
 func _place_first_composition_menu() -> void:
-	if not first_composition_mode or not (_expression_context() or _authored_retune()): return
+	if not first_composition_mode or not (_expression_context() or _authored_retune() or _authored_reservation_context()): return
 	# Keep the player's actual parcel/house visible beside its choices.
 	menu.position.x = 12.0 if bool(menu.get_meta("target_on_right",true)) else maxf(12.0,size.x-menu.size.x-12.0)
 	menu.position.y = clampf(size.y*0.5-menu.size.y*0.5,78.0,maxf(78.0,size.y-menu.size.y-82.0))
@@ -1434,10 +1465,14 @@ func _response_button_text() -> String:
 func _planning_menu() -> void:
 	_refresh_transit_edit_choices()
 	var choosing_expression := _expression_context()
+	var authored_reservation := _authored_reservation_context()
+	(menu.get_meta("compose_more") as Control).visible = first_composition_mode and (_authored_retune() or authored_reservation)
+	(menu.get_meta("authored_reservation_choices") as Control).visible = authored_reservation
 	(menu.get_meta("expression_choices") as Control).visible = choosing_expression
-	(menu.get_meta("notes") as Control).visible = not choosing_expression
-	(menu.get_meta("legacy_expressions") as Control).visible = not choosing_expression and not _authored_retune()
+	(menu.get_meta("notes") as Control).visible = not choosing_expression and not authored_reservation
+	(menu.get_meta("legacy_expressions") as Control).visible = not choosing_expression and not _authored_retune() and not authored_reservation
 	(menu.get_meta("listening_verbs") as Control).visible = not choosing_expression
+	if authored_reservation: (menu.get_meta("listening_verbs") as Control).hide()
 	(menu.get_meta("public_toggle") as Control).visible = not choosing_expression
 	(menu.get_meta("public_tools") as Control).visible = not choosing_expression and (menu.get_meta("public_toggle") as Button).button_pressed
 	(menu.get_meta("city_toggle") as Control).visible = not choosing_expression
@@ -2807,6 +2842,8 @@ func _process(delta: float) -> void:
 	_profile_frame("buildings_ms",frame_started)
 	street_eaves_layer.sync(self)
 	_sync_daylight()
+	if first_composition_mode: authored_reservation_layer.sync(self)
+	else: authored_reservation_layer.hide()
 	music_activity_layer.sync(self)
 	public_space_activity_layer.sync(self)
 	frame_started = Time.get_ticks_usec()
@@ -2832,10 +2869,13 @@ func _process(delta: float) -> void:
 	if presented_events.size() < last_presented_event_count:
 		last_presented_event_count = presented_events.size()
 	if presented_events.size() > last_presented_event_count:
+		var authored_birth_seen := false
 		for event in presented_events.slice(last_presented_event_count):
 			if str(event.get("kind","")) == "birth":
 				var birth_feedback := GrowthFeedback.for_birth(shown_world,event,model.audible_pitches(),model.audible_music_activity(clock.renderer.transport.audible_frame))
-				if not birth_feedback.is_empty(): _message(GrowthFeedback.text(birth_feedback))
+				if not birth_feedback.is_empty() and (bool(birth_feedback["authored"]) or not authored_birth_seen):
+					_message(GrowthFeedback.text(birth_feedback))
+					authored_birth_seen = bool(birth_feedback["authored"])
 			elif str(event.get("kind","")) == "planning_rejected": _message(_planning_rejection_message(event))
 			elif str(event.get("kind","")) == "transit_line":
 				var event_communities := _transit_community_names(event.get("community_ids",[]))
@@ -2962,7 +3002,7 @@ func _process(delta: float) -> void:
 		menu.position = Vector2(clampf(menu.position.x,12,maxf(12,size.x-menu.size.x-12)),clampf(menu.position.y,70,maxf(70,size.y-menu.size.y-12)))
 		_planning_menu()
 		_place_first_composition_menu()
-		if pointer_inside and not _expression_context() and not _authored_retune() and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
+		if pointer_inside and not _expression_context() and not _authored_retune() and not _authored_reservation_context() and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()
 	_profile_frame("interaction_ms",frame_started)
 

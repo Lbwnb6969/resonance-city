@@ -88,10 +88,10 @@ static func text(feedback: Dictionary) -> String:
 	var note := str(feedback.get("note", "·"))
 	var activity_suffix := ""
 	var roles: Array = feedback.get("activity_roles", [])
-	if not roles.is_empty(): activity_suffix = " · " + "/".join(roles) + "已在此处响起"
+	var role_names: Array[String] = []
+	for role: String in roles: role_names.append("对岸应答" if role == "Reply" else "主题")
+	if not role_names.is_empty(): activity_suffix = " · " + "与".join(role_names) + "已在此处响起"
 	if bool(feedback.get("authored", false)):
-		return "你的%s第%d栋%s已长成 · %s · %s · 音源 %s%s" % [expression, int(feedback.get("family_index", 1)), type_label, community, note, str(feedback.get("district_id", "")), activity_suffix]
-	var label := "%s · 一栋%s已长成" % [community, type_label]
-	if not expression.is_empty(): label += " · " + expression
-	return label + " · 音源 " + str(feedback.get("district_id", "")) + " · " + note + activity_suffix
+		return "你的%s第%d栋%s已长成 · %s · %s%s" % [expression, int(feedback.get("family_index", 1)), type_label, community, note, activity_suffix]
+	return "%s · 一栋%s已长成 · %s%s" % [community,type_label,note,activity_suffix]
 

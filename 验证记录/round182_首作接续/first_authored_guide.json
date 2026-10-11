@@ -1,11 +1,12 @@
 {
   "checks": {
-    "actual_audible_retune_stops_repeated_theme_invitation": true,
+    "actual_audible_retune_replaces_theme_invitation_with_next_composition": true,
     "author_root_shows_one_disabled_growth_status_before_theme_eligibility": true,
     "eligible_theme_offers_authored_root_entry": true,
     "existing_work_does_not_reinvite_first_overture": true,
     "first_overture_keeps_single_planning_invitation": true,
     "menu_hides_light_entry": true,
+    "next_composition_returns_to_real_planning_without_auto_choice": true,
     "paused_clock_hides_light_entry": true,
     "planning_invitation_enters_existing_guide_once": true,
     "restored_or_new_author_root_can_receive_its_own_entry": true,

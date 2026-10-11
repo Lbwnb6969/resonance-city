@@ -1,0 +1,58 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+WARNING: [MCPRegistry] cannot write entry C:\Users\Administrator\AppData\Roaming/godot-mcp-toolkit/entries/5fab213a1b05.runtime.json.tmp (err 12)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] write (res://addons/godot_mcp_toolkit/registry/store/registry_entry_file.gd:29)
+       [1] set_runtime (res://addons/godot_mcp_toolkit/registry/registry_client.gd:181)
+       [2] _on_bound (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:200)
+       [3] _scan_and_listen (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:283)
+       [4] ensure_listening (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:254)
+       [5] _start_server (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:162)
+       [6] _ready (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:111)
+WARNING: [MCPRegistry] failed to acquire lock after 10 retries; proceeding anyway
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] acquire (res://addons/godot_mcp_toolkit/registry/store/file_lock.gd:58)
+       [1] acquire_lock (res://addons/godot_mcp_toolkit/registry/registry_client.gd:75)
+       [2] set_runtime (res://addons/godot_mcp_toolkit/registry/registry_client.gd:182)
+       [3] _on_bound (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:200)
+       [4] _scan_and_listen (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:283)
+       [5] ensure_listening (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:254)
+       [6] _start_server (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:162)
+       [7] _ready (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:111)
+WARNING: [MCPRegistry] cannot write C:\Users\Administrator\AppData\Roaming/godot-mcp-toolkit/projects.json.tmp (err 12)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] write_atomic (res://addons/godot_mcp_toolkit/registry/store/registry_projection.gd:35)
+       [1] rebuild (res://addons/godot_mcp_toolkit/registry/store/registry_projection.gd:158)
+       [2] _rebuild_projects_json (res://addons/godot_mcp_toolkit/registry/registry_client.gd:114)
+       [3] set_runtime (res://addons/godot_mcp_toolkit/registry/registry_client.gd:183)
+       [4] _on_bound (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:200)
+       [5] _scan_and_listen (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:283)
+       [6] ensure_listening (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:254)
+       [7] _start_server (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:162)
+       [8] _ready (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:111)
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+ERROR: authored_retune_reaches_actual_device_score
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round190_authored_city_live.gd:17)
+       [1] _run (res://tests/round190_authored_city_live.gd:92)
+ERROR: heard_warm_keeps_real_open_space_action
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round190_authored_city_live.gd:17)
+       [1] _run (res://tests/round190_authored_city_live.gd:95)
+ERROR: warm_open_space_has_three_direct_existing_actions
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round190_authored_city_live.gd:17)
+       [1] _run (res://tests/round190_authored_city_live.gd:97)
+ROUND190_ROUTE_PROGRESS warm phrase 4
+ROUND190_AUTHORED_CITY warm {"checks":22,"evidence":{"audible_frame":2879271.62335493,"family_houses":[{"anchor_id":"family-00028","base_midi":48,"birth_frame":705600,"community_id":"west-1","current_midi":52,"district_id":"building-00028","era":1,"expression":"warm","fabric_frontage":3,"family_anchor":true,"family_id":"family-00028","footprint":[[11.7459707260132,6.73682165145874]],"form":"央","form_count":0,"is_anchor":false,"lot_id":"west-lot-4--1","placement_tier":"L1","player_expression":true,"position":[11.7459707260132,6.73682165145874],"radius":0.45,"type":"residential","vitality":100.0,"voice_level":0.2},{"anchor_id":"family-00028","base_midi":52,"birth_frame":1058400,"community_id":"west-1","current_midi":52,"district_id":"building-00034","era":1,"expression":"warm","fabric_frontage":1,"family_anchor":false,"family_id":"family-00028","footprint":[[11.7569007873535,5.67687797546387]],"form":"央","form_count":0,"is_anchor":false,"lot_id":"","placement_tier":"L2","player_expression":true,"position":[11.7569007873535,5.67687797546387],"radius":0.45,"type":"residential","vitality":100.0,"voice_level":0.2},{"anchor_id":"family-00028","base_midi":52,"birth_frame":1764000,"community_id":"west-1","current_midi":52,"district_id":"building-00040","era":1,"expression":"warm","fabric_frontage":1,"family_anchor":false,"family_id":"family-00028","footprint":[[10.6859703063965,6.73682165145874]],"form":"群","form_count":2,"is_anchor":false,"lot_id":"","placement_tier":"L2","player_expression":true,"position":[10.6859703063965,6.73682165145874],"radius":0.45,"type":"residential","vitality":98.0,"voice_level":0.2},{"anchor_id":"family-00028","base_midi":52,"birth_frame":2469600,"community_id":"west-1","current_midi":52,"district_id":"building-00046","era":1,"expression":"warm","fabric_frontage":1,"family_anchor":false,"family_id":"family-00028","footprint":[[9.6259708404541,6.73682165145874]],"form":"群","form_count":0,"is_anchor":false,"lot_id":"","placement_tier":"L2","player_expression":true,"position":[9.6259708404541,6.73682165145874],"radius":0.45,"type":"residential","vitality":74.0,"voice_level":0.2}],"houses":48,"max_voices":15,"park_score":{"focused_community":"west-1","listener_community":"","muted_communities":{},"pads":["west-1:residential:48","west-2:residential:52","west-2:commercial:52","east-2:residential:55","east-2:commercial:55","east-1:residential:55","west-1:residential:52","west-3:residential:52"],"response":{"cid":"east-1","generation":1,"notes":[-1,-1,55,55,55,55,-1,55,55,-1,-1,55,-1,55,-1,-1,55,-1,55],"pair_count":10,"receiver_ids":["","","building-00051","building-00051","building-00051","building-00051","","building-00051","building-00051","","","building-00051","","building-00051","","","building-00051","","building-00051"],"source":"west-1","source_ids":["building-00031","building-00037","building-00029","building-00001","building-00025","building-00003","building-00049","building-00005","building-00002","building-00052","building-00043","building-00007","building-00046","building-00004","building-00040","building-00034","building-00006","building-00028","building-00008"],"stereo":"(0.156434, 0.987688)"},"response_enabled":true,"rhythms":[{"cid":"west-1","expression":"warm","facility":false,"midi":52,"player_expression":true,"service_pressure":0.368421052631579,"source_id":"building-00028","stereo":"(0.441752, 0.897137)","zone_roles":["home"]},{"cid":"west-2","expression":"warm","facility":false,"midi":52,"player_expression":false,"service_pressure":0.6,"source_id":"building-00015","stereo":"(0.926724, 0.375742)","zone_roles":["home","market","center"]}],"theme":{"center":{},"cid":"west-1","civic":true,"expression":"warm","notes":[48,48,48,48,48,48,48,48,48,52,48,48,52,48,52,52,48,52,48],"park":true,"player_expression":true,"source_ids":["building-00031","building-00037","building-00029","building-00001","building-00025","building-00003","building-00049","building-00005","building-00002","building-00052","building-00043","building-00007","building-00046","building-00004","building-00040","building-00034","building-00006","building-00028","building-00008"],"stereo":"(0.176854, 0.984237)","zone_roles":["home"]},"voices":{"budget_shed":0,"entities":52,"environment_nodes":1,"max_render_voices":15,"pad_nodes":8,"render_voices":15,"response_nodes":2,"rhythm_nodes":2,"theme_nodes":2,"voice_budget":70}},"phrase":8,"reservations":[{"created_phrase":2,"id":"reservation-00003","polygon":"[(13.52597, 6.138854), (14.76597, 6.138854), (14.76597, 7.418854), (13.52597, 7.418854)]","position":[14.1459712982178,6.77885389328003],"reservation_id":"reservation-00003","source_lot_ids":["west-lot-4-1"],"source_site_id":"west-lot-4-1"}],"route":"warm","score":{"focused_community":"west-1","listener_community":"","muted_communities":{},"pads":["west-1:residential:48","west-2:residential:52","west-2:commercial:52","east-2:residential:55","east-2:commercial:55","east-1:residential:55","west-1:residential:52"],"response":{"cid":"east-1","generation":1,"notes":[-1,-1,-1,-1,55,55,55,55,-1,55,-1,55,-1,-1,55,-1,55],"pair_count":8,"receiver_ids":["","","","","building-00045","building-00045","building-00045","building-00045","","building-00045","","building-00045","","","building-00045","","building-00045"],"source":"west-1","source_ids":["building-00031","building-00037","building-00029","building-00001","building-00025","building-00003","building-00005","building-00002","building-00043","building-00007","building-00046","building-00004","building-00040","building-00034","building-00006","building-00028","building-00008"],"stereo":"(0.156434, 0.987688)"},"response_enabled":true,"rhythms":[{"cid":"west-1","expression":"warm","facility":false,"midi":52,"player_expression":true,"service_pressure":0.294117647058824,"source_id":"building-00028","stereo":"(0.441752, 0.897137)","zone_roles":["home"]},{"cid":"west-2","expression":"warm","facility":false,"midi":52,"player_expression":false,"service_pressure":0.6,"source_id":"building-00015","stereo":"(0.926724, 0.375742)","zone_roles":["home","market","center"]}],"theme":{"center":{},"cid":"west-1","civic":true,"expression":"warm","notes":[48,48,48,48,48,48,48,48,48,48,52,48,52,52,48,52,48],"park":false,"player_expression":true,"source_ids":["building-00031","building-00037","building-00029","building-00001","building-00025","building-00003","building-00005","building-00002","building-00043","building-00007","building-00046","building-00004","building-00040","building-00034","building-00006","building-00028","building-00008"],"stereo":"(0.176854, 0.984237)","zone_roles":["home"]},"voices":{"budget_shed":0,"entities":48,"environment_nodes":1,"max_render_voices":15,"pad_nodes":7,"render_voices":12,"response_nodes":1,"rhythm_nodes":2,"theme_nodes":1,"voice_budget":70}},"underruns":0},"failures":["authored_retune_reaches_actual_device_score","heard_warm_keeps_real_open_space_action","warm_open_space_has_three_direct_existing_actions"],"passed":false}

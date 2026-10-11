@@ -1,0 +1,225 @@
+{
+	"checks": {
+		"actual_reply_shares_its_lead_origin": false,
+		"deep_actual_generation_zero_author_root_heard_at_next_legal_pattern_beat": true,
+		"deep_actual_root_request": true,
+		"deep_every_actual_reply_uses_the_exact_lead_schedule_and_two_beat_delay": true,
+		"deep_freeze_keeps_the_exact_authored_schedule_origin": true,
+		"deep_later_notes_still_traverse_every_real_resident": true,
+		"deep_ordinary_maturity_qualifies_theme": true,
+		"deep_production_author_retune_accepted": true,
+		"deep_real_full_score_pcm_changes": true,
+		"deep_root_opens_without_discarding_actual_residents": true,
+		"deep_same_real_root_uses_requested_pitch": true,
+		"nonempty_actual_reply_follows_same_source_and_two_beats": false,
+		"ordinary_legacy_synth_compiles": true,
+		"ordinary_theme_lifetimes_unchanged": true,
+		"ordinary_theme_source_schedule_unchanged": true,
+		"receiver_change_keeps_existing_lead_source_origin": false,
+		"reply_fixture_has_real_legal_cross_bank_land": true,
+		"reply_fixture_natural_theme_qualification": false,
+		"reply_fixture_real_author_root_accepted": true,
+		"warm_actual_generation_zero_author_root_heard_at_next_legal_pattern_beat": true,
+		"warm_actual_root_request": true,
+		"warm_every_actual_reply_uses_the_exact_lead_schedule_and_two_beat_delay": true,
+		"warm_freeze_keeps_the_exact_authored_schedule_origin": true,
+		"warm_later_notes_still_traverse_every_real_resident": true,
+		"warm_ordinary_maturity_qualifies_theme": true,
+		"warm_production_author_retune_accepted": true,
+		"warm_real_full_score_pcm_changes": true,
+		"warm_root_opens_without_discarding_actual_residents": true,
+		"warm_same_real_root_uses_requested_pitch": true,
+		"weave_actual_generation_zero_author_root_heard_at_next_legal_pattern_beat": true,
+		"weave_actual_root_request": true,
+		"weave_every_actual_reply_uses_the_exact_lead_schedule_and_two_beat_delay": true,
+		"weave_freeze_keeps_the_exact_authored_schedule_origin": true,
+		"weave_later_notes_still_traverse_every_real_resident": true,
+		"weave_ordinary_maturity_qualifies_theme": true,
+		"weave_production_author_retune_accepted": true,
+		"weave_real_full_score_pcm_changes": true,
+		"weave_root_opens_without_discarding_actual_residents": true,
+		"weave_same_real_root_uses_requested_pitch": true
+	},
+	"cross_bank_reply": {
+		"distance": 4.77946996688843,
+		"first_reply": {},
+		"lead_origin": -1,
+		"receiver": "building-00021",
+		"reply_count": 0,
+		"root": "building-00025"
+	},
+	"failures": [
+		"reply_fixture_natural_theme_qualification",
+		"actual_reply_shares_its_lead_origin",
+		"nonempty_actual_reply_follows_same_source_and_two_beats",
+		"receiver_change_keeps_existing_lead_source_origin"
+	],
+	"routes": {
+		"deep": {
+			"geometric_root_index": 8,
+			"lead_source_origin": 1973475,
+			"new_root_event": {
+				"cid": "west-1",
+				"end_frame": 2077111,
+				"event_id": "west-1:2028600:3:building-00025:40",
+				"generation": 0,
+				"onset": 2028600,
+				"pitch": 40,
+				"public_site_ids": [
+					"player-civic-00002"
+				],
+				"public_site_kinds": [
+					"civic"
+				],
+				"receiver_id": "",
+				"render_end": 2029011,
+				"render_start": 2028600,
+				"source_event_id": "west-1:2028600:3:building-00025:40",
+				"source_id": "building-00025",
+				"source_onset": 2028600,
+				"strength": 0.0167364258387209
+			},
+			"old_root_event": {},
+			"pcm_max_difference": 0.124685640446842,
+			"reply_available": false,
+			"reply_source_origin": -1,
+			"resident_performers": [
+				"building-00025",
+				"building-00001",
+				"building-00003",
+				"building-00005",
+				"building-00002",
+				"building-00007",
+				"building-00004",
+				"building-00026",
+				"building-00006",
+				"building-00008"
+			],
+			"retune": {
+				"accepted": true,
+				"event_id": 4,
+				"frame": 2116800,
+				"sound_frame": 1973475
+			},
+			"source_count": 10
+		},
+		"warm": {
+			"geometric_root_index": 9,
+			"lead_source_origin": 1973475,
+			"new_root_event": {
+				"cid": "west-1",
+				"end_frame": 2094750,
+				"event_id": "west-1:2028600:2:building-00025:52",
+				"generation": 0,
+				"onset": 2028600,
+				"pitch": 52,
+				"public_site_ids": [
+					"player-civic-00002"
+				],
+				"public_site_kinds": [
+					"civic"
+				],
+				"receiver_id": "",
+				"render_end": 2029011,
+				"render_start": 2028600,
+				"source_event_id": "west-1:2028600:2:building-00025:52",
+				"source_id": "building-00025",
+				"source_onset": 2028600,
+				"strength": 0.0105272194631608
+			},
+			"old_root_event": {},
+			"pcm_max_difference": 0.10486114770174,
+			"reply_available": false,
+			"reply_source_origin": -1,
+			"resident_performers": [
+				"building-00025",
+				"building-00001",
+				"building-00003",
+				"building-00005",
+				"building-00002",
+				"building-00007",
+				"building-00004",
+				"building-00027",
+				"building-00026",
+				"building-00006",
+				"building-00008"
+			],
+			"retune": {
+				"accepted": true,
+				"event_id": 4,
+				"frame": 2116800,
+				"sound_frame": 1973475
+			},
+			"source_count": 11
+		},
+		"weave": {
+			"geometric_root_index": 9,
+			"lead_source_origin": 1973475,
+			"new_root_event": {
+				"cid": "west-1",
+				"end_frame": 1989792,
+				"event_id": "west-1:1984500:10:building-00025:64",
+				"generation": 0,
+				"onset": 1984500,
+				"pitch": 64,
+				"public_site_ids": [
+					"player-civic-00002"
+				],
+				"public_site_kinds": [
+					"civic"
+				],
+				"receiver_id": "",
+				"render_end": 1984979,
+				"render_start": 1984500,
+				"source_event_id": "west-1:1984500:10:building-00025:64",
+				"source_id": "building-00025",
+				"source_onset": 1984500,
+				"strength": 0.0329546915395202
+			},
+			"old_root_event": {
+				"cid": "west-1",
+				"end_frame": 2033892,
+				"event_id": "west-1:2028600:11:building-00025:60",
+				"generation": 0,
+				"onset": 2028600,
+				"pitch": 60,
+				"public_site_ids": [
+					"player-civic-00002"
+				],
+				"public_site_kinds": [
+					"civic"
+				],
+				"receiver_id": "",
+				"render_end": 2029011,
+				"render_start": 2028600,
+				"source_event_id": "west-1:2028600:11:building-00025:60",
+				"source_id": "building-00025",
+				"source_onset": 2028600,
+				"strength": 0.0345558982944625
+			},
+			"pcm_max_difference": 0.075369075872004,
+			"reply_available": false,
+			"reply_source_origin": -1,
+			"resident_performers": [
+				"building-00025",
+				"building-00001",
+				"building-00003",
+				"building-00005",
+				"building-00002",
+				"building-00007",
+				"building-00004",
+				"building-00027",
+				"building-00026",
+				"building-00006",
+				"building-00008"
+			],
+			"retune": {
+				"accepted": true,
+				"event_id": 4,
+				"frame": 2116800,
+				"sound_frame": 1973475
+			},
+			"source_count": 11
+		}
+	}
+}

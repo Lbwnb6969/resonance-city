@@ -1,0 +1,18 @@
+{
+	"checks": {
+		"all_grass_detail_stays_within_true_reserved_land": true,
+		"drawing_uses_exact_current_clickable_footprint": true,
+		"ground_sits_below_buildings_and_label_hit_returns_same_real_reservation": true,
+		"only_actual_authored_family_reservation_is_emphasized": true,
+		"pending_operations_never_draw_future_land": true,
+		"released_authored_land_disappears_while_ordinary_reservation_remains": true,
+		"unbuilt_center_and_short_ownership_marker": true,
+		"visual_sync_does_not_change_world_rng_audio_events_or_archive": true
+	},
+	"failures": [],
+	"grass_strokes": 8,
+	"passed": true,
+	"patches": 2,
+	"reservation_id": "reservation-00002",
+	"scope": "Drawing-data and read-only sync contract. Real GPU composition is reviewed by the root agent."
+}

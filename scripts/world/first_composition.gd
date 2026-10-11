@@ -2,6 +2,7 @@ extends RefCounted
 ## A new river-bend composition starts with real young houses. Opportunities
 ## below are current World queries; they neither reserve nor submit anything.
 const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
+const AuthoredStreetGrowth = preload("res://scripts/world/authored_street_growth.gd")
 const COMMUNITY_IDS := ["west-1","west-2","east-2"]
 const HOUSES_PER_COMMUNITY := 8
 
@@ -11,7 +12,9 @@ static func build(world: RefCounted) -> void:
 		var cid: String = COMMUNITY_IDS[region]
 		var positions := _street_starter_positions(world,cid)
 		var family := "family-%05d" % int(world.next_id)
-		world.families[family] = {"root":"","created_phrase":0,"expression":"warm"}
+		# These three planted blocks frame the small composition. The player's
+		# new sound families own its expansion instead of background sprawl.
+		world.families[family] = {"root":"","created_phrase":0,"expression":"warm","growth_house_limit":HOUSES_PER_COMMUNITY}
 		var count := 0
 		for p: Vector2 in positions:
 			if not bool(world.placement(p)["allowed"]): continue
@@ -104,6 +107,7 @@ static func opportunities(world: RefCounted) -> Dictionary:
 	for cid: String in ids:
 		var public_choice: Dictionary = {}
 		var seed_choice: Dictionary = {}
+		var seed_rank := -INF
 		var anchored: bool = world.public_sites.any(func(site: Dictionary) -> bool:
 			return bool(site.get("active",false)) and bool(site.get("player_planned",false)) and str(site.get("community_id","")) == cid)
 		for lot: Dictionary in world.lots:
@@ -114,10 +118,35 @@ static func opportunities(world: RefCounted) -> Dictionary:
 			if public_choice.is_empty() and bool(public_site.get("allowed",false)) and not SpatialPlanning.public_access(world,public_site).is_empty(): public_choice = public_site.duplicate(true)
 			# Once the real public anchor exists, use its adjacent free parcel for
 			# the voice instead of yielding it to a second, unchosen public site.
-			if seed_choice.is_empty() and bool(placement.get("allowed",false)) and (anchored or str(placement.get("lot_id","")) != str(public_choice.get("source_site_id",""))):
+			if bool(placement.get("allowed",false)) and (anchored or str(placement.get("lot_id","")) != str(public_choice.get("source_site_id",""))):
+				# Recommend a connected street corner with room to extend, rather
+				# than the first parcel at the very end of the road template.
+				var nearest_house := INF
+				for id: String in world.communities[cid]["members"]:
+					var raw: Array = world.by_id[id]["position"]
+					nearest_house = minf(nearest_house,p.distance_to(Vector2(float(raw[0]),float(raw[1]))))
+				var roads: Dictionary = {}
+				for segment: Dictionary in world.near_road_segments(p,1.35):
+					if not bool(segment["road"].get("bridge",false)): roads[str(segment["road"]["id"])] = true
+				var rank := float(roads.size())*10.0-nearest_house+(100.0 if nearest_house <= 2.4 else 0.0)
+				if rank > seed_rank:
+					seed_rank = rank
+					seed_choice = placement.duplicate(true)
+					seed_choice["position"] = [p.x,p.y]
+		if seed_rank < 100.0:
+			# A template parcel may sit far from this young block. Extend an
+			# actual frontage before offering a disconnected first sound.
+			var frontage: Array[Vector2] = []
+			for id: String in world.communities[cid]["members"]:
+				var raw: Array = world.by_id[id]["position"]
+				frontage.append(Vector2(float(raw[0]),float(raw[1])))
+			for candidate: Dictionary in AuthoredStreetGrowth.candidates(world,frontage,"warm"):
+				var p: Vector2 = candidate["position"]
+				var placement: Dictionary = world.placement(p)
+				if not bool(placement.get("allowed",false)) or str(placement.get("community_id","")) != cid: continue
 				seed_choice = placement.duplicate(true)
 				seed_choice["position"] = [p.x,p.y]
-			if not public_choice.is_empty() and not seed_choice.is_empty(): break
+				break
 		if seed_choice.is_empty():
 			# A growing street can consume every parcel without consuming its
 			# continuous surroundings. Query legal land around actual members.

@@ -20,10 +20,21 @@ static func status(world: RefCounted,cid: String) -> Dictionary:
 	var courts := 0
 	for court in world.fabric_cache.get("courtyards",[]):
 		if str(court.get("community_id","")) == cid: courts += 1
+	var authored := members.any(func(id: String) -> bool:
+		return bool(world.families.get(str(world.by_id[id].get("family_id","")),{}).get("player_expression",false)))
+	var public_anchor: bool = authored and world.public_sites.any(func(site: Dictionary) -> bool:
+		return bool(site.get("active",false)) and bool(site.get("player_planned",false)) and str(site.get("community_id","")) == cid and str(site.get("kind","")) in ["park","civic"])
 	var wall: Dictionary = world.fabric_cache.get("community_wall",{}).get(cid,{})
-	var formed: bool = members.size() >= 4 and float(wall.get("score",0.0)) >= 0.35 and courts >= 1
+	var joined_fronts := 0
+	if public_anchor:
+		for joined: Dictionary in world.fabric_cache.get("shared_walls",[]):
+			if str(world.by_id[joined["a"]]["community_id"]) == cid and str(world.by_id[joined["b"]]["community_id"]) == cid: joined_fronts += 1
+	var street_formed: bool = float(wall.get("score",0.0)) >= 0.35 or (public_anchor and joined_fronts >= 2)
+	# A player's actual public place gives their formed street a musical
+	# center. They need not also manufacture an invisible courtyard record.
+	var formed: bool = members.size() >= 4 and street_formed and (courts >= 1 or public_anchor)
 	var eligible := formed and mature >= 6
-	return {"cid":cid,"members":members.size(),"mature":mature,"courtyards":courts,"street_formed":float(wall.get("score",0.0)) >= 0.35,
+	return {"cid":cid,"members":members.size(),"mature":mature,"courtyards":courts,"public_anchor":public_anchor,"street_formed":street_formed,
 		"formed":formed,"theme_eligible":eligible,"commercial":commercial,"lowest":lowest,
 		"deep":deep,"deep_mature":deep_mature}
 
@@ -83,6 +94,7 @@ static func opportunity(world: RefCounted,cid: String,score: Dictionary) -> Dict
 	if bool(state["street_formed"]): met.append("街墙已成形")
 	else: missing.append("继续沿街连片")
 	if int(state["courtyards"]) > 0: met.append("已有公共内院")
+	elif bool(state.get("public_anchor",false)): met.append("你建的公共空间已成为主题锚点")
 	else: missing.append("围合一处内院")
 	if int(state["mature"]) >= 6: met.append("六栋成熟房屋")
 	else: missing.append("还需%d栋成熟房屋" % maxi(0,6-int(state["mature"])))

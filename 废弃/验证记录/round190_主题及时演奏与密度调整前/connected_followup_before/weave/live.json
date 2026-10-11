@@ -1,0 +1,299 @@
+{
+	"checks": {
+		"actual_authored_root_can_be_opened": true,
+		"actual_family_has_player_chosen_route": true,
+		"authored_retune_reaches_actual_device_score": true,
+		"chosen_route_four_second_audition_plays": true,
+		"chosen_route_lands_in_real_city": true,
+		"four_phrases_reach_physical_device": true,
+		"heard_route_keeps_next_composition_action": true,
+		"next_composition_asks_for_real_new_player_choices": true,
+		"physical_city_continues_without_new_underrun": true,
+		"player_is_offered_real_sound_parcel": true,
+		"real_family_growth_keeps_its_visible_route": true,
+		"real_first_public_boundary": true,
+		"real_window_and_device": true,
+		"two_minute_city_keeps_the_small_authored_slice": true,
+		"two_minutes_reach_physical_device": true
+	},
+	"evidence": {
+		"audible_frame": 2879194.49295493,
+		"family_houses": [
+			{
+				"anchor_id": "family-00025",
+				"base_midi": 60,
+				"birth_frame": 705600,
+				"community_id": "west-1",
+				"current_midi": 64,
+				"district_id": "building-00025",
+				"era": 1,
+				"expression": "weave",
+				"fabric_frontage": 2,
+				"family_anchor": true,
+				"family_id": "family-00025",
+				"footprint": [
+					[
+						13.1152276992798,
+						0.363238245248795
+					]
+				],
+				"form": "群",
+				"form_count": 0,
+				"is_anchor": false,
+				"lot_id": "west-lot-0-1",
+				"placement_tier": "L1",
+				"player_expression": true,
+				"position": [
+					13.1152276992798,
+					0.363238245248795
+				],
+				"radius": 0.45,
+				"type": "commercial",
+				"vitality": 100.0,
+				"voice_level": 0.2
+			},
+			{
+				"anchor_id": "family-00025",
+				"base_midi": 64,
+				"birth_frame": 1058400,
+				"community_id": "west-1",
+				"current_midi": 64,
+				"district_id": "building-00026",
+				"era": 1,
+				"expression": "weave",
+				"fabric_frontage": 2,
+				"family_anchor": false,
+				"family_id": "family-00025",
+				"footprint": [
+					[
+						12.8789052963257,
+						-0.546570301055908
+					]
+				],
+				"form": "群",
+				"form_count": 0,
+				"is_anchor": false,
+				"lot_id": "",
+				"placement_tier": "L1",
+				"player_expression": true,
+				"position": [
+					12.8789052963257,
+					-0.546570301055908
+				],
+				"radius": 0.45,
+				"type": "commercial",
+				"vitality": 100.0,
+				"voice_level": 0.2
+			},
+			{
+				"anchor_id": "family-00025",
+				"base_midi": 64,
+				"birth_frame": 1411200,
+				"community_id": "west-1",
+				"current_midi": 64,
+				"district_id": "building-00027",
+				"era": 1,
+				"expression": "weave",
+				"fabric_frontage": 1,
+				"family_anchor": false,
+				"family_id": "family-00025",
+				"footprint": [
+					[
+						12.6699848175049,
+						-1.463059425354
+					]
+				],
+				"form": "群",
+				"form_count": 0,
+				"is_anchor": false,
+				"lot_id": "",
+				"placement_tier": "L2",
+				"player_expression": true,
+				"position": [
+					12.6699848175049,
+					-1.463059425354
+				],
+				"radius": 0.45,
+				"type": "commercial",
+				"vitality": 100.0,
+				"voice_level": 0.2
+			},
+			{
+				"anchor_id": "family-00025",
+				"base_midi": 64,
+				"birth_frame": 2116800,
+				"community_id": "west-1",
+				"current_midi": 64,
+				"district_id": "building-00028",
+				"era": 1,
+				"expression": "weave",
+				"fabric_frontage": 0,
+				"family_anchor": false,
+				"family_id": "family-00025",
+				"footprint": [
+					[
+						12.5063591003418,
+						-2.38870859146118
+					]
+				],
+				"form": "群",
+				"form_count": 0,
+				"is_anchor": false,
+				"lot_id": "",
+				"placement_tier": "L3",
+				"player_expression": true,
+				"position": [
+					12.5063591003418,
+					-2.38870859146118
+				],
+				"radius": 0.45,
+				"type": "commercial",
+				"vitality": 86.0,
+				"voice_level": 0.2
+			},
+			{
+				"anchor_id": "family-00025",
+				"base_midi": 64,
+				"birth_frame": 2822400,
+				"community_id": "west-1",
+				"current_midi": 64,
+				"district_id": "building-00029",
+				"era": 1,
+				"expression": "weave",
+				"fabric_frontage": 1,
+				"family_anchor": false,
+				"family_id": "family-00025",
+				"footprint": [
+					[
+						10.8437461853027,
+						-1.7215701341629
+					]
+				],
+				"form": "胚",
+				"form_count": 1,
+				"is_anchor": false,
+				"lot_id": "",
+				"placement_tier": "L2",
+				"player_expression": true,
+				"position": [
+					10.8437461853027,
+					-1.7215701341629
+				],
+				"radius": 0.45,
+				"type": "commercial",
+				"vitality": 62.0,
+				"voice_level": 0.2
+			}
+		],
+		"heard_retune_frame": 727745.378004929,
+		"houses": 29,
+		"max_voices": 13,
+		"phrase": 8,
+		"reservations": [],
+		"route": "weave",
+		"score": {
+			"focused_community": "west-1",
+			"listener_community": "",
+			"muted_communities": {},
+			"pads": [
+				"west-1:residential:48",
+				"west-2:residential:52",
+				"west-2:commercial:52",
+				"east-2:residential:55",
+				"east-2:commercial:55",
+				"west-1:commercial:64"
+			],
+			"response": {},
+			"response_enabled": true,
+			"rhythms": [
+				{
+					"cid": "west-1",
+					"expression": "weave",
+					"facility": false,
+					"midi": 64,
+					"player_expression": true,
+					"service_pressure": 0.0,
+					"source_id": "building-00025",
+					"stereo": "(0.156434, 0.987688)",
+					"zone_roles": [
+						"home",
+						"center"
+					]
+				},
+				{
+					"cid": "west-2",
+					"expression": "warm",
+					"facility": false,
+					"midi": 52,
+					"player_expression": false,
+					"service_pressure": 0.375,
+					"source_id": "building-00015",
+					"stereo": "(0.926724, 0.375742)",
+					"zone_roles": [
+						"home",
+						"center"
+					]
+				}
+			],
+			"theme": {
+				"center": {},
+				"cid": "west-1",
+				"civic": true,
+				"expression": "weave",
+				"notes": [
+					64,
+					64,
+					64,
+					64,
+					64,
+					48,
+					48,
+					48,
+					48,
+					48,
+					48,
+					48,
+					48
+				],
+				"park": false,
+				"player_expression": true,
+				"source_ids": [
+					"building-00025",
+					"building-00029",
+					"building-00028",
+					"building-00027",
+					"building-00026",
+					"building-00001",
+					"building-00003",
+					"building-00005",
+					"building-00002",
+					"building-00007",
+					"building-00004",
+					"building-00006",
+					"building-00008"
+				],
+				"stereo": "(0.176854, 0.984237)",
+				"zone_roles": [
+					"home",
+					"center"
+				]
+			},
+			"voices": {
+				"budget_shed": 0,
+				"entities": 29,
+				"environment_nodes": 1,
+				"max_render_voices": 13,
+				"pad_nodes": 6,
+				"render_voices": 10,
+				"response_nodes": 0,
+				"rhythm_nodes": 2,
+				"theme_nodes": 1,
+				"voice_budget": 70
+			}
+		},
+		"underruns": 0
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Real production UI, physical WASAPI time, natural eight phrases and screenshots. No human fun/listening verdict."
+}

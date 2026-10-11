@@ -1,0 +1,1377 @@
+{
+	"checks": {
+		"actual_commercial_and_stone_family_roofs_join": true,
+		"actual_compact_charter_and_variation": true,
+		"actual_player_cultural_anchor": true,
+		"deep_actual_seed_accepted": true,
+		"deep_all_actual_houses_keep_legal_land_and_clear_occupancy": true,
+		"deep_authored_houses_form_adjacent_road_frontage": true,
+		"deep_real_descendants_keep_route_use": true,
+		"deep_real_reservation_stays_clear": true,
+		"deep_remains_slower_than_weave": true,
+		"deep_two_minute_core_keeps_player_growth_visible": true,
+		"ordinary_family_eight_phrase_snapshots_match_preserved_source_exactly": true,
+		"warm_actual_seed_accepted": true,
+		"warm_all_actual_houses_keep_legal_land_and_clear_occupancy": true,
+		"warm_authored_houses_form_adjacent_road_frontage": true,
+		"warm_real_descendants_keep_route_use": true,
+		"warm_real_reservation_stays_clear": true,
+		"warm_two_minute_core_keeps_player_growth_visible": true,
+		"weave_actual_seed_accepted": true,
+		"weave_all_actual_houses_keep_legal_land_and_clear_occupancy": true,
+		"weave_authored_houses_form_adjacent_road_frontage": true,
+		"weave_real_descendants_keep_route_use": true,
+		"weave_real_reservation_stays_clear": true,
+		"weave_two_minute_core_keeps_player_growth_visible": true
+	},
+	"failures": [],
+	"ordinary_reference_identical": true,
+	"root_position": [
+		11.7459707260132,
+		6.73682165145874
+	],
+	"routes": {
+		"deep": {
+			"family": "family-00025",
+			"final": {
+				"city_count": 27,
+				"count": 3,
+				"exclusion_clear": true,
+				"houses": [
+					{
+						"birth_frame": 705600,
+						"community": "west-1",
+						"id": "building-00025",
+						"lot": "west-lot-4--1",
+						"nearest_family": 0.980000138282776,
+						"position": [
+							11.7459707260132,
+							6.73682165145874
+						],
+						"road": "west-road-1",
+						"road_gap": 1.19868934154511,
+						"type": "residential"
+					},
+					{
+						"birth_frame": 1411200,
+						"community": "west-1",
+						"id": "building-00026",
+						"lot": "",
+						"nearest_family": 0.980000138282776,
+						"position": [
+							11.7560758590698,
+							5.7568736076355
+						],
+						"road": "west-road-1",
+						"road_gap": 1.17829728126526,
+						"type": "residential"
+					},
+					{
+						"birth_frame": 2822400,
+						"community": "west-1",
+						"id": "building-00027",
+						"lot": "",
+						"nearest_family": 0.980000495910645,
+						"position": [
+							10.7659702301025,
+							6.73682165145874
+						],
+						"road": "west-cross-1",
+						"road_gap": 1.26317834854126,
+						"type": "residential"
+					}
+				],
+				"minimum_building_gap": 0.0800001382827759,
+				"phrase": 8,
+				"shared_walls": [
+					{
+						"a": "building-00025",
+						"b": "building-00026",
+						"gap": 0.0800001382827759
+					},
+					{
+						"a": "building-00025",
+						"b": "building-00027",
+						"gap": 0.0800004959106446
+					}
+				],
+				"valid_land": true,
+				"worst_family_neighbor": 0.980000495910645,
+				"worst_road_gap": 1.26317834854126
+			},
+			"history": [
+				{
+					"city_count": 25,
+					"count": 1,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": -1,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 1.15530619621277,
+					"phrase": 2,
+					"shared_walls": [],
+					"valid_land": true,
+					"worst_family_neighbor": 0.0,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 25,
+					"count": 1,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": -1,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 1.15530619621277,
+					"phrase": 3,
+					"shared_walls": [],
+					"valid_land": true,
+					"worst_family_neighbor": 0.0,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 26,
+					"count": 2,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 0.980000138282776,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1411200,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 0.980000138282776,
+							"position": [
+								11.7560758590698,
+								5.7568736076355
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17829728126526,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 0.0800001382827759,
+					"phrase": 4,
+					"shared_walls": [
+						{
+							"a": "building-00025",
+							"b": "building-00026",
+							"gap": 0.0800001382827759
+						}
+					],
+					"valid_land": true,
+					"worst_family_neighbor": 0.980000138282776,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 26,
+					"count": 2,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 0.980000138282776,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1411200,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 0.980000138282776,
+							"position": [
+								11.7560758590698,
+								5.7568736076355
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17829728126526,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 0.0800001382827759,
+					"phrase": 5,
+					"shared_walls": [
+						{
+							"a": "building-00025",
+							"b": "building-00026",
+							"gap": 0.0800001382827759
+						}
+					],
+					"valid_land": true,
+					"worst_family_neighbor": 0.980000138282776,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 26,
+					"count": 2,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 0.980000138282776,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1411200,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 0.980000138282776,
+							"position": [
+								11.7560758590698,
+								5.7568736076355
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17829728126526,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 0.0800001382827759,
+					"phrase": 6,
+					"shared_walls": [
+						{
+							"a": "building-00025",
+							"b": "building-00026",
+							"gap": 0.0800001382827759
+						}
+					],
+					"valid_land": true,
+					"worst_family_neighbor": 0.980000138282776,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 26,
+					"count": 2,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 0.980000138282776,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1411200,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 0.980000138282776,
+							"position": [
+								11.7560758590698,
+								5.7568736076355
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17829728126526,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 0.0800001382827759,
+					"phrase": 7,
+					"shared_walls": [
+						{
+							"a": "building-00025",
+							"b": "building-00026",
+							"gap": 0.0800001382827759
+						}
+					],
+					"valid_land": true,
+					"worst_family_neighbor": 0.980000138282776,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 27,
+					"count": 3,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 0.980000138282776,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1411200,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 0.980000138282776,
+							"position": [
+								11.7560758590698,
+								5.7568736076355
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17829728126526,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 2822400,
+							"community": "west-1",
+							"id": "building-00027",
+							"lot": "",
+							"nearest_family": 0.980000495910645,
+							"position": [
+								10.7659702301025,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 0.0800001382827759,
+					"phrase": 8,
+					"shared_walls": [
+						{
+							"a": "building-00025",
+							"b": "building-00026",
+							"gap": 0.0800001382827759
+						},
+						{
+							"a": "building-00025",
+							"b": "building-00027",
+							"gap": 0.0800004959106446
+						}
+					],
+					"valid_land": true,
+					"worst_family_neighbor": 0.980000495910645,
+					"worst_road_gap": 1.26317834854126
+				}
+			],
+			"reservations": []
+		},
+		"warm": {
+			"family": "family-00025",
+			"final": {
+				"city_count": 28,
+				"count": 4,
+				"exclusion_clear": true,
+				"houses": [
+					{
+						"birth_frame": 705600,
+						"community": "west-1",
+						"id": "building-00025",
+						"lot": "west-lot-4--1",
+						"nearest_family": 1.06000006198883,
+						"position": [
+							11.7459707260132,
+							6.73682165145874
+						],
+						"road": "west-road-1",
+						"road_gap": 1.19868934154511,
+						"type": "residential"
+					},
+					{
+						"birth_frame": 1058400,
+						"community": "west-1",
+						"id": "building-00026",
+						"lot": "",
+						"nearest_family": 1.06000006198883,
+						"position": [
+							11.7569007873535,
+							5.67687797546387
+						],
+						"road": "west-road-1",
+						"road_gap": 1.17294454574585,
+						"type": "residential"
+					},
+					{
+						"birth_frame": 1764000,
+						"community": "west-1",
+						"id": "building-00027",
+						"lot": "",
+						"nearest_family": 1.05999946594238,
+						"position": [
+							10.6859703063965,
+							6.73682165145874
+						],
+						"road": "west-cross-1",
+						"road_gap": 1.26317834854126,
+						"type": "residential"
+					},
+					{
+						"birth_frame": 2469600,
+						"community": "west-1",
+						"id": "building-00028",
+						"lot": "",
+						"nearest_family": 1.05999946594238,
+						"position": [
+							9.6259708404541,
+							6.73682165145874
+						],
+						"road": "west-cross-1",
+						"road_gap": 1.26317834854126,
+						"type": "residential"
+					}
+				],
+				"minimum_building_gap": 0.0981765747070313,
+				"phrase": 8,
+				"shared_walls": [],
+				"valid_land": true,
+				"worst_family_neighbor": 1.06000006198883,
+				"worst_road_gap": 1.26317834854126
+			},
+			"history": [
+				{
+					"city_count": 25,
+					"count": 1,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": -1,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 1.15530619621277,
+					"phrase": 2,
+					"shared_walls": [],
+					"valid_land": true,
+					"worst_family_neighbor": 0.0,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 26,
+					"count": 2,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7569007873535,
+								5.67687797546387
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17294454574585,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 0.0981765747070313,
+					"phrase": 3,
+					"shared_walls": [],
+					"valid_land": true,
+					"worst_family_neighbor": 1.06000006198883,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 26,
+					"count": 2,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7569007873535,
+								5.67687797546387
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17294454574585,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 0.0981765747070313,
+					"phrase": 4,
+					"shared_walls": [],
+					"valid_land": true,
+					"worst_family_neighbor": 1.06000006198883,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 27,
+					"count": 3,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7569007873535,
+								5.67687797546387
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17294454574585,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1764000,
+							"community": "west-1",
+							"id": "building-00027",
+							"lot": "",
+							"nearest_family": 1.0600004196167,
+							"position": [
+								10.6859703063965,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 0.0981765747070313,
+					"phrase": 5,
+					"shared_walls": [],
+					"valid_land": true,
+					"worst_family_neighbor": 1.0600004196167,
+					"worst_road_gap": 1.26317834854126
+				},
+				{
+					"city_count": 27,
+					"count": 3,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7569007873535,
+								5.67687797546387
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17294454574585,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1764000,
+							"community": "west-1",
+							"id": "building-00027",
+							"lot": "",
+							"nearest_family": 1.0600004196167,
+							"position": [
+								10.6859703063965,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 0.0981765747070313,
+					"phrase": 6,
+					"shared_walls": [],
+					"valid_land": true,
+					"worst_family_neighbor": 1.0600004196167,
+					"worst_road_gap": 1.26317834854126
+				},
+				{
+					"city_count": 28,
+					"count": 4,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7569007873535,
+								5.67687797546387
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17294454574585,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1764000,
+							"community": "west-1",
+							"id": "building-00027",
+							"lot": "",
+							"nearest_family": 1.05999946594238,
+							"position": [
+								10.6859703063965,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 2469600,
+							"community": "west-1",
+							"id": "building-00028",
+							"lot": "",
+							"nearest_family": 1.05999946594238,
+							"position": [
+								9.6259708404541,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 0.0981765747070313,
+					"phrase": 7,
+					"shared_walls": [],
+					"valid_land": true,
+					"worst_family_neighbor": 1.06000006198883,
+					"worst_road_gap": 1.26317834854126
+				},
+				{
+					"city_count": 28,
+					"count": 4,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 1.06000006198883,
+							"position": [
+								11.7569007873535,
+								5.67687797546387
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17294454574585,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 1764000,
+							"community": "west-1",
+							"id": "building-00027",
+							"lot": "",
+							"nearest_family": 1.05999946594238,
+							"position": [
+								10.6859703063965,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "residential"
+						},
+						{
+							"birth_frame": 2469600,
+							"community": "west-1",
+							"id": "building-00028",
+							"lot": "",
+							"nearest_family": 1.05999946594238,
+							"position": [
+								9.6259708404541,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "residential"
+						}
+					],
+					"minimum_building_gap": 0.0981765747070313,
+					"phrase": 8,
+					"shared_walls": [],
+					"valid_land": true,
+					"worst_family_neighbor": 1.06000006198883,
+					"worst_road_gap": 1.26317834854126
+				}
+			],
+			"reservations": [
+				{
+					"created_phrase": 2,
+					"id": "reservation-00003",
+					"polygon": "[(13.52597, 6.138854), (14.76597, 6.138854), (14.76597, 7.418854), (13.52597, 7.418854)]",
+					"position": [
+						14.1459712982178,
+						6.77885389328003
+					],
+					"reservation_id": "reservation-00003",
+					"source_lot_ids": [
+						"west-lot-4-1"
+					],
+					"source_site_id": "west-lot-4-1"
+				}
+			]
+		},
+		"weave": {
+			"family": "family-00025",
+			"final": {
+				"city_count": 28,
+				"count": 4,
+				"exclusion_clear": true,
+				"houses": [
+					{
+						"birth_frame": 705600,
+						"community": "west-1",
+						"id": "building-00025",
+						"lot": "west-lot-4--1",
+						"nearest_family": 0.939999580383301,
+						"position": [
+							11.7459707260132,
+							6.73682165145874
+						],
+						"road": "west-road-1",
+						"road_gap": 1.19868934154511,
+						"type": "commercial"
+					},
+					{
+						"birth_frame": 1058400,
+						"community": "west-1",
+						"id": "building-00026",
+						"lot": "",
+						"nearest_family": 0.939999938011169,
+						"position": [
+							11.7556638717651,
+							5.79687166213989
+						],
+						"road": "west-road-1",
+						"road_gap": 1.17943811416626,
+						"type": "commercial"
+					},
+					{
+						"birth_frame": 1764000,
+						"community": "west-1",
+						"id": "building-00027",
+						"lot": "",
+						"nearest_family": 0.939999580383301,
+						"position": [
+							10.8059711456299,
+							6.73682165145874
+						],
+						"road": "west-cross-1",
+						"road_gap": 1.26317834854126,
+						"type": "commercial"
+					},
+					{
+						"birth_frame": 2469600,
+						"community": "west-1",
+						"id": "building-00028",
+						"lot": "",
+						"nearest_family": 0.939999580383301,
+						"position": [
+							9.86597156524658,
+							6.73682165145874
+						],
+						"road": "west-cross-1",
+						"road_gap": 1.26317834854126,
+						"type": "commercial"
+					}
+				],
+				"minimum_building_gap": 0.0399995803833008,
+				"phrase": 8,
+				"shared_walls": [
+					{
+						"a": "building-00025",
+						"b": "building-00026",
+						"gap": 0.0399999380111694
+					},
+					{
+						"a": "building-00025",
+						"b": "building-00027",
+						"gap": 0.0399995803833008
+					},
+					{
+						"a": "building-00027",
+						"b": "building-00028",
+						"gap": 0.0399995803833008
+					}
+				],
+				"valid_land": true,
+				"worst_family_neighbor": 0.939999938011169,
+				"worst_road_gap": 1.26317834854126
+			},
+			"history": [
+				{
+					"city_count": 25,
+					"count": 1,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": -1,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "commercial"
+						}
+					],
+					"minimum_building_gap": 1.15530619621277,
+					"phrase": 2,
+					"shared_walls": [],
+					"valid_land": true,
+					"worst_family_neighbor": 0.0,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 26,
+					"count": 2,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 0.939999938011169,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 0.939999938011169,
+							"position": [
+								11.7556638717651,
+								5.79687166213989
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17943811416626,
+							"type": "commercial"
+						}
+					],
+					"minimum_building_gap": 0.0399999380111694,
+					"phrase": 3,
+					"shared_walls": [
+						{
+							"a": "building-00025",
+							"b": "building-00026",
+							"gap": 0.0399999380111694
+						}
+					],
+					"valid_land": true,
+					"worst_family_neighbor": 0.939999938011169,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 26,
+					"count": 2,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 0.939999938011169,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 0.939999938011169,
+							"position": [
+								11.7556638717651,
+								5.79687166213989
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17943811416626,
+							"type": "commercial"
+						}
+					],
+					"minimum_building_gap": 0.0399999380111694,
+					"phrase": 4,
+					"shared_walls": [
+						{
+							"a": "building-00025",
+							"b": "building-00026",
+							"gap": 0.0399999380111694
+						}
+					],
+					"valid_land": true,
+					"worst_family_neighbor": 0.939999938011169,
+					"worst_road_gap": 1.19868934154511
+				},
+				{
+					"city_count": 27,
+					"count": 3,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 0.939999580383301,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 0.939999938011169,
+							"position": [
+								11.7556638717651,
+								5.79687166213989
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17943811416626,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 1764000,
+							"community": "west-1",
+							"id": "building-00027",
+							"lot": "",
+							"nearest_family": 0.939999580383301,
+							"position": [
+								10.8059711456299,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "commercial"
+						}
+					],
+					"minimum_building_gap": 0.0399995803833008,
+					"phrase": 5,
+					"shared_walls": [
+						{
+							"a": "building-00025",
+							"b": "building-00026",
+							"gap": 0.0399999380111694
+						},
+						{
+							"a": "building-00025",
+							"b": "building-00027",
+							"gap": 0.0399995803833008
+						}
+					],
+					"valid_land": true,
+					"worst_family_neighbor": 0.939999938011169,
+					"worst_road_gap": 1.26317834854126
+				},
+				{
+					"city_count": 27,
+					"count": 3,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 0.939999580383301,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 0.939999938011169,
+							"position": [
+								11.7556638717651,
+								5.79687166213989
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17943811416626,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 1764000,
+							"community": "west-1",
+							"id": "building-00027",
+							"lot": "",
+							"nearest_family": 0.939999580383301,
+							"position": [
+								10.8059711456299,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "commercial"
+						}
+					],
+					"minimum_building_gap": 0.0399995803833008,
+					"phrase": 6,
+					"shared_walls": [
+						{
+							"a": "building-00025",
+							"b": "building-00026",
+							"gap": 0.0399999380111694
+						},
+						{
+							"a": "building-00025",
+							"b": "building-00027",
+							"gap": 0.0399995803833008
+						}
+					],
+					"valid_land": true,
+					"worst_family_neighbor": 0.939999938011169,
+					"worst_road_gap": 1.26317834854126
+				},
+				{
+					"city_count": 28,
+					"count": 4,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 0.939999580383301,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 0.939999938011169,
+							"position": [
+								11.7556638717651,
+								5.79687166213989
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17943811416626,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 1764000,
+							"community": "west-1",
+							"id": "building-00027",
+							"lot": "",
+							"nearest_family": 0.939999580383301,
+							"position": [
+								10.8059711456299,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 2469600,
+							"community": "west-1",
+							"id": "building-00028",
+							"lot": "",
+							"nearest_family": 0.939999580383301,
+							"position": [
+								9.86597156524658,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "commercial"
+						}
+					],
+					"minimum_building_gap": 0.0399995803833008,
+					"phrase": 7,
+					"shared_walls": [
+						{
+							"a": "building-00025",
+							"b": "building-00026",
+							"gap": 0.0399999380111694
+						},
+						{
+							"a": "building-00025",
+							"b": "building-00027",
+							"gap": 0.0399995803833008
+						},
+						{
+							"a": "building-00027",
+							"b": "building-00028",
+							"gap": 0.0399995803833008
+						}
+					],
+					"valid_land": true,
+					"worst_family_neighbor": 0.939999938011169,
+					"worst_road_gap": 1.26317834854126
+				},
+				{
+					"city_count": 28,
+					"count": 4,
+					"exclusion_clear": true,
+					"houses": [
+						{
+							"birth_frame": 705600,
+							"community": "west-1",
+							"id": "building-00025",
+							"lot": "west-lot-4--1",
+							"nearest_family": 0.939999580383301,
+							"position": [
+								11.7459707260132,
+								6.73682165145874
+							],
+							"road": "west-road-1",
+							"road_gap": 1.19868934154511,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 1058400,
+							"community": "west-1",
+							"id": "building-00026",
+							"lot": "",
+							"nearest_family": 0.939999938011169,
+							"position": [
+								11.7556638717651,
+								5.79687166213989
+							],
+							"road": "west-road-1",
+							"road_gap": 1.17943811416626,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 1764000,
+							"community": "west-1",
+							"id": "building-00027",
+							"lot": "",
+							"nearest_family": 0.939999580383301,
+							"position": [
+								10.8059711456299,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "commercial"
+						},
+						{
+							"birth_frame": 2469600,
+							"community": "west-1",
+							"id": "building-00028",
+							"lot": "",
+							"nearest_family": 0.939999580383301,
+							"position": [
+								9.86597156524658,
+								6.73682165145874
+							],
+							"road": "west-cross-1",
+							"road_gap": 1.26317834854126,
+							"type": "commercial"
+						}
+					],
+					"minimum_building_gap": 0.0399995803833008,
+					"phrase": 8,
+					"shared_walls": [
+						{
+							"a": "building-00025",
+							"b": "building-00026",
+							"gap": 0.0399999380111694
+						},
+						{
+							"a": "building-00025",
+							"b": "building-00027",
+							"gap": 0.0399995803833008
+						},
+						{
+							"a": "building-00027",
+							"b": "building-00028",
+							"gap": 0.0399995803833008
+						}
+					],
+					"valid_land": true,
+					"worst_family_neighbor": 0.939999938011169,
+					"worst_road_gap": 1.26317834854126
+				}
+			],
+			"reservations": []
+		}
+	},
+	"seed": "2026100900000062"
+}
