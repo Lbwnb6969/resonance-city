@@ -1,0 +1,26 @@
+{
+	"checks": {
+		"finds_first_authored_route": true,
+		"finds_second_route": true,
+		"first_line_settles": true,
+		"prefilled_stop_keeps_authoritative_position": true,
+		"second_line_settles": true,
+		"station_action_enters_transit_planning": true,
+		"station_action_prefills_first_stop": true,
+		"station_click_sets_station_context": true,
+		"station_context_explains_lines_and_transfer": true,
+		"station_context_explains_next_action": true,
+		"station_context_menu_visible": true,
+		"station_focus_ring_selected": true,
+		"station_has_two_authored_lines": true,
+		"station_hover_explains_next_action": true,
+		"station_keeps_plan_action_enabled": true,
+		"station_names_two_authored_lines": true,
+		"station_shows_next_composable_action": true,
+		"station_shows_waiting_transfer_state": true,
+		"window_renders_map": true
+	},
+	"failures": [],
+	"passed": true,
+	"screenshot": "res://验证记录/round168_共享站窗口/station_context_live.png"
+}
