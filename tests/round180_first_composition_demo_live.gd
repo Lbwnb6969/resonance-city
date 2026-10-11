@@ -131,6 +131,7 @@ func _run() -> void:
 	guide.theme_rework_button.emit_signal("pressed")
 	var author_id := demo.selected_id
 	check(demo.menu.visible and demo.context.get("kind","") == "retune" and not author_id.is_empty(),"theme_button_opens_real_source_without_auto_pitch")
+	check(bool(demo.shown_world.by_id.get(author_id,{}).get("player_expression",false)),"theme_button_targets_the_player_authored_root")
 	if author_id.is_empty():
 		await _finish()
 		return
