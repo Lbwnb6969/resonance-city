@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "child_result_keeps_actual_birth_phrase_and_frame": true,
+    "child_result_keeps_real_community_and_position": true,
+    "child_result_names_actual_voice_source_and_pitch": true,
+    "growth_text_exposes_observed_child_without_future_wording": true,
+    "latest_child_selection_uses_actual_birth_order": true,
+    "removed_child_event_has_no_current_growth_target": true,
+    "removed_child_is_absent_from_player_copy": true,
+    "reservation_remains_primary_action_alongside_observed_child": true,
+    "reservation_result_still_reports_real_child": true,
+    "settled_family_child_is_reported_as_latest_observed_result": true,
+    "without_birth_no_child_result_is_invented": true
+  },
+  "failures": [],
+  "passed": true,
+  "scope": "Observed first-authored family child identity, birth phrase, position and voice source; reservation priority and removed-child boundary; no operation submission or human listening claim."
+}

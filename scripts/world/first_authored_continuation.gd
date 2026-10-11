@@ -26,6 +26,34 @@ static func _active_reservation(world: RefCounted, reservation_id: String) -> Di
 			return reservation.duplicate(true)
 	return {}
 
+static func _latest_family_child(world: RefCounted, family_id: String, root_id: String) -> Dictionary:
+	## A child is reportable only when both its current building and its birth
+	## event still exist.  Event history alone is insufficient after a removal.
+	var latest: Dictionary = {}
+	for raw_id in world.by_id:
+		var building: Dictionary = world.by_id[raw_id]
+		var id := str(building.get("district_id", raw_id))
+		if id.is_empty() or id == root_id or str(building.get("family_id", "")) != family_id: continue
+		var birth := _event(world, "birth", id)
+		if birth.is_empty(): continue
+		var frame := int(birth.get("frame", building.get("birth_frame", -1)))
+		var birth_frame := int(building.get("birth_frame", frame))
+		if not latest.is_empty():
+			var latest_frame := int(latest.get("frame", -1))
+			var latest_birth_frame := int(latest.get("birth_frame", -1))
+			var latest_id := str(latest.get("id", ""))
+			if frame < latest_frame or (frame == latest_frame and birth_frame < latest_birth_frame) or (frame == latest_frame and birth_frame == latest_birth_frame and id <= latest_id):
+				continue
+		var source_expression := str(building.get("expression", ""))
+		latest = {"id":id,"family_id":family_id,"community_id":str(building.get("community_id", "")),
+			"position":building.get("position", []).duplicate(true),"frame":frame,"birth_frame":birth_frame,
+			"phrase":int(birth.get("phrase", building.get("birth_phrase", -1))),
+			"form":str(building.get("form", birth.get("form", "胚"))),"type":str(building.get("type", "residential")),
+			"current_midi":int(building.get("current_midi", -1)),"expression":source_expression,
+			"voice_source":id,"voice_source_id":id,
+			"birth_event":birth.duplicate(true)}
+	return latest
+
 static func state(world: RefCounted, work: Dictionary, score: Dictionary = {}) -> Dictionary:
 	## `work` is the already-derived FirstAuthoredWork.state result.  Keeping it
 	## as an input means this contract shares the exact latest-root selection and
@@ -47,6 +75,7 @@ static func state(world: RefCounted, work: Dictionary, score: Dictionary = {}) -
 	var current_phrase := int(world.phrase_index)
 	var next_growth_phrase := int(family.get("next_growth_phrase", work.get("next_growth_phrase", -1)))
 	var growth_pending := next_growth_phrase >= 0 and current_phrase < next_growth_phrase
+	var latest_child := _latest_family_child(world, family_id, root_id)
 	var action := {"kind": "", "id": "", "position": [], "community_id": cid, "available": false}
 	if not reservation.is_empty():
 		action = {"kind": "reservation", "id": active_reservation_id, "position": reservation.get("position", []).duplicate(true), "community_id": cid, "available": true,
@@ -77,6 +106,8 @@ static func state(world: RefCounted, work: Dictionary, score: Dictionary = {}) -
 		"reservation_source_id": reservation_source_id, "reservation_active": not reservation.is_empty(),
 		"reservation_id": active_reservation_id, "reservation_position": reservation.get("position", []).duplicate(true),
 		"birth_event": _event(world, "birth", root_id), "retune_event": _event(world, "retune", root_id),
+		"latest_child": latest_child, "latest_child_id": str(latest_child.get("id", "")),
+		"latest_child_observed": not latest_child.is_empty(),
 		"action": action, "target_kind": action_kind, "action_label": action_label,
 		"action_id": str(action.get("id", "")), "actual_only": true}
 
@@ -97,6 +128,11 @@ static func text(result: Dictionary) -> String:
 		lines.append("留地仍在 · " + str(result.get("reservation_id", "")))
 	else:
 		lines.append("当前没有活动留地")
+	var latest_child: Dictionary = result.get("latest_child", {})
+	if not latest_child.is_empty():
+		var phrase := int(latest_child.get("phrase", -1))
+		var phrase_text := "第%d句 · " % phrase if phrase >= 0 else "实际落地 · "
+		lines.append("最近实际生长 · %s · %s社区 · %s声音来源 %s · 音级%d" % [str(latest_child.get("id", "")), str(latest_child.get("community_id", "")), phrase_text, str(latest_child.get("voice_source", "")), int(latest_child.get("current_midi", -1))])
 	var next_phrase := int(result.get("next_growth_phrase", -1))
 	if next_phrase >= 0: lines.append("已登记的实际成长句 · 第%d句" % next_phrase)
 	var action: Dictionary = result.get("action", {})

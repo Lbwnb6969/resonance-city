@@ -1432,7 +1432,9 @@ func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int, reque
 	communities[check["community_id"]]["members"].append(id)
 	index.put(id,p,float(building["radius"]))
 	_cache_entity(id)
-	events.append({"kind":"birth","district_id":id,"frame":frame})
+	# Keep the audible settlement phrase beside the birth event so read-only
+	# continuation queries can report the actual child sentence after reload.
+	events.append({"kind":"birth","district_id":id,"frame":frame,"phrase":phrase_index})
 	return id
 
 func settle(frame: int) -> void:
