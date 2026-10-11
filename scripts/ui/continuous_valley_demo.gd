@@ -29,6 +29,7 @@ const Renderer = preload("res://scripts/audio/sample_renderer.gd")
 const GroundLayer = preload("res://scripts/visual/valley_ground_layer.gd")
 const WaterFlow = preload("res://scripts/visual/valley_water_flow.gd")
 const BuildingVariants = preload("res://scripts/visual/building_variant_catalog.gd")
+const FirstExpressionIdentity = preload("res://scripts/visual/first_expression_identity.gd")
 const StreetEaves = preload("res://scripts/visual/street_eaves_layer.gd")
 const Daylight = preload("res://scripts/visual/valley_daylight.gd")
 var building_catalog := BuildingVariants.new()
@@ -489,7 +490,8 @@ func _make_menu() -> void:
 	box.add_child(verbs)
 	menu.set_meta("listening_verbs",verbs)
 	var compose_more := Button.new()
-	compose_more.text = "再写一段 · 选择一片街坊"
+	compose_more.text = "继续规划 · 街坊 / 公共空间 / 声音"
+	compose_more.tooltip_text = "从章程、变化卡和社区开始，选择公共空间，再听下一段声音"
 	compose_more.pressed.connect(_begin_next_composition)
 	box.add_child(compose_more)
 	menu.set_meta("compose_more",compose_more)
@@ -1201,7 +1203,7 @@ func _begin_next_composition() -> void:
 	menu.hide()
 	_home_city()
 	planning_guide.open_tool()
-	_message("再写一段 · 选发展方向，再在地图选择街坊；让不同声音一起演奏")
+	_message("继续规划 · 选发展方向、街坊、公共空间和声音；让不同声音一起演奏")
 
 func _listen_authored_duet(root_id: String) -> void:
 	if not shown_world.by_id.has(root_id): return
@@ -1220,7 +1222,7 @@ func _resume_full_composition() -> void:
 	menu.hide()
 	planning_guide.hide_tool()
 	_home_city()
-	_message("回到全城合奏 · 各段保留自己的音与生长方向")
+	_message("回到全城合奏 · 左上继续规划公共空间与声音，或按 P")
 
 func _authored_reservation_context() -> bool:
 	if not first_composition_mode or context.get("kind","") != "reservation": return false
@@ -3212,6 +3214,7 @@ func _draw() -> void:
 	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,ui_ink)
 	var composition_title := _composition_title()
 	draw_string(font,Vector2(47,67),composition_title,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color(ui_ink,0.78))
+	_draw_authored_voice_legend(ui_ink)
 	_draw_landmark_bar()
 	if not black:
 		var lead := str(model.audible_theme().get("cid",""))
@@ -3234,6 +3237,27 @@ func _composition_title() -> String:
 	if authored_count <= 1: return "河湾 · 第一段"
 	if authored_count == 2: return "河湾 · 两岸合奏"
 	return "河湾 · %d段合奏" % authored_count
+
+func _draw_authored_voice_legend(ui_ink: Color) -> void:
+	if not first_composition_mode: return
+	var roots: Array[Dictionary] = AuthoredDuet.roots(shown_world,model.audible_pitches())
+	if roots.size() < 2: return
+	var font := ThemeDB.fallback_font
+	var x := 47.0
+	draw_string(font,Vector2(x,88),"你的声音",HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color(ui_ink,0.62))
+	x += font.get_string_size("你的声音",HORIZONTAL_ALIGNMENT_LEFT,-1,11).x+12.0
+	for root: Dictionary in roots:
+		var expression := str(root.get("expression",""))
+		var choice: Dictionary = PlayerExpression.definition(expression)
+		var family: Dictionary = shown_world.families.get(str(root.get("family_id","")),{})
+		var identity: Dictionary = FirstExpressionIdentity.identity(root,family)
+		var ink: Color = identity.get("ink",Color("7b8b81"))
+		var pitch := int(root.get("current_midi",48))
+		var community := str(root.get("community_name",root.get("community_id","")))
+		var text := "%s · %s %s%d · %s" % [community,str(choice.get("label",expression)),note_name(pitch),pitch/12-1,str(choice.get("sound",""))]
+		draw_circle(Vector2(x+4,84),4.0,Color(ink,0.92))
+		draw_string(font,Vector2(x+12,88),text,HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color(ink,0.95))
+		x += font.get_string_size(text,HORIZONTAL_ALIGNMENT_LEFT,-1,11).x+22.0
 
 func _draw_authored_selection() -> void:
 	if not first_composition_mode or not _authored_retune() or not shown_world.by_id.has(selected_id): return

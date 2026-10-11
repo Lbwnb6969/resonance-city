@@ -67,8 +67,8 @@ func sync() -> void:
 				tooltip_text = "保留留白，或亲自把它营造成公共空间"
 			else:
 				action = "compose"
-				text = "再写一段 · 选择一片街坊"
-				tooltip_text = "重新选发展方向与社区，让另一段声音与这段合奏"
+				text = "继续规划 · 街坊 / 公共空间 / 声音"
+				tooltip_text = "重新选发展方向与社区，再选择公共空间和下一段声音"
 			disabled = false
 			visible = not _blocked()
 			_place_entry()
