@@ -1,10 +1,12 @@
 extends Button
 ## One small entry follows a real first composition from planning to its own theme.
+const FirstAuthoredContinuation = preload("res://scripts/world/first_authored_continuation.gd")
 var demo: Control
 var origin_frame := 0.0
 var entered := false
 var action := "planning"
 var authored_state: Dictionary = {}
+var continuation_state: Dictionary = {}
 var heard_root := ""
 const EXPRESSIONS := {"deep":"深流","weave":"织机","warm":"留地"}
 
@@ -24,6 +26,7 @@ func reset_for_city() -> void:
 	entered = false
 	action = "planning"
 	authored_state.clear()
+	continuation_state.clear()
 	heard_root = ""
 	disabled = false
 	hide()
@@ -37,9 +40,16 @@ func sync() -> void:
 	var root_id := str(authored_state.get("root_id",""))
 	if not root_id.is_empty():
 		entered = true
+		continuation_state.clear()
+		# The continuation is derived from the live World.  Test doubles and
+		# older callers without a ContinuousWorld stay on the existing status
+		# path instead of inventing a target.
+		if demo.shown_world != null and demo.shown_world.has_method("snapshot"):
+			var score: Dictionary = demo.model.audible_score() if demo.model != null and demo.model.has_method("audible_score") else {}
+			continuation_state = FirstAuthoredContinuation.state(demo.shown_world,authored_state,score)
 		if bool(authored_state.get("root_heard_retune",false)):
 			heard_root = root_id
-		if heard_root == root_id:
+		if heard_root == root_id and bool(authored_state.get("theme_eligible",false)):
 			hide()
 			return
 		var community := str(authored_state["community_name"])
@@ -50,10 +60,19 @@ func sync() -> void:
 			text = "%s · 改写你种下的%s" % [community,expression]
 			tooltip_text = "回到你亲自种下的房屋，改一个音；不替你选择或提交"
 		else:
-			action = "growth"
-			disabled = true
-			text = "%s · 你种下的%s在生长" % [community,expression]
-			tooltip_text = "同一家族已有%d栋房屋；社区至少六栋成熟房屋后才能形成主题" % int(authored_state.get("family_houses",1))
+			var continuation: Dictionary = continuation_state.get("action",{})
+			if bool(continuation.get("available",false)) and str(continuation.get("kind","")) in ["root","reservation","community"]:
+				action = "continuation"
+				disabled = false
+				var continuation_kind := str(continuation.get("kind",""))
+				var continuation_label := "定位真实留地" if continuation_kind == "reservation" else ("沿社区继续组合" if continuation_kind == "community" else "定位首作房屋")
+				text = "%s · %s" % [community,continuation_label]
+				tooltip_text = str(continuation.get("text","沿真实结果继续组合"))
+			else:
+				action = "growth"
+				disabled = true
+				text = "%s · 你种下的%s在生长" % [community,expression]
+				tooltip_text = "同一家族已有%d栋房屋；社区至少六栋成熟房屋后才能形成主题" % int(authored_state.get("family_houses",1))
 		visible = not _blocked()
 	elif entered or _has_started_work():
 		entered = true
@@ -89,6 +108,14 @@ func _begin() -> void:
 			sync()
 			return
 		if bool(demo._begin_first_authored_theme()): hide()
+		return
+	if action == "continuation":
+		var current: Dictionary = demo._first_authored_state()
+		if current.is_empty():
+			sync()
+			return
+		if demo.has_method("_begin_first_authored_continuation") and bool(demo._begin_first_authored_continuation()):
+			hide()
 		return
 	entered = true
 	hide()

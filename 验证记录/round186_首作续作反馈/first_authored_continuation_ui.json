@@ -1,0 +1,10 @@
+{
+  "checks": {
+    "heard_root_keeps_real_community_continuation_entry_before_theme": true,
+    "house_continuation_entry_delegates_real_target_without_submit": true,
+    "warm_route_continuation_entry_names_live_reservation": true
+  },
+  "failures": [],
+  "passed": true,
+  "scope": "Dummy UI entry over derived live root/reservation target; no operation submission, audio or human preference claim."
+}

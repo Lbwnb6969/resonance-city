@@ -15,6 +15,7 @@ const TransitRework = preload("res://scripts/world/transit_line_rework.gd")
 const TransitReworkPreview = preload("res://scripts/world/transit_rework_preview.gd")
 const FirstComposition = preload("res://scripts/world/first_composition.gd")
 const FirstAuthoredWork = preload("res://scripts/world/first_authored_work.gd")
+const FirstAuthoredContinuation = preload("res://scripts/world/first_authored_continuation.gd")
 const FirstAuthoredRouteResult = preload("res://scripts/ui/first_authored_route_result.gd")
 const FirstExpressionComparisonCard = preload("res://scripts/ui/first_expression_comparison_card.gd")
 const PlayerExpression = preload("res://scripts/world/player_expression.gd")
@@ -1038,6 +1039,48 @@ func _begin_first_authored_theme() -> bool:
 	_show_context_menu()
 	_message(str(work["community_name"])+" · 听自己种下的主题，亲自改一个音；Esc回到全城")
 	return true
+
+func _begin_first_authored_continuation() -> bool:
+	## Locate the next real authored result without creating a new save state.
+	## A live reservation gets the planning context; otherwise the actual root
+	## house is opened for listening/retuning. Theme entry keeps its existing
+	## focus behavior once the community is genuinely eligible.
+	var work := _first_authored_state()
+	if work.is_empty() or shown_world == null: return false
+	var score: Dictionary = model.audible_score()
+	var continuation := FirstAuthoredContinuation.state(shown_world,work,score)
+	var action: Dictionary = continuation.get("action",{})
+	if not bool(action.get("available",false)): return false
+	var kind := str(action.get("kind",""))
+	if kind == "reservation":
+		var reservation_id := str(action.get("id",""))
+		var raw: Array = action.get("position",[])
+		if reservation_id.is_empty() or raw.size() != 2: return false
+		var reservation := shown_world.planning_at(Vector2(float(raw[0]),float(raw[1])))
+		if reservation.is_empty() or str(reservation.get("reservation_id",reservation.get("id",""))) != reservation_id: return false
+		_cancel_preview_playback()
+		planning_guide.hide_tool()
+		selected_id = ""
+		context = {"kind":"reservation","id":reservation_id,"position":raw.duplicate()}
+		planning_guide._focus_planning_position(raw)
+		_show_context_menu()
+		_message(str(work["community_name"])+" · 已定位真实留地，继续规划或释放")
+		return true
+	if kind in ["root","community"]:
+		# A community target has no invented future building position. Locate the
+		# actual authored root as the player's concrete entry to that community.
+		var root_id := str(work.get("root_id",action.get("id","")))
+		if root_id.is_empty() or not shown_world.by_id.has(root_id): return false
+		if bool(work.get("theme_eligible",false)): return _begin_first_authored_theme()
+		_cancel_preview_playback()
+		planning_guide.hide_tool()
+		selected_id = root_id
+		context = {"kind":"retune","id":root_id}
+		planning_guide._focus_planning_position(shown_world.by_id[root_id]["position"])
+		_show_context_menu()
+		_message(str(work["community_name"])+" · 已定位首作房屋；下一句第%d句继续生长" % int(work.get("next_growth_phrase",shown_world.phrase_index)))
+		return true
+	return false
 
 func _begin_first_sound_choice(cid: String,at: Vector2 = Vector2.INF) -> bool:
 	var choices: Array = FirstComposition.opportunities(shown_world).get("seed_candidates",[])

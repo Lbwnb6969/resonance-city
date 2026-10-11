@@ -1,0 +1,116 @@
+{
+  "checks": {
+    "deep_checkpoint_reads": true,
+    "deep_checkpoint_writes": true,
+    "deep_continuation_always_has_a_real_next_target": true,
+    "deep_continuation_exposes_the_real_root_building": true,
+    "deep_continuation_is_available_and_actual_only": true,
+    "deep_continuation_keeps_real_community_and_family": true,
+    "deep_continuation_reports_only_the_supplied_theme_source": true,
+    "deep_continuation_reports_the_real_birth_event": true,
+    "deep_continuation_uses_the_formal_growth_schedule": true,
+    "deep_non_warm_targets_root_or_community_without_inventing_land": true,
+    "deep_query_does_not_mutate_world": true,
+    "deep_real_expression_operation_is_accepted": true,
+    "deep_restore_derives_same_community_and_growth_schedule": true,
+    "deep_restore_keeps_family_identity": true,
+    "deep_restore_keeps_only_real_reservation_state": true,
+    "deep_restore_keeps_root_identity": true,
+    "deep_restore_rederives_same_next_action_target": true,
+    "released_land_keeps_provenance_but_no_live_target": true,
+    "warm_checkpoint_reads": true,
+    "warm_checkpoint_writes": true,
+    "warm_continuation_always_has_a_real_next_target": true,
+    "warm_continuation_exposes_the_real_root_building": true,
+    "warm_continuation_is_available_and_actual_only": true,
+    "warm_continuation_keeps_real_community_and_family": true,
+    "warm_continuation_reports_only_the_supplied_theme_source": true,
+    "warm_continuation_reports_the_real_birth_event": true,
+    "warm_continuation_uses_the_formal_growth_schedule": true,
+    "warm_query_does_not_mutate_world": true,
+    "warm_real_expression_operation_is_accepted": true,
+    "warm_release_is_accepted": true,
+    "warm_restore_derives_same_community_and_growth_schedule": true,
+    "warm_restore_keeps_family_identity": true,
+    "warm_restore_keeps_only_real_reservation_state": true,
+    "warm_restore_keeps_root_identity": true,
+    "warm_restore_rederives_same_next_action_target": true,
+    "warm_warm_exposes_live_reservation_identity": true,
+    "warm_warm_targets_the_live_reservation_first": true,
+    "weave_checkpoint_reads": true,
+    "weave_checkpoint_writes": true,
+    "weave_continuation_always_has_a_real_next_target": true,
+    "weave_continuation_exposes_the_real_root_building": true,
+    "weave_continuation_is_available_and_actual_only": true,
+    "weave_continuation_keeps_real_community_and_family": true,
+    "weave_continuation_reports_only_the_supplied_theme_source": true,
+    "weave_continuation_reports_the_real_birth_event": true,
+    "weave_continuation_uses_the_formal_growth_schedule": true,
+    "weave_non_warm_targets_root_or_community_without_inventing_land": true,
+    "weave_query_does_not_mutate_world": true,
+    "weave_real_expression_operation_is_accepted": true,
+    "weave_restore_derives_same_community_and_growth_schedule": true,
+    "weave_restore_keeps_family_identity": true,
+    "weave_restore_keeps_only_real_reservation_state": true,
+    "weave_restore_keeps_root_identity": true,
+    "weave_restore_rederives_same_next_action_target": true
+  },
+  "evidence": {
+    "routes": {
+      "deep": {
+        "action": {
+          "available": true,
+          "community_id": "west-1",
+          "id": "west-1",
+          "kind": "community",
+          "position": [],
+          "text": "沿这片社区等待第3句真实生长"
+        },
+        "community_id": "west-1",
+        "family_id": "family-00025",
+        "next_growth_phrase": 3,
+        "reservation_active": false,
+        "reservation_source_id": "",
+        "root_id": "building-00025"
+      },
+      "warm": {
+        "action": {
+          "available": true,
+          "community_id": "west-1",
+          "id": "reservation-00001",
+          "kind": "reservation",
+          "position": [
+            14.096492767334,
+            8.36427974700928
+          ],
+          "text": "定位这片真实留地继续规划"
+        },
+        "community_id": "west-1",
+        "family_id": "family-00025",
+        "next_growth_phrase": 2,
+        "reservation_active": true,
+        "reservation_source_id": "reservation-00001",
+        "root_id": "building-00025"
+      },
+      "weave": {
+        "action": {
+          "available": true,
+          "community_id": "west-1",
+          "id": "west-1",
+          "kind": "community",
+          "position": [],
+          "text": "沿这片社区等待第2句真实生长"
+        },
+        "community_id": "west-1",
+        "family_id": "family-00025",
+        "next_growth_phrase": 2,
+        "reservation_active": false,
+        "reservation_source_id": "",
+        "root_id": "building-00025"
+      }
+    }
+  },
+  "failures": [],
+  "passed": true,
+  "scope": "Read-only first-authored continuation derived from World/families/events/score; binary archive round trip; no UI or human listening claim."
+}
