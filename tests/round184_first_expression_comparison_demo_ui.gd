@@ -38,17 +38,17 @@ func _run() -> void:
 	check(demo._begin_first_sound_choice(cid),"sound_choice_opens_at_real_community")
 	var before := demo.model.world.snapshot()
 	demo.expression_choice = "weave"
-	demo.expression_comparison = {"variants":{
-		"deep":{"accepted":true,"pcm":PackedByteArray([1,2,3,4]),"consequences":{"type":"residential","next_growth_phrase":2,"mature":3,"reservation_count":0}},
-		"weave":{"accepted":true,"pcm":PackedByteArray([4,3,2,1]),"consequences":{"type":"commercial","next_growth_phrase":1,"mature":4,"reservation_count":0}},
-		"warm":{"accepted":true,"pcm":PackedByteArray([8,8,8,8]),"consequences":{"type":"residential","next_growth_phrase":1,"mature":2,"reservation_count":1}}
+	demo.expression_comparison = {"sample_rate":22050,"variants":{
+		"deep":{"accepted":true,"pcm":PackedByteArray([1,2,3,4]),"metrics":{"rhythm_profiles":[{"pitch":36,"spacing_frames":44100.0,"tail":1.6}]},"consequences":{"type":"residential","next_growth_phrase":2,"mature":3,"reservation_count":0}},
+		"weave":{"accepted":true,"pcm":PackedByteArray([4,3,2,1]),"metrics":{"rhythm_profiles":[{"pitch":72,"spacing_frames":5512.5,"tail":0.12}]},"consequences":{"type":"commercial","next_growth_phrase":1,"mature":4,"reservation_count":0}},
+		"warm":{"accepted":true,"pcm":PackedByteArray([8,8,8,8]),"metrics":{"rhythm_profiles":[{"pitch":55,"spacing_frames":88200.0,"tail":2.2}]},"consequences":{"type":"residential","next_growth_phrase":1,"mature":2,"reservation_count":1}}
 	}}
 	demo.expression_comparison_key = demo._expression_preview_identity()
 	demo._update_expression_menu()
 	await process_frame
 	var bounds := Rect2(Vector2.ZERO,Vector2(800,600))
 	check(demo.menu.visible and bounds.encloses(demo.menu.get_global_rect()),"comparison_card_fits_800x600")
-	check(demo.expression_comparison_summary.visible and demo.expression_comparison_summary.text.contains("PCM与") and demo.expression_comparison_summary.text.contains("保留1片真实空地"),"comparison_card_shows_actual_audio_and_city_consequence")
+	check(demo.expression_comparison_summary.visible and demo.expression_comparison_summary.text.contains("PCM与") and demo.expression_comparison_summary.text.contains("C5") and demo.expression_comparison_summary.text.contains("每0.25秒/尾0.12秒") and demo.expression_comparison_summary.text.contains("保留1片真实空地"),"comparison_card_shows_actual_audio_and_city_consequence")
 	check(demo.expression_comparison_summary.get_global_rect().size.y > 0.0,"comparison_card_is_visible_in_menu")
 	check(demo.model.world.snapshot() == before,"comparison_card_does_not_submit_or_mutate_city")
 	var report := {"passed":failures.is_empty(),"checks":checks,"failures":failures,"card":demo.expression_comparison_summary.text,"menu_rect":demo.menu.get_global_rect()}

@@ -97,6 +97,7 @@ func _run() -> void:
 	if demo.expression_comparison.is_empty():
 		await _finish()
 		return
+	check(demo.expression_comparison_summary.visible and demo.expression_comparison_summary.text.contains("C5") and demo.expression_comparison_summary.text.contains("每0.25秒/尾0.12秒") and demo.expression_comparison_summary.text.contains("保留1片真实空地"),"production_comparison_card_exposes_actual_register_rhythm_and_city_consequence")
 	var comparison := demo.expression_comparison.duplicate(true)
 	check(comparison["variants"].values().all(func(v: Dictionary) -> bool: return bool(v["accepted"]) and v["pcm"].size() == rate*4*4),"three_accepted_four_second_full_scores")
 	var source_key := str(comparison["source_key"])

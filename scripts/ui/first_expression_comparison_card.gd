@@ -6,6 +6,7 @@ extends RefCounted
 ## changes the pending operation.  A row is shown as actual only when that
 ## branch contains the accepted PCM and its branch consequence.
 const PlayerExpression = preload("res://scripts/world/player_expression.gd")
+const ExpressionCompareResult = preload("res://scripts/world/expression_compare_result.gd")
 
 const ROUTE_LABELS := {"deep":"深流", "weave":"织机", "warm":"留地"}
 const TYPE_LABELS := {"commercial":"商业", "residential":"住宅"}
@@ -15,6 +16,17 @@ static func _route_label(id: String) -> String:
 
 static func _type_label(kind: String) -> String:
 	return str(TYPE_LABELS.get(kind,kind if not kind.is_empty() else "建筑"))
+
+static func _actual_audio_text(variant: Dictionary,comparison: Dictionary) -> String:
+	var metrics: Dictionary = variant.get("metrics",{})
+	var profiles: Array = metrics.get("rhythm_profiles",[])
+	var rate := int(comparison.get("sample_rate",0))
+	if profiles.is_empty() or not (profiles[0] is Dictionary) or rate <= 0: return ""
+	var profile: Dictionary = profiles[0]
+	var pitch := int(profile.get("pitch",0))
+	var spacing := float(profile.get("spacing_frames",0.0))/float(rate)
+	var tail := float(profile.get("tail",0.0))
+	return " · %s · 每%.2f秒/尾%.2f秒" % [ExpressionCompareResult.note_label(pitch),spacing,tail]
 
 static func _pcm_differs_from(variants: Dictionary,id: String) -> Array[String]:
 	var current: Variant = variants.get(id,{})
@@ -37,7 +49,7 @@ static func _row(id: String,variant: Dictionary,selected: String,comparison: Dic
 		return prefix+_route_label(id)+" · 未生成实际试听 · "+str(variant.get("reason","暂不可用"))
 	var definition := PlayerExpression.definition(id)
 	var consequence: Dictionary = variant.get("consequences",{})
-	var sound := str(definition.get("sound",""))
+	var sound := str(definition.get("sound",""))+_actual_audio_text(variant,comparison)
 	var differs := _pcm_differs_from(comparison.get("variants",{}),id)
 	var pcm_text := "PCM与"+"、".join(differs)+"不同" if not differs.is_empty() else "PCM暂未显示差异"
 	var next_phrase := int(consequence.get("next_growth_phrase",-1))
