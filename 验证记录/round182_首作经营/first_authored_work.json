@@ -1,0 +1,1386 @@
+{
+  "checks": {
+    "a_community_theme_does_not_invent_a_missing_root_source": true,
+    "a_new_pending_family_does_not_replace_the_surviving_author_before_settlement": true,
+    "a_stale_missing_root_cannot_hide_the_previous_surviving_authored_work": true,
+    "all_routes_share_the_same_seed_real_offered_card_civic_anchor_and_continuous_sound_position": true,
+    "current_root_pitch_and_retune_status_use_the_caller_audible_pitch_without_mutating_world": true,
+    "deep_authored_community_has_real_mature_theme_qualification_and_civic_support": true,
+    "deep_descendant_land_use_is_the_existing_formal_expression_consequence": true,
+    "deep_eight_phrase_summary_keeps_the_real_root_family_community_and_growth_schedule": true,
+    "deep_restored_world_derives_the_same_author_without_new_saved_progress": true,
+    "deep_state_query_keeps_world_and_random_stream_at_phrase_2": true,
+    "deep_state_query_keeps_world_and_random_stream_at_phrase_3": true,
+    "deep_state_query_keeps_world_and_random_stream_at_phrase_4": true,
+    "deep_state_query_keeps_world_and_random_stream_at_phrase_5": true,
+    "deep_state_query_keeps_world_and_random_stream_at_phrase_6": true,
+    "deep_state_query_keeps_world_and_random_stream_at_phrase_7": true,
+    "deep_state_query_keeps_world_and_random_stream_at_phrase_8": true,
+    "eight_ordinary_phrases_keep_actual_slow_deep_versus_faster_commercial_weave_growth": true,
+    "latest_surviving_authored_root_is_selected_from_actual_settled_families": true,
+    "muted_authored_community_is_not_claimed_as_audibly_playing": true,
+    "no_authored_family_returns_empty_even_when_an_unrelated_community_has_a_theme": true,
+    "only_warm_keeps_its_actual_live_reserved_land_through_eight_phrases": true,
+    "pending_sound_is_not_reported_as_a_surviving_authored_root": true,
+    "released_land_is_not_reported_as_live_even_while_family_provenance_is_preserved": true,
+    "returned_position_and_qualification_arrays_do_not_alias_the_city": true,
+    "root_in_theme_requires_the_actual_supplied_theme_source_identity": true,
+    "rotating_theme_in_another_community_does_not_redirect_the_authored_work": true,
+    "warm_authored_community_has_real_mature_theme_qualification_and_civic_support": true,
+    "warm_descendant_land_use_is_the_existing_formal_expression_consequence": true,
+    "warm_eight_phrase_summary_keeps_the_real_root_family_community_and_growth_schedule": true,
+    "warm_restored_world_derives_the_same_author_without_new_saved_progress": true,
+    "warm_state_query_keeps_world_and_random_stream_at_phrase_2": true,
+    "warm_state_query_keeps_world_and_random_stream_at_phrase_3": true,
+    "warm_state_query_keeps_world_and_random_stream_at_phrase_4": true,
+    "warm_state_query_keeps_world_and_random_stream_at_phrase_5": true,
+    "warm_state_query_keeps_world_and_random_stream_at_phrase_6": true,
+    "warm_state_query_keeps_world_and_random_stream_at_phrase_7": true,
+    "warm_state_query_keeps_world_and_random_stream_at_phrase_8": true,
+    "weave_authored_community_has_real_mature_theme_qualification_and_civic_support": true,
+    "weave_descendant_land_use_is_the_existing_formal_expression_consequence": true,
+    "weave_eight_phrase_summary_keeps_the_real_root_family_community_and_growth_schedule": true,
+    "weave_restored_world_derives_the_same_author_without_new_saved_progress": true,
+    "weave_state_query_keeps_world_and_random_stream_at_phrase_2": true,
+    "weave_state_query_keeps_world_and_random_stream_at_phrase_3": true,
+    "weave_state_query_keeps_world_and_random_stream_at_phrase_4": true,
+    "weave_state_query_keeps_world_and_random_stream_at_phrase_5": true,
+    "weave_state_query_keeps_world_and_random_stream_at_phrase_6": true,
+    "weave_state_query_keeps_world_and_random_stream_at_phrase_7": true,
+    "weave_state_query_keeps_world_and_random_stream_at_phrase_8": true,
+    "young_authored_root_reports_the_existing_qualification_gaps": true
+  },
+  "evidence": {
+    "card": "infill_pulse",
+    "civic_position": [
+      11.7459707260132,
+      6.73682165145874
+    ],
+    "plan": "compact",
+    "routes": {
+      "deep": {
+        "family_positions": [
+          [
+            10.1402282714844,
+            1.373091340065
+          ],
+          [
+            10.1402282714844,
+            2.92309141159058
+          ]
+        ],
+        "final_score": {
+          "focused_community": "",
+          "listener_community": "",
+          "muted_communities": {},
+          "pads": [
+            "west-1:residential:48",
+            "west-2:commercial:52",
+            "west-2:residential:52",
+            "east-2:residential:55",
+            "east-2:commercial:55",
+            "west-1:residential:52",
+            "west-1:residential:36",
+            "east-1:residential:55"
+          ],
+          "response": {
+            "cid": "east-1",
+            "generation": 1,
+            "notes": [
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              55,
+              55,
+              -1,
+              55,
+              55,
+              55,
+              -1
+            ],
+            "pair_count": 5,
+            "receiver_ids": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "building-00031",
+              "building-00037",
+              "",
+              "building-00037",
+              "building-00031",
+              "building-00031",
+              ""
+            ],
+            "source": "west-1",
+            "source_ids": [
+              "building-00035",
+              "building-00029",
+              "building-00001",
+              "building-00028",
+              "building-00032",
+              "building-00043",
+              "building-00003",
+              "building-00002",
+              "building-00005",
+              "building-00004",
+              "building-00007",
+              "building-00006",
+              "building-00040",
+              "building-00046",
+              "building-00008",
+              "building-00025",
+              "building-00026"
+            ],
+            "stereo": "(0.156434, 0.987688)"
+          },
+          "response_enabled": true,
+          "rhythms": [
+            {
+              "cid": "west-1",
+              "expression": "deep",
+              "facility": false,
+              "midi": 36,
+              "player_expression": true,
+              "service_pressure": 0.411764705882353,
+              "source_id": "building-00028",
+              "stereo": "(0.210015, 0.977698)",
+              "zone_roles": [
+                "home"
+              ]
+            },
+            {
+              "cid": "west-2",
+              "expression": "warm",
+              "facility": false,
+              "midi": 52,
+              "player_expression": false,
+              "service_pressure": 0.466666666666667,
+              "source_id": "building-00009",
+              "stereo": "(0.933398, 0.358844)",
+              "zone_roles": [
+                "home",
+                "market",
+                "center"
+              ]
+            }
+          ],
+          "theme": {
+            "center": {},
+            "cid": "west-1",
+            "civic": true,
+            "expression": "deep",
+            "notes": [
+              48,
+              48,
+              48,
+              36,
+              48,
+              36,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              52
+            ],
+            "park": false,
+            "player_expression": true,
+            "source_ids": [
+              "building-00035",
+              "building-00029",
+              "building-00001",
+              "building-00028",
+              "building-00032",
+              "building-00043",
+              "building-00003",
+              "building-00002",
+              "building-00005",
+              "building-00004",
+              "building-00007",
+              "building-00006",
+              "building-00040",
+              "building-00046",
+              "building-00008",
+              "building-00025",
+              "building-00026"
+            ],
+            "stereo": "(0.156434, 0.987688)",
+            "zone_roles": [
+              "home"
+            ]
+          },
+          "voices": {}
+        },
+        "history": [
+          {
+            "city_houses": 31,
+            "lead_cid": "west-1",
+            "phrase": 2,
+            "work": {
+              "base_midi": 36,
+              "civic_support": true,
+              "community_houses": 12,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 36,
+              "expression": "deep",
+              "family_houses": 1,
+              "family_id": "family-00028",
+              "form": "胚",
+              "mature": 10,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 6,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 34,
+            "lead_cid": "west-1",
+            "phrase": 3,
+            "work": {
+              "base_midi": 36,
+              "civic_support": true,
+              "community_houses": 13,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 36,
+              "expression": "deep",
+              "family_houses": 1,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 12,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 6,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 37,
+            "lead_cid": "west-1",
+            "phrase": 4,
+            "work": {
+              "base_midi": 36,
+              "civic_support": true,
+              "community_houses": 14,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 36,
+              "expression": "deep",
+              "family_houses": 1,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 13,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 6,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 39,
+            "lead_cid": "west-1",
+            "phrase": 5,
+            "work": {
+              "base_midi": 36,
+              "civic_support": true,
+              "community_houses": 14,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 36,
+              "expression": "deep",
+              "family_houses": 1,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 14,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 6,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 43,
+            "lead_cid": "",
+            "phrase": 6,
+            "work": {
+              "base_midi": 36,
+              "civic_support": true,
+              "community_houses": 16,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 36,
+              "expression": "deep",
+              "family_houses": 2,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 14,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 10,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": false,
+              "theme_eligible": true,
+              "theme_playing": false
+            }
+          },
+          {
+            "city_houses": 45,
+            "lead_cid": "west-1",
+            "phrase": 7,
+            "work": {
+              "base_midi": 36,
+              "civic_support": true,
+              "community_houses": 16,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 36,
+              "expression": "deep",
+              "family_houses": 2,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 16,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 10,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 48,
+            "lead_cid": "west-1",
+            "phrase": 8,
+            "work": {
+              "base_midi": 36,
+              "civic_support": true,
+              "community_houses": 17,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 36,
+              "expression": "deep",
+              "family_houses": 2,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 16,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 10,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          }
+        ],
+        "reservations": []
+      },
+      "warm": {
+        "family_positions": [
+          [
+            10.1402282714844,
+            1.373091340065
+          ],
+          [
+            9.6152286529541,
+            0.463764667510986
+          ],
+          [
+            9.1152286529541,
+            -0.402260780334473
+          ],
+          [
+            9.09022808074951,
+            1.37309122085571
+          ]
+        ],
+        "final_score": {
+          "focused_community": "",
+          "listener_community": "",
+          "muted_communities": {},
+          "pads": [
+            "west-1:residential:48",
+            "west-2:commercial:52",
+            "west-2:residential:52",
+            "east-2:residential:55",
+            "east-2:commercial:55",
+            "west-1:residential:52",
+            "east-1:residential:55"
+          ],
+          "response": {
+            "cid": "east-1",
+            "generation": 1,
+            "notes": [
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              55,
+              55,
+              -1,
+              55,
+              55,
+              55,
+              -1
+            ],
+            "pair_count": 5,
+            "receiver_ids": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "building-00031",
+              "building-00037",
+              "",
+              "building-00037",
+              "building-00031",
+              "building-00031",
+              ""
+            ],
+            "source": "west-1",
+            "source_ids": [
+              "building-00044",
+              "building-00035",
+              "building-00029",
+              "building-00038",
+              "building-00050",
+              "building-00001",
+              "building-00028",
+              "building-00032",
+              "building-00003",
+              "building-00002",
+              "building-00005",
+              "building-00004",
+              "building-00007",
+              "building-00006",
+              "building-00041",
+              "building-00047",
+              "building-00008",
+              "building-00025",
+              "building-00026"
+            ],
+            "stereo": "(0.156434, 0.987688)"
+          },
+          "response_enabled": true,
+          "rhythms": [
+            {
+              "cid": "west-1",
+              "expression": "warm",
+              "facility": false,
+              "midi": 48,
+              "player_expression": true,
+              "service_pressure": 0.473684210526316,
+              "source_id": "building-00028",
+              "stereo": "(0.210015, 0.977698)",
+              "zone_roles": [
+                "home"
+              ]
+            },
+            {
+              "cid": "west-2",
+              "expression": "warm",
+              "facility": false,
+              "midi": 52,
+              "player_expression": false,
+              "service_pressure": 0.466666666666667,
+              "source_id": "building-00009",
+              "stereo": "(0.933398, 0.358844)",
+              "zone_roles": [
+                "home",
+                "market",
+                "center"
+              ]
+            }
+          ],
+          "theme": {
+            "center": {},
+            "cid": "west-1",
+            "civic": true,
+            "expression": "warm",
+            "notes": [
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              52
+            ],
+            "park": false,
+            "player_expression": true,
+            "source_ids": [
+              "building-00044",
+              "building-00035",
+              "building-00029",
+              "building-00038",
+              "building-00050",
+              "building-00001",
+              "building-00028",
+              "building-00032",
+              "building-00003",
+              "building-00002",
+              "building-00005",
+              "building-00004",
+              "building-00007",
+              "building-00006",
+              "building-00041",
+              "building-00047",
+              "building-00008",
+              "building-00025",
+              "building-00026"
+            ],
+            "stereo": "(0.156434, 0.987688)",
+            "zone_roles": [
+              "home"
+            ]
+          },
+          "voices": {}
+        },
+        "history": [
+          {
+            "city_houses": 31,
+            "lead_cid": "west-1",
+            "phrase": 2,
+            "work": {
+              "base_midi": 48,
+              "civic_support": true,
+              "community_houses": 12,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 48,
+              "expression": "warm",
+              "family_houses": 1,
+              "family_id": "family-00028",
+              "form": "胚",
+              "mature": 10,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 4,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "reservation-00003",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 34,
+            "lead_cid": "west-1",
+            "phrase": 3,
+            "work": {
+              "base_midi": 48,
+              "civic_support": true,
+              "community_houses": 13,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 48,
+              "expression": "warm",
+              "family_houses": 1,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 12,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 4,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "reservation-00003",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 38,
+            "lead_cid": "west-1",
+            "phrase": 4,
+            "work": {
+              "base_midi": 48,
+              "civic_support": true,
+              "community_houses": 15,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 48,
+              "expression": "warm",
+              "family_houses": 2,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 13,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 6,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "reservation-00003",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 40,
+            "lead_cid": "west-1",
+            "phrase": 5,
+            "work": {
+              "base_midi": 48,
+              "civic_support": true,
+              "community_houses": 15,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 48,
+              "expression": "warm",
+              "family_houses": 2,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 15,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 6,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "reservation-00003",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 44,
+            "lead_cid": "",
+            "phrase": 6,
+            "work": {
+              "base_midi": 48,
+              "civic_support": true,
+              "community_houses": 17,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 48,
+              "expression": "warm",
+              "family_houses": 3,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 15,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 8,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "reservation-00003",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": false,
+              "theme_eligible": true,
+              "theme_playing": false
+            }
+          },
+          {
+            "city_houses": 46,
+            "lead_cid": "west-1",
+            "phrase": 7,
+            "work": {
+              "base_midi": 48,
+              "civic_support": true,
+              "community_houses": 17,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 48,
+              "expression": "warm",
+              "family_houses": 3,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 17,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 8,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "reservation-00003",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 50,
+            "lead_cid": "west-1",
+            "phrase": 8,
+            "work": {
+              "base_midi": 48,
+              "civic_support": true,
+              "community_houses": 19,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 48,
+              "expression": "warm",
+              "family_houses": 4,
+              "family_id": "family-00028",
+              "form": "群",
+              "mature": 17,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 10,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "reservation-00003",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          }
+        ],
+        "reservations": [
+          {
+            "created_phrase": 2,
+            "id": "reservation-00003",
+            "polygon": "[(9.590228, 2.423091), (10.69023, 2.423091), (10.69023, 3.523091), (9.590228, 3.523091)]",
+            "position": [
+              10.1402282714844,
+              2.97309136390686
+            ],
+            "reservation_id": "reservation-00003",
+            "source_lot_ids": [],
+            "source_site_id": "expression-clear:10.14023:2.97309"
+          }
+        ]
+      },
+      "weave": {
+        "family_positions": [
+          [
+            10.1402282714844,
+            1.373091340065
+          ],
+          [
+            10.1402282714844,
+            2.92309141159058
+          ],
+          [
+            10.9152278900146,
+            4.26543092727661
+          ],
+          [
+            9.6152286529541,
+            0.463764667510986
+          ]
+        ],
+        "final_score": {
+          "focused_community": "",
+          "listener_community": "",
+          "muted_communities": {},
+          "pads": [
+            "west-1:residential:48",
+            "west-2:commercial:52",
+            "west-2:residential:52",
+            "east-2:residential:55",
+            "east-2:commercial:55",
+            "west-1:residential:52",
+            "west-1:commercial:60",
+            "east-1:residential:55"
+          ],
+          "response": {
+            "cid": "east-1",
+            "generation": 1,
+            "notes": [
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              55,
+              55,
+              -1,
+              55,
+              55,
+              55,
+              -1
+            ],
+            "pair_count": 5,
+            "receiver_ids": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "building-00031",
+              "building-00037",
+              "",
+              "building-00037",
+              "building-00031",
+              "building-00031",
+              ""
+            ],
+            "source": "west-1",
+            "source_ids": [
+              "building-00035",
+              "building-00029",
+              "building-00050",
+              "building-00001",
+              "building-00028",
+              "building-00032",
+              "building-00038",
+              "building-00003",
+              "building-00002",
+              "building-00005",
+              "building-00044",
+              "building-00004",
+              "building-00007",
+              "building-00006",
+              "building-00041",
+              "building-00047",
+              "building-00008",
+              "building-00025",
+              "building-00026"
+            ],
+            "stereo": "(0.156434, 0.987688)"
+          },
+          "response_enabled": true,
+          "rhythms": [
+            {
+              "cid": "west-1",
+              "expression": "weave",
+              "facility": false,
+              "midi": 60,
+              "player_expression": true,
+              "service_pressure": 0.473684210526316,
+              "source_id": "building-00028",
+              "stereo": "(0.210015, 0.977698)",
+              "zone_roles": [
+                "home",
+                "market",
+                "center"
+              ]
+            },
+            {
+              "cid": "west-2",
+              "expression": "warm",
+              "facility": false,
+              "midi": 52,
+              "player_expression": false,
+              "service_pressure": 0.466666666666667,
+              "source_id": "building-00009",
+              "stereo": "(0.933398, 0.358844)",
+              "zone_roles": [
+                "home",
+                "market",
+                "center"
+              ]
+            }
+          ],
+          "theme": {
+            "center": {},
+            "cid": "west-1",
+            "civic": true,
+            "expression": "weave",
+            "notes": [
+              48,
+              48,
+              60,
+              48,
+              60,
+              48,
+              60,
+              48,
+              48,
+              48,
+              60,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              48,
+              52
+            ],
+            "park": false,
+            "player_expression": true,
+            "source_ids": [
+              "building-00035",
+              "building-00029",
+              "building-00050",
+              "building-00001",
+              "building-00028",
+              "building-00032",
+              "building-00038",
+              "building-00003",
+              "building-00002",
+              "building-00005",
+              "building-00044",
+              "building-00004",
+              "building-00007",
+              "building-00006",
+              "building-00041",
+              "building-00047",
+              "building-00008",
+              "building-00025",
+              "building-00026"
+            ],
+            "stereo": "(0.156434, 0.987688)",
+            "zone_roles": [
+              "home",
+              "market",
+              "center"
+            ]
+          },
+          "voices": {}
+        },
+        "history": [
+          {
+            "city_houses": 31,
+            "lead_cid": "west-1",
+            "phrase": 2,
+            "work": {
+              "base_midi": 60,
+              "civic_support": true,
+              "community_houses": 12,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 60,
+              "expression": "weave",
+              "family_houses": 1,
+              "family_id": "family-00028",
+              "form": "胚",
+              "mature": 10,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 4,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 34,
+            "lead_cid": "west-1",
+            "phrase": 3,
+            "work": {
+              "base_midi": 60,
+              "civic_support": true,
+              "community_houses": 13,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 60,
+              "expression": "weave",
+              "family_houses": 1,
+              "family_id": "family-00028",
+              "form": "胚",
+              "mature": 11,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 4,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 38,
+            "lead_cid": "west-1",
+            "phrase": 4,
+            "work": {
+              "base_midi": 60,
+              "civic_support": true,
+              "community_houses": 15,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 60,
+              "expression": "weave",
+              "family_houses": 2,
+              "family_id": "family-00028",
+              "form": "胚",
+              "mature": 12,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 6,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 40,
+            "lead_cid": "west-1",
+            "phrase": 5,
+            "work": {
+              "base_midi": 60,
+              "civic_support": true,
+              "community_houses": 15,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 60,
+              "expression": "weave",
+              "family_houses": 2,
+              "family_id": "family-00028",
+              "form": "胚",
+              "mature": 13,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 6,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 44,
+            "lead_cid": "",
+            "phrase": 6,
+            "work": {
+              "base_midi": 60,
+              "civic_support": true,
+              "community_houses": 17,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 60,
+              "expression": "weave",
+              "family_houses": 3,
+              "family_id": "family-00028",
+              "form": "胚",
+              "mature": 13,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 8,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": false,
+              "theme_eligible": true,
+              "theme_playing": false
+            }
+          },
+          {
+            "city_houses": 46,
+            "lead_cid": "west-1",
+            "phrase": 7,
+            "work": {
+              "base_midi": 60,
+              "civic_support": true,
+              "community_houses": 17,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 60,
+              "expression": "weave",
+              "family_houses": 3,
+              "family_id": "family-00028",
+              "form": "胚",
+              "mature": 14,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 8,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          },
+          {
+            "city_houses": 50,
+            "lead_cid": "west-1",
+            "phrase": 8,
+            "work": {
+              "base_midi": 60,
+              "civic_support": true,
+              "community_houses": 19,
+              "community_id": "west-1",
+              "community_name": "松丘",
+              "current_midi": 60,
+              "expression": "weave",
+              "family_houses": 4,
+              "family_id": "family-00028",
+              "form": "胚",
+              "mature": 14,
+              "met_conditions": [
+                "街墙已成形",
+                "已有公共内院",
+                "六栋成熟房屋"
+              ],
+              "missing_conditions": [],
+              "next_growth_phrase": 10,
+              "position": [
+                10.1402282714844,
+                1.373091340065
+              ],
+              "reservation_id": "",
+              "retuned": false,
+              "root_id": "building-00028",
+              "root_in_theme": true,
+              "theme_eligible": true,
+              "theme_playing": true
+            }
+          }
+        ],
+        "reservations": []
+      }
+    },
+    "scope": "World growth and score-source identity only; full PCM and player-facing operation are verified separately.",
+    "seed": "2026100900000062",
+    "sound_position": [
+      10.1402282714844,
+      1.373091340065
+    ]
+  },
+  "failures": [],
+  "passed": true
+}

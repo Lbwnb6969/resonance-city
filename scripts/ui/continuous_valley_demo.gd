@@ -14,6 +14,7 @@ const TransitCharter = preload("res://scripts/world/transit_charter_anchor.gd")
 const TransitRework = preload("res://scripts/world/transit_line_rework.gd")
 const TransitReworkPreview = preload("res://scripts/world/transit_rework_preview.gd")
 const FirstComposition = preload("res://scripts/world/first_composition.gd")
+const FirstAuthoredWork = preload("res://scripts/world/first_authored_work.gd")
 const PlayerExpression = preload("res://scripts/world/player_expression.gd")
 const ExpressionPreview = preload("res://scripts/world/expression_preview.gd")
 const Config = preload("res://scripts/world/world_values.gd")
@@ -673,7 +674,7 @@ func _checkpoint() -> void:
 
 func _warm_notes() -> void:
 	var rate := int(Config.load_values()["timing"]["sample_rate"])
-	for base: int in [36,38,40,43,45,48,50,52,55,57]:
+	for base: int in [36,38,40,43,45,48,50,52,55,57,60,62,64,67,69]:
 		var samples := PackedVector2Array()
 		var table: PackedFloat32Array = model.synth.tables["commercial" if posmod(base,12) == 4 else "residential"]
 		var phase := 0.0
@@ -694,9 +695,21 @@ func _warm_notes() -> void:
 		model.synth.Stage.waveform(base+24,rate,model.synth.values["stage_audio"],"bell")
 
 func _light_note(note: int) -> void:
-	var pitch := note-12 if low_octave.button_pressed or Input.is_key_pressed(KEY_SHIFT) else note
+	var pitch := _note_pitch(note)
 	light_player.stream = light_notes[pitch]
 	light_player.play()
+
+func _authored_retune() -> bool:
+	return context.get("kind","") == "retune" and bool(shown_world.by_id.get(str(context.get("id","")),{}).get("player_expression",false))
+
+func _note_pitch(base: int) -> int:
+	if _authored_retune():
+		var id := str(context["id"])
+		var current := int(model.audible_pitches().get(id,shown_world.by_id[id]["current_midi"]))
+		var register := floori(float(current)/12.0)*12
+		if Input.is_key_pressed(KEY_SHIFT): register = maxi(36,register-12)
+		return base-48+register
+	return base-12 if low_octave.button_pressed or Input.is_key_pressed(KEY_SHIFT) else base
 
 func note_name(note: int) -> String:
 	return str({0:"C",2:"D",4:"E",7:"G",9:"A"}.get(posmod(note,12),"·"))
@@ -982,6 +995,41 @@ func _start_first_composition() -> void:
 func _expression_context() -> bool:
 	return first_composition_mode and context.get("kind","") == "seed"
 
+func _first_authored_state() -> Dictionary:
+	if not first_composition_mode: return {}
+	var work := FirstAuthoredWork.state(shown_world,model.audible_score(),model.audible_pitches())
+	if work.is_empty(): return work
+	work["root_heard_retune"] = false
+	if bool(work["retuned"]):
+		for event: Dictionary in model.audible_music_activity(clock.renderer.transport.audible_frame):
+			if int(event["generation"]) == 0 and str(event["source_id"]) == str(work["root_id"]) and posmod(int(event["pitch"]),12) == posmod(int(work["current_midi"]),12):
+				work["root_heard_retune"] = true
+				break
+	return work
+
+func _begin_first_authored_theme() -> bool:
+	var work := _first_authored_state()
+	if work.is_empty() or not bool(work["theme_eligible"]): return false
+	var id := str(work["root_id"])
+	if not shown_world.by_id.has(id): return false
+	_cancel_preview_playback()
+	planning_guide.hide_tool()
+	selected_id = id
+	context = {"kind":"retune","id":id,"first_authored_theme":true}
+	# This explicit listening action targets the player's own community. The
+	# ordinary beat-level controls preserve the unique theme slot and rest bars.
+	var score := model.audible_score()
+	if not str(score.get("listener_community","")).is_empty() and str(score["listener_community"]) != str(work["community_id"]):
+		model.submit({"kind":"solo","community":""})
+	if bool(score.get("muted_communities",{}).get(str(work["community_id"]),false)):
+		model.submit({"kind":"mute","community":work["community_id"],"enabled":false})
+	model.submit({"kind":"focus","community":work["community_id"]})
+	planning_guide._focus_planning_position(shown_world.by_id[id]["position"])
+	pointer = point(Coupling.position_of(shown_world.by_id[id]))
+	_show_context_menu()
+	_message(str(work["community_name"])+" · 听自己种下的主题，亲自改一个音；Esc回到全城")
+	return true
+
 func _begin_first_sound_choice(cid: String,at: Vector2 = Vector2.INF) -> bool:
 	var choices: Array = FirstComposition.opportunities(shown_world).get("seed_candidates",[])
 	var candidate: Dictionary = {}
@@ -1094,7 +1142,7 @@ func _confirm_player_expression() -> void:
 
 func _choose_note(choice: int) -> void:
 	if _expression_context(): return
-	midi = choice-12 if low_octave.button_pressed or Input.is_key_pressed(KEY_SHIFT) else choice
+	midi = _note_pitch(choice)
 	_light_note(choice)
 	if context.is_empty() or context["kind"] not in ["seed","retune"]: return
 	var operation := context.duplicate(true)
@@ -1134,10 +1182,22 @@ func _show_context_menu() -> void:
 	menu.position = Vector2(clampf(pointer.x-100,12,maxf(12,size.x-menu.size.x-12)),clampf(pointer.y+22,70,maxf(70,size.y-menu.size.y-12)))
 	menu.show()
 
+func _sync_note_buttons() -> void:
+	var note_choices: Array = [48,50,52,55,57]
+	var labels := ["地基","张力","暖和","开阔","伸展"]
+	var row: Control = menu.get_meta("notes")
+	var authored := _authored_retune()
+	for index in range(note_choices.size()):
+		var button: Button = row.get_child(index)
+		var candidate := _note_pitch(int(note_choices[index]))
+		button.text = str(labels[index])+" · "+note_name(candidate)+(str(candidate/12-1) if authored else "")
+		button.tooltip_text = "下一拍换成 "+note_name(candidate)+str(candidate/12-1)
+
 func _update_selected_opportunity() -> void:
+	_sync_note_buttons()
 	if context.get("kind","") != "retune" or not shown_world.by_id.has(selected_id): return
 	var current_score := model.audible_score()
-	var key: Array = [model.presentation_token,shown_world.phrase_index,selected_id,hash(current_score),hash(model.audible_pitches())]
+	var key: Array = [model.presentation_token,shown_world.phrase_index,selected_id,hash(current_score),hash(model.audible_pitches()),Input.is_key_pressed(KEY_SHIFT)]
 	if key == opportunity_key: return
 	opportunity_key = key
 	var cid := str(shown_world.by_id[selected_id]["community_id"])
@@ -1153,6 +1213,11 @@ func _update_selected_opportunity() -> void:
 	menu_info.text = "%s · %s\n这栋 · %s · %s\n音型 · %s%s\n选音改编 · 下一拍换音；F聚焦 · Tab独听\n详细条件 · 低音表达 / 商业律动 / 跨岸应答" % [
 		shown_world.communities[cid]["name"],str(selected_opportunity.get("current","当前以长音融入合奏")),
 		note_name(pitch),str(building["form"]),"  ".join(displayed)," …" if notes.size() > 8 else ""]
+	if _authored_retune():
+		var choice := PlayerExpression.definition(str(building["expression"]))
+		menu_info.text = "%s · 你种下的%s\n这栋 · %s%d · %s\n音型 · %s%s\n%s\n选一个音，下一拍改写 · Esc回到全城\n保持当前声域 · Shift低一个八度（最低C2）" % [
+			shown_world.communities[cid]["name"],choice["label"],note_name(pitch),pitch/12-1,str(building["form"]),
+			"  ".join(displayed)," …" if notes.size() > 8 else "",str(selected_opportunity.get("current","当前融入合奏"))]
 	var details: Label = menu.get_meta("details_label")
 	details.text = next_text+"\n"+("公园给主题留白" if selected_opportunity["facility"]["park"] else ("文化馆实际服务%d栋" % int(selected_opportunity["facility"]["served"]) if selected_opportunity["facility"]["civic"] else "可自由选择留白、文化或商业布局"))
 	details.text += "\n跨河应答 · "+_response_state_label()+"\nEsc回到全城合奏"
@@ -1210,7 +1275,7 @@ func _planning_menu() -> void:
 	_refresh_transit_edit_choices()
 	(menu.get_meta("expression_choices") as Control).visible = _expression_context()
 	(menu.get_meta("notes") as Control).visible = not _expression_context()
-	(menu.get_meta("legacy_expressions") as Control).visible = not _expression_context()
+	(menu.get_meta("legacy_expressions") as Control).visible = not _expression_context() and not _authored_retune()
 	var retuning: bool = context.get("kind","") == "retune"
 	var active_public := false
 	for site in model.world.public_sites:

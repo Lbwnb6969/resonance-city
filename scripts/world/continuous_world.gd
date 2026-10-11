@@ -1396,7 +1396,7 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 	if kind in ["seed","retune"]:
 		var midi := int(operation["midi"])
 		var allowed: Array = Legacy.load_values()["proposals"]["allowed_pitches"]
-		var player_range := kind == "seed" and bool(operation.get("player_expression",false))
+		var player_range := (kind == "seed" and bool(operation.get("player_expression",false))) or (kind == "retune" and bool(by_id.get(str(operation.get("id","")),{}).get("player_expression",false)))
 		if not allowed.any(func(pitch: float) -> bool: return int(pitch) == midi or int(pitch) == midi+12 or (player_range and int(pitch) == midi-12)): return {"accepted":false,"reason":"请选择当前时代的五声音阶"}
 	# Repeated retuning replaces this building's future structural intent only.
 	pending_actions = pending_actions.filter(func(op: Dictionary) -> bool:

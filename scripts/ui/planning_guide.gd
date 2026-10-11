@@ -514,6 +514,8 @@ func refresh() -> void:
 	var audible_theme: Dictionary = demo.model.audible_theme()
 	charter_theme_key = [str(audible_theme.get("cid","")),audible_theme.get("source_ids",[])]
 	var has_theme_house: bool = audible_theme.get("source_ids",[]).any(func(raw_id: Variant) -> bool: return demo.shown_world.by_id.has(str(raw_id)))
+	var authored: Dictionary = demo._first_authored_state() if _first_composition_mode() else {}
+	if not authored.is_empty(): has_theme_house = bool(authored["theme_eligible"])
 	theme_rework_button.visible = stage == "charter" and has_theme_house
 	actions.visible = stage != "charter"
 	confirm.visible = stage in ["scope","reuse_anchor","transit_anchor","transit_edit"]
@@ -561,7 +563,10 @@ func refresh() -> void:
 		if _first_composition_mode():
 			heading.text = "写第一段 · 先选发展章程"
 			detail.text = "选一种生长方向，再点一片社区。公园或文化馆由你放置，随后亲自选一个声音。"
-		if not audible_theme.is_empty():
+		if not authored.is_empty() and bool(authored["theme_eligible"]):
+			theme_rework_button.text = "改写"+str(authored["community_name"])+" · 你种下的"+str(demo.PlayerExpression.definition(str(authored["expression"]))["label"])
+			detail.text += "\n你的社区已有主题；回到亲自种下的房屋，改一个音。"
+		elif not audible_theme.is_empty():
 			var theme_cid := str(audible_theme.get("cid",""))
 			var theme_name := str(demo.shown_world.communities.get(theme_cid,{}).get("name","当前社区"))
 			theme_rework_button.text = "改编"+theme_name+"主题 · 自己选一个音"
@@ -1108,6 +1113,9 @@ func _continue_combo_planning() -> void:
 	refresh()
 
 func _take_theme_building() -> void:
+	if _first_composition_mode() and not demo._first_authored_state().is_empty():
+		demo._begin_first_authored_theme()
+		return
 	var theme: Dictionary = demo.model.audible_theme()
 	var sources: Array = theme.get("source_ids",[])
 	var id := ""

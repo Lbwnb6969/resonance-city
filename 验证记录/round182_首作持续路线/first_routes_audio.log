@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+ROUND182 route deep natural continuation
+ROUND182 route deep complete {"houses":48,"peak":0.342275261878967,"profile":{"attack":0.04,"decay":0.55,"pitch":36,"spacing_frames":44100.0,"tail":1.6},"retune_pcm_max_abs":0.0947294534134953,"root":"building-00028"}
+ROUND182 route weave natural continuation
+ROUND182 route weave complete {"houses":50,"peak":0.360737919807434,"profile":{"attack":0.004,"decay":0.04,"pitch":72,"spacing_frames":5512.5,"tail":0.12},"retune_pcm_max_abs":0.0990020447401349,"root":"building-00028"}
+ROUND182 route warm natural continuation
+ROUND182 route warm complete {"houses":50,"peak":0.314753264188766,"profile":{"attack":0.09,"decay":0.8,"pitch":55,"spacing_frames":88200.0,"tail":2.2},"retune_pcm_max_abs":0.106723227637562,"root":"building-00028"}
+ROUND182_FIRST_ROUTES_AUDIO {"checks":49,"failures":[],"passed":true}
