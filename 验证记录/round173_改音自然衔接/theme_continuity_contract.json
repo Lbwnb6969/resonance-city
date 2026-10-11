@@ -1,0 +1,278 @@
+{
+	"checks": {
+		"active_and_retiring_lifecycles_restore_exact_continuation_pcm_and_phases": true,
+		"different_allowed_note_keeps_actual_receiving_community_available": true,
+		"mute_handoff_reads_block_start_level_independent_of_chunk_length": true,
+		"mute_retune_inherits_actual_partial_fade_instead_of_resetting_or_unmuting": true,
+		"mute_retune_keeps_real_source_control_on_delayed_old_reply": true,
+		"mute_retuned_theme_reaches_original_control_target": true,
+		"mute_uses_real_next_beat_control_without_changing_theme_community": true,
+		"natural_rest_reaches_real_silence_boundary_after_delayed_reply_fades": true,
+		"natural_rework_starter_supplies_mature_theme_and_real_paired_test_window": true,
+		"natural_seventh_phrase_rest_retires_real_theme_at_absolute_boundary": true,
+		"new_reply_identity_refers_to_real_new_lead_pitch_and_exact_two_beat_delay": true,
+		"new_response_lifecycle_never_replays_pre_on_sources": true,
+		"pending_handoff_freeze_and_json_restore_continue_with_identical_pcm_and_phase": true,
+		"private_retune_forecast_matches_formal_frozen_continuation_without_live_mutation": true,
+		"quick_a_b_a_creates_fresh_a_lifecycle_from_current_b_level": true,
+		"quick_a_b_a_keeps_exactly_one_b_reply_after_original_two_beats": true,
+		"quick_a_b_a_preserves_exactly_one_original_b_tail_without_backdated_a_note": true,
+		"quick_response_off_on_uses_real_beats_at_old_answer_onset": true,
+		"quick_response_on_preserves_exactly_one_old_already_authored_reply": true,
+		"quick_response_on_starts_a_new_cold_lifecycle_without_retired_level": true,
+		"retune_does_not_rewrite_prefetched_music_or_structural_pitch": true,
+		"retunes_preserve_world_growth_rng_and_existing_render_voice_budget": true,
+		"same_community_retune_keeps_warm_lead_level_and_absolute_lifecycles": true,
+		"same_onset_handoff_uses_block_start_level_not_old_nodes_block_end": true,
+		"same_onset_real_source_plays_new_note_at_existing_level_instead_of_two_beat_reentry": true,
+		"same_onset_retune_never_duplicates_or_replays_old_source_pitch": true,
+		"same_receiving_and_source_communities_keep_warm_reply_level_with_new_source_identity": true,
+		"single_source_retune_uses_next_writable_beat_and_keeps_structure_pending": true,
+		"solo_handoff_reads_block_start_level_independent_of_chunk_length": true,
+		"solo_retune_inherits_actual_partial_fade_instead_of_resetting_or_unmuting": true,
+		"solo_retune_keeps_real_source_control_on_delayed_old_reply": true,
+		"solo_retuned_theme_reaches_original_control_target": true,
+		"solo_uses_real_next_beat_control_without_changing_theme_community": true,
+		"theme_return_after_natural_rest_is_cold_not_a_retired_level_handoff": true
+	},
+	"details": {
+		"back": {
+			"accepted": true,
+			"event_id": 2,
+			"frame": 1058400,
+			"sound_frame": 926100
+		},
+		"max_render_voices": 20,
+		"mute": {
+			"active_key": "[\"west-1\",[48,55,48,52,48,55,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],[],\"(0.156434, 0.987688)\",\"west-1\",[48,55,48,52,48,55,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],\"bright\",false,true,[\"home\"],false]",
+			"chunk_max_abs": 0.0,
+			"control": {
+				"accepted": true,
+				"frame": 915075,
+				"sound_frame": 915075
+			},
+			"first_expected": 0.499954648525799,
+			"handoff_level": 0.499999999999722,
+			"level_after": 0.0,
+			"level_before": 0.500045351473645,
+			"listener": "west-2",
+			"node_levels": [
+				{
+					"active": true,
+					"answer": false,
+					"born": 926100,
+					"key": "[\"west-1\",[48,55,48,52,48,55,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],[],\"(0.156434, 0.987688)\",\"west-1\",[48,55,48,52,48,55,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],\"bright\",false,true,[\"home\"],false]",
+					"level": 0.0,
+					"retired": -1
+				},
+				{
+					"active": true,
+					"answer": true,
+					"born": 926100,
+					"key": "[\"east-1\",[-1,-1,-1,-1,-1,55,55,55],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],[\"\",\"\",\"\",\"\",\"\",\"building-00021\",\"building-00021\",\"building-00021\"],\"(0.156434, 0.987688)\",\"west-1\",[48,55,48,52,48,55,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],\"bright\",false,true,[\"home\"],true]",
+					"level": 0.0,
+					"retired": -1
+				}
+			],
+			"reply_row": {},
+			"retune": {
+				"accepted": true,
+				"event_id": 1,
+				"frame": 1058400,
+				"sound_frame": 926100
+			},
+			"voice_max": 16
+		},
+		"natural_rest": {
+			"activity_at_quiet": [],
+			"previous_level": 1.0,
+			"quiet_frame": 2171925,
+			"residual_levels": [],
+			"rest_frame": 2116800,
+			"return_community": "west-1",
+			"return_frame": 2469600,
+			"return_level": 0.0000453514739229025
+		},
+		"new_pitch": 55,
+		"new_reply": {
+			"event_id": "reply:west-1:915075:5:building-00019:55:building-00021",
+			"generation": 1,
+			"onset": 937125,
+			"pitch": 67,
+			"receiver_id": "building-00021",
+			"source_event_id": "west-1:915075:5:building-00019:55",
+			"source_id": "building-00019",
+			"source_onset": 915075
+		},
+		"old_reply": {
+			"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+			"generation": 1,
+			"onset": 937125,
+			"pitch": 67,
+			"receiver_id": "building-00021",
+			"source_event_id": "west-1:915075:5:building-00019:48",
+			"source_id": "building-00019",
+			"source_onset": 915075
+		},
+		"partition_max_abs": 0.0,
+		"response_off_on": {
+			"cold_step": 0.0000453514739229025,
+			"new_key": "[\"east-1\",[-1,-1,-1,-1,-1,55,55,55],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],[\"\",\"\",\"\",\"\",\"\",\"building-00021\",\"building-00021\",\"building-00021\"],\"(0.156434, 0.987688)\",\"west-1\",[48,55,48,52,48,48,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],\"bright\",false,true,[\"home\"],true]@937125:1",
+			"off": {
+				"accepted": true,
+				"frame": 926100,
+				"sound_frame": 926100
+			},
+			"old_key": "[\"east-1\",[-1,-1,-1,-1,-1,55,55,55],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],[\"\",\"\",\"\",\"\",\"\",\"building-00021\",\"building-00021\",\"building-00021\"],\"(0.156434, 0.987688)\",\"west-1\",[48,55,48,52,48,48,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],\"bright\",false,true,[\"home\"],true]",
+			"old_reply": {
+				"cid": "east-1",
+				"end_frame": 951458,
+				"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+				"generation": 1,
+				"onset": 937125,
+				"pitch": 67,
+				"receiver_id": "building-00021",
+				"render_end": 937382,
+				"render_start": 937125,
+				"source_event_id": "west-1:915075:5:building-00019:48",
+				"source_id": "building-00019",
+				"source_onset": 915075,
+				"strength": 0.0200845479263735
+			},
+			"on": {
+				"accepted": true,
+				"frame": 937125,
+				"sound_frame": 937125
+			}
+		},
+		"retained_reply": {
+			"cid": "east-1",
+			"end_frame": 951458,
+			"event_id": "reply:west-1:915075:5:building-00019:55:building-00021",
+			"generation": 1,
+			"onset": 937125,
+			"pitch": 67,
+			"receiver_id": "building-00021",
+			"render_end": 937382,
+			"render_start": 937125,
+			"source_event_id": "west-1:915075:5:building-00019:55",
+			"source_id": "building-00019",
+			"source_onset": 915075,
+			"strength": 0.0200845479263735
+		},
+		"retained_tail": {
+			"cid": "west-1",
+			"end_frame": 929408,
+			"event_id": "west-1:915075:5:building-00019:55",
+			"generation": 0,
+			"onset": 915075,
+			"pitch": 67,
+			"receiver_id": "",
+			"render_end": 926357,
+			"render_start": 926100,
+			"source_event_id": "west-1:915075:5:building-00019:55",
+			"source_id": "building-00019",
+			"source_onset": 915075,
+			"strength": 0.00352143200079181
+		},
+		"retune": {
+			"accepted": true,
+			"event_id": 1,
+			"frame": 1058400,
+			"sound_frame": 915075
+		},
+		"retuned_source": {
+			"cid": "west-1",
+			"end_frame": 929408,
+			"event_id": "west-1:915075:5:building-00019:55",
+			"generation": 0,
+			"onset": 915075,
+			"pitch": 67,
+			"receiver_id": "",
+			"render_end": 915332,
+			"render_start": 915075,
+			"source_event_id": "west-1:915075:5:building-00019:55",
+			"source_id": "building-00019",
+			"source_onset": 915075,
+			"strength": 0.0419949638460538
+		},
+		"seed": "2026100900000062",
+		"solo": {
+			"active_key": "[\"west-1\",[48,55,48,52,48,55,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],[],\"(0.156434, 0.987688)\",\"west-1\",[48,55,48,52,48,55,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],\"bright\",false,true,[\"home\"],false]",
+			"chunk_max_abs": 0.0,
+			"control": {
+				"accepted": true,
+				"frame": 915075,
+				"sound_frame": 915075
+			},
+			"first_expected": 0.499954648525799,
+			"handoff_level": 0.499999999999722,
+			"level_after": 0.125892541,
+			"level_before": 0.500045351473645,
+			"listener": "west-2",
+			"node_levels": [
+				{
+					"active": false,
+					"answer": true,
+					"born": 705600,
+					"key": "[\"east-1\",[-1,-1,-1,-1,-1,55,55,55],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],[\"\",\"\",\"\",\"\",\"\",\"building-00021\",\"building-00021\",\"building-00021\"],\"(0.156434, 0.987688)\",\"west-1\",[48,55,48,52,48,48,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],\"bright\",false,true,[\"home\"],true]",
+					"level": 0.125892541,
+					"retired": 926100
+				},
+				{
+					"active": true,
+					"answer": false,
+					"born": 926100,
+					"key": "[\"west-1\",[48,55,48,52,48,55,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],[],\"(0.156434, 0.987688)\",\"west-1\",[48,55,48,52,48,55,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],\"bright\",false,true,[\"home\"],false]",
+					"level": 0.125892541,
+					"retired": -1
+				},
+				{
+					"active": true,
+					"answer": true,
+					"born": 926100,
+					"key": "[\"east-1\",[-1,-1,-1,-1,-1,55,55,55],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],[\"\",\"\",\"\",\"\",\"\",\"building-00021\",\"building-00021\",\"building-00021\"],\"(0.156434, 0.987688)\",\"west-1\",[48,55,48,52,48,55,48,48],[\"building-00001\",\"building-00003\",\"building-00002\",\"building-00005\",\"building-00004\",\"building-00019\",\"building-00006\",\"building-00022\"],\"bright\",false,true,[\"home\"],true]",
+					"level": 0.125892541,
+					"retired": -1
+				}
+			],
+			"reply_row": {
+				"cid": "east-1",
+				"end_frame": 951458,
+				"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+				"generation": 1,
+				"onset": 937125,
+				"pitch": 67,
+				"receiver_id": "building-00021",
+				"render_end": 937382,
+				"render_start": 937125,
+				"source_event_id": "west-1:915075:5:building-00019:48",
+				"source_id": "building-00019",
+				"source_onset": 915075,
+				"strength": 0.00252849477328745
+			},
+			"retune": {
+				"accepted": true,
+				"event_id": 1,
+				"frame": 1058400,
+				"sound_frame": 926100
+			},
+			"voice_max": 18
+		},
+		"source": {
+			"event_id": "west-1:915075:5:building-00019:48",
+			"generation": 0,
+			"onset": 915075,
+			"pitch": 60,
+			"receiver_id": "",
+			"source_event_id": "west-1:915075:5:building-00019:48",
+			"source_id": "building-00019",
+			"source_onset": 915075
+		},
+		"start": 705600,
+		"strength_ratio": 1.0
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Production-seed mature starter and actual authored source/receiver events. No fabricated qualification; PCM/state continuation and next-beat envelopes only. Boundary-only natural-settlement checks do not claim uninterrupted long-duration PCM or human listening."
+}

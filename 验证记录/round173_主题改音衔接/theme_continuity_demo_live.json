@@ -1,0 +1,624 @@
+{
+	"adapter": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+	"audio_driver": "WASAPI",
+	"checks": {
+		"actual_pcm_trace_contains_first_new_note_on_the_switch_beat": true,
+		"clear_same_onset_mark_shows_player_pitch_at_actual_house": true,
+		"device_hears_real_late_reply_before_same_beat_edit_window": true,
+		"existing_real_reply_tail_survives_the_theme_change": true,
+		"first_same_beat_new_note_reaches_clear_map_brightness": true,
+		"opening_does_not_fabricate_player_decisions": true,
+		"physical_output_advances_during_real_operation": true,
+		"physical_small_city_operation_adds_no_underruns": true,
+		"player_note_submits_one_same_source_retune": true,
+		"pre_edit_marks_match_actual_audible_pcm_events": true,
+		"production_mature_default_small_city_is_playing": true,
+		"production_p_opens_real_theme_rework_shortcut": true,
+		"queued_new_note_waits_for_actual_device_frame": true,
+		"real_mature_score_has_reply_then_next_beat_theme_source": true,
+		"real_next_writable_beat_is_exactly_source_first_new_onset": true,
+		"real_shortcut_selects_the_upcoming_source_house": true,
+		"real_source_menu_offers_player_note_choice": true,
+		"real_window_uses_physical_wasapi": true,
+		"replaced_source_does_not_restart_old_pitch_on_switch_beat": true,
+		"selected_window_reproduces_round172_first_note_regression": true,
+		"sound_changes_first_and_city_intent_stays_pending_until_real_phrase": true,
+		"source_shortcut_only_locates_without_choosing_music": true,
+		"theme_preceding_reply_live_screenshot_saved": true,
+		"theme_preceding_reply_live_window_draws": true,
+		"theme_same_onset_new_note_live_screenshot_saved": true,
+		"theme_same_onset_new_note_live_window_draws": true
+	},
+	"display_backend": "Windows",
+	"edit": {
+		"expected_onset": 948150,
+		"first_actual_new_event": {
+			"cid": "west-1",
+			"end_frame": 962483,
+			"event_id": "west-1:948150:6:building-00006:52",
+			"generation": 0,
+			"onset": 948150,
+			"pitch": 64,
+			"receiver_id": "",
+			"render_end": 956479,
+			"render_start": 948150,
+			"source_event_id": "west-1:948150:6:building-00006:52",
+			"source_id": "building-00006",
+			"source_onset": 948150,
+			"strength": 0.0011642417331045
+		},
+		"new_pitch": 52,
+		"old_pitch": 48,
+		"previous_reply_surviving_after_switch": {
+			"cid": "east-1",
+			"end_frame": 951458,
+			"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+			"generation": 1,
+			"onset": 937125,
+			"pitch": 67,
+			"receiver_id": "building-00021",
+			"render_end": 951458,
+			"render_start": 937125,
+			"source_event_id": "west-1:915075:5:building-00019:48",
+			"source_id": "building-00019",
+			"source_onset": 915075,
+			"strength": 0.00227975669575239
+		},
+		"requested_frame": 945599,
+		"same_onset_mark": {
+			"alpha": 0.860642430481372,
+			"cid": "west-1",
+			"end_frame": 962483,
+			"event_id": "west-1:948150:6:building-00006:52",
+			"generation": 0,
+			"note": "E",
+			"onset": 948150,
+			"performer_id": "building-00006",
+			"pitch": 64,
+			"position": [
+				726.744140625,
+				450.442749023438
+			],
+			"radius": 17.787570171365,
+			"receiver_id": "",
+			"render_end": 956735,
+			"render_start": 948150,
+			"role": "lead",
+			"source_event_id": "west-1:948150:6:building-00006:52",
+			"source_id": "building-00006",
+			"source_onset": 948150,
+			"strength": 0.0580710736446516
+		},
+		"sound_frame": 948150,
+		"source_id": "building-00006"
+	},
+	"engine": "4.7.2-stable (official)",
+	"failures": [],
+	"observations": {
+		"actual_reply_edit_window": {
+			"audible_frame": 937255.855004929,
+			"buffer_ahead_frames": 8343.14499507146,
+			"next_writable_frame": 948150,
+			"rendered_frame": 945599,
+			"reply": {
+				"cid": "east-1",
+				"end_frame": 951458,
+				"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+				"generation": 1,
+				"onset": 937125,
+				"pitch": 67,
+				"receiver_id": "building-00021",
+				"render_end": 945599,
+				"render_start": 937125,
+				"source_event_id": "west-1:915075:5:building-00019:48",
+				"source_id": "building-00019",
+				"source_onset": 915075,
+				"strength": 0.0140725054540677
+			}
+		},
+		"rendered_but_not_audible": {
+			"actual_rows": [
+				{
+					"cid": "east-1",
+					"end_frame": 951458,
+					"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+					"generation": 1,
+					"onset": 937125,
+					"pitch": 67,
+					"receiver_id": "building-00021",
+					"render_end": 948415,
+					"render_start": 937125,
+					"source_event_id": "west-1:915075:5:building-00019:48",
+					"source_id": "building-00019",
+					"source_onset": 915075,
+					"strength": 0.0157089003820663
+				}
+			],
+			"audible_frame": 939904.253454929,
+			"buildings": 24,
+			"device_frame": 939904.253454929,
+			"marks": [
+				{
+					"alpha": 0.484355963631493,
+					"cid": "east-1",
+					"end_frame": 951458,
+					"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+					"generation": 1,
+					"note": "G",
+					"onset": 937125,
+					"performer_id": "building-00021",
+					"pitch": 67,
+					"position": [
+						834.140014648438,
+						597.919189453125
+					],
+					"radius": 19.6707265823736,
+					"receiver_id": "building-00021",
+					"render_end": 948415,
+					"render_start": 937125,
+					"role": "reply",
+					"source_event_id": "west-1:915075:5:building-00019:48",
+					"source_id": "building-00019",
+					"source_onset": 915075,
+					"strength": 0.0157089003820663
+				}
+			],
+			"phrase": 2,
+			"rendered_frame": 948415,
+			"underruns": 0
+		},
+		"same_onset_frames": [
+			{
+				"audible_frame": 937632.424404929,
+				"rendered_frame": 945855,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 937960.417154929,
+				"rendered_frame": 946367,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 938152.582904929,
+				"rendered_frame": 946367,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 938359.367304929,
+				"rendered_frame": 946623,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 938359.367304929,
+				"rendered_frame": 946623,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 938370.436154929,
+				"rendered_frame": 946751,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 938654.660154929,
+				"rendered_frame": 947007,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 938879.459404929,
+				"rendered_frame": 947263,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 939056.983954929,
+				"rendered_frame": 947263,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 939272.676554929,
+				"rendered_frame": 947519,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 939491.390004929,
+				"rendered_frame": 947775,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 939660.733504929,
+				"rendered_frame": 948031,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 939831.885604929,
+				"rendered_frame": 948031,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 939904.253454929,
+				"rendered_frame": 948415,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 940350.875204929,
+				"rendered_frame": 948671,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 940606.412154929,
+				"rendered_frame": 948927,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 940775.844354929,
+				"rendered_frame": 948927,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 940938.418504929,
+				"rendered_frame": 949183,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 941204.782004929,
+				"rendered_frame": 949439,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 941274.966904929,
+				"rendered_frame": 949567,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 941495.708954929,
+				"rendered_frame": 949823,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 941668.426104929,
+				"rendered_frame": 950079,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 941847.802854929,
+				"rendered_frame": 950079,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 941847.802854929,
+				"rendered_frame": 950079,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 941993.067754929,
+				"rendered_frame": 950335,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 942236.477204929,
+				"rendered_frame": 950591,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 942474.418254929,
+				"rendered_frame": 950847,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 942654.941604929,
+				"rendered_frame": 950847,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 942849.863104929,
+				"rendered_frame": 951103,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 942949.550904929,
+				"rendered_frame": 951231,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 943163.038504929,
+				"rendered_frame": 951487,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 943371.454604929,
+				"rendered_frame": 951743,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 943539.563804929,
+				"rendered_frame": 951743,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 943747.362504929,
+				"rendered_frame": 951999,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 943909.760254929,
+				"rendered_frame": 952255,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 944163.224504929,
+				"rendered_frame": 952511,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 944338.654304929,
+				"rendered_frame": 952511,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 944358.300604929,
+				"rendered_frame": 952639,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 944606.715404929,
+				"rendered_frame": 952895,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 944810.942004929,
+				"rendered_frame": 953151,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 945045.046354929,
+				"rendered_frame": 953407,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 945258.115004929,
+				"rendered_frame": 953663,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 945443.312954929,
+				"rendered_frame": 953663,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 945443.312954929,
+				"rendered_frame": 953663,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 945623.262504929,
+				"rendered_frame": 953919,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 945731.593904929,
+				"rendered_frame": 954047,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 945916.901604929,
+				"rendered_frame": 954303,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 946179.891454929,
+				"rendered_frame": 954559,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 946368.815854929,
+				"rendered_frame": 954559,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 946547.729054929,
+				"rendered_frame": 954815,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 946788.316104929,
+				"rendered_frame": 955071,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 947015.562904929,
+				"rendered_frame": 955327,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 947092.186404929,
+				"rendered_frame": 955455,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 947318.970154929,
+				"rendered_frame": 955711,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 947497.001854929,
+				"rendered_frame": 955711,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 947735.780804929,
+				"rendered_frame": 955967,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 947939.654604929,
+				"rendered_frame": 956223,
+				"target_mark_alpha": 0.0
+			},
+			{
+				"audible_frame": 948155.192854929,
+				"rendered_frame": 956479,
+				"target_mark_alpha": 0.0465497287315706
+			},
+			{
+				"audible_frame": 948416.771504929,
+				"rendered_frame": 956735,
+				"target_mark_alpha": 0.860642430481372
+			}
+		],
+		"selected_wait_schedule": {
+			"lead": {
+				"event_id": "west-1:948150:6:building-00006:48",
+				"generation": 0,
+				"onset": 948150,
+				"pitch": 60,
+				"receiver_id": "",
+				"source_event_id": "west-1:948150:6:building-00006:48",
+				"source_id": "building-00006",
+				"source_onset": 948150
+			},
+			"next_boundary": 1058400,
+			"opening_rendered_frame": 714431,
+			"preceding_reply": {
+				"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+				"generation": 1,
+				"onset": 937125,
+				"pitch": 67,
+				"receiver_id": "building-00021",
+				"source_event_id": "west-1:915075:5:building-00019:48",
+				"source_id": "building-00019",
+				"source_onset": 915075
+			},
+			"sample_rate": 22050
+		},
+		"theme_preceding_reply_live": {
+			"actual_rows": [
+				{
+					"cid": "east-1",
+					"end_frame": 951458,
+					"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+					"generation": 1,
+					"onset": 937125,
+					"pitch": 67,
+					"receiver_id": "building-00021",
+					"render_end": 945599,
+					"render_start": 937125,
+					"source_event_id": "west-1:915075:5:building-00019:48",
+					"source_id": "building-00019",
+					"source_onset": 915075,
+					"strength": 0.0140725054540677
+				}
+			],
+			"audible_frame": 937255.855004929,
+			"buildings": 24,
+			"device_frame": 937255.855004929,
+			"marks": [
+				{
+					"alpha": 0.556826558230985,
+					"cid": "east-1",
+					"end_frame": 951458,
+					"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+					"generation": 1,
+					"note": "G",
+					"onset": 937125,
+					"performer_id": "building-00021",
+					"pitch": 67,
+					"position": [
+						979.263427734375,
+						475.698272705078
+					],
+					"radius": 11.5159611819993,
+					"receiver_id": "building-00021",
+					"render_end": 945599,
+					"render_start": 937125,
+					"role": "reply",
+					"source_event_id": "west-1:915075:5:building-00019:48",
+					"source_id": "building-00019",
+					"source_onset": 915075,
+					"strength": 0.0140725054540677
+				}
+			],
+			"phrase": 2,
+			"rendered_frame": 945599,
+			"underruns": 0
+		},
+		"theme_same_onset_new_note_live": {
+			"actual_rows": [
+				{
+					"cid": "east-1",
+					"end_frame": 951458,
+					"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+					"generation": 1,
+					"onset": 937125,
+					"pitch": 67,
+					"receiver_id": "building-00021",
+					"render_end": 951458,
+					"render_start": 937125,
+					"source_event_id": "west-1:915075:5:building-00019:48",
+					"source_id": "building-00019",
+					"source_onset": 915075,
+					"strength": 0.00227975669575239
+				},
+				{
+					"cid": "west-1",
+					"end_frame": 962483,
+					"event_id": "west-1:948150:6:building-00006:52",
+					"generation": 0,
+					"onset": 948150,
+					"pitch": 64,
+					"receiver_id": "",
+					"render_end": 956735,
+					"render_start": 948150,
+					"source_event_id": "west-1:948150:6:building-00006:52",
+					"source_id": "building-00006",
+					"source_onset": 948150,
+					"strength": 0.0580710736446516
+				}
+			],
+			"audible_frame": 948416.771504929,
+			"buildings": 24,
+			"device_frame": 948416.771504929,
+			"marks": [
+				{
+					"alpha": 0.860642430481372,
+					"cid": "west-1",
+					"end_frame": 962483,
+					"event_id": "west-1:948150:6:building-00006:52",
+					"generation": 0,
+					"note": "E",
+					"onset": 948150,
+					"performer_id": "building-00006",
+					"pitch": 64,
+					"position": [
+						726.744140625,
+						450.442749023438
+					],
+					"radius": 17.787570171365,
+					"receiver_id": "",
+					"render_end": 956735,
+					"render_start": 948150,
+					"role": "lead",
+					"source_event_id": "west-1:948150:6:building-00006:52",
+					"source_id": "building-00006",
+					"source_onset": 948150,
+					"strength": 0.0580710736446516
+				}
+			],
+			"phrase": 2,
+			"rendered_frame": 956735,
+			"underruns": 0
+		}
+	},
+	"output_window": {
+		"advanced_frames": 242322.081,
+		"audible_after": 948416.771504929,
+		"audible_before": 706094.690504929,
+		"sample_rate": 22050,
+		"underruns_after": 0,
+		"underruns_before": 0
+	},
+	"passed": true,
+	"scope": "Physical WASAPI production default city, late actual Reply, P/source/note callbacks, same-onset first new Lead and surviving previous Reply tail. No manual live render/settle, invented eligibility, later-repeat substitute, human-listening or large-city claim",
+	"screenshots": {
+		"theme_preceding_reply_live": "res://验证记录/round173_主题改音衔接/theme_preceding_reply_live.png",
+		"theme_same_onset_new_note_live": "res://验证记录/round173_主题改音衔接/theme_same_onset_new_note_live.png"
+	}
+}

@@ -1,5 +1,13 @@
 # 共鸣之城：当前项目状态
 
+## 2026-10-11 当前裁定（第173轮）
+
+单栋改音现在能连续接入正在播放的主题：下一可写拍只重建受影响的音频生命周期，新Lead/Reply从旧节点在块起点的实际电平继续，旧Lead尾音和已排程的两拍Reply保留；Reply身份同时带新的Lead音级/source_event_id。A→B→A与Response关→开建立新生命周期，静音/独听沿用当前控制坡道，不把声部重置为满电平。World结构、pending、社区范围和建筑仍在真实乐句边界落定，未增加声部、存档字段、DNA字段、RNG消耗或70 RenderVoice预算。
+
+验证：`tests/round173_theme_continuity_contract.gd` 34项通过（自然成熟开局、同拍改音、实际Lead/Reply、A→B→A、静音/独听、Response开关、冻结/JSON/试听、自然第七乐句留白）；`tests/round173_theme_continuity_demo_live.gd` 26项通过，真实OpenGL/NVIDIA RTX 5070 Ti + WASAPI窗口中，旧Reply仍在、新音级实际出声、地图标记来自真实可听帧，新增underrun为0。Round172 23项回归继续通过。证据见[自然衔接](验证记录/round173_改音自然衔接/theme_continuity_contract.json)与[真实窗口](验证记录/round173_主题改音衔接/theme_continuity_demo_live.json)及同目录截图。技术验证不代表真人听感、好玩程度或长期平衡已验收。
+
+备份：`codex/backup-before-round173`（基于`25717d2`）。下一步优先把公共留白与社区组合的经营选择接入同样可听的连续反馈，保留旧尾音与边界规则；真人长时听感、大城规模和长期平衡仍待验收。
+
 ## 2026-10-11 当前裁定（第172轮）
 
 地图已显示真实正在演奏的房屋：Lead来源用暖色单圈，generation=1的Reply接收者用双虚圈，字母取实际演奏音级。默认24栋小城可直接点击/P进入改音，再认出同来源的新音与两拍后的对岸应答。独立CanvasItem只投影实际活动，0.55秒短标记跟随设备可听帧；静音/独听/duck跟随真实贡献，黑屏/未来试听/停播清空。名称优先级与HUD主题也改读可听主题，未来缓存不提前改文字。

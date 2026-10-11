@@ -239,19 +239,44 @@ func _sync_rhythm_nodes() -> void:
 		rhythm_nodes[key]["active"] = true
 
 func _sync_musical_nodes(at: int) -> void:
+	var previous: Array[Dictionary] = []
 	for node in musical_nodes.values():
-		if bool(node["active"]): node["retired_at"] = at
+		if bool(node["active"]):
+			previous.append(node)
+			node["retired_at"] = at
 		node["active"] = false
 	if theme.is_empty(): return
-	_register_musical_node(theme,theme,false,at)
-	if not response.is_empty(): _register_musical_node(response,theme,true,at)
+	_register_musical_node(theme,theme,false,at,previous)
+	if not response.is_empty(): _register_musical_node(response,theme,true,at,previous)
 
-func _register_musical_node(part: Dictionary, pattern: Dictionary, answer: bool, at: int) -> void:
-	var key := JSON.stringify([part["cid"],part["notes"],part.get("source_ids",[]),part.get("receiver_ids",[]),pattern["expression"],pattern["park"],pattern["civic"],pattern.get("zone_roles",[]),answer])
-	if not musical_nodes.has(key):
+func _musical_signature(part: Dictionary, pattern: Dictionary, answer: bool) -> String:
+	# Replies must carry the exact source pitch as well as the receiving pitch.
+	return JSON.stringify([part["cid"],part["notes"],part.get("source_ids",[]),part.get("receiver_ids",[]),
+		part["stereo"],pattern["cid"],pattern["notes"],pattern.get("source_ids",[]),
+		pattern["expression"],pattern["park"],pattern["civic"],pattern.get("zone_roles",[]),answer])
+
+func _register_musical_node(part: Dictionary, pattern: Dictionary, answer: bool, at: int, previous: Array[Dictionary] = []) -> void:
+	var signature := _musical_signature(part,pattern,answer)
+	var key := ""
+	var predecessor := ""
+	for old in previous:
+		if bool(old["answer"]) != answer: continue
+		if _musical_signature(old["part"],old["pattern"],answer) == signature:
+			key = str(old["key"])
+			break
+		if str(old["part"]["cid"]) == str(part["cid"]) and str(old["pattern"]["cid"]) == str(pattern["cid"]) \
+			and str(old["pattern"]["expression"]) == str(pattern["expression"]):
+			predecessor = str(old["key"])
+	if key.is_empty():
+		# A retired incarnation still owns its old tails and delayed replies.
+		# Returning to its notes starts a distinct lifetime, never overwrites it.
+		key = signature
+		var incarnation := 0
+		while musical_nodes.has(key):
+			incarnation += 1
+			key = signature+"@%d:%d" % [at,incarnation]
 		musical_nodes[key] = {"key":key,"part":part.duplicate(true),"pattern":pattern.duplicate(true),"answer":answer,"born_at":at}
-	elif musical_nodes[key].has("retired_at") and int(musical_nodes[key]["retired_at"]) != at:
-		musical_nodes[key]["born_at"] = at
+		if not predecessor.is_empty(): musical_nodes[key]["handoff_from"] = predecessor
 	musical_nodes[key].erase("retired_at")
 	musical_nodes[key]["active"] = true
 	# Warm immutable event waves before the output clock starts.
@@ -496,6 +521,14 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 	var theme_count := 0
 	var response_count := 0
 	var retiring_musical: Array = []
+	# Resolve every handoff from the block-start state before any old node writes
+	# its block-end fade. This keeps the transition independent of chunk size.
+	var handoffs: Dictionary = {}
+	for node in musical_nodes.values():
+		if node.has("handoff_from"):
+			handoffs[node["key"]] = float(state.get("_theme_level_"+str(node["handoff_from"]),0.0))
+			node.erase("handoff_from")
+	for key in handoffs: state["_theme_level_"+str(key)] = handoffs[key]
 	for node in musical_nodes.values():
 		var part: Dictionary = node["part"]
 		var pattern: Dictionary = node["pattern"]
@@ -520,7 +553,9 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			output[i] += wave[i]*level*amplitude*stereo
 		state["_theme_level_"+key] = level
 		if not node["active"] and level < 0.00001: retiring_musical.append(key)
-	for key in retiring_musical: musical_nodes.erase(key)
+	for key in retiring_musical:
+		musical_nodes.erase(key)
+		state.erase("_theme_level_"+str(key))
 	last_voice_count = active_count+pulse_count+theme_count+response_count+1
 	max_voice_count = maxi(max_voice_count,last_voice_count)
 	assert(last_voice_count <= int(score["render_voice_limit"]))
