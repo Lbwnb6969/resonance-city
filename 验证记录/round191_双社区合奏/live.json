@@ -30,12 +30,13 @@
 		"second_public_place_reaches_device_boundary": true,
 		"second_voice_becomes_real_commercial_house": true,
 		"second_voice_has_real_opposite_site_and_no_default": true,
-		"second_voice_uses_actual_cross_bank_street_opportunity": true
+		"second_voice_uses_actual_cross_bank_street_opportunity": true,
+		"title_acknowledges_two_authored_sections": true
 	},
 	"evidence": {
 		"actual_root_reply": {
-			"age": 0.00299521564302202,
-			"alpha": 0.0700075138181509,
+			"age": 0.00649621564301487,
+			"alpha": 0.15009422677028,
 			"event_id": "reply:west-2:1499400:1:building-00025:40:building-00026",
 			"from": "(13.7985, 18.77426)",
 			"from_ink": "(0.8343, 0.7051, 0.478, 1.0)",
@@ -46,11 +47,11 @@
 			"source_event_id": "west-2:1499400:1:building-00025:40",
 			"source_id": "building-00025",
 			"source_onset": 1499400,
-			"strength": 0.00175977128999182,
+			"strength": 0.00379720560829767,
 			"to": "(19.16414, 16.21075)",
-			"to_ink": "(0.5388, 0.7397, 0.7216, 1.0)"
+			"to_ink": "(0.5389, 0.7397, 0.7216, 1.0)"
 		},
-		"audible_frame": 2844939.64215493,
+		"audible_frame": 2844920.45865493,
 		"audible_score": {
 			"focused_community": "",
 			"listener_community": "",

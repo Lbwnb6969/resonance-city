@@ -3210,7 +3210,7 @@ func _draw() -> void:
 	var font := ThemeDB.fallback_font
 	var ui_ink: Color = daylight_state.get("ui_ink",Color("4b6561"))
 	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,ui_ink)
-	var composition_title := "河湾 · 第一段" if first_composition_mode else (shown_world.terrain_title()+" · 晴岸合奏" if expression == "bright" else shown_world.terrain_title()+" · 深流慢板")
+	var composition_title := _composition_title()
 	draw_string(font,Vector2(47,67),composition_title,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color(ui_ink,0.78))
 	_draw_landmark_bar()
 	if not black:
@@ -3226,6 +3226,14 @@ func _draw() -> void:
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
 	draw_line(Vector2(48,size.y-32),Vector2(48+(size.x-96)*progress,size.y-32),Color("af9c6a"),3.0)
 	_profile_frame("draw_ms",draw_started)
+
+func _composition_title() -> String:
+	if not first_composition_mode:
+		return shown_world.terrain_title()+" · 晴岸合奏" if expression == "bright" else shown_world.terrain_title()+" · 深流慢板"
+	var authored_count := AuthoredDuet.roots(shown_world,model.audible_pitches()).size()
+	if authored_count <= 1: return "河湾 · 第一段"
+	if authored_count == 2: return "河湾 · 两岸合奏"
+	return "河湾 · %d段合奏" % authored_count
 
 func _draw_authored_selection() -> void:
 	if not first_composition_mode or not _authored_retune() or not shown_world.by_id.has(selected_id): return

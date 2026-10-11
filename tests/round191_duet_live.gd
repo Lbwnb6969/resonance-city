@@ -145,6 +145,7 @@ func _run() -> void:
 	check(await _until(root_boundary+rate/5),"second_voice_becomes_real_commercial_house")
 	second_root = str(demo._first_authored_state().get("root_id",""))
 	check(first_root != second_root and Duet.roots(demo.shown_world).size() == 2,"both_real_authored_families_survive")
+	check(demo._composition_title() == "河湾 · 两岸合奏","title_acknowledges_two_authored_sections")
 	check(demo._begin_authored_theme(second_root),"second_author_theme_opens")
 	if not failures.is_empty(): await _finish(); return
 	check(demo.authored_composition_choices.visible,"both_compositions_have_stable_menu_entries")
