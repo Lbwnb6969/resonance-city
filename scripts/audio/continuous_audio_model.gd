@@ -470,7 +470,7 @@ func forecast(operation: Dictionary, state: Dictionary, at: int, duration: int) 
 	var preview_model := freeze()
 	# Anchors include the queued charter and independent structural intent.
 	# Transit request replaces its own pending route exactly as formal submission.
-	if str(operation.get("kind","")) not in ["park","civic","transit_line"]: preview_model.cancel_pending()
+	if str(operation.get("kind","")) not in ["park","civic","transit_line"] and not bool(operation.get("player_expression",false)): preview_model.cancel_pending()
 	preview_model.rendered_until = at
 	var result := preview_model.submit(operation)
 	if not result["accepted"]: return PackedVector2Array()

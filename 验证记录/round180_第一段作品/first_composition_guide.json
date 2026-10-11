@@ -1,0 +1,89 @@
+{
+  "checks": {
+    "actual_map_click_selects_player_community": true,
+    "chosen_charter_and_card_leave_community_to_player": true,
+    "city_reset_clears_first_handoff_and_non_first_invitation": true,
+    "existing_non_first_planning_keeps_transit_entry": true,
+    "first_anchor_keeps_public_choices_without_default_transit_detour": true,
+    "first_charter_choices_fit_1440": true,
+    "first_charter_choices_fit_800": true,
+    "first_sound_handoff_fits_1440": true,
+    "first_sound_handoff_fits_800": true,
+    "fixture_is_real_young_three_community_city_without_active_anchor": true,
+    "future_model_settlement_does_not_show_sound_choice_before_audible_world": true,
+    "handoff_offers_three_expressions_without_auto_selecting_or_submitting": true,
+    "handoff_rejects_another_facility_at_the_same_boundary": true,
+    "independent_house_tuning_does_not_expire_anchor_handoff": true,
+    "invitation_opens_three_charters_without_selecting_scope_or_mutating_city": true,
+    "overture_offers_one_small_planning_invitation": true,
+    "player_public_anchor_queues_precise_first_sound_followup": true,
+    "real_matching_public_reveal_offers_one_local_sound_choice": true,
+    "render_ahead_does_not_skip_audible_ten_second_overture": true,
+    "sound_handoff_opens_existing_demo_choice_for_actual_anchor_community": true
+  },
+  "failures": [],
+  "passed": true,
+  "scope": "Dummy production Guide and real young World authoring/reveal; controlled presentation frames test overture and render-ahead separation, no physical-device or human-listening claim.",
+  "sound_handoff": {
+    "context": {
+      "community_id": "west-1",
+      "first_composition": true,
+      "kind": "seed",
+      "position": [
+        11.196720123291,
+        0.975715756416321
+      ]
+    },
+    "menu_visible": true,
+    "notice": "选择这块地怎样唱 · 按住空格听下一句，确认才种下；可点其他空地换落点",
+    "opened": false,
+    "seed_candidates": [
+      {
+        "allowed": true,
+        "community_id": "west-1",
+        "frontage": 0,
+        "growth_delay": 2,
+        "lot_id": "",
+        "max_form": "群",
+        "position": [
+          11.196720123291,
+          0.975715756416321
+        ],
+        "preview": "孤屋空地 · 停在群",
+        "reason": "孤屋空地 · 停在群；任意合法陆地都能播种",
+        "tier": "L3"
+      },
+      {
+        "allowed": true,
+        "community_id": "west-2",
+        "frontage": 2,
+        "growth_delay": 1,
+        "lot_id": "west-outer-lot-2--1",
+        "max_form": "腔",
+        "position": [
+          5.20509052276611,
+          12.0
+        ],
+        "preview": "沿街地块 · 可成长",
+        "reason": "沿街地块 · 可成长；下一乐句落定",
+        "tier": "L1"
+      },
+      {
+        "allowed": true,
+        "community_id": "east-2",
+        "frontage": 2,
+        "growth_delay": 1,
+        "lot_id": "east-outer-lot-2--1",
+        "max_form": "腔",
+        "position": [
+          23.6050910949707,
+          12.0
+        ],
+        "preview": "沿街地块 · 可成长",
+        "reason": "沿街地块 · 可成长；下一乐句落定",
+        "tier": "L1"
+      }
+    ],
+    "state": "consumed"
+  }
+}

@@ -8,6 +8,7 @@ var listener_community := ""
 var focused_community := ""
 const MusicRules = preload("res://scripts/world/community_music_rules.gd")
 const RiverResponse = preload("res://scripts/world/river_call_response.gd")
+const PlayerExpression = preload("res://scripts/world/player_expression.gd")
 var muted_communities: Dictionary = {}
 var response_enabled := true
 var pad_groups: Dictionary = {}
@@ -15,6 +16,7 @@ var rhythms: Array[Dictionary] = []
 var rhythm_nodes: Dictionary = {}
 var musical_nodes: Dictionary = {}
 static var theme_waves: Dictionary = {}
+static var theme_wave_mutex := Mutex.new()
 var theme: Dictionary = {}
 var response: Dictionary = {}
 var current_world: ContinuousWorld
@@ -156,7 +158,18 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}, at: int
 			priorities[cid] = [{"primary":0,"secondary":1,"terrace":2}.get(str(center["level"]),3),index]
 	for cid in candidates:
 		if not priorities.has(cid): priorities[cid] = [3,999]
+	var authored_roots: Dictionary = {}
+	for cid in candidates: authored_roots[cid] = _player_expression_root(world,cid)
 	candidates.sort_custom(func(a: String,b: String) -> bool:
+		# A newly authored family gets the existing rhythm doorway immediately.
+		# It must not lose its weave to an older default commercial building.
+		var ap: bool = not authored_roots[a].is_empty()
+		var bp: bool = not authored_roots[b].is_empty()
+		if ap != bp: return ap
+		if ap and bp:
+			var af := int(authored_roots[a].get("birth_frame",0))
+			var bf := int(authored_roots[b].get("birth_frame",0))
+			if af != bf: return af > bf
 		var ar: int = priorities[a][0]
 		var br: int = priorities[b][0]
 		if ar != br: return ar < br
@@ -166,12 +179,14 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}, at: int
 		return a < b)
 	rhythms.clear()
 	for cid in candidates:
-		var chosen: Dictionary = {}
-		for id in world.communities[cid]["members"]:
-			var b: Dictionary = world.by_id[id]
-			if b["type"] == "commercial" or (b["expression"] == "bright" and b["form"] != "胚"):
-				chosen = b
-				break
+		var chosen: Dictionary = authored_roots[cid]
+		var player_authored := not chosen.is_empty()
+		if chosen.is_empty():
+			for id in world.communities[cid]["members"]:
+				var b: Dictionary = world.by_id[id]
+				if b["type"] == "commercial" or (b["expression"] == "bright" and b["form"] != "胚"):
+					chosen = b
+					break
 		var facility_rhythm := false
 		if chosen.is_empty() and not world.communities[cid]["members"].is_empty():
 			for site in world.public_sites:
@@ -181,7 +196,7 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}, at: int
 					break
 		if not chosen.is_empty():
 			var service_pressure := float(world.community_public_service(cid).get("pressure",0.0))
-			rhythms.append({"cid":cid,"midi":int(overrides.get(chosen["district_id"],chosen["current_midi"])),"stereo":_stereo_for(chosen),"expression":chosen["expression"],"facility":facility_rhythm,"zone_roles":world.functional_zone_roles(cid),"service_pressure":service_pressure})
+			rhythms.append({"cid":cid,"midi":int(overrides.get(chosen["district_id"],chosen["current_midi"])),"stereo":_stereo_for(chosen),"expression":chosen["expression"],"player_expression":player_authored,"source_id":str(chosen["district_id"]),"facility":facility_rhythm,"zone_roles":world.functional_zone_roles(cid),"service_pressure":service_pressure})
 		if rhythms.size() >= int(score["rhythm_slot_limit"]): break
 	# Keep one public place audible even when the two ordinary rhythm slots are full.
 	# This makes a park or civic room a compositional invitation, not only a visual tag.
@@ -212,10 +227,11 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}, at: int
 	if theme_candidates.has(listener_community): selected = listener_community
 	var notes := world.community_theme(selected,overrides)
 	var first: Dictionary = world.by_id[world.communities[selected]["members"][0]]
+	var author := _player_expression_root(world,selected)
 	var facility := MusicRules.facilities(world,selected)
 	var has_park := bool(facility["park"])
 	var has_civic := bool(facility["civic"])
-	theme = {"cid":selected,"notes":notes,"expression":first["expression"],"park":has_park,"civic":has_civic,"center":current_world.center_for(selected).duplicate(true),"zone_roles":world.functional_zone_roles(selected),"stereo":_stereo_for(first)}
+	theme = {"cid":selected,"notes":notes,"expression":world.community_expression(selected),"player_expression":not author.is_empty(),"park":has_park,"civic":has_civic,"center":current_world.center_for(selected).duplicate(true),"zone_roles":world.functional_zone_roles(selected),"stereo":_stereo_for(first)}
 	theme["source_ids"] = world.community_theme_sources(selected)
 	# The river supplies a spatial opportunity; the player still authors the
 	# pitches and placement. One response is derived from the lead schedule.
@@ -224,6 +240,41 @@ func configure_score(world: ContinuousWorld, overrides: Dictionary = {}, at: int
 		if not response.is_empty():
 			response["stereo"] = _response_stereo(world,response,theme.get("stereo",Vector2.ONE/sqrt(2.0)))
 	_sync_musical_nodes(at)
+
+func _player_expression_root(world: ContinuousWorld,cid: String) -> Dictionary:
+	var chosen: Dictionary = {}
+	var newest := -1
+	for id in world.communities[cid]["members"]:
+		var building: Dictionary = world.by_id[id]
+		var family: Dictionary = world.families.get(str(building.get("family_id","")),{})
+		if not bool(family.get("player_expression",false)) or str(family.get("root","")) != str(id): continue
+		var created := int(building.get("birth_frame",0))
+		if created > newest or (created == newest and str(id) > str(chosen.get("district_id",""))):
+			chosen = building
+			newest = created
+	return chosen
+
+func rhythm_profile(part: Dictionary,rate: int) -> Dictionary:
+	var beat := roundi(rate*0.5)
+	if bool(part.get("player_expression",false)):
+		var voice := PlayerExpression.definition(str(part["expression"]))
+		return {"spacing_frames":float(voice["rhythm_beats"])*beat,"pitch":int(part["midi"])+int(voice["rhythm_offset"]),
+			"tail":float(voice["rhythm_tail"]),"attack":float(voice["rhythm_attack"]),"decay":float(voice["rhythm_decay"])}
+	var spacing: int = beat*4 if part["expression"] == "deep" else beat
+	if float(part.get("service_pressure",0.0)) >= 0.5: spacing = beat*2 if part["expression"] == "deep" else beat/2
+	return {"spacing_frames":spacing,"pitch":int(part["midi"])+12,"tail":0.24,"attack":0.006,"decay":0.075}
+
+func rhythm_events(part: Dictionary,start: int,count: int,rate: int) -> Array[Dictionary]:
+	var profile := rhythm_profile(part,rate)
+	var spacing := float(profile["spacing_frames"])
+	var shift := 0 if str(part["cid"]).begins_with("west") else roundi(rate*0.5)/2
+	var duration := ceili(float(profile["tail"])*rate)
+	var events: Array[Dictionary] = []
+	for cycle in range(floori(float(start-shift-duration)/spacing)+1,ceili(float(start+count-shift)/spacing)):
+		var onset := roundi(cycle*spacing)+shift
+		if onset >= start+count or onset+duration <= start: continue
+		events.append({"onset":onset,"pitch":profile["pitch"],"duration_frames":duration,"source_id":str(part.get("source_id",""))})
+	return events
 
 func _audibility(cid: String) -> float:
 	if muted_communities.get(cid,false): return 0.0
@@ -234,6 +285,7 @@ func _sync_rhythm_nodes() -> void:
 	for node in rhythm_nodes.values(): node["active"] = false
 	for part in rhythms:
 		var key := "%s:%d:%s:%s:%s" % [part["cid"],part["midi"],part["expression"],JSON.stringify(part.get("zone_roles",[])),float(part.get("service_pressure",0.0)) >= 0.5]
+		if bool(part.get("player_expression",false)): key += ":player"
 		if not rhythm_nodes.has(key):
 			rhythm_nodes[key] = part.duplicate(true)
 			rhythm_nodes[key]["key"] = key
@@ -258,7 +310,7 @@ func _musical_signature(part: Dictionary, pattern: Dictionary, answer: bool) -> 
 	# Replies must carry the exact source pitch as well as the receiving pitch.
 	return JSON.stringify([part["cid"],part["notes"],part.get("source_ids",[]),part.get("receiver_ids",[]),
 		part["stereo"],pattern["cid"],pattern["notes"],pattern.get("source_ids",[]),
-		pattern["expression"],pattern["park"],pattern["civic"],pattern.get("zone_roles",[]),answer])
+		pattern["expression"],pattern["park"],pattern["civic"],pattern.get("zone_roles",[]),bool(pattern.get("player_expression",false)),answer])
 
 func _register_musical_node(part: Dictionary, pattern: Dictionary, answer: bool, at: int, previous: Array[Dictionary] = []) -> void:
 	var signature := _musical_signature(part,pattern,answer)
@@ -291,30 +343,51 @@ func _register_musical_node(part: Dictionary, pattern: Dictionary, answer: bool,
 	# Warm immutable event waves before the output clock starts.
 	for note in part["notes"]:
 		if int(note) < 0: continue
-		var pitch := int(note)+(24 if int(note) < 48 else 12)
-		_event_wave(pitch,str(pattern["expression"]),int(values["timing"]["sample_rate"]))
-		_event_wave(pitch+12,str(pattern["expression"]),int(values["timing"]["sample_rate"]))
+		var pitch := _theme_pitch(int(note),0,pattern)
+		_event_wave(pitch,str(pattern["expression"]),int(values["timing"]["sample_rate"]),bool(pattern.get("player_expression",false)))
+		_event_wave(pitch+12,str(pattern["expression"]),int(values["timing"]["sample_rate"]),bool(pattern.get("player_expression",false)))
 
 func warm_score() -> void:
 	var rate := int(values["timing"]["sample_rate"])
 	for expression in ["bright","deep"]:
 		for pitch in [60,62,64,67,69,72,74,76,79,81]: _event_wave(pitch,expression,rate)
 
-func _event_wave(pitch: int, expression: String, rate: int) -> PackedFloat32Array:
-	var key := "%d:%s:%d" % [pitch,expression,rate]
-	if theme_waves.has(key): return theme_waves[key]
+func _event_wave(pitch: int, expression: String, rate: int,player_authored: bool = false) -> PackedFloat32Array:
+	var key := "%d:%s:%d:%s" % [pitch,expression,rate,player_authored]
+	# The preview worker and live renderer share immutable wave tables. Protect
+	# dictionary access, but compute a missing table outside the audio lock.
+	theme_wave_mutex.lock()
+	var cached: PackedFloat32Array = theme_waves.get(key,PackedFloat32Array())
+	theme_wave_mutex.unlock()
+	if not cached.is_empty(): return cached
 	var tail := 0.95 if expression == "deep" else 0.65
+	var attack := 0.012
+	var decay := 0.35 if expression == "deep" else 0.20
+	if player_authored:
+		var voice := PlayerExpression.definition(expression)
+		tail = float(voice["theme_tail"])
+		attack = float(voice["theme_attack"])
+		decay = float(voice["theme_decay"])
 	var wave := PackedFloat32Array()
 	wave.resize(ceili(tail*rate))
 	var hz := frequency(pitch)
 	for at in range(wave.size()):
 		var seconds := float(at)/rate
-		var envelope := minf(1.0,seconds/0.012)*exp(-seconds/(0.35 if expression == "deep" else 0.20))*clampf((tail-seconds)/0.03,0.0,1.0)
-		wave[at] = (sin(TAU*hz*seconds)+0.18*sin(TAU*hz*seconds*2.0))/1.18*envelope
+		var envelope := minf(1.0,seconds/attack)*exp(-seconds/decay)*clampf((tail-seconds)/0.03,0.0,1.0)
+		# A long warm chord occupies the same Lead slot and shares its envelope.
+		var tone := (sin(TAU*hz*seconds)+0.18*sin(TAU*hz*seconds*2.0))/1.18
+		if player_authored and expression == "warm": tone = (sin(TAU*hz*seconds)+0.32*sin(TAU*hz*pow(2.0,7.0/12.0)*seconds))/1.32
+		wave[at] = tone*envelope
+	theme_wave_mutex.lock()
 	theme_waves[key] = wave
+	theme_wave_mutex.unlock()
 	return wave
 
 func musical_steps(pattern: Dictionary) -> Array:
+	if bool(pattern.get("player_expression",false)):
+		var steps: Array = PlayerExpression.definition(str(pattern["expression"]))["theme_steps"].duplicate()
+		if bool(pattern["park"]): steps = steps.slice(0,maxi(2,steps.size()-1))
+		return steps
 	var steps: Array = [0,8,16,24] if pattern["expression"] == "deep" else [0,3,6,10,16,19,22,27]
 	var zone_roles: Array = pattern.get("zone_roles",[])
 	if zone_roles.has("workshop"): steps = [0,6,12,18,24,30] if pattern["expression"] != "deep" else [0,8,16,24]
@@ -325,6 +398,13 @@ func musical_steps(pattern: Dictionary) -> Array:
 	elif zone_roles.has("pulse"): steps = [0,4,8,12,16,20,24,28]
 	if pattern["park"]: steps = steps.slice(0,maxi(2,steps.size()-2))
 	return steps
+
+func _theme_pitch(pitch: int,index: int,pattern: Dictionary) -> int:
+	if bool(pattern.get("player_expression",false)):
+		return posmod(pitch,12)+int(PlayerExpression.definition(str(pattern["expression"]))["theme_octave"])
+	pitch += 24 if pitch < 48 else 12
+	if index%4 == 3: pitch += 12
+	return pitch
 
 func musical_events(node: Dictionary, start: int, count: int, rate: int) -> Array[Dictionary]:
 	# The only producers are original Lead events. Replies are derived once
@@ -352,14 +432,14 @@ func musical_events(node: Dictionary, start: int, count: int, rate: int) -> Arra
 			var source_event := "%s:%d:%d:%s:%d" % [pattern["cid"],source_onset,index,source_id,source_pitch]
 			var receiver_ids: Array = part.get("receiver_ids",[])
 			var receiver_id := str(receiver_ids[note_index]) if note_index < receiver_ids.size() else ""
-			pitch += 24 if pitch < 48 else 12
-			if index%4 == 3: pitch += 12
+			pitch = _theme_pitch(pitch,index,pattern)
 			var onset := source_onset+delay
 			var tail := ceili((0.95 if pattern["expression"] == "deep" else 0.65)*rate)
+			if bool(pattern.get("player_expression",false)): tail = ceili(float(PlayerExpression.definition(str(pattern["expression"]))["theme_tail"])*rate)
 			if onset >= start+count or onset+tail <= start: continue
 			result.append({"event_id":("reply:"+source_event+":"+receiver_id) if node["answer"] else source_event,
 				"source_event_id":source_event,"source_id":source_id,"receiver_id":receiver_id,
-				"generation":1 if node["answer"] else 0,"source_onset":source_onset,"onset":onset,"pitch":pitch})
+				"generation":1 if node["answer"] else 0,"source_onset":source_onset,"onset":onset,"pitch":pitch,"duration_frames":tail})
 	return result
 
 func _musical_block(node: Dictionary, start: int, count: int, rate: int, contribution: Dictionary = {}) -> PackedFloat32Array:
@@ -367,7 +447,7 @@ func _musical_block(node: Dictionary, start: int, count: int, rate: int, contrib
 	output.resize(count)
 	for event in musical_events(node,start,count,rate):
 		var onset := int(event["onset"])
-		var wave := _event_wave(int(event["pitch"]),node["pattern"]["expression"],rate)
+		var wave := _event_wave(int(event["pitch"]),node["pattern"]["expression"],rate,bool(node["pattern"].get("player_expression",false)))
 		var begin := maxi(start,onset)
 		var finish := mini(start+count,onset+wave.size())
 		if not contribution.is_empty() and finish > begin:
@@ -377,6 +457,14 @@ func _musical_block(node: Dictionary, start: int, count: int, rate: int, contrib
 			segment["render_start"] = begin
 			segment["render_end"] = finish
 			segment["expression"] = str(node["pattern"]["expression"])
+			segment["envelope_tail"] = 0.95 if segment["expression"] == "deep" else 0.65
+			segment["envelope_attack"] = 0.012
+			segment["envelope_decay"] = 0.35 if segment["expression"] == "deep" else 0.20
+			if bool(node["pattern"].get("player_expression",false)):
+				var voice := PlayerExpression.definition(segment["expression"])
+				segment["envelope_tail"] = voice["theme_tail"]
+				segment["envelope_attack"] = voice["theme_attack"]
+				segment["envelope_decay"] = voice["theme_decay"]
 			segment["node_key"] = str(node["key"])
 			segment["cid"] = str(node["part"]["cid"])
 			# Public-space identity is an ephemeral projection of the current world
@@ -531,17 +619,22 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var target := _audibility(cid) if rhythm["active"] else 0.0
 		if level > 0.00001 or target > 0.0: pulse_count += 1
 		var beat := roundi(rate*0.5)
-		var spacing: int = beat*4 if rhythm["expression"] == "deep" else beat
-		var service_pressure := float(rhythm.get("service_pressure",0.0))
-		if service_pressure >= 0.5:
-			spacing = beat*2 if rhythm["expression"] == "deep" else beat/2
-		var hz := frequency(int(rhythm["midi"])+12)
+		var profile := rhythm_profile(rhythm,rate)
+		var spacing := float(profile["spacing_frames"])
+		var whole_spacing := roundi(spacing)
+		var fractional := not is_equal_approx(spacing,float(whole_spacing))
+		var hz := frequency(int(profile["pitch"]))
 		var phase_shift := 0 if cid.begins_with("west") else beat/2
 		var rhythm_stereo: Vector2 = rhythm["stereo"]
 		var captured_pulses: Dictionary = {}
-		var pulse_frames := roundi(0.24*rate)
+		var pulse_frames := roundi(float(profile["tail"])*rate)
 		for i in range(count):
-			var elapsed := posmod(start+i-phase_shift,spacing)
+			var elapsed := posmod(start+i-phase_shift,whole_spacing)
+			if fractional:
+				# Half-beats at 22050 Hz alternate 5512/5513 frames. Rounding each
+				# absolute onset preserves bar alignment instead of drifting forever.
+				var cycle := floori(float(start+i-phase_shift)/spacing)
+				elapsed = start+i-phase_shift-roundi(cycle*spacing)
 			if capture_music_activity and bool(rhythm.get("facility",false)) and elapsed < pulse_frames:
 				var pulse_onset := start+i-elapsed
 				var pulse_id := "public:%s:%d" % [str(rhythm["key"]),pulse_onset]
@@ -561,12 +654,12 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 							"render_start":start+i,"render_end":start+count,"level_frame":start+i,
 							"level_from":level,"target":target,"fade_step":1.0/fade_frames,
 							"amplitude":float(score["rhythm_gain"])*gain,"stereo_gain":rhythm_stereo.length(),
-							"midi":int(rhythm["midi"])+12,"rate":rate,"expression":str(rhythm["expression"]),"public_site_ids":public_site_ids,
+							"midi":int(profile["pitch"]),"rate":rate,"expression":str(rhythm["expression"]),"public_site_ids":public_site_ids,
 							"public_site_kinds":public_site_kinds,"rhythm":true})
 			level = move_toward(level,target,1.0/fade_frames)
 			var seconds := float(elapsed)/rate
-			if seconds >= 0.24: continue
-			var envelope := minf(1.0,seconds/0.006)*exp(-seconds/0.075)*clampf((0.24-seconds)/0.01,0.0,1.0)
+			if seconds >= float(profile["tail"]): continue
+			var envelope := minf(1.0,seconds/float(profile["attack"]))*exp(-seconds/float(profile["decay"]))*clampf((float(profile["tail"])-seconds)/0.01,0.0,1.0)
 			output[i] += sin(TAU*hz*seconds)*envelope*float(score["rhythm_gain"])*level*gain*rhythm["stereo"]
 		state[level_key] = level
 		if not rhythm["active"] and level < 0.00001: retiring_rhythms.append(rhythm["key"])

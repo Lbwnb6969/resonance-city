@@ -17,6 +17,7 @@ const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd"
 const TransitPlan = preload("res://scripts/world/transit_planning.gd")
 const TransitCharterAnchor = preload("res://scripts/world/transit_charter_anchor.gd")
 const TransitLineRework = preload("res://scripts/world/transit_line_rework.gd")
+const FirstComposition = preload("res://scripts/world/first_composition.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -1194,6 +1195,8 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		if not check["allowed"]: return {"accepted":false,"reason":check["reason"]}
 		for op in pending_actions:
 			if op["kind"] != "seed": continue
+			if op.has("expression_reservation") and SpatialPlanning.disc_hits(FirstComposition.polygon(op["expression_reservation"]["polygon"]),Vector2(float(operation["position"][0]),float(operation["position"][1])),float(cfg["space"]["residential_radius"])):
+				return {"accepted":false,"reason":"这片地已随留地表达保留，下一句可以继续规划"}
 			if not str(check["lot_id"]).is_empty() and op.get("lot_id","") == check["lot_id"]:
 				return {"accepted":false,"reason":"这块地已经播下声音，下一句会长出来"}
 			if str(check["lot_id"]).is_empty() and Vector2(float(op["position"][0]),float(op["position"][1])).distance_to(Vector2(float(operation["position"][0]),float(operation["position"][1]))) < 0.9:
@@ -1201,6 +1204,12 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		operation = operation.duplicate(true)
 		operation["lot_id"] = check["lot_id"]
 		operation["placement_tier"] = check["tier"]
+		if bool(operation.get("player_expression",false)) and str(operation.get("expression","")) not in ["deep","weave","warm"]:
+			return {"accepted":false,"reason":"请选择深流、织机或协和表达"}
+		if bool(operation.get("player_expression",false)) and str(operation.get("expression","")) == "warm":
+			var reservation := FirstComposition.warm_reservation(self,Vector2(float(operation["position"][0]),float(operation["position"][1])))
+			if reservation.is_empty(): return {"accepted":false,"reason":"留地表达需要附近一块可保留的真实空地，请换一个落点"}
+			operation["expression_reservation"] = reservation
 	elif kind == "charter":
 		var reason := Charter.reason(self,operation)
 		if not reason.is_empty(): return {"accepted":false,"reason":reason}
@@ -1387,7 +1396,8 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 	if kind in ["seed","retune"]:
 		var midi := int(operation["midi"])
 		var allowed: Array = Legacy.load_values()["proposals"]["allowed_pitches"]
-		if not allowed.any(func(pitch: float) -> bool: return int(pitch) == midi or int(pitch) == midi+12): return {"accepted":false,"reason":"请选择当前时代的五声音阶"}
+		var player_range := kind == "seed" and bool(operation.get("player_expression",false))
+		if not allowed.any(func(pitch: float) -> bool: return int(pitch) == midi or int(pitch) == midi+12 or (player_range and int(pitch) == midi-12)): return {"accepted":false,"reason":"请选择当前时代的五声音阶"}
 	# Repeated retuning replaces this building's future structural intent only.
 	pending_actions = pending_actions.filter(func(op: Dictionary) -> bool:
 		return not (op["kind"] == kind and kind != "seed" and op.get("id","") == operation.get("id","")))
@@ -1408,11 +1418,13 @@ func _birth(p: Vector2, midi: int, family: String, root: bool, frame: int, reque
 		if lot["id"] == check["lot_id"]: type = str(lot["use"])
 	if str(check.get("lot_id","")).is_empty() and requested_type in ["residential","commercial","industrial"]:
 		type = requested_type
+	type = _family_expression_type(family,type)
 	var building := {"district_id":id,"position":[p.x,p.y],"footprint":[[p.x,p.y]],"radius":cfg["space"]["residential_radius"],
 		"current_midi":midi,"base_midi":midi,"type":type,"vitality":cfg["harmony"]["initial_vitality"],
 		"community_id":check["community_id"],"lot_id":check["lot_id"],"placement_tier":str(check.get("tier","L1")),
 		"fabric_frontage":int(check.get("frontage",0)),"family_id":family,"anchor_id":family,
 		"expression":str(families.get(family,{}).get("expression",profile)),"family_anchor":root,"is_anchor":false,"era":era,"form":"胚","form_count":0,"birth_frame":frame,"voice_level":0.2}
+	if bool(families.get(family,{}).get("player_expression",false)): building["player_expression"] = true
 	buildings.append(building)
 	by_id[id] = building
 	for lot in lots:
@@ -1479,12 +1491,27 @@ func settle(frame: int) -> void:
 			"seed":
 				var p := Vector2(float(op["position"][0]),float(op["position"][1]))
 				if not placement(p)["allowed"]: continue
+				var expression_reservation_id := ""
+				if bool(op.get("player_expression",false)) and str(op.get("expression","")) == "warm":
+					var reservation: Dictionary = op.get("expression_reservation",{}).duplicate(true)
+					if reservation.is_empty():
+						events.append({"kind":"planning_rejected","operation_kind":"seed","event_id":int(op["event_id"]),"reason":"留地来源已变化，请重新比较声音落点","frame":frame})
+						continue
+					reservation["kind"] = "reserve"
+					reservation["event_id"] = op["event_id"]
+					reservation["polygon"] = FirstComposition.polygon(reservation["polygon"])
+					if not FirstComposition.commit_expression_reservation(self,reservation,frame):
+						events.append({"kind":"planning_rejected","operation_kind":"seed","event_id":int(op["event_id"]),"reason":"要保留的空地已被规划占用，请重新比较声音落点","frame":frame})
+						continue
+					expression_reservation_id = "reservation-%05d" % int(op["event_id"])
 				var family := "family-%05d" % next_id
 				families[family] = {"root":"","created_phrase":phrase_index,"expression":op.get("expression",profile)}
+				if bool(op.get("player_expression",false)): families[family]["player_expression"] = true
+				if not expression_reservation_id.is_empty(): families[family]["expression_reservation_id"] = expression_reservation_id
 				var root := _birth(p,int(op["midi"]),family,true,frame)
 				families[family]["root"] = root
 				var root_tier := str(by_id[root].get("placement_tier","L1"))
-				families[family]["next_growth_phrase"] = phrase_index+(2 if root_tier != "L1" else 1)
+				families[family]["next_growth_phrase"] = phrase_index+_family_expression_growth_delay(family,2 if root_tier != "L1" else 1)
 			"retune":
 				by_id[op["id"]]["current_midi"] = int(op["midi"])
 				costs[op["id"]] = float(Legacy.load_values()["proposals"]["retune_cost"])
@@ -1709,6 +1736,7 @@ func _grow(family: String, frame: int) -> void:
 			quotas[cid] = community_land_use_quota(cid)
 			usages[cid] = _community_usage(cid)
 		var candidate_use := _growth_use_for_candidate(cid,p,str(candidate.get("use","residential")),quotas[cid],usages[cid])
+		candidate_use = _family_expression_type(family,candidate_use)
 		var tier_rank := 3 if check["tier"] == "L1" else (2 if check["tier"] == "L2" else 1)
 		var distance := p.distance_squared_to(origin)
 		var transit_bonus := _transit_growth_bonus(p,candidate_use)
@@ -1768,7 +1796,16 @@ func _grow(family: String, frame: int) -> void:
 		events.back()["plan_id"] = charter["plan_id"]
 		events.back()["card_refs"] = charter.get("card_refs",[]).duplicate()
 	var growth_delay := Charter.growth_delay(self,str(best_check.get("community_id","")),p,int(best_check.get("growth_delay",1)),str(best_check.get("tier","L1")))
-	families[family]["next_growth_phrase"] = phrase_index+growth_delay
+	families[family]["next_growth_phrase"] = phrase_index+_family_expression_growth_delay(family,growth_delay)
+
+func _family_expression_type(family: String,fallback: String) -> String:
+	var intent: Dictionary = families.get(family,{})
+	if not bool(intent.get("player_expression",false)): return fallback
+	return "commercial" if str(intent.get("expression","")) == "weave" else "residential"
+
+func _family_expression_growth_delay(family: String,base_delay: int) -> int:
+	var intent: Dictionary = families.get(family,{})
+	return base_delay*2 if bool(intent.get("player_expression",false)) and str(intent.get("expression","")) == "deep" else base_delay
 
 
 func _community_adjacency(ids: Array) -> Dictionary:
@@ -2555,6 +2592,28 @@ func build_rework_starter(expression: String = "bright") -> void:
 	build_starter(expression)
 	var phrase := int(cfg["timing"]["phrase_frames"])
 	for index in range(2): settle((phrase_index+1)*phrase)
+
+func build_first_composition_starter() -> void:
+	FirstComposition.build(self)
+
+func community_expression(cid: String) -> String:
+	var latest_frame := -1
+	var latest_id := -1
+	var selected := ""
+	for intent: Dictionary in families.values():
+		if not bool(intent.get("player_expression",false)): continue
+		var root: Dictionary = by_id.get(str(intent.get("root","")),{})
+		if root.is_empty() or str(root.get("community_id","")) != cid: continue
+		var frame := int(root.get("birth_frame",0))
+		var order := str(root["district_id"]).trim_prefix("building-").to_int()
+		if frame > latest_frame or (frame == latest_frame and order > latest_id):
+			latest_frame = frame
+			latest_id = order
+			selected = str(intent["expression"])
+	if not selected.is_empty(): return selected
+	for id in communities.get(cid,{}).get("members",[]):
+		if by_id.has(str(id)): return str(by_id[str(id)].get("expression","warm"))
+	return "warm"
 
 func community_theme_sources(cid: String) -> Array:
 	var members: Array = communities[cid]["members"].duplicate()

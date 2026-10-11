@@ -1,0 +1,929 @@
+{
+  "checks": {
+    "actual_audible_lead_source_changes_from_c60_to_e64": true,
+    "all_three_are_accepted_formal_seeds_at_the_same_legal_position": true,
+    "candidate_generation_preserves_source_rng_all_intent_and_oscillator_phases": true,
+    "changed_reply_is_a_measured_rendered_pcm_difference_not_only_new_event_identity": true,
+    "deep_actual_existing_rhythm_slot_uses_the_new_root_and_real_events": true,
+    "deep_exports_only_the_actual_formal_full_score_pcm": true,
+    "deep_formal_seed_preserves_independent_planning_and_sound_requests": true,
+    "deep_full_score_keeps_gain_headroom_and_seventy_voice_budget": true,
+    "deep_opportunities_and_growth_are_current_branch_world_results": true,
+    "deep_ordinary_maturation_forms_an_actual_authored_theme_from_at_least_six_houses": true,
+    "deep_preview_is_byte_identical_to_formal_four_second_full_score": true,
+    "deep_reports_only_actual_reserved_empty_land_and_no_building_on_it": true,
+    "deep_saved_player_expression_resumes_with_identical_real_pcm_and_phases": true,
+    "deep_sound_is_real_saved_family_pitch_land_use_and_birth": true,
+    "deep_warm_full_scores_have_a_measured_pcm_difference": true,
+    "deep_weave_full_scores_have_a_measured_pcm_difference": true,
+    "formal_validation_and_maturation_leave_the_live_source_untouched": true,
+    "natural_theme_has_a_real_later_c_source_whose_legal_e_breaks_a_reply_pair": true,
+    "one_normal_c_to_e_retune_uses_the_first_writable_beat": true,
+    "one_retune_changes_the_next_actual_generation_one_reply_relation_and_schedule": true,
+    "real_render_profiles_differ_in_register_interval_and_envelope_duration": true,
+    "receiver_pitch_and_original_source_world_remain_unchanged": true,
+    "reply_pcm_probe_uses_actual_fully_audible_existing_slot_levels": true,
+    "same_source_choices_have_real_slow_growth_and_commercial_or_residential_consequences": true,
+    "source_is_a_real_young_24_house_three_community_opening": true,
+    "source_keeps_real_pending_charter_anchor_retune_and_focus": true,
+    "three_candidates_share_one_source_real_rate_gain_and_next_boundary": true,
+    "warm_actual_existing_rhythm_slot_uses_the_new_root_and_real_events": true,
+    "warm_exports_only_the_actual_formal_full_score_pcm": true,
+    "warm_formal_seed_preserves_independent_planning_and_sound_requests": true,
+    "warm_full_score_keeps_gain_headroom_and_seventy_voice_budget": true,
+    "warm_opportunities_and_growth_are_current_branch_world_results": true,
+    "warm_ordinary_maturation_forms_an_actual_authored_theme_from_at_least_six_houses": true,
+    "warm_preview_is_byte_identical_to_formal_four_second_full_score": true,
+    "warm_reports_only_actual_reserved_empty_land_and_no_building_on_it": true,
+    "warm_saved_player_expression_resumes_with_identical_real_pcm_and_phases": true,
+    "warm_sound_is_real_saved_family_pitch_land_use_and_birth": true,
+    "weave_actual_existing_rhythm_slot_uses_the_new_root_and_real_events": true,
+    "weave_exports_only_the_actual_formal_full_score_pcm": true,
+    "weave_formal_seed_preserves_independent_planning_and_sound_requests": true,
+    "weave_full_score_keeps_gain_headroom_and_seventy_voice_budget": true,
+    "weave_opportunities_and_growth_are_current_branch_world_results": true,
+    "weave_ordinary_maturation_forms_an_actual_authored_theme_from_at_least_six_houses": true,
+    "weave_preview_is_byte_identical_to_formal_four_second_full_score": true,
+    "weave_reports_only_actual_reserved_empty_land_and_no_building_on_it": true,
+    "weave_saved_player_expression_resumes_with_identical_real_pcm_and_phases": true,
+    "weave_sound_is_real_saved_family_pitch_land_use_and_birth": true,
+    "weave_warm_full_scores_have_a_measured_pcm_difference": true
+  },
+  "evidence": {
+    "boundary_frame": 352800,
+    "branches": {
+      "deep": {
+        "max_voices": 12,
+        "metrics": {
+          "consequences": {
+            "city_buildings": 28,
+            "community_id": "west-1",
+            "expression": "deep",
+            "family_buildings": 1,
+            "mature": 0,
+            "next_growth_phrase": 3,
+            "reservation_count": 0,
+            "reservations": [],
+            "theme_eligible": false,
+            "type": "residential"
+          },
+          "events": [
+            {
+              "duration_frames": 35280,
+              "onset": 352800,
+              "pitch": 36,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 35280,
+              "onset": 396900,
+              "pitch": 36,
+              "source_id": "building-00025"
+            }
+          ],
+          "profile": {
+            "attack": 0.04,
+            "decay": 0.55,
+            "pitch": 36,
+            "spacing_frames": 44100.0,
+            "tail": 1.6
+          }
+        },
+        "peak": 0.31142520904541,
+        "preview_formal_pcm_max_abs": 0.0,
+        "root_id": "building-00025",
+        "wav": "res://验证记录/round180_首作三种表达/deep.wav"
+      },
+      "warm": {
+        "max_voices": 11,
+        "metrics": {
+          "consequences": {
+            "city_buildings": 28,
+            "community_id": "west-1",
+            "expression": "warm",
+            "family_buildings": 1,
+            "mature": 0,
+            "next_growth_phrase": 2,
+            "reservation_count": 1,
+            "reservations": [
+              {
+                "created_phrase": 1,
+                "id": "reservation-00004",
+                "polygon": "[(13.49666, 7.796892), (14.73666, 7.796892), (14.73666, 9.076892), (13.49666, 9.076892)]",
+                "position": [
+                  14.1166572570801,
+                  8.43689155578613
+                ],
+                "reservation_id": "reservation-00004",
+                "source_lot_ids": [
+                  "west-lot-5-1"
+                ],
+                "source_site_id": "west-lot-5-1"
+              }
+            ],
+            "theme_eligible": false,
+            "type": "residential"
+          },
+          "events": [
+            {
+              "duration_frames": 48511,
+              "onset": 352800,
+              "pitch": 55,
+              "source_id": "building-00025"
+            }
+          ],
+          "profile": {
+            "attack": 0.09,
+            "decay": 0.8,
+            "pitch": 55,
+            "spacing_frames": 88200.0,
+            "tail": 2.2
+          }
+        },
+        "peak": 0.299035102128983,
+        "preview_formal_pcm_max_abs": 0.0,
+        "root_id": "building-00025",
+        "wav": "res://验证记录/round180_首作三种表达/warm.wav"
+      },
+      "weave": {
+        "max_voices": 12,
+        "metrics": {
+          "consequences": {
+            "city_buildings": 28,
+            "community_id": "west-1",
+            "expression": "weave",
+            "family_buildings": 1,
+            "mature": 0,
+            "next_growth_phrase": 2,
+            "reservation_count": 0,
+            "reservations": [],
+            "theme_eligible": false,
+            "type": "commercial"
+          },
+          "events": [
+            {
+              "duration_frames": 2646,
+              "onset": 352800,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 358313,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 363825,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 369338,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 374850,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 380363,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 385875,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 391388,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 396900,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 402413,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 407925,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 413438,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 418950,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 424463,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 429975,
+              "pitch": 72,
+              "source_id": "building-00025"
+            },
+            {
+              "duration_frames": 2646,
+              "onset": 435488,
+              "pitch": 72,
+              "source_id": "building-00025"
+            }
+          ],
+          "profile": {
+            "attack": 0.004,
+            "decay": 0.04,
+            "pitch": 72,
+            "spacing_frames": 5512.5,
+            "tail": 0.12
+          }
+        },
+        "peak": 0.330442488193512,
+        "preview_formal_pcm_max_abs": 0.0,
+        "root_id": "building-00025",
+        "wav": "res://验证记录/round180_首作三种表达/weave.wav"
+      }
+    },
+    "duration_frames": 88200,
+    "gain": 1.34090362249795,
+    "interpretation": "Technical equality, actual rendering profiles and saved city consequences only. These three full-score WAVs are for human evaluation; no human fun or sound-quality verdict is asserted.",
+    "matured": {
+      "deep": {
+        "actual_events": [
+          {
+            "duration_frames": 48511,
+            "event_id": "west-1:705600:0:building-00008:48",
+            "generation": 0,
+            "onset": 705600,
+            "pitch": 36,
+            "receiver_id": "",
+            "source_event_id": "west-1:705600:0:building-00008:48",
+            "source_id": "building-00008",
+            "source_onset": 705600
+          },
+          {
+            "duration_frames": 48511,
+            "event_id": "west-1:793800:1:building-00025:36",
+            "generation": 0,
+            "onset": 793800,
+            "pitch": 36,
+            "receiver_id": "",
+            "source_event_id": "west-1:793800:1:building-00025:36",
+            "source_id": "building-00025",
+            "source_onset": 793800
+          },
+          {
+            "duration_frames": 48511,
+            "event_id": "west-1:882000:2:building-00027:52",
+            "generation": 0,
+            "onset": 882000,
+            "pitch": 40,
+            "receiver_id": "",
+            "source_event_id": "west-1:882000:2:building-00027:52",
+            "source_id": "building-00027",
+            "source_onset": 882000
+          },
+          {
+            "duration_frames": 48511,
+            "event_id": "west-1:970200:3:building-00026:52",
+            "generation": 0,
+            "onset": 970200,
+            "pitch": 40,
+            "receiver_id": "",
+            "source_event_id": "west-1:970200:3:building-00026:52",
+            "source_id": "building-00026",
+            "source_onset": 970200
+          }
+        ],
+        "phrase": 2,
+        "response": {
+          "cid": "east-1",
+          "generation": 1,
+          "notes": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            55,
+            55,
+            55,
+            55,
+            -1
+          ],
+          "pair_count": 4,
+          "receiver_ids": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "building-00030",
+            "building-00030",
+            "building-00030",
+            "building-00030",
+            ""
+          ],
+          "source": "west-1",
+          "source_ids": [
+            "building-00026",
+            "building-00001",
+            "building-00003",
+            "building-00002",
+            "building-00005",
+            "building-00004",
+            "building-00007",
+            "building-00006",
+            "building-00008",
+            "building-00025",
+            "building-00027"
+          ],
+          "stereo": "(0.156434, 0.987688)"
+        },
+        "status": {
+          "cid": "west-1",
+          "commercial": 0,
+          "courtyards": 2,
+          "deep": 1,
+          "deep_mature": 1,
+          "formed": true,
+          "lowest": 36,
+          "mature": 11,
+          "members": 11,
+          "street_formed": true,
+          "theme_eligible": true
+        },
+        "theme": {
+          "center": {},
+          "cid": "west-1",
+          "civic": true,
+          "expression": "deep",
+          "notes": [
+            52,
+            52,
+            48,
+            48,
+            48,
+            48,
+            48,
+            48,
+            48,
+            36,
+            52
+          ],
+          "park": false,
+          "player_expression": true,
+          "source_ids": [
+            "building-00026",
+            "building-00001",
+            "building-00003",
+            "building-00002",
+            "building-00005",
+            "building-00004",
+            "building-00007",
+            "building-00006",
+            "building-00008",
+            "building-00025",
+            "building-00027"
+          ],
+          "stereo": "(0.156434, 0.987688)",
+          "zone_roles": [
+            "home"
+          ]
+        }
+      },
+      "warm": {
+        "actual_events": [
+          {
+            "duration_frames": 66150,
+            "event_id": "west-1:705600:0:building-00007:48",
+            "generation": 0,
+            "onset": 705600,
+            "pitch": 48,
+            "receiver_id": "",
+            "source_event_id": "west-1:705600:0:building-00007:48",
+            "source_id": "building-00007",
+            "source_onset": 705600
+          },
+          {
+            "duration_frames": 66150,
+            "event_id": "west-1:837900:1:building-00006:48",
+            "generation": 0,
+            "onset": 837900,
+            "pitch": 48,
+            "receiver_id": "",
+            "source_event_id": "west-1:837900:1:building-00006:48",
+            "source_id": "building-00006",
+            "source_onset": 837900
+          },
+          {
+            "duration_frames": 66150,
+            "event_id": "west-1:970200:2:building-00008:48",
+            "generation": 0,
+            "onset": 970200,
+            "pitch": 48,
+            "receiver_id": "",
+            "source_event_id": "west-1:970200:2:building-00008:48",
+            "source_id": "building-00008",
+            "source_onset": 970200
+          }
+        ],
+        "phrase": 2,
+        "response": {
+          "cid": "east-1",
+          "generation": 1,
+          "notes": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            55,
+            55,
+            55,
+            55,
+            55
+          ],
+          "pair_count": 5,
+          "receiver_ids": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "building-00030",
+            "building-00030",
+            "building-00030",
+            "building-00030",
+            "building-00030"
+          ],
+          "source": "west-1",
+          "source_ids": [
+            "building-00026",
+            "building-00001",
+            "building-00003",
+            "building-00002",
+            "building-00005",
+            "building-00004",
+            "building-00007",
+            "building-00006",
+            "building-00008",
+            "building-00031",
+            "building-00025"
+          ],
+          "stereo": "(0.156434, 0.987688)"
+        },
+        "status": {
+          "cid": "west-1",
+          "commercial": 0,
+          "courtyards": 2,
+          "deep": 0,
+          "deep_mature": 0,
+          "formed": true,
+          "lowest": 48,
+          "mature": 10,
+          "members": 11,
+          "street_formed": true,
+          "theme_eligible": true
+        },
+        "theme": {
+          "center": {},
+          "cid": "west-1",
+          "civic": true,
+          "expression": "warm",
+          "notes": [
+            52,
+            52,
+            48,
+            48,
+            48,
+            48,
+            48,
+            48,
+            48,
+            48,
+            48
+          ],
+          "park": false,
+          "player_expression": true,
+          "source_ids": [
+            "building-00026",
+            "building-00001",
+            "building-00003",
+            "building-00002",
+            "building-00005",
+            "building-00004",
+            "building-00007",
+            "building-00006",
+            "building-00008",
+            "building-00031",
+            "building-00025"
+          ],
+          "stereo": "(0.156434, 0.987688)",
+          "zone_roles": [
+            "home"
+          ]
+        }
+      },
+      "weave": {
+        "actual_events": [
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:705600:0:building-00007:48",
+            "generation": 0,
+            "onset": 705600,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:705600:0:building-00007:48",
+            "source_id": "building-00007",
+            "source_onset": 705600
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:716625:1:building-00006:48",
+            "generation": 0,
+            "onset": 716625,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:716625:1:building-00006:48",
+            "source_id": "building-00006",
+            "source_onset": 716625
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:727650:2:building-00008:48",
+            "generation": 0,
+            "onset": 727650,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:727650:2:building-00008:48",
+            "source_id": "building-00008",
+            "source_onset": 727650
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:749700:3:building-00025:60",
+            "generation": 0,
+            "onset": 749700,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:749700:3:building-00025:60",
+            "source_id": "building-00025",
+            "source_onset": 749700
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:771750:4:building-00031:60",
+            "generation": 0,
+            "onset": 771750,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:771750:4:building-00031:60",
+            "source_id": "building-00031",
+            "source_onset": 771750
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:793800:5:building-00027:52",
+            "generation": 0,
+            "onset": 793800,
+            "pitch": 64,
+            "receiver_id": "",
+            "source_event_id": "west-1:793800:5:building-00027:52",
+            "source_id": "building-00027",
+            "source_onset": 793800
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:815850:6:building-00026:52",
+            "generation": 0,
+            "onset": 815850,
+            "pitch": 64,
+            "receiver_id": "",
+            "source_event_id": "west-1:815850:6:building-00026:52",
+            "source_id": "building-00026",
+            "source_onset": 815850
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:837900:7:building-00001:52",
+            "generation": 0,
+            "onset": 837900,
+            "pitch": 64,
+            "receiver_id": "",
+            "source_event_id": "west-1:837900:7:building-00001:52",
+            "source_id": "building-00001",
+            "source_onset": 837900
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:882000:8:building-00003:48",
+            "generation": 0,
+            "onset": 882000,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:882000:8:building-00003:48",
+            "source_id": "building-00003",
+            "source_onset": 882000
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:904050:9:building-00002:48",
+            "generation": 0,
+            "onset": 904050,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:904050:9:building-00002:48",
+            "source_id": "building-00002",
+            "source_onset": 904050
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:926100:10:building-00005:48",
+            "generation": 0,
+            "onset": 926100,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:926100:10:building-00005:48",
+            "source_id": "building-00005",
+            "source_onset": 926100
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:970200:11:building-00004:48",
+            "generation": 0,
+            "onset": 970200,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:970200:11:building-00004:48",
+            "source_id": "building-00004",
+            "source_onset": 970200
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:992250:12:building-00007:48",
+            "generation": 0,
+            "onset": 992250,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:992250:12:building-00007:48",
+            "source_id": "building-00007",
+            "source_onset": 992250
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:1014300:13:building-00006:48",
+            "generation": 0,
+            "onset": 1014300,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:1014300:13:building-00006:48",
+            "source_id": "building-00006",
+            "source_onset": 1014300
+          },
+          {
+            "duration_frames": 5292,
+            "event_id": "west-1:1036350:14:building-00008:48",
+            "generation": 0,
+            "onset": 1036350,
+            "pitch": 60,
+            "receiver_id": "",
+            "source_event_id": "west-1:1036350:14:building-00008:48",
+            "source_id": "building-00008",
+            "source_onset": 1036350
+          }
+        ],
+        "phrase": 2,
+        "response": {
+          "cid": "east-1",
+          "generation": 1,
+          "notes": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            55,
+            55,
+            55,
+            55,
+            55,
+            -1
+          ],
+          "pair_count": 5,
+          "receiver_ids": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "building-00030",
+            "building-00030",
+            "building-00030",
+            "building-00030",
+            "building-00030",
+            ""
+          ],
+          "source": "west-1",
+          "source_ids": [
+            "building-00026",
+            "building-00001",
+            "building-00003",
+            "building-00002",
+            "building-00005",
+            "building-00004",
+            "building-00007",
+            "building-00006",
+            "building-00008",
+            "building-00025",
+            "building-00031",
+            "building-00027"
+          ],
+          "stereo": "(0.156434, 0.987688)"
+        },
+        "status": {
+          "cid": "west-1",
+          "commercial": 2,
+          "courtyards": 2,
+          "deep": 0,
+          "deep_mature": 0,
+          "formed": true,
+          "lowest": 48,
+          "mature": 10,
+          "members": 12,
+          "street_formed": true,
+          "theme_eligible": true
+        },
+        "theme": {
+          "center": {},
+          "cid": "west-1",
+          "civic": true,
+          "expression": "weave",
+          "notes": [
+            52,
+            52,
+            48,
+            48,
+            48,
+            48,
+            48,
+            48,
+            48,
+            60,
+            60,
+            52
+          ],
+          "park": false,
+          "player_expression": true,
+          "source_ids": [
+            "building-00026",
+            "building-00001",
+            "building-00003",
+            "building-00002",
+            "building-00005",
+            "building-00004",
+            "building-00007",
+            "building-00006",
+            "building-00008",
+            "building-00025",
+            "building-00031",
+            "building-00027"
+          ],
+          "stereo": "(0.156434, 0.987688)",
+          "zone_roles": [
+            "home",
+            "market",
+            "center"
+          ]
+        }
+      }
+    },
+    "pair_pcm_max_abs": {
+      "deep_warm": 0.065736869411298,
+      "deep_weave": 0.0925931577501755,
+      "weave_warm": 0.0689718314157537
+    },
+    "retune_cause": {
+      "full_score_pcm_max_abs": 0.0320444349497971,
+      "new_lead": {
+        "cid": "west-1",
+        "end_frame": 721917,
+        "event_id": "west-1:716625:1:building-00006:52",
+        "generation": 0,
+        "onset": 716625,
+        "pitch": 64,
+        "public_site_ids": [
+          "player-civic-00002"
+        ],
+        "public_site_kinds": [
+          "civic"
+        ],
+        "receiver_id": "",
+        "render_end": 716882,
+        "render_start": 716625,
+        "source_event_id": "west-1:716625:1:building-00006:52",
+        "source_id": "building-00006",
+        "source_onset": 716625,
+        "strength": 0.0263974133450655
+      },
+      "new_reply": {},
+      "new_reply_score": 0.6,
+      "old_lead": {
+        "cid": "west-1",
+        "end_frame": 721917,
+        "event_id": "west-1:716625:1:building-00006:48",
+        "generation": 0,
+        "onset": 716625,
+        "pitch": 60,
+        "public_site_ids": [
+          "player-civic-00002"
+        ],
+        "public_site_kinds": [
+          "civic"
+        ],
+        "receiver_id": "",
+        "render_end": 716882,
+        "render_start": 716625,
+        "source_event_id": "west-1:716625:1:building-00006:48",
+        "source_id": "building-00006",
+        "source_onset": 716625,
+        "strength": 0.0263974133450651
+      },
+      "old_reply": {
+        "cid": "east-1",
+        "end_frame": 743967,
+        "event_id": "reply:west-1:716625:1:building-00006:48:building-00030",
+        "generation": 1,
+        "onset": 738675,
+        "pitch": 67,
+        "public_site_ids": [
+          "player-civic-00002"
+        ],
+        "public_site_kinds": [
+          "civic"
+        ],
+        "receiver_id": "building-00030",
+        "render_end": 739699,
+        "render_start": 738675,
+        "source_event_id": "west-1:716625:1:building-00006:48",
+        "source_id": "building-00006",
+        "source_onset": 716625,
+        "strength": 0.024674520424393
+      },
+      "old_reply_score": 0.9,
+      "operation": {
+        "id": "building-00006",
+        "kind": "retune",
+        "midi": 52
+      },
+      "receiver_id": "building-00030",
+      "receiver_midi": 55,
+      "reply_pcm_max_abs": 0.0239265114291818,
+      "request": {
+        "accepted": true,
+        "event_id": 5,
+        "frame": 1058400,
+        "sound_frame": 716625
+      },
+      "scope": "This one legal C-to-E retune changes an actual river pair and its next generation-one reply. It does not assert that every retune changes every reply."
+    },
+    "sample_rate": 22050,
+    "source_frame": 352672
+  },
+  "failures": [],
+  "passed": true
+}

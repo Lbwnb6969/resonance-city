@@ -25,6 +25,8 @@ func capture(rows: Array[Dictionary],start: int,count: int,rate: int,duck: float
 		var merge := not previous.is_empty() and int(previous["render_end"]) == int(row["render_start"])
 		for field in ["target","fade_step","amplitude","stereo_gain","expression","rate","duck_target","duck_step","public_site_ids","public_site_kinds"]:
 			if merge and previous[field] != row[field]: merge = false
+		for field in ["envelope_tail","envelope_attack","envelope_decay"]:
+			if merge and previous.get(field) != row.get(field): merge = false
 		if merge:
 			var distance := int(row["level_frame"])-int(previous["level_frame"])
 			merge = absf(_ramp(float(previous["level_from"]),float(previous["target"]),float(previous["fade_step"]),distance)-float(row["level_from"])) < 0.000000001 \
@@ -54,8 +56,10 @@ func audible(audible_frame: float) -> Array[Dictionary]:
 	for segment in segments:
 		if frame < int(segment["render_start"]) or frame >= int(segment["render_end"]): continue
 		var seconds := float(frame-int(segment["onset"]))/float(segment["rate"])
-		var tail := 0.95 if str(segment["expression"]) == "deep" else 0.65
-		var envelope := minf(1.0,seconds/0.012)*exp(-seconds/(0.35 if str(segment["expression"]) == "deep" else 0.20))*clampf((tail-seconds)/0.03,0.0,1.0)
+		var tail := float(segment.get("envelope_tail",0.95 if str(segment["expression"]) == "deep" else 0.65))
+		var attack := float(segment.get("envelope_attack",0.012))
+		var decay := float(segment.get("envelope_decay",0.35 if str(segment["expression"]) == "deep" else 0.20))
+		var envelope := minf(1.0,seconds/attack)*exp(-seconds/decay)*clampf((tail-seconds)/0.03,0.0,1.0)
 		var distance := frame-int(segment["level_frame"])+1
 		var level := _ramp(float(segment["level_from"]),float(segment["target"]),float(segment["fade_step"]),distance)
 		var duck := _ramp(float(segment["duck_from"]),float(segment["duck_target"]),float(segment["duck_step"]),distance)

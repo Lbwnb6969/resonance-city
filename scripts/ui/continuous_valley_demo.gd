@@ -13,6 +13,9 @@ const TransitPlanning = preload("res://scripts/world/transit_planning.gd")
 const TransitCharter = preload("res://scripts/world/transit_charter_anchor.gd")
 const TransitRework = preload("res://scripts/world/transit_line_rework.gd")
 const TransitReworkPreview = preload("res://scripts/world/transit_rework_preview.gd")
+const FirstComposition = preload("res://scripts/world/first_composition.gd")
+const PlayerExpression = preload("res://scripts/world/player_expression.gd")
+const ExpressionPreview = preload("res://scripts/world/expression_preview.gd")
 const Config = preload("res://scripts/world/world_values.gd")
 const GrowthSprite = preload("res://scripts/visual/audio_growth_mask.gd")
 const Shadows = preload("res://scripts/visual/city_shadow_layer.gd")
@@ -22,6 +25,14 @@ const WaterFlow = preload("res://scripts/visual/valley_water_flow.gd")
 var scenery := ValleyScenery.new()
 var expression := "bright"
 var starter := true
+var first_composition_mode := true
+var first_composition_guide: Button
+var expression_choices: Dictionary = {}
+var expression_choice := ""
+var expression_comparison: Dictionary = {}
+var expression_comparison_key: Array = []
+var expression_confirm: Button
+var expression_summary: Label
 var town_starter := false
 var expanded_town_starter := false
 var terrain_family := "river_valley"
@@ -219,6 +230,10 @@ func _ready() -> void:
 	planning_guide = preload("res://scripts/ui/planning_guide.gd").new()
 	add_child(planning_guide)
 	planning_guide.setup(self)
+	menu.theme = planning_guide.theme
+	first_composition_guide = preload("res://scripts/ui/first_composition_guide.gd").new()
+	add_child(first_composition_guide)
+	first_composition_guide.setup(self)
 	light_player = AudioStreamPlayer.new()
 	light_player.volume_db = -8.0
 	add_child(light_player)
@@ -242,11 +257,14 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 		if example_world == null:
 			if expanded_town_starter: world.build_expanded_town()
 			elif town_starter: world.build_town()
-			elif starter: world.build_rework_starter(expression)
+			elif starter:
+				if first_composition_mode: world.build_first_composition_starter()
+				else: world.build_rework_starter(expression)
 		model = Model.new(world,fixed_gain)
 	else:
 		model = Model.from_state(saved["model"])
 		expression = str(saved["view"]["expression"])
+		first_composition_mode = bool(saved["view"].get("first_composition_mode",false))
 		starter = bool(saved["view"]["starter"])
 		town_starter = bool(saved["view"].get("town_starter",false))
 		expanded_town_starter = bool(model.world.expanded_plan)
@@ -256,6 +274,9 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	shown_world = model.world
 	selected_id = ""
 	context.clear()
+	expression_choice = ""
+	expression_comparison.clear()
+	expression_comparison_key.clear()
 	relocation_mode = false
 	relocation_site_id = ""
 	transit_station_focus_id = ""
@@ -308,8 +329,12 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	last_checkpoint_phrase = model.world.phrase_index
 	selected_landmark_candidate = -1
 	planning_guide.reset_for_city()
+	first_composition_guide.reset_for_city()
 	if not saved.is_empty():
 		_message("%s · %d栋 · %d个社区" % [shown_world.terrain_title(),shown_world.buildings.size(),shown_world.active_community_count()])
+	elif first_composition_mode:
+		planning_guide.hide_tool()
+		_message("河湾序曲 · 24栋年轻房屋，三个社区 · 先听城市，再写你的第一段")
 	elif town_starter:
 		_message("%s · 林荫交响 · 完整河谷起点，可继续生长" % shown_world.terrain_title())
 	elif starter:
@@ -345,6 +370,29 @@ func _make_menu() -> void:
 	menu_info.add_theme_color_override("font_color",Color("435c59"))
 	menu_info.add_theme_font_size_override("font_size",16)
 	box.add_child(menu_info)
+	var expression_box := VBoxContainer.new()
+	expression_box.add_theme_constant_override("separation",6)
+	for choice: Dictionary in PlayerExpression.catalogue():
+		var button := Button.new()
+		button.text = "%s · %s" % [choice["label"],choice["sound"]]
+		button.tooltip_text = str(choice["city"])
+		button.toggle_mode = true
+		button.custom_minimum_size.y = 38
+		button.pressed.connect(_select_player_expression.bind(str(choice["id"])))
+		expression_choices[choice["id"]] = button
+		expression_box.add_child(button)
+	expression_summary = Label.new()
+	expression_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	expression_summary.add_theme_font_size_override("font_size",14)
+	expression_summary.add_theme_color_override("font_color",Color("435c59"))
+	expression_box.add_child(expression_summary)
+	expression_confirm = Button.new()
+	expression_confirm.text = "确认种下 · 下一句生长"
+	expression_confirm.custom_minimum_size.y = 38
+	expression_confirm.pressed.connect(_confirm_player_expression)
+	expression_box.add_child(expression_confirm)
+	box.add_child(expression_box)
+	menu.set_meta("expression_choices",expression_box)
 	transit_edit_choices = VBoxContainer.new()
 	box.add_child(transit_edit_choices)
 	var notes := HFlowContainer.new()
@@ -356,6 +404,7 @@ func _make_menu() -> void:
 		button.mouse_entered.connect(func() -> void: _light_note(choice))
 		notes.add_child(button)
 	box.add_child(notes)
+	menu.set_meta("notes",notes)
 	low_octave = CheckBox.new()
 	low_octave.text = "低八度 · 深流"
 	var expressions := HFlowContainer.new()
@@ -366,6 +415,7 @@ func _make_menu() -> void:
 		button.pressed.connect(_set_expression.bind(item[1]))
 		expressions.add_child(button)
 	box.add_child(expressions)
+	menu.set_meta("legacy_expressions",expressions)
 	var verbs := HFlowContainer.new()
 	for item in [["独听社区","solo"],["静音社区","mute"],["聚焦","focus"],["跨河应答","response"],["规划社区 · P","planning"]]:
 		var button := Button.new()
@@ -450,6 +500,10 @@ func _make_menu() -> void:
 	export_button.clip_text = true
 	export_button.pressed.connect(export_dna)
 	city_tools.add_child(export_button)
+	var first_button := Button.new()
+	first_button.text = "新河湾 · 写第一段 · Shift+R"
+	first_button.pressed.connect(_start_first_composition)
+	city_tools.add_child(first_button)
 	var town_button := Button.new()
 	town_button.text = "林荫交响 · T"
 	town_button.tooltip_text = "切换到完整河谷起点；当前作品先保存，之后仍可继续生长"
@@ -475,6 +529,7 @@ func _make_menu() -> void:
 
 func _cycle_terrain() -> void:
 	_save_before_switch()
+	first_composition_mode = false
 	var families: Array[String] = ValleyTerrain.family_ids()
 	var index := families.find(terrain_family)
 	terrain_family = families[posmod(index+1,families.size())]
@@ -490,6 +545,7 @@ func _save_before_switch() -> void:
 
 func _start_regional_town() -> void:
 	_save_before_switch()
+	first_composition_mode = false
 	starter = true
 	town_starter = true
 	expanded_town_starter = true
@@ -513,6 +569,7 @@ func _home_city() -> void:
 
 func _start_expanded_town() -> void:
 	_save_before_switch()
+	first_composition_mode = false
 	starter = true
 	town_starter = true
 	expanded_town_starter = true
@@ -523,6 +580,7 @@ func _start_expanded_town() -> void:
 
 func _start_town() -> void:
 	_save_before_switch()
+	first_composition_mode = false
 	starter = true
 	town_starter = true
 	expanded_town_starter = false
@@ -556,7 +614,7 @@ func _stop_preview() -> void:
 
 func capture_city() -> Dictionary:
 	return {"model":model.capture_state(),"renderer":clock.renderer.snapshot(),
-		"view":{"expression":expression,"starter":starter,"town_starter":town_starter,"zoom":view_zoom,"pan":pan,
+		"view":{"expression":expression,"first_composition_mode":first_composition_mode,"starter":starter,"town_starter":town_starter,"zoom":view_zoom,"pan":pan,
 			"selected_id":selected_id,"travelers":scenery.snapshot()}}
 
 func save_city(reason: String = "手动保存") -> Dictionary:
@@ -888,11 +946,139 @@ func _gui_input(event: InputEvent) -> void:
 					return
 				selected_id = ""
 				context = {"kind":"seed","position":[p.x,p.y]}
+				if first_composition_mode:
+					context["first_composition"] = true
+					context["community_id"] = str(check.get("community_id",""))
 				menu_info.text = "播种声音 · "+str(check["preview"])+"\n也可选定这片地营造公共空间"
 			_planning_menu()
 			_show_context_menu()
 
+func _start_first_composition() -> void:
+	_save_before_switch()
+	first_composition_mode = true
+	starter = true
+	town_starter = false
+	expanded_town_starter = false
+	terrain_family = "river_valley"
+	expression = "warm"
+	_start_world()
+	clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
+
+func _expression_context() -> bool:
+	return first_composition_mode and context.get("kind","") == "seed"
+
+func _begin_first_sound_choice(cid: String,at: Vector2 = Vector2.INF) -> bool:
+	var choices: Array = FirstComposition.opportunities(shown_world).get("seed_candidates",[])
+	var candidate: Dictionary = {}
+	for possible: Dictionary in choices:
+		if str(possible.get("community_id","")) == cid:
+			candidate = possible
+			break
+	if candidate.is_empty():
+		_message("这片社区的空地已占用 · 点另一处街边继续选声音")
+		return false
+	var raw: Array = candidate["position"]
+	var position := Vector2(float(raw[0]),float(raw[1]))
+	if at != Vector2.INF:
+		var distance := position.distance_squared_to(at)
+		for lot: Dictionary in shown_world.lots:
+			if str(lot.get("community_id","")) != cid: continue
+			var p := Vector2(float(lot["center"][0]),float(lot["center"][1]))
+			if p.distance_squared_to(at) < distance and bool(model.world.placement(p)["allowed"]):
+				position = p
+				distance = p.distance_squared_to(at)
+	planning_guide.hide_tool()
+	selected_id = ""
+	context = {"kind":"seed","position":[position.x,position.y],"community_id":cid,"first_composition":true}
+	planning_guide._focus_planning_position(context["position"])
+	pointer = point(position)
+	_show_context_menu()
+	_message("选择这块地怎样唱 · 按住空格听下一句，确认才种下；可点其他空地换落点")
+	return true
+
+func _select_player_expression(choice: String) -> void:
+	if not _expression_context(): return
+	expression_choice = choice
+	_update_expression_menu()
+	if preview_requested: _request_expression_preview()
+
+func _update_expression_menu() -> void:
+	for choice: String in expression_choices:
+		(expression_choices[choice] as Button).set_pressed_no_signal(choice == expression_choice)
+	expression_confirm.disabled = expression_choice.is_empty()
+	var cid := str(context.get("community_id",""))
+	var name_text := str(shown_world.communities.get(cid,{}).get("name","这片街坊"))
+	menu_info.text = "%s · 在这块地写下一段\n三种声音会改变实际房屋与社区唱法" % name_text
+	if expression_choice.is_empty():
+		expression_summary.text = "亲自选一个方向 · 按住空格试听四秒合奏\n松开回到城市；切换按钮听同一下一句"
+		return
+	var choice := PlayerExpression.definition(expression_choice)
+	expression_summary.text = str(choice["city"])+"\n按住空格试听 · Enter或按钮确认"
+	if not expression_comparison.is_empty() and expression_comparison_key == _expression_preview_identity():
+		var variant: Dictionary = expression_comparison["variants"][expression_choice]
+		if not bool(variant["accepted"]):
+			expression_summary.text = str(variant["reason"])
+			expression_confirm.disabled = true
+		else:
+			var consequence: Dictionary = variant["consequences"]
+			expression_summary.text += "\n下一句：%s · 社区%d栋成熟房屋" % ["商业" if consequence["type"] == "commercial" else "住宅",int(consequence["mature"])]
+			if int(consequence.get("reservation_count",0)) > 0: expression_summary.text += " · 留下1片可再规划空地"
+
+func _expression_preview_identity() -> Array:
+	return [context.get("position",[]),model.next_boundary,model.world.action_serial,hash(model.world.pending_actions),
+		hash(model.sound_events),hash(model.synth.pitch_overrides),model.synth.focused_community,model.synth.listener_community,
+		model.synth.response_enabled,hash(model.synth.muted_communities),model.synth.gain,hash(model.synth.score)].duplicate(true)
+
+func _request_expression_preview() -> void:
+	if expression_choice.is_empty():
+		_message("先亲自选择深流、织机或留地，再按住空格听")
+		return
+	preview_requested = true
+	preview_public = false
+	var key := _expression_preview_identity()
+	if not expression_comparison.is_empty() and expression_comparison_key == key:
+		_play_expression_preview()
+		return
+	if preview_thread != null: return
+	var frozen := model.freeze()
+	if preview_duck_owned:
+		frozen.synth.ducking = preview_saved_ducking
+		frozen.synth.duck_release_at = preview_saved_release
+	preview_started = false
+	preview_thread = Thread.new()
+	preview_thread.start(_build_expression_preview.bind(frozen,context["position"].duplicate(),clock.renderer.state.duplicate(true),clock.renderer.transport.rendered_frames,key))
+	_message("取得同一下一句 · 三种真实声音正在准备")
+
+func _build_expression_preview(source: ContinuousAudioModel,position: Array,state: Dictionary,at: int,key: Array) -> Dictionary:
+	var result := ExpressionPreview.build(source,position,state,at)
+	result["request_key"] = key
+	return result
+
+func _play_expression_preview() -> void:
+	var variant: Dictionary = expression_comparison["variants"][expression_choice]
+	if not bool(variant["accepted"]):
+		_cancel_preview_playback()
+		_message(str(variant["reason"]))
+		return
+	_play_preview_pcm(variant["pcm"])
+	_message(str(PlayerExpression.definition(expression_choice)["label"])+"试听 · 松开恢复城市；切换方向听同一下一句")
+
+func _confirm_player_expression() -> void:
+	if not _expression_context() or expression_choice.is_empty() or expression_confirm.disabled: return
+	var operation := PlayerExpression.operation(expression_choice,context["position"])
+	_cancel_preview_playback()
+	var result := model.submit(operation)
+	if not bool(result["accepted"]):
+		_message(str(result["reason"]))
+		return
+	var p: Array = operation["position"]
+	ripple_position = Vector2(float(p[0]),float(p[1]))
+	ripple_seconds = 0.6
+	menu.hide()
+	_message(str(PlayerExpression.definition(expression_choice)["label"])+"已种下 · 下一句长出房屋，成熟后点房屋改一个音")
+
 func _choose_note(choice: int) -> void:
+	if _expression_context(): return
 	midi = choice-12 if low_octave.button_pressed or Input.is_key_pressed(KEY_SHIFT) else choice
 	_light_note(choice)
 	if context.is_empty() or context["kind"] not in ["seed","retune"]: return
@@ -910,12 +1096,18 @@ func _choose_note(choice: int) -> void:
 
 func _show_context_menu() -> void:
 	var retuning: bool = context.get("kind","") == "retune"
+	if _expression_context():
+		_cancel_preview_playback()
+		expression_choice = ""
+		expression_comparison.clear()
+		expression_comparison_key.clear()
+		_update_expression_menu()
 	var details_toggle: Button = menu.get_meta("details_toggle")
 	details_toggle.set_pressed_no_signal(false)
 	(menu.get_meta("details_label") as Label).hide()
 	var public_toggle: Button = menu.get_meta("public_toggle")
-	public_toggle.set_pressed_no_signal(not retuning)
-	(menu.get_meta("public_tools") as Control).visible = not retuning
+	public_toggle.set_pressed_no_signal(not retuning and not _expression_context())
+	(menu.get_meta("public_tools") as Control).visible = not retuning and not _expression_context()
 	var city_toggle: Button = menu.get_meta("city_toggle")
 	city_toggle.set_pressed_no_signal(false)
 	(menu.get_meta("city_tools") as Control).hide()
@@ -1001,6 +1193,9 @@ func _response_button_text() -> String:
 
 func _planning_menu() -> void:
 	_refresh_transit_edit_choices()
+	(menu.get_meta("expression_choices") as Control).visible = _expression_context()
+	(menu.get_meta("notes") as Control).visible = not _expression_context()
+	(menu.get_meta("legacy_expressions") as Control).visible = not _expression_context()
 	var retuning: bool = context.get("kind","") == "retune"
 	var active_public := false
 	for site in model.world.public_sites:
@@ -2005,6 +2200,7 @@ func _input(event: InputEvent) -> void:
 			else: _start_expanded_town()
 		KEY_N:
 			_save_before_switch()
+			first_composition_mode = false
 			town_starter = false
 			expanded_town_starter = false
 			starter = false
@@ -2012,6 +2208,7 @@ func _input(event: InputEvent) -> void:
 			clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
 		KEY_V:
 			_save_before_switch()
+			first_composition_mode = false
 			town_starter = false
 			expanded_town_starter = false
 			starter = true
@@ -2019,7 +2216,11 @@ func _input(event: InputEvent) -> void:
 			_start_world()
 			clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
 		KEY_R:
+			if event.shift_pressed:
+				_start_first_composition()
+				return
 			_save_before_switch()
+			first_composition_mode = false
 			town_starter = false
 			expanded_town_starter = false
 			starter = true
@@ -2028,7 +2229,9 @@ func _input(event: InputEvent) -> void:
 			clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
 		KEY_SPACE: _request_preview()
 		KEY_ENTER:
-			if transit_route_mode:
+			if menu.visible and _expression_context():
+				_confirm_player_expression()
+			elif transit_route_mode:
 				_submit_transit_route()
 			elif planning_guide.opened and planning_guide.stage == "partial_anchor":
 				_submit_partial_comparison()
@@ -2158,6 +2361,9 @@ func _planning_status_hint() -> String:
 	return "当前规划 · %s · %s · P重新规划" % [title, card_text]
 
 func _request_preview() -> void:
+	if menu.visible and _expression_context() and not planning_guide.opened:
+		_request_expression_preview()
+		return
 	if transit_route_mode:
 		if not transit_edit_context.is_empty():
 			_request_transit_comparison()
@@ -2291,7 +2497,7 @@ func _play_preview_pcm(pcm: PackedByteArray) -> void:
 		preview_saved_release = model.synth.duck_release_at
 		preview_duck_owned = true
 	model.synth.ducking = true
-	model.synth.duck_release_at = clock.renderer.transport.rendered_frames+stream.mix_rate*3
+	model.synth.duck_release_at = clock.renderer.transport.rendered_frames+pcm.size()/4
 
 func _hover_placement(p: Vector2) -> Dictionary:
 	var key := [model.world,model.world.phrase_index,model.world.action_serial,p]
@@ -2322,7 +2528,15 @@ func _process(delta: float) -> void:
 	if preview_thread != null and not preview_thread.is_alive():
 		var result: Dictionary = preview_thread.wait_to_finish()
 		preview_thread = null
-		if result.get("contract","") == "P12-TRANSIT-REWORK-COMPARE/v1":
+		if result.get("contract","") == "P12-EXPRESSION-COMPARE/v1":
+			if menu.visible and _expression_context() and result.get("request_key",[]) == _expression_preview_identity():
+				expression_comparison = result
+				expression_comparison_key = result["request_key"].duplicate(true)
+				_update_expression_menu()
+				if preview_requested: _play_expression_preview()
+			elif preview_requested and menu.visible and _expression_context(): _request_expression_preview()
+			else: _cancel_preview_playback()
+		elif result.get("contract","") == "P12-TRANSIT-REWORK-COMPARE/v1":
 			if preview_requested and planning_guide.accept_transit_comparison(result,result["request_key"]): _play_transit_comparison()
 			else: _cancel_preview_playback()
 		elif result.has("variants"):
@@ -2397,6 +2611,7 @@ func _process(delta: float) -> void:
 	notice_seconds = maxf(0.0,notice_seconds-delta)
 	ripple_seconds = maxf(0.0,ripple_seconds-delta)
 	planning_guide.sync()
+	first_composition_guide.sync()
 	caption.position = Vector2(48,size.y-68)
 	caption.visible = not black
 	tooltip.visible = not black and pointer_inside and not menu.visible
@@ -2628,7 +2843,8 @@ func _draw() -> void:
 		draw_arc(point(Coupling.position_of(shown_world.by_id[hover_id])),18*view_zoom,0,TAU,48,Color(0.62,0.72,0.5,0.8),1.5,true)
 	var font := ThemeDB.fallback_font
 	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("4b6561"))
-	draw_string(font,Vector2(47,67),shown_world.terrain_title()+" · 晴岸合奏" if expression == "bright" else shown_world.terrain_title()+" · 深流慢板",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("758c85"))
+	var composition_title := "河湾 · 第一段" if first_composition_mode else (shown_world.terrain_title()+" · 晴岸合奏" if expression == "bright" else shown_world.terrain_title()+" · 深流慢板")
+	draw_string(font,Vector2(47,67),composition_title,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("758c85"))
 	_draw_landmark_bar()
 	if not black:
 		var lead := str(model.audible_theme().get("cid",""))
@@ -2636,7 +2852,8 @@ func _draw() -> void:
 		var decree_slots := " · 政令槽%d" % shown_world.landmark_intervention_slots() if shown_world.landmark_intervention_slots() > 1 else ""
 		var service := overlay_service
 		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d功能区 · %d条线路 · 文化%d/%d栋 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.active_community_count(),shown_world.functional_zones.size(),shown_world.transit_lines.size(),int(service.get("served",0)),shown_world.buildings.size(),model.world.pending_actions.size(),name,decree_slots]
-		draw_string(font,Vector2(size.x-760,size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("607974"))
+		if first_composition_mode: status = "第%d句 · %d栋房屋 · %s主题%s" % [shown_world.phrase_index,shown_world.buildings.size(),name," · 选择待播" if not model.world.pending_actions.is_empty() else ""]
+		draw_string(font,Vector2(size.x-(380 if first_composition_mode else 760),size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("607974"))
 	var duration := float(model.phrase_frames)
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
@@ -2707,6 +2924,7 @@ func _draw_landmarks() -> void:
 			draw_string(ThemeDB.fallback_font,at+Vector2(8,7)*view_zoom,"落成 %.0f%%" % (progress*100.0),HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("8a7356"))
 
 func _draw_landmark_bar() -> void:
+	if first_composition_mode: return
 	var candidates := _landmark_candidates()
 	if candidates.is_empty(): return
 	var font := ThemeDB.fallback_font
@@ -2919,6 +3137,12 @@ func _draw_planning_preview() -> void:
 			draw_colored_polygon(polygon,Color(0.72,0.84,0.72,0.35))
 			polygon.append(polygon[0])
 			draw_polyline(polygon,Color("789978"),1.8,true)
+		if _expression_context() and expression_choice == "warm" and not expression_comparison.is_empty() and expression_comparison_key == _expression_preview_identity():
+			for reservation: Dictionary in expression_comparison["variants"]["warm"]["consequences"].get("reservations",[]):
+				var projected := _project_polygon(reservation["polygon"])
+				draw_colored_polygon(projected,Color(0.34,0.70,0.59,0.20))
+				projected.append(projected[0])
+				draw_polyline(projected,Color("4f927f"),2.0,true)
 	for op in model.world.pending_actions:
 		if str(op.get("kind","")) == "transit_line":
 			var positions: Array = op.get("stop_positions",[])
