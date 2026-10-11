@@ -490,8 +490,8 @@ func _make_menu() -> void:
 	box.add_child(verbs)
 	menu.set_meta("listening_verbs",verbs)
 	var compose_more := Button.new()
-	compose_more.text = "继续规划 · 街坊 / 公共空间 / 声音"
-	compose_more.tooltip_text = "从章程、变化卡和社区开始，选择公共空间，再听下一段声音"
+	compose_more.text = "下一段 · 街坊 / 公共空间 / 声音"
+	compose_more.tooltip_text = "从街坊开始：选章程、变化卡、公共空间，再听下一段声音；也可按 P"
 	compose_more.pressed.connect(_begin_next_composition)
 	box.add_child(compose_more)
 	menu.set_meta("compose_more",compose_more)
@@ -1222,7 +1222,7 @@ func _resume_full_composition() -> void:
 	menu.hide()
 	planning_guide.hide_tool()
 	_home_city()
-	_message("回到全城合奏 · 左上继续规划公共空间与声音，或按 P")
+	_message("回到全城合奏 · 点击左上“下一段”或按 P：从街坊开始，再选公共空间和声音")
 
 func _authored_reservation_context() -> bool:
 	if not first_composition_mode or context.get("kind","") != "reservation": return false
@@ -2688,7 +2688,12 @@ func _planning_status_hint() -> String:
 	# persistent caption so the planning cause remains visible while the city
 	# continues to grow.
 	if model.world.bridge:
-		return "跨河已连接 · 两岸道路与合奏已接通 · P继续规划"
+		return "跨河已连接 · 两岸道路与合奏已接通 · 下一段从街坊开始 · 点击左上入口或按 P"
+	# Author-created voices can already form a cross-bank duet before a bridge
+	# operation exists. Keep the next composition entry discoverable in that
+	# route too; the button itself remains the same single planning action.
+	if first_composition_mode and shown_world != null and AuthoredDuet.roots(shown_world,model.audible_pitches()).size() >= 2:
+		return "两岸作者合奏已接通 · 下一段从街坊开始 · 点击左上入口或按 P"
 	if model.world.development_charters.is_empty():
 		return "P规划：选章程 → 变化卡 → 社区 → 公共空间"
 	var charter: Dictionary = model.world.development_charters[0]

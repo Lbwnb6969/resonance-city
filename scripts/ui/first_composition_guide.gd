@@ -14,7 +14,7 @@ func setup(owner_demo: Control) -> void:
 	demo = owner_demo
 	name = "FirstCompositionGuide"
 	text = "写第一段 · 选择发展章程"
-	tooltip_text = "先决定一片社区怎样生长，再亲自放置公园或文化馆"
+	tooltip_text = "先决定一片社区怎样生长，再亲自安排公园、文化馆或留地"
 	theme = demo.planning_guide.theme
 	add_theme_font_size_override("font_size",16)
 	z_index = 115
@@ -67,8 +67,8 @@ func sync() -> void:
 				tooltip_text = "保留留白，或亲自把它营造成公共空间"
 			else:
 				action = "compose"
-				text = "继续规划 · 街坊 / 公共空间 / 声音"
-				tooltip_text = "重新选发展方向与社区，再选择公共空间和下一段声音"
+				text = "下一段 · 街坊 / 公共空间 / 声音 · P"
+				tooltip_text = "点击这里或按 P：重新选发展方向与社区，再选择公共空间和下一段声音"
 			disabled = false
 			visible = not _blocked()
 			_place_entry()

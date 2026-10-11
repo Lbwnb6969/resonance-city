@@ -575,7 +575,7 @@ func refresh() -> void:
 		detail.text = "先选倾向，再在地图选社区；公园和文化馆由你摆，房屋沿合法空地自动长。"
 		if _first_composition_mode():
 			heading.text = "写第一段 · 先选发展章程" if authored.is_empty() else "再写一段 · 选择生长方向"
-			detail.text = "选一种生长方向，再点一片社区。公园或文化馆由你放置，随后亲自选一个声音。"
+			detail.text = "选一种生长方向，再点一片社区。公园、文化馆或留地由你安排，随后亲自选一个声音。"
 		if not authored.is_empty() and bool(authored["theme_eligible"]):
 			theme_rework_button.text = "改写"+str(authored["community_name"])+" · 你种下的"+str(demo.PlayerExpression.definition(str(authored["expression"]))["label"])
 			detail.text += "\n你的社区已有主题；回到亲自种下的房屋，改一个音。"
