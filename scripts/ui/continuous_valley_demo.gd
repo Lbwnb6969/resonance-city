@@ -16,6 +16,7 @@ const TransitReworkPreview = preload("res://scripts/world/transit_rework_preview
 const FirstComposition = preload("res://scripts/world/first_composition.gd")
 const FirstAuthoredWork = preload("res://scripts/world/first_authored_work.gd")
 const FirstAuthoredRouteResult = preload("res://scripts/ui/first_authored_route_result.gd")
+const FirstExpressionComparisonCard = preload("res://scripts/ui/first_expression_comparison_card.gd")
 const PlayerExpression = preload("res://scripts/world/player_expression.gd")
 const ExpressionPreview = preload("res://scripts/world/expression_preview.gd")
 const Config = preload("res://scripts/world/world_values.gd")
@@ -42,6 +43,7 @@ var expression_comparison: Dictionary = {}
 var expression_comparison_key: Array = []
 var expression_confirm: Button
 var expression_summary: Label
+var expression_comparison_summary: Label
 var town_starter := false
 var expanded_town_starter := false
 var terrain_family := "river_valley"
@@ -403,6 +405,12 @@ func _make_menu() -> void:
 	expression_summary.add_theme_font_size_override("font_size",14)
 	expression_summary.add_theme_color_override("font_color",Color("435c59"))
 	expression_box.add_child(expression_summary)
+	expression_comparison_summary = Label.new()
+	expression_comparison_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	expression_comparison_summary.add_theme_font_size_override("font_size",13)
+	expression_comparison_summary.add_theme_color_override("font_color",Color("51665c"))
+	expression_comparison_summary.hide()
+	expression_box.add_child(expression_comparison_summary)
 	expression_confirm = Button.new()
 	expression_confirm.text = "确认种下 · 下一句生长"
 	expression_confirm.custom_minimum_size.y = 38
@@ -1070,6 +1078,11 @@ func _update_expression_menu() -> void:
 	for choice: String in expression_choices:
 		(expression_choices[choice] as Button).set_pressed_no_signal(choice == expression_choice)
 	expression_confirm.disabled = expression_choice.is_empty()
+	var comparison_ready := not expression_comparison.is_empty() and expression_comparison_key == _expression_preview_identity()
+	if is_instance_valid(expression_comparison_summary):
+		expression_comparison_summary.visible = comparison_ready
+		if comparison_ready:
+			expression_comparison_summary.text = FirstExpressionComparisonCard.text(expression_comparison,expression_choice)
 	var cid := str(context.get("community_id",""))
 	var name_text := str(shown_world.communities.get(cid,{}).get("name","这片街坊"))
 	menu_info.text = "%s · 在这块地写下一段\n三种声音会改变实际房屋与社区唱法" % name_text
