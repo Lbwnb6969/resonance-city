@@ -7,6 +7,7 @@ const PublicPreview = preload("res://scripts/world/public_planning_preview.gd")
 const PublicReuse = preload("res://scripts/world/public_site_reuse.gd")
 const NextAction = preload("res://scripts/world/planning_next_action.gd")
 const TransitPlanning = preload("res://scripts/world/transit_planning.gd")
+const TransitCharter = preload("res://scripts/world/transit_charter_anchor.gd")
 var comparison: Dictionary = {}
 var comparison_key: Array = []
 var comparison_community_id := ""
@@ -15,6 +16,7 @@ var demo: Control
 var stage := "charter"
 var plan_id := ""
 var card_id := ""
+var committed_charter_id := ""
 var scope: Array = []
 ## A transit station can hand its real catchment into the normal planning flow.
 ## Keep this seed separate from the editable scope so choosing a charter/card
@@ -32,6 +34,7 @@ var cards: HBoxContainer
 var card_choices: HBoxContainer
 var drawn_card_ids: Array[String] = []
 var confirm: Button
+var transit_anchor_button: Button
 var candidate: Dictionary = {}
 ## A player-drawn conversion is a fixed target, independent of the pointer.
 var partial_site: Dictionary = {}
@@ -171,6 +174,10 @@ func setup(owner_demo: Control) -> void:
 		button.pressed.connect(choose_anchor.bind(item[1]))
 		actions.add_child(button)
 	box.add_child(actions)
+	transit_anchor_button = Button.new()
+	transit_anchor_button.text = "公交 · 连接社区"
+	transit_anchor_button.pressed.connect(_choose_transit_anchor)
+	box.add_child(transit_anchor_button)
 	hide()
 
 ## Read-only entry point for the route UI.  The main Demo owns pointer input
@@ -191,6 +198,7 @@ func transit_feedback_text(payload: Dictionary, settled := false) -> String:
 	return str(summary.get("text",""))
 
 func reset_for_city() -> void:
+	committed_charter_id = ""
 	scope.clear()
 	scope_seed.clear()
 	scope_source.clear()
@@ -213,6 +221,8 @@ func reset_for_city() -> void:
 	refresh()
 
 func open_tool() -> void:
+	if not demo.transit_charter_context.is_empty(): demo._clear_transit_route()
+	committed_charter_id = ""
 	partial_site.clear()
 	reuse_site.clear()
 	comparison.clear()
@@ -264,9 +274,13 @@ func _scope_source_hint() -> String:
 	var building_count: int = scope_source.get("covered_building_ids",[]).size()
 	if str(scope_source.get("kind","")) == "community_combo":
 		return "沿上一句真实组合预选范围 · %d个社区\n点击社区可替换，Shift点击继续多选" % community_count
+	if str(scope_source.get("kind","")) == "transit_charter":
+		return "沿公交章程预选范围 · %d个社区\n点击社区可替换，Shift点击继续多选" % community_count
 	return "公交站已预选实际覆盖范围 · %d个社区、%d栋已覆盖房屋\n点击社区可替换，Shift点击继续多选" % [community_count,building_count]
 
 func hide_tool() -> void:
+	if stage == "transit_anchor": demo._clear_transit_route()
+	committed_charter_id = ""
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
 	comparison_key.clear()
@@ -281,6 +295,7 @@ func hide_tool() -> void:
 ## Keep every component, courtyard and source revision exactly as authored.
 ## The demo owns submission; this panel only chooses and compares branches.
 func begin_partial_comparison(site: Dictionary,selected_kind: String) -> void:
+	committed_charter_id = ""
 	reuse_site.clear()
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
@@ -309,6 +324,7 @@ func begin_partial_comparison(site: Dictionary,selected_kind: String) -> void:
 	demo.queue_redraw()
 
 func begin_public_reuse(site: Dictionary) -> void:
+	committed_charter_id = ""
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
 	comparison_key.clear()
@@ -338,8 +354,33 @@ func public_reuse_is_current() -> bool:
 	return bool(current.get("allowed",false)) and str(current.get("source_revision","")) == str(reuse_site.get("source_revision",""))
 
 func _confirm_stage() -> void:
-	if stage == "reuse_anchor": demo._submit_public_reuse()
+	if stage == "transit_anchor": demo._submit_transit_route()
+	elif stage == "reuse_anchor": demo._submit_public_reuse()
 	else: commit_scope()
+
+func _choose_transit_anchor() -> void:
+	if stage == "transit_anchor":
+		demo._clear_transit_route()
+		stage = "anchor"
+		refresh()
+		demo.queue_redraw()
+		return
+	if stage != "anchor" or committed_charter_id.is_empty(): return
+	var source := TransitCharter.source(demo.model.world,committed_charter_id)
+	if not bool(source.get("accepted",false)):
+		demo._message(str(source.get("reason","章程已经变化，请重新选择社区")))
+		return
+	comparison.clear()
+	comparison_key.clear()
+	_clear_comparison_community()
+	candidate.clear()
+	preview.clear()
+	if demo.preview_requested: demo._cancel_preview_playback()
+	demo._begin_charter_transit({"charter_id":committed_charter_id,"plan_id":plan_id,"card_id":card_id,
+		"scope_community_ids":source["scope_community_ids"].duplicate()})
+	stage = "transit_anchor"
+	refresh()
+	demo.queue_redraw()
 
 func clear_partial_comparison() -> void:
 	if stage != "partial_anchor" and partial_site.is_empty(): return
@@ -393,20 +434,27 @@ func refresh() -> void:
 	var has_theme_house: bool = audible_theme.get("source_ids",[]).any(func(raw_id: Variant) -> bool: return demo.shown_world.by_id.has(str(raw_id)))
 	theme_rework_button.visible = stage == "charter" and has_theme_house
 	actions.visible = stage != "charter"
-	confirm.visible = stage in ["scope","reuse_anchor"]
-	confirm.text = "确认原位改用" if stage == "reuse_anchor" else "确认社区范围 → 摆放锚点"
+	confirm.visible = stage in ["scope","reuse_anchor","transit_anchor"]
+	confirm.text = "确认线路 · 下一句" if stage == "transit_anchor" else "确认原位改用" if stage == "reuse_anchor" else "确认社区范围 → 摆放锚点"
+	transit_anchor_button.visible = stage in ["anchor","transit_anchor"]
+	transit_anchor_button.disabled = committed_charter_id.is_empty()
+	transit_anchor_button.text = "返回公园 / 文化馆选择" if stage == "transit_anchor" else "公交 · 连接社区"
 	next_action_row.visible = opened and stage == "feedback" and next_action.get("state","") == "ready"
 	var partial_feedback := next_action_row.visible and (bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false)))
 	var combo_ids := _combo_community_ids()
-	next_combo_button.visible = next_action_row.visible and combo_ids.size() > 1
+	var transit_feedback := next_action_row.visible and bool(next_action.get("transit_anchor",false))
+	next_combo_button.visible = next_action_row.visible and (combo_ids.size() > 1 or transit_feedback and not combo_ids.is_empty())
 	if next_combo_button.visible:
 		next_combo_button.text = "沿%d社区组合继续规划" % combo_ids.size()
+		if transit_feedback: next_combo_button.text = "沿%d个章程社区继续规划" % combo_ids.size()
 	next_action_button.text = "定位落成公建 · 继续规划" if partial_feedback else "定位落地房屋 · 继续调音"
+	if transit_feedback: next_action_button.text = "定位线路站点 · 继续经营"
 	next_action_button.tooltip_text = "打开真实落成公共设施的规划入口" if partial_feedback else "选中刚落地的房屋，打开已有聚焦与调音入口"
 	next_partial_row.visible = partial_feedback
 	next_reservation_button.visible = partial_feedback and not next_action.get("remaining_reservation_ids",[]).is_empty()
 	next_served_button.visible = partial_feedback and not next_action.get("served_building_ids",[]).is_empty()
 	confirm.disabled = not public_reuse_is_current() if stage == "reuse_anchor" else scope.is_empty()
+	if stage == "transit_anchor": confirm.disabled = not bool(demo._transit_route_preview().get("accepted",false))
 	for i in range(1,actions.get_child_count()):
 		var button: Button = actions.get_child(i)
 		button.visible = stage in ["anchor","partial_anchor","reuse_anchor"]
@@ -446,10 +494,14 @@ func refresh() -> void:
 	elif stage == "reuse_anchor":
 		heading.text = "原位改用 · "+str({"park":"公园","civic":"文化馆","none":"保留当前用途"}[anchor_kind])
 		_update_reuse_detail()
+	elif stage == "transit_anchor":
+		heading.text = str(Charter.PLANS[plan_id]["title"])+" · 公交连接社区"
+		_update_transit_detail()
 	else:
 		heading.text = str(Charter.PLANS[plan_id]["title"])+" · "+{"park":"摆放公园","civic":"摆放文化馆","none":"暂不建设"}[anchor_kind]
 		detail.text = "移动到所选社区的空置地块或公共候选地。\n按住空格比较不建、公园、文化馆；选择一种后点击地图确认。"
 		detail.text += "\n不建会保留章程与正常成长，不自动留下永久空地。"
+		detail.text += "\n也可选择公交锚点，沿真实道路连接这些社区。"
 	preview_key.clear()
 	reset_size()
 	position = Vector2(maxf(16.0,(demo.size.x-size.x)*0.5),76)
@@ -471,6 +523,7 @@ func _rebuild_card_choices() -> void:
 
 func map_click(p: Vector2,multiple: bool) -> bool:
 	if not opened: return false
+	if stage == "transit_anchor": return true
 	if stage == "reuse_anchor":
 		if Planning.point_in_footprint(reuse_site,p): demo._submit_public_reuse()
 		return true
@@ -598,6 +651,18 @@ func queue_public_reuse_action(site: Dictionary,result: Dictionary) -> void:
 	next_action["expected_boundary_frame"] = int(result.get("frame",demo.model.next_boundary))
 	_close_after_commit()
 
+func queue_transit_anchor_action(preview: Dictionary,result: Dictionary,context: Dictionary) -> void:
+	var anchor: Dictionary = preview.get("charter_anchor",{})
+	next_action = {"contract":NextAction.CONTRACT,"state":"queued","transit_anchor":true,"choice":"transit_line",
+		"charter_id":str(context["charter_id"]),"plan_id":str(context.get("plan_id","")),"card_id":str(context.get("card_id","")),
+		"scope":anchor.get("scope_community_ids",context.get("scope_community_ids",[])).duplicate(),
+		"covered_scope_community_ids":anchor.get("covered_scope_community_ids",[]).duplicate(),
+		"uncovered_scope_community_ids":anchor.get("uncovered_scope_community_ids",[]).duplicate(),
+		"event_id":int(result["event_id"]),"expected_boundary_frame":int(result["frame"]),
+		"queued_world_version":Charter.version(demo.model.world),"building_id":""}
+	_close_after_commit()
+	committed_charter_id = ""
+
 func _close_after_commit() -> void:
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
@@ -613,6 +678,10 @@ func _close_after_commit() -> void:
 func _next_action_event_matches(event: Dictionary) -> bool:
 	if next_action.get("state","") != "queued": return false
 	var event_kind := str(event.get("kind",""))
+	if bool(next_action.get("transit_anchor",false)):
+		return event_kind == "transit_line" and str(event.get("charter_id","")) == str(next_action.get("charter_id","")) \
+			and int(event.get("event_id",-2)) == int(next_action.get("event_id",-1)) \
+			and int(event.get("frame",-1)) == int(next_action.get("expected_boundary_frame",-2))
 	if bool(next_action.get("reuse",false)):
 		return event_kind == str(next_action.get("choice","")) and bool(event.get("reuse",false)) \
 			and str(event.get("id","")) == str(next_action.get("public_id","")) \
@@ -653,6 +722,21 @@ func _next_action_event_matches(event: Dictionary) -> bool:
 
 func _expire_next_action_if_stale() -> void:
 	if next_action.get("state","") != "queued" or demo.shown_world == null: return
+	if bool(next_action.get("transit_anchor",false)):
+		# Independent authoring changes action_serial without cancelling a line.
+		# Rendering can also settle it before the device reaches its boundary.
+		for pending in demo.model.world.pending_actions:
+			if str(pending.get("kind","")) == "transit_line" and str(pending.get("charter_id","")) == str(next_action["charter_id"]) and int(pending.get("event_id",-2)) == int(next_action["event_id"]) and int(pending.get("frame",-1)) == int(next_action["expected_boundary_frame"]): return
+		for event in demo.model.world.events:
+			if _next_action_event_matches(event): return
+			if str(event.get("kind","")) == "planning_rejected" and str(event.get("operation_kind","")) == "transit_line" and int(event.get("event_id",-2)) == int(next_action["event_id"]) and int(event.get("frame",-1)) == int(next_action["expected_boundary_frame"]): return
+		next_action["state"] = "expired"
+		next_action["reason"] = "这条待播线路已被撤回或替换，请重新选择公交锚点"
+		stage = "feedback"
+		opened = true
+		visible = not demo.black
+		refresh()
+		return
 	var queued: Array = next_action.get("queued_world_version",[])
 	var current := Charter.version(demo.model.world)
 	# action_serial changes for every accepted operation.  A later operation
@@ -677,6 +761,9 @@ func _expire_next_action_if_stale() -> void:
 		refresh()
 
 func _activate_next_action(event: Dictionary) -> void:
+	if bool(next_action.get("transit_anchor",false)):
+		_activate_transit_next_action(event)
+		return
 	if bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false)):
 		_activate_partial_next_action(event)
 		return
@@ -709,6 +796,29 @@ func _activate_next_action(event: Dictionary) -> void:
 	visible = not demo.black
 	refresh()
 	demo._message("规划结果已经落地 · 下一次行动由你选择")
+
+func _activate_transit_next_action(event: Dictionary) -> void:
+	var line_id := str(event.get("id",event.get("line_id","")))
+	for line in demo.shown_world.transit_lines:
+		if str(line.get("id","")) != line_id: continue
+		var stops: Array[String] = []
+		for raw_id in line.get("stops",[]):
+			var id := str(raw_id)
+			if not demo.shown_world.transit_stop_record(id).is_empty(): stops.append(id)
+		if stops.is_empty(): return
+		next_action["state"] = "ready"
+		next_action["line_id"] = line_id
+		next_action["line_name"] = str(line.get("name","公交线路"))
+		next_action["stop_ids"] = stops
+		next_action["covered_building_ids"] = event.get("covered_building_ids",[]).duplicate()
+		var anchor: Dictionary = TransitCharter.preview(demo.shown_world,event,str(next_action["charter_id"]))
+		for key: String in ["scope_community_ids","covered_scope_community_ids","uncovered_scope_community_ids","scope_covered_building_ids"]:
+			if anchor.has(key): next_action[key] = anchor[key].duplicate()
+		stage = "feedback"
+		opened = true
+		refresh()
+		demo._message("公交锚点已经落定 · 定位真实站点，或沿章程范围继续规划")
+		return
 
 func _activate_partial_next_action(event: Dictionary) -> void:
 	var facility_id := str(event.get("id",""))
@@ -761,6 +871,10 @@ func _next_action_detail() -> String:
 	var community_name: String = str(next_action.get("community_id",""))
 	if demo != null and demo.shown_world != null:
 		community_name = str(demo.shown_world.communities.get(str(next_action.get("community_id","")),{}).get("name",community_name))
+	if bool(next_action.get("transit_anchor",false)):
+		var covered := "、".join(demo._transit_community_names(next_action.get("covered_scope_community_ids",[])))
+		var missed := "、".join(demo._transit_community_names(next_action.get("uncovered_scope_community_ids",[])))
+		return "%s · 已沿章程落定\n实际覆盖 · %s · %d栋房屋\n%s\n实际客流达到脉冲条件才带来声音；可定位站点继续组合，或沿章程社区安排下一步。" % [next_action.get("line_name","公交线路"),covered if not covered.is_empty() else "暂无",next_action.get("scope_covered_building_ids",[]).size(),"尚未覆盖 · "+missed if not missed.is_empty() else "所选社区已全部接入"]
 	if bool(next_action.get("reuse",false)):
 		var lines: Array[String] = ["%s · %s · 已原位改用" % [choice,community_name],"原占地、内院与设施身份保留；可再次比较用途。"]
 		if str(next_action.get("choice","")) == "civic": lines.append("当前实际服务%d栋房屋；可定位其中一栋继续调音。" % next_action.get("served_building_ids",[]).size())
@@ -795,7 +909,7 @@ func _next_action_detail() -> String:
 	return "\n".join(lines)
 
 func _combo_community_ids() -> Array[String]:
-	var raw: Variant = next_action.get("community_combo",{})
+	var raw: Variant = {"community_ids":next_action.get("scope_community_ids",next_action.get("scope",[]))} if bool(next_action.get("transit_anchor",false)) else next_action.get("community_combo",{})
 	if not raw is Dictionary: return []
 	var result: Array[String] = []
 	for item in raw.get("community_ids",[]):
@@ -809,12 +923,13 @@ func _combo_community_ids() -> Array[String]:
 func _continue_combo_planning() -> void:
 	if next_action.get("state","") != "ready": return
 	var ids := _combo_community_ids()
-	if ids.size() < 2: return
+	var transit := bool(next_action.get("transit_anchor",false))
+	if ids.is_empty() or not transit and ids.size() < 2: return
 	next_action["state"] = "consumed"
 	open_tool()
 	scope_seed = ids.duplicate()
 	scope_seed.sort()
-	scope_source = {"kind":"community_combo","community_ids":scope_seed.duplicate()}
+	scope_source = {"kind":"transit_charter" if transit else "community_combo","community_ids":scope_seed.duplicate()}
 	_apply_scope_seed()
 	demo._message("沿真实社区组合继续规划 · 可删减或加入社区，再选择下一片公共落点")
 	refresh()
@@ -848,6 +963,9 @@ func _take_theme_building() -> void:
 
 func _take_next_action() -> void:
 	if next_action.get("state","") != "ready": return
+	if bool(next_action.get("transit_anchor",false)):
+		_take_transit_anchor_station()
+		return
 	if bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false)):
 		_take_partial_public()
 		return
@@ -866,6 +984,25 @@ func _take_next_action() -> void:
 	next_action_row.visible = false
 	opened = false
 	hide()
+
+func _take_transit_anchor_station() -> void:
+	for line in demo.shown_world.transit_lines:
+		if str(line.get("id","")) != str(next_action.get("line_id","")): continue
+		for raw_id in next_action.get("stop_ids",[]):
+			var id := str(raw_id)
+			if not line.get("stops",[]).has(id): continue
+			var record: Dictionary = demo.shown_world.transit_stop_record(id)
+			if record.is_empty(): continue
+			_focus_planning_position(record["position"])
+			demo.selected_id = ""
+			demo.transit_station_focus_id = id
+			demo.context = {"kind":"transit_station","id":id}
+			demo.menu_info.text = demo._transit_station_context_text({"id":id,"record":record,"line_ids":demo._transit_line_ids_at_stop(id),"line_names":demo._transit_line_names(demo._transit_line_ids_at_stop(id))})
+			demo._show_context_menu()
+			_consume_partial_action()
+			return
+	demo._message("这条线路的站点已经变化，请在地图选择当前站点")
+	hide_tool()
 
 func _focus_planning_position(raw: Array) -> void:
 	if raw.size() != 2: return
@@ -936,9 +1073,25 @@ func commit_scope() -> void:
 	if not bool(result["accepted"]):
 		demo._message(str(result["reason"]))
 		return
+	committed_charter_id = "charter-%05d" % int(result["event_id"])
 	stage = "anchor"
 	demo._message("章程与变化卡已排入下一乐句 · "+str(PlanningCard.CARDS.get(card_id,{}).get("title","变化卡")))
 	refresh()
+
+func _update_transit_detail() -> void:
+	var route: Dictionary = demo._transit_route_preview()
+	var anchor: Dictionary = route.get("charter_anchor",{})
+	var source := TransitCharter.source(demo.model.world,committed_charter_id)
+	var names: Array[String] = demo._transit_community_names(source.get("scope_community_ids",[]))
+	var lines: Array[String] = ["章程范围 · "+"、".join(names),"左键沿道路加站 · Backspace撤回 · 按住空格试听 · Enter确认"]
+	if demo.transit_route_stops.size() < 2: lines.append("已放%d站 · 至少两站，实际覆盖一个所选社区后可确认" % demo.transit_route_stops.size())
+	else:
+		lines.append("实际覆盖 · "+"、".join(demo._transit_community_names(anchor.get("covered_scope_community_ids",[])))+" · %d栋" % anchor.get("scope_covered_building_ids",[]).size())
+		var missed := "、".join(demo._transit_community_names(anchor.get("uncovered_scope_community_ids",[])))
+		lines.append("尚未覆盖 · "+missed if not missed.is_empty() else "所选社区已全部接入")
+		if not bool(route.get("accepted",false)): lines.append(str(route.get("reason","继续沿真实道路加站")))
+	lines.append("线路不占新建筑用地；实际客流达到脉冲条件才带来声音。")
+	detail.text = "\n".join(lines)
 
 func update_candidate(p: Vector2) -> void:
 	if stage == "partial_anchor":
@@ -1190,12 +1343,13 @@ func _show_comparison() -> void:
 
 func sync() -> void:
 	visible = opened and not demo.black
+	if bool(next_action.get("transit_anchor",false)) and next_action.get("state","") == "queued": _expire_next_action_if_stale()
 	if observed_phrase != demo.shown_world.phrase_index:
 		observed_phrase = demo.shown_world.phrase_index
 		_expire_next_action_if_stale()
 		for event in demo.shown_world.events:
 			if int(event.get("frame",-1)) != observed_phrase*int(demo.shown_world.cfg["timing"]["phrase_frames"]): continue
-			if (bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false))) and next_action.get("state","") == "queued" and str(event.get("kind","")) == "planning_rejected" and int(event.get("event_id",-2)) == int(next_action.get("event_id",-1)):
+			if (bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false)) or bool(next_action.get("transit_anchor",false))) and next_action.get("state","") == "queued" and str(event.get("kind","")) == "planning_rejected" and int(event.get("event_id",-2)) == int(next_action.get("event_id",-1)):
 				next_action["state"] = "expired"
 				next_action["reason"] = "这片公共规划没有落定 · "+str(event.get("reason","请重新选择留地"))
 				stage = "feedback"
@@ -1212,7 +1366,7 @@ func sync() -> void:
 				var shape := str(building.get("form","胚"))
 				var pitch: String = demo.note_name(int(building.get("current_midi",48))) if not building.is_empty() else "待定音级"
 				demo._message("%s · %s以%s落地，%s%s；下一步可继续调音或按P规划下一片社区" % [title,kind,shape,"音级"+pitch+" · " if pitch != "待定音级" else "", "沿你的规划生长"])
-				if not (bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false))): break
+				if not (bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false)) or bool(next_action.get("transit_anchor",false))): break
 	if not visible: return
 	if stage == "charter":
 		var audible_theme: Dictionary = demo.model.audible_theme()
@@ -1222,6 +1376,16 @@ func sync() -> void:
 		hide_tool()
 		demo._message("这处公共空间已经变化，请重新点选用途")
 		return
+	if stage == "transit_anchor":
+		if not demo._transit_charter_is_current():
+			hide_tool()
+			demo._message("章程已经变化，公交草稿已关闭；按P选择当前范围")
+			return
+		var operation: Dictionary = demo._transit_route_operation({})
+		var transit_key: Array = demo._transit_preview_identity(operation["stop_positions"])
+		if transit_key != preview_key:
+			refresh()
+			preview_key = transit_key
 	if stage in ["anchor","partial_anchor","reuse_anchor"]:
 		var next_comparison_key := comparison_identity()
 		if not comparison.is_empty() and next_comparison_key != comparison_key:

@@ -1,0 +1,136 @@
+{
+  "checks": {
+    "actual_arrivals_wait_for_boundary_without_immediate_growth_or_rng_change": true,
+    "anchor_and_passenger_audio_keep_existing_gain_and_voice_budget": true,
+    "assigned_real_vehicle_visits_anchor_stations_and_exchanges_passengers": true,
+    "charter_anchor_forecast_matches_formal_pcm_exactly": false,
+    "committed_passengers_strengthen_existing_local_station_growth": true,
+    "forecast_formal_boundary_preserves_independent_charter_card_and_retune": true,
+    "forecast_preserves_live_world_rng_audio_and_phases": true,
+    "formal_boundary_keeps_real_author_line_charter_identity": true,
+    "later_growth_and_audio_keep_original_charter_anchor": true,
+    "new_anchor_coverage_does_not_claim_passenger_music": true,
+    "production_forecast_keeps_pending_charter_and_renders_three_seconds": true,
+    "real_flow_commits_once_at_the_next_phrase": true,
+    "real_passenger_memory_enters_existing_pulse_qualification": true,
+    "same_charter_route_is_accepted_by_formal_submission": true,
+    "source_has_pending_charter_card_and_independent_real_retune": true
+  },
+  "evidence": {
+    "audibility_condition": "Real demand enters existing pulse eligibility; current services and score slots still select the audible arrangement. PCM equality is allowed.",
+    "boundary": 1058400,
+    "charter_id": "charter-00001",
+    "feedback": {
+      "community_count": 2,
+      "community_ids": [
+        "west-1",
+        "west-2"
+      ],
+      "covered_building_count": 15,
+      "functional_role": "pulse_dense",
+      "functional_zone_id": "zone-transit-hub",
+      "growth_action": {
+        "bounded": true,
+        "demand_peak": 7.52,
+        "demand_stop_ids": [
+          "west-1",
+          "west-2",
+          "west-3"
+        ],
+        "kind": "prioritize_near_station",
+        "line_id": "player-line-3",
+        "message": "共享站已记录38次换乘；站点附近合法空地可优先成长，再从此处继续组合线路",
+        "stop_ids": [
+          "west-1",
+          "west-2",
+          "west-3",
+          "west-2"
+        ],
+        "strength": 0.94,
+        "title": "沿站点需求成长"
+      },
+      "growth_demand_peak": 7.52,
+      "growth_hint": "共享站已记录38次换乘；站点附近合法空地可优先成长，再从此处继续组合线路",
+      "line_id": "player-line-3",
+      "line_ids": [
+        "player-line-3",
+        "valley-line"
+      ],
+      "message": "已有真实客流；线路进入既有 pulse_dense 条件",
+      "next_action": {
+        "growth_action": {
+          "bounded": true,
+          "demand_peak": 7.52,
+          "demand_stop_ids": [
+            "west-1",
+            "west-2",
+            "west-3"
+          ],
+          "kind": "prioritize_near_station",
+          "line_id": "player-line-3",
+          "message": "共享站已记录38次换乘；站点附近合法空地可优先成长，再从此处继续组合线路",
+          "stop_ids": [
+            "west-1",
+            "west-2",
+            "west-3",
+            "west-2"
+          ],
+          "strength": 0.94,
+          "title": "沿站点需求成长"
+        },
+        "growth_hint": "共享站已记录38次换乘；站点附近合法空地可优先成长，再从此处继续组合线路",
+        "kind": "continue_composition",
+        "line_id": "player-line-3",
+        "line_ids": [
+          "player-line-3",
+          "valley-line"
+        ],
+        "message": "换乘客流已进入既有 pulse_dense 条件；下一乐句可从共享站继续接线",
+        "qualified_role": "pulse_dense",
+        "state": "pulse_dense_active",
+        "title": "继续组合线路",
+        "transfer_state": "passenger_transfer",
+        "transfer_stop_ids": [
+          "west-1",
+          "west-2",
+          "west-3"
+        ]
+      },
+      "passenger_average": 7.52,
+      "passenger_peak": 7.52,
+      "passenger_qualified": true,
+      "passenger_visits": 54,
+      "pulse_dense_qualified": true,
+      "qualified_role": "pulse_dense",
+      "state": "pulse_dense_active",
+      "stop_ids": [
+        "west-1",
+        "west-2",
+        "west-3",
+        "west-2"
+      ],
+      "threshold": 2.5,
+      "transfer_count": 38,
+      "transfer_qualified": true,
+      "transfer_state": "passenger_transfer",
+      "transfer_stop_ids": [
+        "west-1",
+        "west-2",
+        "west-3"
+      ],
+      "transfer_visits": 23
+    },
+    "growth_after": 2.6,
+    "growth_before": 2.1,
+    "line_id": "player-line-3",
+    "max_voices": 20,
+    "passenger_pcm_max_abs": 0.0512100589007233,
+    "passengers": 292,
+    "preview_formal_pcm_max_abs": 0.733787041840877
+  },
+  "failures": [
+    "charter_anchor_forecast_matches_formal_pcm_exactly"
+  ],
+  "passed": false,
+  "scope": "Same-source production forecast and formal PCM; actual assigned Traveler exchange and real phrase commits. No physical device or human listening claim."
+}

@@ -467,8 +467,9 @@ static func from_state(saved: Dictionary) -> ContinuousAudioModel:
 
 func forecast(operation: Dictionary, state: Dictionary, at: int, duration: int) -> PackedVector2Array:
 	var preview_model := freeze()
-	# Facility comparisons include the queued charter and other structural intent.
-	if str(operation.get("kind","")) not in ["park","civic"]: preview_model.cancel_pending()
+	# Anchors include the queued charter and independent structural intent.
+	# Transit request replaces its own pending route exactly as formal submission.
+	if str(operation.get("kind","")) not in ["park","civic","transit_line"]: preview_model.cancel_pending()
 	preview_model.rendered_until = at
 	var result := preview_model.submit(operation)
 	if not result["accepted"]: return PackedVector2Array()

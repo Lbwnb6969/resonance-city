@@ -15,6 +15,7 @@ const PublicRelocation = preload("res://scripts/world/public_site_relocation.gd"
 const PublicReuse = preload("res://scripts/world/public_site_reuse.gd")
 const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd")
 const TransitPlan = preload("res://scripts/world/transit_planning.gd")
+const TransitCharterAnchor = preload("res://scripts/world/transit_charter_anchor.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -1221,6 +1222,10 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		for stop in transit_plan["stops"]: stop_positions.append(stop["position"].duplicate())
 		operation["stop_positions"] = stop_positions
 		operation["source_topology"] = transit_plan["source_topology"]
+		if not str(operation.get("charter_id","")).is_empty():
+			var association := TransitCharterAnchor.preview(self,transit_plan,str(operation["charter_id"]))
+			if not bool(association.get("accepted",false)): return association
+			TransitCharterAnchor.apply(operation,association)
 		# One authored route intent is replaceable while it is still waiting for
 		# the phrase boundary; already settled lines remain independent records.
 		pending_actions = pending_actions.filter(func(op: Dictionary) -> bool: return str(op.get("kind","")) != "transit_line")
@@ -1462,7 +1467,7 @@ func settle(frame: int) -> void:
 			"transit_line":
 				var result: Dictionary = TransitPlan.commit(self,op,frame)
 				if not bool(result.get("accepted",false)):
-					events.append({"kind":"planning_rejected","operation_kind":"transit_line","event_id":op["event_id"],"reason":result.get("reason","线路未能落定"),"frame":frame})
+					events.append({"kind":"planning_rejected","operation_kind":"transit_line","event_id":op["event_id"],"charter_id":str(op.get("charter_id","")),"reason":result.get("reason","线路未能落定"),"frame":frame})
 			"seed":
 				var p := Vector2(float(op["position"][0]),float(op["position"][1]))
 				if not placement(p)["allowed"]: continue
@@ -2220,6 +2225,7 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 			if str(line.get("id","")) == intent_id: derived = line; break
 		if derived.is_empty(): continue
 		events.append({"kind":"transit_line","id":intent_id,"event_id":intent.get("event_id",0),"frame":intent.get("frame",0),"stop_ids":intent.get("stop_ids",[]).duplicate(true),"community_ids":derived.get("community_ids",[]).duplicate(true),"covered_building_ids":derived.get("covered_building_ids",[]).duplicate(true),"route_mode":derived.get("route_mode",intent.get("route_mode","out_and_back")),"coverage":derived.get("coverage",{}).duplicate(true),"line_ids":derived.get("line_ids",[]).duplicate(true),"transfer_stop_ids":derived.get("transfer_stop_ids",[]).duplicate(true),"route_role":str(derived.get("route_role","社区往返线")),"music_feedback":derived.get("music_feedback",{}).duplicate(true),"source_topology":str(intent.get("source_topology",""))})
+		if not str(derived.get("charter_id","")).is_empty(): TransitCharterAnchor.apply(events.back(),derived)
 	_refresh_transit_music_feedback()
 	for operation in pending_actions:
 		if str(operation.get("kind","")) == "transit_line":
@@ -2395,9 +2401,11 @@ func _refresh_transit_line_contracts() -> void:
 			intent["line_ids"] = line.get("line_ids",[]).duplicate(true)
 			intent["transfer_stop_ids"] = line.get("transfer_stop_ids",[]).duplicate(true)
 			intent["route_role"] = str(line.get("route_role","社区往返线"))
+			if not str(line.get("charter_id","")).is_empty(): TransitCharterAnchor.apply(intent,line)
 			break
 
 func _update_transit_event_contract(event: Dictionary, runtime: Dictionary, summary: Dictionary) -> void:
+	if not str(runtime.get("charter_id","")).is_empty(): TransitCharterAnchor.apply(event,runtime)
 	event["line_ids"] = runtime.get("line_ids",summary.get("line_ids",[])).duplicate(true)
 	event["transfer_stop_ids"] = runtime.get("transfer_stop_ids",summary.get("transfer_stop_ids",[])).duplicate(true)
 	event["coverage"] = summary.duplicate(true)

@@ -1,6 +1,7 @@
 class_name TransitPlanning
 extends RefCounted
 ## Authored stop/line intent, separate from the physical road graph and derived routes.
+const CharterAnchor = preload("res://scripts/world/transit_charter_anchor.gd")
 const STOP_MERGE_DISTANCE := 0.18
 const STOP_ACCESS_DISTANCE := 0.85
 const WALK_RADIUS := 4.5
@@ -242,13 +243,15 @@ static func coverage_summary(world: RefCounted, payload: Dictionary) -> Dictiona
 	var role_titles: Array[String] = []
 	for music_role in all_music_roles:
 		role_titles.append(str(MUSIC_ROLE_TITLES.get(music_role,music_role)))
-	return {"covered_building_ids":covered_ids,"community_ids":community_ids,
+	var summary := {"covered_building_ids":covered_ids,"community_ids":community_ids,
 		"covered_building_count":covered_ids.size(),"community_count":community_ids.size(),
 		"stop_count":stop_records.size(),"stop_ids":stop_records.map(func(stop: Dictionary) -> String: return str(stop.get("id",""))),
 		"leg_count":payload.get("legs",[]).size(),"route_length":length,"route_mode":route_mode,
 		"line_ids":line_ids,"transfer_stop_ids":transfer_stop_ids,"route_role":role,
 		"music_roles":all_music_roles,"music_role_titles":role_titles,"communities":communities,
 		"music_feedback":music_feedback}
+	if not str(payload.get("charter_id","")).is_empty(): CharterAnchor.apply(summary,payload)
+	return summary
 
 static func coverage_text(summary: Dictionary, heading := "线路覆盖") -> String:
 	var lines: Array[String] = ["%s · %d站 · %s · 覆盖%d栋、%d个社区" % [heading,
@@ -392,6 +395,11 @@ static func commit(world: RefCounted, operation: Dictionary, frame: int) -> Dict
 		return {"accepted":false,"reason":"道路在乐句边界前已经变化，请重新规划线路"}
 	var plan := preview(world,operation.get("stop_positions",[]))
 	if not bool(plan.get("accepted",false)): return plan
+	var association: Dictionary = {}
+	if not str(operation.get("charter_id","")).is_empty():
+		association = CharterAnchor.preview(world,plan,str(operation["charter_id"]))
+		if not bool(association.get("accepted",false)): return association
+		CharterAnchor.apply(plan,association)
 	var id := "player-line-%d" % int(operation["event_id"])
 	var chosen_ids: Array[String] = []
 	for stop in plan["stops"]:
@@ -405,6 +413,7 @@ static func commit(world: RefCounted, operation: Dictionary, frame: int) -> Dict
 		"route_mode":plan["route_mode"],"frame":frame,"event_id":operation["event_id"],"source_topology":plan["source_topology"],
 		"line_ids":authored_summary.get("line_ids",[]).duplicate(true),"transfer_stop_ids":authored_summary.get("transfer_stop_ids",[]).duplicate(true),
 		"route_role":str(authored_summary.get("route_role","社区往返线"))})
+	if not association.is_empty(): CharterAnchor.apply(world.authored_transit_lines.back(),association)
 	world.events.append({"kind":"transit_line","id":id,"event_id":operation["event_id"],"frame":frame,"stop_ids":chosen_ids,
 		"community_ids":plan["community_ids"].duplicate(),"covered_building_ids":plan["covered_building_ids"].duplicate(),"route_mode":plan["route_mode"],
 		"source_topology":plan["source_topology"],"line_ids":authored_summary.get("line_ids",[]).duplicate(true),
@@ -413,6 +422,7 @@ static func commit(world: RefCounted, operation: Dictionary, frame: int) -> Dict
 	event_coverage["music_feedback"] = {}
 	world.events.back()["coverage"] = event_coverage
 	world.events.back()["route_role"] = str(authored_summary.get("route_role","社区往返线"))
+	if not association.is_empty(): CharterAnchor.apply(world.events.back(),association)
 	return {"accepted":true,"id":id}
 
 static func derived_lines(world: RefCounted) -> Array[Dictionary]:
@@ -435,5 +445,7 @@ static func derived_lines(world: RefCounted) -> Array[Dictionary]:
 			"intent_stop_ids":intent["stop_ids"].duplicate(),"route_stops":plan["stop_ids"].duplicate(),"route_mode":plan["route_mode"],"legs":plan["legs"],"path":plan["path"],"edges":plan["edges"],
 			"directional_edges":plan["directional_edges"],"community_ids":plan["community_ids"],"covered_building_ids":plan["covered_building_ids"],
 			"coverage":coverage,"route_role":coverage.get("route_role","社区往返线")}
+		if not str(intent.get("charter_id","")).is_empty():
+			CharterAnchor.apply(line_payload,CharterAnchor.settled_coverage(world,plan,intent))
 		result.append(line_contract(world,line_payload))
 	return result
