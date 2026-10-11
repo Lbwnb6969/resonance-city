@@ -46,6 +46,7 @@ var transit_choice := "edit"
 var transit_comparison: Dictionary = {}
 var transit_comparison_key: Array = []
 var candidate: Dictionary = {}
+var composition_public_hint: Dictionary = {}
 ## A player-drawn conversion is a fixed target, independent of the pointer.
 var partial_site: Dictionary = {}
 ## An existing facility stays fixed even when the pointer leaves its parcel.
@@ -228,6 +229,7 @@ func transit_feedback_text(payload: Dictionary, settled := false) -> String:
 	return str(summary.get("text",""))
 
 func reset_for_city() -> void:
+	composition_public_hint.clear()
 	committed_charter_id = ""
 	scope.clear()
 	scope_seed.clear()
@@ -251,6 +253,7 @@ func reset_for_city() -> void:
 	refresh()
 
 func open_tool() -> void:
+	composition_public_hint.clear()
 	if not demo.transit_charter_context.is_empty() or not demo.transit_edit_context.is_empty(): demo._clear_transit_route()
 	committed_charter_id = ""
 	partial_site.clear()
@@ -267,7 +270,12 @@ func open_tool() -> void:
 	scope_seed.clear()
 	scope_source.clear()
 	scope_version.clear()
+	if not ready_sound_community().is_empty(): stage = "feedback"
 	refresh()
+
+func ready_sound_community() -> String:
+	if not _first_composition_mode() or next_action.get("state","") != "ready" or not bool(next_action.get("first_composition_anchor",false)): return ""
+	return str(_first_composition_anchor().get("community_id",""))
 
 func _first_composition_mode() -> bool:
 	return bool(demo.get("first_composition_mode"))
@@ -561,7 +569,7 @@ func refresh() -> void:
 		heading.text = "你想让这片城市怎样生长？"
 		detail.text = "先选倾向，再在地图选社区；公园和文化馆由你摆，房屋沿合法空地自动长。"
 		if _first_composition_mode():
-			heading.text = "写第一段 · 先选发展章程"
+			heading.text = "写第一段 · 先选发展章程" if authored.is_empty() else "再写一段 · 选择生长方向"
 			detail.text = "选一种生长方向，再点一片社区。公园或文化馆由你放置，随后亲自选一个声音。"
 		if not authored.is_empty() and bool(authored["theme_eligible"]):
 			theme_rework_button.text = "改写"+str(authored["community_name"])+" · 你种下的"+str(demo.PlayerExpression.definition(str(authored["expression"]))["label"])
@@ -588,6 +596,13 @@ func refresh() -> void:
 		if not source_hint.is_empty(): detail.text = source_hint+"\n"
 		detail.text += ("点击地图选择一个社区；Shift点击可选多个。\n" if scope.is_empty() else "范围 · "+ "、".join(names)+"\n")
 		detail.text += "%d栋现有房屋 · %d块合法空置地块 · 不改房屋音级，不封锁其他用途" % [summary["houses"],summary["legal_lots"]]
+		if _first_composition_mode() and demo.shown_world.by_id.has(str(demo.composition_source_id)):
+			var source_cid := str(demo.shown_world.by_id[demo.composition_source_id]["community_id"])
+			var bank := int(demo.shown_world.communities[source_cid]["bank"])
+			var opposite: Array[String] = []
+			for cid: String in demo.shown_world.communities:
+				if int(demo.shown_world.communities[cid]["bank"]) != bank and not demo.shown_world.communities[cid]["members"].is_empty(): opposite.append(str(demo.shown_world.communities[cid]["name"]))
+			if not opposite.is_empty(): detail.text += "\n试试对岸的"+"、".join(opposite)+"，给它另一种声音；仍可自由选择街坊。"
 	elif stage == "feedback":
 		heading.text = "你的选择已经落地 · 现在轮到你"
 		detail.text = _next_action_detail()
@@ -606,6 +621,7 @@ func refresh() -> void:
 	else:
 		heading.text = str(Charter.PLANS[plan_id]["title"])+" · "+{"park":"摆放公园","civic":"摆放文化馆","none":"暂不建设"}[anchor_kind]
 		detail.text = "移动到所选社区的空置地块或公共候选地。\n按住空格比较不建、公园、文化馆；选择一种后点击地图确认。"
+		if not composition_public_hint.is_empty(): detail.text += "\n地图标出一处公建落点，给河岸街段留出第二个声音；也可自由安排。"
 		detail.text += "\n不建会保留章程与正常成长，不自动留下永久空地。"
 		if not _first_composition_mode(): detail.text += "\n也可选择公交锚点，沿真实道路连接这些社区。"
 	preview_key.clear()
@@ -1271,6 +1287,9 @@ func commit_scope() -> void:
 		return
 	committed_charter_id = "charter-%05d" % int(result["event_id"])
 	stage = "anchor"
+	composition_public_hint.clear()
+	if _first_composition_mode() and demo.shown_world.by_id.has(str(demo.composition_source_id)):
+		composition_public_hint = demo.AuthoredDuet.public_candidate(demo.model.world,demo.composition_source_id,str(scope[0]))
 	demo._message("章程与变化卡已排入下一乐句 · "+str(PlanningCard.CARDS.get(card_id,{}).get("title","变化卡")))
 	refresh()
 
@@ -1655,6 +1674,11 @@ func draw_map() -> void:
 		demo.draw_colored_polygon(polygon,Color(0.55,0.72,0.57,0.16))
 		polygon.append(polygon[0])
 		demo.draw_polyline(polygon,Color(0.45,0.62,0.45,0.5),1.1,true)
+	if stage == "anchor" and not composition_public_hint.is_empty():
+		var raw: Array = composition_public_hint["position"]
+		var at: Vector2 = demo.point(Vector2(float(raw[0]),float(raw[1])))
+		demo.draw_arc(at,13.0,0.0,TAU,32,Color("92764b"),1.5,true)
+		demo.draw_string(ThemeDB.fallback_font,at+Vector2(18,-14),"公建落点 · 河岸留给声音",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("596d58"))
 	if stage != "anchor" or candidate.is_empty(): return
 	var polygon: PackedVector2Array = demo._project_polygon(candidate["polygon"])
 	var allowed: bool = bool(candidate.get("allowed",false)) and bool(preview.get("access",false)) and Charter.in_scope(demo.model.world,str(candidate["community_id"]),scope)

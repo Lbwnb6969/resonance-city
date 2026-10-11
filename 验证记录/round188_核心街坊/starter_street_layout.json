@@ -696,17 +696,17 @@
 			"sound_site": {
 				"allowed": true,
 				"community_id": "west-2",
-				"frontage": 1,
-				"growth_delay": 2,
+				"frontage": 2,
+				"growth_delay": 1,
 				"lot_id": "",
 				"max_form": "腔",
 				"position": [
-					10.9741706848145,
-					14.8584938049316
+					13.7984962463379,
+					18.7742557525635
 				],
-				"preview": "侧街地块 · 稍慢",
-				"reason": "侧街地块 · 稍慢；任意合法陆地都能播种",
-				"tier": "L2"
+				"preview": "沿街地块 · 可成长",
+				"reason": "沿街地块 · 可成长；任意合法陆地都能播种",
+				"tier": "L1"
 			}
 		},
 		{
@@ -880,17 +880,17 @@
 			"sound_site": {
 				"allowed": true,
 				"community_id": "west-2",
-				"frontage": 1,
-				"growth_delay": 2,
+				"frontage": 2,
+				"growth_delay": 1,
 				"lot_id": "",
 				"max_form": "腔",
 				"position": [
-					10.9741706848145,
-					14.8584938049316
+					13.7984962463379,
+					18.7742557525635
 				],
-				"preview": "侧街地块 · 稍慢",
-				"reason": "侧街地块 · 稍慢；任意合法陆地都能播种",
-				"tier": "L2"
+				"preview": "沿街地块 · 可成长",
+				"reason": "沿街地块 · 可成长；任意合法陆地都能播种",
+				"tier": "L1"
 			}
 		},
 		{

@@ -3,6 +3,8 @@ extends RefCounted
 ## below are current World queries; they neither reserve nor submit anything.
 const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 const AuthoredStreetGrowth = preload("res://scripts/world/authored_street_growth.gd")
+const AuthoredDuet = preload("res://scripts/world/authored_duet.gd")
+const Fabric = preload("res://scripts/world/fabric_relations.gd")
 const COMMUNITY_IDS := ["west-1","west-2","east-2"]
 const HOUSES_PER_COMMUNITY := 8
 
@@ -104,8 +106,10 @@ static func opportunities(world: RefCounted) -> Dictionary:
 		if world.communities.has(cid) and not world.communities[cid].get("members",[]).is_empty(): ids.append(cid)
 	var public_candidates: Array[Dictionary] = []
 	var seed_candidates: Array[Dictionary] = []
+	var authors := AuthoredDuet.roots(world)
 	for cid: String in ids:
 		var public_choice: Dictionary = {}
+		if not authors.is_empty(): public_choice = AuthoredDuet.public_candidate(world,str(authors[-1]["root_id"]),cid)
 		var seed_choice: Dictionary = {}
 		var seed_rank := -INF
 		var anchored: bool = world.public_sites.any(func(site: Dictionary) -> bool:
@@ -140,13 +144,18 @@ static func opportunities(world: RefCounted) -> Dictionary:
 			for id: String in world.communities[cid]["members"]:
 				var raw: Array = world.by_id[id]["position"]
 				frontage.append(Vector2(float(raw[0]),float(raw[1])))
+			var best_frontage := INF
 			for candidate: Dictionary in AuthoredStreetGrowth.candidates(world,frontage,"warm"):
 				var p: Vector2 = candidate["position"]
 				var placement: Dictionary = world.placement(p)
 				if not bool(placement.get("allowed",false)) or str(placement.get("community_id","")) != cid: continue
-				seed_choice = placement.duplicate(true)
-				seed_choice["position"] = [p.x,p.y]
-				break
+				if Fabric.frontage_directions(world,p).is_empty(): continue
+				if not anchored and not public_choice.is_empty() and SpatialPlanning.disc_hits(public_choice["polygon"],p,float(world.cfg["space"]["residential_radius"])): continue
+				var distance := absf(p.x-world.terrain.river_x(p.y))
+				if distance < best_frontage:
+					best_frontage = distance
+					seed_choice = placement.duplicate(true)
+					seed_choice["position"] = [p.x,p.y]
 		if seed_choice.is_empty():
 			# A growing street can consume every parcel without consuming its
 			# continuous surroundings. Query legal land around actual members.

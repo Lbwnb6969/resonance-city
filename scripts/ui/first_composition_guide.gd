@@ -36,6 +36,17 @@ func sync() -> void:
 		hide()
 		return
 	if demo.planning_guide.opened: entered = true
+	if demo.planning_guide.has_method("ready_sound_community"):
+		var ready_cid: String = demo.planning_guide.ready_sound_community()
+		if not ready_cid.is_empty():
+			entered = true
+			action = "sound"
+			text = "给"+str(demo.shown_world.communities[ready_cid]["name"])+"选一个声音"
+			tooltip_text = "公共空间已经落成，继续选择声音；确认才种下"
+			disabled = false
+			visible = not _blocked()
+			_place_entry()
+			return
 	authored_state = demo._first_authored_state()
 	var root_id := str(authored_state.get("root_id",""))
 	if not root_id.is_empty():
@@ -115,6 +126,9 @@ func _has_started_work() -> bool:
 
 func _begin() -> void:
 	if not bool(demo.get("first_composition_mode")) or disabled or _blocked(): return
+	if action == "sound":
+		demo.planning_guide._take_next_action()
+		return
 	if action == "compose":
 		hide()
 		if demo.has_method("_begin_next_composition"): demo._begin_next_composition()

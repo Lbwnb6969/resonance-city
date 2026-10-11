@@ -3,7 +3,7 @@ extends RefCounted
 ## audible World/score/pitches. It never selects a theme or stores progress.
 const MusicRules = preload("res://scripts/world/community_music_rules.gd")
 
-static func state(world: RefCounted,score: Dictionary,pitches: Dictionary = {}) -> Dictionary:
+static func state(world: RefCounted,score: Dictionary,pitches: Dictionary = {},preferred_root: String = "") -> Dictionary:
 	var root: Dictionary = {}
 	var family: Dictionary = {}
 	var family_id := ""
@@ -12,6 +12,7 @@ static func state(world: RefCounted,score: Dictionary,pitches: Dictionary = {}) 
 		if not bool(candidate_family.get("player_expression",false)): continue
 		var candidate: Dictionary = world.by_id.get(str(candidate_family.get("root","")),{})
 		if candidate.is_empty() or str(candidate.get("family_id","")) != str(raw_id): continue
+		if not preferred_root.is_empty() and str(candidate["district_id"]) != preferred_root: continue
 		if not root.is_empty():
 			var current_frame := int(root.get("birth_frame",0))
 			var candidate_frame := int(candidate.get("birth_frame",0))

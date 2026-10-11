@@ -1,0 +1,65 @@
+{
+	"checks": {
+		"black_screen_clears_heard_connections": true,
+		"currently_heard_reply_links_only_to_its_exact_observed_lead": true,
+		"heard_links_expire_after_short_reply_gesture": true,
+		"lead_and_prefetched_reply_do_not_draw_future_links": true,
+		"missing_source_event_identity_draws_nothing": true,
+		"night_brightens_ink_without_claiming_more_audible_strength": true,
+		"preview_clears_marks_links_and_source_history": true,
+		"production_pcm_contains_exact_lead_and_two_beat_reply": true,
+		"reply_without_a_heard_source_does_not_invent_a_connection": true,
+		"stopped_output_keeps_no_performance_marks": true,
+		"thin_ground_arc_preserves_existing_reply_pitch_and_double_ring": true,
+		"visual_projection_leaves_audio_state_world_archive_and_rng_unchanged": true
+	},
+	"details": {
+		"day_alpha": 0.786423288255431,
+		"ground_z": -26,
+		"lead": {
+			"cid": "west-1",
+			"end_frame": 929408,
+			"event_id": "west-1:915075:5:building-00019:48",
+			"generation": 0,
+			"onset": 915075,
+			"pitch": 60,
+			"public_site_ids": [
+				"west-civic"
+			],
+			"public_site_kinds": [
+				"civic"
+			],
+			"receiver_id": "",
+			"render_end": 929408,
+			"render_start": 915075,
+			"source_event_id": "west-1:915075:5:building-00019:48",
+			"source_id": "building-00019",
+			"source_onset": 915075,
+			"strength": 0.0419949638460538
+		},
+		"reply": {
+			"cid": "east-1",
+			"end_frame": 951458,
+			"event_id": "reply:west-1:915075:5:building-00019:48:building-00021",
+			"generation": 1,
+			"onset": 937125,
+			"pitch": 67,
+			"public_site_ids": [
+				"west-civic"
+			],
+			"public_site_kinds": [
+				"civic"
+			],
+			"receiver_id": "building-00021",
+			"render_end": 951458,
+			"render_start": 937125,
+			"source_event_id": "west-1:915075:5:building-00019:48",
+			"source_id": "building-00019",
+			"source_onset": 915075,
+			"strength": 0.0200845479263735
+		}
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Real production-model PCM activity plus read-only screen projection. Dummy only; no device or human listening conclusion."
+}

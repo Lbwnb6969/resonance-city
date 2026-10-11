@@ -14,6 +14,7 @@ const TransitCharter = preload("res://scripts/world/transit_charter_anchor.gd")
 const TransitRework = preload("res://scripts/world/transit_line_rework.gd")
 const TransitReworkPreview = preload("res://scripts/world/transit_rework_preview.gd")
 const FirstComposition = preload("res://scripts/world/first_composition.gd")
+const AuthoredDuet = preload("res://scripts/world/authored_duet.gd")
 const FirstAuthoredWork = preload("res://scripts/world/first_authored_work.gd")
 const FirstAuthoredContinuation = preload("res://scripts/world/first_authored_continuation.gd")
 const FirstAuthoredRouteResult = preload("res://scripts/ui/first_authored_route_result.gd")
@@ -39,6 +40,8 @@ var expression := "bright"
 var starter := true
 var first_composition_mode := true
 var first_composition_guide: Button
+var composition_source_id := ""
+var authored_composition_choices: VBoxContainer
 var expression_choices: Dictionary = {}
 var expression_choice := ""
 var expression_comparison: Dictionary = {}
@@ -287,6 +290,7 @@ func _ready() -> void:
 	mouse_exited.connect(func() -> void: pointer_inside = false)
 
 func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null) -> void:
+	composition_source_id = ""
 	_stop_preview()
 	clock.stop_output()
 	for sprite in sprites.values(): sprite.queue_free()
@@ -489,6 +493,9 @@ func _make_menu() -> void:
 	compose_more.pressed.connect(_begin_next_composition)
 	box.add_child(compose_more)
 	menu.set_meta("compose_more",compose_more)
+	authored_composition_choices = preload("res://scripts/ui/authored_composition_choices.gd").new()
+	authored_composition_choices.setup(self)
+	box.add_child(authored_composition_choices)
 	var reservation_choices := HFlowContainer.new()
 	for item in [["保持留白 · 回到城市","keep"],["这里建公园","park"],["这里建文化馆","civic"]]:
 		var button := Button.new()
@@ -1095,9 +1102,9 @@ func _start_first_composition() -> void:
 func _expression_context() -> bool:
 	return first_composition_mode and context.get("kind","") == "seed"
 
-func _first_authored_state() -> Dictionary:
+func _first_authored_state(preferred_root: String = "") -> Dictionary:
 	if not first_composition_mode: return {}
-	var work := FirstAuthoredWork.state(shown_world,model.audible_score(),model.audible_pitches())
+	var work := FirstAuthoredWork.state(shown_world,model.audible_score(),model.audible_pitches(),preferred_root)
 	if work.is_empty(): return work
 	work["root_heard_retune"] = false
 	if bool(work["retuned"]):
@@ -1109,6 +1116,11 @@ func _first_authored_state() -> Dictionary:
 
 func _begin_first_authored_theme() -> bool:
 	var work := _first_authored_state()
+	return _begin_authored_theme(str(work.get("root_id","")))
+
+func _begin_authored_theme(root_id: String) -> bool:
+	if root_id.is_empty(): return false
+	var work := _first_authored_state(root_id)
 	if work.is_empty() or not bool(work["theme_eligible"]): return false
 	var id := str(work["root_id"])
 	if not shown_world.by_id.has(id): return false
@@ -1177,13 +1189,38 @@ func _begin_first_authored_continuation() -> bool:
 
 func _begin_next_composition() -> void:
 	_cancel_preview_playback()
+	var work := _first_authored_state()
+	composition_source_id = str(work.get("root_id",""))
+	if _authored_retune():
+		var family_id := str(shown_world.by_id[selected_id]["family_id"])
+		composition_source_id = str(shown_world.families[family_id]["root"])
 	model.submit({"kind":"focus","community":""})
+	model.submit({"kind":"solo","community":""})
 	selected_id = ""
 	context.clear()
 	menu.hide()
 	_home_city()
 	planning_guide.open_tool()
 	_message("再写一段 · 选发展方向，再在地图选择街坊；让不同声音一起演奏")
+
+func _listen_authored_duet(root_id: String) -> void:
+	if not shown_world.by_id.has(root_id): return
+	var cid := str(shown_world.by_id[root_id]["community_id"])
+	_cancel_preview_playback()
+	model.submit({"kind":"solo","community":""})
+	model.submit({"kind":"focus","community":cid})
+	planning_guide.hide_tool()
+	menu.hide()
+	_home_city()
+	_message(str(shown_world.communities[cid]["name"])+"先唱 · 协和的对岸房屋延两拍回答；点任一段继续改音")
+
+func _resume_full_composition() -> void:
+	model.submit({"kind":"solo","community":""})
+	model.submit({"kind":"focus","community":""})
+	menu.hide()
+	planning_guide.hide_tool()
+	_home_city()
+	_message("回到全城合奏 · 各段保留自己的音与生长方向")
 
 func _authored_reservation_context() -> bool:
 	if not first_composition_mode or context.get("kind","") != "reservation": return false
@@ -1198,6 +1235,9 @@ func _begin_first_sound_choice(cid: String,_at: Vector2 = Vector2.INF) -> bool:
 		if str(possible.get("community_id","")) == cid:
 			candidate = possible
 			break
+	if shown_world.by_id.has(composition_source_id):
+		var duet_candidates: Array = AuthoredDuet.candidates(shown_world,composition_source_id,cid,1)
+		if not duet_candidates.is_empty(): candidate = duet_candidates[0]
 	if candidate.is_empty():
 		_message("这片社区的空地已占用 · 点另一处街边继续选声音")
 		return false
@@ -1372,11 +1412,20 @@ func _sync_note_buttons() -> void:
 	var labels := ["地基","张力","暖和","开阔","伸展"]
 	var row: Control = menu.get_meta("notes")
 	var authored := _authored_retune()
+	var partners: Array = []
+	if authored:
+		for relation: Dictionary in AuthoredDuet.relations(shown_world,model.audible_pitches()):
+			if str(relation["a"]) == selected_id: partners.append(str(relation["b"]))
+			elif str(relation["b"]) == selected_id: partners.append(str(relation["a"]))
 	for index in range(note_choices.size()):
 		var button: Button = row.get_child(index)
 		var candidate := _note_pitch(int(note_choices[index]))
 		button.text = str(labels[index])+" · "+note_name(candidate)+(str(candidate/12-1) if authored else "")
 		button.tooltip_text = "下一拍换成 "+note_name(candidate)+str(candidate/12-1)
+		if partners.any(func(id: String) -> bool:
+			return float(shown_world.coupling.interval(candidate,int(model.audible_pitches().get(id,shown_world.by_id[id]["current_midi"])))["score"]) >= 0.85):
+			button.text += " · 呼应"
+			button.tooltip_text += " · 与实际对岸作者房屋协和"
 
 func _update_selected_opportunity() -> void:
 	_sync_note_buttons()
@@ -1404,7 +1453,8 @@ func _update_selected_opportunity() -> void:
 		menu_info.text = "%s · 你种下的%s\n这栋 · %s%d · %s\n音型 · %s%s\n选一个音，下一拍改写 · Esc回到全城" % [
 			shown_world.communities[cid]["name"],choice["label"],note_name(pitch),pitch/12-1,str(building["form"]),
 			"  ".join(displayed)," …" if notes.size() > 8 else ""]
-		var authored_work := FirstAuthoredWork.state(shown_world,current_score,model.audible_pitches())
+		var family_id := str(building["family_id"])
+		var authored_work := FirstAuthoredWork.state(shown_world,current_score,model.audible_pitches(),str(shown_world.families[family_id]["root"]))
 		var route_result := FirstAuthoredRouteResult.summary(authored_work,current_score)
 		if not route_result.is_empty() and bool(route_result.get("available",false)):
 			menu_info.text += "\n实际路线结果 · 家族%d栋 · 社区成熟%d栋" % [int(route_result.get("family_houses",0)),int(route_result.get("mature",0))]
@@ -1464,6 +1514,7 @@ func _response_button_text() -> String:
 
 func _planning_menu() -> void:
 	_refresh_transit_edit_choices()
+	authored_composition_choices.sync()
 	var choosing_expression := _expression_context()
 	var authored_reservation := _authored_reservation_context()
 	(menu.get_meta("compose_more") as Control).visible = first_composition_mode and (_authored_retune() or authored_reservation)
