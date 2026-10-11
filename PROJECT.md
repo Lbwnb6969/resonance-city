@@ -39,8 +39,10 @@
 
 默认0062河湾已核对，未穷举种子与长期路线平衡。当前最低充分验证是编辑器解析、`round171_rework_planning_audio.gd` 既有公建试听合同，以及 `round194_reservation_comparison.gd` 留地合同；最新一次无头设备回归不能代表真人窗口或好听结论。下一步继续做三分钟真人首玩反馈：检查第二次规划是否自然、留地是否被理解为“空地喘息”而不是第四种建筑、两种性格是否足够分明；根据反馈调密度、镜头和颜色，不回到后台字段扩张。无反馈仍推进独立可玩工作。
 
+本轮试玩切片调整：首屏新增“这座城市会演奏”三种真实路线图例，首作入口在可听序曲5秒后出现并改为“塑造第一段 · 选择发展方向”；启动Demo带`--isolated-session`，确保展示从24栋新河湾进入；街坊占地色块、共享墙线和街道带轻微增强。`first_expression_identity_contract.gd` 15/15、`round184_expression_compare_result.gd` 32/32、`round194_reservation_comparison.gd` 15项通过；真实窗口首作回归保持0新增underrun，旧探针仅自然Reply观察项偶发失败。
+
 ## Git与协作
 
-分支`codex/p0-sound-proof`；本轮开始前备份`codex/backup-before-round194`指向`723a989`，此前备份`codex/backup-before-round193`与`codex/backup-before-round192`仍保留。第191轮集成版本为`4a2c4ee`，第192轮根据真实录音反馈收窄织机节奏音域，第193轮补真实声音图例与继续规划入口；本轮加入主规划留地试听分支和专门验证，旧调音、失败探索与重跑产物均保留。
+分支`codex/p0-sound-proof`；本轮开始前备份`codex/backup-before-round194`指向`723a989`，本轮工作开始前新增备份提交`3fa94f4`并保留分支`backup-before-core-slice`，此前备份`codex/backup-before-round193`与`codex/backup-before-round192`仍保留。第191轮集成版本为`4a2c4ee`，第192轮根据真实录音反馈收窄织机节奏音域，第193轮补真实声音图例与继续规划入口；本轮加入主规划留地试听分支和专门验证，并完成首屏三性格图例、5秒入口、街坊材质增强和隔离试玩启动，旧调音、失败探索与重跑产物均保留。
 
 重要旧源码、文档、失败诊断及被替代证据保留根`废弃/`相应日期目录；`废弃/.gdignore`阻止旧资产导入。玩家作品未参与验证，保存链未修改。此前详细技术和保存/音频连续性证据保留Git及原验证目录；不重复搬入本文件。

@@ -175,7 +175,9 @@ func _draw_urban() -> void:
 func _draw_occupied_lots() -> void:
 	for lot in city.lots:
 		if lot["occupant"] != "":
-			draw_colored_polygon(_project_polygon(lot["polygon"]),Color(0.68,0.73,0.57,0.2))
+			# Slightly stronger lot tint keeps each family legible as a block while
+			# leaving the river, roads and building silhouettes visually dominant.
+			draw_colored_polygon(_project_polygon(lot["polygon"]),Color(0.68,0.73,0.57,0.24))
 
 func _draw_center_markers() -> void:
 	for center in city.centers:
@@ -252,14 +254,19 @@ func _draw_fabric_overlay() -> void:
 		if not city.by_id.has(relation["a"]) or not city.by_id.has(relation["b"]): continue
 		var a := _point(Coupling.position_of(city.by_id[relation["a"]]),city.terrain.height_at(Coupling.position_of(city.by_id[relation["a"]]))+0.04)
 		var b := _point(Coupling.position_of(city.by_id[relation["b"]]),city.terrain.height_at(Coupling.position_of(city.by_id[relation["b"]]))+0.04)
-		draw_line(a,b,Color(0.74,0.52,0.31,0.72),2.1*1.0,true)
+		# Shared walls carry the block rhythm. Keep the accent under the houses
+		# so closely packed starter homes read as one street frontage.
+		draw_line(a,b,Color(0.74,0.52,0.31,0.78),2.5*1.0,true)
 	for row in cache.get("rows",[]):
 		var members: Array = row["members"]
 		for i in range(members.size()-1):
 			if not city.by_id.has(members[i]) or not city.by_id.has(members[i+1]): continue
 			var a := _point(Coupling.position_of(city.by_id[members[i]]),0.05)
 			var b := _point(Coupling.position_of(city.by_id[members[i+1]]),0.05)
-			draw_line(a,b,Color(0.62,0.67,0.49,0.42),1.4*1.0,true)
+			# A translucent sidewalk ribbon turns the row relation into a visible
+			# street block. It is presentation-only and remains beneath buildings.
+			draw_line(a,b,Color(0.52,0.63,0.48,0.16),6.0*1.0,true)
+			draw_line(a,b,Color(0.62,0.67,0.49,0.52),1.8*1.0,true)
 
 func _sync_urban_parts(terrain_changed: bool) -> void:
 	var began := Time.get_ticks_usec()

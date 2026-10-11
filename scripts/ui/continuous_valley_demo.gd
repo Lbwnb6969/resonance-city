@@ -37,6 +37,7 @@ var street_eaves_layer: Node2D
 var daylight_state: Dictionary = {}
 var daylight_manual_phase := -1.0
 var scenery := ValleyScenery.new()
+var slice_panel_style: StyleBoxFlat
 var expression := "bright"
 var starter := true
 var first_composition_mode := true
@@ -3240,6 +3241,7 @@ func _draw() -> void:
 	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,ui_ink)
 	var composition_title := _composition_title()
 	draw_string(font,Vector2(47,67),composition_title,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color(ui_ink,0.78))
+	_draw_slice_hud(ui_ink)
 	_draw_authored_voice_legend(ui_ink)
 	_draw_landmark_bar()
 	if not black:
@@ -3255,6 +3257,35 @@ func _draw() -> void:
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
 	draw_line(Vector2(48,size.y-32),Vector2(48+(size.x-96)*progress,size.y-32),Color("af9c6a"),3.0)
 	_profile_frame("draw_ms",draw_started)
+
+func _draw_slice_hud(ui_ink: Color) -> void:
+	## A compact, always-visible explanation of the playable slice. It uses the
+	## same three authored identities as the real sound/building systems so the
+	## player can read the visual promise before opening the planning panel.
+	if not first_composition_mode or black: return
+	var panel := Rect2(size.x-386.0,24.0,350.0,86.0)
+	draw_style_box(_slice_panel_style(),panel)
+	draw_string(ThemeDB.fallback_font,panel.position+Vector2(14,21),"这座城市会演奏",HORIZONTAL_ALIGNMENT_LEFT,-1,16,ui_ink)
+	draw_string(ThemeDB.fallback_font,panel.position+Vector2(14,41),"选方向 · 放锚点 · 听它沿街生长",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(ui_ink,0.76))
+	var chips := [["深流","低音 · 慢拍",Color("6f8d92")],["织机","高音 · 短拍",Color("bd8760")],["留地","中音 · 留白",Color("809475")]]
+	var chip_x := panel.position.x+14.0
+	for chip: Array in chips:
+		var label := str(chip[0])
+		var sub := str(chip[1])
+		var width := 98.0
+		draw_circle(Vector2(chip_x+5,panel.position.y+65),4.0,chip[2])
+		draw_string(ThemeDB.fallback_font,Vector2(chip_x+13,panel.position.y+63),label,HORIZONTAL_ALIGNMENT_LEFT,-1,11,chip[2])
+		draw_string(ThemeDB.fallback_font,Vector2(chip_x+13,panel.position.y+77),sub,HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color(ui_ink,0.66))
+		chip_x += width
+
+func _slice_panel_style() -> StyleBoxFlat:
+	if slice_panel_style == null:
+		slice_panel_style = StyleBoxFlat.new()
+		slice_panel_style.bg_color = Color("f4f0df",0.91)
+		slice_panel_style.border_color = Color("b5b89d",0.72)
+		slice_panel_style.set_border_width_all(1)
+		slice_panel_style.set_corner_radius_all(10)
+	return slice_panel_style
 
 func _composition_title() -> String:
 	if not first_composition_mode:

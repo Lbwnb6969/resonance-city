@@ -96,7 +96,11 @@ static func _sound_character(route: Dictionary) -> String:
 	var spacing := float(rhythm.get("spacing_seconds",0.0))
 	if spacing <= 0.0: return str(route.get("description","")).replace(" · ","，")
 	var pitch := int(route.get("register",{}).get("midi",0))
-	var register := "低音" if pitch <= 48 else ("中音" if pitch <= 64 else "高音")
+	# Keep the readable card aligned with the three authored routes.  The
+	# first-expression roots are C2 (deep), C3 (warm), and C4 (weave); using a
+	# generic octave cutoff of 64 mislabeled the weave C4 as "中音" even though
+	# the choice and button promise a high, bright register.
+	var register := "低音" if pitch < 48 else ("中音" if pitch < 60 else "高音")
 	var length := "短促" if float(rhythm.get("tail_seconds",0.0)) < 0.5 else "长响"
 	var movement := "密集织拍" if spacing < 1.0 else ("慢慢铺底" if spacing < 3.0 else "留出空隙")
 	return register+length+"，"+movement

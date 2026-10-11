@@ -13,10 +13,25 @@ const EXPRESSIONS := {"deep":"深流","weave":"织机","warm":"留地"}
 func setup(owner_demo: Control) -> void:
 	demo = owner_demo
 	name = "FirstCompositionGuide"
-	text = "写第一段 · 选择发展章程"
-	tooltip_text = "先决定一片社区怎样生长，再亲自安排公园、文化馆或留地"
+	text = "塑造第一段 · 选择发展方向"
+	tooltip_text = "选一片街坊和一种生长方向，再安排公共空间；城市会沿道路自动长出回应"
 	theme = demo.planning_guide.theme
 	add_theme_font_size_override("font_size",16)
+	custom_minimum_size = Vector2(318,44)
+	var entry_style := StyleBoxFlat.new()
+	entry_style.bg_color = Color("e6dfc7",0.96)
+	entry_style.border_color = Color("b19263")
+	entry_style.set_border_width_all(1)
+	entry_style.set_corner_radius_all(9)
+	entry_style.content_margin_left = 14
+	entry_style.content_margin_right = 14
+	entry_style.content_margin_top = 8
+	entry_style.content_margin_bottom = 8
+	add_theme_stylebox_override("normal",entry_style)
+	var entry_hover := entry_style.duplicate()
+	entry_hover.bg_color = Color("f1e4bf",0.99)
+	entry_hover.border_color = Color("9d7d4d")
+	add_theme_stylebox_override("hover",entry_hover)
 	z_index = 115
 	pressed.connect(_begin)
 	hide()
@@ -102,10 +117,10 @@ func sync() -> void:
 	else:
 		action = "planning"
 		disabled = false
-		text = "写第一段 · 选择发展章程"
-		tooltip_text = "先决定一片社区怎样生长，再安排公园、文化馆或留地"
+		text = "塑造第一段 · 选择发展方向"
+		tooltip_text = "选一片街坊和一种生长方向，再安排公共空间；城市会沿道路自动长出回应"
 		var audible_seconds: float = (demo.clock.renderer.transport.audible_frame-origin_frame)/float(demo.clock.renderer.transport.sample_rate)
-		visible = not _blocked() and audible_seconds >= 10.0
+		visible = not _blocked() and audible_seconds >= 5.0
 	_place_entry()
 
 func _place_entry() -> void:
