@@ -46,5 +46,6 @@ func observe(rows: Array[Dictionary],world: RefCounted,frame: float,rate: float)
 		result.append({"event_id":str(row["event_id"]),"source_event_id":source_event,
 			"source_id":str(row["source_id"]),"receiver_id":str(row["receiver_id"]),
 			"source_onset":int(row["source_onset"]),"onset":int(row["onset"]),
-			"generation":1,"from":from,"to":to,"age":age,"strength":float(row["strength"])})
+			"generation":1,"from":from,"to":to,"age":age,"strength":float(row["strength"]),
+			"authored":bool(source.get("player_expression",false)) and bool(receiver.get("player_expression",false))})
 	return result

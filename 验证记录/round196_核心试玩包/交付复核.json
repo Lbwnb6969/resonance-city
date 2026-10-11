@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "probe_checks": 14,
+  "all_probe_checks_passed": true,
+  "audited_textures": 48,
+  "packed_resource_files": 474,
+  "opening": {
+    "audible_seconds": 5.00119638548753,
+    "communities": 3,
+    "community_names": [
+      "钟庭",
+      "松丘",
+      "石桥"
+    ],
+    "display": "Windows",
+    "driver": "Dummy",
+    "houses": 24,
+    "native_mixer": true,
+    "registered_community_areas": 10
+  },
+  "source_script_fingerprints_match": true,
+  "shipping_zip_integrity": true,
+  "shipping_zip_bytes": 96143635,
+  "shipping_zip_sha256": "db12f4052d63e16db32d12676fd806aae7e2325d0bcc534a7abbb76598a34eea",
+  "launchers": {
+    "new_slice": "D:\\GODOT\\GODOTPRO\\共鸣之城\\交付\\共鸣之城_核心试玩_2026-10-12\\启动Demo.cmd",
+    "continue_saved_city": "D:\\GODOT\\GODOTPRO\\共鸣之城\\交付\\共鸣之城_核心试玩_2026-10-12\\继续城市.cmd"
+  }
+}

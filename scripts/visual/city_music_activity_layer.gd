@@ -3,6 +3,7 @@ extends Node2D
 const Coupling = preload("res://scripts/world/world_coupling.gd")
 const HeardReplyLinks = preload("res://scripts/visual/heard_reply_links.gd")
 const MARK_SECONDS := 0.55
+const AUTHORED_REPLY_ALPHA := 0.78
 var marks: Array[Dictionary] = []
 var trails: Array[Dictionary] = []
 var audible_frame := 0.0
@@ -18,10 +19,14 @@ class ReplyTrailGround extends Node2D:
 			var alpha := float(trail["alpha"])
 			var from_ink: Color = trail["from_ink"]
 			var to_ink: Color = trail["to_ink"]
+			var authored := bool(trail.get("authored",false))
 			for index in range(path.size()-1):
 				var ink := from_ink.lerp(to_ink,float(index)/float(path.size()-2))
 				ink.a = alpha*0.38
-				draw_line(path[index],path[index+1],ink,1.2,true)
+				draw_line(path[index],path[index+1],ink,1.7 if authored else 1.2,true)
+			if authored:
+				draw_arc(path[0],7.0,0.0,TAU,24,Color(from_ink,alpha*0.72),1.4,true)
+				draw_arc(path[-1],9.0,0.0,TAU,24,Color(to_ink,alpha*0.72),1.4,true)
 			# The entire gesture starts only once Reply is heard. A brief dot
 			# crosses the river then dissolves into the receiver's existing rings.
 			var t := clampf(float(trail["age"])/0.42,0.0,1.0)
@@ -42,12 +47,19 @@ func _trail(demo: Control,link: Dictionary) -> Dictionary:
 		var t := float(index)/24.0
 		path.append(from*(1.0-t)*(1.0-t)+control*2.0*(1.0-t)*t+to*t*t)
 	var night := float(demo.daylight_state.get("night_strength",0.0))
-	var alpha := clampf(float(link["strength"])/0.022,0.0,1.0)*0.88*(1.0-float(link["age"])/MARK_SECONDS)
+	var alpha := _reply_alpha(float(link["strength"]),float(link["age"]),bool(link.get("authored",false)))
 	var trail := link.duplicate()
 	trail.merge({"path":path,"alpha":alpha,
 		"from_ink":Color("b18a48").lerp(Color("e6c892"),night*0.70),
 		"to_ink":Color("4c8584").lerp(Color("a1d2cc"),night*0.75)})
 	return trail
+
+static func _reply_alpha(strength: float,age: float,authored: bool) -> float:
+	# Visibility represents a gesture already heard, rather than an extra sound.
+	# Ordinary score events retain their original strength-based presentation.
+	var onset_alpha := clampf(strength/0.022,0.0,1.0)*0.88
+	if authored: onset_alpha = maxf(onset_alpha,AUTHORED_REPLY_ALPHA)
+	return onset_alpha*(1.0-age/MARK_SECONDS)
 
 func sync(demo: Control) -> void:
 	if trail_ground == null:
@@ -67,7 +79,9 @@ func sync(demo: Control) -> void:
 		var rate: float = demo.clock.renderer.transport.sample_rate
 		var viewport := Rect2(Vector2.ZERO,demo.size).grow(32.0)
 		var rows: Array[Dictionary] = demo.model.audible_music_activity(audible_frame)
+		var authored_reply_events: Dictionary = {}
 		for link in heard_reply_links.observe(rows,demo.shown_world,audible_frame,rate):
+			if bool(link.get("authored",false)): authored_reply_events[str(link["event_id"])] = true
 			var trail := _trail(demo,link)
 			if float(trail["alpha"]) >= 0.015 and viewport.intersects(Rect2(trail["path"][0],Vector2.ZERO).expand(trail["path"][-1]).grow(54)):
 				next_trails.append(trail)
@@ -82,6 +96,8 @@ func sync(demo: Control) -> void:
 			if not viewport.has_point(at): continue
 			var strength := clampf(float(row["strength"])/0.022,0.0,1.0)
 			var alpha := strength*0.88*(1.0-age/MARK_SECONDS)
+			if answer and authored_reply_events.has(str(row["event_id"])):
+				alpha = _reply_alpha(float(row["strength"]),age,true)
 			if alpha < 0.015: continue
 			var mark: Dictionary = row.duplicate()
 			mark.merge({"performer_id":performer,"position":at,"alpha":alpha,

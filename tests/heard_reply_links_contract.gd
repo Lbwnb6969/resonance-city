@@ -3,7 +3,7 @@ const World = preload("res://scripts/world/continuous_world.gd")
 const Model = preload("res://scripts/audio/continuous_audio_model.gd")
 const Links = preload("res://scripts/visual/heard_reply_links.gd")
 const Layer = preload("res://scripts/visual/city_music_activity_layer.gd")
-const OUTPUT := "res://验证记录/round191_真实两岸演奏连线/"
+const OUTPUT := "res://验证记录/core_slice_作者应答可视/"
 var checks: Dictionary = {}
 var failures: Array[String] = []
 
@@ -91,6 +91,8 @@ func _run() -> void:
 	var day_alpha: float = layer.trails[0]["alpha"] if not layer.trails.is_empty() else 0.0
 	var day_ink: Color = layer.trails[0]["to_ink"] if not layer.trails.is_empty() else Color.BLACK
 	check(layer.trails.size() == 1 and layer.trail_ground.z_index == -26 and not layer.trail_ground.z_as_relative and layer.marks.any(func(mark: Dictionary) -> bool: return mark["role"] == "reply" and int(mark["pitch"]) == int(heard_reply["pitch"])),"thin_ground_arc_preserves_existing_reply_pitch_and_double_ring")
+	var ordinary_alpha := clampf(float(heard_reply["strength"])/0.022,0.0,1.0)*0.88*(1.0-float(reply_probe-int(heard_reply["onset"]))/22050.0/Layer.MARK_SECONDS)
+	check(is_equal_approx(day_alpha,ordinary_alpha) and not bool(layer.trails[0].get("authored",false)),"ordinary_reply_keeps_original_strength_based_visibility")
 	view.daylight_state["night_strength"] = 1.0
 	layer.sync(view)
 	check(layer.trails.size() == 1 and float(layer.trails[0]["alpha"]) == day_alpha and layer.trails[0]["to_ink"] != day_ink,"night_brightens_ink_without_claiming_more_audible_strength")
@@ -108,7 +110,29 @@ func _run() -> void:
 	layer.sync(view)
 	check(not layer.visible and layer.marks.is_empty() and layer.trails.is_empty(),"stopped_output_keeps_no_performance_marks")
 	check(model.capture_state() == before and city.snapshot() == snapshot,"visual_projection_leaves_audio_state_world_archive_and_rng_unchanged")
-	_finish({"lead":lead,"reply":heard_reply,"day_alpha":day_alpha,"ground_z":layer.trail_ground.z_index})
+	# Reuse exact heard production events on a read-only authored-house fixture;
+	# the new visibility floor must still pass the observed-source gate.
+	var authored_city := city.fork()
+	authored_city.by_id[str(heard_reply["source_id"])]["player_expression"] = true
+	authored_city.by_id[str(heard_reply["receiver_id"])]["player_expression"] = true
+	var authored_snapshot: Dictionary = authored_city.snapshot()
+	view.shown_world = authored_city
+	view.clock.active = true
+	layer.heard_reply_links.clear()
+	view.clock.renderer.transport.audible_frame = reply_probe
+	layer.sync(view)
+	check(layer.trails.is_empty(),"authored_visibility_does_not_invent_an_unheard_source")
+	view.clock.renderer.transport.audible_frame = lead_probe
+	layer.sync(view)
+	view.clock.renderer.transport.audible_frame = int(reply["onset"])-1
+	layer.sync(view)
+	check(layer.trails.is_empty(),"authored_visibility_does_not_draw_prefetched_reply")
+	view.clock.renderer.transport.audible_frame = reply_probe
+	layer.sync(view)
+	var authored_alpha: float = layer.trails[0]["alpha"] if not layer.trails.is_empty() else 0.0
+	check(layer.trails.size() == 1 and bool(layer.trails[0].get("authored",false)) and authored_alpha > 0.70 and layer.marks.any(func(mark: Dictionary) -> bool: return str(mark["event_id"]) == str(heard_reply["event_id"]) and is_equal_approx(float(mark["alpha"]),authored_alpha)),"heard_authored_reply_has_readable_arc_and_matching_receiver_rings")
+	check(authored_city.snapshot() == authored_snapshot and model.capture_state() == before,"authored_visibility_floor_leaves_city_and_audio_unchanged")
+	_finish({"lead":lead,"reply":heard_reply,"day_alpha":day_alpha,"authored_alpha":authored_alpha,"ground_z":layer.trail_ground.z_index})
 
 func _finish(details: Dictionary) -> void:
 	DirAccess.make_dir_recursive_absolute(OUTPUT)

@@ -27,6 +27,7 @@ var scope_source: Dictionary = {}
 var anchor_kind := "park"
 var opened := false
 var heading: Label
+var flow_hint: Label
 var detail: Label
 var theme_rework_button: Button
 var charter_theme_key: Array = []
@@ -114,14 +115,35 @@ func setup(owner_demo: Control) -> void:
 	close.pressed.connect(hide_tool)
 	top.add_child(close)
 	box.add_child(top)
+	flow_hint = Label.new()
+	flow_hint.custom_minimum_size.x = 720
+	flow_hint.add_theme_font_size_override("font_size",13)
+	flow_hint.add_theme_color_override("font_color",Color("6a7d70"))
+	flow_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(flow_hint)
 	cards = HBoxContainer.new()
 	cards.add_theme_constant_override("separation",10)
 	for id: String in ["compact","corridor","bluegreen"]:
 		var spec: Dictionary = Charter.PLANS[id]
 		var button := Button.new()
+		var accent: Color = {"compact":Color("587487"),"corridor":Color("a56d4d"),"bluegreen":Color("638a78")}[id]
 		button.text = "%s\n\n%s\n取舍 · %s\n机会 · %s" % [spec["title"],spec["tendency"],spec["tradeoff"],spec["opportunity"]]
 		button.custom_minimum_size = Vector2(224,132)
 		button.add_theme_font_size_override("font_size",15)
+		button.add_theme_color_override("font_color",accent.darkened(0.12))
+		button.add_theme_color_override("font_hover_color",accent.darkened(0.18))
+		button.add_theme_color_override("font_pressed_color",accent.darkened(0.2))
+		for state: String in ["normal","hover","pressed","focus"]:
+			var card_style := StyleBoxFlat.new()
+			card_style.bg_color = Color("eef0e7") if state == "normal" else accent.lerp(Color.WHITE,0.78 if state == "hover" else 0.7)
+			card_style.border_color = accent
+			card_style.set_border_width_all(2 if state in ["hover","pressed","focus"] else 1)
+			card_style.set_corner_radius_all(8)
+			card_style.content_margin_left = 10
+			card_style.content_margin_right = 10
+			card_style.content_margin_top = 7
+			card_style.content_margin_bottom = 7
+			button.add_theme_stylebox_override(state,card_style)
 		button.pressed.connect(choose_plan.bind(id))
 		cards.add_child(button)
 	box.add_child(cards)
@@ -515,8 +537,29 @@ func choose_anchor(kind: String) -> void:
 	if stage in ["anchor","partial_anchor","reuse_anchor"]: update_candidate(demo.world_at(demo.pointer))
 	if demo.preview_requested and not comparison.is_empty(): demo._request_preview()
 
+func _planning_flow_step() -> int:
+	match stage:
+		"charter": return 0
+		"card": return 1
+		"scope": return 2
+		"anchor", "partial_anchor", "reuse_anchor", "transit_anchor", "transit_edit": return 3
+		"feedback": return 4
+		_: return 0
+
+func _update_flow_hint() -> void:
+	if flow_hint == null: return
+	var labels := ["发展方向","变化卡","社区范围","公共空间","声音"]
+	var current := _planning_flow_step()
+	var trail: Array[String] = []
+	for i in range(labels.size()):
+		var marker := "✓" if i < current else ("▶" if i == current else "○")
+		trail.append("%s%d %s" % [marker,i + 1,labels[i]])
+	flow_hint.text = "流程 %d/5 · %s" % [current + 1," · ".join(trail)]
+	flow_hint.tooltip_text = "这条链路会把你的选择带进下一句城市生长；当前步骤用 ▶ 标出"
+
 func refresh() -> void:
 	if comparison.is_empty(): _clear_comparison_community()
+	_update_flow_hint()
 	cards.visible = stage == "charter"
 	card_choices.visible = stage == "card"
 	var audible_theme: Dictionary = demo.model.audible_theme()

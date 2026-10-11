@@ -110,14 +110,14 @@ func sync() -> void:
 				text = "%s · 你种下的%s在生长" % [community,expression]
 				tooltip_text = "同一家族已有%d栋房屋；社区至少六栋成熟房屋后才能形成主题" % int(authored_state.get("family_houses",1))
 		visible = not _blocked()
-	elif entered or _has_started_work():
+	elif _has_started_work():
 		entered = true
 		hide()
 		return
 	else:
 		action = "planning"
 		disabled = false
-		text = "塑造第一段 · 选择发展方向"
+		text = "继续塑造第一段" if entered else "塑造第一段 · 选择发展方向"
 		tooltip_text = "选一片街坊和一种生长方向，再安排公共空间；城市会沿道路自动长出回应"
 		var audible_seconds: float = (demo.clock.renderer.transport.audible_frame-origin_frame)/float(demo.clock.renderer.transport.sample_rate)
 		visible = not _blocked() and audible_seconds >= 5.0

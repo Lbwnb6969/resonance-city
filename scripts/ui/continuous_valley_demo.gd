@@ -3047,6 +3047,8 @@ func _process(delta: float) -> void:
 			hover_card_status = card_feedback
 			tooltip.text += "\n"+card_feedback
 		tooltip.text += "\n跨河应答 · "+_response_state_label()+"\n点击查看社区音型、当前声部与下一步机会"
+		if first_composition_mode:
+			tooltip.text = "%s · %s\n%s\n点击改音 · Tab独听这个街坊" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),shown_world.communities[b["community_id"]]["name"]]
 	elif not bridge_hover.is_empty():
 		var names: Array = bridge_hover.get("community_names",[])
 		var before := "未连通" if is_inf(float(bridge_hover.get("route_before",INF))) else ("%.1f步" % float(bridge_hover.get("route_before",0.0)))
@@ -3061,6 +3063,7 @@ func _process(delta: float) -> void:
 			tooltip.text = "你留下的空地 · 房屋不会长进来\n点击选择释放、建公园或文化设施；规划面板也可自由留地"
 		elif check["allowed"]:
 			tooltip.text = "%s\n%s\n点击选音；Shift低八度；按住空格试听" % [str(check["preview"]),note_name(midi)]
+			if first_composition_mode: tooltip.text = "可生长的空地 · %s\n点击选择声音 · 按住空格试听" % note_name(midi)
 			var lot: String = check["lot_id"]
 			hover_seconds = hover_seconds+delta if lot == last_hover_lot else 0.0
 			if lot != last_hover_lot: last_hover_lot = lot
@@ -3069,7 +3072,8 @@ func _process(delta: float) -> void:
 			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路覆盖%d栋\n公园为主题留白" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
 			if site["active"] and site["kind"] == "civic":
 				tooltip.text = "%s · 文化设施%d级\n覆盖%d栋 · 已服务%d/%d栋\n%s" % [site["name"],int(site.get("service_level",1)),site.get("covered",[]).size(),site.get("served",[]).size(),int(site.get("service_capacity",18)),"点击后选公共设施，下一句扩容" if int(site.get("service_level",1)) < 3 else "三级扩容完成 · 文化主题继续演奏"]
-		else: tooltip.text = str(check["reason"])+"\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形 · E扩展城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续"
+		else:
+			tooltip.text = str(check["reason"])+("\n滚轮缩放 · 中键移动" if first_composition_mode else "\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形 · E扩展城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续")
 	var status_line := notice if notice_seconds > 0.0 else _planning_status_hint()
 	if not hover_card_status.is_empty():
 		status_line = hover_card_status if status_line.is_empty() else status_line+" · "+hover_card_status
@@ -3241,7 +3245,7 @@ func _draw() -> void:
 	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,ui_ink)
 	var composition_title := _composition_title()
 	draw_string(font,Vector2(47,67),composition_title,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color(ui_ink,0.78))
-	_draw_slice_hud(ui_ink)
+	_draw_slice_hud(Color("435c59"))
 	_draw_authored_voice_legend(ui_ink)
 	_draw_landmark_bar()
 	if not black:
