@@ -59,6 +59,10 @@ var transit_stop_cache: Dictionary = {}
 var transit_demand: Dictionary = {}
 # Stop observations commit after growth; the next phrase consumes this pressure.
 var transit_flow_pending: Array[Dictionary] = []
+# The dense pulse threshold is deliberately shared by the transport summary and
+# the existing functional-zone role.  It is a condition readout, never a new
+# sound source or a guarantee that a pulse voice will win the score budget.
+const TRANSIT_PULSE_DENSE_THRESHOLD := 2.5
 # Ephemeral task version; snapshots restore without pending worker tasks.
 var planning_revision := 0
 # Service pressure is derived from public coverage and cached within a planning pass.
@@ -313,6 +317,102 @@ func _commit_transit_flow() -> void:
 func transit_demand_score(stop_id: String) -> float:
 	return clampf(float(transit_demand.get(str(stop_id),{}).get("score",0.0)),0.0,8.0)
 
+func transit_music_feedback(line_id: String) -> Dictionary:
+	# Passenger values intentionally come from committed stop memories only.
+	# Coverage and service pressure can make a transit functional zone visible,
+	# but they must not be reported as passenger qualification before a vehicle
+	# has actually recorded arrivals.  The returned role is an existing
+	# functional-zone role; this method never allocates a voice or changes score.
+	var line: Dictionary = {}
+	for candidate in transit_lines:
+		if str(candidate.get("id","")) == str(line_id):
+			line = candidate
+			break
+	if line.is_empty():
+		return {"line_id":str(line_id),"state":"unavailable","functional_role":"","qualified_role":"",
+			"passenger_qualified":false,"pulse_dense_qualified":false,
+			"passenger_peak":0.0,"passenger_average":0.0,"passenger_visits":0,
+			"threshold":TRANSIT_PULSE_DENSE_THRESHOLD}
+	var stop_ids: Array = line.get("stops",[])
+	var total := 0.0
+	var peak := 0.0
+	var visits := 0
+	for raw_stop_id in stop_ids:
+		var record: Dictionary = transit_demand.get(str(raw_stop_id),{})
+		var score := clampf(float(record.get("score",0.0)),0.0,8.0)
+		total += score
+		peak = maxf(peak,score)
+		visits += int(record.get("visits",0))
+	var communities: Array = line.get("community_ids",[]).duplicate(true)
+	var zone: Dictionary = {}
+	for candidate in functional_zones:
+		if str(candidate.get("role","")) != "transit": continue
+		if candidate.get("line_ids",[]).has(str(line_id)):
+			zone = candidate
+			break
+	var role := str(zone.get("music_role",""))
+	var qualified_role := ""
+	var state := "coverage_only"
+	var message := "已覆盖道路与社区；等待真实客流形成既有 pulse 条件"
+	if not zone.is_empty() and peak > 0.0:
+		qualified_role = "pulse_dense" if peak >= TRANSIT_PULSE_DENSE_THRESHOLD and role == "pulse_dense" else ("pulse" if role in ["pulse","pulse_dense"] else "")
+		state = "pulse_dense_active" if qualified_role == "pulse_dense" else ("pulse_active" if not qualified_role.is_empty() else "passenger_memory")
+		message = "已有真实客流；线路进入既有 %s 条件" % (qualified_role if not qualified_role.is_empty() else "pulse")
+	elif zone.is_empty() and peak > 0.0:
+		state = "passenger_memory"
+		message = "已有真实客流记忆；还未形成跨社区 transit pulse 区域"
+	return {"line_id":str(line_id),"stop_ids":stop_ids.duplicate(true),
+		"community_ids":communities,"covered_building_count":line.get("covered_building_ids",[]).size(),
+		"community_count":communities.size(),"functional_zone_id":str(zone.get("id","")),
+		"functional_role":role,"qualified_role":qualified_role,"state":state,"message":message,
+		"passenger_qualified":peak > 0.0,"pulse_dense_qualified":peak >= TRANSIT_PULSE_DENSE_THRESHOLD and role == "pulse_dense",
+		"passenger_peak":peak,"passenger_average":total/float(maxi(1,stop_ids.size())),
+		"passenger_visits":visits,"threshold":TRANSIT_PULSE_DENSE_THRESHOLD}
+
+func _refresh_transit_music_feedback(frame: int = -1) -> void:
+	# Keep the authoritative route event useful to the map/guide after each
+	# phrase.  A separate event is emitted only when passenger qualification
+	# changes, so the audio model receives metadata without a structural seam.
+	for line in transit_lines:
+		var line_id := str(line.get("id",""))
+		if line_id.is_empty(): continue
+		var feedback := transit_music_feedback(line_id)
+		line["music_feedback"] = feedback.duplicate(true)
+		var line_coverage: Variant = line.get("coverage",{})
+		if line_coverage is Dictionary:
+			var updated_line_coverage: Dictionary = line_coverage.duplicate(true)
+			updated_line_coverage["music_feedback"] = feedback.duplicate(true)
+			line["coverage"] = updated_line_coverage
+		var route_event: Dictionary = {}
+		for event in events:
+			if str(event.get("kind","")) == "transit_line" and str(event.get("id","")) == line_id:
+				route_event = event
+				break
+		if route_event.is_empty(): continue
+		var previous: Dictionary = route_event.get("music_feedback",{})
+		route_event["music_feedback"] = feedback.duplicate(true)
+		var coverage: Variant = route_event.get("coverage",{})
+		if coverage is Dictionary:
+			var updated_coverage: Dictionary = coverage.duplicate(true)
+			updated_coverage["music_feedback"] = feedback.duplicate(true)
+			route_event["coverage"] = updated_coverage
+		if previous.is_empty(): continue
+		var changed := (
+			str(previous.get("state","")) != str(feedback.get("state",""))
+			or str(previous.get("functional_role","")) != str(feedback.get("functional_role",""))
+			or str(previous.get("qualified_role","")) != str(feedback.get("qualified_role",""))
+			or bool(previous.get("passenger_qualified",false)) != bool(feedback.get("passenger_qualified",false))
+			or bool(previous.get("pulse_dense_qualified",false)) != bool(feedback.get("pulse_dense_qualified",false))
+		)
+		if not changed: continue
+		var event_id: Variant = route_event.get("event_id",0)
+		var duplicate := events.any(func(candidate: Dictionary) -> bool:
+			return str(candidate.get("kind","")) == "transit_feedback" and str(candidate.get("event_id","")) == str(event_id) and int(candidate.get("phrase",-1)) == int(phrase_index))
+		if duplicate: continue
+		var feedback_frame := frame if frame >= 0 else phrase_index*int(cfg["timing"]["phrase_frames"])
+		events.append({"kind":"transit_feedback","id":line_id,"event_id":event_id,"frame":feedback_frame,"phrase":phrase_index,
+			"music_feedback":feedback.duplicate(true)})
+
 func _decay_transit_demand() -> void:
 	for stop_id in transit_demand:
 		var record: Dictionary = transit_demand[stop_id]
@@ -339,7 +439,7 @@ func functional_zone_roles(cid: String) -> Array[String]:
 			roles.append(str(zone.get("music_role",zone.get("role","mixed"))))
 	return roles
 
-func refresh_functional_zones() -> void:
+func refresh_functional_zones(feedback_frame: int = -1) -> void:
 	var ids := _active_community_ids()
 	var next: Array[Dictionary] = []
 	var role_specs := [
@@ -417,13 +517,29 @@ func refresh_functional_zones() -> void:
 			var line_ids: Array = transit_lines.map(func(line: Dictionary) -> String: return str(line.get("id","")))
 			var demand_total := 0.0
 			var demand_peak := 0.0
+			var passenger_total := 0.0
+			var passenger_peak := 0.0
+			var passenger_visits := 0
+			var seen_stops: Dictionary = {}
 			for cid in transit_members:
 				var local_demand := _community_transit_demand(cid)
 				demand_total += local_demand
 				demand_peak = maxf(demand_peak,local_demand)
+			for line in transit_lines:
+				for raw_stop_id in line.get("stops",[]):
+					var stop_id := str(raw_stop_id)
+					if seen_stops.has(stop_id): continue
+					seen_stops[stop_id] = true
+					var record: Dictionary = transit_demand.get(stop_id,{})
+					var score := clampf(float(record.get("score",0.0)),0.0,8.0)
+					passenger_total += score
+					passenger_peak = maxf(passenger_peak,score)
+					passenger_visits += int(record.get("visits",0))
 			var demand_average := demand_total/float(transit_members.size())
-			next.append({"id":"zone-transit-hub","role":"transit","title":"换乘节点","music_role":"pulse_dense" if demand_peak >= 2.5 else "pulse","community_ids":transit_members,"building_count":0,"site_ids":[],"line_ids":line_ids,"transit_demand":demand_average,"peak_demand":demand_peak})
+			next.append({"id":"zone-transit-hub","role":"transit","title":"换乘节点","music_role":"pulse_dense" if demand_peak >= TRANSIT_PULSE_DENSE_THRESHOLD else "pulse","community_ids":transit_members,"building_count":0,"site_ids":[],"line_ids":line_ids,"transit_demand":demand_average,"peak_demand":demand_peak,
+				"passenger_demand":passenger_total/float(maxi(1,seen_stops.size())),"passenger_peak":passenger_peak,"passenger_visits":passenger_visits,"passenger_qualified":passenger_peak > 0.0,"pulse_dense_threshold":TRANSIT_PULSE_DENSE_THRESHOLD})
 	functional_zones = next
+	_refresh_transit_music_feedback(feedback_frame)
 
 func road_environment(a: Vector2,b: Vector2) -> Dictionary:
 	var key := Vector4(a.x,a.y,b.x,b.y)
@@ -1253,7 +1369,7 @@ func settle(frame: int) -> void:
 	# Passenger observations become demand memory only at the phrase boundary;
 	# refresh the derived qualification after that ordered merge so authored stops
 	# can affect the next visible functional-zone summary without a second route build.
-	refresh_functional_zones()
+	refresh_functional_zones(frame)
 
 func _transit_growth_bonus(position: Vector2,use: String = "residential") -> float:
 	var bonus := 0.0
@@ -1910,7 +2026,8 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 		for line in transit_lines:
 			if str(line.get("id","")) == intent_id: derived = line; break
 		if derived.is_empty(): continue
-		events.append({"kind":"transit_line","id":intent_id,"event_id":intent.get("event_id",0),"frame":intent.get("frame",0),"stop_ids":intent.get("stop_ids",[]).duplicate(true),"community_ids":derived.get("community_ids",[]).duplicate(true),"covered_building_ids":derived.get("covered_building_ids",[]).duplicate(true),"source_topology":str(intent.get("source_topology",""))})
+		events.append({"kind":"transit_line","id":intent_id,"event_id":intent.get("event_id",0),"frame":intent.get("frame",0),"stop_ids":intent.get("stop_ids",[]).duplicate(true),"community_ids":derived.get("community_ids",[]).duplicate(true),"covered_building_ids":derived.get("covered_building_ids",[]).duplicate(true),"route_mode":derived.get("route_mode",intent.get("route_mode","out_and_back")),"coverage":derived.get("coverage",{}).duplicate(true),"route_role":str(derived.get("route_role","社区往返线")),"source_topology":str(intent.get("source_topology",""))})
+	_refresh_transit_music_feedback()
 	for operation in pending_actions:
 		if str(operation.get("kind","")) == "transit_line":
 			operation["source_topology"] = network.topology

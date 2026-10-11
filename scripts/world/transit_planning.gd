@@ -87,7 +87,7 @@ static func _coverage(world: RefCounted, stops: Array) -> Dictionary:
 static func coverage_summary(world: RefCounted, payload: Dictionary) -> Dictionary:
 	var stop_records: Array[Dictionary] = []
 	var seen_stops: Dictionary = {}
-	for raw_stop in payload.get("stops",payload.get("route_stops",[])):
+	for raw_stop in payload.get("stops",payload.get("route_stops",payload.get("stop_ids",[]))):
 		var record: Dictionary = {}
 		if raw_stop is Dictionary:
 			record = raw_stop.duplicate(true)
@@ -99,7 +99,8 @@ static func coverage_summary(world: RefCounted, payload: Dictionary) -> Dictiona
 			if record.is_empty() and world.nodes.has(raw_stop_id):
 				record = stop_preview(world,point(world.nodes[raw_stop_id]))
 		if record.is_empty(): continue
-		var stop_id := str(record.get("id",raw_stop if not raw_stop is Dictionary else ""))
+		var fallback_id := "" if raw_stop is Dictionary else str(raw_stop)
+		var stop_id := str(record.get("id",fallback_id))
 		if stop_id.is_empty(): stop_id = "stop-%d" % stop_records.size()
 		if seen_stops.has(stop_id): continue
 		seen_stops[stop_id] = true
@@ -149,6 +150,9 @@ static func coverage_summary(world: RefCounted, payload: Dictionary) -> Dictiona
 			var stop_id := str(stop.get("id",""))
 			if stop_id.is_empty(): continue
 			var line_ids: Array = stop.get("line_ids",[])
+			if line_ids.is_empty():
+				for line in world.transit_lines:
+					if line.get("stops",[]).has(stop_id): line_ids.append(str(line.get("id","")))
 			if line_ids.size() > 1: transfer_stop_ids.append(stop_id)
 	transfer_stop_ids.sort()
 
@@ -156,6 +160,13 @@ static func coverage_summary(world: RefCounted, payload: Dictionary) -> Dictiona
 	for raw_id in payload.get("line_ids",[]):
 		var line_id := str(raw_id)
 		if not line_id.is_empty() and not line_ids.has(line_id): line_ids.append(line_id)
+	if line_ids.is_empty() and payload.has("id") and not str(payload.get("id","")).is_empty():
+		line_ids.append(str(payload.get("id","")))
+	var music_feedback: Dictionary = {}
+	var raw_music_feedback: Variant = payload.get("music_feedback",{})
+	if raw_music_feedback is Dictionary: music_feedback = raw_music_feedback.duplicate(true)
+	if music_feedback.is_empty() and payload.has("id") and world.has_method("transit_music_feedback"):
+		music_feedback = world.transit_music_feedback(str(payload.get("id",""))).duplicate(true)
 	var role := "社区往返线"
 	var route_mode := str(payload.get("route_mode",""))
 	if not transfer_stop_ids.is_empty(): role = "换乘走廊"
@@ -205,7 +216,8 @@ static func coverage_summary(world: RefCounted, payload: Dictionary) -> Dictiona
 		"stop_count":stop_records.size(),"stop_ids":stop_records.map(func(stop: Dictionary) -> String: return str(stop.get("id",""))),
 		"leg_count":payload.get("legs",[]).size(),"route_length":length,"route_mode":route_mode,
 		"line_ids":line_ids,"transfer_stop_ids":transfer_stop_ids,"route_role":role,
-		"music_roles":all_music_roles,"music_role_titles":role_titles,"communities":communities}
+		"music_roles":all_music_roles,"music_role_titles":role_titles,"communities":communities,
+		"music_feedback":music_feedback}
 
 static func coverage_text(summary: Dictionary, heading := "线路覆盖") -> String:
 	var lines: Array[String] = ["%s · %d站 · %s · 覆盖%d栋、%d个社区" % [heading,
@@ -217,6 +229,9 @@ static func coverage_text(summary: Dictionary, heading := "线路覆盖") -> Str
 		var covered := int(community.get("covered_building_count",0))
 		var total := int(community.get("existing_building_count",0))
 		lines.append("　%s · %d/%d栋 · %s" % [str(community.get("name",community.get("id",""))),covered,total,str(community.get("hint",""))])
+	var music_feedback: Dictionary = summary.get("music_feedback",{})
+	if not music_feedback.is_empty():
+		lines.append("音乐条件 · "+str(music_feedback.get("message","等待客流条件")))
 	if not summary.get("transfer_stop_ids",[]).is_empty(): lines.append("换乘站 · %d处 · 后续可与其他线路接续" % summary["transfer_stop_ids"].size())
 	return "\n".join(lines)
 
@@ -329,7 +344,8 @@ static func commit(world: RefCounted, operation: Dictionary, frame: int) -> Dict
 	world.authored_transit_lines.append({"id":id,"name":"自定线路 %d" % (world.authored_transit_lines.size()+1),"stop_ids":chosen_ids,
 		"route_mode":plan["route_mode"],"frame":frame,"event_id":operation["event_id"],"source_topology":plan["source_topology"]})
 	world.events.append({"kind":"transit_line","id":id,"event_id":operation["event_id"],"frame":frame,"stop_ids":chosen_ids,
-		"community_ids":plan["community_ids"].duplicate(),"covered_building_ids":plan["covered_building_ids"].duplicate(),"source_topology":plan["source_topology"]})
+		"community_ids":plan["community_ids"].duplicate(),"covered_building_ids":plan["covered_building_ids"].duplicate(),"route_mode":plan["route_mode"],
+		"source_topology":plan["source_topology"]})
 	world.events.back()["coverage"] = plan.get("coverage",coverage_summary(world,plan)).duplicate(true)
 	world.events.back()["route_role"] = str(plan.get("route_role","社区往返线"))
 	return {"accepted":true,"id":id}
@@ -348,7 +364,7 @@ static func derived_lines(world: RefCounted) -> Array[Dictionary]:
 			positions.append(positions[0])
 		var plan := preview(world,positions)
 		if not bool(plan.get("accepted",false)): continue
-		var coverage := plan.get("coverage",coverage_summary(world,plan))
+		var coverage: Dictionary = plan.get("coverage",coverage_summary(world,plan))
 		result.append({"id":intent["id"],"name":intent["name"],"authored":true,"frame":intent["frame"],"stops":plan["stop_ids"],
 			"intent_stop_ids":intent["stop_ids"].duplicate(),"route_stops":plan["stop_ids"].duplicate(),"route_mode":plan["route_mode"],"legs":plan["legs"],"path":plan["path"],"edges":plan["edges"],
 			"directional_edges":plan["directional_edges"],"community_ids":plan["community_ids"],"covered_building_ids":plan["covered_building_ids"],

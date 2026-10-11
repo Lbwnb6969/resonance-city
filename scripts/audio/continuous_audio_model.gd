@@ -251,7 +251,8 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			# Structural births/upgrades add layers at a phrase boundary. Give the
 			# complete bus an 80 ms seam so the new event joins under the old sample
 			# instead of sounding like a click, while ordinary retunes keep the
-			# shorter pitch glide.
+			# shorter pitch glide. `transit_feedback` only reports committed
+			# passenger qualification and deliberately remains metadata-only here.
 			var structural_change := recent.any(func(event: Dictionary) -> bool:
 				return str(event.get("kind","")) in ["birth","upgrade","landmark","park","civic","relocate_public","bridge","transit_line","era","community_split"])
 			var seam_seconds := 0.08 if structural_change else float(world.cfg["score"]["pitch_glide_seconds"])
