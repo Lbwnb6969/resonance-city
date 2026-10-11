@@ -142,6 +142,7 @@ static func coverage_summary(world: RefCounted, payload: Dictionary) -> Dictiona
 	community_ids.sort()
 
 	var transfer_stop_ids: Array[String] = []
+	var preview_only := not payload.has("id") or str(payload.get("id","")).is_empty()
 	for raw_transfer in payload.get("transfer_stops",[]):
 		var transfer_id := str(raw_transfer.get("stop_id",raw_transfer) if raw_transfer is Dictionary else raw_transfer)
 		if not transfer_id.is_empty() and not transfer_stop_ids.has(transfer_id): transfer_stop_ids.append(transfer_id)
@@ -149,11 +150,23 @@ static func coverage_summary(world: RefCounted, payload: Dictionary) -> Dictiona
 		for stop in stop_records:
 			var stop_id := str(stop.get("id",""))
 			if stop_id.is_empty(): continue
-			var line_ids: Array = stop.get("line_ids",[])
+			var line_ids: Array = []
+			# Raw preview stop dictionaries intentionally have no runtime line
+			# membership. Ask the authoritative station record first so a second
+			# authored preview immediately sees the settled first line.
+			if world.has_method("transit_stop_record"):
+				var authoritative_stop: Dictionary = world.transit_stop_record(stop_id)
+				line_ids.assign(authoritative_stop.get("line_ids",[]))
+			if line_ids.is_empty(): line_ids.assign(stop.get("line_ids",[]))
 			if line_ids.is_empty():
 				for line in world.transit_lines:
 					if line.get("stops",[]).has(stop_id): line_ids.append(str(line.get("id","")))
-			if line_ids.size() > 1: transfer_stop_ids.append(stop_id)
+			# In a not-yet-settled preview, one existing line already means the
+			# candidate route would become the second service at this station. Once
+			# settled, the authoritative record contains both IDs and reaches the
+			# same branch.
+			if (preview_only and line_ids.size() >= 1) or (not preview_only and line_ids.size() > 1):
+				transfer_stop_ids.append(stop_id)
 	transfer_stop_ids.sort()
 
 	var line_ids: Array[String] = []
@@ -162,6 +175,24 @@ static func coverage_summary(world: RefCounted, payload: Dictionary) -> Dictiona
 		if not line_id.is_empty() and not line_ids.has(line_id): line_ids.append(line_id)
 	if line_ids.is_empty() and payload.has("id") and not str(payload.get("id","")).is_empty():
 		line_ids.append(str(payload.get("id","")))
+	# A preview has no authored ID yet, so expose the existing lines touched by
+	# its physical stations.  Once an authored line has an ID, keep that ID and
+	# add every currently active line sharing one of the same stop IDs.  This is
+	# the stable contract consumed by coverage cards, saved events, and restore.
+	var route_stop_ids: Array[String] = []
+	for stop in stop_records:
+		var stop_id := str(stop.get("id",""))
+		if not stop_id.is_empty() and not route_stop_ids.has(stop_id): route_stop_ids.append(stop_id)
+	for line in world.transit_lines:
+		var candidate_id := str(line.get("id",""))
+		if candidate_id.is_empty(): continue
+		var overlaps := false
+		for stop_id in route_stop_ids:
+			if line.get("stops",[]).has(stop_id):
+				overlaps = true
+				break
+		if overlaps and not line_ids.has(candidate_id): line_ids.append(candidate_id)
+	line_ids.sort()
 	var music_feedback: Dictionary = {}
 	var raw_music_feedback: Variant = payload.get("music_feedback",{})
 	if raw_music_feedback is Dictionary: music_feedback = raw_music_feedback.duplicate(true)
@@ -247,7 +278,28 @@ static func stop_record(world: RefCounted, id: String) -> Dictionary:
 	for line in world.transit_lines:
 		if line.get("stops",[]).has(id): line_ids.append(str(line["id"]))
 	result["line_ids"] = line_ids
+	line_ids.sort()
 	return result
+
+## Rebuild the complete data contract after a route enters the runtime graph.
+## `world.transit_lines` must already contain the line so music feedback can
+## read the authoritative runtime line; no audio voice or PCM is created here.
+static func line_contract(world: RefCounted, line: Dictionary) -> Dictionary:
+	var payload := line.duplicate(true)
+	payload.erase("coverage")
+	payload.erase("music_feedback")
+	var summary: Dictionary = coverage_summary(world,payload)
+	var line_id := str(payload.get("id",""))
+	var feedback: Dictionary = {}
+	if not line_id.is_empty() and world.has_method("transit_music_feedback"):
+		feedback = world.transit_music_feedback(line_id).duplicate(true)
+	summary["music_feedback"] = feedback.duplicate(true)
+	payload["coverage"] = summary.duplicate(true)
+	payload["transfer_stop_ids"] = summary.get("transfer_stop_ids",[]).duplicate(true)
+	payload["line_ids"] = summary.get("line_ids",[]).duplicate(true)
+	payload["route_role"] = str(summary.get("route_role","社区往返线"))
+	payload["music_feedback"] = feedback
+	return payload
 
 static func _directional_edges(world: RefCounted, path: PackedVector2Array) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -327,6 +379,11 @@ static func preview(world: RefCounted, positions: Array) -> Dictionary:
 	for stop in stops: stop_positions.append(stop["position"].duplicate())
 	result["stop_positions"] = stop_positions
 	result["coverage"] = coverage_summary(world,result)
+	# Keep the most useful planning facts at the preview root as well as inside
+	# the richer coverage summary.  This lets lightweight UI cards and save
+	# contracts inspect a preview without knowing the summary nesting.
+	result["line_ids"] = result["coverage"].get("line_ids",[]).duplicate(true)
+	result["transfer_stop_ids"] = result["coverage"].get("transfer_stop_ids",[]).duplicate(true)
 	result["route_role"] = result["coverage"].get("route_role","社区往返线")
 	return result
 
@@ -341,13 +398,21 @@ static func commit(world: RefCounted, operation: Dictionary, frame: int) -> Dict
 		var stop_id := str(stop["id"])
 		if not world.nodes.has(stop_id): world.authored_transit_stops[stop_id] = stop.duplicate(true)
 		chosen_ids.append(stop_id)
+	var authored_contract_payload := plan.duplicate(true)
+	authored_contract_payload["id"] = id
+	var authored_summary: Dictionary = coverage_summary(world,authored_contract_payload)
 	world.authored_transit_lines.append({"id":id,"name":"自定线路 %d" % (world.authored_transit_lines.size()+1),"stop_ids":chosen_ids,
-		"route_mode":plan["route_mode"],"frame":frame,"event_id":operation["event_id"],"source_topology":plan["source_topology"]})
+		"route_mode":plan["route_mode"],"frame":frame,"event_id":operation["event_id"],"source_topology":plan["source_topology"],
+		"line_ids":authored_summary.get("line_ids",[]).duplicate(true),"transfer_stop_ids":authored_summary.get("transfer_stop_ids",[]).duplicate(true),
+		"route_role":str(authored_summary.get("route_role","社区往返线"))})
 	world.events.append({"kind":"transit_line","id":id,"event_id":operation["event_id"],"frame":frame,"stop_ids":chosen_ids,
 		"community_ids":plan["community_ids"].duplicate(),"covered_building_ids":plan["covered_building_ids"].duplicate(),"route_mode":plan["route_mode"],
-		"source_topology":plan["source_topology"]})
-	world.events.back()["coverage"] = plan.get("coverage",coverage_summary(world,plan)).duplicate(true)
-	world.events.back()["route_role"] = str(plan.get("route_role","社区往返线"))
+		"source_topology":plan["source_topology"],"line_ids":authored_summary.get("line_ids",[]).duplicate(true),
+		"transfer_stop_ids":authored_summary.get("transfer_stop_ids",[]).duplicate(true),"music_feedback":{}})
+	var event_coverage: Dictionary = authored_summary.duplicate(true)
+	event_coverage["music_feedback"] = {}
+	world.events.back()["coverage"] = event_coverage
+	world.events.back()["route_role"] = str(authored_summary.get("route_role","社区往返线"))
 	return {"accepted":true,"id":id}
 
 static func derived_lines(world: RefCounted) -> Array[Dictionary]:
@@ -365,8 +430,10 @@ static func derived_lines(world: RefCounted) -> Array[Dictionary]:
 		var plan := preview(world,positions)
 		if not bool(plan.get("accepted",false)): continue
 		var coverage: Dictionary = plan.get("coverage",coverage_summary(world,plan))
-		result.append({"id":intent["id"],"name":intent["name"],"authored":true,"frame":intent["frame"],"stops":plan["stop_ids"],
+		var line_id := str(intent.get("id",""))
+		var line_payload := {"id":line_id,"name":intent.get("name","自定线路"),"authored":true,"frame":intent.get("frame",0),"stops":plan["stop_ids"],
 			"intent_stop_ids":intent["stop_ids"].duplicate(),"route_stops":plan["stop_ids"].duplicate(),"route_mode":plan["route_mode"],"legs":plan["legs"],"path":plan["path"],"edges":plan["edges"],
 			"directional_edges":plan["directional_edges"],"community_ids":plan["community_ids"],"covered_building_ids":plan["covered_building_ids"],
-			"coverage":coverage,"route_role":coverage.get("route_role","社区往返线")})
+			"coverage":coverage,"route_role":coverage.get("route_role","社区往返线")}
+		result.append(line_contract(world,line_payload))
 	return result

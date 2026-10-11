@@ -1006,15 +1006,75 @@ func _transit_community_names(raw_ids: Variant) -> Array[String]:
 
 func _transit_line_names(raw_ids: Variant) -> Array[String]:
 	var names: Array[String] = []
-	if shown_world == null: return names
+	var world := model.world if model != null and model.world != null else shown_world
+	if world == null: return names
 	for raw_id in raw_ids:
 		var line_id := str(raw_id)
-		for line in shown_world.transit_lines:
+		for line in world.transit_lines:
 			if str(line.get("id", "")) != line_id: continue
 			var name := str(line.get("name", line_id))
 			if not name.is_empty() and not names.has(name): names.append(name)
 			break
 	return names
+
+func _transit_line_ids_at_stop(stop_id: String) -> Array[String]:
+	## A route preview has no authored line id yet.  Resolve the existing
+	## memberships directly so a second player line can advertise a transfer
+	## before it is submitted.  Keep the fallback tolerant of old snapshots that
+	## do not carry the cached `line_ids` field on a stop record.
+	var ids: Array[String] = []
+	var world := model.world if model != null and model.world != null else shown_world
+	if world == null or stop_id.is_empty(): return ids
+	var record := world.transit_stop_record(stop_id)
+	for raw_id in record.get("line_ids",[]):
+		var line_id := str(raw_id)
+		if not line_id.is_empty() and not ids.has(line_id): ids.append(line_id)
+	for line in world.transit_lines:
+		if not line.get("stops",[]).has(stop_id): continue
+		var line_id := str(line.get("id",""))
+		if not line_id.is_empty() and not ids.has(line_id): ids.append(line_id)
+	return ids
+
+func _transit_transfer_stop_ids(preview: Dictionary, summary: Dictionary = {}) -> Array[String]:
+	## Merge the world summary with the preview-side single-line case.  The
+	## world contract marks existing multi-line stations; the player also needs
+	## to see a station where this *new* line will join one existing line.
+	var ids: Array[String] = []
+	for raw_id in summary.get("transfer_stop_ids",[]):
+		var stop_id := str(raw_id)
+		if not stop_id.is_empty() and not ids.has(stop_id): ids.append(stop_id)
+	var stops: Array = preview.get("stops",preview.get("route_stops",preview.get("stop_ids",[])))
+	for raw_stop in stops:
+		var stop_id := str(raw_stop.get("id","") if raw_stop is Dictionary else raw_stop)
+		if stop_id.is_empty() or ids.has(stop_id): continue
+		if not _transit_line_ids_at_stop(stop_id).is_empty(): ids.append(stop_id)
+	return ids
+
+func _transit_transfer_feedback(preview: Dictionary, summary: Dictionary = {}) -> Dictionary:
+	var transfer_stop_ids := _transit_transfer_stop_ids(preview,summary)
+	var line_ids: Array[String] = []
+	var details: Array[String] = []
+	for stop_id in transfer_stop_ids:
+		var stop_line_ids := _transit_line_ids_at_stop(stop_id)
+		var line_names := _transit_line_names(stop_line_ids)
+		for line_id in stop_line_ids:
+			if not line_ids.has(line_id): line_ids.append(line_id)
+		var label := stop_id
+		if not line_names.is_empty(): label += " → "+"、".join(line_names)
+		details.append(label)
+	var role := str(summary.get("route_role","社区往返线"))
+	if role.is_empty(): role = "社区往返线"
+	if not transfer_stop_ids.is_empty(): role = "换乘走廊"
+	return {"transfer_stop_ids":transfer_stop_ids,"line_ids":line_ids,
+		"line_names":_transit_line_names(line_ids),"details":details,"route_role":role}
+
+func _transit_next_phrase_text(transfer: Dictionary, summary: Dictionary) -> String:
+	var names: Array = transfer.get("line_names",[])
+	if not transfer.get("transfer_stop_ids",[]).is_empty():
+		var lines := "、".join(names) if not names.is_empty() else "既有线路"
+		return "下一乐句：换乘站接入%s，落定后观察真实客流脉冲" % lines
+	var mode := "闭环" if str(summary.get("route_mode","")) == "loop" else "往返"
+	return "下一乐句：%s线路落定并开始接客" % mode
 
 func _transit_station_at(position: Vector2) -> Dictionary:
 	if shown_world == null: return {}
@@ -1037,7 +1097,7 @@ func _transit_station_at(position: Vector2) -> Dictionary:
 	if best_id.is_empty(): return {}
 	var record := shown_world.transit_stop_record(best_id)
 	if record.is_empty(): return {}
-	var line_ids: Array = record.get("line_ids", [])
+	var line_ids: Array = _transit_line_ids_at_stop(best_id)
 	return {"id":best_id,"position":best_position,"record":record,"line_ids":line_ids,
 		"line_names":_transit_line_names(line_ids),"distance":best_distance}
 
@@ -1858,6 +1918,10 @@ func _process(delta: float) -> void:
 				var event_communities := _transit_community_names(event.get("community_ids",[]))
 				var event_community_text := "、".join(event_communities) if not event_communities.is_empty() else "%d个社区" % event.get("community_ids",[]).size()
 				var route_mode := "闭环" if str(event.get("route_mode","")) == "loop" else "往返"
+				var event_transfer := _transit_transfer_feedback(event,event.get("coverage",{}))
+				var event_role := str(event_transfer.get("route_role",event.get("route_role","社区往返线")))
+				var event_transfer_text := ""
+				if not event_transfer.get("details",[]).is_empty(): event_transfer_text = " · 换乘："+"、".join(event_transfer["details"])
 				var feedback_value: Variant = event.get("music_feedback",event.get("music_role",""))
 				var feedback := ""
 				var feedback_message := ""
@@ -1873,7 +1937,7 @@ func _process(delta: float) -> void:
 				elif feedback == "pulse_active": feedback_text = "客流已接入脉冲"
 				elif feedback == "waiting_for_passengers": feedback_text = "等候真实客流进入脉冲"
 				elif not feedback_message.is_empty(): feedback_text = feedback_message
-				_message("公交线路已落定 · %s · %d站 · 覆盖%d栋 · %s · %s" % [route_mode,event.get("stop_ids",[]).size(),event.get("covered_building_ids",[]).size(),event_community_text,feedback_text])
+				_message("公交线路已落定 · %s · %s · %d站 · 覆盖%d栋 · %s%s · %s" % [route_mode,event_role,event.get("stop_ids",[]).size(),event.get("covered_building_ids",[]).size(),event_community_text,event_transfer_text,feedback_text])
 		last_presented_event_count = presented_events.size()
 	notice_seconds = maxf(0.0,notice_seconds-delta)
 	ripple_seconds = maxf(0.0,ripple_seconds-delta)
@@ -1902,11 +1966,16 @@ func _process(delta: float) -> void:
 			var community_names := _transit_community_names(transit_hover.get("community_ids",[]))
 			var community_text := "、".join(community_names) if not community_names.is_empty() else "%d个社区" % transit_hover.get("community_ids",[]).size()
 			var coverage_summary: Dictionary = planning_guide.transit_preview_feedback(transit_hover)
+			var transfer := _transit_transfer_feedback(transit_hover,coverage_summary)
+			var transfer_text := ""
+			if not transfer.get("details",[]).is_empty(): transfer_text = "\n换乘站："+"、".join(transfer["details"])
+			var role_text := str(transfer.get("route_role",coverage_summary.get("route_role","社区往返线")))
+			var next_phrase := _transit_next_phrase_text(transfer,coverage_summary)
 			var coverage_lines: Array = str(coverage_summary.get("text","")).split("\n")
 			var community_detail := ""
 			if coverage_lines.size() > 1: community_detail += "\n"+str(coverage_lines[1])
 			if coverage_lines.size() > 2: community_detail += "\n"+str(coverage_lines[2])
-			tooltip.text = "公交线路预影 · %d站 · %s\n真实道路：%s\n覆盖%d栋 · 社区：%s%s\n左键加站 · Backspace撤回 · 空格试听 · Enter排入下一乐句 · 右键取消" % [transit_route_stops.size(),_transit_route_mode_label(transit_hover),road_text,transit_hover.get("covered_building_ids",[]).size(),community_text,community_detail]
+			tooltip.text = "公交线路预影 · %d站 · %s · %s\n真实道路：%s\n覆盖%d栋 · 社区：%s%s%s\n%s\n左键加站 · Backspace撤回 · 空格试听 · Enter排入下一乐句 · 右键取消" % [transit_route_stops.size(),_transit_route_mode_label(transit_hover),role_text,road_text,transit_hover.get("covered_building_ids",[]).size(),community_text,community_detail,transfer_text,next_phrase]
 		else:
 			tooltip.text = "公交线路预影 · %d站（至少两站）\n左键沿真实道路放置 · Backspace撤回 · 空格试听 · Enter排入下一乐句 · 右键取消" % transit_route_stops.size()
 	elif not landmark.is_empty():
@@ -1923,7 +1992,8 @@ func _process(delta: float) -> void:
 		var role_text := "换乘站" if station_hover.get("line_ids",[]).size() > 1 else "中途站"
 		var rhythm_text := "换乘客流会进入密集脉冲" if station_hover.get("line_ids",[]).size() > 1 else "客流会进入城市脉冲"
 		if demand > 0.1: rhythm_text = "当前客流 %.1f · 已进入城市脉冲" % demand
-		tooltip.text = "站点 · %s · %s\n%s · %s\n覆盖%d栋 · 社区：%s\n%s\n悬停站牌查看上下客；下一句继续组合线路" % [role_text,str(station_hover["id"]),line_text,str(station_record.get("road", "真实道路")),station_record.get("covered_building_ids",[]).size(),station_community_text,rhythm_text]
+		var transfer_hint := "可换乘至："+line_text if station_hover.get("line_ids",[]).size() > 1 else "接入线路："+line_text
+		tooltip.text = "站点 · %s · %s\n%s · %s\n覆盖%d栋 · 社区：%s\n%s\n%s\n下一句继续组合线路" % [role_text,str(station_hover["id"]),transfer_hint,str(station_record.get("road", "真实道路")),station_record.get("covered_building_ids",[]).size(),station_community_text,rhythm_text,"换乘后客流会进入密集脉冲" if station_hover.get("line_ids",[]).size() > 1 else "可在此规划第二条线路"]
 	elif not hover_id.is_empty():
 		var b: Dictionary = shown_world.by_id[hover_id]
 		tooltip.text = "%s · %s · %s\n%s  ·  活力 %.0f\n点击选音   Tab独听社区   F聚焦" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),b["form"],shown_world.communities[b["community_id"]]["name"],b["vitality"]]
@@ -2240,6 +2310,8 @@ func _draw_planning_preview() -> void:
 	if transit_route_mode and pointer_inside:
 		var transit_draw := _transit_route_preview(true)
 		var route_color := Color("c88942") if bool(transit_draw.get("accepted",false)) else Color("b35e58")
+		var transit_summary: Dictionary = planning_guide.transit_preview_feedback(transit_draw)
+		var transfer_stop_ids := _transit_transfer_stop_ids(transit_draw,transit_summary)
 		for leg in transit_draw.get("legs",[]):
 			var raw_path: PackedVector2Array = leg.get("path",PackedVector2Array())
 			if raw_path.size() > 1:
@@ -2251,9 +2323,15 @@ func _draw_planning_preview() -> void:
 			var stop: Dictionary = transit_draw["stops"][index]
 			var p := Vector2(float(stop["position"][0]),float(stop["position"][1]))
 			var screen := point(p,shown_world.terrain.height_at(p)+0.28)
+			var is_transfer := transfer_stop_ids.has(str(stop.get("id","")))
+			if is_transfer:
+				draw_circle(screen,10.0*view_zoom,Color(0.96,0.76,0.32,0.20))
+				draw_arc(screen,9.0*view_zoom,0,TAU,24,Color("e5b64e",0.95),1.8*view_zoom,true)
 			draw_circle(screen,7.0*view_zoom,Color(0.98,0.92,0.68,0.92))
 			draw_circle(screen,4.0*view_zoom,Color(route_color,0.95))
 			draw_string(ThemeDB.fallback_font,screen+Vector2(7,-7)*view_zoom,str(index+1),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("604c32"))
+			if is_transfer:
+				draw_string(ThemeDB.fallback_font,screen+Vector2(7,9)*view_zoom,"换",HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("8a6825"))
 	if reservation_draw_mode and pointer_inside:
 		var draw_color := Color("4f9f7b") if reservation_draw_points.size() >= 3 else Color("79966e")
 		if reservation_draw_points.size() >= 2:

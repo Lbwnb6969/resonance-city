@@ -1,5 +1,15 @@
 # 共鸣之城：当前项目状态
 
+## 2026-10-11 当前裁定（第166轮）
+
+玩家公交线路现在可以继续组合：第二条 authored 线路沿真实道路选站时，会读取已落定线路的站点身份，在预影中显示共享站、既有线路名称、换乘走廊和下一乐句提示；Enter 后两条线路保留相同 `transfer_stop_ids`/`line_ids`/`coverage` 合同，事件、快照和旧字段存档均可恢复。已落定的首条线路不会把自身误报成换乘线。
+
+换乘仍由真实乘客交换产生声音资格：边界前只报告 `coverage_only`，车辆在共享站上下客并累积 `transfer_visits` 后，反馈进入既有 `pulse`/`pulse_dense` 条件；换乘反馈是状态元数据，不新增声部或突破 70 RenderVoice 预算。真实 OpenGL/NVIDIA 窗口脚本通过，截图见[公交换乘](验证记录/round166_公交换乘/transit_transfer_live.png)。
+
+验证：`tests/round166_authored_transit_transfer_contract.gd`、`round166_transit_transfer_audio.gd`、`round166_transit_transfer_ui.gd` 和真实窗口 `round166_transit_transfer_demo_live.gd` 全部通过；Round165 UI 与 Round164 保存/音频回归继续通过，脚本检查 `valid:true`。技术链已接通，真人悬停、完整听感和多线路长期客流平衡仍待试玩。
+
+备份：`codex/backup-before-round166`（基于 `cffc313`）。下一步优先做真人共享站悬停/听感复核，再决定继续多线路组合还是转向下一项高价值可试玩内容。
+
 ## 2026-10-11 当前裁定（第165轮）
 
 公交线路现在把“放置 → 覆盖 → 客流 → 节奏条件”显示成一条可读的玩家反馈链：线路预影显示往返/闭环、实际道路和覆盖社区，并列出前两条社区覆盖细节；落成站点可悬停查看线路、道路、覆盖房屋、社区、客流需求和换乘提示；P 面板收起后底部状态线仍保留公交线路待播与下一乐句落定。线路试听在取消、重画或切换规划时会失效旧请求身份，旧 PCM 不会回到新路线。

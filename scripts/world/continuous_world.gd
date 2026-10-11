@@ -343,6 +343,21 @@ func transit_music_feedback(line_id: String) -> Dictionary:
 		total += score
 		peak = maxf(peak,score)
 		visits += int(record.get("visits",0))
+	# A transfer is a passenger observation at a physically shared station.  Keep
+	# this derived summary alongside the existing passenger memory so the map and
+	# archive can distinguish coverage from a real line-to-line exchange.
+	var transfer_stop_ids: Array[String] = []
+	var transfer_count := 0
+	var transfer_visits := 0
+	for raw_transfer in line.get("transfer_stops",[]):
+		var transfer_stop_id := str(raw_transfer.get("stop_id",raw_transfer) if raw_transfer is Dictionary else raw_transfer)
+		if transfer_stop_id.is_empty() or transfer_stop_ids.has(transfer_stop_id): continue
+		transfer_stop_ids.append(transfer_stop_id)
+		var transfer_record: Dictionary = transit_demand.get(transfer_stop_id,{})
+		var observed_transfers := int(transfer_record.get("transfers",0))
+		transfer_count += observed_transfers
+		if observed_transfers > 0: transfer_visits += int(transfer_record.get("visits",0))
+	transfer_stop_ids.sort()
 	var communities: Array = line.get("community_ids",[]).duplicate(true)
 	var zone: Dictionary = {}
 	for candidate in functional_zones:
@@ -354,6 +369,11 @@ func transit_music_feedback(line_id: String) -> Dictionary:
 	var qualified_role := ""
 	var state := "coverage_only"
 	var message := "已覆盖道路与社区；等待真实客流形成既有 pulse 条件"
+	var transfer_state := "coverage_only"
+	if transfer_count > 0:
+		transfer_state = "passenger_transfer"
+	elif not transfer_stop_ids.is_empty() and peak > 0.0:
+		transfer_state = "shared_station_waiting"
 	if not zone.is_empty() and peak > 0.0:
 		qualified_role = "pulse_dense" if peak >= TRANSIT_PULSE_DENSE_THRESHOLD and role == "pulse_dense" else ("pulse" if role in ["pulse","pulse_dense"] else "")
 		state = "pulse_dense_active" if qualified_role == "pulse_dense" else ("pulse_active" if not qualified_role.is_empty() else "passenger_memory")
@@ -367,7 +387,10 @@ func transit_music_feedback(line_id: String) -> Dictionary:
 		"functional_role":role,"qualified_role":qualified_role,"state":state,"message":message,
 		"passenger_qualified":peak > 0.0,"pulse_dense_qualified":peak >= TRANSIT_PULSE_DENSE_THRESHOLD and role == "pulse_dense",
 		"passenger_peak":peak,"passenger_average":total/float(maxi(1,stop_ids.size())),
-		"passenger_visits":visits,"threshold":TRANSIT_PULSE_DENSE_THRESHOLD}
+		"passenger_visits":visits,"transfer_stop_ids":transfer_stop_ids,
+		"transfer_count":transfer_count,"transfer_visits":transfer_visits,
+		"transfer_qualified":transfer_count > 0,"transfer_state":transfer_state,
+		"threshold":TRANSIT_PULSE_DENSE_THRESHOLD}
 
 func _refresh_transit_music_feedback(frame: int = -1) -> void:
 	# Keep the authoritative route event useful to the map/guide after each
@@ -2127,6 +2150,10 @@ func _refresh_public_network(frame: int = 0) -> void:
 	transit_lines.assign(lines)
 	_annotate_transfers()
 	refresh_functional_zones()
+	# Functional-zone roles are part of the coverage contract.  Recompute line
+	# summaries after the zone pass so a freshly built city and a restored city
+	# serialize identical community/music role details.
+	_refresh_transit_line_contracts()
 	transit = transit_lines[0] if not transit_lines.is_empty() else {}
 
 func transit_stop_preview(position: Vector2) -> Dictionary:
@@ -2162,6 +2189,56 @@ func _annotate_transfers() -> void:
 				return str(a.get("stop_id","")) < str(b.get("stop_id",""))
 			return int(a.get("line_index",-1)) < int(b.get("line_index",-1)))
 		transit_lines[index]["transfer_stops"] = transfers
+		var transfer_stop_ids: Array[String] = []
+		for transfer in transfers:
+			var stop_id := str(transfer.get("stop_id",""))
+			if not stop_id.is_empty() and not transfer_stop_ids.has(stop_id): transfer_stop_ids.append(stop_id)
+		transfer_stop_ids.sort()
+		transit_lines[index]["transfer_stop_ids"] = transfer_stop_ids
+
+func _refresh_transit_line_contracts() -> void:
+	# Runtime lines are complete at this point, so authored lines can discover
+	# one another's shared stations.  The contract is metadata only: it updates
+	# coverage, transfer IDs, line IDs, route role, and the existing passenger
+	# feedback summary without touching PCM or voice allocation.
+	var refreshed: Array[Dictionary] = []
+	for line in transit_lines:
+		refreshed.append(TransitPlan.line_contract(self,line))
+	transit_lines.assign(refreshed)
+	for event in events:
+		if str(event.get("kind","")) != "transit_line": continue
+		var event_id := str(event.get("id",""))
+		var runtime: Dictionary = {}
+		for line in transit_lines:
+			if str(line.get("id","")) == event_id:
+				runtime = line
+				break
+		if runtime.is_empty(): continue
+		var summary: Dictionary = runtime.get("coverage",{})
+		if summary.is_empty(): summary = TransitPlan.coverage_summary(self,runtime)
+		_update_transit_event_contract(event,runtime,summary)
+	# Keep the authored intent as a save-friendly copy of the latest relation.
+	for intent in authored_transit_lines:
+		var intent_id := str(intent.get("id",""))
+		for line in transit_lines:
+			if str(line.get("id","")) != intent_id: continue
+			intent["line_ids"] = line.get("line_ids",[]).duplicate(true)
+			intent["transfer_stop_ids"] = line.get("transfer_stop_ids",[]).duplicate(true)
+			intent["route_role"] = str(line.get("route_role","社区往返线"))
+			break
+
+func _update_transit_event_contract(event: Dictionary, runtime: Dictionary, summary: Dictionary) -> void:
+	event["line_ids"] = runtime.get("line_ids",summary.get("line_ids",[])).duplicate(true)
+	event["transfer_stop_ids"] = runtime.get("transfer_stop_ids",summary.get("transfer_stop_ids",[])).duplicate(true)
+	event["coverage"] = summary.duplicate(true)
+	event["route_role"] = str(runtime.get("route_role",summary.get("route_role","社区往返线")))
+	# Preserve an empty/new event feedback field until the ordered functional-zone
+	# refresh writes the first visible state. Otherwise the contract rebuild would
+	# manufacture a phrase-1 transit_feedback metadata event before any passenger
+	# qualification change, breaking the existing no-passenger event contract.
+	var previous_feedback: Dictionary = event.get("music_feedback",{})
+	if not previous_feedback.is_empty():
+		event["music_feedback"] = runtime.get("music_feedback",summary.get("music_feedback",{})).duplicate(true)
 
 func _make_transit_line(id: String, title: String, itinerary: Array, frame: int) -> Dictionary:
 	var legs: Array[Dictionary] = []
