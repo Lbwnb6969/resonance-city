@@ -967,6 +967,12 @@ func _activate_next_action(event: Dictionary) -> void:
 	demo._message("规划结果已经落地 · 下一次行动由你选择")
 
 func _first_composition_anchor() -> Dictionary:
+	if str(next_action.get("choice","")) == "reserve":
+		for reservation: Dictionary in demo.shown_world.planning_reservations:
+			if str(reservation.get("reservation_id",reservation.get("id",""))) != str(next_action.get("public_id","")): continue
+			var kept := reservation.duplicate(true)
+			kept["community_id"] = str(next_action.get("community_id",""))
+			return kept
 	for site: Dictionary in demo.shown_world.public_sites:
 		if str(site["id"]) == str(next_action.get("public_id","")) and bool(site.get("active",false)) and str(site["kind"]) == str(next_action.get("choice","")) and int(site.get("frame",-1)) == int(next_action.get("expected_boundary_frame",-2)):
 			return site
@@ -981,7 +987,7 @@ func _activate_first_composition_anchor(_event: Dictionary) -> void:
 	stage = "feedback"
 	opened = true
 	refresh()
-	demo._message("你放的公共空间已落成 · 选一个声音，沿这个社区继续")
+	demo._message("你留下的空间已保留 · 选一个声音，沿这个社区继续" if str(next_action.get("choice","")) == "reserve" else "你放的公共空间已落成 · 选一个声音，沿这个社区继续")
 
 func _activate_transit_next_action(event: Dictionary) -> void:
 	var line_id := str(event.get("id",event.get("line_id","")))
