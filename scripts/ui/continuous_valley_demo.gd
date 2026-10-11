@@ -12,6 +12,7 @@ const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd"
 const TransitPlanning = preload("res://scripts/world/transit_planning.gd")
 const TransitCharter = preload("res://scripts/world/transit_charter_anchor.gd")
 const TransitRework = preload("res://scripts/world/transit_line_rework.gd")
+const TransitReworkPreview = preload("res://scripts/world/transit_rework_preview.gd")
 const Config = preload("res://scripts/world/world_values.gd")
 const GrowthSprite = preload("res://scripts/visual/audio_growth_mask.gd")
 const Shadows = preload("res://scripts/visual/city_shadow_layer.gd")
@@ -544,6 +545,7 @@ func _invalidate_transit_preview() -> void:
 	if preview_requested or preview_started:
 		_cancel_preview_playback()
 	preview_context_key.clear()
+	if planning_guide != null: planning_guide.clear_transit_comparison()
 
 func _stop_preview() -> void:
 	_cancel_preview_playback()
@@ -1446,6 +1448,22 @@ func _remove_last_transit_stop() -> void:
 		_message("已撤回最后一站 · 当前%d站" % transit_route_stops.size())
 
 func _submit_transit_route() -> void:
+	if not transit_edit_context.is_empty() and planning_guide.transit_choice == "edit" and planning_guide.transit_comparison_is_current():
+		var compared: Dictionary = planning_guide.transit_comparison["variants"]["edit"]
+		if not bool(compared.get("accepted",false)):
+			_message(str(compared.get("reason","改站没有在下一句落定，请继续修改或保留原线")))
+			return
+	if not transit_edit_context.is_empty() and planning_guide.transit_choice == "keep":
+		var keep_operation := {"kind":"transit_line","keep":true,"edit_id":str(transit_edit_context["id"]),
+			"source_revision":str(transit_edit_context["source_revision"]),"source_topology":str(transit_edit_context["source_topology"])}
+		var kept: Dictionary = model.submit(keep_operation)
+		if bool(kept.get("accepted",false)):
+			if bool(planning_guide.next_action.get("transit_edit",false)) and planning_guide.next_action.get("edit_id","") == transit_edit_context["id"] and planning_guide.next_action.get("state","") == "queued": planning_guide.next_action["state"] = "consumed"
+			planning_guide.hide_tool()
+			menu.hide()
+			_message("已保留原线路 · 只撤回这条线尚未落定的改站")
+		else: _message(str(kept.get("reason","原线路已经变化，请重新点选")))
+		return
 	var preview := _transit_route_preview()
 	if not bool(preview.get("accepted",false)):
 		_message(str(preview.get("reason","公交线路至少需要两处真实道路站位")))
@@ -2141,6 +2159,9 @@ func _planning_status_hint() -> String:
 
 func _request_preview() -> void:
 	if transit_route_mode:
+		if not transit_edit_context.is_empty():
+			_request_transit_comparison()
+			return
 		var transit_candidate := _transit_route_preview()
 		if not bool(transit_candidate.get("accepted",false)):
 			_message(str(transit_candidate.get("reason","公交线路至少需要两处真实道路站位")))
@@ -2196,6 +2217,43 @@ func _request_preview() -> void:
 	preview_started = false
 	preview_thread = Thread.new()
 	preview_thread.start(_build_preview.bind(frozen,operation,state,at,preview_context_key.duplicate(true)))
+
+func _request_transit_comparison() -> void:
+	if not planning_guide.opened or planning_guide.stage != "transit_edit" or not _transit_edit_is_current(): return
+	var operation := _transit_route_operation({})
+	preview_context_key = _transit_preview_identity(operation["stop_positions"])
+	preview_public = false
+	preview_requested = true
+	if not planning_guide.transit_comparison.is_empty() and planning_guide.transit_comparison_key == preview_context_key:
+		_play_transit_comparison()
+		return
+	if preview_thread != null: return
+	var frozen := model.freeze()
+	if preview_duck_owned:
+		frozen.synth.ducking = preview_saved_ducking
+		frozen.synth.duck_release_at = preview_saved_release
+	var state := clock.renderer.state.duplicate(true)
+	var at := clock.renderer.transport.rendered_frames
+	preview_started = false
+	preview_thread = Thread.new()
+	preview_thread.start(_build_transit_comparison.bind(frozen,operation,state,at,preview_context_key.duplicate(true)))
+	_message("公交两方案试听 · 正在取得同一下一句，按钮切换保留 / 改站")
+
+func _build_transit_comparison(frozen: ContinuousAudioModel,operation: Dictionary,state: Dictionary,at: int,request_key: Array) -> Dictionary:
+	var result := TransitReworkPreview.build(frozen,operation,state,at)
+	result["request_key"] = request_key
+	return result
+
+func _play_transit_comparison() -> void:
+	if not preview_requested or not planning_guide.transit_comparison_is_current(): return
+	var variant: Dictionary = planning_guide.transit_comparison["variants"][planning_guide.transit_choice]
+	if not bool(variant.get("accepted",false)):
+		_cancel_preview_playback()
+		preview_requested = true
+		_message(str(variant.get("reason","改站草稿还未完成；可切换保留原线")))
+		return
+	_play_preview_pcm(variant["pcm"])
+	_message(("保留原线" if planning_guide.transit_choice == "keep" else "改站")+"试听 · 松开恢复城市，Enter确认当前选择")
 
 func _build_preview(frozen: ContinuousAudioModel, operation: Dictionary, state: Dictionary, at: int, request_key: Array) -> Dictionary:
 	if operation["kind"] == "public_compare":
@@ -2264,7 +2322,10 @@ func _process(delta: float) -> void:
 	if preview_thread != null and not preview_thread.is_alive():
 		var result: Dictionary = preview_thread.wait_to_finish()
 		preview_thread = null
-		if result.has("variants"):
+		if result.get("contract","") == "P12-TRANSIT-REWORK-COMPARE/v1":
+			if preview_requested and planning_guide.accept_transit_comparison(result,result["request_key"]): _play_transit_comparison()
+			else: _cancel_preview_playback()
+		elif result.has("variants"):
 			if planning_guide.accept_comparison(result,result["request_key"]):
 				if preview_requested: _play_public_preview()
 			elif preview_requested and planning_guide.opened and planning_guide.stage == "reuse_anchor" and planning_guide.public_reuse_is_current():

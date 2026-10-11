@@ -152,6 +152,7 @@ func submit(operation: Dictionary) -> Dictionary:
 		decisions.append({"requested_frame":rendered_until,"operation":operation.duplicate(true),"sound_frame":beat,"structure_frame":-1})
 		return {"accepted":true,"frame":beat,"sound_frame":beat}
 	var result := world.request(operation,next_boundary)
+	if bool(result.get("kept",false)) and not bool(result.get("changed",false)): return result
 	if result["accepted"] and kind == "retune":
 		var event := operation.duplicate(true)
 		event["sound_frame"] = beat

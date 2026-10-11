@@ -56,7 +56,9 @@ static func _difference(after: Array,before: Array) -> Array[String]:
 	result.sort()
 	return result
 
-static func preview(world: RefCounted,operation: Dictionary) -> Dictionary:
+## Keep and edit must validate the same authored source before changing any
+## pending intent. Growth and derived ridership do not change this revision.
+static func source(world: RefCounted,operation: Dictionary) -> Dictionary:
 	var line_id := str(operation.get("edit_id",operation.get("id","")))
 	var original := candidate(world,line_id)
 	if not bool(original.get("accepted",false)): return original
@@ -64,6 +66,32 @@ static func preview(world: RefCounted,operation: Dictionary) -> Dictionary:
 		return {"accepted":false,"reason":"这条线路已被改站，请重新打开当前站序","edit_id":line_id}
 	if str(operation.get("source_topology",original["source_topology"])) != str(original["source_topology"]):
 		return {"accepted":false,"reason":"道路已经变化，请重新查看改站预影","edit_id":line_id}
+	return original
+
+static func preview(world: RefCounted,operation: Dictionary) -> Dictionary:
+	var original := source(world,operation)
+	if not bool(original.get("accepted",false)): return original
+	var line_id := str(original["id"])
+	if bool(operation.get("keep",false)):
+		# Keeping never requires a new route or reconnect. A broken old route
+		# remains the player's line while its queued replacement is withdrawn.
+		var current := _intent(world,line_id).duplicate(true)
+		for line in world.transit_lines:
+			if str(line.get("id","")) == line_id:
+				current = line.duplicate(true)
+				break
+		var coverage: Dictionary = current.get("coverage",{}).duplicate(true)
+		if coverage.is_empty():
+			var stops: Array[Dictionary] = []
+			for raw_id in _intent(world,line_id).get("stop_ids",[]):
+				stops.append({"id":str(raw_id),"position":_position(world,str(raw_id))})
+			var payload := current.duplicate(true)
+			payload["stops"] = stops
+			coverage = world.transit_line_coverage_summary(payload)
+		current.merge(original,true)
+		current.merge({"keep":true,"edit":false,"old_coverage":coverage.duplicate(true),"new_coverage":coverage.duplicate(true),
+			"coverage":coverage,"added_covered_building_ids":[],"removed_covered_building_ids":[],"added_community_ids":[],"removed_community_ids":[]},true)
+		return current
 	var plan: Dictionary = world.transit_plan_preview(operation.get("stop_positions",[]))
 	if not bool(plan.get("accepted",false)): return plan
 	var intent := _intent(world,line_id)
@@ -90,7 +118,22 @@ static func preview(world: RefCounted,operation: Dictionary) -> Dictionary:
 	if not str(intent.get("charter_id","")).is_empty(): CharterAnchor.apply(plan,new_coverage)
 	return plan
 
+static func keep(world: RefCounted,operation: Dictionary) -> Dictionary:
+	var original := source(world,operation)
+	if not bool(original.get("accepted",false)): return original
+	var line_id := str(original["id"])
+	var remaining: Array[Dictionary] = world.pending_actions.filter(func(op: Dictionary) -> bool:
+		return not (str(op.get("kind","")) == "transit_line" and str(op.get("edit_id","")) == line_id))
+	# pending is the legacy mirror consumed by settle when the queue is empty.
+	# Clear/repoint that mirror as well so a canceled edit cannot return later.
+	var changed: bool = remaining.size() != world.pending_actions.size() or (str(world.pending.get("kind","")) == "transit_line" and str(world.pending.get("edit_id","")) == line_id)
+	if changed:
+		world.pending_actions = remaining
+		world.pending = remaining[-1].duplicate(true) if not remaining.is_empty() else {}
+	return {"accepted":true,"kept":true,"changed":changed,"frame":-1,"id":line_id,"edit_id":line_id}
+
 static func commit(world: RefCounted,operation: Dictionary,frame: int) -> Dictionary:
+	if bool(operation.get("keep",false)): return keep(world,operation)
 	var plan := preview(world,operation)
 	if not bool(plan.get("accepted",false)): return plan
 	var intent := _intent(world,str(plan["id"]))

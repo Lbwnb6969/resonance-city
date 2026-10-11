@@ -39,6 +39,12 @@ var transit_anchor_button: Button
 var transit_edit_row: HBoxContainer
 var transit_redraw_button: Button
 var transit_edit_cancel_button: Button
+var transit_compare_row: HBoxContainer
+var transit_keep_button: Button
+var transit_change_button: Button
+var transit_choice := "edit"
+var transit_comparison: Dictionary = {}
+var transit_comparison_key: Array = []
 var candidate: Dictionary = {}
 ## A player-drawn conversion is a fixed target, independent of the pointer.
 var partial_site: Dictionary = {}
@@ -192,6 +198,16 @@ func setup(owner_demo: Control) -> void:
 	transit_edit_cancel_button.pressed.connect(hide_tool)
 	transit_edit_row.add_child(transit_edit_cancel_button)
 	box.add_child(transit_edit_row)
+	transit_compare_row = HBoxContainer.new()
+	for item in [["保留原线","keep"],["改站","edit"]]:
+		var button := Button.new()
+		button.text = item[0]
+		button.toggle_mode = true
+		button.pressed.connect(choose_transit_variant.bind(str(item[1])))
+		transit_compare_row.add_child(button)
+		if item[1] == "keep": transit_keep_button = button
+		else: transit_change_button = button
+	box.add_child(transit_compare_row)
 	hide()
 
 ## Read-only entry point for the route UI.  The main Demo owns pointer input
@@ -368,6 +384,8 @@ func public_reuse_is_current() -> bool:
 	return bool(current.get("allowed",false)) and str(current.get("source_revision","")) == str(reuse_site.get("source_revision",""))
 
 func begin_transit_edit(source: Dictionary) -> void:
+	clear_transit_comparison()
+	transit_choice = "edit"
 	committed_charter_id = ""
 	comparison.clear()
 	comparison_key.clear()
@@ -388,6 +406,31 @@ func begin_transit_edit(source: Dictionary) -> void:
 	opened = true
 	refresh()
 	demo.queue_redraw()
+
+func clear_transit_comparison() -> void:
+	transit_comparison.clear()
+	transit_comparison_key.clear()
+
+func transit_comparison_is_current() -> bool:
+	if not opened or stage != "transit_edit" or transit_comparison.is_empty() or not demo._transit_edit_is_current(): return false
+	var operation: Dictionary = demo._transit_route_operation({})
+	return transit_comparison_key == demo._transit_preview_identity(operation["stop_positions"])
+
+func accept_transit_comparison(payload: Dictionary,request_key: Array) -> bool:
+	if not opened or stage != "transit_edit" or not demo._transit_edit_is_current(): return false
+	var operation: Dictionary = demo._transit_route_operation({})
+	if request_key.is_empty() or request_key != demo._transit_preview_identity(operation["stop_positions"]): return false
+	if payload.get("contract","") != "P12-TRANSIT-REWORK-COMPARE/v1": return false
+	transit_comparison = payload
+	transit_comparison_key = request_key.duplicate(true)
+	refresh()
+	return true
+
+func choose_transit_variant(choice: String) -> void:
+	if stage != "transit_edit" or choice not in ["keep","edit"]: return
+	transit_choice = choice
+	refresh()
+	if demo.preview_requested and transit_comparison_is_current(): demo._play_transit_comparison()
 
 func _confirm_stage() -> void:
 	if stage in ["transit_anchor","transit_edit"]: demo._submit_transit_route()
@@ -471,8 +514,11 @@ func refresh() -> void:
 	theme_rework_button.visible = stage == "charter" and has_theme_house
 	actions.visible = stage != "charter"
 	confirm.visible = stage in ["scope","reuse_anchor","transit_anchor","transit_edit"]
-	confirm.text = "确认改站 · 下一句" if stage == "transit_edit" else "确认线路 · 下一句" if stage == "transit_anchor" else "确认原位改用" if stage == "reuse_anchor" else "确认社区范围 → 摆放锚点"
+	confirm.text = ("确认保留原线" if transit_choice == "keep" else "确认改站 · 下一句") if stage == "transit_edit" else "确认线路 · 下一句" if stage == "transit_anchor" else "确认原位改用" if stage == "reuse_anchor" else "确认社区范围 → 摆放锚点"
 	transit_edit_row.visible = stage == "transit_edit"
+	transit_compare_row.visible = stage == "transit_edit"
+	transit_keep_button.set_pressed_no_signal(transit_choice == "keep")
+	transit_change_button.set_pressed_no_signal(transit_choice == "edit")
 	transit_anchor_button.visible = stage in ["anchor","transit_anchor"]
 	transit_anchor_button.disabled = committed_charter_id.is_empty()
 	transit_anchor_button.text = "返回公园 / 文化馆选择" if stage == "transit_anchor" else "公交 · 连接社区"
@@ -492,6 +538,8 @@ func refresh() -> void:
 	next_served_button.visible = partial_feedback and not next_action.get("served_building_ids",[]).is_empty()
 	confirm.disabled = not public_reuse_is_current() if stage == "reuse_anchor" else scope.is_empty()
 	if stage in ["transit_anchor","transit_edit"]: confirm.disabled = not bool(demo._transit_route_preview().get("accepted",false))
+	if stage == "transit_edit" and transit_choice == "keep": confirm.disabled = not demo._transit_edit_is_current()
+	if stage == "transit_edit" and transit_choice == "edit" and transit_comparison_is_current(): confirm.disabled = confirm.disabled or not bool(transit_comparison["variants"]["edit"].get("accepted",false))
 	for i in range(1,actions.get_child_count()):
 		var button: Button = actions.get_child(i)
 		button.visible = stage in ["anchor","partial_anchor","reuse_anchor"]
@@ -1165,14 +1213,33 @@ func _update_transit_detail() -> void:
 
 func _update_transit_edit_detail() -> void:
 	var route: Dictionary = demo._transit_route_preview()
-	var lines: Array[String] = ["沿用原线路身份与原章程来源；原站序已带入，可逐站撤回或清空重画。","左键沿道路加站 · Backspace撤回 · 按住空格试听 · Enter确认"]
+	var lines: Array[String] = ["沿用原线路身份与原章程来源；沿道路加站，Backspace撤回或清空重画。","按住空格取得同源3秒合奏 · 按钮切换保留 / 改站 · Enter确认当前选择"]
 	lines.append("当前%d站 · 至少两站" % demo.transit_route_stops.size())
 	if bool(route.get("accepted",false)):
 		lines.append("实际覆盖 · %d → %d栋房屋 · 新接入%d栋，移出%d栋" % [route["old_coverage"].get("covered_building_ids",[]).size(),route["new_coverage"].get("covered_building_ids",[]).size(),route.get("added_covered_building_ids",[]).size(),route.get("removed_covered_building_ids",[]).size()])
 		var source_names := "、".join(demo._transit_community_names(demo.transit_edit_context.get("scope_community_ids",[])))
 		if not source_names.is_empty(): lines.append("保留原章程范围 · "+source_names)
 	elif not route.is_empty(): lines.append(str(route.get("reason","继续沿真实道路加站")))
-	lines.append("实际客流达到脉冲条件才带来声音；确认后在下一句更新这条线路。")
+	if transit_comparison_is_current():
+		lines = ["同一下一句的3秒合奏 · 按住空格时切换，Enter确认当前选择"]
+		for choice: String in ["keep","edit"]:
+			var variant: Dictionary = transit_comparison["variants"][choice]
+			var title := "保留原线" if choice == "keep" else "改站"
+			if not bool(variant.get("accepted",false)):
+				lines.append(title+" · "+str(variant.get("reason","草稿还未完成")))
+				continue
+			var coverage: Dictionary = variant.get("coverage",{})
+			lines.append("%s · 实际覆盖%d栋、%d社区 · %s" % [title,coverage.get("covered_building_ids",[]).size(),coverage.get("community_ids",[]).size(),str(coverage.get("route_role","社区往返线"))])
+			var music_message := str(variant.get("music_feedback",{}).get("message","实际客流达到脉冲条件才带来声音")).replace("pulse_dense","密集脉冲节奏").replace("pulse","脉冲节奏")
+			lines.append("　"+music_message)
+		var selected: Dictionary = transit_comparison["variants"][transit_choice]
+		var opportunities: Array = selected.get("opportunities",[])
+		for opportunity: Dictionary in opportunities.slice(0,2):
+			var cid := str(opportunity.get("community_id",""))
+			var names: Array[String] = demo._transit_community_names([cid])
+			lines.append((names[0] if not names.is_empty() else cid)+" · "+str(opportunity.get("current","")))
+		if bool(selected.get("accepted",false)) and not bool(transit_comparison.get("pcm_changed",false)) and bool(transit_comparison["variants"]["edit"].get("accepted",false)): lines.append("这3秒合奏相同；覆盖与客流条件按各方案变化。")
+	else: lines.append("实际客流达到脉冲条件才带来声音；保留可撤回这条线的待播改站。")
 	detail.text = "\n".join(lines)
 
 func update_candidate(p: Vector2) -> void:
@@ -1465,6 +1532,8 @@ func sync() -> void:
 			return
 		var operation: Dictionary = demo._transit_route_operation({})
 		var transit_key: Array = demo._transit_preview_identity(operation["stop_positions"])
+		if stage == "transit_edit" and ((not transit_comparison.is_empty() and transit_comparison_key != transit_key) or (demo.preview_requested and demo.preview_context_key != transit_key)):
+			demo._invalidate_transit_preview()
 		if transit_key != preview_key:
 			refresh()
 			preview_key = transit_key

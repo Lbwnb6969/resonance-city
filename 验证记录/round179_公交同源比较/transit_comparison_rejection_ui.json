@@ -1,0 +1,16 @@
+{
+  "checks": {
+    "comparison_music_conditions_use_player_facing_pulse_names": true,
+    "enter_reuses_private_rejection_reason_without_requeueing_known_failed_edit": true,
+    "fixture_has_real_pending_bridge_before_same_phrase_edit": true,
+    "fixture_queues_real_original_line": true,
+    "instant_route_is_legal_before_private_boundary": true,
+    "keep_preserves_original_line_and_independent_pending_bridge_without_event": true,
+    "real_private_bridge_settlement_rejects_only_edit_despite_legal_instant_draft": true,
+    "same_comparison_keep_remains_confirmable_and_audible": true,
+    "valid_comparison_rejection_disables_edit_confirmation": true
+  },
+  "failures": [],
+  "passed": true,
+  "scope": "Production Guide, real pending bridge and private next-phrase worker rejection; edit confirm/Enter blocked, keep allowed. Dummy, no physical-device claim."
+}

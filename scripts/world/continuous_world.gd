@@ -1214,6 +1214,7 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 	elif kind == "retune":
 		if not by_id.has(operation.get("id","")): return {"accepted":false,"reason":"请选择一栋建筑"}
 	elif kind == "transit_line":
+		if bool(operation.get("keep",false)): return TransitLineRework.keep(self,operation)
 		var editing := not str(operation.get("edit_id","")).is_empty()
 		var transit_plan := TransitLineRework.preview(self,operation) if editing else transit_plan_preview(operation.get("stop_positions",[]))
 		if not bool(transit_plan.get("accepted",false)): return transit_plan
