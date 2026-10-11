@@ -39,7 +39,7 @@
 
 第182轮最小真实窗口回归也通过：在 WASAPI/OpenGL NVIDIA 窗口中走完新河湾 → 章程/卡/社区/文化馆 → 三表达试听 → 作者主题入口 → 改音，主题入口实际定位 `player_expression` 根 `building-00028`，E64 Lead 与 G67 Reply 均来自真实地图标记，设备推进 881878.5242 帧、underrun 0、峰值声部17。截图和 JSON 保存在 `验证记录/round182_首作真实窗口/`；旧第180轮窗口证据已恢复原样。
 
-第183轮路线结果卡已接入作者主题调音菜单，Dummy 纯合同 11/11；它只读当前 `_first_authored_state()` 和可选真实 score，明确显示缺少的路线，不作路线偏好或未来音频判断。证据在 `验证记录/round183_首作路线结果/route_result_card.json`。作品边界合同 59/59 覆盖 deep/weave/warm 的 Ctrl+S/F9 与 City DNA，证据在 `验证记录/round183_作品保存导出/authored_archive_contract.json`。
+第183轮路线结果卡已接入作者主题调音菜单，Dummy 纯合同 12/12；它只读当前 `_first_authored_state()` 和可选真实 score，明确显示缺少的路线，并在混合槽位优先显示实际 `expression` 来源，不作路线偏好或未来音频判断。证据在 `验证记录/round183_首作路线结果/route_result_card.json`。作品边界合同 59/59 覆盖 deep/weave/warm 的 Ctrl+S/F9 与 City DNA，证据在 `验证记录/round183_作品保存导出/authored_archive_contract.json`。
 
 下一项高价值工作是让真人直接比较三路线的首句试听、成长状态和作者改音结果，记录对候选差异、作者归属和地图反馈的原话；没有反馈时继续修实际操作反馈与作品导出可读性，不扩公交、不进入P2，也不以增加测试数量代替体验。未经真人听测不裁定路线平衡或核心玩法成立。
 
