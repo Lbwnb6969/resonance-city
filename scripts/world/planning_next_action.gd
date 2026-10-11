@@ -137,7 +137,7 @@ static func _fallback_record(preview: Dictionary) -> Dictionary:
 	if records.is_empty(): return {}
 	return records[0].duplicate(true)
 
-static func _action_from_preview(preview: Dictionary, variant: Dictionary, choice: String) -> Dictionary:
+static func _action_from_preview(preview: Dictionary, variant: Dictionary, choice: String, community_id: String = "") -> Dictionary:
 	var token := _token(preview)
 	var accepted := bool(variant.get("accepted",preview.get("accepted",true)))
 	var records: Array = preview.get("communities",[])
@@ -148,6 +148,13 @@ static func _action_from_preview(preview: Dictionary, variant: Dictionary, choic
 				var cid := str(raw.get("community_id",""))
 				if not cid.is_empty() and not affected.has(cid): affected.append(cid)
 	var record := _fallback_record(preview)
+	var has_selected_community := false
+	if not community_id.is_empty():
+		for raw in records:
+			if raw is Dictionary and str(raw.get("community_id","")) == community_id:
+				record = raw.duplicate(true)
+				has_selected_community = true
+				break
 	var community_targets: Dictionary = {}
 	for raw in records:
 		if not raw is Dictionary: continue
@@ -173,7 +180,11 @@ static func _action_from_preview(preview: Dictionary, variant: Dictionary, choic
 				selected_role = alias
 				selected = summary[alias]
 				break
-	var primary_target := _target_for_record(record,preview.get("anchor_ids",[]))
+	# A viewed community owns its role/anchor target.  The preview-level list
+	# is an aggregate across communities and cannot be a selected target's
+	# fallback.  Calls without a valid selection keep the original primary
+	# record behavior for existing consumers and older comparison payloads.
+	var primary_target := _target_for_record(record,[] if has_selected_community else preview.get("anchor_ids",[]))
 	if not cid.is_empty() and not community_targets.has(cid): community_targets[cid] = primary_target.duplicate(true)
 	var action_kind := "replan"
 	# The headline state follows the community theme qualification.  Bass,
@@ -224,23 +235,23 @@ static func _action_from_preview(preview: Dictionary, variant: Dictionary, choic
 		"presentation_token":token["presentation_token"].duplicate(true),
 	}
 
-static func from_preview(preview: Dictionary, choice: String = "") -> Dictionary:
+static func from_preview(preview: Dictionary, choice: String = "", community_id: String = "") -> Dictionary:
 	var variant := {"accepted":bool(preview.get("accepted",true)),"reason":str(preview.get("reason",""))}
 	var selected_choice := choice if not choice.is_empty() else str(preview.get("choice",""))
-	return _action_from_preview(preview,variant,selected_choice)
+	return _action_from_preview(preview,variant,selected_choice,community_id)
 
-static func from_comparison(comparison: Dictionary, choice: String) -> Dictionary:
+static func from_comparison(comparison: Dictionary, choice: String, community_id: String = "") -> Dictionary:
 	var variants: Dictionary = comparison.get("variants",{})
 	var variant: Dictionary = variants.get(choice,{})
 	if variant.is_empty():
-		return _action_from_preview({"choice":choice,"accepted":false,"reason":"找不到该规划分支","source_version":comparison.get("source_version",[]),"source_frame":comparison.get("source_frame",-1),"boundary_frame":comparison.get("boundary_frame",-1),"world_version":[]},variant,choice)
+		return _action_from_preview({"choice":choice,"accepted":false,"reason":"找不到该规划分支","source_version":comparison.get("source_version",[]),"source_frame":comparison.get("source_frame",-1),"boundary_frame":comparison.get("boundary_frame",-1),"world_version":[]},variant,choice,community_id)
 	var preview: Dictionary = variant.get("opportunity_preview",{})
 	if preview.is_empty():
 		preview = {"choice":choice,"accepted":variant.get("accepted",false),"reason":variant.get("reason",""),
 			"source_version":comparison.get("source_version",[]),"source_frame":comparison.get("source_frame",-1),
 			"boundary_frame":comparison.get("boundary_frame",-1),"world_version":[],"communities":variant.get("opportunities",[]),
 			"affected_communities":[],"anchor_ids":[]}
-	return _action_from_preview(preview,variant,choice)
+	return _action_from_preview(preview,variant,choice,community_id)
 
 static func is_current(action: Dictionary, world_version: Array, audible_frame: int = -1) -> bool:
 	if action.get("contract","") != CONTRACT: return false

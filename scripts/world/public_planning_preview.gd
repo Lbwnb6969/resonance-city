@@ -113,6 +113,7 @@ static func _opportunity_preview(world: RefCounted,site: Dictionary,choice: Stri
 		var schedule := _schedule_facts(cid,score,roles)
 		var record := {
 			"community_id":cid,
+			"community_name":str(world.communities[cid].get("name",cid)),
 			"source":{
 				"kind":"public_planning_variant",
 				"site_id":str(site.get("source_site_id","")),

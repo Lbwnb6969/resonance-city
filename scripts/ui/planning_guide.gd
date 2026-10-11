@@ -8,6 +8,8 @@ const NextAction = preload("res://scripts/world/planning_next_action.gd")
 const TransitPlanning = preload("res://scripts/world/transit_planning.gd")
 var comparison: Dictionary = {}
 var comparison_key: Array = []
+var comparison_community_id := ""
+var comparison_community_choices: HFlowContainer
 var demo: Control
 var stage := "charter"
 var plan_id := ""
@@ -108,6 +110,10 @@ func setup(owner_demo: Control) -> void:
 	drawn_card_ids = ["infill_pulse","road_echo","anchor_bloom"]
 	_rebuild_card_choices()
 	box.add_child(card_choices)
+	comparison_community_choices = HFlowContainer.new()
+	comparison_community_choices.add_theme_constant_override("h_separation",6)
+	comparison_community_choices.add_theme_constant_override("v_separation",6)
+	box.add_child(comparison_community_choices)
 	detail = Label.new()
 	detail.custom_minimum_size.x = 720
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -179,6 +185,7 @@ func reset_for_city() -> void:
 	preview_key.clear()
 	comparison.clear()
 	comparison_key.clear()
+	_clear_comparison_community()
 	candidate.clear()
 	partial_site.clear()
 	observed_phrase = demo.shown_world.phrase_index
@@ -194,6 +201,7 @@ func open_tool() -> void:
 	partial_site.clear()
 	comparison.clear()
 	comparison_key.clear()
+	_clear_comparison_community()
 	demo.menu.hide()
 	opened = true
 	stage = "charter"
@@ -244,6 +252,7 @@ func hide_tool() -> void:
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
 	comparison_key.clear()
+	_clear_comparison_community()
 	opened = false
 	hide()
 	candidate.clear()
@@ -256,6 +265,7 @@ func begin_partial_comparison(site: Dictionary,selected_kind: String) -> void:
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
 	comparison_key.clear()
+	_clear_comparison_community()
 	preview_key.clear()
 	partial_site = site.duplicate(true)
 	partial_site["partial"] = true
@@ -286,6 +296,7 @@ func clear_partial_comparison() -> void:
 	preview.clear()
 	comparison.clear()
 	comparison_key.clear()
+	_clear_comparison_community()
 	preview_key.clear()
 	opened = false
 	hide()
@@ -321,6 +332,7 @@ func choose_anchor(kind: String) -> void:
 	if demo.preview_requested and not comparison.is_empty(): demo._request_preview()
 
 func refresh() -> void:
+	if comparison.is_empty(): _clear_comparison_community()
 	cards.visible = stage == "charter"
 	card_choices.visible = stage == "card"
 	actions.visible = stage != "charter"
@@ -456,7 +468,7 @@ static func next_action_from_variant(variant: Dictionary,candidate: Dictionary) 
 func _queue_next_action(variant: Dictionary) -> void:
 	var data: Dictionary = {}
 	if not comparison.is_empty() and comparison.has("variants"):
-		data = NextAction.from_comparison(comparison,anchor_kind)
+		data = NextAction.from_comparison(comparison,anchor_kind,comparison_community_id)
 	else:
 		data = next_action_from_variant(variant,candidate)
 	if data.get("community_id","") == "" and candidate.has("community_id"): data["community_id"] = str(candidate["community_id"])
@@ -503,6 +515,7 @@ func _close_after_commit() -> void:
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
 	comparison_key.clear()
+	_clear_comparison_community()
 	partial_site.clear()
 	opened = false
 	hide()
@@ -811,6 +824,63 @@ func accept_comparison(payload: Dictionary,request_key: Array) -> bool:
 	update_candidate(demo.world_at(demo.pointer))
 	return true
 
+func _clear_comparison_community() -> void:
+	comparison_community_id = ""
+	if comparison_community_choices != null: comparison_community_choices.hide()
+
+func _comparison_community_records(variant: Dictionary) -> Array:
+	var preview: Variant = variant.get("opportunity_preview",{})
+	if preview is Dictionary and preview.get("communities",[]) is Array and not preview.get("communities",[]).is_empty():
+		return preview["communities"]
+	return variant.get("opportunities",[])
+
+func _comparison_community_name(cid: String) -> String:
+	var variants: Dictionary = comparison.get("variants",{})
+	for record in _comparison_community_records(variants.get(anchor_kind,{})):
+		if record is Dictionary and str(record.get("community_id","")) == cid and not str(record.get("community_name","")).is_empty():
+			return str(record["community_name"])
+	if demo != null and demo.has_method("_request_preview") and demo.model != null:
+		return str(demo.model.world.communities.get(cid,{}).get("name",cid))
+	return cid
+
+func _sync_comparison_communities() -> void:
+	var variants: Dictionary = comparison.get("variants",{})
+	var ids: Array[String] = []
+	for record in _comparison_community_records(variants.get(anchor_kind,{})):
+		if not record is Dictionary: continue
+		var cid := str(record.get("community_id",""))
+		if not cid.is_empty() and not ids.has(cid): ids.append(cid)
+	if not ids.has(comparison_community_id): comparison_community_id = ids[0] if not ids.is_empty() else ""
+	var current_ids: Array[String] = []
+	for child in comparison_community_choices.get_children():
+		if child is Button: current_ids.append(str(child.get_meta("community_id","")))
+	if current_ids != ids:
+		for child in comparison_community_choices.get_children():
+			comparison_community_choices.remove_child(child)
+			child.queue_free()
+		var label := Label.new()
+		label.text = "查看社区"
+		label.add_theme_color_override("font_color",Color("51665c"))
+		comparison_community_choices.add_child(label)
+		for cid in ids:
+			var button := Button.new()
+			button.text = _comparison_community_name(cid)
+			button.toggle_mode = true
+			button.set_meta("community_id",cid)
+			button.tooltip_text = "查看这片社区的真实机会条件；试听保持完整合奏"
+			button.pressed.connect(choose_comparison_community.bind(cid))
+			comparison_community_choices.add_child(button)
+	for child in comparison_community_choices.get_children():
+		if child is Button: child.set_pressed_no_signal(str(child.get_meta("community_id","")) == comparison_community_id)
+	comparison_community_choices.visible = ids.size() > 1
+
+func choose_comparison_community(cid: String) -> void:
+	var variants: Dictionary = comparison.get("variants",{})
+	var records := _comparison_community_records(variants.get(anchor_kind,{}))
+	if not records.any(func(record: Variant) -> bool: return record is Dictionary and str(record.get("community_id","")) == cid): return
+	comparison_community_id = cid
+	_show_comparison()
+
 func _comparison_role_map_items(mapping: Dictionary) -> Array:
 	var aliases := {"Lead":["Lead","theme"],"Bass":["Bass","bass"],
 		"Rhythm":["Rhythm","commercial","rhythm"],"Response":["Response","response"]}
@@ -842,10 +912,14 @@ func _comparison_opportunity_items(variant: Dictionary) -> Array:
 			source = direct
 	if not source is Array: return []
 	var entries: Array = source
-	# public_planning_preview currently returns one community opportunity per
-	# entry; select the first community's structured role rows for this compact
-	# branch panel. A future direct role-array payload falls through unchanged.
-	for raw in entries:
+	# Community records follow the viewed community; direct role arrays keep
+	# the older comparison format without borrowing a neighboring record.
+	var scoped_entries: Array = entries
+	if not comparison_community_id.is_empty():
+		var selected: Array = entries.filter(func(raw: Variant) -> bool: return raw is Dictionary and str(raw.get("community_id","")) == comparison_community_id)
+		if not selected.is_empty(): scoped_entries = selected
+		elif entries.any(func(raw: Variant) -> bool: return raw is Dictionary and raw.has("community_id")): return []
+	for raw in scoped_entries:
 		if not raw is Dictionary: continue
 		var community: Dictionary = raw
 		if community.has("roles") and community["roles"] is Array: return community["roles"]
@@ -857,7 +931,7 @@ func _comparison_opportunity_items(variant: Dictionary) -> Array:
 			if not roles.is_empty(): return roles
 		if community.has("opportunities") and community["opportunities"] is Array:
 			return community["opportunities"]
-	return entries
+	return scoped_entries
 
 func _comparison_role_item(items: Array,role: String) -> Dictionary:
 	var ids := {
@@ -885,10 +959,12 @@ func _comparison_role_line(items: Array,role: String) -> String:
 	return "%s · %s · 现 %s · 下 %s" % [labels[role],"已就绪" if qualified else "待条件",current,next]
 
 func _show_comparison() -> void:
+	_sync_comparison_communities()
 	var partial := stage == "partial_anchor"
-	var lines: Array[String] = ["下一句真实对照 · 同一快照 / 同一增益 / 各3秒；点击地图才确认",
-		"机会行只读同一分支的结构条件；试听是完整合奏，不承诺单独声部未来音频"]
+	var lines: Array[String] = ["下一句真实对照 · 同一时刻 / 同一增益 / 各3秒",
+		"试听是完整合奏 · 切换下方方案对比，点击地图确认"]
 	if partial: lines = ["同一范围 · 试听是完整合奏 · 每种3秒 · Enter 确认这一范围"]
+	if not comparison_community_id.is_empty(): lines.append("查看 · "+_comparison_community_name(comparison_community_id)+" · 当前方案的声部条件")
 	for kind: String in ["none","park","civic"]:
 		var variant: Dictionary = comparison["variants"][kind]
 		var title := str({"none":"暂不建","park":"公园","civic":"文化馆"}[kind])
@@ -901,10 +977,6 @@ func _show_comparison() -> void:
 		if kind == "civic":
 			service = "本馆%d/%d栋 · 全城净增%d栋服务" % [variant["anchor"].get("served",[]).size(),int(variant["anchor"].get("service_capacity",18)),variant["newly_served_ids"].size()-variant["lost_service_ids"].size()]
 		lines.append(prefix+title+(" · 下一句共%d栋 · " if partial else " · 下一句%d栋 · ") % int(variant["houses"])+service+" · "+role)
-		if not partial:
-			var opportunity_items := _comparison_opportunity_items(variant)
-			for role_id: String in ["Bass","Rhythm","Response"]:
-				lines.append("　"+_comparison_role_line(opportunity_items,role_id))
 	var chosen: Dictionary = comparison["variants"][anchor_kind]
 	if chosen["accepted"]:
 		var chosen_items := _comparison_opportunity_items(chosen)
@@ -924,9 +996,9 @@ func _show_comparison() -> void:
 						all_same = all_same and other.get("pcm",PackedByteArray()) == baseline_pcm
 					same_audio = compared > 0 and all_same
 			if same_audio: lines.append("这3秒合奏相同；空间与服务按上方方案变化，声音仍需下列条件。")
-			lines.append(str({"none":"暂不兑现","park":"公园","civic":"文化馆"}[anchor_kind])+" · 当前机会")
-			for role_id: String in ["Bass","Rhythm","Response"]:
-				lines.append(_comparison_role_line(chosen_items,role_id))
+		lines.append(str({"none":"暂不兑现" if partial else "暂不建设","park":"公园","civic":"文化馆"}[anchor_kind])+" · 当前机会")
+		for role_id: String in ["Bass","Rhythm","Response"]:
+			lines.append(_comparison_role_line(chosen_items,role_id))
 		var chosen_theme := _comparison_role_item(chosen_items,"Lead")
 		if chosen_theme.is_empty() and not chosen_items.is_empty(): chosen_theme = chosen_items[0]
 		if not chosen_theme.is_empty() and not str(chosen_theme.get("next","")).is_empty():
@@ -966,6 +1038,7 @@ func sync() -> void:
 		if not comparison.is_empty() and next_comparison_key != comparison_key:
 			comparison.clear()
 			comparison_key.clear()
+			_clear_comparison_community()
 			if demo.preview_public: demo._cancel_preview_playback()
 		var p: Vector2 = demo.world_at(demo.pointer)
 		var key: Array = [comparison_identity(),anchor_kind,not comparison.is_empty()] if stage == "partial_anchor" else [p,Charter.version(demo.model.world),anchor_kind,not comparison.is_empty()]

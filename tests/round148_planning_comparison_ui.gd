@@ -52,10 +52,15 @@ func _run() -> void:
 	var text: String = guide.detail.text
 	for label in ["暂不建","公园","文化馆","低音表达","商业律动","跨岸应答"]:
 		check(text.contains(label),"comparison keeps "+label)
-	check(text.count("低音表达") >= 3 and text.count("商业律动") >= 3 and text.count("跨岸应答") >= 3,"all three branches show all role opportunities")
+	var role_rows := Array(text.split("\n")).filter(func(line: String) -> bool: return line.begins_with("低音表达 ·") or line.begins_with("商业律动 ·") or line.begins_with("跨岸应答 ·"))
+	check(role_rows.size() == 3,"comparison expands one selected branch without duplicate role rows")
 	check(text.contains("已就绪") and text.contains("待条件"),"comparison distinguishes qualified and waiting roles")
-	check(text.count("现 ") >= 9 and text.count("下 ") >= 9,"comparison exposes current and next for every role")
-	check(text.contains("试听是完整合奏") and text.contains("不承诺单独声部未来音频"),"comparison does not claim isolated future role audio")
+	check(text.count("现 ") >= 3 and text.count("下 ") >= 3,"comparison exposes current and next for selected roles")
+	check(text.contains("试听是完整合奏") and text.contains("切换下方方案对比"),"comparison explains full mix and branch controls")
+	for choice: String in ["none","park","civic"]:
+		guide.anchor_kind = choice
+		guide._show_comparison()
+		check(guide.detail.text.contains("低音表达") and guide.detail.text.contains("商业律动") and guide.detail.text.contains("跨岸应答"),choice+" exposes its role opportunities when selected")
 	print("ROUND148_PLANNING_COMPARISON_UI checks=%d failures=%s" % [checks,JSON.stringify(failures)])
 	guide.free()
 	host.free()
