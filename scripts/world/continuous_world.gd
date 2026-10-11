@@ -16,6 +16,7 @@ const PublicReuse = preload("res://scripts/world/public_site_reuse.gd")
 const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd")
 const TransitPlan = preload("res://scripts/world/transit_planning.gd")
 const TransitCharterAnchor = preload("res://scripts/world/transit_charter_anchor.gd")
+const TransitLineRework = preload("res://scripts/world/transit_line_rework.gd")
 var cfg: Dictionary = Config.load_values()
 var terrain := Terrain.new()
 var coupling := Coupling.new()
@@ -1213,7 +1214,8 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 	elif kind == "retune":
 		if not by_id.has(operation.get("id","")): return {"accepted":false,"reason":"请选择一栋建筑"}
 	elif kind == "transit_line":
-		var transit_plan := transit_plan_preview(operation.get("stop_positions",[]))
+		var editing := not str(operation.get("edit_id","")).is_empty()
+		var transit_plan := TransitLineRework.preview(self,operation) if editing else transit_plan_preview(operation.get("stop_positions",[]))
 		if not bool(transit_plan.get("accepted",false)): return transit_plan
 		if str(operation.get("source_topology",transit_plan["source_topology"])) != str(transit_plan["source_topology"]):
 			return {"accepted":false,"reason":"道路已经变化，请重新查看线路预影"}
@@ -1222,7 +1224,12 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 		for stop in transit_plan["stops"]: stop_positions.append(stop["position"].duplicate())
 		operation["stop_positions"] = stop_positions
 		operation["source_topology"] = transit_plan["source_topology"]
-		if not str(operation.get("charter_id","")).is_empty():
+		if editing:
+			operation["edit_id"] = str(transit_plan["id"])
+			operation["source_revision"] = str(transit_plan["source_revision"])
+			for field: String in TransitCharterAnchor.FIELDS: operation.erase(field)
+			TransitCharterAnchor.apply(operation,transit_plan)
+		elif not str(operation.get("charter_id","")).is_empty():
 			var association := TransitCharterAnchor.preview(self,transit_plan,str(operation["charter_id"]))
 			if not bool(association.get("accepted",false)): return association
 			TransitCharterAnchor.apply(operation,association)
@@ -1467,7 +1474,7 @@ func settle(frame: int) -> void:
 			"transit_line":
 				var result: Dictionary = TransitPlan.commit(self,op,frame)
 				if not bool(result.get("accepted",false)):
-					events.append({"kind":"planning_rejected","operation_kind":"transit_line","event_id":op["event_id"],"charter_id":str(op.get("charter_id","")),"reason":result.get("reason","线路未能落定"),"frame":frame})
+					events.append({"kind":"planning_rejected","operation_kind":"transit_line","event_id":op["event_id"],"edit_id":str(op.get("edit_id","")),"charter_id":str(op.get("charter_id","")),"reason":result.get("reason","线路未能落定"),"frame":frame})
 			"seed":
 				var p := Vector2(float(op["position"][0]),float(op["position"][1]))
 				if not placement(p)["allowed"]: continue
@@ -2219,12 +2226,16 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 	# the one authoritative transit event from that intent after routes hydrate.
 	for intent in authored_transit_lines:
 		var intent_id := str(intent.get("id",""))
-		if events.any(func(event: Dictionary) -> bool: return str(event.get("kind","")) == "transit_line" and str(event.get("event_id","")) == str(intent.get("event_id",""))): continue
+		var restored_event_id := int(intent.get("edit_event_id",intent.get("event_id",0)))
+		if events.any(func(event: Dictionary) -> bool: return str(event.get("kind","")) == "transit_line" and int(event.get("event_id",-1)) == restored_event_id): continue
 		var derived: Dictionary = {}
 		for line in transit_lines:
 			if str(line.get("id","")) == intent_id: derived = line; break
 		if derived.is_empty(): continue
-		events.append({"kind":"transit_line","id":intent_id,"event_id":intent.get("event_id",0),"frame":intent.get("frame",0),"stop_ids":intent.get("stop_ids",[]).duplicate(true),"community_ids":derived.get("community_ids",[]).duplicate(true),"covered_building_ids":derived.get("covered_building_ids",[]).duplicate(true),"route_mode":derived.get("route_mode",intent.get("route_mode","out_and_back")),"coverage":derived.get("coverage",{}).duplicate(true),"line_ids":derived.get("line_ids",[]).duplicate(true),"transfer_stop_ids":derived.get("transfer_stop_ids",[]).duplicate(true),"route_role":str(derived.get("route_role","社区往返线")),"music_feedback":derived.get("music_feedback",{}).duplicate(true),"source_topology":str(intent.get("source_topology",""))})
+		events.append({"kind":"transit_line","id":intent_id,"event_id":restored_event_id,"frame":intent.get("edited_frame",intent.get("frame",0)),"stop_ids":intent.get("stop_ids",[]).duplicate(true),"community_ids":derived.get("community_ids",[]).duplicate(true),"covered_building_ids":derived.get("covered_building_ids",[]).duplicate(true),"route_mode":derived.get("route_mode",intent.get("route_mode","out_and_back")),"coverage":derived.get("coverage",{}).duplicate(true),"line_ids":derived.get("line_ids",[]).duplicate(true),"transfer_stop_ids":derived.get("transfer_stop_ids",[]).duplicate(true),"route_role":str(derived.get("route_role","社区往返线")),"music_feedback":derived.get("music_feedback",{}).duplicate(true),"source_topology":str(intent.get("source_topology",""))})
+		if intent.has("edit_event_id"):
+			events.back().merge({"edit":true,"original_event_id":int(intent.get("event_id",0)),"created_frame":int(intent.get("frame",0)),
+				"edit_event_id":restored_event_id,"edited_frame":int(intent.get("edited_frame",0)),"edit_revision":int(intent.get("revision",0))})
 		if not str(derived.get("charter_id","")).is_empty(): TransitCharterAnchor.apply(events.back(),derived)
 	_refresh_transit_music_feedback()
 	for operation in pending_actions:
@@ -2337,6 +2348,9 @@ func transit_stop_preview(position: Vector2) -> Dictionary:
 
 func transit_plan_preview(stop_positions: Array) -> Dictionary:
 	return TransitPlan.preview(self,stop_positions)
+
+func transit_line_coverage_summary(payload: Dictionary) -> Dictionary:
+	return TransitPlan.coverage_summary(self,payload)
 
 func transit_stop_record(id: String) -> Dictionary:
 	# Line membership is derived from the current runtime lines: an authored

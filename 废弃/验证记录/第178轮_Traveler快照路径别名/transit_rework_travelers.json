@@ -1,0 +1,99 @@
+{
+  "checks": {
+    "actual_old_arrival_alights_removed_targets_and_keeps_valid_rider": true,
+    "captured_in_flight_packed_path_is_immutable_after_later_legs": false,
+    "disconnected_reconnect_waits_at_actual_old_stop_without_jump": true,
+    "disconnected_retry_does_not_repeat_rider_exchange": true,
+    "edit_begins_during_first_real_old_leg": true,
+    "edit_reuses_one_stable_authored_service": true,
+    "fixture_uses_four_real_non_node_road_positions": true,
+    "in_flight_reconnect_snapshot_keeps_once_only_arrival": true,
+    "old_arrival_records_one_real_alighting_packet": true,
+    "old_leg_finishes_at_its_real_removed_stop": true,
+    "pending_edit_keeps_visible_original_route": true,
+    "real_authored_line_commits": true,
+    "rejoined_vehicle_keeps_service_identity_and_resumes_station_exchange": true,
+    "removed_rider_destinations_do_not_remain_on_the_new_line": true,
+    "restored_disconnected_retry_keeps_once_only_flow": true,
+    "restored_reconnect_continues_exact_vehicle_and_flow_state": true,
+    "same_vehicle_reconnects_by_real_road_without_a_position_jump": true,
+    "settlement_keeps_existing_vehicle_position_destination_and_old_path": true,
+    "subsequent_travel_does_not_repeat_old_stop_flow": true
+  },
+  "evidence": {
+    "line_id": "player-line-17801",
+    "max_position_step": 0.0359993390738964,
+    "new_stops": [
+      "stop-5683fa3584a09b085189",
+      "stop-3b282ca135ef025e1b49"
+    ],
+    "old_arrival": "stop-61a95c9ff96091638a5b",
+    "old_stops": [
+      "stop-aa126a7e91be496976fc",
+      "stop-61a95c9ff96091638a5b",
+      "stop-5683fa3584a09b085189",
+      "stop-61a95c9ff96091638a5b"
+    ],
+    "retained_reconnect": {
+      "assigned_line_id": "player-line-17801",
+      "destination": "stop-5683fa3584a09b085189",
+      "destination_kind": "transit_reconnect",
+      "direction": "(0.246267, 0.969202)",
+      "distance": 0.0,
+      "initialized": true,
+      "kind": "bus",
+      "last_seconds": 2.78,
+      "leg_index": 0,
+      "lengths": [
+        0.0699991136789322,
+        0.0132575808092952,
+        0.0109321791678667,
+        0.0109327360987663,
+        0.0132578704506159,
+        0.413429766893387,
+        0.0199980288743973,
+        0.0199954602867365,
+        0.0199952814728022,
+        0.0199979469180107,
+        0.684988737106323,
+        0.019998786970973,
+        0.0199981648474932,
+        0.0199985522776842,
+        0.0199990030378103,
+        0.574210226535797
+      ],
+      "line_index": 1,
+      "line_key": "player-line-17801:edit-1:[\"west-road-1\", \"west-road-1\"]:4244203509",
+      "motion_speed": 1.8,
+      "ordinal": 0,
+      "passenger_capacity": 12,
+      "passenger_destinations": [
+        "stop-5683fa3584a09b085189"
+      ],
+      "passenger_load": 1,
+      "passengers_alighted": 2,
+      "passengers_boarded": 0,
+      "path": "[(12.95345, 5.213319), (12.88358, 5.217647), (12.8706, 5.220329), (12.86159, 5.226523), (12.85656, 5.236228), (12.8555, 5.249443), (12.88109, 5.66208), (12.88222, 5.682046), (12.88313, 5.702021), (12.88383, 5.722004), (12.8843, 5.741996), (12.89678, 6.426871), (12.89707, 6.446868), (12.89723, 6.466866), (12.89723, 6.486864), (12.8971, 6.506863), (12.89117, 7.081042)]",
+      "position": "(12.39061, 2.411861)",
+      "previous_walk_target": "(0.0, 0.0)",
+      "purpose": "改站接驳",
+      "reconnect_arrival_stop": "stop-61a95c9ff96091638a5b",
+      "service_line_id": "player-line-17801",
+      "stop_id": "stop-61a95c9ff96091638a5b",
+      "total": 2.84983494319022,
+      "transfer_count": 0,
+      "transfer_passengers": 0,
+      "transfer_stop": "",
+      "transfer_target": "",
+      "trip": 0,
+      "wait": 1.02453467845284,
+      "walk_target": "(0.0, 0.0)"
+    },
+    "rider_fixture": "Three explicit riders: removed origin, completed old stop, retained new first. Route and arrivals use production Traveler."
+  },
+  "failures": [
+    "captured_in_flight_packed_path_is_immutable_after_later_legs"
+  ],
+  "passed": false,
+  "scope": "Real non-node authored line and road reconnect; explicit rider edge fixture and isolated retry fixture; no physical device or human experience claim."
+}

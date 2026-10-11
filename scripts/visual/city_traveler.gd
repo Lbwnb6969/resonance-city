@@ -19,6 +19,8 @@ var line_index := -1
 var assigned_line_id := ""
 # Authored lines keep one vehicle in service while riders transfer at shared stops.
 var service_line_id := ""
+## A completed old stop exchanges riders once while a changed line reconnects.
+var reconnect_arrival_stop := ""
 var leg_index := 0
 var initialized := false
 var trip := 0
@@ -138,7 +140,6 @@ func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array,physi
 	for other in traffic:
 		if str(other.get("kind","")) == kind and int(other.get("ordinal",-1)) == ordinal: continue
 		if str(other.get("road","")) != road:
-			if int(other.get("priority",0)) >= priority: continue
 			var other_position: Vector2 = other.get("position",Vector2.ZERO)
 			if position.distance_squared_to(other_position) > 1.800001*1.800001: continue
 			if _junction_conflict(city,access,other): return 0.0
@@ -147,9 +148,17 @@ func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array,physi
 		var gap: float = position.distance_to(other_position)
 		var other_direction: Vector2 = other.get("direction",Vector2.RIGHT)
 		var same_way: bool = direction.dot(other_direction) > 0.55
-		var ahead: bool = (other_position-position).dot(direction) > -0.04
+		var longitudinal := (other_position-position).dot(direction)
+		# Side-by-side spawns must have one winner. Otherwise both travelers
+		# see the other as ahead and freeze the entire following queue.
+		var ahead := longitudinal > 0.04 or (absf(longitudinal) <= 0.04 and int(other.get("priority",0)) < priority)
 		var other_kind := str(other.get("kind",""))
 		var other_is_vehicle := other_kind in ["carriage","tram","bus","car"]
+		# Parallel sidewalks are separate queues from the carriageway, and
+		# opposite sidewalks can pass. Actual crossing paths still yield below.
+		var lateral := absf((other_position-position).cross(direction))
+		var lane_clearance := 0.02 if direction.dot(other_direction) < -0.55 else (0.12 if vehicle or other_is_vehicle else 0.24)
+		if absf(direction.dot(other_direction)) > 0.55 and lateral > lane_clearance: continue
 		if same_way and ahead:
 			var safe: float = 0.52 if (vehicle or other_is_vehicle) else 0.34
 			if gap < safe+desired: return maxf(0.0,gap-safe)
@@ -158,9 +167,9 @@ func _traffic_distance(city: ContinuousWorld,desired: float,traffic: Array,physi
 	return desired
 
 func _junction_conflict(city: ContinuousWorld,current_access: Dictionary,other: Dictionary) -> bool:
-	# Both positions must be within 0.9 of the same node. Distant or
-	# higher-priority peers cannot block us; skip their endpoint allocations.
-	if int(other.get("priority",0)) >= _priority(): return false
+	# The nearest approaching traveler clears the junction first; equal
+	# positions use stable priority. A follower cannot reserve the crossing
+	# against the traveler it is waiting for on another incoming road.
 	var other_position: Vector2 = other.get("position",Vector2.ZERO)
 	if position.distance_squared_to(other_position) > 1.800001*1.800001: return false
 	var current_road := str(current_access.get("road",""))
@@ -173,11 +182,14 @@ func _junction_conflict(city: ContinuousWorld,current_access: Dictionary,other: 
 		if node_id.is_empty() or not other_nodes.has(node_id) or not city.network.nodes.has(node_id): continue
 		var point_data: Array = city.network.nodes[node_id]
 		var junction := Vector2(float(point_data[0]),float(point_data[1]))
-		if position.distance_to(junction) > 0.9 or other_position.distance_to(junction) > 0.9: continue
+		var our_gap := position.distance_to(junction)
+		var their_gap := other_position.distance_to(junction)
+		if our_gap > 0.9 or their_gap > 0.9: continue
 		var current_heading := (junction-position).normalized()
 		var other_heading := (junction-other_position).normalized()
 		if current_heading.length_squared() < 0.00001 or other_heading.length_squared() < 0.00001: continue
 		if direction.dot(current_heading) < -0.1 or other_direction.dot(other_heading) < -0.1: continue
+		if not is_equal_approx(our_gap,their_gap): return their_gap < our_gap
 		return int(other.get("priority",0)) < _priority()
 	return false
 
@@ -333,7 +345,8 @@ func _next_bus(city: ContinuousWorld) -> void:
 	else:
 		purpose = "沿线接驳"
 		destination_kind = "transit"
-	var next_key := str(line["id"])+":"+str(line.get("edges",[]))+":"+str(hash(line["legs"]))
+	var edit_signature := ":edit-%d" % int(line["edit_revision"]) if int(line.get("edit_revision",0)) > 0 else ""
+	var next_key := str(line["id"])+edit_signature+":"+str(line.get("edges",[]))+":"+str(hash(line["legs"]))
 	if line_key != next_key:
 		# Reroute only at the next completed stop; reconnect physically if it left the new line.
 		# The edge signature changes when a bridge, branch, or era network rebuilds,
@@ -345,6 +358,9 @@ func _next_bus(city: ContinuousWorld) -> void:
 				match_index = i
 				break
 		if match_index < 0:
+			if reconnect_arrival_stop != destination:
+				_alight_reworked_stop(city,line,destination)
+				reconnect_arrival_stop = destination
 			var reconnect := _stop_route(city,destination,str(legs[0]["from"]))
 			if reconnect["path"].is_empty() or is_inf(float(reconnect["distance"])):
 				# A disconnected replacement line cannot be reached across open water.
@@ -355,9 +371,12 @@ func _next_bus(city: ContinuousWorld) -> void:
 			destination = legs[0]["from"]
 			leg_index = 0
 			_set_path(reconnect["path"],_vehicle_lane())
-			wait = 1.0
+			purpose = "改站接驳"
+			destination_kind = "transit_reconnect"
+			wait = 1.0+float(passengers_alighted)*0.018
 			return
 		leg_index = match_index
+	reconnect_arrival_stop = ""
 	var leg: Dictionary = legs[leg_index]
 	stop_id = str(leg["from"])
 	destination = leg["to"]
@@ -379,7 +398,7 @@ func _next_bus(city: ContinuousWorld) -> void:
 	var remaining_destinations: Array[String] = []
 	passengers_alighted = 0
 	for rider_destination in passenger_destinations:
-		if str(rider_destination) == stop_id:
+		if str(rider_destination) == stop_id or (not str(rider_destination).is_empty() and not line.get("stops",[]).has(str(rider_destination))):
 			passengers_alighted += 1
 		else:
 			remaining_destinations.append(str(rider_destination))
@@ -402,6 +421,23 @@ func _next_bus(city: ContinuousWorld) -> void:
 	city.record_transit_flow(arrival_stop,passengers_boarded,passengers_alighted,transfer_passengers)
 	var base_dwell := float(city.cfg["city"]["bus_dwell_beats"])*60.0/float(city.cfg["timing"]["bpm"])
 	wait = base_dwell+float(passenger_load)*0.035+float(passengers_boarded+passengers_alighted)*0.018+(0.35 if did_transfer else 0.0)
+
+func _alight_reworked_stop(city: ContinuousWorld,line: Dictionary,arrival: String) -> void:
+	stop_id = arrival
+	passengers_boarded = 0
+	passengers_alighted = 0
+	transfer_passengers = 0
+	var remaining: Array[String] = []
+	if passenger_destinations.size() != passenger_load:
+		passenger_destinations.clear()
+		for index in range(passenger_load): passenger_destinations.append("")
+	for target in passenger_destinations:
+		if target == arrival or (not target.is_empty() and not line.get("stops",[]).has(target)):
+			passengers_alighted += 1
+		else: remaining.append(target)
+	passenger_destinations = remaining
+	passenger_load = remaining.size()
+	city.record_transit_flow(arrival,0,passengers_alighted,0)
 
 func _new_passenger_destinations(line: Dictionary,stop: String,count: int,seed: int) -> Array[String]:
 	var result: Array[String] = []
@@ -551,20 +587,24 @@ func _set_path(center: PackedVector2Array, lane: float) -> void:
 func snapshot() -> Dictionary:
 	var saved: Dictionary = {}
 	for field in ["kind","ordinal","position","direction","path","lengths","distance","total","last_seconds","wait",
-		"destination","destination_kind","purpose","line_key","line_index","assigned_line_id","service_line_id","leg_index","initialized","trip","walk_target","previous_walk_target","stop_id","passenger_load","passenger_capacity","passenger_destinations","passengers_boarded","passengers_alighted","transfer_passengers","motion_speed","transfer_count","transfer_target","transfer_stop"]: saved[field] = get(field)
-	return saved.duplicate(true)
+		"destination","destination_kind","purpose","line_key","line_index","assigned_line_id","service_line_id","reconnect_arrival_stop","leg_index","initialized","trip","walk_target","previous_walk_target","stop_id","passenger_load","passenger_capacity","passenger_destinations","passengers_boarded","passengers_alighted","transfer_passengers","motion_speed","transfer_count","transfer_target","transfer_stop"]: saved[field] = get(field)
+	saved = saved.duplicate(true)
+	# Copy mutable packed buffers for an independent captured journey.
+	saved["path"] = path.duplicate()
+	saved["lengths"] = lengths.duplicate()
+	return saved
 
 func _saved_vector(value: Variant) -> Vector2:
 	return value if value is Vector2 else Vector2(float(value[0]),float(value[1]))
 
 func _saved_path(value: Variant) -> PackedVector2Array:
-	if value is PackedVector2Array: return value
+	if value is PackedVector2Array: return value.duplicate()
 	var result := PackedVector2Array()
 	for point in value: result.append(_saved_vector(point))
 	return result
 
 func _saved_lengths(value: Variant) -> PackedFloat32Array:
-	if value is PackedFloat32Array: return value
+	if value is PackedFloat32Array: return value.duplicate()
 	var result := PackedFloat32Array()
 	for number in value: result.append(float(number))
 	return result

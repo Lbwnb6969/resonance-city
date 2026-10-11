@@ -11,6 +11,7 @@ const PublicReuse = preload("res://scripts/world/public_site_reuse.gd")
 const PartialPublic = preload("res://scripts/world/partial_public_conversion.gd")
 const TransitPlanning = preload("res://scripts/world/transit_planning.gd")
 const TransitCharter = preload("res://scripts/world/transit_charter_anchor.gd")
+const TransitRework = preload("res://scripts/world/transit_line_rework.gd")
 const Config = preload("res://scripts/world/world_values.gd")
 const GrowthSprite = preload("res://scripts/visual/audio_growth_mask.gd")
 const Shadows = preload("res://scripts/visual/city_shadow_layer.gd")
@@ -94,6 +95,9 @@ var transit_preview: Dictionary = {}
 var transit_preview_key: Array = []
 ## Transient P12 context; only charter_id is submitted with the authored line.
 var transit_charter_context: Dictionary = {}
+var transit_edit_context: Dictionary = {}
+var transit_edit_choices: VBoxContainer
+var transit_edit_choices_key: Array = []
 var transit_station_focus_id := ""
 var reservation_draw_mode := false
 var reservation_draw_points := PackedVector2Array()
@@ -340,6 +344,8 @@ func _make_menu() -> void:
 	menu_info.add_theme_color_override("font_color",Color("435c59"))
 	menu_info.add_theme_font_size_override("font_size",16)
 	box.add_child(menu_info)
+	transit_edit_choices = VBoxContainer.new()
+	box.add_child(transit_edit_choices)
 	var notes := HFlowContainer.new()
 	for choice: int in [48,50,52,55,57]:
 		var button := Button.new()
@@ -808,6 +814,7 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
 			zoom_target = clampf(zoom_target*(1.12 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.12),0.18 if int(shown_world.cfg["city"].get("regional_count",1)) > 1 else 0.55,1.9)
 		elif event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+			var cancelling_transit_edit := not transit_edit_context.is_empty()
 			_clear_transit_route()
 			transit_station_focus_id = ""
 			_clear_partial_draft()
@@ -815,7 +822,7 @@ func _gui_input(event: InputEvent) -> void:
 			reservation_draw_points.clear()
 			relocation_mode = false
 			relocation_site_id = ""
-			model.cancel_pending()
+			if not cancelling_transit_edit: model.cancel_pending()
 			menu.hide()
 			planning_guide.hide_tool()
 			context.clear()
@@ -991,6 +998,7 @@ func _response_button_text() -> String:
 	return "跨河应答 · "+("开" if bool(model.synth.response_enabled) else "关")
 
 func _planning_menu() -> void:
+	_refresh_transit_edit_choices()
 	var retuning: bool = context.get("kind","") == "retune"
 	var active_public := false
 	for site in model.world.public_sites:
@@ -1075,6 +1083,75 @@ func _clear_transit_route() -> void:
 	transit_preview.clear()
 	transit_preview_key.clear()
 	transit_charter_context.clear()
+	transit_edit_context.clear()
+
+func _refresh_transit_edit_choices() -> void:
+	var sources: Array[Dictionary] = []
+	var station_id := str(context.get("id","")) if context.get("kind","") == "transit_station" else ""
+	for line in shown_world.transit_lines:
+		if station_id.is_empty() or not line.get("stops",[]).has(station_id): continue
+		var source := TransitRework.candidate(shown_world,str(line["id"]))
+		if not bool(source.get("accepted",false)): continue
+		var writable := TransitRework.candidate(model.world,str(line["id"]))
+		source["writable"] = bool(writable.get("accepted",false)) and writable.get("source_revision","") == source["source_revision"] and writable.get("source_topology","") == source["source_topology"]
+		sources.append(source)
+	var key: Array = [station_id,sources]
+	transit_edit_choices.visible = not sources.is_empty()
+	if key == transit_edit_choices_key: return
+	transit_edit_choices_key = key.duplicate(true)
+	for child in transit_edit_choices.get_children():
+		transit_edit_choices.remove_child(child)
+		child.queue_free()
+	for source in sources:
+		var button := Button.new()
+		button.text = "改站 · %s · %d站" % [str(source["line_name"]),source["stop_positions"].size()]
+		button.set_meta("line_id",str(source["id"]))
+		button.disabled = not bool(source["writable"])
+		button.tooltip_text = "带入这条作者线路的原站序，试听并在下一句更新同一线路" if not button.disabled else "改站已排入，等下一句可听落成后再编辑这条线路"
+		button.pressed.connect(_begin_transit_edit.bind(str(source["id"])))
+		transit_edit_choices.add_child(button)
+
+func _begin_transit_edit(line_id: String) -> void:
+	var source := TransitRework.candidate(shown_world,line_id)
+	if not bool(source.get("accepted",false)):
+		_message(str(source.get("reason","这条作者线路不可编辑")))
+		return
+	var writable := TransitRework.candidate(model.world,line_id)
+	if not bool(writable.get("accepted",false)) or writable.get("source_revision","") != source["source_revision"] or writable.get("source_topology","") != source["source_topology"]:
+		_message("改站已排入 · 等下一句可听落成后再编辑这条线路")
+		return
+	planning_guide.hide_tool()
+	_clear_transit_route()
+	_clear_partial_draft()
+	reservation_draw_mode = false
+	reservation_draw_points.clear()
+	relocation_mode = false
+	relocation_site_id = ""
+	transit_station_focus_id = ""
+	transit_route_mode = true
+	transit_edit_context = source.duplicate(true)
+	for position in source["stop_positions"]: transit_route_stops.append(Vector2(float(position[0]),float(position[1])))
+	context.clear()
+	menu.hide()
+	planning_guide.begin_transit_edit(source)
+	_message("改站 · "+str(source["line_name"])+" · 已带入原站序；Backspace撤回、沿路加站，空格试听，Enter更新")
+
+func _redraw_transit_edit() -> void:
+	if transit_edit_context.is_empty(): return
+	_invalidate_transit_preview()
+	transit_route_stops.clear()
+	transit_preview.clear()
+	transit_preview_key.clear()
+	planning_guide.refresh()
+	_message("已清空改站草稿 · 沿真实道路重画同一条线路")
+
+func _transit_edit_is_current() -> bool:
+	if transit_edit_context.is_empty(): return true
+	var source := TransitRework.candidate(model.world,str(transit_edit_context["id"]))
+	return bool(source.get("accepted",false)) and source.get("source_revision","") == transit_edit_context["source_revision"] and source.get("source_topology","") == transit_edit_context["source_topology"]
+
+func _transit_source_is_current() -> bool:
+	return _transit_charter_is_current() and _transit_edit_is_current()
 
 func _begin_charter_transit(payload: Dictionary) -> void:
 	_clear_transit_route()
@@ -1094,7 +1171,7 @@ func _transit_charter_is_current() -> bool:
 	return transit_charter_context.is_empty() or bool(TransitCharter.source(model.world,str(transit_charter_context["charter_id"])).get("accepted",false))
 
 func _transit_preview_identity(positions: Array) -> Array:
-	return [model.presentation_token,model.world.phrase_index,model.world.action_serial,model.world.network.topology,positions,transit_charter_context.duplicate(true),
+	return [model.presentation_token,model.world.phrase_index,model.world.action_serial,model.world.network.topology,positions,transit_charter_context.duplicate(true),transit_edit_context.duplicate(true),
 		hash(model.world.pending_actions),hash(model.sound_events),hash(model.sound_overrides),model.synth.focused_community,
 		model.synth.listener_community,model.synth.response_enabled,hash(model.synth.muted_communities),model.synth.gain,hash(model.synth.score)]
 
@@ -1102,7 +1179,11 @@ func _transit_route_operation(preview: Dictionary) -> Dictionary:
 	var positions: Array = []
 	for stop in transit_route_stops: positions.append([stop.x,stop.y])
 	var operation := {"kind":"transit_line","stop_positions":positions,"source_topology":str(preview.get("source_topology",model.world.network.topology))}
-	if not transit_charter_context.is_empty(): operation["charter_id"] = str(transit_charter_context["charter_id"])
+	if not transit_edit_context.is_empty():
+		operation["edit_id"] = str(transit_edit_context["id"])
+		operation["source_revision"] = str(transit_edit_context["source_revision"])
+		operation["source_topology"] = str(transit_edit_context["source_topology"])
+	elif not transit_charter_context.is_empty(): operation["charter_id"] = str(transit_charter_context["charter_id"])
 	return operation
 
 func _transit_route_preview(include_hover := false) -> Dictionary:
@@ -1117,7 +1198,11 @@ func _transit_route_preview(include_hover := false) -> Dictionary:
 	var key := _transit_preview_identity(positions)
 	if not include_hover and transit_preview_key == key: return transit_preview
 	var result: Dictionary = TransitPlanning.preview(model.world,positions)
-	if not transit_charter_context.is_empty():
+	if not transit_edit_context.is_empty():
+		var operation := _transit_route_operation(result)
+		operation["stop_positions"] = positions
+		result = TransitRework.preview(model.world,operation)
+	elif not transit_charter_context.is_empty():
 		var anchor := TransitCharter.preview(model.world,result,str(transit_charter_context["charter_id"]))
 		result["charter_anchor"] = anchor
 		if not bool(anchor.get("accepted",false)):
@@ -1158,9 +1243,9 @@ func _transit_community_names(raw_ids: Variant) -> Array[String]:
 		if not names.has(name): names.append(name)
 	return names
 
-func _transit_line_names(raw_ids: Variant) -> Array[String]:
+func _transit_line_names(raw_ids: Variant, city: ContinuousWorld = null) -> Array[String]:
 	var names: Array[String] = []
-	var world := model.world if model != null and model.world != null else shown_world
+	var world := city if city != null else (model.world if model != null and model.world != null else shown_world)
 	if world == null: return names
 	for raw_id in raw_ids:
 		var line_id := str(raw_id)
@@ -1171,13 +1256,13 @@ func _transit_line_names(raw_ids: Variant) -> Array[String]:
 			break
 	return names
 
-func _transit_line_ids_at_stop(stop_id: String) -> Array[String]:
+func _transit_line_ids_at_stop(stop_id: String, city: ContinuousWorld = null) -> Array[String]:
 	## A route preview has no authored line id yet.  Resolve the existing
 	## memberships directly so a second player line can advertise a transfer
 	## before it is submitted.  Keep the fallback tolerant of old snapshots that
 	## do not carry the cached `line_ids` field on a stop record.
 	var ids: Array[String] = []
-	var world := model.world if model != null and model.world != null else shown_world
+	var world := city if city != null else (model.world if model != null and model.world != null else shown_world)
 	if world == null or stop_id.is_empty(): return ids
 	var record := world.transit_stop_record(stop_id)
 	for raw_id in record.get("line_ids",[]):
@@ -1201,7 +1286,9 @@ func _transit_transfer_stop_ids(preview: Dictionary, summary: Dictionary = {}) -
 	for raw_stop in stops:
 		var stop_id := str(raw_stop.get("id","") if raw_stop is Dictionary else raw_stop)
 		if stop_id.is_empty() or ids.has(stop_id): continue
-		if not _transit_line_ids_at_stop(stop_id).is_empty(): ids.append(stop_id)
+		var members := _transit_line_ids_at_stop(stop_id)
+		var own_id := str(preview.get("edit_id",""))
+		if members.any(func(id: String) -> bool: return own_id.is_empty() or id != own_id): ids.append(stop_id)
 	return ids
 
 func _transit_transfer_feedback(preview: Dictionary, summary: Dictionary = {}) -> Dictionary:
@@ -1210,6 +1297,8 @@ func _transit_transfer_feedback(preview: Dictionary, summary: Dictionary = {}) -
 	var details: Array[String] = []
 	for stop_id in transfer_stop_ids:
 		var stop_line_ids := _transit_line_ids_at_stop(stop_id)
+		var own_id := str(preview.get("edit_id",""))
+		if not own_id.is_empty(): stop_line_ids.erase(own_id)
 		var line_names := _transit_line_names(stop_line_ids)
 		for line_id in stop_line_ids:
 			if not line_ids.has(line_id): line_ids.append(line_id)
@@ -1237,7 +1326,7 @@ func _transit_station_feedback(station: Dictionary) -> Dictionary:
 	var stop_id := str(station.get("id",""))
 	var line_ids: Array = station.get("line_ids",[]).duplicate(true)
 	var line_names: Array = station.get("line_names",[]).duplicate(true)
-	var world = model.world if model != null and model.world != null else shown_world
+	var world = shown_world
 	var demand := 0.0
 	var visits := 0
 	var transfers := 0
@@ -1329,9 +1418,9 @@ func _transit_station_at(position: Vector2) -> Dictionary:
 	if best_id.is_empty(): return {}
 	var record := shown_world.transit_stop_record(best_id)
 	if record.is_empty(): return {}
-	var line_ids: Array = _transit_line_ids_at_stop(best_id)
+	var line_ids: Array = _transit_line_ids_at_stop(best_id,shown_world)
 	return {"id":best_id,"position":best_position,"record":record,"line_ids":line_ids,
-		"line_names":_transit_line_names(line_ids),"distance":best_distance}
+		"line_names":_transit_line_names(line_ids,shown_world),"distance":best_distance}
 
 func _append_transit_stop(position: Vector2) -> void:
 	_invalidate_transit_preview()
@@ -1363,8 +1452,9 @@ func _submit_transit_route() -> void:
 		return
 	var result: Dictionary = model.submit(_transit_route_operation(preview))
 	if bool(result.get("accepted",false)):
-		if not transit_charter_context.is_empty(): planning_guide.queue_transit_anchor_action(preview,result,transit_charter_context)
-		_message("公交线路已排入下一乐句 · %d站 · 覆盖%d栋、%d个社区" % [transit_route_stops.size(),preview.get("covered_building_ids",[]).size(),preview.get("community_ids",[]).size()])
+		if not transit_edit_context.is_empty(): planning_guide.queue_transit_edit_action(preview,result,transit_edit_context)
+		elif not transit_charter_context.is_empty(): planning_guide.queue_transit_anchor_action(preview,result,transit_charter_context)
+		_message(("原线路改站已排入下一乐句" if not transit_edit_context.is_empty() else "公交线路已排入下一乐句")+" · %d站 · 覆盖%d栋、%d个社区" % [transit_route_stops.size(),preview.get("covered_building_ids",[]).size(),preview.get("community_ids",[]).size()])
 		_clear_transit_route()
 		menu.hide()
 	else:
@@ -1670,6 +1760,7 @@ func _verb(verb: String) -> void:
 			planning_guide.open_tool()
 		return
 	if verb == "plan_transit":
+		_clear_transit_route()
 		_invalidate_transit_preview()
 		_clear_partial_draft()
 		reservation_draw_mode = false
@@ -1858,6 +1949,7 @@ func _input(event: InputEvent) -> void:
 				if planning_guide.opened and planning_guide.stage == "transit_anchor":
 					planning_guide.stage = "anchor"
 					planning_guide.refresh()
+				elif planning_guide.opened and planning_guide.stage == "transit_edit": planning_guide.hide_tool()
 				_message("公交线路预影已取消")
 				return
 			if partial_mode or partial_polygon_mode:
@@ -2181,8 +2273,8 @@ func _process(delta: float) -> void:
 		elif preview_requested:
 			if transit_route_mode:
 				var operation := _transit_route_operation({})
-				if _transit_charter_is_current() and result.get("request_key",[]) == _transit_preview_identity(operation["stop_positions"]): _play_preview_pcm(result["pcm"])
-				elif not transit_charter_context.is_empty() and _transit_charter_is_current(): _request_preview()
+				if _transit_source_is_current() and result.get("request_key",[]) == _transit_preview_identity(operation["stop_positions"]): _play_preview_pcm(result["pcm"])
+				elif (not transit_charter_context.is_empty() or not transit_edit_context.is_empty()) and _transit_source_is_current(): _request_preview()
 				else: _cancel_preview_playback()
 			elif not planning_guide.opened and result.get("request_key",preview_context_key) == preview_context_key: _play_preview_pcm(result["pcm"])
 			else: _cancel_preview_playback()

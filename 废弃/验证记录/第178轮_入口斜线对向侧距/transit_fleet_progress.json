@@ -1,0 +1,635 @@
+{
+  "checks": {
+    "after_edit_all_active_default_fleet_agents_keep_progressing": false,
+    "after_edit_author_vehicle_does_not_remain_blocked": true,
+    "after_edit_author_vehicle_reaches_real_stops_with_default_fleet": true,
+    "before_edit_all_active_default_fleet_agents_keep_progressing": true,
+    "before_edit_author_vehicle_does_not_remain_blocked": true,
+    "before_edit_author_vehicle_reaches_real_stops_with_default_fleet": true,
+    "fixture_keeps_all_default_four_vehicles_and_ten_pedestrians": true,
+    "production_scenery_adds_real_authored_service_vehicle": true,
+    "rework_retains_the_existing_author_vehicle_in_full_fleet": true,
+    "same_author_line_accepts_real_connected_rework": true,
+    "three_actual_midroad_stations_queue_one_author_line": true
+  },
+  "evidence": {
+    "after_edit": {
+      "arrivals": 6,
+      "destination": "west-outer-2",
+      "fleet_progress": {
+        "vehicle-0": {
+          "max_still": 1.8,
+          "position": "(7.772205, 14.88639)",
+          "still": 0.0,
+          "travelled": 65.7764924640287
+        },
+        "vehicle-1": {
+          "max_still": 3.4,
+          "position": "(6.634631, 19.88438)",
+          "still": 0.0,
+          "travelled": 60.7969674156539
+        },
+        "vehicle-2": {
+          "max_still": 1.8,
+          "position": "(12.77413, 9.149961)",
+          "still": 0.0,
+          "travelled": 62.0393401964102
+        },
+        "vehicle-3": {
+          "max_still": 5.34999999999999,
+          "position": "(7.770862, 14.12651)",
+          "still": 5.34999999999999,
+          "travelled": 56.219523396343
+        },
+        "vehicle-line-player-line-1": {
+          "max_still": 3.15,
+          "position": "(6.803667, 19.83736)",
+          "still": 1.9,
+          "travelled": 53.9723418759968
+        },
+        "walker-0": {
+          "max_still": 13.4500000000001,
+          "position": "(8.183144, 14.01462)",
+          "still": 13.4500000000001,
+          "travelled": 32.2240742285321
+        },
+        "walker-1": {
+          "max_still": 3.99999999999999,
+          "position": "(13.13532, 5.400465)",
+          "still": 0.0,
+          "travelled": 37.7691005663364
+        },
+        "walker-2": {
+          "max_still": 1.85,
+          "position": "(12.63145, 10.9727)",
+          "still": 0.0,
+          "travelled": 39.2568862979533
+        },
+        "walker-3": {
+          "max_still": 3.0,
+          "position": "(8.978925, 13.96235)",
+          "still": 2.3,
+          "travelled": 35.0757864508469
+        },
+        "walker-4": {
+          "max_still": 13.3000000000001,
+          "position": "(8.639057, 13.97182)",
+          "still": 13.3000000000001,
+          "travelled": 29.7167735798284
+        },
+        "walker-5": {
+          "max_still": 0.75,
+          "position": "(20.26077, 11.55796)",
+          "still": 0.0,
+          "travelled": 36.656288208309
+        },
+        "walker-6": {
+          "max_still": 0.95,
+          "position": "(20.02043, 9.859047)",
+          "still": 0.0,
+          "travelled": 36.551209732017
+        },
+        "walker-7": {
+          "max_still": 5.74999999999999,
+          "position": "(12.84676, 5.170968)",
+          "still": 0.0,
+          "travelled": 35.7591561079607
+        },
+        "walker-8": {
+          "max_still": 2.45,
+          "position": "(13.14056, 8.186838)",
+          "still": 0.0,
+          "travelled": 36.7998318826867
+        },
+        "walker-9": {
+          "max_still": 13.5000000000001,
+          "position": "(8.523026, 14.02357)",
+          "still": 13.5000000000001,
+          "travelled": 32.300453310716
+        }
+      },
+      "max_still_seconds": 3.15,
+      "new_flow_observations": 45,
+      "position": "(6.803667, 19.83736)",
+      "travelled": 53.9723418759968
+    },
+    "before_edit": {
+      "arrivals": 7,
+      "destination": "stop-58662193da1739a7cd66",
+      "fleet_progress": {
+        "vehicle-0": {
+          "max_still": 1.55,
+          "position": "(13.08789, 14.00704)",
+          "still": 0.8,
+          "travelled": 68.5531507043925
+        },
+        "vehicle-1": {
+          "max_still": 4.24999999999999,
+          "position": "(6.625444, 19.87245)",
+          "still": 0.0,
+          "travelled": 59.7592462688044
+        },
+        "vehicle-2": {
+          "max_still": 1.4,
+          "position": "(12.89031, 8.106126)",
+          "still": 0.0,
+          "travelled": 63.6018987230345
+        },
+        "vehicle-3": {
+          "max_still": 1.7,
+          "position": "(8.09123, 19.86)",
+          "still": 0.0,
+          "travelled": 59.9252552530925
+        },
+        "vehicle-line-player-line-1": {
+          "max_still": 5.04999999999999,
+          "position": "(13.06336, 9.691023)",
+          "still": 0.0,
+          "travelled": 49.5353605162381
+        },
+        "walker-0": {
+          "max_still": 1.3,
+          "position": "(13.13105, 5.331707)",
+          "still": 0.0,
+          "travelled": 40.2719818307669
+        },
+        "walker-1": {
+          "max_still": 1.15,
+          "position": "(12.70497, 9.75098)",
+          "still": 0.0,
+          "travelled": 41.1303159473464
+        },
+        "walker-2": {
+          "max_still": 2.65,
+          "position": "(9.386719, 14.0463)",
+          "still": 0.0,
+          "travelled": 37.0893022451055
+        },
+        "walker-3": {
+          "max_still": 2.1,
+          "position": "(11.9004, 10.90172)",
+          "still": 0.0,
+          "travelled": 37.2238532818265
+        },
+        "walker-4": {
+          "max_still": 2.95,
+          "position": "(11.14842, 13.9019)",
+          "still": 0.0,
+          "travelled": 37.1357097738073
+        },
+        "walker-5": {
+          "max_still": 0.75,
+          "position": "(19.94505, 12.39698)",
+          "still": 0.0,
+          "travelled": 36.6851593216852
+        },
+        "walker-6": {
+          "max_still": 0.95,
+          "position": "(19.44785, 7.487207)",
+          "still": 0.0,
+          "travelled": 35.817883548254
+        },
+        "walker-7": {
+          "max_still": 5.44999999999999,
+          "position": "(12.86478, 12.09077)",
+          "still": 0.0,
+          "travelled": 32.0800595511464
+        },
+        "walker-8": {
+          "max_still": 3.15,
+          "position": "(12.70503, 7.933607)",
+          "still": 2.25,
+          "travelled": 34.1321875140166
+        },
+        "walker-9": {
+          "max_still": 8.04999999999998,
+          "position": "(12.30842, 1.942915)",
+          "still": 0.0,
+          "travelled": 32.138501678477
+        }
+      },
+      "max_still_seconds": 5.04999999999999,
+      "new_flow_observations": 50,
+      "position": "(13.06336, 9.691023)",
+      "travelled": 49.5353605162381
+    },
+    "default_pedestrians": 10,
+    "default_vehicles": 4,
+    "diagnostics": [
+      {
+        "access": {
+          "along": 5.04457092285156,
+          "from": "west-2",
+          "gap": 0.0146198272705078,
+          "length": 5.59999990463257,
+          "position": [
+            8.18314361572266,
+            14.0
+          ],
+          "road": "west-cross-2",
+          "to": "west-outer-2"
+        },
+        "allowed": 0.000000569820404028309,
+        "destination": "entrance",
+        "nearby": [
+          {
+            "ahead": -0.387857407331467,
+            "destination": "west-outer-2",
+            "direction": "(0.030639, -0.99953)",
+            "gap": 0.963773846626282,
+            "heading_dot": 0.00432747788727283,
+            "key": "vehicle-0",
+            "kind": "carriage",
+            "ordinal": 0,
+            "position": "(7.772205, 14.88639)",
+            "priority": 0,
+            "remaining": 0.88998141784114,
+            "road": "west-outer-road-3",
+            "road_along": 0.882281556725502,
+            "road_from": "west-outer-2",
+            "road_length": 6.11560153961182,
+            "road_to": "west-outer-3",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          },
+          {
+            "ahead": -0.409194469451904,
+            "destination": "west-outer-2",
+            "direction": "(-0.024538, -0.999699)",
+            "gap": 0.427196025848389,
+            "heading_dot": -0.0508346222341061,
+            "key": "vehicle-3",
+            "kind": "carriage",
+            "ordinal": 3,
+            "position": "(7.770862, 14.12651)",
+            "priority": 24,
+            "remaining": 0.129993236558559,
+            "road": "west-cross-2",
+            "road_along": 5.45685243606567,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          },
+          {
+            "ahead": 0.794130146503448,
+            "destination": "entrance",
+            "direction": "(-0.999612, 0.027854)",
+            "gap": 0.797496020793915,
+            "heading_dot": -0.998533010482788,
+            "key": "walker-3",
+            "kind": "walker",
+            "ordinal": 3,
+            "position": "(8.978925, 13.96235)",
+            "priority": 28,
+            "remaining": 1.35173471041206,
+            "road": "west-cross-2",
+            "road_along": 4.24878978729248,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          },
+          {
+            "ahead": 0.454629451036453,
+            "destination": "entrance",
+            "direction": "(-0.999612, 0.027854)",
+            "gap": 0.45791819691658,
+            "heading_dot": -0.998533010482788,
+            "key": "walker-4",
+            "kind": "walker",
+            "ordinal": 4,
+            "position": "(8.639057, 13.97182)",
+            "priority": 36,
+            "remaining": 1.01173482279781,
+            "road": "west-cross-2",
+            "road_along": 4.58865737915039,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          },
+          {
+            "ahead": 0.340000569820404,
+            "destination": "entrance",
+            "direction": "(0.999654, 0.026313)",
+            "gap": 0.340000569820404,
+            "heading_dot": 1.0,
+            "key": "walker-9",
+            "kind": "walker",
+            "ordinal": 9,
+            "position": "(8.523026, 14.02357)",
+            "priority": 76,
+            "remaining": 18.8109673446788,
+            "road": "west-cross-2",
+            "road_along": 4.70468807220459,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.000000569820404028309,
+            "wait": 0.0
+          }
+        ],
+        "phase": "after_edit_end",
+        "remaining": 15.860465060047,
+        "seconds": 228.000000000018,
+        "speed": 0.36999999999985,
+        "vehicle": {
+          "direction": "(0.999654, 0.026313)",
+          "key": "walker-0",
+          "kind": "walker",
+          "ordinal": 0,
+          "position": "(8.183144, 14.01462)",
+          "priority": 4,
+          "road": "west-cross-2",
+          "road_along": 5.04457092285156,
+          "road_from": "west-2",
+          "road_length": 5.59999990463257,
+          "road_to": "west-outer-2"
+        },
+        "wait": 0.0
+      },
+      {
+        "access": {
+          "along": 4.58865737915039,
+          "from": "west-2",
+          "gap": 0.0281810760498047,
+          "length": 5.59999990463257,
+          "position": [
+            8.63905715942383,
+            14.0
+          ],
+          "road": "west-cross-2",
+          "to": "west-outer-2"
+        },
+        "allowed": 0.0,
+        "destination": "entrance",
+        "nearby": [
+          {
+            "ahead": 0.891990602016449,
+            "destination": "west-outer-2",
+            "direction": "(0.030639, -0.99953)",
+            "gap": 1.26011097431183,
+            "heading_dot": -0.0584679171442986,
+            "key": "vehicle-0",
+            "kind": "carriage",
+            "ordinal": 0,
+            "position": "(7.772205, 14.88639)",
+            "priority": 0,
+            "remaining": 0.88998141784114,
+            "road": "west-outer-road-3",
+            "road_along": 0.882281556725502,
+            "road_from": "west-outer-2",
+            "road_length": 6.11560153961182,
+            "road_to": "west-outer-3",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          },
+          {
+            "ahead": 0.872167110443115,
+            "destination": "west-outer-2",
+            "direction": "(-0.024538, -0.999699)",
+            "gap": 0.881869256496429,
+            "heading_dot": -0.00331724435091019,
+            "key": "vehicle-3",
+            "kind": "carriage",
+            "ordinal": 3,
+            "position": "(7.770862, 14.12651)",
+            "priority": 24,
+            "remaining": 0.129993236558559,
+            "road": "west-cross-2",
+            "road_along": 5.45685243606567,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          },
+          {
+            "ahead": 0.456928849220276,
+            "destination": "entrance",
+            "direction": "(0.999654, 0.026313)",
+            "gap": 0.45791819691658,
+            "heading_dot": -0.998533010482788,
+            "key": "walker-0",
+            "kind": "walker",
+            "ordinal": 0,
+            "position": "(8.183144, 14.01462)",
+            "priority": 4,
+            "remaining": 15.860465060047,
+            "road": "west-cross-2",
+            "road_along": 5.04457092285156,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.0,
+            "wait": 0.0
+          },
+          {
+            "ahead": -0.33999952673912,
+            "destination": "entrance",
+            "direction": "(-0.999612, 0.027854)",
+            "gap": 0.339999496936798,
+            "heading_dot": 1.00000011920929,
+            "key": "walker-3",
+            "kind": "walker",
+            "ordinal": 3,
+            "position": "(8.978925, 13.96235)",
+            "priority": 28,
+            "remaining": 1.35173471041206,
+            "road": "west-cross-2",
+            "road_along": 4.24878978729248,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          },
+          {
+            "ahead": 0.117427051067352,
+            "destination": "entrance",
+            "direction": "(0.999654, 0.026313)",
+            "gap": 0.127046868205071,
+            "heading_dot": -0.998533010482788,
+            "key": "walker-9",
+            "kind": "walker",
+            "ordinal": 9,
+            "position": "(8.523026, 14.02357)",
+            "priority": 76,
+            "remaining": 18.8109673446788,
+            "road": "west-cross-2",
+            "road_along": 4.70468807220459,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          }
+        ],
+        "phase": "after_edit_end",
+        "remaining": 1.01173482279781,
+        "seconds": 228.000000000018,
+        "speed": 0.36999999999985,
+        "vehicle": {
+          "direction": "(-0.999612, 0.027854)",
+          "key": "walker-4",
+          "kind": "walker",
+          "ordinal": 4,
+          "position": "(8.639057, 13.97182)",
+          "priority": 36,
+          "road": "west-cross-2",
+          "road_along": 4.58865737915039,
+          "road_from": "west-2",
+          "road_length": 5.59999990463257,
+          "road_to": "west-outer-2"
+        },
+        "wait": 0.0
+      },
+      {
+        "access": {
+          "along": 4.70468807220459,
+          "from": "west-2",
+          "gap": 0.0235662460327148,
+          "length": 5.59999990463257,
+          "position": [
+            8.52302646636963,
+            14.0
+          ],
+          "road": "west-cross-2",
+          "to": "west-outer-2"
+        },
+        "allowed": 0.0,
+        "destination": "entrance",
+        "nearby": [
+          {
+            "ahead": -0.727857947349548,
+            "destination": "west-outer-2",
+            "direction": "(0.030639, -0.99953)",
+            "gap": 1.14376747608185,
+            "heading_dot": 0.00432747788727283,
+            "key": "vehicle-0",
+            "kind": "carriage",
+            "ordinal": 0,
+            "position": "(7.772205, 14.88639)",
+            "priority": 0,
+            "remaining": 0.88998141784114,
+            "road": "west-outer-road-3",
+            "road_along": 0.882281556725502,
+            "road_from": "west-outer-2",
+            "road_length": 6.11560153961182,
+            "road_to": "west-outer-3",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          },
+          {
+            "ahead": -0.749195039272308,
+            "destination": "west-outer-2",
+            "direction": "(-0.024538, -0.999699)",
+            "gap": 0.759176909923553,
+            "heading_dot": -0.0508346222341061,
+            "key": "vehicle-3",
+            "kind": "carriage",
+            "ordinal": 3,
+            "position": "(7.770862, 14.12651)",
+            "priority": 24,
+            "remaining": 0.129993236558559,
+            "road": "west-cross-2",
+            "road_along": 5.45685243606567,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          },
+          {
+            "ahead": -0.340000569820404,
+            "destination": "entrance",
+            "direction": "(0.999654, 0.026313)",
+            "gap": 0.340000569820404,
+            "heading_dot": 1.0,
+            "key": "walker-0",
+            "kind": "walker",
+            "ordinal": 0,
+            "position": "(8.183144, 14.01462)",
+            "priority": 4,
+            "remaining": 15.860465060047,
+            "road": "west-cross-2",
+            "road_along": 5.04457092285156,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          },
+          {
+            "ahead": 0.454129606485367,
+            "destination": "entrance",
+            "direction": "(-0.999612, 0.027854)",
+            "gap": 0.459989994764328,
+            "heading_dot": -0.998533010482788,
+            "key": "walker-3",
+            "kind": "walker",
+            "ordinal": 3,
+            "position": "(8.978925, 13.96235)",
+            "priority": 28,
+            "remaining": 1.35173471041206,
+            "road": "west-cross-2",
+            "road_along": 4.24878978729248,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.05,
+            "wait": 0.0
+          },
+          {
+            "ahead": 0.11462888866663,
+            "destination": "entrance",
+            "direction": "(-0.999612, 0.027854)",
+            "gap": 0.127046868205071,
+            "heading_dot": -0.998533010482788,
+            "key": "walker-4",
+            "kind": "walker",
+            "ordinal": 4,
+            "position": "(8.639057, 13.97182)",
+            "priority": 36,
+            "remaining": 1.01173482279781,
+            "road": "west-cross-2",
+            "road_along": 4.58865737915039,
+            "road_from": "west-2",
+            "road_length": 5.59999990463257,
+            "road_to": "west-outer-2",
+            "single_obstacle_allowed": 0.0,
+            "wait": 0.0
+          }
+        ],
+        "phase": "after_edit_end",
+        "remaining": 18.8109673446788,
+        "seconds": 228.000000000018,
+        "speed": 0.36999999999985,
+        "vehicle": {
+          "direction": "(0.999654, 0.026313)",
+          "key": "walker-9",
+          "kind": "walker",
+          "ordinal": 9,
+          "position": "(8.523026, 14.02357)",
+          "priority": 76,
+          "road": "west-cross-2",
+          "road_along": 4.70468807220459,
+          "road_from": "west-2",
+          "road_length": 5.59999990463257,
+          "road_to": "west-outer-2"
+        },
+        "wait": 0.0
+      }
+    ],
+    "line_id": "player-line-1"
+  },
+  "failures": [
+    "after_edit_all_active_default_fleet_agents_keep_progressing"
+  ],
+  "passed": false,
+  "scope": "Dummy production Scenery.sync, real default fleet and authored station edits. Simulated audible-frame time; no physical device or audio timing claim."
+}

@@ -2,6 +2,7 @@ class_name TransitPlanning
 extends RefCounted
 ## Authored stop/line intent, separate from the physical road graph and derived routes.
 const CharterAnchor = preload("res://scripts/world/transit_charter_anchor.gd")
+const LineRework = preload("res://scripts/world/transit_line_rework.gd")
 const STOP_MERGE_DISTANCE := 0.18
 const STOP_ACCESS_DISTANCE := 0.85
 const WALK_RADIUS := 4.5
@@ -166,7 +167,7 @@ static func coverage_summary(world: RefCounted, payload: Dictionary) -> Dictiona
 			# candidate route would become the second service at this station. Once
 			# settled, the authoritative record contains both IDs and reaches the
 			# same branch.
-			if (preview_only and line_ids.size() >= 1) or (not preview_only and line_ids.size() > 1):
+			if (preview_only and line_ids.size() >= 1) or (not preview_only and line_ids.any(func(id: Variant) -> bool: return str(id) != str(payload.get("id","")))):
 				transfer_stop_ids.append(stop_id)
 	transfer_stop_ids.sort()
 
@@ -391,6 +392,7 @@ static func preview(world: RefCounted, positions: Array) -> Dictionary:
 	return result
 
 static func commit(world: RefCounted, operation: Dictionary, frame: int) -> Dictionary:
+	if not str(operation.get("edit_id","")).is_empty(): return LineRework.commit(world,operation,frame)
 	if str(operation.get("source_topology","")) != str(world.network.topology):
 		return {"accepted":false,"reason":"道路在乐句边界前已经变化，请重新规划线路"}
 	var plan := preview(world,operation.get("stop_positions",[]))
@@ -445,6 +447,11 @@ static func derived_lines(world: RefCounted) -> Array[Dictionary]:
 			"intent_stop_ids":intent["stop_ids"].duplicate(),"route_stops":plan["stop_ids"].duplicate(),"route_mode":plan["route_mode"],"legs":plan["legs"],"path":plan["path"],"edges":plan["edges"],
 			"directional_edges":plan["directional_edges"],"community_ids":plan["community_ids"],"covered_building_ids":plan["covered_building_ids"],
 			"coverage":coverage,"route_role":coverage.get("route_role","社区往返线")}
+		line_payload["original_event_id"] = int(intent.get("event_id",0))
+		line_payload["edit_revision"] = int(intent.get("revision",0))
+		line_payload["source_revision"] = LineRework._revision(intent)
+		for key: String in ["edited_frame","edit_event_id","retained_stop_ids"]:
+			if intent.has(key): line_payload[key] = intent[key].duplicate() if intent[key] is Array else intent[key]
 		if not str(intent.get("charter_id","")).is_empty():
 			CharterAnchor.apply(line_payload,CharterAnchor.settled_coverage(world,plan,intent))
 		result.append(line_contract(world,line_payload))
