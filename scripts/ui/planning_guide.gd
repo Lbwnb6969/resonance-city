@@ -673,6 +673,10 @@ func _next_action_detail() -> String:
 	if next_action.get("state","") == "expired":
 		return str(next_action.get("reason","上一项规划提示已过期"))+"；按P重新规划另一片社区。"
 	var choice: String = str({"park":"公园","civic":"文化馆","none":"暂不建设"}.get(str(next_action.get("choice","")),"公共规划"))
+	var combo_hint := ""
+	var raw_combo: Variant = next_action.get("community_combo",{})
+	if raw_combo is Dictionary and int(raw_combo.get("count",0)) > 1:
+		combo_hint = str(raw_combo.get("message",raw_combo.get("next","")))
 	var community_name: String = str(next_action.get("community_id",""))
 	if demo != null and demo.shown_world != null:
 		community_name = str(demo.shown_world.communities.get(str(next_action.get("community_id","")),{}).get("name",community_name))
@@ -688,6 +692,7 @@ func _next_action_detail() -> String:
 			if not str(row.get("next","")).is_empty():
 				partial_lines.append("下一步 · "+str(row["next"]).replace("\n","；"))
 				break
+		if not combo_hint.is_empty(): partial_lines.append("组合机会 · "+combo_hint)
 		partial_lines.append("定位文化馆可搬迁或扩容；剩余留地可再兑现。" if str(next_action.get("choice","")) == "civic" else "定位公园可继续搬迁；剩余留地可再兑现。")
 		return "\n".join(partial_lines)
 	var hint := "点击下方定位落地房屋，进入已有调音、独听与聚焦入口。"
@@ -698,7 +703,10 @@ func _next_action_detail() -> String:
 			if not row.is_empty() and not str(row.get("next","")).is_empty():
 				hint = str(row["next"]).replace("\n","；")+"\n点击下方定位这片社区，继续由你决定。"
 				break
-	return "%s · %s\n%s\n%s" % [choice,community_name,hint,"规划影响已经兑现，下一步可以改一栋的音、聚焦主题或重新规划另一片社区。"]
+	var lines: Array[String] = ["%s · %s" % [choice,community_name],hint]
+	if not combo_hint.is_empty(): lines.append("组合机会 · "+combo_hint)
+	lines.append("规划影响已经兑现，下一步可以改一栋的音、聚焦主题或重新规划另一片社区。")
+	return "\n".join(lines)
 
 func _take_theme_building() -> void:
 	var theme: Dictionary = demo.model.audible_theme()
@@ -1020,6 +1028,10 @@ func _show_comparison() -> void:
 		lines.append(prefix+title+(" · 下一句共%d栋 · " if partial else " · 下一句%d栋 · ") % int(variant["houses"])+service+" · "+role)
 	var chosen: Dictionary = comparison["variants"][anchor_kind]
 	if chosen["accepted"]:
+		var raw_combo: Variant = chosen.get("opportunity_preview",{}).get("community_combo",{}) if chosen.get("opportunity_preview",{}) is Dictionary else {}
+		if raw_combo is Dictionary and int(raw_combo.get("count",0)) > 1:
+			var combo_message := str(raw_combo.get("message",raw_combo.get("next","")))
+			if not combo_message.is_empty(): lines.append("组合听觉机会 · "+combo_message)
 		var chosen_items := _comparison_opportunity_items(chosen)
 		if partial:
 			var baseline: Dictionary = comparison["variants"].get("none",{})

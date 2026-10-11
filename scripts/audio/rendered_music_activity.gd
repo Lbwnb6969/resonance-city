@@ -23,7 +23,7 @@ func capture(rows: Array[Dictionary],start: int,count: int,rate: int,duck: float
 		var key := str(row["node_key"])+":"+str(row["event_id"])
 		var previous: Dictionary = tails.get(key,{})
 		var merge := not previous.is_empty() and int(previous["render_end"]) == int(row["render_start"])
-		for field in ["target","fade_step","amplitude","stereo_gain","expression","rate","duck_target","duck_step"]:
+		for field in ["target","fade_step","amplitude","stereo_gain","expression","rate","duck_target","duck_step","public_site_ids","public_site_kinds"]:
 			if merge and previous[field] != row[field]: merge = false
 		if merge:
 			var distance := int(row["level_frame"])-int(previous["level_frame"])
@@ -66,9 +66,16 @@ func audible(audible_frame: float) -> Array[Dictionary]:
 			events[id]["strength"] = float(events[id]["strength"])+strength
 			events[id]["render_start"] = mini(int(events[id]["render_start"]),int(segment["render_start"]))
 			events[id]["render_end"] = maxi(int(events[id]["render_end"]),int(segment["render_end"]))
+			# A lifecycle can span a runtime-only public-site refresh. Preserve every
+			# authored site represented by the audible event while keeping one event row.
+			for field in ["public_site_ids","public_site_kinds"]:
+				var merged: Array = events[id].get(field,[])
+				for value in segment.get(field,[]):
+					if value not in merged: merged.append(value)
+				events[id][field] = merged
 		else:
 			var event: Dictionary = {}
-			for field in ["event_id","source_event_id","source_id","receiver_id","generation","source_onset","onset","end_frame","pitch","cid","render_start","render_end"]: event[field] = segment[field]
+			for field in ["event_id","source_event_id","source_id","receiver_id","generation","source_onset","onset","end_frame","pitch","cid","render_start","render_end","public_site_ids","public_site_kinds"]: event[field] = segment.get(field,[])
 			event["strength"] = strength
 			events[id] = event
 	for event in events.values(): result.append(event)

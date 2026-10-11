@@ -137,8 +137,13 @@ static func _fallback_record(preview: Dictionary) -> Dictionary:
 	if records.is_empty(): return {}
 	return records[0].duplicate(true)
 
+static func _community_combo(preview: Dictionary) -> Dictionary:
+	var raw: Variant = preview.get("community_combo",{})
+	return raw.duplicate(true) if raw is Dictionary else {}
+
 static func _action_from_preview(preview: Dictionary, variant: Dictionary, choice: String, community_id: String = "") -> Dictionary:
 	var token := _token(preview)
+	var combo := _community_combo(preview)
 	var accepted := bool(variant.get("accepted",preview.get("accepted",true)))
 	var records: Array = preview.get("communities",[])
 	var affected := _as_string_array(preview.get("affected_communities",[]))
@@ -227,6 +232,7 @@ static func _action_from_preview(preview: Dictionary, variant: Dictionary, choic
 		"affected_communities":affected,
 		"roles":summary,
 		"community_targets":community_targets,
+		"community_combo":combo,
 		"qualification":selected.get("qualification",{}).duplicate(true) if not selected.is_empty() else {},
 		"world_version":token["world_version"].duplicate(true),
 		"source_frame":token["source_frame"],
@@ -250,7 +256,7 @@ static func from_comparison(comparison: Dictionary, choice: String, community_id
 		preview = {"choice":choice,"accepted":variant.get("accepted",false),"reason":variant.get("reason",""),
 			"source_version":comparison.get("source_version",[]),"source_frame":comparison.get("source_frame",-1),
 			"boundary_frame":comparison.get("boundary_frame",-1),"world_version":[],"communities":variant.get("opportunities",[]),
-			"affected_communities":[],"anchor_ids":[]}
+			"affected_communities":[],"anchor_ids":[],"community_combo":variant.get("community_combo",{})}
 	return _action_from_preview(preview,variant,choice,community_id)
 
 static func is_current(action: Dictionary, world_version: Array, audible_frame: int = -1) -> bool:

@@ -41,6 +41,7 @@ var city_ground_layer: Node2D
 var water_flow: Node2D
 var community_label_layer: Node2D
 var music_activity_layer: Node2D
+var public_space_activity_layer: Node2D
 var overlay_key: Array = []
 var overlay_candidates: Array[Dictionary] = []
 var overlay_communities: Array[Dictionary] = []
@@ -189,6 +190,10 @@ func _ready() -> void:
 	music_activity_layer.name = "MusicActivity"
 	music_activity_layer.z_index = 60
 	add_child(music_activity_layer)
+	public_space_activity_layer = preload("res://scripts/visual/public_space_activity_layer.gd").new()
+	public_space_activity_layer.name = "PublicSpaceActivity"
+	public_space_activity_layer.z_index = 59
+	add_child(public_space_activity_layer)
 	tooltip = Label.new()
 	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tooltip.add_theme_font_size_override("font_size",15)
@@ -2082,6 +2087,7 @@ func _process(delta: float) -> void:
 	_sync_buildings()
 	_profile_frame("buildings_ms",frame_started)
 	music_activity_layer.sync(self)
+	public_space_activity_layer.sync(self)
 	frame_started = Time.get_ticks_usec()
 	scenery.sync(self)
 	_profile_frame("traffic_ms",frame_started)

@@ -3,6 +3,7 @@ extends RefCounted
 const Rules = preload("res://scripts/world/community_music_rules.gd")
 const Renderer = preload("res://scripts/audio/sample_renderer.gd")
 const Charter = preload("res://scripts/world/development_charter.gd")
+const River = preload("res://scripts/world/river_call_response.gd")
 
 static func _append_community_id(ids: Array[String], raw: Variant) -> void:
 	var cid := str(raw)
@@ -78,6 +79,89 @@ static func _schedule_facts(cid: String,score: Dictionary,roles: Dictionary) -> 
 	}
 	return facts
 
+## Aggregate the selected scope into one small, ephemeral continuation hint.
+## Each relation is derived from an already scheduled role or an existing
+## world relation; this never creates an extra voice, facility, or save field.
+static func community_combo(world: RefCounted,community_ids: Array,score: Dictionary) -> Dictionary:
+	var ids: Array[String] = []
+	for raw in community_ids:
+		var cid := str(raw)
+		if not cid.is_empty() and world.communities.has(cid) and not ids.has(cid): ids.append(cid)
+	var combo := {"contract":"P11-COMMUNITY-COMBO/v1","community_ids":ids.duplicate(),
+		"count":ids.size(),"mode":"single" if ids.size() < 2 else "multi",
+		"relations":[],"audible":{},"next":"","message":""}
+	if ids.size() < 2:
+		combo["next"] = "单社区规划 · 下一句沿当前主题条件继续"
+		combo["message"] = combo["next"]
+		return combo
+	var id_set: Dictionary = {}
+	for cid in ids: id_set[cid] = true
+	var theme: Dictionary = score.get("theme",{})
+	var response: Dictionary = score.get("response",{})
+	var theme_cid := str(theme.get("cid",""))
+	var response_source := str(response.get("source",""))
+	var response_cid := str(response.get("cid",""))
+	if id_set.has(theme_cid): combo["audible"]["lead_community"] = theme_cid
+	if id_set.has(response_source) and id_set.has(response_cid) and response_source != response_cid:
+		combo["audible"]["reply_source"] = response_source
+		combo["audible"]["reply_community"] = response_cid
+		combo["audible"]["reply_generation"] = int(response.get("generation",0))
+		combo["relations"].append({"kind":"river_response","source":response_source,
+			"receiver":response_cid,"pair_count":int(response.get("pair_count",0)),"audible":true})
+	# River pairs are a real spatial opportunity even before the unique response
+	# slot is scheduled. Keep only pairs whose two owning communities are in the
+	# player's selected scope and collapse them to deterministic community pairs.
+	var pair_keys: Dictionary = {}
+	for pair in River.pairs(world):
+		var a_id := str(pair.get("a",""))
+		var b_id := str(pair.get("b",""))
+		if not world.by_id.has(a_id) or not world.by_id.has(b_id): continue
+		var a_cid := str(world.by_id[a_id].get("community_id",""))
+		var b_cid := str(world.by_id[b_id].get("community_id",""))
+		if a_cid == b_cid or not id_set.has(a_cid) or not id_set.has(b_cid): continue
+		var pair_key := a_cid+"|"+b_cid if a_cid < b_cid else b_cid+"|"+a_cid
+		if pair_keys.has(pair_key):
+			pair_keys[pair_key]["pair_count"] = int(pair_keys[pair_key]["pair_count"])+1
+			pair_keys[pair_key]["best_score"] = maxf(float(pair_keys[pair_key]["best_score"]),float(pair.get("score",0.0)))
+			continue
+		pair_keys[pair_key] = {"kind":"river_opportunity","communities":[a_cid,b_cid],
+			"pair_count":1,"best_score":float(pair.get("score",0.0)),"audible":false}
+	for pair_key in pair_keys:
+		var relation: Dictionary = pair_keys[pair_key]
+		var already_audible := false
+		for existing in combo["relations"]:
+			if existing.get("kind","") != "river_response": continue
+			var source := str(existing.get("source",""))
+			var receiver := str(existing.get("receiver",""))
+			if relation["communities"].has(source) and relation["communities"].has(receiver):
+				already_audible = true
+				relation["audible"] = true
+				break
+		if not already_audible: combo["relations"].append(relation)
+	# Existing authored/derived transit lines provide another real cross-
+	# community connection. It remains a planning relation until actual audio
+	# role qualification says otherwise.
+	for line in world.transit_lines:
+		var line_ids: Array[String] = []
+		for raw in line.get("community_ids",line.get("line_community_ids",[])):
+			var cid := str(raw)
+			if id_set.has(cid) and not line_ids.has(cid): line_ids.append(cid)
+		if line_ids.size() < 2: continue
+		combo["relations"].append({"kind":"transit","communities":line_ids,
+			"line_id":str(line.get("id","")),"route_role":str(line.get("route_role","社区往返线")),"audible":false})
+	var audible: Dictionary = combo["audible"]
+	if audible.has("reply_source"):
+		combo["next"] = "%s主题 → %s应答，下一句沿真实两拍延迟继续听" % [str(world.communities[audible["reply_source"]].get("name",audible["reply_source"])),str(world.communities[audible["reply_community"]].get("name",audible["reply_community"]))]
+	elif audible.has("lead_community"):
+		var lead_name := str(world.communities[theme_cid].get("name",theme_cid))
+		combo["next"] = "%s在下一句保留主题；其他所选社区继续竞争已有声部" % lead_name
+	elif not combo["relations"].is_empty():
+		combo["next"] = "所选社区已有真实连接条件；下一句先听现有声部，再决定是否继续组合"
+	else:
+		combo["next"] = "已保留%d个社区的同一规划范围；下一句各自竞争已有声部，不自动新增声部" % ids.size()
+	combo["message"] = combo["next"]
+	return combo
+
 static func _opportunity_preview(world: RefCounted,site: Dictionary,choice: String,source_version: Array,
 		source_frame: int,boundary_frame: int,score: Dictionary,anchor: Dictionary,community_ids: Array) -> Dictionary:
 	var world_version: Array = Charter.version(world)
@@ -141,6 +225,7 @@ static func _opportunity_preview(world: RefCounted,site: Dictionary,choice: Stri
 			"facility":canonical.get("facility",{}).duplicate(true),
 		}
 		records.append(record)
+	var combo_summary := community_combo(world,community_ids,score)
 	return {
 		"source":{
 			"kind":"public_planning_variant",
@@ -160,6 +245,7 @@ static func _opportunity_preview(world: RefCounted,site: Dictionary,choice: Stri
 		"communities":records,
 		"anchor_ids":all_anchor_ids,
 		"affected_role_ids":all_affected_roles,
+		"community_combo":combo_summary,
 		"rules":["P11-COMMUNITY-THEME","P11-BASS-EXPRESSION","P11-COMMERCIAL-RHYTHM","P11-RIVER-RESPONSE"],
 	}
 

@@ -22,8 +22,10 @@ var sound_events: Array[Dictionary] = []
 var sound_overrides: Dictionary = {}
 var sound_trace: Array[Dictionary] = []
 const MusicActivity = preload("res://scripts/audio/rendered_music_activity.gd")
+const PublicActivity = preload("res://scripts/audio/rendered_public_activity.gd")
 # Runtime-only rendering evidence; freezes and restored works begin without it.
 var music_activity: RefCounted
+var public_activity: RefCounted
 var last_sample := Vector2.ZERO
 var transition_offset := Vector2.ZERO
 var transition_remaining := 0
@@ -183,11 +185,16 @@ func _mix_frame(_state: Dictionary, _at: int, _rate: int) -> Vector2:
 
 func enable_music_activity() -> void:
 	if music_activity == null: music_activity = MusicActivity.new()
+	if public_activity == null: public_activity = PublicActivity.new()
 	synth.capture_music_activity = true
 
 func audible_music_activity(audible_frame: float) -> Array[Dictionary]:
 	if music_activity == null: return []
 	return music_activity.audible(audible_frame)
+
+func audible_public_activity(audible_frame: float) -> Array[Dictionary]:
+	if public_activity == null: return []
+	return public_activity.audible(audible_frame)
 
 func _record_presentation(at: int) -> void:
 	if not presentation_history.is_empty() and int(presentation_history[-1]["frame"]) == at: return
@@ -290,6 +297,8 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 		var duck := float(state.get("_score_duck",1.0))
 		if music_activity != null:
 			music_activity.capture(synth.captured_music_segments,at,amount,rate,duck,duck_target,duck_step)
+			if public_activity != null:
+				public_activity.capture(synth.captured_public_segments,at,amount,rate,duck,duck_target,duck_step)
 		for i in range(block.size()):
 			var frame := at+i
 			var breath := 0.004*sin(TAU*130.81*float(frame)/rate) if empty_city else 0.0

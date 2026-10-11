@@ -33,6 +33,7 @@ var native_mixer: RefCounted = ClassDB.instantiate("CityPadMixer") if ClassDB.cl
 # Opt-in render telemetry. These fields are absent from saved/frozen synth state.
 var capture_music_activity := false
 var captured_music_segments: Array[Dictionary] = []
+var captured_public_segments: Array[Dictionary] = []
 
 func begin_continuous_era_transition(frame: int,target_era: int,rate: int) -> void:
 	var duration := maxi(1,roundi(4.0*60.0*float(rate)/120.0))
@@ -236,6 +237,10 @@ func _sync_rhythm_nodes() -> void:
 		if not rhythm_nodes.has(key):
 			rhythm_nodes[key] = part.duplicate(true)
 			rhythm_nodes[key]["key"] = key
+		else:
+			# The facility flag and runtime presentation metadata can change while the
+			# rhythmic lifecycle remains continuous; refresh the current definition.
+			rhythm_nodes[key].merge(part.duplicate(true),true)
 		rhythm_nodes[key]["active"] = true
 
 func _sync_musical_nodes(at: int) -> void:
@@ -263,6 +268,10 @@ func _register_musical_node(part: Dictionary, pattern: Dictionary, answer: bool,
 		if bool(old["answer"]) != answer: continue
 		if _musical_signature(old["part"],old["pattern"],answer) == signature:
 			key = str(old["key"])
+			# Keep the audible lifecycle and phase, while refreshing runtime-only
+			# presentation metadata such as the current public-site identity.
+			musical_nodes[key]["part"] = part.duplicate(true)
+			musical_nodes[key]["pattern"] = pattern.duplicate(true)
 			break
 		if str(old["part"]["cid"]) == str(part["cid"]) and str(old["pattern"]["cid"]) == str(pattern["cid"]) \
 			and str(old["pattern"]["expression"]) == str(pattern["expression"]):
@@ -370,6 +379,22 @@ func _musical_block(node: Dictionary, start: int, count: int, rate: int, contrib
 			segment["expression"] = str(node["pattern"]["expression"])
 			segment["node_key"] = str(node["key"])
 			segment["cid"] = str(node["part"]["cid"])
+			# Public-space identity is an ephemeral projection of the current world
+			# at render time.  It intentionally never enters theme/musical-node save
+			# data, while the activity row still points at the real site that shaped
+			# this audible theme.
+			var public_site_ids: Array[String] = []
+			var public_site_kinds: Array[String] = []
+			var public_cid := str(node["pattern"].get("cid",node["part"]["cid"]))
+			if current_world != null:
+				for site in current_world.public_sites:
+					if not bool(site.get("active",false)) or str(site.get("community_id","")) != public_cid: continue
+					var public_kind := str(site.get("kind",""))
+					if public_kind not in ["park","civic"]: continue
+					public_site_ids.append(str(site.get("id","")))
+					public_site_kinds.append(public_kind)
+			segment["public_site_ids"] = public_site_ids
+			segment["public_site_kinds"] = public_site_kinds
 			segment["rate"] = rate
 			captured_music_segments.append(segment)
 		for at in range(begin,finish): output[at-start] += wave[at-onset]
@@ -377,6 +402,7 @@ func _musical_block(node: Dictionary, start: int, count: int, rate: int, contrib
 
 func render_block(state: Dictionary, start: int, count: int, rate: int) -> PackedVector2Array:
 	if capture_music_activity: captured_music_segments.clear()
+	if capture_music_activity: captured_public_segments.clear()
 	if current_world == null and pad_groups.is_empty():
 		return super.render_block(state,start,count,rate)
 	var output := PackedVector2Array()
@@ -507,9 +533,33 @@ func render_block(state: Dictionary, start: int, count: int, rate: int) -> Packe
 			spacing = beat*2 if rhythm["expression"] == "deep" else beat/2
 		var hz := frequency(int(rhythm["midi"])+12)
 		var phase_shift := 0 if cid.begins_with("west") else beat/2
+		var rhythm_stereo: Vector2 = rhythm["stereo"]
+		var captured_pulses: Dictionary = {}
+		var pulse_frames := roundi(0.24*rate)
 		for i in range(count):
-			level = move_toward(level,target,1.0/fade_frames)
 			var elapsed := posmod(start+i-phase_shift,spacing)
+			if capture_music_activity and bool(rhythm.get("facility",false)) and elapsed < pulse_frames:
+				var pulse_onset := start+i-elapsed
+				var pulse_id := "public:%s:%d" % [str(rhythm["key"]),pulse_onset]
+				if not captured_pulses.has(pulse_id):
+					captured_pulses[pulse_id] = true
+					var public_site_ids: Array[String] = []
+					var public_site_kinds: Array[String] = []
+					if current_world != null:
+						for site in current_world.public_sites:
+							if not bool(site.get("active",false)) or str(site.get("community_id","")) != cid: continue
+							var public_kind := str(site.get("kind",""))
+							if public_kind not in ["park","civic"]: continue
+							public_site_ids.append(str(site.get("id","")))
+							public_site_kinds.append(public_kind)
+					if not public_site_ids.is_empty():
+						captured_public_segments.append({"event_id":pulse_id,"onset":pulse_onset,
+							"render_start":start+i,"render_end":start+count,"level_frame":start+i,
+							"level_from":level,"target":target,"fade_step":1.0/fade_frames,
+							"amplitude":float(score["rhythm_gain"])*gain,"stereo_gain":rhythm_stereo.length(),
+							"midi":int(rhythm["midi"])+12,"rate":rate,"expression":str(rhythm["expression"]),"public_site_ids":public_site_ids,
+							"public_site_kinds":public_site_kinds,"rhythm":true})
+			level = move_toward(level,target,1.0/fade_frames)
 			var seconds := float(elapsed)/rate
 			if seconds >= 0.24: continue
 			var envelope := minf(1.0,seconds/0.006)*exp(-seconds/0.075)*clampf((0.24-seconds)/0.01,0.0,1.0)
