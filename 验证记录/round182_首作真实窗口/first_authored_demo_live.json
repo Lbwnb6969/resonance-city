@@ -26,13 +26,14 @@
 		"ten_seconds_of_real_city_audio": true,
 		"theme_button_opens_real_source_without_auto_pitch": true,
 		"theme_button_targets_the_player_authored_root": true,
+		"theme_menu_exposes_actual_route_result_without_future_claim": true,
 		"three_accepted_four_second_full_scores": true,
 		"three_actual_pcm_candidates_ready": true,
 		"three_choices_and_confirmation_fit_small_window": true
 	},
 	"evidence": {
 		"actual_reply": {
-			"alpha": 0.023023022992425,
+			"alpha": 0.0209868612954603,
 			"cid": "east-1",
 			"end_frame": 799092,
 			"event_id": "reply:west-1:771750:4:building-00025:48:building-00031",
@@ -41,14 +42,14 @@
 			"onset": 793800,
 			"performer_id": "building-00031",
 			"pitch": 67,
-			"position": "(801.0774, 824.4265)",
+			"position": "(801.0775, 824.4264)",
 			"public_site_ids": [
 				"player-civic-00002"
 			],
 			"public_site_kinds": [
 				"civic"
 			],
-			"radius": 21.7553482196025,
+			"radius": 21.7869824014206,
 			"receiver_id": "building-00031",
 			"render_end": 799092,
 			"render_start": 793800,
@@ -56,18 +57,18 @@
 			"source_event_id": "west-1:771750:4:building-00025:48",
 			"source_id": "building-00025",
 			"source_onset": 771750,
-			"strength": 0.000942614775571974
+			"strength": 0.000863391338612415
 		},
 		"comparison": {
 			"boundary_frame": 705600,
-			"source_frame": 363775,
-			"source_key": "1937614715"
+			"source_frame": 363519,
+			"source_key": "384086006"
 		},
-		"device_frames": 881242.88985,
+		"device_frames": 881878.5242,
 		"era": 1,
 		"houses": 31,
 		"new_lead": {
-			"alpha": 0.856825860866859,
+			"alpha": 0.873464224585685,
 			"cid": "west-1",
 			"end_frame": 887292,
 			"event_id": "west-1:882000:8:building-00028:64",
@@ -76,14 +77,14 @@
 			"onset": 882000,
 			"performer_id": "building-00028",
 			"pitch": 64,
-			"position": "(720.0001, 439.735)",
+			"position": "(720.0001, 439.7349)",
 			"public_site_ids": [
 				"player-civic-00002"
 			],
 			"public_site_kinds": [
 				"civic"
 			],
-			"radius": 17.8344098893613,
+			"radius": 17.6302117891757,
 			"receiver_id": "",
 			"render_end": 887292,
 			"render_start": 882000,
@@ -91,7 +92,7 @@
 			"source_event_id": "west-1:882000:8:building-00028:64",
 			"source_id": "building-00028",
 			"source_onset": 882000,
-			"strength": 0.0493735101514001
+			"strength": 0.047287686590537
 		},
 		"new_underruns": 0,
 		"public_request": {

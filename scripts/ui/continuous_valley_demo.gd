@@ -15,6 +15,7 @@ const TransitRework = preload("res://scripts/world/transit_line_rework.gd")
 const TransitReworkPreview = preload("res://scripts/world/transit_rework_preview.gd")
 const FirstComposition = preload("res://scripts/world/first_composition.gd")
 const FirstAuthoredWork = preload("res://scripts/world/first_authored_work.gd")
+const FirstAuthoredRouteResult = preload("res://scripts/ui/first_authored_route_result.gd")
 const PlayerExpression = preload("res://scripts/world/player_expression.gd")
 const ExpressionPreview = preload("res://scripts/world/expression_preview.gd")
 const Config = preload("res://scripts/world/world_values.gd")
@@ -1218,6 +1219,10 @@ func _update_selected_opportunity() -> void:
 		menu_info.text = "%s · 你种下的%s\n这栋 · %s%d · %s\n音型 · %s%s\n%s\n选一个音，下一拍改写 · Esc回到全城\n保持当前声域 · Shift低一个八度（最低C2）" % [
 			shown_world.communities[cid]["name"],choice["label"],note_name(pitch),pitch/12-1,str(building["form"]),
 			"  ".join(displayed)," …" if notes.size() > 8 else "",str(selected_opportunity.get("current","当前融入合奏"))]
+		var authored_work := FirstAuthoredWork.state(shown_world,current_score,model.audible_pitches())
+		var route_result := FirstAuthoredRouteResult.summary(authored_work,current_score)
+		if not route_result.is_empty() and bool(route_result.get("available",false)):
+			menu_info.text += "\n\n实际路线结果\n"+FirstAuthoredRouteResult.text(route_result)
 	var details: Label = menu.get_meta("details_label")
 	details.text = next_text+"\n"+("公园给主题留白" if selected_opportunity["facility"]["park"] else ("文化馆实际服务%d栋" % int(selected_opportunity["facility"]["served"]) if selected_opportunity["facility"]["civic"] else "可自由选择留白、文化或商业布局"))
 	details.text += "\n跨河应答 · "+_response_state_label()+"\nEsc回到全城合奏"

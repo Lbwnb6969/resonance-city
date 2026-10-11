@@ -132,6 +132,7 @@ func _run() -> void:
 	var author_id := demo.selected_id
 	check(demo.menu.visible and demo.context.get("kind","") == "retune" and not author_id.is_empty(),"theme_button_opens_real_source_without_auto_pitch")
 	check(bool(demo.shown_world.by_id.get(author_id,{}).get("player_expression",false)),"theme_button_targets_the_player_authored_root")
+	check(demo.menu_info.text.contains("实际路线结果") and demo.menu_info.text.contains("家族"),"theme_menu_exposes_actual_route_result_without_future_claim")
 	if author_id.is_empty():
 		await _finish()
 		return
