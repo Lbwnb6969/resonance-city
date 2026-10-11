@@ -23,6 +23,7 @@ var terrain_geometry: Dictionary = {}
 var terrain_geometry_key: Array = []
 var terrain_geometry_rebuilds := 0
 var terrain_prepare_ms := 0.0
+var terrain_surface_skips := 0
 # Independent CanvasItems retain exact draw contents in the original layer order.
 var urban_parts: Dictionary = {}
 var last_prepare_ms := 0.0
@@ -129,9 +130,18 @@ func _draw_river_terrain() -> void:
 	_prepare_terrain_geometry()
 	var left_colors := [Color("e9e1cb"),Color("d4dcc0"),Color("becfb0"),Color("acbfae")]
 	var right_colors := [Color("e0e5d6"),Color("ced9c5"),Color("b9ccb8"),Color("acbfae")]
+	terrain_surface_skips = 0
 	for surface in terrain_geometry["surfaces"]:
 		var colors: Array = left_colors if int(surface["side"]) == 0 else right_colors
-		draw_colored_polygon(_project_polygon(surface["polygon"]),colors[int(surface["band"])])
+		var projected := _project_polygon(surface["polygon"])
+		# Height clipping can leave a tiny world-space triangle whose projected
+		# vertices collapse onto one line. Godot's CanvasItem triangulator logs an
+		# error for that command even though the source triangulation succeeded.
+		# Filter only the degenerate projected face; all readable terrain remains.
+		if not _is_drawable_polygon(projected):
+			terrain_surface_skips += 1
+			continue
+		draw_colored_polygon(projected,colors[int(surface["band"])])
 	for ring in patches: draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.08))
 	for contour in terrain_geometry["contours"]:
 		draw_polyline(_project_polygon(contour["path"]),Color(0.45,0.58,0.46,0.18),0.8/camera_zoom,true)
@@ -145,6 +155,14 @@ func _draw_river_terrain() -> void:
 		var wall := PackedVector2Array([top[0],top[1],_point(edge[1],0.0),_point(edge[0],0.0)])
 		draw_colored_polygon(wall,Color("9fac9c"))
 		draw_polyline(top,Color("d8dfc7"),0.8/camera_zoom,true)
+
+func _is_drawable_polygon(polygon: PackedVector2Array) -> bool:
+	if polygon.size() < 3: return false
+	var twice_area := 0.0
+	for index in range(polygon.size()):
+		twice_area += polygon[index].cross(polygon[(index+1)%polygon.size()])
+	if absf(twice_area) <= 0.000002: return false
+	return not Geometry2D.triangulate_polygon(polygon).is_empty()
 
 func _draw_urban() -> void:
 	for road in roads: draw_colored_polygon(_project_polygon(road["polygon"]),road["color"])
