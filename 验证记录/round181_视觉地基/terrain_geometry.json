@@ -1,0 +1,40 @@
+{
+  "checks": {
+    "camera_pan_retains_surface_geometry_and_existing_draw_commands": true,
+    "contour_lines_follow_actual_noise_height_instead_of_decorative_circles": true,
+    "head_ground_backup_remains_a_loadable_original": true,
+    "height_surfaces_partition_the_actual_banks_without_water_or_missing_ground": true,
+    "near_bank_land_uses_the_actual_shore_buffer_without_filling_the_river": true,
+    "new_real_terrain_identity_invalidates_the_retained_geometry": true,
+    "other_terrain_families_keep_their_existing_visual_path": true,
+    "real_growth_and_facility_settlement_do_not_rebuild_static_terrain_or_change_urban_draw_data": true,
+    "real_river_bend_contains_four_readable_height_bands": true,
+    "retained_canvas_consumes_the_real_surfaces_in_one_valid_draw": true,
+    "retained_layer_prepares_the_actual_geometry_once": true,
+    "roads_facilities_reservations_lots_and_fabric_keep_the_original_retention_contract": true,
+    "shallow_edges_and_deeper_channel_stay_inside_the_real_water_footprint": true,
+    "terrain_lots_and_public_footprints_share_the_unchanged_real_projection": true,
+    "visible_bank_faces_use_actual_shore_vertices_and_actual_height_to_water_level": true,
+    "visual_geometry_keeps_world_rules_rng_occupancy_save_and_music_state": true,
+    "zoom_and_unified_night_tint_reuse_the_same_terrain_geometry": true
+  },
+  "evidence": {
+    "bands": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "bank_face_count": 80,
+    "contour_count": 103,
+    "land_area": 1475.99993815817,
+    "maximum_contour_height_error": 0.000455453044891474,
+    "maximum_projection_error": 0.0,
+    "preparation_ms": 23.505,
+    "scope": "Actual geometry and retained-cache contract; visual enjoyment requires screenshots and human feedback.",
+    "surface_count": 1006,
+    "water_overlap": 0.0
+  },
+  "failures": [],
+  "passed": true
+}

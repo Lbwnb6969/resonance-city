@@ -22,6 +22,13 @@ const Shadows = preload("res://scripts/visual/city_shadow_layer.gd")
 const Renderer = preload("res://scripts/audio/sample_renderer.gd")
 const GroundLayer = preload("res://scripts/visual/valley_ground_layer.gd")
 const WaterFlow = preload("res://scripts/visual/valley_water_flow.gd")
+const BuildingVariants = preload("res://scripts/visual/building_variant_catalog.gd")
+const StreetEaves = preload("res://scripts/visual/street_eaves_layer.gd")
+const Daylight = preload("res://scripts/visual/valley_daylight.gd")
+var building_catalog := BuildingVariants.new()
+var street_eaves_layer: Node2D
+var daylight_state: Dictionary = {}
+var daylight_manual_phase := -1.0
 var scenery := ValleyScenery.new()
 var expression := "bright"
 var starter := true
@@ -169,6 +176,10 @@ func _ready() -> void:
 		assets[entry["category"]] = entry
 		textures[entry["category"]] = load("res://"+str(entry["texture"]))
 		asset_images[entry["category"]] = textures[entry["category"]].get_image()
+	building_catalog.load_catalog()
+	for entry: Dictionary in assets.values():
+		building_catalog.texture_for(entry)
+		building_catalog.image_for(entry)
 	backdrop = ColorRect.new()
 	backdrop.name = "Backdrop"
 	backdrop.z_index = -40
@@ -198,10 +209,14 @@ func _ready() -> void:
 			var path := "res://"+str(entry[kind+"_texture"])
 			var texture: Texture2D = load(path)
 			shadow_layer.mask_images[path] = texture.get_image()
+	building_catalog.prewarm_masks(shadow_layer)
 	buildings_layer = Node2D.new()
 	buildings_layer.name = "Buildings"
 	buildings_layer.y_sort_enabled = true
 	add_child(buildings_layer)
+	street_eaves_layer = StreetEaves.new()
+	street_eaves_layer.name = "StreetEaves"
+	buildings_layer.add_child(street_eaves_layer)
 	community_label_layer = preload("res://scripts/visual/community_label_layer.gd").new()
 	community_label_layer.name = "CommunityNames"
 	community_label_layer.z_index = 50
@@ -756,7 +771,7 @@ func _hit(screen: Vector2) -> String:
 		var sprite: AudioGrowthMask = sprites[id]
 		if sprite.progress <= 0.0: continue
 		var local := sprite.to_local(screen)-sprite.offset
-		var image: Image = asset_images[shown_world.by_id[id]["type"]]
+		var image: Image = building_geometry[id]["image"]
 		if local.x >= 0 and local.y >= 0 and local.x < image.get_width() and local.y < image.get_height():
 			if image.get_pixelv(Vector2i(local)).a > 0.1 and local.y/image.get_height() >= 1.0-sprite.progress: return id
 	return ""
@@ -2556,6 +2571,8 @@ func _process(delta: float) -> void:
 	var frame_started := Time.get_ticks_usec()
 	_sync_buildings()
 	_profile_frame("buildings_ms",frame_started)
+	street_eaves_layer.sync(self)
+	_sync_daylight()
 	music_activity_layer.sync(self)
 	public_space_activity_layer.sync(self)
 	frame_started = Time.get_ticks_usec()
@@ -2710,6 +2727,21 @@ func _process(delta: float) -> void:
 	queue_redraw()
 	_profile_frame("interaction_ms",frame_started)
 
+func _sync_daylight() -> void:
+	daylight_state = Daylight.sample(clock.renderer.transport.audible_frame,clock.renderer.transport.sample_rate,daylight_manual_phase)
+	var tint: Color = daylight_state["world_tint"]
+	terrain_layer.modulate = tint
+	city_ground_layer.modulate = tint
+	water_flow.modulate = daylight_state["water_tint"]
+	var frame := clock.renderer.transport.audible_frame
+	var warmth := 0.03*sin(TAU*frame/float(clock.renderer.transport.sample_rate)/4.0)
+	buildings_layer.modulate = tint*Color(0.96+warmth,1.0,1.0)
+	buildings_layer.set_meta("world_tint",tint)
+	backdrop.color = Color.BLACK if black else daylight_state["backdrop"]
+	shadow_layer.modulate.a = float(daylight_state["shadow_strength"])
+	caption.add_theme_color_override("font_color",daylight_state["ui_ink"])
+	tooltip.add_theme_color_override("font_color",daylight_state["ui_ink"])
+
 func _sync_buildings() -> void:
 	_prepare_ground()
 	terrain_layer.sync(self)
@@ -2762,14 +2794,14 @@ func _sync_buildings() -> void:
 		append_only = false
 	for building in shown_world.buildings:
 		var id: String = building["district_id"]
-		var entry: Dictionary = assets[building["type"]]
+		var entry: Dictionary = building_catalog.entry_for(building,assets[building["type"]])
 		var world_position := Coupling.position_of(building)
 		var key := [world_position,entry["id"]]
 		var geometry_dirty := false
 		if not building_geometry.has(id) or building_geometry[id]["key"] != key:
 			geometry_dirty = true
 			if building_geometry.has(id): append_only = false
-			building_geometry[id] = {"key":key,"position":Projection2D.to_screen(world_position-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),shown_world.terrain.height_at(world_position)),
+			building_geometry[id] = {"key":key,"entry":entry,"image":building_catalog.image_for(entry),"position":Projection2D.to_screen(world_position-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),shown_world.terrain.height_at(world_position)),
 				"scale":28.0*sqrt(2.0)*0.8/maxf(float(entry["model_bounds"]["size"][0]),float(entry["model_bounds"]["size"][2]))/float(entry["pixels_per_world"])}
 			shadows_dirty = true
 		var geometry: Dictionary = building_geometry[id]
@@ -2778,13 +2810,16 @@ func _sync_buildings() -> void:
 			shadows_dirty = true
 			var sprite := GrowthSprite.new()
 			sprite.use_master_clock = false
-			sprite.texture = textures[building["type"]]
+			sprite.texture = building_catalog.texture_for(entry)
 			sprite.centered = false
 			sprite.offset = -Vector2(entry["origin"][0],entry["origin"][1])
 			buildings_layer.add_child(sprite)
 			sprite.begin_at(maxi(0,int(building["birth_frame"])))
 			sprites[id] = sprite
 		var sprite: AudioGrowthMask = sprites[id]
+		if geometry_dirty:
+			sprite.texture = building_catalog.texture_for(entry)
+			sprite.offset = -Vector2(entry["origin"][0],entry["origin"][1])
 		sprite.position = geometry["position"]
 		sprite.scale = Vector2.ONE*scale_factor
 		if sprite.progress < 1.0:
@@ -2842,9 +2877,10 @@ func _draw() -> void:
 	if not hover_id.is_empty():
 		draw_arc(point(Coupling.position_of(shown_world.by_id[hover_id])),18*view_zoom,0,TAU,48,Color(0.62,0.72,0.5,0.8),1.5,true)
 	var font := ThemeDB.fallback_font
-	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("4b6561"))
+	var ui_ink: Color = daylight_state.get("ui_ink",Color("4b6561"))
+	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,ui_ink)
 	var composition_title := "河湾 · 第一段" if first_composition_mode else (shown_world.terrain_title()+" · 晴岸合奏" if expression == "bright" else shown_world.terrain_title()+" · 深流慢板")
-	draw_string(font,Vector2(47,67),composition_title,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("758c85"))
+	draw_string(font,Vector2(47,67),composition_title,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color(ui_ink,0.78))
 	_draw_landmark_bar()
 	if not black:
 		var lead := str(model.audible_theme().get("cid",""))
@@ -2853,7 +2889,7 @@ func _draw() -> void:
 		var service := overlay_service
 		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d功能区 · %d条线路 · 文化%d/%d栋 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.active_community_count(),shown_world.functional_zones.size(),shown_world.transit_lines.size(),int(service.get("served",0)),shown_world.buildings.size(),model.world.pending_actions.size(),name,decree_slots]
 		if first_composition_mode: status = "第%d句 · %d栋房屋 · %s主题%s" % [shown_world.phrase_index,shown_world.buildings.size(),name," · 选择待播" if not model.world.pending_actions.is_empty() else ""]
-		draw_string(font,Vector2(size.x-(380 if first_composition_mode else 760),size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("607974"))
+		draw_string(font,Vector2(size.x-(380 if first_composition_mode else 760),size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color(ui_ink,0.85))
 	var duration := float(model.phrase_frames)
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)

@@ -269,6 +269,8 @@ func sync(demo: Control) -> void:
 			"road_length":float(traffic_access.get("length",0.0)),"priority":traffic_traveler._priority()})
 	_index_traffic(traffic,accesses)
 	var stop_activity: Dictionary = {}
+	var world_tint: Color = demo.buildings_layer.get_meta("world_tint",Color.WHITE)
+	var scenery_red: float = world_tint.r/demo.buildings_layer.modulate.r
 	for key in props:
 		var prop: ValleyProp = props[key]
 		var p: Vector2 = prop.get_meta("world_position")
@@ -324,8 +326,8 @@ func sync(demo: Control) -> void:
 				prop_projections[key] = {"key":projection_key,"position":WorldProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),city.terrain.height_at(p))}
 			prop.position = prop_projections[key]["position"]
 		prop.scale = Vector2.ONE*float(prop.get_meta("public_scale",1.0))
-		# Building warmth is shared at the layer; scenery retains its original tint.
-		prop.modulate = Color(1.0/demo.buildings_layer.modulate.r,1.0,1.0,prop.reveal)
+		# Remove building warmth while retaining the world's full daylight tint.
+		prop.modulate = Color(scenery_red,1.0,1.0,prop.reveal)
 		prop.motion = seconds*TAU/4.0
 		# Station signs, lamps, rocks and civic geometry keep their draw commands.
 		# Reveal alpha remains a CanvasItem property; trees/travelers keep animating.

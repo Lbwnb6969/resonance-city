@@ -62,5 +62,6 @@ func _draw() -> void:
 	var started := Time.get_ticks_usec()
 	draw_count += 1
 	for label in labels:
-		draw_string(ThemeDB.fallback_font,label["position"],label["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(0.40,0.48,0.42,0.72))
+		draw_rect(label["bounds"],Color(0.93,0.92,0.87,0.92))
+		draw_string(ThemeDB.fallback_font,label["position"],label["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(0.40,0.48,0.42,0.96))
 	last_draw_ms = float(Time.get_ticks_usec()-started)/1000.0

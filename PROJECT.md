@@ -1,6 +1,6 @@
 # 共鸣之城：接续状态
 
-## 当前目标与优先级（2026-10-11，第180轮已集成）
+## 当前目标与优先级（2026-10-11，第180–181轮已集成）
 
 先做可试玩、可评价的核心创作竖切片：一片河湾、20–30栋、三个社区、三张发展章程，前五分钟亲自完成章程 → 社区 → 公共锚点 → 真实声音选择 → 城市成长。六栋成熟房屋形成主题后，改一栋音级应改变主题、真实地图来源及后续Reply。
 
@@ -10,14 +10,14 @@
 
 ## 当前实现与协作接口
 
-基线573f0bb（第179轮公交同源保留/改站），分支codex/p0-sound-proof；修改前备份codex/backup-before-round180。核心旧源码和完整历史PROJECT分别保存在根废弃/scripts/2026-10-11_第180轮核心创作前/与废弃/文档/2026-10-11_第180轮优先级收敛前/，玩家作品不参与测试。
+基线08a394e（第180轮首作三种表达），分支codex/p0-sound-proof；修改前备份codex/backup-before-round180。核心旧源码和完整历史PROJECT分别保存在根废弃/scripts/2026-10-11_第180轮核心创作前/与废弃/文档/2026-10-11_第180轮优先级收敛前/，玩家作品不参与测试。
 
 - World Agent负责continuous_world.gd、first_composition.gd：build_first_composition_starter()，24胚、3社区、第0句、不预热不预建公建；opportunities(world)派生合法公建/声音地块。自然成熟走普通结算。
 - Audio Agent负责continuous_synth.gd、player_expression.gd、expression_preview.gd：deep/weave/warm正式family，低音长慢拍/高音短织拍/中音长和声留白；既有Rhythm/Lead/Reply槽实际发声。四秒三分支试听保留独立pending，与正式事务一致。
 - Guide Agent负责planning_guide.gd、first_composition_guide.gd：设备可听10秒后单个轻入口；三章程/变化卡/玩家社区/公共落点，严格匹配真实可见锚点后接声音入口。首局隐藏公交锚点。
 - Root负责Demo与Model forecast接入、真实Windows/WASAPI窗口、文档和Git集成。Demo默认first_composition_mode=true；Shift+R或作品入口“新河湾”重开。已有存档从原位置继续，旧存档模式false，旧R/V/N/T/E基线保留。
 
-声音候选按钮不代选不提交，expression_choice初始空；按住Space取得同一冻结来源的三份实际PCM，切换候选复用，松开恢复城市，Enter/按钮正式提交。warm在同一事务中保留真实邻近空地；该分支的占地、保存恢复、后续释放均需本轮证明。
+声音候选按钮不代选不提交，expression_choice初始空；按住Space取得同一冻结来源的三份实际PCM，切换候选复用，松开恢复城市，Enter/按钮正式提交。warm在同一事务中保留真实邻近空地；占地、保存恢复、避让与后续释放已在第180轮模型合同证明。
 
 ## 验证状态与下一步
 
@@ -27,7 +27,11 @@
 
 证据：验证记录/round180_第一段作品/（模型/Guide）、round180_首作三种表达/（59项声音JSON/log和三份WAV）、round180_第一段真实窗口/（窗口JSON与六张截图）。首次Guide断点、布局探针、留地原子兑现前/continuous与forecast前声音、白字前窗口均在根废弃/验证记录。
 
-下一批进入视觉地基，不返回公交扩展。Guide Agent已完成只读视觉准备，拟独占建筑变体生成器/目录与真实street_eaves视觉层，等待本轮Git提交和下一批备份后施工；Root负责Demo接入。其他Agent已停止编辑，暂无未接接口。
+第181轮视觉地基已接入，修改前备份codex/backup-before-round181（08a394e）。三Agent交付building_variant_catalog/street_eaves、valley_terrain_visual_geometry与valley_daylight，Root接入Demo；协作均完成并停止编辑。三种住宅真实轮廓由稳定ID派生，命中alpha与6份接地遮罩预热，真实shared_walls且两屋揭示后才接短檐口；不合并身份。河谷4高程层、真实等高线/岸面/浅水/深槽只在terrain identity变更重建。昼夜沿保存可听帧派生150秒基础圈，无新作品字段；夜UI/音乐标记不变暗，社区名有缓存底片。修复旧scenery红色补偿抵消整个夜色的问题，仅抵消建筑warmth；旧其它Demo无metadata仍走原行为。完整多朝向/用途、窗光、OKLab LUT、影长、季节与活动曲线仍未实施；美术现行规则已更新17与spec.asset，不恢复旧24分钟/time_origin字段要求。
+
+第181轮验证：建筑12/12、实际地形/缓存17/17、昼夜与PCM/续接10/10，Root Windows/OpenGL NVIDIA+WASAPI窗口17/17。真实24年轻房屋均可命中三种轮廓，生产点击/选深流/Enter在可听边界成长至28栋，两组真实邻屋檐口完成揭示后显示；设备推进375971帧、新增underrun0、最多11 voices，地形只准备1次。白昼/黄昏/夜晚/晨光、共墙近景与黑屏截图已查看；四时截图是临时phase检查，不声称真实经过整日。夜树偏红前和首版断言失误证据保留废弃/第181视觉前/；原地形/Demo/scenery/社区名/17文档均保留HEAD备份。根废弃/.gdignore避免旧class_name与资产被导入；editor产生的历史测试UID仅本地归档，res://加载的测试不跟踪新UID。证据在验证记录/round181_视觉地基/、round181_河谷昼夜/与round181_视觉真实窗口/。
+
+下一项高价值工作仍是核心首作：从同一种子、同一公共锚点分别经营深流/织机/留地，核对较长成长后的可听差异、空间后果和主题改编入口，优先修复实际操作断点与反馈，形成可直接比较的试玩结果；不扩公交、不进入P2，也不以增加测试数量代替体验。未经真人听测不裁定路线平衡或核心玩法成立。
 
 HUMAN-EXPRESSION、HUMAN-AUTHOR、HUMAN-DIFF、路线长期平衡均未验收。无人类反馈时继续独立实现，技术通过不代表真人觉得好玩、好听。P2时代/地标/三模式/祝福仍未贯通；更大城市和其他地形只保留已有能力与证据，不宣称本轮验收。
 

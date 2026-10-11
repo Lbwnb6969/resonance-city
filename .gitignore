@@ -24,3 +24,7 @@
 /native/city_audio/src/*.obj.import
 /addons/city_audio/bin/*.exp
 /addons/city_audio/bin/*.lib
+
+# Standalone test scripts load by res:// path; editor-generated UIDs are not inputs.
+/tests/*.gd.uid
+/废弃/第181视觉前/import_uid_noise/

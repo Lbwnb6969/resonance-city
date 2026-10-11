@@ -2,6 +2,7 @@ extends Node2D
 const Coupling = preload("res://scripts/world/world_coupling.gd")
 const IsoProjection = preload("res://scripts/world/world_projection.gd")
 const PublicGeometry = preload("res://scripts/visual/public_space_visual_geometry.gd")
+const TerrainGeometry = preload("res://scripts/visual/valley_terrain_visual_geometry.gd")
 var city: ContinuousWorld
 var role := "terrain"
 var key: Array = []
@@ -18,6 +19,10 @@ var rebuild_count := 0
 var update_count := 0
 var last_draw_ms := 0.0
 var max_draw_ms := 0.0
+var terrain_geometry: Dictionary = {}
+var terrain_geometry_key: Array = []
+var terrain_geometry_rebuilds := 0
+var terrain_prepare_ms := 0.0
 # Independent CanvasItems retain exact draw contents in the original layer order.
 var urban_parts: Dictionary = {}
 var last_prepare_ms := 0.0
@@ -48,7 +53,17 @@ func sync(demo: Control) -> void:
 	contours = demo.ground_contours
 	if role == "urban":
 		_sync_urban_parts(terrain_changed)
-	else: queue_redraw()
+	else:
+		if role == "terrain": _prepare_terrain_geometry()
+		queue_redraw()
+
+func _prepare_terrain_geometry() -> void:
+	if terrain_geometry_key == terrain_identity and not terrain_geometry.is_empty(): return
+	var began := Time.get_ticks_usec()
+	terrain_geometry = TerrainGeometry.build(city.terrain) if city.terrain.family == "river_valley" else {"surfaces":[]}
+	terrain_geometry_key = terrain_identity.duplicate(true)
+	terrain_geometry_rebuilds += 1
+	terrain_prepare_ms = float(Time.get_ticks_usec()-began)/1000.0
 
 func _point(p: Vector2, height: float = -1.0) -> Vector2:
 	var point_key := [p,height]
@@ -100,12 +115,36 @@ func _draw_terrain() -> void:
 	var left_color := Color("e9e1cb") if family != "forest_ridge" and family != "highland_pass" else (Color("9eafad") if family == "highland_pass" else Color("b7c8a4"))
 	var right_color := Color("e0e5d6") if family != "coastal_plain" and family != "highland_pass" else (Color("c4d0cc") if family == "highland_pass" else Color("e5d9bd"))
 	draw_colored_polygon(_project_polygon(sea,0.0),Color("9bbcc0"))
+	if family == "river_valley":
+		_draw_river_terrain()
+		return
 	draw_colored_polygon(_project_polygon(city.terrain.left_bank),left_color)
 	draw_colored_polygon(_project_polygon(city.terrain.right_bank),right_color)
 	for ring in patches: draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.12))
 	for contour in contours:
 		draw_polyline(_project_polygon(contour),Color(0.54,0.64,0.49,0.16),1.0/camera_zoom,true)
 	draw_colored_polygon(_project_polygon(city.terrain.water,0.0),water_color)
+
+func _draw_river_terrain() -> void:
+	_prepare_terrain_geometry()
+	var left_colors := [Color("e9e1cb"),Color("d4dcc0"),Color("becfb0"),Color("acbfae")]
+	var right_colors := [Color("e0e5d6"),Color("ced9c5"),Color("b9ccb8"),Color("acbfae")]
+	for surface in terrain_geometry["surfaces"]:
+		var colors: Array = left_colors if int(surface["side"]) == 0 else right_colors
+		draw_colored_polygon(_project_polygon(surface["polygon"]),colors[int(surface["band"])])
+	for ring in patches: draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.08))
+	for contour in terrain_geometry["contours"]:
+		draw_polyline(_project_polygon(contour["path"]),Color(0.45,0.58,0.46,0.18),0.8/camera_zoom,true)
+	for rim in terrain_geometry["rims"]: draw_colored_polygon(_project_polygon(rim),Color("c2ceb3"))
+	draw_colored_polygon(_project_polygon(city.terrain.water,0.0),Color("91b1b3"))
+	draw_colored_polygon(_project_polygon(terrain_geometry["channel"],0.0),Color("78a4ad"))
+	for shallow in terrain_geometry["shallow_water"]: draw_colored_polygon(_project_polygon(shallow,0.0),Color("acc6be"))
+	for face in terrain_geometry["shore_faces"]:
+		var edge: PackedVector2Array = face["edge"]
+		var top := PackedVector2Array([_point(edge[0],float(face["heights"][0])),_point(edge[1],float(face["heights"][1]))])
+		var wall := PackedVector2Array([top[0],top[1],_point(edge[1],0.0),_point(edge[0],0.0)])
+		draw_colored_polygon(wall,Color("9fac9c"))
+		draw_polyline(top,Color("d8dfc7"),0.8/camera_zoom,true)
 
 func _draw_urban() -> void:
 	for road in roads: draw_colored_polygon(_project_polygon(road["polygon"]),road["color"])
