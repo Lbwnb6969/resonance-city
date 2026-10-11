@@ -21,15 +21,17 @@ func _run() -> void:
 		"warm":{"accepted":true,"pcm":PackedByteArray([8,8,8,8]),"metrics":{"rhythm_profiles":[{"pitch":55,"spacing_frames":88200.0,"tail":2.2}]},"consequences":{"type":"residential","next_growth_phrase":1,"mature":2,"reservation_count":1}}
 	}}
 	var text := Card.text(comparison,"weave")
-	check(text.contains("同一冻结下一句") and text.contains("未提交"),"card_marks_preview_as_uncommitted")
+	check(text.split("\n").size() == 3,"card_keeps_three_short_route_rows")
 	check(text.contains("深流") and text.contains("织机") and text.contains("留地"),"card_lists_all_three_routes")
-	check(text.contains("PCM与织机、留地不同") and text.contains("PCM与深流、留地不同"),"card_reports_actual_pcm_differences")
-	check(text.contains("商业") and text.contains("第1句") and text.contains("保留1片真实空地"),"card_reports_real_city_consequences")
-	check(text.contains("C2") and text.contains("每2.00秒/尾1.60秒") and text.contains("C5") and text.contains("每0.25秒/尾0.12秒"),"card_reports_actual_register_and_rhythm")
+	check(not text.contains("PCM") and not text.contains("秒") and not text.contains("第1句"),"card_omits_engine_measurements")
+	check(text.contains("住宅生长") and text.contains("商业生长") and text.contains("保留1片空地"),"card_reports_real_city_consequences")
+	check(text.contains("低音长响，慢慢铺底") and text.contains("高音短促，密集织拍") and text.contains("中音长响，留出空隙"),"card_reports_sound_character_from_actual_profile")
 	check(text.contains("▶ 织机") and not text.contains("▶ 深流"),"card_marks_current_choice_only")
 	var incomplete := {"variants":{"deep":{"accepted":false,"reason":"落点已占用"}}}
 	var incomplete_text := Card.text(incomplete,"deep")
-	check(incomplete_text.contains("深流") and incomplete_text.contains("未生成实际试听") and incomplete_text.contains("落点已占用"),"card_exposes_missing_actual_branch")
+	check(incomplete_text.contains("深流") and incomplete_text.contains("未生成试听") and incomplete_text.contains("落点已占用"),"card_exposes_missing_actual_branch")
+	var no_samples := {"variants":{"deep":{"accepted":true,"consequences":{"type":"residential"}}}}
+	check(Card.text(no_samples).contains("深流 · 未生成试听") and not Card.text(no_samples).contains("住宅生长"),"accepted_request_without_generated_audio_has_no_actual_result")
 	var empty_text := Card.text({},"")
 	check(empty_text.is_empty(),"empty_comparison_stays_hidden")
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://验证记录/round184_首作试听比较"))

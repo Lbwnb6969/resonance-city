@@ -2,6 +2,7 @@ class_name ValleyBuildingVariantCatalog
 extends RefCounted
 ## Deterministic presentation only: no city RNG, acoustic state, or saved author choices.
 const MANIFEST := "res://资源/街坊建筑变体/manifest.json"
+const FirstExpressionIdentity = preload("res://scripts/visual/first_expression_identity.gd")
 var entries: Array[Dictionary] = []
 var textures: Dictionary = {}
 var images: Dictionary = {}
@@ -27,9 +28,23 @@ static func variant_index(id: String) -> int:
 func prewarm_masks(shadow_layer: Node2D) -> void:
 	shadow_layer.mask_images.merge(shadow_images,true)
 
-func entry_for(building: Dictionary,fallback_entry: Dictionary = {}) -> Dictionary:
-	if str(building.get("type","")) != "residential": return fallback_entry
-	return entries[variant_index(str(building["district_id"]))]
+func entry_for(building: Dictionary,fallback_entry: Dictionary = {},family: Dictionary = {}) -> Dictionary:
+	var base := fallback_entry
+	if str(building.get("type","")) == "residential": base = entries[variant_index(str(building["district_id"]))]
+	return FirstExpressionIdentity.entry_for(building,base,entries,family)
+
+func prewarm_first_expressions(fallback_entries: Dictionary) -> void:
+	# Call before starting audio, alongside existing texture/mask prewarming.
+	for expression: String in ["deep","weave","warm"]:
+		var base: Dictionary = fallback_entries["commercial"] if expression == "weave" else {}
+		if base.is_empty():
+			for entry: Dictionary in entries:
+				if str(entry["id"]) == str(FirstExpressionIdentity.STYLES[expression]["residential_id"]):
+					base = entry
+					break
+		var styled := FirstExpressionIdentity.styled_entry(base,expression)
+		texture_for(styled)
+		image_for(styled)
 
 func texture_for(entry: Dictionary) -> Texture2D:
 	var path := "res://"+str(entry["texture"])

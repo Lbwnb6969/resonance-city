@@ -1,0 +1,15 @@
+{
+  "checks": {
+    "complete_observation_record_is_valid": true,
+    "empty_template_requires_trial_metadata": true,
+    "future_identity_is_not_copied_into_truth": true,
+    "non_authored_observation_stays_neutral": true,
+    "observed_identity_and_position_are_preserved": true,
+    "player_answer_and_reviewer_result_are_kept_separate": true,
+    "record_does_not_alias_live_query_arrays": true,
+    "unknown_kind_and_non_boolean_review_are_rejected": true
+  },
+  "failures": [],
+  "passed": true,
+  "scope": "Human playtest record schema: observed growth/audio identity, separate player answer, review result and evidence paths; no World mutation or human acceptance claim."
+}

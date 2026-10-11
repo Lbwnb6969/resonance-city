@@ -13,12 +13,13 @@
     "deep_weave_reports_measured_pcm_difference": true,
     "keep_land_reports_only_the_actual_warm_reservation": true,
     "readable_result_exposes_city_consequences": true,
-    "readable_result_exposes_pcm_and_rhythm_difference": true,
+    "readable_result_exposes_three_plain_sound_choices": true,
     "readable_result_names_all_routes": true,
     "same_source_charter_is_accepted": true,
     "same_source_focus_is_accepted": true,
     "same_source_public_anchor_is_accepted": true,
     "same_source_retune_is_accepted": true,
+    "technical_details_remain_available_separately": true,
     "three_routes_report_actual_growth_type_and_timing_consequences": true,
     "three_routes_report_distinct_registers": true,
     "three_routes_report_distinct_rhythm_spacing": true,
@@ -46,7 +47,7 @@
       "weave_warm": 0.0689718314157537
     },
     "passed": true,
-    "readable": "同一试听来源 · 22050Hz · 4.00秒 · 边界352800\n深流 · C2 · PCM88200帧 · 每2.00秒/尾1.60秒 · 住宅 · 第3句 · 留地0块\n织机 · C5 · PCM88200帧 · 每0.25秒/尾0.12秒 · 商业 · 第2句 · 留地0块\n留地 · G3 · PCM88200帧 · 每4.00秒/尾2.20秒 · 住宅 · 第2句 · 留地1块\nPCM差异（实际试听） · deep_weave 0.09259 · deep_warm 0.06574 · weave_warm 0.06897",
+    "readable": "深流 · 低音长响，慢慢铺底 · 住宅生长\n织机 · 高音短促，密集织拍 · 商业生长\n留地 · 中音长响，留出空隙 · 住宅生长，保留1片空地",
     "routes": {
       "deep": {
         "audio": {
@@ -197,7 +198,7 @@
     "source": {
       "boundary_frame": 352800,
       "frame": 352672,
-      "key": "640689565",
+      "key": "236552046",
       "same_source": true
     }
   },

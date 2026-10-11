@@ -9,13 +9,11 @@ static func build(world: RefCounted) -> void:
 	world.profile = "warm"
 	for region in range(COMMUNITY_IDS.size()):
 		var cid: String = COMMUNITY_IDS[region]
-		var candidates: Array = world.lots.filter(func(lot: Dictionary) -> bool: return str(lot["community_id"]) == cid)
-		candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return str(a["id"]) < str(b["id"]))
+		var positions := _street_starter_positions(world,cid)
 		var family := "family-%05d" % int(world.next_id)
 		world.families[family] = {"root":"","created_phrase":0,"expression":"warm"}
 		var count := 0
-		for lot: Dictionary in candidates:
-			var p := Vector2(float(lot["center"][0]),float(lot["center"][1]))
+		for p: Vector2 in positions:
 			if not bool(world.placement(p)["allowed"]): continue
 			var pitch: int = [48,52,55][region]
 			var id: String = world._birth(p,pitch,family,count == 0,0)
@@ -24,6 +22,78 @@ static func build(world: RefCounted) -> void:
 			if count >= HOUSES_PER_COMMUNITY: break
 	world.refresh_fabric()
 	world.resonance = world.coupling.resonance(world.buildings,world.musical_edges(world.musicality()))
+
+static func _street_starter_positions(world: RefCounted,cid: String) -> Array[Vector2]:
+	var bank := int(world.communities[cid]["bank"])
+	var terrain: Dictionary = world.cfg["terrain"]
+	var road_offset := float(terrain["template_road_bank_offset"])
+	var frontage := float(terrain["template_lot_road_offset"])
+	var radius := float(world.cfg["space"]["residential_radius"])
+	var lots: Array = world.lots.filter(func(lot: Dictionary) -> bool: return str(lot["community_id"]) == cid)
+	lots.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+		if not is_equal_approx(float(a["center"][1]),float(b["center"][1])): return float(a["center"][1]) < float(b["center"][1])
+		return float(a["center"][0]) < float(b["center"][0]))
+	var main_lots: Array[Dictionary] = []
+	for lot: Dictionary in lots:
+		var p := Vector2(float(lot["center"][0]),float(lot["center"][1]))
+		var entrance: Array = lot["entrance"]
+		if absf(float(entrance[0])-world.terrain.river_x(p.y)-float(bank)*road_offset) < 0.1: main_lots.append(lot)
+	# Keep two existing parcels clear: the first public anchor and its separate
+	# sound root remain actual planning choices beside the young street.
+	var clear_lots: Array[Dictionary] = []
+	for lot: Dictionary in main_lots:
+		var p := Vector2(float(lot["center"][0]),float(lot["center"][1]))
+		var site: Dictionary = world.planning_candidate(p)
+		if not bool(site.get("allowed",false)) or SpatialPlanning.public_access(world,site).is_empty(): continue
+		clear_lots.append(lot)
+		if clear_lots.size() == 2: break
+	var chosen: Array[Vector2] = []
+	var fallback: Array[Vector2] = []
+	var best := INF
+	if not main_lots.is_empty():
+		var spacing := radius*2.0+0.06
+		var end := float(main_lots[-1]["center"][1])+radius
+		for phase: float in [0.0,spacing*0.5]:
+			var candidates: Array[Vector2] = []
+			var y := float(main_lots[0]["center"][1])+phase
+			while y <= end:
+				for side: int in [-1,1]:
+					var p := Vector2(world.terrain.river_x(y)+float(bank)*road_offset+float(side)*frontage,y)
+					var clear := clear_lots.all(func(lot: Dictionary) -> bool: return not SpatialPlanning.disc_hits(lot["polygon"],p,radius))
+					if not clear: continue
+					var check: Dictionary = world.placement(p)
+					if bool(check.get("allowed",false)) and str(check.get("community_id","")) == cid: candidates.append(p)
+				y += spacing
+			if candidates.size() > fallback.size(): fallback = candidates
+			for start in range(maxi(0,candidates.size()-HOUSES_PER_COMMUNITY+1)):
+				var street: Array[Vector2] = []
+				var center := Vector2.ZERO
+				var separation := 0.0
+				for index in range(start,start+HOUSES_PER_COMMUNITY):
+					street.append(candidates[index])
+					center += candidates[index]
+				center /= float(HOUSES_PER_COMMUNITY)
+				for p: Vector2 in street:
+					var nearest := INF
+					for q: Vector2 in street:
+						if p != q: nearest = minf(nearest,p.distance_to(q))
+					separation = maxf(separation,nearest)
+				var score := street[-1].y-street[0].y+separation
+				if not clear_lots.is_empty():
+					var raw: Array = clear_lots[0]["center"]
+					score += center.distance_to(Vector2(float(raw[0]),float(raw[1])))*0.15
+				if score < best:
+					best = score
+					chosen = street
+	# Non-template river terrain still uses legal existing parcels if its small
+	# frontage does not contain a complete eight-house window.
+	if chosen.is_empty():
+		chosen = fallback
+		for lot: Dictionary in lots:
+			if clear_lots.has(lot): continue
+			var p := Vector2(float(lot["center"][0]),float(lot["center"][1]))
+			if chosen.all(func(q: Vector2) -> bool: return p.distance_to(q) >= radius*2.0): chosen.append(p)
+	return chosen
 
 static func opportunities(world: RefCounted) -> Dictionary:
 	var ids: Array[String] = []
@@ -34,13 +104,17 @@ static func opportunities(world: RefCounted) -> Dictionary:
 	for cid: String in ids:
 		var public_choice: Dictionary = {}
 		var seed_choice: Dictionary = {}
+		var anchored: bool = world.public_sites.any(func(site: Dictionary) -> bool:
+			return bool(site.get("active",false)) and bool(site.get("player_planned",false)) and str(site.get("community_id","")) == cid)
 		for lot: Dictionary in world.lots:
 			if str(lot["community_id"]) != cid or not str(lot.get("occupant","")).is_empty(): continue
 			var p := Vector2(float(lot["center"][0]),float(lot["center"][1]))
 			var placement: Dictionary = world.placement(p)
 			var public_site: Dictionary = world.planning_candidate(p)
 			if public_choice.is_empty() and bool(public_site.get("allowed",false)) and not SpatialPlanning.public_access(world,public_site).is_empty(): public_choice = public_site.duplicate(true)
-			if seed_choice.is_empty() and bool(placement.get("allowed",false)) and str(placement.get("lot_id","")) != str(public_choice.get("source_site_id","")):
+			# Once the real public anchor exists, use its adjacent free parcel for
+			# the voice instead of yielding it to a second, unchosen public site.
+			if seed_choice.is_empty() and bool(placement.get("allowed",false)) and (anchored or str(placement.get("lot_id","")) != str(public_choice.get("source_site_id",""))):
 				seed_choice = placement.duplicate(true)
 				seed_choice["position"] = [p.x,p.y]
 			if not public_choice.is_empty() and not seed_choice.is_empty(): break

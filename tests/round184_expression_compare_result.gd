@@ -65,8 +65,9 @@ func _run() -> void:
 		check(float(result["pair_pcm_max_abs"][pair]) > 0.005,pair+"_reports_measured_pcm_difference")
 	var readable := Compare.text(result)
 	check(readable.contains("深流") and readable.contains("织机") and readable.contains("留地"),"readable_result_names_all_routes")
-	check(readable.contains("PCM差异（实际试听）") and readable.contains("每"),"readable_result_exposes_pcm_and_rhythm_difference")
-	check(readable.contains("住宅") and readable.contains("商业") and readable.contains("第"),"readable_result_exposes_city_consequences")
+	check(readable.split("\n").size() == 3 and not readable.contains("PCM") and readable.contains("低音长响") and readable.contains("高音短促"),"readable_result_exposes_three_plain_sound_choices")
+	check(readable.contains("住宅生长") and readable.contains("商业生长") and readable.contains("保留1片空地"),"readable_result_exposes_city_consequences")
+	check(Compare.technical_text(result).contains("PCM差异（实际试听）") and Compare.technical_text(result).contains("每"),"technical_details_remain_available_separately")
 	check(model.capture_state() == source_state and phases == source_phases,"comparison_result_does_not_mutate_live_source")
 	var evidence := {"contract":result["contract"],"passed":failures.is_empty(),"source":result["source"],"audio":result["audio"],"routes":{},"pair_pcm_max_abs":result["pair_pcm_max_abs"],"readable":readable,
 		"scope":"Read-only summary over ExpressionPreview's real same-source PCM and branch consequences; no human preference or sound-quality verdict."}

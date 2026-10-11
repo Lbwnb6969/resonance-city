@@ -40,6 +40,8 @@ static func _variant_card(id: String,variant: Dictionary,comparison: Dictionary)
 	var profile := _profile(variant)
 	var consequences: Dictionary = variant.get("consequences",{})
 	var pcm: PackedByteArray = variant.get("pcm",PackedByteArray())
+	if pcm.is_empty() or consequences.is_empty():
+		return {"available":false,"route":id,"route_label":str(LABELS.get(id,id)),"reason":"试听尚未生成"}
 	var pitch := int(profile.get("pitch",operation.get("midi",definition.get("midi",0))))
 	var spacing_frames := float(profile.get("spacing_frames",0.0))
 	var rate := int(comparison.get("sample_rate",0))
@@ -89,7 +91,50 @@ static func summary(comparison: Dictionary) -> Dictionary:
 			"seconds":float(comparison.get("seconds",0.0)),"duration_frames":int(comparison.get("duration_frames",0))},
 		"routes":routes,"missing":missing,"pair_pcm_max_abs":pairs}
 
-static func text(result: Dictionary) -> String:
+static func _sound_character(route: Dictionary) -> String:
+	var rhythm: Dictionary = route.get("rhythm",{})
+	var spacing := float(rhythm.get("spacing_seconds",0.0))
+	if spacing <= 0.0: return str(route.get("description","")).replace(" · ","，")
+	var pitch := int(route.get("register",{}).get("midi",0))
+	var register := "低音" if pitch <= 48 else ("中音" if pitch <= 64 else "高音")
+	var length := "短促" if float(rhythm.get("tail_seconds",0.0)) < 0.5 else "长响"
+	var movement := "密集织拍" if spacing < 1.0 else ("慢慢铺底" if spacing < 3.0 else "留出空隙")
+	return register+length+"，"+movement
+
+static func _city_consequence(route: Dictionary) -> String:
+	var city: Dictionary = route.get("city",{})
+	var type := str(city.get("building_type",""))
+	var description := str(CITY_TYPES.get(type,"建筑"))+"生长"
+	var reserved := int(city.get("reservation_count",0))
+	if reserved > 0: description += "，保留%d片空地" % reserved
+	return description
+
+static func text(result: Dictionary,selected: String = "") -> String:
+	## Three short player choices; detailed measurements remain available below.
+	if result.is_empty(): return ""
+	var lines: Array[String] = []
+	var routes: Dictionary = result.get("routes",{})
+	for id: String in PlayerExpression.IDS:
+		var prefix := "▶ " if id == selected else ""
+		var route: Dictionary = routes.get(id,{})
+		if not bool(route.get("available",false)):
+			var reason := str(result.get("missing_reasons",{}).get(id,""))
+			lines.append(prefix+str(LABELS.get(id,id))+" · 未生成试听"+(" · "+reason if not reason.is_empty() else ""))
+			continue
+		lines.append(prefix+str(route.get("route_label",id))+" · "+_sound_character(route)+" · "+_city_consequence(route))
+	return "\n".join(lines)
+
+static func player_text(comparison: Dictionary,selected: String = "") -> String:
+	## Formatting a live card does not rescan or compare sample buffers.
+	if comparison.is_empty() or comparison.get("variants",{}).is_empty(): return ""
+	var result := {"routes":{},"missing_reasons":{}}
+	for id: String in PlayerExpression.IDS:
+		var card := _variant_card(id,comparison.get("variants",{}).get(id,{}),comparison)
+		if bool(card.get("available",false)): result["routes"][id] = card
+		else: result["missing_reasons"][id] = str(card.get("reason",""))
+	return text(result,selected)
+
+static func technical_text(result: Dictionary) -> String:
 	if result.is_empty(): return ""
 	var lines: Array[String] = []
 	var source: Dictionary = result.get("source",{})

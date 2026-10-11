@@ -48,7 +48,7 @@ func _run() -> void:
 	await process_frame
 	var bounds := Rect2(Vector2.ZERO,Vector2(800,600))
 	check(demo.menu.visible and bounds.encloses(demo.menu.get_global_rect()),"comparison_card_fits_800x600")
-	check(demo.expression_comparison_summary.visible and demo.expression_comparison_summary.text.contains("PCM与") and demo.expression_comparison_summary.text.contains("C5") and demo.expression_comparison_summary.text.contains("每0.25秒/尾0.12秒") and demo.expression_comparison_summary.text.contains("保留1片真实空地"),"comparison_card_shows_actual_audio_and_city_consequence")
+	check(demo.expression_comparison_summary.visible and demo.expression_comparison_summary.text.split("\n").size() == 3 and demo.expression_comparison_summary.text.contains("高音短促，密集织拍") and demo.expression_comparison_summary.text.contains("保留1片空地") and not demo.expression_comparison_summary.text.contains("PCM"),"comparison_card_shows_plain_sound_and_city_choices")
 	check(demo.expression_comparison_summary.get_global_rect().size.y > 0.0,"comparison_card_is_visible_in_menu")
 	check(demo.model.world.snapshot() == before,"comparison_card_does_not_submit_or_mutate_city")
 	var report := {"passed":failures.is_empty(),"checks":checks,"failures":failures,"card":demo.expression_comparison_summary.text,"menu_rect":demo.menu.get_global_rect()}

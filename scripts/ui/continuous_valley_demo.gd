@@ -44,6 +44,9 @@ var expression_choice := ""
 var expression_comparison: Dictionary = {}
 var expression_comparison_key: Array = []
 var expression_confirm: Button
+var expression_listen: Button
+var expression_click_preview := false
+var authored_badge_style: StyleBoxFlat
 var expression_summary: Label
 var expression_comparison_summary: Label
 var town_starter := false
@@ -186,6 +189,7 @@ func _ready() -> void:
 	for entry: Dictionary in assets.values():
 		building_catalog.texture_for(entry)
 		building_catalog.image_for(entry)
+	building_catalog.prewarm_first_expressions(assets)
 	backdrop = ColorRect.new()
 	backdrop.name = "Backdrop"
 	backdrop.z_index = -40
@@ -245,6 +249,14 @@ func _ready() -> void:
 	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	caption.add_theme_font_size_override("font_size",18)
 	caption.add_theme_color_override("font_color",Color("586a65"))
+	var caption_style := StyleBoxFlat.new()
+	caption_style.bg_color = Color("f1efdf",0.92)
+	caption_style.set_corner_radius_all(7)
+	caption_style.content_margin_left = 10
+	caption_style.content_margin_right = 10
+	caption_style.content_margin_top = 5
+	caption_style.content_margin_bottom = 5
+	caption.add_theme_stylebox_override("normal",caption_style)
 	caption.z_index = 100
 	add_child(caption)
 	_make_menu()
@@ -260,6 +272,8 @@ func _ready() -> void:
 	add_child(light_player)
 	preview_player = AudioStreamPlayer.new()
 	add_child(preview_player)
+	preview_player.finished.connect(func() -> void:
+		if expression_click_preview: _cancel_preview_playback())
 	var calibration: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://数据/valley_score_calibration.json"))
 	fixed_gain = float(calibration["gain"])
 	clock = get_node("/root/AudioClock") as AudibleAudioClock
@@ -339,7 +353,7 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 		model.rendered_until = start_frame
 		clock.renderer.transport.rendered_frames = start_frame
 		clock.renderer.transport.audible_frame = float(start_frame)
-	if example_world != null:
+	if example_world != null or (saved.is_empty() and first_composition_mode):
 		_home_city()
 		view_zoom = zoom_target
 		pan = pan_target
@@ -399,6 +413,7 @@ func _make_menu() -> void:
 		button.tooltip_text = str(choice["city"])
 		button.toggle_mode = true
 		button.custom_minimum_size.y = 38
+		_apply_expression_button_style(button,str(choice["id"]))
 		button.pressed.connect(_select_player_expression.bind(str(choice["id"])))
 		expression_choices[choice["id"]] = button
 		expression_box.add_child(button)
@@ -413,11 +428,22 @@ func _make_menu() -> void:
 	expression_comparison_summary.add_theme_color_override("font_color",Color("51665c"))
 	expression_comparison_summary.hide()
 	expression_box.add_child(expression_comparison_summary)
+	expression_listen = Button.new()
+	expression_listen.text = "听四秒 · 先选一个方向"
+	expression_listen.custom_minimum_size.y = 34
+	expression_listen.pressed.connect(_toggle_expression_listen)
+	expression_box.add_child(expression_listen)
 	expression_confirm = Button.new()
 	expression_confirm.text = "确认种下 · 下一句生长"
 	expression_confirm.custom_minimum_size.y = 38
 	expression_confirm.pressed.connect(_confirm_player_expression)
 	expression_box.add_child(expression_confirm)
+	var expression_back := Button.new()
+	expression_back.text = "回到河湾 · Esc"
+	expression_back.pressed.connect(func() -> void:
+		_cancel_preview_playback()
+		menu.hide())
+	expression_box.add_child(expression_back)
 	box.add_child(expression_box)
 	menu.set_meta("expression_choices",expression_box)
 	transit_edit_choices = VBoxContainer.new()
@@ -453,6 +479,7 @@ func _make_menu() -> void:
 		button.pressed.connect(_verb.bind(item[1]))
 		verbs.add_child(button)
 	box.add_child(verbs)
+	menu.set_meta("listening_verbs",verbs)
 	var reuse_button := Button.new()
 	reuse_button.text = "原位改用 · 试听"
 	reuse_button.tooltip_text = "固定现有占地，比较保留当前用途、公园与文化馆"
@@ -554,6 +581,30 @@ func _make_menu() -> void:
 	add_child(menu)
 	menu.hide()
 
+func _apply_expression_button_style(button: Button, choice_id: String) -> void:
+	## Give each first-composition route a quiet visual identity before the
+	## player hears it. The pressed/hover states stay in the same family so the
+	## card remains calm while the three choices are easy to scan.
+	var palette: Dictionary = {
+		"deep":{"fill":Color("e8e6f0"),"hover":Color("dcd9e8"),"pressed":Color("c7c1df"),"edge":Color("7c78a5")},
+		"weave":{"fill":Color("f0ead4"),"hover":Color("e7ddbd"),"pressed":Color("d8c793"),"edge":Color("b18b55")},
+		"warm":{"fill":Color("e2ecdf"),"hover":Color("d4e5d0"),"pressed":Color("bdd6ba"),"edge":Color("6f9b74")},
+	}.get(choice_id,{"fill":Color("eef0e8"),"hover":Color("e2e8dc"),"pressed":Color("cbd9c6"),"edge":Color("789272")})
+	for state in ["normal","hover","pressed","focus"]:
+		var style := StyleBoxFlat.new()
+		style.bg_color = palette["fill"]
+		if state == "hover": style.bg_color = palette["hover"]
+		elif state == "pressed": style.bg_color = palette["pressed"]
+		style.border_color = palette["edge"]
+		style.set_border_width(SIDE_LEFT,4)
+		style.set_border_width(SIDE_TOP,1)
+		style.set_border_width(SIDE_RIGHT,1)
+		style.set_border_width(SIDE_BOTTOM,1)
+		style.set_corner_radius_all(8)
+		style.content_margin_left = 12
+		style.content_margin_right = 12
+		button.add_theme_stylebox_override(state,style)
+
 func _cycle_terrain() -> void:
 	_save_before_switch()
 	first_composition_mode = false
@@ -582,6 +633,9 @@ func _start_regional_town() -> void:
 	_message("三河段大城 · %d栋 · %d个社区 · 滚轮放大查看街坊，H看全城" % [shown_world.buildings.size(),shown_world.active_community_count()])
 
 func _home_city() -> void:
+	if first_composition_mode and not shown_world.buildings.is_empty():
+		_frame_first_composition()
+		return
 	zoom_target = 0.88
 	pan_target = Vector2(0,70)
 	if int(shown_world.cfg["city"].get("regional_count",1)) == 1: return
@@ -593,6 +647,19 @@ func _home_city() -> void:
 		bounds = bounds.expand(Projection2D.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0))
 	zoom_target = minf(0.88,minf((size.x-120.0)/bounds.size.x,(size.y-180.0)/bounds.size.y))
 	pan_target = -bounds.get_center()*zoom_target+Vector2(0,30)
+
+func _frame_first_composition() -> void:
+	var bounds := Rect2()
+	var first := true
+	for building: Dictionary in shown_world.buildings:
+		var p := Coupling.position_of(building)
+		var projected := Projection2D.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),shown_world.terrain.height_at(p))
+		if first:
+			bounds = Rect2(projected,Vector2.ZERO)
+			first = false
+		else: bounds = bounds.expand(projected)
+	zoom_target = clampf(minf((size.x-260.0)/maxf(1.0,bounds.size.x),(size.y-260.0)/maxf(1.0,bounds.size.y)),0.65,1.20)
+	pan_target = -bounds.get_center()*zoom_target+Vector2(0,-12)
 
 func _start_expanded_town() -> void:
 	_save_before_switch()
@@ -618,11 +685,13 @@ func _start_town() -> void:
 func _cancel_preview_playback() -> void:
 	preview_requested = false
 	preview_started = false
+	expression_click_preview = false
 	if is_instance_valid(preview_player): preview_player.stop()
 	if preview_duck_owned and model != null:
 		model.synth.ducking = preview_saved_ducking
 		model.synth.duck_release_at = preview_saved_release
 	preview_duck_owned = false
+	_sync_expression_listen()
 
 func _invalidate_transit_preview() -> void:
 	# A route redraw/cancel makes any in-flight PCM result stale.  The worker may
@@ -1111,7 +1180,7 @@ func _begin_first_sound_choice(cid: String,at: Vector2 = Vector2.INF) -> bool:
 	planning_guide._focus_planning_position(context["position"])
 	pointer = point(position)
 	_show_context_menu()
-	_message("选择这块地怎样唱 · 按住空格听下一句，确认才种下；可点其他空地换落点")
+	_message("选择这块地怎样唱 · 点‘听四秒’听下一句，确认才种下；可点其他空地换落点")
 	return true
 
 func _select_player_expression(choice: String) -> void:
@@ -1120,7 +1189,23 @@ func _select_player_expression(choice: String) -> void:
 	_update_expression_menu()
 	if preview_requested: _request_expression_preview()
 
+func _toggle_expression_listen() -> void:
+	if not _expression_context() or expression_choice.is_empty(): return
+	if preview_requested:
+		_cancel_preview_playback()
+		return
+	expression_click_preview = true
+	_request_expression_preview()
+	_sync_expression_listen()
+
+func _sync_expression_listen() -> void:
+	if not is_instance_valid(expression_listen): return
+	expression_listen.disabled = expression_choice.is_empty()
+	expression_listen.text = "停止试听 · 回到城市" if preview_requested else "听四秒 · 也可按住空格"
+	if expression_choice.is_empty(): expression_listen.text = "听四秒 · 先选一个方向"
+
 func _update_expression_menu() -> void:
+	_sync_expression_listen()
 	for choice: String in expression_choices:
 		(expression_choices[choice] as Button).set_pressed_no_signal(choice == expression_choice)
 	expression_confirm.disabled = expression_choice.is_empty()
@@ -1133,10 +1218,10 @@ func _update_expression_menu() -> void:
 	var name_text := str(shown_world.communities.get(cid,{}).get("name","这片街坊"))
 	menu_info.text = "%s · 在这块地写下一段\n三种声音会改变实际房屋与社区唱法" % name_text
 	if expression_choice.is_empty():
-		expression_summary.text = "亲自选一个方向 · 按住空格试听四秒合奏\n松开回到城市；切换按钮听同一下一句"
+		expression_summary.text = "亲自选一个方向，再点‘听四秒’\n试听时切换方向；确认才种下"
 		return
 	var choice := PlayerExpression.definition(expression_choice)
-	expression_summary.text = str(choice["city"])+"\n按住空格试听 · Enter或按钮确认"
+	expression_summary.text = str(choice["city"])+"\n点‘听四秒’比较 · Enter或按钮确认"
 	if not expression_comparison.is_empty() and expression_comparison_key == _expression_preview_identity():
 		var variant: Dictionary = expression_comparison["variants"][expression_choice]
 		if not bool(variant["accepted"]):
@@ -1154,7 +1239,7 @@ func _expression_preview_identity() -> Array:
 
 func _request_expression_preview() -> void:
 	if expression_choice.is_empty():
-		_message("先亲自选择深流、织机或留地，再按住空格听")
+		_message("先亲自选择深流、织机或留地，再点‘听四秒’")
 		return
 	preview_requested = true
 	preview_public = false
@@ -1184,7 +1269,8 @@ func _play_expression_preview() -> void:
 		_message(str(variant["reason"]))
 		return
 	_play_preview_pcm(variant["pcm"])
-	_message(str(PlayerExpression.definition(expression_choice)["label"])+"试听 · 松开恢复城市；切换方向听同一下一句")
+	_sync_expression_listen()
+	_message(str(PlayerExpression.definition(expression_choice)["label"])+("试听 · 四秒后回到城市；切换方向听同一下一句" if expression_click_preview else "试听 · 松开恢复城市；切换方向听同一下一句"))
 
 func _confirm_player_expression() -> void:
 	if not _expression_context() or expression_choice.is_empty() or expression_confirm.disabled: return
@@ -1240,7 +1326,15 @@ func _show_context_menu() -> void:
 	_planning_menu()
 	menu.size = menu.get_combined_minimum_size()
 	menu.position = Vector2(clampf(pointer.x-100,12,maxf(12,size.x-menu.size.x-12)),clampf(pointer.y+22,70,maxf(70,size.y-menu.size.y-12)))
+	menu.set_meta("target_on_right",pointer.x >= size.x*0.5)
+	_place_first_composition_menu()
 	menu.show()
+
+func _place_first_composition_menu() -> void:
+	if not first_composition_mode or not (_expression_context() or _authored_retune()): return
+	# Keep the player's actual parcel/house visible beside its choices.
+	menu.position.x = 12.0 if bool(menu.get_meta("target_on_right",true)) else maxf(12.0,size.x-menu.size.x-12.0)
+	menu.position.y = clampf(size.y*0.5-menu.size.y*0.5,78.0,maxf(78.0,size.y-menu.size.y-82.0))
 
 func _sync_note_buttons() -> void:
 	var note_choices: Array = [48,50,52,55,57]
@@ -1270,21 +1364,23 @@ func _update_selected_opportunity() -> void:
 	if not opportunity_lines.is_empty(): next_text = "\n".join(opportunity_lines)
 	var building: Dictionary = shown_world.by_id[selected_id]
 	var pitch := int(model.audible_pitches().get(selected_id,building["current_midi"]))
+	var route_detail := ""
 	menu_info.text = "%s · %s\n这栋 · %s · %s\n音型 · %s%s\n选音改编 · 下一拍换音；F聚焦 · Tab独听\n详细条件 · 低音表达 / 商业律动 / 跨岸应答" % [
 		shown_world.communities[cid]["name"],str(selected_opportunity.get("current","当前以长音融入合奏")),
 		note_name(pitch),str(building["form"]),"  ".join(displayed)," …" if notes.size() > 8 else ""]
 	if _authored_retune():
 		var choice := PlayerExpression.definition(str(building["expression"]))
-		menu_info.text = "%s · 你种下的%s\n这栋 · %s%d · %s\n音型 · %s%s\n%s\n选一个音，下一拍改写 · Esc回到全城\n保持当前声域 · Shift低一个八度（最低C2）" % [
+		menu_info.text = "%s · 你种下的%s\n这栋 · %s%d · %s\n音型 · %s%s\n选一个音，下一拍改写 · Esc回到全城" % [
 			shown_world.communities[cid]["name"],choice["label"],note_name(pitch),pitch/12-1,str(building["form"]),
-			"  ".join(displayed)," …" if notes.size() > 8 else "",str(selected_opportunity.get("current","当前融入合奏"))]
+			"  ".join(displayed)," …" if notes.size() > 8 else ""]
 		var authored_work := FirstAuthoredWork.state(shown_world,current_score,model.audible_pitches())
 		var route_result := FirstAuthoredRouteResult.summary(authored_work,current_score)
 		if not route_result.is_empty() and bool(route_result.get("available",false)):
-			menu_info.text += "\n\n实际路线结果\n"+FirstAuthoredRouteResult.text(route_result)
+			menu_info.text += "\n实际路线结果 · 家族%d栋 · 社区成熟%d栋" % [int(route_result.get("family_houses",0)),int(route_result.get("mature",0))]
+			route_detail = "\n\n"+FirstAuthoredRouteResult.text(route_result)+"\n保持当前声域 · Shift低一个八度（最低C2）"
 	var details: Label = menu.get_meta("details_label")
 	details.text = next_text+"\n"+("公园给主题留白" if selected_opportunity["facility"]["park"] else ("文化馆实际服务%d栋" % int(selected_opportunity["facility"]["served"]) if selected_opportunity["facility"]["civic"] else "可自由选择留白、文化或商业布局"))
-	details.text += "\n跨河应答 · "+_response_state_label()+"\nEsc回到全城合奏"
+	details.text += "\n跨河应答 · "+_response_state_label()+"\nEsc回到全城合奏"+route_detail
 
 func _opportunity_lines(opportunity: Dictionary) -> Array[String]:
 	var rows_variant: Variant = opportunity.get("opportunities",[])
@@ -1337,9 +1433,15 @@ func _response_button_text() -> String:
 
 func _planning_menu() -> void:
 	_refresh_transit_edit_choices()
-	(menu.get_meta("expression_choices") as Control).visible = _expression_context()
-	(menu.get_meta("notes") as Control).visible = not _expression_context()
-	(menu.get_meta("legacy_expressions") as Control).visible = not _expression_context() and not _authored_retune()
+	var choosing_expression := _expression_context()
+	(menu.get_meta("expression_choices") as Control).visible = choosing_expression
+	(menu.get_meta("notes") as Control).visible = not choosing_expression
+	(menu.get_meta("legacy_expressions") as Control).visible = not choosing_expression and not _authored_retune()
+	(menu.get_meta("listening_verbs") as Control).visible = not choosing_expression
+	(menu.get_meta("public_toggle") as Control).visible = not choosing_expression
+	(menu.get_meta("public_tools") as Control).visible = not choosing_expression and (menu.get_meta("public_toggle") as Button).button_pressed
+	(menu.get_meta("city_toggle") as Control).visible = not choosing_expression
+	(menu.get_meta("city_tools") as Control).visible = not choosing_expression and (menu.get_meta("city_toggle") as Button).button_pressed
 	var retuning: bool = context.get("kind","") == "retune"
 	var active_public := false
 	for site in model.world.public_sites:
@@ -1354,6 +1456,7 @@ func _planning_menu() -> void:
 	var scroll: ScrollContainer = menu.get_meta("scroll")
 	var box: VBoxContainer = menu.get_meta("content")
 	var width := maxf(1.0,minf(560.0,size.x-52.0))
+	if choosing_expression: width = minf(width,maxf(280.0,(size.x-168.0)*0.5))
 	box.custom_minimum_size.x = maxf(1.0,width-18.0)
 	scroll.custom_minimum_size = Vector2(width,minf(box.get_combined_minimum_size().y,maxf(1.0,minf(520.0,size.y-106.0))))
 	var candidate: Dictionary = {}
@@ -2371,7 +2474,9 @@ func _input(event: InputEvent) -> void:
 			expression = "bright"
 			_start_world()
 			clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
-		KEY_SPACE: _request_preview()
+		KEY_SPACE:
+			expression_click_preview = false
+			_request_preview()
 		KEY_ENTER:
 			if menu.visible and _expression_context():
 				_confirm_player_expression()
@@ -2849,13 +2954,15 @@ func _process(delta: float) -> void:
 	if not hover_card_status.is_empty():
 		status_line = hover_card_status if status_line.is_empty() else status_line+" · "+hover_card_status
 	caption.text = status_line
+	caption.visible = not black and not status_line.is_empty()
 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
 	if menu.visible:
 		_update_selected_opportunity()
 		menu.size = menu.get_combined_minimum_size()
 		menu.position = Vector2(clampf(menu.position.x,12,maxf(12,size.x-menu.size.x-12)),clampf(menu.position.y,70,maxf(70,size.y-menu.size.y-12)))
 		_planning_menu()
-		if pointer_inside and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
+		_place_first_composition_menu()
+		if pointer_inside and not _expression_context() and not _authored_retune() and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()
 	_profile_frame("interaction_ms",frame_started)
 
@@ -2871,7 +2978,7 @@ func _sync_daylight() -> void:
 	buildings_layer.set_meta("world_tint",tint)
 	backdrop.color = Color.BLACK if black else daylight_state["backdrop"]
 	shadow_layer.modulate.a = float(daylight_state["shadow_strength"])
-	caption.add_theme_color_override("font_color",daylight_state["ui_ink"])
+	caption.add_theme_color_override("font_color",Color("435c59"))
 	tooltip.add_theme_color_override("font_color",daylight_state["ui_ink"])
 
 func _sync_buildings() -> void:
@@ -2926,7 +3033,7 @@ func _sync_buildings() -> void:
 		append_only = false
 	for building in shown_world.buildings:
 		var id: String = building["district_id"]
-		var entry: Dictionary = building_catalog.entry_for(building,assets[building["type"]])
+		var entry: Dictionary = building_catalog.entry_for(building,assets[building["type"]],shown_world.families.get(str(building.get("family_id","")),{}))
 		var world_position := Coupling.position_of(building)
 		var key := [world_position,entry["id"]]
 		var geometry_dirty := false
@@ -2986,6 +3093,7 @@ func _draw() -> void:
 	var flow := float(clock.renderer.transport.audible_frame)/float(clock.renderer.transport.sample_rate)
 	_draw_community_names()
 	_draw_public_labels()
+	_draw_authored_selection()
 	_draw_landmarks()
 	_draw_landmark_preview()
 	if pointer_inside:
@@ -3027,6 +3135,26 @@ func _draw() -> void:
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
 	draw_line(Vector2(48,size.y-32),Vector2(48+(size.x-96)*progress,size.y-32),Color("af9c6a"),3.0)
 	_profile_frame("draw_ms",draw_started)
+
+func _draw_authored_selection() -> void:
+	if not first_composition_mode or not _authored_retune() or not shown_world.by_id.has(selected_id): return
+	var building: Dictionary = shown_world.by_id[selected_id]
+	var choice := PlayerExpression.definition(str(building["expression"]))
+	var at := point(Coupling.position_of(building))
+	var label := "你种下的"+str(choice["label"])
+	var font := ThemeDB.fallback_font
+	var text_size := font.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,13)
+	var origin := at-Vector2(text_size.x*0.5,55.0*view_zoom)
+	draw_line(at-Vector2(0,10),origin+Vector2(text_size.x*0.5,10),Color("aa8956",0.85),1.3,true)
+	draw_style_box(_authored_label_style(),Rect2(origin-Vector2(7,15),text_size+Vector2(14,8)))
+	draw_string(font,origin,label,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("6d5737"))
+
+func _authored_label_style() -> StyleBoxFlat:
+	if authored_badge_style == null:
+		authored_badge_style = StyleBoxFlat.new()
+		authored_badge_style.bg_color = Color("f3ecd6",0.96)
+		authored_badge_style.set_corner_radius_all(6)
+	return authored_badge_style
 
 func diagnostics() -> Dictionary:
 	return {"buildings":shown_world.buildings.size(),"planned_communities":shown_world.active_community_count(),
@@ -3335,6 +3463,7 @@ func _draw_planning_preview() -> void:
 
 func _draw_bridge_preview() -> void:
 	if shown_world == null: return
+	if first_composition_mode and (not pointer_inside or planning_guide.opened or menu.visible or _bridge_preview_at(world_at(pointer)).is_empty()): return
 	var preview: Dictionary = shown_world.bridge_preview()
 	if not bool(preview.get("available",false)): return
 	var raw_a: Array = preview.get("from_position",[])

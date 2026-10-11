@@ -1,10 +1,10 @@
 {
-	"card": "同一冻结下一句 · 四秒实际试听（未提交）\n  深流 · 低音 · 慢拍长音 · C2 · 每2.00秒/尾1.60秒 · PCM与织机、留地不同\n    下一句第2句 · 住宅 · 成熟3栋\n▶ 织机 · 高音 · 短促织拍 · C5 · 每0.25秒/尾0.12秒 · PCM与深流、留地不同\n    下一句第1句 · 商业 · 成熟4栋\n  留地 · 中音 · 长和声与留白 · G3 · 每4.00秒/尾2.20秒 · PCM与深流、织机不同\n    下一句第1句 · 住宅 · 成熟2栋 · 保留1片真实空地",
+	"card": "深流 · 低音长响，慢慢铺底 · 住宅生长\n▶ 织机 · 高音短促，密集织拍 · 商业生长\n留地 · 中音长响，留出空隙 · 住宅生长，保留1片空地",
 	"checks": {
 		"comparison_card_does_not_submit_or_mutate_city": true,
 		"comparison_card_fits_800x600": true,
 		"comparison_card_is_visible_in_menu": true,
-		"comparison_card_shows_actual_audio_and_city_consequence": true,
+		"comparison_card_shows_plain_sound_and_city_choices": true,
 		"sound_choice_opens_at_real_community": true
 	},
 	"failures": [],
