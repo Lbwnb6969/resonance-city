@@ -88,6 +88,7 @@ var transit_route_mode := false
 var transit_route_stops: Array[Vector2] = []
 var transit_preview: Dictionary = {}
 var transit_preview_key: Array = []
+var transit_station_focus_id := ""
 var reservation_draw_mode := false
 var reservation_draw_points := PackedVector2Array()
 var pointer := Vector2.ZERO
@@ -730,6 +731,7 @@ func _gui_input(event: InputEvent) -> void:
 			zoom_target = clampf(zoom_target*(1.12 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.12),0.18 if int(shown_world.cfg["city"].get("regional_count",1)) > 1 else 0.55,1.9)
 		elif event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
 			_clear_transit_route()
+			transit_station_focus_id = ""
 			_clear_partial_draft()
 			reservation_draw_mode = false
 			reservation_draw_points.clear()
@@ -754,6 +756,14 @@ func _gui_input(event: InputEvent) -> void:
 				return
 			if partial_mode:
 				_submit_partial_at(world_at(pointer))
+				return
+			var station_click := _transit_station_at(world_at(pointer))
+			if not station_click.is_empty():
+				transit_station_focus_id = str(station_click.get("id",""))
+				selected_id = ""
+				context = {"kind":"transit_station","id":transit_station_focus_id}
+				menu_info.text = _transit_station_context_text(station_click)
+				_show_context_menu()
 				return
 			if planning_guide.map_click(world_at(pointer),Input.is_key_pressed(KEY_SHIFT)): return
 			var landmark_index := _landmark_candidate_at(pointer)
@@ -916,6 +926,10 @@ func _planning_menu() -> void:
 			active_public = bool(site.get("active",false)) and str(context.get("kind","")) in ["park","civic"]
 	planning_buttons["relocate_public"].disabled = not active_public
 	planning_buttons["plan_transit"].disabled = false
+	if context.get("kind","") == "transit_station":
+		planning_buttons["plan_transit"].tooltip_text = "沿已选站点继续规划第二/第三条线路；下一乐句先试听再落定"
+	else:
+		planning_buttons["plan_transit"].tooltip_text = "沿真实道路逐站规划公交线路；至少两站后试听，Enter排入下一乐句"
 
 func _submit_relocation_at(target: Vector2) -> void:
 	if relocation_site_id.is_empty():
@@ -1075,6 +1089,76 @@ func _transit_next_phrase_text(transfer: Dictionary, summary: Dictionary) -> Str
 		return "下一乐句：换乘站接入%s，落定后观察真实客流脉冲" % lines
 	var mode := "闭环" if str(summary.get("route_mode","")) == "loop" else "往返"
 	return "下一乐句：%s线路落定并开始接客" % mode
+
+func _transit_station_feedback(station: Dictionary) -> Dictionary:
+	## Convert one authoritative station into the short causal feedback used by
+	## both the hover card and the click-to-plan context.  The station itself is
+	## spatial truth; passenger values come from committed demand memory only.
+	var stop_id := str(station.get("id",""))
+	var line_ids: Array = station.get("line_ids",[]).duplicate(true)
+	var line_names: Array = station.get("line_names",[]).duplicate(true)
+	var world = model.world if model != null and model.world != null else shown_world
+	var demand := 0.0
+	var visits := 0
+	var transfers := 0
+	if world != null:
+		demand = world.transit_demand_score(stop_id)
+		var record: Dictionary = world.transit_demand.get(stop_id,{})
+		visits = int(record.get("visits",0))
+		transfers = int(record.get("transfers",0))
+	var state := "coverage_only"
+	var state_text := "等待真实客流"
+	var next_action: Dictionary = {}
+	if world != null:
+		for line_id in line_ids:
+			var line_feedback: Dictionary = {}
+			for world_line in world.transit_lines:
+				if str(world_line.get("id","")) == str(line_id):
+					var cached_feedback: Variant = world_line.get("music_feedback",{})
+					if cached_feedback is Dictionary: line_feedback = cached_feedback.duplicate(true)
+					break
+			if line_feedback.is_empty() and world.has_method("transit_music_feedback"):
+				line_feedback = world.transit_music_feedback(str(line_id))
+			var candidate_action: Variant = line_feedback.get("next_action",{})
+			if candidate_action is Dictionary and not candidate_action.is_empty():
+				next_action = candidate_action.duplicate(true)
+				break
+	if line_ids.size() > 1:
+		if transfers > 0:
+			state = "passenger_transfer"
+			state_text = "已发生%d次换乘" % transfers
+		elif demand > 0.0 or visits > 0:
+			state = "shared_station_waiting"
+			state_text = "已有上下客，等待线路交换"
+		else:
+			state = "shared_station_waiting"
+			state_text = "等待两条线路的真实交换"
+	elif demand > 0.0 or visits > 0:
+		state = "passenger_memory"
+		state_text = "已有客流 %.1f，继续观察城市脉冲" % demand
+	var next_text := "下一乐句：可沿此站继续规划第三条线路，观察换乘客流脉冲" if line_ids.size() > 1 else "下一乐句：可在此规划第二条线路，先试听再落定"
+	if not next_action.is_empty():
+		var action_message := str(next_action.get("message",next_action.get("title","")))
+		if not action_message.is_empty():
+			next_text = "下一乐句："+action_message
+			if line_ids.size() > 1 and not next_text.contains("规划第三条线路"):
+				next_text += "；也可从共享站规划第三条线路"
+	return {"stop_id":stop_id,"line_ids":line_ids,"line_names":line_names,
+		"demand":demand,"visits":visits,"transfers":transfers,"state":state,
+		"state_text":state_text,"next_text":next_text,"next_action":next_action}
+
+func _transit_station_context_text(station: Dictionary) -> String:
+	var feedback := _transit_station_feedback(station)
+	var line_names: Array = feedback.get("line_names",[])
+	var line_text := "、".join(line_names) if not line_names.is_empty() else "公交线路"
+	var station_record: Dictionary = station.get("record",{})
+	var community_names := _transit_community_names(station_record.get("community_ids",[]))
+	var community_text := "、".join(community_names) if not community_names.is_empty() else "暂无直接覆盖社区"
+	var role_text := "共享换乘站" if feedback.get("line_ids",[]).size() > 1 else "线路站点"
+	return "站点 · %s · %s\n线路：%s\n真实道路：%s · 覆盖%d栋 · 社区：%s\n当前换乘：%s\n%s\n点击‘规划公交线路’沿此站继续组合" % [
+		role_text,str(feedback.get("stop_id","")),line_text,str(station_record.get("road","真实道路")),
+		station_record.get("covered_building_ids",[]).size(),community_text,str(feedback.get("state_text","等待真实客流")),
+		str(feedback.get("next_text","下一乐句继续组合线路"))]
 
 func _transit_station_at(position: Vector2) -> Dictionary:
 	if shown_world == null: return {}
@@ -1381,9 +1465,11 @@ func _submit_free_reservation() -> void:
 		_message(str(result.get("reason","这片范围暂时不能留地")))
 
 func _verb(verb: String) -> void:
+	var transit_anchor_id := str(context.get("id","")) if context.get("kind","") == "transit_station" else ""
 	if verb in ["free_reserve","partial_park","partial_civic","free_partial_park","free_partial_civic","free_multi_partial_park","free_multi_partial_civic","free_courtyard_park","free_courtyard_civic","relocate_public","plan_transit"]:
 		planning_guide.hide_tool()
 	if verb != "plan_transit": _clear_transit_route()
+	if verb != "plan_transit": transit_station_focus_id = ""
 	if verb == "planning":
 		planning_guide.open_tool()
 		return
@@ -1396,11 +1482,16 @@ func _verb(verb: String) -> void:
 		relocation_site_id = ""
 		transit_route_mode = true
 		transit_route_stops.clear()
+		var anchor_position := model.world.transit_stop_position(transit_anchor_id) if not transit_anchor_id.is_empty() else Vector2.INF
+		if anchor_position != Vector2.INF:
+			var anchor_preview := TransitPlanning.stop_preview(model.world,anchor_position)
+			if bool(anchor_preview.get("accepted",false)):
+				transit_route_stops.append(Vector2(float(anchor_preview["position"][0]),float(anchor_preview["position"][1])))
 		transit_preview.clear()
 		transit_preview_key.clear()
 		context.clear()
 		menu.hide()
-		_message("公交线路预影开启 · 左键沿真实道路逐站放置，至少两站后按住空格试听，Enter 排入下一乐句；右键取消")
+		_message(("公交线路预影开启 · 已带入站点%s · 左键继续沿真实道路加站，至少两站后按住空格试听，Enter 排入下一乐句；右键取消" % transit_anchor_id) if not transit_anchor_id.is_empty() and not transit_route_stops.is_empty() else "公交线路预影开启 · 左键沿真实道路逐站放置，至少两站后按住空格试听，Enter 排入下一乐句；右键取消")
 		return
 	if verb == "free_reserve":
 		partial_polygon_mode = false
@@ -1984,16 +2075,18 @@ func _process(delta: float) -> void:
 		tooltip.text = "%s · %s\n%s\n落成 %.0f%% · 悬停查看历史" % [str(landmark["name"]),"古典遗产" if int(landmark.get("era",1)) == 1 else "时代地标",effect,progress*100.0]
 	elif not station_hover.is_empty():
 		var station_record: Dictionary = station_hover["record"]
+		var station_feedback := _transit_station_feedback(station_hover)
 		var station_communities := _transit_community_names(station_record.get("community_ids",[]))
 		var station_community_text := "、".join(station_communities) if not station_communities.is_empty() else "暂无直接覆盖社区"
 		var line_names: Array = station_hover.get("line_names",[])
 		var line_text := "、".join(line_names) if not line_names.is_empty() else "公交线路"
-		var demand := shown_world.transit_demand_score(str(station_hover["id"]))
+		var demand := float(station_feedback.get("demand",0.0))
 		var role_text := "换乘站" if station_hover.get("line_ids",[]).size() > 1 else "中途站"
-		var rhythm_text := "换乘客流会进入密集脉冲" if station_hover.get("line_ids",[]).size() > 1 else "客流会进入城市脉冲"
-		if demand > 0.1: rhythm_text = "当前客流 %.1f · 已进入城市脉冲" % demand
+		var rhythm_text := str(station_feedback.get("state_text","等待真实客流"))
+		if demand > 0.1 and station_hover.get("line_ids",[]).size() > 1 and int(station_feedback.get("transfers",0)) > 0:
+			rhythm_text += " · 已进入密集脉冲"
 		var transfer_hint := "可换乘至："+line_text if station_hover.get("line_ids",[]).size() > 1 else "接入线路："+line_text
-		tooltip.text = "站点 · %s · %s\n%s · %s\n覆盖%d栋 · 社区：%s\n%s\n%s\n下一句继续组合线路" % [role_text,str(station_hover["id"]),transfer_hint,str(station_record.get("road", "真实道路")),station_record.get("covered_building_ids",[]).size(),station_community_text,rhythm_text,"换乘后客流会进入密集脉冲" if station_hover.get("line_ids",[]).size() > 1 else "可在此规划第二条线路"]
+		tooltip.text = "站点 · %s · %s\n%s · %s\n覆盖%d栋 · 社区：%s\n%s\n%s\n点击查看站点并规划下一条线路" % [role_text,str(station_hover["id"]),transfer_hint,str(station_record.get("road", "真实道路")),station_record.get("covered_building_ids",[]).size(),station_community_text,rhythm_text,str(station_feedback.get("next_text","下一乐句继续组合线路"))]
 	elif not hover_id.is_empty():
 		var b: Dictionary = shown_world.by_id[hover_id]
 		tooltip.text = "%s · %s · %s\n%s  ·  活力 %.0f\n点击选音   Tab独听社区   F聚焦" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),b["form"],shown_world.communities[b["community_id"]]["name"],b["vitality"]]
@@ -2139,6 +2232,11 @@ func _draw() -> void:
 	if black: return
 	if shown_world == null: return
 	_draw_planning_preview()
+	if not transit_station_focus_id.is_empty():
+		var focus_position := shown_world.transit_stop_position(transit_station_focus_id)
+		if focus_position != Vector2.INF:
+			draw_arc(point(focus_position),15.0*view_zoom,0,TAU,40,Color("e5b64e",0.95),2.4*view_zoom,true)
+			draw_string(ThemeDB.fallback_font,point(focus_position)+Vector2(10,-12),"已选站点",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("8a6825"))
 	var flow := float(clock.renderer.transport.audible_frame)/float(clock.renderer.transport.sample_rate)
 	_draw_community_names()
 	_draw_public_labels()

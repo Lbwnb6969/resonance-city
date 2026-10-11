@@ -59,6 +59,15 @@ static func export_dna(city: Dictionary, directory: String = DIRECTORY+"/exports
 	var world: Dictionary = model.get("world",{})
 	var plan: Dictionary = world.get("plan",{})
 	var mix: Dictionary = model.get("mix",{})
+	var authored_station_ids: Array[String] = []
+	for raw_id in world.get("authored_transit_stops",{}).keys():
+		var station_id := str(raw_id)
+		if not station_id.is_empty() and not authored_station_ids.has(station_id): authored_station_ids.append(station_id)
+	for line in world.get("authored_transit_lines",[]):
+		for raw_id in line.get("stop_ids",[]):
+			var station_id := str(raw_id)
+			if not station_id.is_empty() and not authored_station_ids.has(station_id): authored_station_ids.append(station_id)
+	authored_station_ids.sort()
 	var dna := {
 		"schema":"resonance_city_dna_v1",
 		"saved_at":stamp,
@@ -79,7 +88,14 @@ static func export_dna(city: Dictionary, directory: String = DIRECTORY+"/exports
 			"public_sites":world.get("public_sites",[]),
 			"planning_reservations":world.get("planning_reservations",[]),
 			"development_charters":world.get("development_charters",[]),
-			"transit_lines":world.get("transit_lines",[])
+			"transit_lines":world.get("transit_lines",[]),
+			# Authored station/line identity is part of the public DNA contract,
+			# while the runtime model below remains the canonical restore source.
+			"authored_transit_stops":world.get("authored_transit_stops",{}),
+			"authored_transit_lines":world.get("authored_transit_lines",[]),
+			"authored_transit_station_ids":authored_station_ids,
+			"transit_demand":world.get("transit_demand",{}),
+			"transit_flow_pending":world.get("transit_flow_pending",[])
 		},
 		"music":{
 			"theme":mix.get("theme",{}),

@@ -381,6 +381,29 @@ func transit_music_feedback(line_id: String) -> Dictionary:
 	elif zone.is_empty() and peak > 0.0:
 		state = "passenger_memory"
 		message = "已有真实客流记忆；还未形成跨社区 transit pulse 区域"
+	# Keep the post-transfer prompt in the world/audio contract.  It is a
+	# read-only planning hint: the UI can point at the same physical stations,
+	# while the audio layer continues to use only the existing pulse roles.
+	var line_ids: Array[String] = []
+	for raw_line_id in line.get("line_ids",[]):
+		var line_id_value := str(raw_line_id)
+		if not line_id_value.is_empty() and not line_ids.has(line_id_value): line_ids.append(line_id_value)
+	if not str(line_id).is_empty() and not line_ids.has(str(line_id)): line_ids.append(str(line_id))
+	line_ids.sort()
+	var next_action_kind := "observe_passengers"
+	var next_action_title := "等待真实客流"
+	var next_action_message := "下一乐句观察车辆到站，再决定是否继续组合线路"
+	if not transfer_stop_ids.is_empty():
+		next_action_kind = "observe_transfer"
+		next_action_title = "观察换乘"
+		next_action_message = "共享站已接入既有线路；等待真实乘客完成交换"
+	if transfer_count > 0:
+		next_action_kind = "continue_composition"
+		next_action_title = "继续组合线路"
+		next_action_message = "换乘客流已进入既有 %s 条件；下一乐句可从共享站继续接线" % (qualified_role if not qualified_role.is_empty() else "pulse")
+	var next_action := {"kind":next_action_kind,"title":next_action_title,"message":next_action_message,
+		"line_id":str(line_id),"line_ids":line_ids,"transfer_stop_ids":transfer_stop_ids.duplicate(true),
+		"transfer_state":transfer_state,"qualified_role":qualified_role,"state":state}
 	return {"line_id":str(line_id),"stop_ids":stop_ids.duplicate(true),
 		"community_ids":communities,"covered_building_count":line.get("covered_building_ids",[]).size(),
 		"community_count":communities.size(),"functional_zone_id":str(zone.get("id","")),
@@ -390,6 +413,7 @@ func transit_music_feedback(line_id: String) -> Dictionary:
 		"passenger_visits":visits,"transfer_stop_ids":transfer_stop_ids,
 		"transfer_count":transfer_count,"transfer_visits":transfer_visits,
 		"transfer_qualified":transfer_count > 0,"transfer_state":transfer_state,
+		"line_ids":line_ids,"next_action":next_action,
 		"threshold":TRANSIT_PULSE_DENSE_THRESHOLD}
 
 func _refresh_transit_music_feedback(frame: int = -1) -> void:
@@ -401,6 +425,15 @@ func _refresh_transit_music_feedback(frame: int = -1) -> void:
 		if line_id.is_empty(): continue
 		var feedback := transit_music_feedback(line_id)
 		line["music_feedback"] = feedback.duplicate(true)
+		# Functional zones expose the same next-action contract so a settled
+		# transfer can be followed from either the route card or the city-level
+		# growth/music summary.  This remains metadata only.
+		for zone_candidate in functional_zones:
+			if str(zone_candidate.get("role","")) != "transit": continue
+			if not zone_candidate.get("line_ids",[]).has(line_id): continue
+			zone_candidate["next_action"] = feedback.get("next_action",{}).duplicate(true)
+			zone_candidate["next_action_kind"] = str(feedback.get("next_action",{}).get("kind",""))
+			break
 		var line_coverage: Variant = line.get("coverage",{})
 		if line_coverage is Dictionary:
 			var updated_line_coverage: Dictionary = line_coverage.duplicate(true)
@@ -2049,7 +2082,7 @@ func restore(saved: Dictionary, rebuild_derived: bool = true) -> void:
 		for line in transit_lines:
 			if str(line.get("id","")) == intent_id: derived = line; break
 		if derived.is_empty(): continue
-		events.append({"kind":"transit_line","id":intent_id,"event_id":intent.get("event_id",0),"frame":intent.get("frame",0),"stop_ids":intent.get("stop_ids",[]).duplicate(true),"community_ids":derived.get("community_ids",[]).duplicate(true),"covered_building_ids":derived.get("covered_building_ids",[]).duplicate(true),"route_mode":derived.get("route_mode",intent.get("route_mode","out_and_back")),"coverage":derived.get("coverage",{}).duplicate(true),"route_role":str(derived.get("route_role","社区往返线")),"source_topology":str(intent.get("source_topology",""))})
+		events.append({"kind":"transit_line","id":intent_id,"event_id":intent.get("event_id",0),"frame":intent.get("frame",0),"stop_ids":intent.get("stop_ids",[]).duplicate(true),"community_ids":derived.get("community_ids",[]).duplicate(true),"covered_building_ids":derived.get("covered_building_ids",[]).duplicate(true),"route_mode":derived.get("route_mode",intent.get("route_mode","out_and_back")),"coverage":derived.get("coverage",{}).duplicate(true),"line_ids":derived.get("line_ids",[]).duplicate(true),"transfer_stop_ids":derived.get("transfer_stop_ids",[]).duplicate(true),"route_role":str(derived.get("route_role","社区往返线")),"music_feedback":derived.get("music_feedback",{}).duplicate(true),"source_topology":str(intent.get("source_topology",""))})
 	_refresh_transit_music_feedback()
 	for operation in pending_actions:
 		if str(operation.get("kind","")) == "transit_line":

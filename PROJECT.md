@@ -1,5 +1,15 @@
 # 共鸣之城：当前项目状态
 
+## 2026-10-11 当前裁定（第167轮）
+
+共享公交站现在是可继续操作的城市音乐入口：悬停和点击使用同一份权威站点反馈，显示线路名称、真实道路、覆盖社区、已发生或等待中的客流交换和下一行动；点击“规划公交线路”会把该稳定站点预填为新线路首站。单线路提示等待真实客流，共享站提示观察换乘；真实乘客交换在边界归集后，提示才变为“继续组合线路”，并保留既有 `line_ids`、`transfer_stop_ids` 和 `pulse`/`pulse_dense` 条件。功能区、事件和快照读取同一 `next_action` 合同，不新增声部或突破70个 RenderVoice。
+
+City DNA 计划区现在显式保存 `authored_transit_stops`、`authored_transit_lines`、作者线路汇出的 `authored_transit_station_ids`、已提交的 `transit_demand` 和边界前 `transit_flow_pending`；站点若复用物理节点仍以节点 ID 作为作者身份。运行时站点缓存、覆盖查询和车辆位置继续由恢复过程派生；旧事件缺字段时会从当前线路补建换乘与音乐反馈合同。
+
+验证：`tests/round167_station_interaction_ui.gd` 14/14、`round167_transit_next_action_audio.gd` 23项、`round167_authored_transit_city_dna.gd` 30项通过；Round166 合同/UI、Round165 UI/音频、Round164 保存/音频和 `city_dna_contract.gd` 回归通过。Round166 真实 OpenGL/NVIDIA 窗口截图仍是当前有效的窗口证据；本轮两个站点窗口脚本未形成可靠证据，已移入 `废弃/验证记录/第167轮_站点窗口脚本未形成证据/`。本轮 MCP 脚本检查端口未稳定连接，结论以 standalone console 解析/运行结果为准。
+
+备份：`codex/backup-before-round167`（基于 `278d43c`）。下一步做真人共享站悬停、点击、试听和长时客流平衡复核，再决定继续多线路组合或转向下一项高价值可试玩内容。
+
 ## 2026-10-11 当前裁定（第166轮）
 
 玩家公交线路现在可以继续组合：第二条 authored 线路沿真实道路选站时，会读取已落定线路的站点身份，在预影中显示共享站、既有线路名称、换乘走廊和下一乐句提示；Enter 后两条线路保留相同 `transfer_stop_ids`/`line_ids`/`coverage` 合同，事件、快照和旧字段存档均可恢复。已落定的首条线路不会把自身误报成换乘线。
