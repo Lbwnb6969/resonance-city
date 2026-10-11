@@ -289,6 +289,19 @@ static func _committed_anchor(world: RefCounted,site: Dictionary,kind: String,ev
 			return public_site.duplicate(true)
 	return {}
 
+static func _committed_reservation(world: RefCounted,site: Dictionary,event_id: int,boundary: int) -> Dictionary:
+	var reservation_id := "reservation-%05d" % event_id
+	for event in world.events:
+		if str(event.get("kind","")) != "reserve" or int(event.get("frame",-1)) != boundary: continue
+		if int(event.get("event_id",event_id)) != event_id: continue
+		if not bool(site.get("partial",false)) and str(event.get("source_site_id","")) != str(site.get("source_site_id","")): continue
+		reservation_id = str(event.get("id",reservation_id))
+		break
+	for reservation in world.planning_reservations:
+		if str(reservation.get("reservation_id",reservation.get("id",""))) == reservation_id:
+			return reservation.duplicate(true)
+	return {}
+
 static func build(source: ContinuousAudioModel,site: Dictionary,state: Dictionary,at: int) -> Dictionary:
 	var rate: int = source.world.cfg["timing"]["sample_rate"]
 	var boundary := source.next_boundary
@@ -299,7 +312,9 @@ static func build(source: ContinuousAudioModel,site: Dictionary,state: Dictionar
 	var common := source.freeze()
 	if bool(site.get("reuse",false)): common.cancel_public_reuse(str(site["public_id"]))
 	else: common.cancel_planning()
-	for kind: String in ["none","park","civic"]:
+	var kinds: Array[String] = ["none","park","civic"]
+	if bool(state.get("include_reserve",false)): kinds = ["none","reserve","park","civic"]
+	for kind: String in kinds:
 		var branch := common.freeze()
 		var phases := state.duplicate(true)
 		var request := {"accepted":true}
@@ -314,7 +329,8 @@ static func build(source: ContinuousAudioModel,site: Dictionary,state: Dictionar
 			accepted = not branch.world.events.any(func(e:Dictionary)->bool:
 				return e.get("kind","") == "planning_rejected" and int(e.get("event_id",-1)) == int(request["event_id"]))
 		var anchor: Dictionary = {}
-		if kind != "none": anchor = _committed_anchor(branch.world,site,kind,int(request["event_id"]),boundary)
+		if kind == "reserve": anchor = _committed_reservation(branch.world,site,int(request["event_id"]),boundary)
+		elif kind != "none": anchor = _committed_anchor(branch.world,site,kind,int(request["event_id"]),boundary)
 		elif bool(site.get("reuse",false)):
 			for existing in branch.world.public_sites:
 				if str(existing.get("id","")) == str(site["public_id"]):
@@ -343,6 +359,7 @@ static func build(source: ContinuousAudioModel,site: Dictionary,state: Dictionar
 			"opportunity_preview":opportunity_preview,
 			"score":score,"theme_events":0 if theme.is_empty() else branch.synth.musical_steps(theme).size(),
 			"service":branch.world.public_service_summary(),"served_ids":served,"birth_ids":births,
+			"reservation_count":branch.world.planning_reservations.size(),
 			"houses":branch.world.buildings.size(),"peak":peak,"max_voices":branch.synth.max_voice_count}
 	var original: Dictionary = result["variants"]["none"]
 	for kind in result["variants"]:
@@ -352,4 +369,5 @@ static func build(source: ContinuousAudioModel,site: Dictionary,state: Dictionar
 		var lost: Array = original["served_ids"].filter(func(id:Variant)->bool:return not variant["served_ids"].has(id))
 		variant["newly_served_ids"] = newly
 		variant["lost_service_ids"] = lost
+		variant["newly_reserved"] = max(0,int(variant.get("reservation_count",0))-int(original.get("reservation_count",0)))
 	return result

@@ -2755,6 +2755,7 @@ func _request_preview() -> void:
 		frozen.synth.ducking = preview_saved_ducking
 		frozen.synth.duck_release_at = preview_saved_release
 	var state := clock.renderer.state.duplicate(true)
+	if planning_guide.opened and planning_guide.stage == "anchor": state["include_reserve"] = true
 	var at := clock.renderer.transport.rendered_frames
 	preview_requested = true
 	preview_started = false
@@ -2814,9 +2815,9 @@ func _play_public_preview() -> void:
 		return
 	_play_preview_pcm(variant["pcm"])
 	if planning_guide.stage == "partial_anchor":
-		_message(str({"none":"暂不兑现","park":"公园","civic":"文化馆"}[planning_guide.anchor_kind])+"试听 · 松开恢复原合奏，Enter 确认这一范围")
+		_message(str({"none":"暂不兑现","reserve":"留地 · 呼吸","park":"公园","civic":"文化馆"}[planning_guide.anchor_kind])+"试听 · 松开恢复原合奏，Enter 确认这一范围")
 	elif planning_guide.stage == "reuse_anchor":
-		_message(str({"none":"保留当前用途","park":"公园","civic":"文化馆"}[planning_guide.anchor_kind])+"试听 · 松开恢复原合奏，确认后下一句原位改用")
+		_message(str({"none":"保留当前用途","reserve":"留地 · 呼吸","park":"公园","civic":"文化馆"}[planning_guide.anchor_kind])+"试听 · 松开恢复原合奏，确认后下一句原位改用")
 
 func _play_preview_pcm(pcm: PackedByteArray) -> void:
 	if pcm.is_empty(): return

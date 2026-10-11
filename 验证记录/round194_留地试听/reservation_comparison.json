@@ -1,0 +1,29 @@
+{
+	"checks": {
+		"comparison_does_not_mutate_live_model": true,
+		"focus_accepts_real_community": true,
+		"formal_reserve_persists_until_boundary": true,
+		"formal_reserve_submission_accepts_same_candidate": true,
+		"none_branch_accepted": true,
+		"real_candidate_exists": true,
+		"reserve_adds_no_public_service_voice": true,
+		"reserve_branch_accepted": true,
+		"reserve_branch_adds_real_reservation": true,
+		"reserve_does_not_add_more_growth_than_none": true,
+		"reserve_has_no_direct_sound_gap": true,
+		"reserve_has_three_second_stereo_pcm": true,
+		"reserve_preview_has_real_reservation_identity": true,
+		"reserve_preview_keeps_existing_three_branches": true,
+		"reserve_preview_matches_formal_continuation": true
+	},
+	"community_id": "west-1",
+	"contract": "ROUND194_RESERVATION_COMPARISON/v1",
+	"failures": [],
+	"none_houses": 27,
+	"passed": true,
+	"pcm_bytes_equal": false,
+	"reservation_count": 1,
+	"reservation_id": "reservation-00001",
+	"reserve_houses": 27,
+	"seed": "2026100900000062"
+}

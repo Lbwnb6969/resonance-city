@@ -1,0 +1,41 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+WARNING: [MCPRegistry] cannot write entry C:\Users\Administrator\AppData\Roaming/godot-mcp-toolkit/entries/5fab213a1b05.runtime.json.tmp (err 12)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] write (res://addons/godot_mcp_toolkit/registry/store/registry_entry_file.gd:29)
+       [1] set_runtime (res://addons/godot_mcp_toolkit/registry/registry_client.gd:181)
+       [2] _on_bound (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:200)
+       [3] _scan_and_listen (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:283)
+       [4] ensure_listening (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:254)
+       [5] _start_server (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:162)
+       [6] _ready (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:111)
+WARNING: [MCPRegistry] failed to acquire lock after 10 retries; proceeding anyway
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] acquire (res://addons/godot_mcp_toolkit/registry/store/file_lock.gd:58)
+       [1] acquire_lock (res://addons/godot_mcp_toolkit/registry/registry_client.gd:75)
+       [2] set_runtime (res://addons/godot_mcp_toolkit/registry/registry_client.gd:182)
+       [3] _on_bound (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:200)
+       [4] _scan_and_listen (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:283)
+       [5] ensure_listening (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:254)
+       [6] _start_server (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:162)
+       [7] _ready (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:111)
+WARNING: [MCPRegistry] cannot write C:\Users\Administrator\AppData\Roaming/godot-mcp-toolkit/projects.json.tmp (err 12)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] write_atomic (res://addons/godot_mcp_toolkit/registry/store/registry_projection.gd:35)
+       [1] rebuild (res://addons/godot_mcp_toolkit/registry/store/registry_projection.gd:158)
+       [2] _rebuild_projects_json (res://addons/godot_mcp_toolkit/registry/registry_client.gd:114)
+       [3] set_runtime (res://addons/godot_mcp_toolkit/registry/registry_client.gd:183)
+       [4] _on_bound (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:200)
+       [5] _scan_and_listen (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:283)
+       [6] ensure_listening (res://addons/godot_mcp_toolkit/transport/ws_transport.gd:254)
+       [7] _start_server (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:162)
+       [8] _ready (res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd:111)
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+ROUND171_REWORK_PLANNING_AUDIO {"candidate_count":3,"checks":{"all_real_branches_keep_one_source_identity":true,"all_real_branches_share_gain_length_source_and_boundary":true,"at_least_one_real_public_choice_changes_pcm_and_existing_arrangement":true,"civic_audible_public_anchor_is_same_real_candidate":true,"civic_branch_accepts_real_public_candidate":true,"civic_branch_contains_real_three_second_stereo_pcm":true,"civic_exports_real_three_second_wav":true,"civic_formal_public_submission_accepts_same_candidate":true,"civic_preview_pcm_equals_formal_continuation_bytes":true,"civic_preview_schedule_equals_formal_continuation":true,"civic_stays_within_calibrated_peak":true,"civic_stays_within_existing_render_voice_budget":true,"comparison_does_not_consume_live_city_rng":true,"comparison_does_not_mutate_captured_phase_state":true,"comparison_does_not_mutate_live_city_or_audio_model":true,"existing_focus_operation_queues_selected_community":true,"focus_action_applies_before_shared_comparison_source":true,"natural_eligible_community_has_real_road_accessible_public_candidate":true,"naturally_eligible_focused_community_uses_existing_theme_slot":true,"none_branch_accepts_real_public_candidate":true,"none_branch_contains_real_three_second_stereo_pcm":true,"none_exports_real_three_second_wav":true,"none_preview_pcm_equals_formal_continuation_bytes":true,"none_preview_schedule_equals_formal_continuation":true,"none_stays_within_calibrated_peak":true,"none_stays_within_existing_render_voice_budget":true,"park_audible_public_anchor_is_same_real_candidate":true,"park_branch_accepts_real_public_candidate":true,"park_branch_contains_real_three_second_stereo_pcm":true,"park_exports_real_three_second_wav":true,"park_formal_public_submission_accepts_same_candidate":true,"park_preview_pcm_equals_formal_continuation_bytes":true,"park_preview_schedule_equals_formal_continuation":true,"park_stays_within_calibrated_peak":true,"park_stays_within_existing_render_voice_budget":true,"rework_starter_reaches_two_real_phrase_settlements":true,"selected_community_has_unmodified_natural_theme_eligibility":true},"community_id":"west-1","failures":[],"pairwise_pcm_difference":{"none_vs_civic":{"arrangement_changed":true,"bytes_equal":false,"comparable":true,"max_abs":0.10940885647145,"rms":0.0109382186546732},"none_vs_park":{"arrangement_changed":true,"bytes_equal":false,"comparable":true,"max_abs":0.0858790856654561,"rms":0.00904854339063633},"park_vs_civic":{"bytes_equal":false,"comparable":true,"max_abs":0.0533463545640431,"rms":0.00688276586770238}},"passed":true}
