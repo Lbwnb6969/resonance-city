@@ -142,6 +142,7 @@ func _run() -> void:
 	check(str(demo.context.get("kind","")) == "transit_station","station_click_sets_station_context")
 	check(demo.menu_info.text.contains("线路：") and demo.menu_info.text.contains("当前换乘："),"station_context_explains_lines_and_transfer")
 	check(demo.menu_info.text.contains("下一乐句"),"station_context_explains_next_action")
+	check(demo.menu_info.text.contains("成长：") and demo.menu_info.text.contains("合法空地"),"station_context_explains_growth_followup")
 	check(not demo.transit_station_focus_id.is_empty(),"station_focus_ring_selected")
 	check(not demo.planning_buttons["plan_transit"].disabled,"station_keeps_plan_action_enabled")
 

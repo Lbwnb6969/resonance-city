@@ -1109,6 +1109,7 @@ func _transit_station_feedback(station: Dictionary) -> Dictionary:
 	var state := "coverage_only"
 	var state_text := "等待真实客流"
 	var next_action: Dictionary = {}
+	var growth_action: Dictionary = {}
 	if world != null:
 		for line_id in line_ids:
 			var line_feedback: Dictionary = {}
@@ -1120,9 +1121,13 @@ func _transit_station_feedback(station: Dictionary) -> Dictionary:
 			if line_feedback.is_empty() and world.has_method("transit_music_feedback"):
 				line_feedback = world.transit_music_feedback(str(line_id))
 			var candidate_action: Variant = line_feedback.get("next_action",{})
-			if candidate_action is Dictionary and not candidate_action.is_empty():
+			if next_action.is_empty() and candidate_action is Dictionary and not candidate_action.is_empty():
 				next_action = candidate_action.duplicate(true)
-				break
+			var candidate_growth: Variant = line_feedback.get("growth_action",{})
+			if candidate_growth is Dictionary and not candidate_growth.is_empty():
+				var candidate_growth_dict: Dictionary = candidate_growth
+				if growth_action.is_empty() or float(candidate_growth_dict.get("strength",0.0)) > float(growth_action.get("strength",-1.0)):
+					growth_action = candidate_growth_dict.duplicate(true)
 	if line_ids.size() > 1:
 		if transfers > 0:
 			state = "passenger_transfer"
@@ -1145,7 +1150,8 @@ func _transit_station_feedback(station: Dictionary) -> Dictionary:
 				next_text += "；也可从共享站规划第三条线路"
 	return {"stop_id":stop_id,"line_ids":line_ids,"line_names":line_names,
 		"demand":demand,"visits":visits,"transfers":transfers,"state":state,
-		"state_text":state_text,"next_text":next_text,"next_action":next_action}
+		"state_text":state_text,"next_text":next_text,"next_action":next_action,
+		"growth_action":growth_action,"growth_hint":str(growth_action.get("message",next_action.get("growth_hint","")))}
 
 func _transit_station_context_text(station: Dictionary) -> String:
 	var feedback := _transit_station_feedback(station)
@@ -1155,10 +1161,12 @@ func _transit_station_context_text(station: Dictionary) -> String:
 	var community_names := _transit_community_names(station_record.get("community_ids",[]))
 	var community_text := "、".join(community_names) if not community_names.is_empty() else "暂无直接覆盖社区"
 	var role_text := "共享换乘站" if feedback.get("line_ids",[]).size() > 1 else "线路站点"
-	return "站点 · %s · %s\n线路：%s\n真实道路：%s · 覆盖%d栋 · 社区：%s\n当前换乘：%s\n%s\n点击‘规划公交线路’沿此站继续组合" % [
+	var growth_hint := str(feedback.get("growth_hint",feedback.get("next_action",{}).get("growth_hint","")))
+	if growth_hint.is_empty(): growth_hint = "客流结算后，站点步行范围内的合法空地会获得轻微成长偏好"
+	return "站点 · %s · %s\n线路：%s\n真实道路：%s · 覆盖%d栋 · 社区：%s\n当前换乘：%s\n%s\n成长：%s\n点击‘规划公交线路’沿此站继续组合" % [
 		role_text,str(feedback.get("stop_id","")),line_text,str(station_record.get("road","真实道路")),
 		station_record.get("covered_building_ids",[]).size(),community_text,str(feedback.get("state_text","等待真实客流")),
-		str(feedback.get("next_text","下一乐句继续组合线路"))]
+		str(feedback.get("next_text","下一乐句继续组合线路")),growth_hint]
 
 func _transit_station_at(position: Vector2) -> Dictionary:
 	if shown_world == null: return {}

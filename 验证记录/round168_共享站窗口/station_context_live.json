@@ -8,6 +8,7 @@
 		"station_action_enters_transit_planning": true,
 		"station_action_prefills_first_stop": true,
 		"station_click_sets_station_context": true,
+		"station_context_explains_growth_followup": true,
 		"station_context_explains_lines_and_transfer": true,
 		"station_context_explains_next_action": true,
 		"station_context_menu_visible": true,

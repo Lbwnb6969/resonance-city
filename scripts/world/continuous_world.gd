@@ -63,6 +63,12 @@ var transit_flow_pending: Array[Dictionary] = []
 # the existing functional-zone role.  It is a condition readout, never a new
 # sound source or a guarantee that a pulse voice will win the score budget.
 const TRANSIT_PULSE_DENSE_THRESHOLD := 2.5
+# Committed passenger memory may only nudge an already legal candidate near a
+# real station.  Keep this below the existing transfer proximity bonus so
+# demand explains a next growth opportunity without turning transit into a
+# global city multiplier.
+const TRANSIT_GROWTH_DEMAND_WEIGHT := 0.35
+const TRANSIT_GROWTH_TRANSFER_WEIGHT := 0.15
 # Ephemeral task version; snapshots restore without pending worker tasks.
 var planning_revision := 0
 # Service pressure is derived from public coverage and cached within a planning pass.
@@ -337,12 +343,15 @@ func transit_music_feedback(line_id: String) -> Dictionary:
 	var total := 0.0
 	var peak := 0.0
 	var visits := 0
+	var demand_stop_ids: Array[String] = []
 	for raw_stop_id in stop_ids:
-		var record: Dictionary = transit_demand.get(str(raw_stop_id),{})
+		var stop_key := str(raw_stop_id)
+		var record: Dictionary = transit_demand.get(stop_key,{})
 		var score := clampf(float(record.get("score",0.0)),0.0,8.0)
 		total += score
 		peak = maxf(peak,score)
 		visits += int(record.get("visits",0))
+		if score > 0.0 and not demand_stop_ids.has(stop_key): demand_stop_ids.append(stop_key)
 	# A transfer is a passenger observation at a physically shared station.  Keep
 	# this derived summary alongside the existing passenger memory so the map and
 	# archive can distinguish coverage from a real line-to-line exchange.
@@ -401,9 +410,28 @@ func transit_music_feedback(line_id: String) -> Dictionary:
 		next_action_kind = "continue_composition"
 		next_action_title = "继续组合线路"
 		next_action_message = "换乘客流已进入既有 %s 条件；下一乐句可从共享站继续接线" % (qualified_role if not qualified_role.is_empty() else "pulse")
+	# Growth remains a concrete, bounded follow-up to the same station memory:
+	# only a legal candidate within walking distance receives the nudge in
+	# _transit_growth_bonus.  The UI can expose this action without inventing a
+	# second planning or music contract.
+	var growth_strength := clampf(peak/8.0,0.0,1.0)
+	var growth_action_kind := "observe_station_growth"
+	var growth_action_title := "等待站点需求"
+	var growth_hint := "客流结算后，站点步行范围内的合法空地会获得轻微成长偏好"
+	if peak > 0.0:
+		growth_action_kind = "prioritize_near_station"
+		growth_action_title = "沿站点需求成长"
+		growth_hint = "已提交站点需求 %.1f/8；附近合法空地下一句优先成长，不改变道路合法性或音级" % peak
+	if transfer_count > 0:
+		growth_hint = "共享站已记录%d次换乘；站点附近合法空地可优先成长，再从此处继续组合线路" % transfer_count
+	var growth_action := {"kind":growth_action_kind,"title":growth_action_title,
+		"message":growth_hint,"line_id":str(line_id),"stop_ids":stop_ids.duplicate(true),
+		"demand_stop_ids":demand_stop_ids.duplicate(true),"demand_peak":peak,
+		"strength":growth_strength,"bounded":true}
 	var next_action := {"kind":next_action_kind,"title":next_action_title,"message":next_action_message,
 		"line_id":str(line_id),"line_ids":line_ids,"transfer_stop_ids":transfer_stop_ids.duplicate(true),
-		"transfer_state":transfer_state,"qualified_role":qualified_role,"state":state}
+		"transfer_state":transfer_state,"qualified_role":qualified_role,"state":state,
+		"growth_action":growth_action,"growth_hint":growth_hint}
 	return {"line_id":str(line_id),"stop_ids":stop_ids.duplicate(true),
 		"community_ids":communities,"covered_building_count":line.get("covered_building_ids",[]).size(),
 		"community_count":communities.size(),"functional_zone_id":str(zone.get("id","")),
@@ -413,13 +441,76 @@ func transit_music_feedback(line_id: String) -> Dictionary:
 		"passenger_visits":visits,"transfer_stop_ids":transfer_stop_ids,
 		"transfer_count":transfer_count,"transfer_visits":transfer_visits,
 		"transfer_qualified":transfer_count > 0,"transfer_state":transfer_state,
-		"line_ids":line_ids,"next_action":next_action,
+		"line_ids":line_ids,"next_action":next_action,"growth_action":growth_action,
+		"growth_hint":growth_hint,"growth_demand_peak":peak,
 		"threshold":TRANSIT_PULSE_DENSE_THRESHOLD}
+
+func _transit_next_action_priority(action: Dictionary) -> int:
+	# A transit zone can contain authored lines with different immediate actions.
+	# Keep the strongest actionable state visible at city level: a real exchange
+	# unlocks composition, a shared station waiting for exchange comes next, and
+	# ordinary passenger observation is the fallback.
+	return {"observe_passengers":1,"observe_transfer":2,"continue_composition":3}.get(str(action.get("kind","")),0)
+
+func _transit_growth_action_priority(action: Dictionary) -> int:
+	return {"observe_station_growth":1,"prioritize_near_station":2}.get(str(action.get("kind","")),0)
+
+func _merge_transit_zone_action(current: Dictionary, candidate: Dictionary) -> Dictionary:
+	if current.is_empty(): return candidate.duplicate(true)
+	var chosen := current
+	if _transit_next_action_priority(candidate) > _transit_next_action_priority(current):
+		chosen = candidate.duplicate(true)
+	var line_ids: Array = chosen.get("line_ids",[]).duplicate(true)
+	for raw_line_id in current.get("line_ids",[]):
+		var line_id := str(raw_line_id)
+		if not line_id.is_empty() and not line_ids.has(line_id): line_ids.append(line_id)
+	for raw_line_id in candidate.get("line_ids",[]):
+		var line_id := str(raw_line_id)
+		if not line_id.is_empty() and not line_ids.has(line_id): line_ids.append(line_id)
+	line_ids.sort()
+	var transfer_stop_ids: Array = chosen.get("transfer_stop_ids",[]).duplicate(true)
+	for raw_stop_id in current.get("transfer_stop_ids",[]):
+		var stop_id := str(raw_stop_id)
+		if not stop_id.is_empty() and not transfer_stop_ids.has(stop_id): transfer_stop_ids.append(stop_id)
+	for raw_stop_id in candidate.get("transfer_stop_ids",[]):
+		var stop_id := str(raw_stop_id)
+		if not stop_id.is_empty() and not transfer_stop_ids.has(stop_id): transfer_stop_ids.append(stop_id)
+	transfer_stop_ids.sort()
+	var current_growth: Dictionary = current.get("growth_action",{})
+	var candidate_growth: Dictionary = candidate.get("growth_action",{})
+	var growth_action: Dictionary = chosen.get("growth_action",{}).duplicate(true)
+	if _transit_growth_action_priority(candidate_growth) > _transit_growth_action_priority(current_growth):
+		growth_action = candidate_growth.duplicate(true)
+	elif growth_action.is_empty() and not candidate_growth.is_empty():
+		growth_action = candidate_growth.duplicate(true)
+	var growth_line_ids: Array[String] = []
+	for source in [current_growth,candidate_growth]:
+		var source_line_id := str(source.get("line_id",""))
+		if not source_line_id.is_empty() and not growth_line_ids.has(source_line_id): growth_line_ids.append(source_line_id)
+		for raw_line_id in source.get("line_ids",[]):
+			var line_id := str(raw_line_id)
+			if not line_id.is_empty() and not growth_line_ids.has(line_id): growth_line_ids.append(line_id)
+	growth_line_ids.sort()
+	if not growth_action.is_empty():
+		growth_action["line_ids"] = growth_line_ids
+		var demand_stop_ids: Array[String] = growth_action.get("demand_stop_ids",[]).duplicate(true)
+		for source in [current_growth,candidate_growth]:
+			for raw_stop_id in source.get("demand_stop_ids",[]):
+				var stop_id := str(raw_stop_id)
+				if not stop_id.is_empty() and not demand_stop_ids.has(stop_id): demand_stop_ids.append(stop_id)
+		demand_stop_ids.sort()
+		growth_action["demand_stop_ids"] = demand_stop_ids
+	chosen["line_ids"] = line_ids
+	chosen["transfer_stop_ids"] = transfer_stop_ids
+	chosen["growth_action"] = growth_action
+	chosen["growth_hint"] = str(growth_action.get("message",chosen.get("growth_hint","")))
+	return chosen
 
 func _refresh_transit_music_feedback(frame: int = -1) -> void:
 	# Keep the authoritative route event useful to the map/guide after each
 	# phrase.  A separate event is emitted only when passenger qualification
 	# changes, so the audio model receives metadata without a structural seam.
+	var zone_actions: Dictionary = {}
 	for line in transit_lines:
 		var line_id := str(line.get("id",""))
 		if line_id.is_empty(): continue
@@ -431,9 +522,9 @@ func _refresh_transit_music_feedback(frame: int = -1) -> void:
 		for zone_candidate in functional_zones:
 			if str(zone_candidate.get("role","")) != "transit": continue
 			if not zone_candidate.get("line_ids",[]).has(line_id): continue
-			zone_candidate["next_action"] = feedback.get("next_action",{}).duplicate(true)
-			zone_candidate["next_action_kind"] = str(feedback.get("next_action",{}).get("kind",""))
-			break
+			var zone_id := str(zone_candidate.get("id",""))
+			var candidate_action: Dictionary = feedback.get("next_action",{}).duplicate(true)
+			zone_actions[zone_id] = _merge_transit_zone_action(zone_actions.get(zone_id,{}),candidate_action)
 		var line_coverage: Variant = line.get("coverage",{})
 		if line_coverage is Dictionary:
 			var updated_line_coverage: Dictionary = line_coverage.duplicate(true)
@@ -468,6 +559,13 @@ func _refresh_transit_music_feedback(frame: int = -1) -> void:
 		var feedback_frame := frame if frame >= 0 else phrase_index*int(cfg["timing"]["phrase_frames"])
 		events.append({"kind":"transit_feedback","id":line_id,"event_id":event_id,"frame":feedback_frame,"phrase":phrase_index,
 			"music_feedback":feedback.duplicate(true)})
+	for zone_candidate in functional_zones:
+		if str(zone_candidate.get("role","")) != "transit": continue
+		var zone_id := str(zone_candidate.get("id",""))
+		if not zone_actions.has(zone_id): continue
+		var zone_action: Dictionary = zone_actions[zone_id]
+		zone_candidate["next_action"] = zone_action.duplicate(true)
+		zone_candidate["next_action_kind"] = str(zone_action.get("kind",""))
 
 func _decay_transit_demand() -> void:
 	for stop_id in transit_demand:
@@ -1439,8 +1537,15 @@ func _transit_growth_bonus(position: Vector2,use: String = "residential") -> flo
 			if distance > 4.5: continue
 			var local := (4.5-distance)/4.5
 			if use in ["commercial","industrial"]: local *= 1.35
+			# Demand is committed at the phrase boundary, so this cannot react to
+			# an in-flight passenger observation.  It only nudges an already legal
+			# candidate that is reachable from this actual station.
+			var demand_strength := clampf(transit_demand_score(str(stop_id))/8.0,0.0,1.0)
+			local += TRANSIT_GROWTH_DEMAND_WEIGHT*demand_strength
 			if line.get("transfer_stops",[]).any(func(transfer: Dictionary) -> bool: return str(transfer.get("stop_id","")) == str(stop_id)):
 				local += 0.75
+				var transfer_record: Dictionary = transit_demand.get(str(stop_id),{})
+				local += TRANSIT_GROWTH_TRANSFER_WEIGHT*clampf(float(transfer_record.get("transfers",0))/4.0,0.0,1.0)
 			bonus = maxf(bonus,local)
 	return bonus
 
