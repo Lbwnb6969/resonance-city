@@ -1,0 +1,72 @@
+{
+  "checks": {
+    "accepts_real_three_branch_preview": true,
+    "card_step_keeps_combo_scope": true,
+    "combo_continuation_stays_out_of_saved_truth": true,
+    "continuation_button_names_combo_scope": true,
+    "continuation_does_not_change_world_or_audio": true,
+    "continuation_marks_combo_scope_source": true,
+    "continuation_preselects_real_communities": true,
+    "continuation_reopens_normal_planning": true,
+    "continued_charter_lands_with_edited_scope": true,
+    "editing_combo_scope_keeps_world_and_audio_until_submit": true,
+    "feedback_keeps_combo_context": true,
+    "feedback_panel_fits_1440x900": true,
+    "feedback_panel_fits_800x600": true,
+    "fixture_has_real_public_site": true,
+    "fixture_has_two_communities": true,
+    "new_scope_submits_through_real_charter_path": true,
+    "partial_combo_seeds_normal_flow_without_replaying_footprint": true,
+    "partial_multi_community_result_keeps_combo_entry": true,
+    "plan_step_keeps_combo_scope": true,
+    "public_commit_queues_existing_next_action": true,
+    "ready_combo_shows_continuation_button": true,
+    "real_boundary_activates_combo_followup": true,
+    "removed_community_does_not_create_invalid_scope": true,
+    "scope_remains_editable_after_continuation": true,
+    "single_community_has_no_combo_action": true,
+    "three_feedback_actions_fit_1440x900": true,
+    "three_feedback_actions_fit_800x600": true
+  },
+  "communities": [
+    "west-1",
+    "west-2"
+  ],
+  "failures": [],
+  "landed_scope": [
+    "west-2"
+  ],
+  "layouts": [
+    {
+      "all_actions_inside": true,
+      "panel_position": [
+        342.0,
+        76.0
+      ],
+      "panel_size": [
+        756.0,
+        279.0
+      ],
+      "window": [
+        1440,
+        900
+      ]
+    },
+    {
+      "all_actions_inside": true,
+      "panel_position": [
+        22.0,
+        76.0
+      ],
+      "panel_size": [
+        756.0,
+        279.0
+      ],
+      "window": [
+        800,
+        600
+      ]
+    }
+  ],
+  "passed": true
+}

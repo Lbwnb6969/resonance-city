@@ -38,8 +38,7 @@ func sync(demo: Control) -> void:
 				if raw_position.size() != 2: continue
 				var at: Vector2 = demo.point(Vector2(float(raw_position[0]),float(raw_position[1])))
 				if not viewport.has_point(at): continue
-				var kinds: Array = row.get("public_site_kinds",[])
-				var kind := str(kinds[index]) if index < kinds.size() else str(site.get("kind","park"))
+				var kind := str(site["kind"])
 				var mark := {"event_id":str(row["event_id"]),"site_id":str(site["id"]),
 					"site_kind":kind,"position":at,"alpha":alpha,"pitch":int(row["pitch"]),
 					"onset":int(row["onset"]),"end_frame":int(row["end_frame"]),

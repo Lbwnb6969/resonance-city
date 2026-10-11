@@ -1,0 +1,36 @@
+{
+  "checks": {
+    "actual_lead_carries_public_facility_metadata": false,
+    "playable_expanded_town_has_real_public_rhythm_slot": true,
+    "public_activity_collection_adds_no_saved_state": true,
+    "public_activity_collection_keeps_pcm_and_phase_exact": true,
+    "public_activity_keeps_bounded_cache_and_voice_budget": true,
+    "public_pulse_ids_and_kinds_match_active_real_facilities": true,
+    "public_pulse_never_reports_unrendered_device_frame": true,
+    "public_pulse_query_returns_independent_facility_arrays": true,
+    "public_rhythm_has_actual_rendered_audible_contribution": true,
+    "restored_work_has_no_old_public_activity": true
+  },
+  "failures": [
+    "actual_lead_carries_public_facility_metadata"
+  ],
+  "lead_event_id": "",
+  "passed": false,
+  "pulse": {
+    "end_frame": 5292,
+    "event_id": "public:west-terrace-10:55:bright:[\"garden\",\"pulse\"]:false:0",
+    "onset": 0,
+    "pitch": 67,
+    "public_site_ids": [
+      "west-terrace-pocket-park"
+    ],
+    "public_site_kinds": [
+      "park"
+    ],
+    "render_end": 841,
+    "render_start": 64,
+    "rhythm": true,
+    "strength": 0.000734418076477499
+  },
+  "scope": "Production playable expanded-town entry with 777-frame chunks; exact same-chunk PCM/phases/save state and read-only actual public activity. No device or human listening claim"
+}

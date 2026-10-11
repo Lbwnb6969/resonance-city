@@ -1,0 +1,21 @@
+{
+  "checks": {
+    "actual_lead_carries_public_facility_metadata": false,
+    "natural_deep_city_has_public_rhythm_slot": false,
+    "public_activity_collection_adds_no_saved_state": true,
+    "public_activity_collection_keeps_pcm_and_phase_exact": true,
+    "public_activity_keeps_bounded_cache_and_voice_budget": true,
+    "public_pulse_never_reports_unrendered_device_frame": true,
+    "public_rhythm_has_actual_rendered_audible_contribution": false,
+    "restored_work_has_no_old_public_activity": true
+  },
+  "failures": [
+    "natural_deep_city_has_public_rhythm_slot",
+    "public_rhythm_has_actual_rendered_audible_contribution",
+    "actual_lead_carries_public_facility_metadata"
+  ],
+  "lead_event_id": "",
+  "passed": false,
+  "pulse": {},
+  "scope": "Natural deep starter with 777-frame chunks; exact same-chunk PCM/phases/save state and read-only actual public activity. No device or human listening claim"
+}

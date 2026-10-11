@@ -48,6 +48,12 @@ func audible(audible_frame: float) -> Array[Dictionary]:
 			events[id]["strength"] = float(events[id]["strength"])+strength
 			events[id]["render_start"] = mini(int(events[id]["render_start"]),int(segment["render_start"]))
 			events[id]["render_end"] = maxi(int(events[id]["render_end"]),int(segment["render_end"]))
+			var site_ids: Array = segment.get("public_site_ids",[])
+			var site_kinds: Array = segment.get("public_site_kinds",[])
+			for index in range(site_ids.size()):
+				if site_ids[index] in events[id]["public_site_ids"]: continue
+				events[id]["public_site_ids"].append(site_ids[index])
+				events[id]["public_site_kinds"].append(site_kinds[index])
 		else:
 			var event := {"event_id":id,"onset":int(segment["onset"]),"end_frame":int(segment["onset"])+roundi(PULSE_SECONDS*float(segment["rate"])),
 				"render_start":int(segment["render_start"]),"render_end":int(segment["render_end"]),"pitch":int(segment["midi"]),

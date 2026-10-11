@@ -46,6 +46,7 @@ var causal_feedback_count := 0
 var next_action: Dictionary = {}
 var next_action_row: HBoxContainer
 var next_action_button: Button
+var next_combo_button: Button
 var next_replan_button: Button
 var next_partial_row: HBoxContainer
 var next_reservation_button: Button
@@ -132,6 +133,11 @@ func setup(owner_demo: Control) -> void:
 	next_action_button.tooltip_text = "选中刚落地的房屋，打开已有聚焦与调音入口"
 	next_action_button.pressed.connect(_take_next_action)
 	next_action_row.add_child(next_action_button)
+	next_combo_button = Button.new()
+	next_combo_button.text = "沿组合范围继续规划"
+	next_combo_button.tooltip_text = "保留真实多社区范围，重新选择章程、变化卡和公共落点"
+	next_combo_button.pressed.connect(_continue_combo_planning)
+	next_action_row.add_child(next_combo_button)
 	next_replan_button = Button.new()
 	next_replan_button.text = "重新规划另一片社区"
 	next_replan_button.tooltip_text = "回到章程、变化卡和社区范围选择"
@@ -251,6 +257,8 @@ func _scope_source_hint() -> String:
 	if scope_source.is_empty(): return ""
 	var community_count: int = scope_source.get("community_ids",[]).size()
 	var building_count: int = scope_source.get("covered_building_ids",[]).size()
+	if str(scope_source.get("kind","")) == "community_combo":
+		return "沿上一句真实组合预选范围 · %d个社区\n点击社区可替换，Shift点击继续多选" % community_count
 	return "公交站已预选实际覆盖范围 · %d个社区、%d栋已覆盖房屋\n点击社区可替换，Shift点击继续多选" % [community_count,building_count]
 
 func hide_tool() -> void:
@@ -348,6 +356,10 @@ func refresh() -> void:
 	confirm.visible = stage == "scope"
 	next_action_row.visible = opened and stage == "feedback" and next_action.get("state","") == "ready"
 	var partial_feedback := next_action_row.visible and bool(next_action.get("partial",false))
+	var combo_ids := _combo_community_ids()
+	next_combo_button.visible = next_action_row.visible and combo_ids.size() > 1
+	if next_combo_button.visible:
+		next_combo_button.text = "沿%d社区组合继续规划" % combo_ids.size()
 	next_action_button.text = "定位落成公建 · 继续规划" if partial_feedback else "定位落地房屋 · 继续调音"
 	next_action_button.tooltip_text = "打开真实落成公共设施的规划入口" if partial_feedback else "选中刚落地的房屋，打开已有聚焦与调音入口"
 	next_partial_row.visible = partial_feedback
@@ -707,6 +719,31 @@ func _next_action_detail() -> String:
 	if not combo_hint.is_empty(): lines.append("组合机会 · "+combo_hint)
 	lines.append("规划影响已经兑现，下一步可以改一栋的音、聚焦主题或重新规划另一片社区。")
 	return "\n".join(lines)
+
+func _combo_community_ids() -> Array[String]:
+	var raw: Variant = next_action.get("community_combo",{})
+	if not raw is Dictionary: return []
+	var result: Array[String] = []
+	for item in raw.get("community_ids",[]):
+		var cid := str(item)
+		if not cid.is_empty() and demo.model.world.communities.has(cid) and not result.has(cid): result.append(cid)
+	return result
+
+## Reopen the normal planning flow with the real multi-community combo as its
+## editable scope.  This only seeds the next choice; it does not submit a
+## charter, add a voice, or turn an ephemeral relation into saved state.
+func _continue_combo_planning() -> void:
+	if next_action.get("state","") != "ready": return
+	var ids := _combo_community_ids()
+	if ids.size() < 2: return
+	next_action["state"] = "consumed"
+	open_tool()
+	scope_seed = ids.duplicate()
+	scope_seed.sort()
+	scope_source = {"kind":"community_combo","community_ids":scope_seed.duplicate()}
+	_apply_scope_seed()
+	demo._message("沿真实社区组合继续规划 · 可删减或加入社区，再选择下一片公共落点")
+	refresh()
 
 func _take_theme_building() -> void:
 	var theme: Dictionary = demo.model.audible_theme()

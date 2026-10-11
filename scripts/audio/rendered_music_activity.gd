@@ -68,14 +68,16 @@ func audible(audible_frame: float) -> Array[Dictionary]:
 			events[id]["render_end"] = maxi(int(events[id]["render_end"]),int(segment["render_end"]))
 			# A lifecycle can span a runtime-only public-site refresh. Preserve every
 			# authored site represented by the audible event while keeping one event row.
-			for field in ["public_site_ids","public_site_kinds"]:
-				var merged: Array = events[id].get(field,[])
-				for value in segment.get(field,[]):
-					if value not in merged: merged.append(value)
-				events[id][field] = merged
+			var site_ids: Array = segment.get("public_site_ids",[])
+			var site_kinds: Array = segment.get("public_site_kinds",[])
+			for index in range(site_ids.size()):
+				if site_ids[index] in events[id]["public_site_ids"]: continue
+				events[id]["public_site_ids"].append(site_ids[index])
+				events[id]["public_site_kinds"].append(site_kinds[index])
 		else:
 			var event: Dictionary = {}
-			for field in ["event_id","source_event_id","source_id","receiver_id","generation","source_onset","onset","end_frame","pitch","cid","render_start","render_end","public_site_ids","public_site_kinds"]: event[field] = segment.get(field,[])
+			for field in ["event_id","source_event_id","source_id","receiver_id","generation","source_onset","onset","end_frame","pitch","cid","render_start","render_end"]: event[field] = segment[field]
+			for field in ["public_site_ids","public_site_kinds"]: event[field] = segment.get(field,[]).duplicate()
 			event["strength"] = strength
 			events[id] = event
 	for event in events.values(): result.append(event)
