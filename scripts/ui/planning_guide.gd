@@ -13,6 +13,11 @@ var stage := "charter"
 var plan_id := ""
 var card_id := ""
 var scope: Array = []
+## A transit station can hand its real catchment into the normal planning flow.
+## Keep this seed separate from the editable scope so choosing a charter/card
+## never loses the station's spatial suggestion before the player reaches scope.
+var scope_seed: Array = []
+var scope_source: Dictionary = {}
 var anchor_kind := "park"
 var opened := false
 var heading: Label
@@ -167,6 +172,8 @@ func transit_feedback_text(payload: Dictionary, settled := false) -> String:
 
 func reset_for_city() -> void:
 	scope.clear()
+	scope_seed.clear()
+	scope_source.clear()
 	scope_polygons.clear()
 	scope_version.clear()
 	preview_key.clear()
@@ -193,8 +200,45 @@ func open_tool() -> void:
 	plan_id = ""
 	card_id = ""
 	scope.clear()
+	scope_seed.clear()
+	scope_source.clear()
 	scope_version.clear()
 	refresh()
+
+## Open the ordinary P planning guide from a real transit station.  The guide
+## still goes through the existing charter and change-card steps; when it
+## reaches community scope the station's authoritative catchment is already
+## selected and remains editable with normal click/Shift-click behavior.
+func open_tool_from_transit_station(station: Dictionary) -> void:
+	open_tool()
+	var record: Dictionary = station.get("record",station)
+	for raw_id in record.get("community_ids",[]):
+		var id := str(raw_id)
+		if id.is_empty() or scope_seed.has(id): continue
+		if demo.model.world.communities.has(id): scope_seed.append(id)
+	scope_seed.sort()
+	var covered: Array = []
+	for raw_id in record.get("covered_building_ids",[]):
+		var id := str(raw_id)
+		if not id.is_empty() and not covered.has(id): covered.append(id)
+	scope_source = {"kind":"transit_station","station_id":str(station.get("id",record.get("id",""))),
+		"community_ids":scope_seed.duplicate(),"covered_building_ids":covered}
+	# Seed is already visible in the eventual scope stage. Keep the transient
+	# panel open even when an unusual station has no current catchment, so the
+	# player can select a neighboring community manually.
+	refresh()
+
+func _apply_scope_seed() -> void:
+	if scope_seed.is_empty(): return
+	scope = scope_seed.duplicate()
+	scope.sort()
+	scope_version.clear()
+
+func _scope_source_hint() -> String:
+	if scope_source.is_empty(): return ""
+	var community_count: int = scope_source.get("community_ids",[]).size()
+	var building_count: int = scope_source.get("covered_building_ids",[]).size()
+	return "公交站已预选实际覆盖范围 · %d个社区、%d栋已覆盖房屋\n点击社区可替换，Shift点击继续多选" % [community_count,building_count]
 
 func hide_tool() -> void:
 	if demo.preview_public: demo._cancel_preview_playback()
@@ -225,6 +269,8 @@ func begin_partial_comparison(site: Dictionary,selected_kind: String) -> void:
 	card_id = ""
 	scope.clear()
 	scope_polygons.clear()
+	scope_seed.clear()
+	scope_source.clear()
 	scope_version.clear()
 	stage = "partial_anchor"
 	opened = true
@@ -252,7 +298,8 @@ func choose_plan(id: String) -> void:
 	card_id = drawn_card_ids[0]
 	_rebuild_card_choices()
 	stage = "card"
-	scope.clear()
+	if scope_source.is_empty(): scope.clear()
+	else: _apply_scope_seed()
 	scope_version.clear()
 	refresh()
 
@@ -261,7 +308,8 @@ func choose_card(id: String) -> void:
 	if not drawn_card_ids.is_empty() and not drawn_card_ids.has(id): return
 	card_id = id
 	stage = "scope"
-	scope.clear()
+	if scope_source.is_empty(): scope.clear()
+	else: _apply_scope_seed()
 	scope_version.clear()
 	refresh()
 
@@ -292,15 +340,22 @@ func refresh() -> void:
 	if stage == "charter":
 		heading.text = "你想让这片城市怎样生长？"
 		detail.text = "先选倾向，再在地图选社区；公园和文化馆由你摆，房屋沿合法空地自动长。"
+		var source_hint := _scope_source_hint()
+		if not source_hint.is_empty(): detail.text += "\n"+source_hint+"；选完章程和变化卡后会带入社区范围。"
 	elif stage == "card":
 		heading.text = str(Charter.PLANS[plan_id]["title"]) + " · 选一张章首变化卡"
 		detail.text = "变化卡只影响已有规划关系的候选优先级或生长时机，持续几句后自然退场；不会增加全城活力，也不会锁住公共设施。\n当前默认 · " + str(PlanningCard.CARDS[card_id]["title"]) + "（可直接点地图继续，也可改选下面任意一张）"
+		var source_hint := _scope_source_hint()
+		if not source_hint.is_empty(): detail.text += "\n"+source_hint
 	elif stage == "scope":
 		heading.text = str(Charter.PLANS[plan_id]["title"])+" · 选择社区范围"
 		var names: Array[String] = []
 		for cid in scope: names.append(str(demo.model.world.communities[cid]["name"]))
 		var summary := Charter.scope_preview(demo.model.world,scope)
-		detail.text = ("点击地图选择一个社区；Shift点击可选多个。\n" if scope.is_empty() else "范围 · "+ "、".join(names)+"\n")
+		var source_hint := _scope_source_hint()
+		detail.text = ""
+		if not source_hint.is_empty(): detail.text = source_hint+"\n"
+		detail.text += ("点击地图选择一个社区；Shift点击可选多个。\n" if scope.is_empty() else "范围 · "+ "、".join(names)+"\n")
 		detail.text += "%d栋现有房屋 · %d块合法空置地块 · 不改房屋音级，不封锁其他用途" % [summary["houses"],summary["legal_lots"]]
 	elif stage == "feedback":
 		heading.text = "你的选择已经落地 · 现在轮到你"
@@ -703,7 +758,8 @@ func _replan_next_action() -> void:
 
 func commit_scope() -> void:
 	if scope.is_empty(): return
-	var result: Dictionary = demo.model.submit({"kind":"charter","plan_id":plan_id,"community_ids":scope.duplicate(),"card_refs":[card_id]})
+	var operation := {"kind":"charter","plan_id":plan_id,"community_ids":scope.duplicate(),"card_refs":[card_id]}
+	var result: Dictionary = demo.model.submit(operation)
 	if not bool(result["accepted"]):
 		demo._message(str(result["reason"]))
 		return
@@ -718,6 +774,7 @@ func update_candidate(p: Vector2) -> void:
 	candidate = demo.model.world.planning_candidate(p)
 	preview.clear()
 	if candidate.is_empty(): return
+	candidate["planning_scope"] = scope.duplicate()
 	preview = Charter.anchor_preview(demo.model.world,candidate,anchor_kind,Planning.public_access(demo.model.world,candidate))
 	var name := str(demo.model.world.communities.get(str(candidate["community_id"]),{}).get("name",""))
 	var valid: bool = bool(candidate.get("allowed",false)) and bool(preview["access"]) and Charter.in_scope(demo.model.world,str(candidate["community_id"]),scope)
@@ -744,6 +801,7 @@ func comparison_identity() -> Array:
 	if stage != "anchor": return []
 	var site: Dictionary = demo.model.world.planning_candidate(demo.world_at(demo.pointer))
 	if site.is_empty() or not bool(site.get("allowed",false)) or not Charter.in_scope(demo.model.world,str(site["community_id"]),scope): return []
+	site["planning_scope"] = scope.duplicate()
 	return [demo.model.presentation_token]+PublicPreview.identity(demo.model,site)
 
 func accept_comparison(payload: Dictionary,request_key: Array) -> bool:

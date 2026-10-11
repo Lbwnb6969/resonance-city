@@ -1163,7 +1163,7 @@ func _transit_station_context_text(station: Dictionary) -> String:
 	var role_text := "共享换乘站" if feedback.get("line_ids",[]).size() > 1 else "线路站点"
 	var growth_hint := str(feedback.get("growth_hint",feedback.get("next_action",{}).get("growth_hint","")))
 	if growth_hint.is_empty(): growth_hint = "客流结算后，站点步行范围内的合法空地会获得轻微成长偏好"
-	return "站点 · %s · %s\n线路：%s\n真实道路：%s · 覆盖%d栋 · 社区：%s\n当前换乘：%s\n%s\n成长：%s\n点击‘规划公交线路’沿此站继续组合" % [
+	return "站点 · %s · %s\n线路：%s\n真实道路：%s · 覆盖%d栋 · 社区：%s\n当前换乘：%s\n%s\n成长：%s\nP规划社区会预选这些覆盖范围，仍可修改或多选；点击‘规划公交线路’沿此站继续组合" % [
 		role_text,str(feedback.get("stop_id","")),line_text,str(station_record.get("road","真实道路")),
 		station_record.get("covered_building_ids",[]).size(),community_text,str(feedback.get("state_text","等待真实客流")),
 		str(feedback.get("next_text","下一乐句继续组合线路")),growth_hint]
@@ -1473,13 +1473,18 @@ func _submit_free_reservation() -> void:
 		_message(str(result.get("reason","这片范围暂时不能留地")))
 
 func _verb(verb: String) -> void:
-	var transit_anchor_id := str(context.get("id","")) if context.get("kind","") == "transit_station" else ""
+	var station_context := context.duplicate(true) if context.get("kind","") == "transit_station" else {}
+	var transit_anchor_id := str(station_context.get("id",""))
+	var station_record: Dictionary = shown_world.transit_stop_record(transit_anchor_id) if not transit_anchor_id.is_empty() else {}
 	if verb in ["free_reserve","partial_park","partial_civic","free_partial_park","free_partial_civic","free_multi_partial_park","free_multi_partial_civic","free_courtyard_park","free_courtyard_civic","relocate_public","plan_transit"]:
 		planning_guide.hide_tool()
 	if verb != "plan_transit": _clear_transit_route()
 	if verb != "plan_transit": transit_station_focus_id = ""
 	if verb == "planning":
-		planning_guide.open_tool()
+		if not station_context.is_empty() and not station_record.is_empty():
+			planning_guide.open_tool_from_transit_station({"id":transit_anchor_id,"record":station_record})
+		else:
+			planning_guide.open_tool()
 		return
 	if verb == "plan_transit":
 		_invalidate_transit_preview()
@@ -1662,6 +1667,7 @@ func _input(event: InputEvent) -> void:
 	match event.keycode:
 		KEY_P:
 			if planning_guide.opened: planning_guide.hide_tool()
+			elif menu.visible and context.get("kind","") == "transit_station": _verb("planning")
 			else: planning_guide.open_tool()
 		KEY_ESCAPE:
 			if transit_route_mode:

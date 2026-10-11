@@ -14,6 +14,11 @@ static func _affected_communities(world: RefCounted,site: Dictionary,anchor: Dic
 	_append_community_id(ids,site.get("community_id",""))
 	_append_community_id(ids,anchor.get("community_id",""))
 	for cid in anchor.get("target_community_ids",[]): _append_community_id(ids,cid)
+	# The normal guide carries its current editable scope into this private
+	# comparison. Partial footprints keep their actual owner/service scope;
+	# neither path expands from an unrelated historical charter.
+	if not bool(site.get("partial",false)):
+		for raw_cid in site.get("planning_scope",[]): _append_community_id(ids,raw_cid)
 	for raw_id in anchor.get("served",[]):
 		var id := str(raw_id)
 		if world.by_id.has(id): _append_community_id(ids,world.by_id[id].get("community_id",""))
@@ -161,7 +166,7 @@ static func identity(model: ContinuousAudioModel,site: Dictionary) -> Array:
 	return [Charter.version(model.world),model.next_boundary,site.get("source_site_id",""),site.get("polygon",PackedVector2Array()),site.get("footprint_components",[]),
 		bool(site.get("partial",false)),site.get("source_reservation_id",site.get("reservation_id","")),site.get("source_revision",""),
 		site.get("target_polygons",[]),site.get("target_polygon",PackedVector2Array()),site.get("hole_polygons",[]),site.get("target_holes",[]),
-		site.get("position",[]),site.get("target_position",[]),site.get("community_id",""),
+		site.get("position",[]),site.get("target_position",[]),site.get("community_id",""),site.get("planning_scope",[]),
 		hash(model.world.pending_actions),hash(model.sound_events),hash(model.sound_overrides),
 		model.synth.focused_community,model.synth.listener_community,model.synth.response_enabled,hash(model.synth.muted_communities),model.synth.gain,hash(model.synth.score)].duplicate(true)
 
