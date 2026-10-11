@@ -1067,19 +1067,21 @@ func _begin_first_authored_continuation() -> bool:
 		_show_context_menu()
 		_message(str(work["community_name"])+" · 已定位真实留地，继续规划或释放")
 		return true
-	if kind in ["root","community"]:
+	if kind in ["root","community","child"]:
 		# A community target has no invented future building position. Locate the
 		# actual authored root as the player's concrete entry to that community.
-		var root_id := str(work.get("root_id",action.get("id","")))
+		var root_id := str(action.get("id",work.get("root_id",""))) if kind == "child" else str(work.get("root_id",action.get("id","")))
 		if root_id.is_empty() or not shown_world.by_id.has(root_id): return false
-		if bool(work.get("theme_eligible",false)): return _begin_first_authored_theme()
+		if kind != "child" and bool(work.get("theme_eligible",false)): return _begin_first_authored_theme()
 		_cancel_preview_playback()
 		planning_guide.hide_tool()
 		selected_id = root_id
 		context = {"kind":"retune","id":root_id}
 		planning_guide._focus_planning_position(shown_world.by_id[root_id]["position"])
 		_show_context_menu()
-		_message(str(work["community_name"])+" · 已定位首作房屋；下一句第%d句继续生长" % int(work.get("next_growth_phrase",shown_world.phrase_index)))
+		var building: Dictionary = shown_world.by_id[root_id]
+		var label := "已定位最近新屋" if kind == "child" else "已定位首作房屋"
+		_message(str(work["community_name"])+" · "+label+" · 音级"+note_name(int(building.get("current_midi",work.get("current_midi",48)))))
 		return true
 	return false
 

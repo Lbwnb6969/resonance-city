@@ -3,6 +3,7 @@
     "child_result_keeps_actual_birth_phrase_and_frame": true,
     "child_result_keeps_real_community_and_position": true,
     "child_result_names_actual_voice_source_and_pitch": true,
+    "continuation_targets_the_latest_real_child": true,
     "growth_text_exposes_observed_child_without_future_wording": true,
     "latest_child_selection_uses_actual_birth_order": true,
     "removed_child_event_has_no_current_growth_target": true,

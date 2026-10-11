@@ -58,6 +58,7 @@ func _run() -> void:
 	check(str(child.get("community_id","")) == "west-2" and child.get("position",[]) == [3.5,4.5],"child_result_keeps_real_community_and_position")
 	check(int(child.get("phrase",-1)) == 2 and int(child.get("frame",-1)) == 220,"child_result_keeps_actual_birth_phrase_and_frame")
 	check(str(child.get("voice_source","")) == "building-00029" and str(child.get("expression","")) == "deep" and int(child.get("current_midi",-1)) == 36,"child_result_names_actual_voice_source_and_pitch")
+	check(str(result.get("target_kind","")) == "child" and str(result.get("action",{}).get("id","")) == "building-00029" and str(result.get("action_label","")) == "定位最近新屋","continuation_targets_the_latest_real_child")
 	check(Continuation.text(result).contains("最近实际生长") and Continuation.text(result).contains("第2句") and Continuation.text(result).contains("building-00029"),"growth_text_exposes_observed_child_without_future_wording")
 
 	# A second actual birth wins by event frame even when history is not ordered.

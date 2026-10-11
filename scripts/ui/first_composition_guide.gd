@@ -61,11 +61,11 @@ func sync() -> void:
 			tooltip_text = "回到你亲自种下的房屋，改一个音；不替你选择或提交"
 		else:
 			var continuation: Dictionary = continuation_state.get("action",{})
-			if bool(continuation.get("available",false)) and str(continuation.get("kind","")) in ["root","reservation","community"]:
+			if bool(continuation.get("available",false)) and str(continuation.get("kind","")) in ["root","reservation","community","child"]:
 				action = "continuation"
 				disabled = false
 				var continuation_kind := str(continuation.get("kind",""))
-				var continuation_label := "定位真实留地" if continuation_kind == "reservation" else ("沿社区继续组合" if continuation_kind == "community" else "定位首作房屋")
+				var continuation_label := "定位真实留地" if continuation_kind == "reservation" else ("沿社区继续组合" if continuation_kind == "community" else ("定位最近新屋" if continuation_kind == "child" else "定位首作房屋"))
 				text = "%s · %s" % [community,continuation_label]
 				tooltip_text = str(continuation.get("text","沿真实结果继续组合"))
 			else:

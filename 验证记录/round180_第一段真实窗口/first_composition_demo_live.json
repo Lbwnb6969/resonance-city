@@ -12,9 +12,10 @@
 		"new_opening_mode_is_saved_without_rewarming_world": true,
 		"one_house_new_pitch_is_actual_audible_lead_and_map_source": true,
 		"overture_has_no_preset_public_anchor_or_choice": true,
-		"physical_audio_continues_through_first_composition": true,
+		"physical_audio_continues_through_first_composition": false,
 		"player_choice_is_real_commercial_family_and_community_voice": true,
 		"player_chooses_one_of_three_charters_and_community": true,
+		"production_comparison_card_exposes_actual_register_rhythm_and_city_consequence": true,
 		"public_reveals_at_physical_audio_boundary": true,
 		"real_window_and_wasapi": true,
 		"release_restores_real_city": true,
@@ -25,74 +26,76 @@
 		"switch_weave_reuses_same_source_pcm": true,
 		"ten_seconds_of_real_city_audio": true,
 		"theme_button_opens_real_source_without_auto_pitch": true,
+		"theme_button_targets_the_player_authored_root": true,
+		"theme_menu_exposes_actual_route_result_without_future_claim": true,
 		"three_accepted_four_second_full_scores": true,
 		"three_actual_pcm_candidates_ready": true,
 		"three_choices_and_confirmation_fit_small_window": true
 	},
 	"evidence": {
 		"actual_reply": {
-			"alpha": 0.870835925265952,
+			"alpha": 0.0169501007453937,
 			"cid": "east-1",
-			"end_frame": 743967,
-			"event_id": "reply:west-1:716625:1:building-00007:48:building-00031",
+			"end_frame": 799092,
+			"event_id": "reply:west-1:771750:4:building-00025:48:building-00031",
 			"generation": 1,
 			"note": "G",
-			"onset": 738675,
+			"onset": 793800,
 			"performer_id": "building-00031",
 			"pitch": 67,
-			"position": "(728.7849, 686.6661)",
+			"position": "(801.0774, 824.4265)",
 			"public_site_ids": [
 				"player-civic-00002"
 			],
 			"public_site_kinds": [
 				"civic"
 			],
-			"radius": 17.6624681899179,
+			"radius": 21.8539352771164,
 			"receiver_id": "building-00031",
-			"render_end": 743967,
-			"render_start": 738675,
+			"render_end": 799092,
+			"render_start": 793800,
 			"role": "reply",
-			"source_event_id": "west-1:716625:1:building-00007:48",
-			"source_id": "building-00007",
-			"source_onset": 716625,
-			"strength": 0.0270172107276905
+			"source_event_id": "west-1:771750:4:building-00025:48",
+			"source_id": "building-00025",
+			"source_onset": 771750,
+			"strength": 0.000704507636005319
 		},
 		"comparison": {
 			"boundary_frame": 705600,
-			"source_frame": 363263,
-			"source_key": "2821534855"
+			"source_frame": 363390,
+			"source_key": "3886894615"
 		},
-		"device_frames": 738228.03775,
+		"device_frames": 881647.3445,
 		"era": 1,
 		"houses": 31,
 		"new_lead": {
-			"alpha": 0.0245971696821432,
+			"alpha": 0.864781605084551,
 			"cid": "west-1",
-			"end_frame": 732942,
-			"event_id": "west-1:727650:2:building-00006:52",
+			"end_frame": 887292,
+			"event_id": "west-1:882000:8:building-00028:64",
 			"generation": 0,
 			"note": "E",
-			"onset": 727650,
-			"performer_id": "building-00006",
+			"onset": 882000,
+			"performer_id": "building-00028",
 			"pitch": 64,
-			"position": "(720.0504, 453.2405)",
+			"position": "(720.0001, 439.735)",
 			"public_site_ids": [
 				"player-civic-00002"
 			],
 			"public_site_kinds": [
 				"civic"
 			],
-			"radius": 21.951924694556,
+			"radius": 17.736771210326,
 			"receiver_id": "",
-			"render_end": 732942,
-			"render_start": 727650,
+			"render_end": 887292,
+			"render_start": 882000,
 			"role": "lead",
-			"source_event_id": "west-1:727650:2:building-00006:52",
-			"source_id": "building-00006",
-			"source_onset": 727650,
-			"strength": 0.00103800525894526
+			"source_event_id": "west-1:882000:8:building-00028:64",
+			"source_id": "building-00028",
+			"source_onset": 882000,
+			"strength": 0.0533120666533708
 		},
-		"new_underruns": 0,
+		"new_underruns": 31,
 		"public_request": {
 			"action_kind": "replan",
 			"affected_communities": [
@@ -159,9 +162,11 @@
 			},
 			"world_version": []
 		},
-		"voice_limit": 15
+		"voice_limit": 17
 	},
-	"failures": [],
-	"passed": true,
+	"failures": [
+		"physical_audio_continues_through_first_composition"
+	],
+	"passed": false,
 	"scope": "Production UI, Windows/WASAPI physical frames and screenshots; no human fun, authorship or listening verdict."
 }

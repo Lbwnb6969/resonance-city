@@ -83,6 +83,9 @@ static func state(world: RefCounted, work: Dictionary, score: Dictionary = {}) -
 	elif bool(work.get("theme_eligible", false)) and not root_id.is_empty():
 		action = {"kind": "root", "id": root_id, "position": root.get("position", []).duplicate(true), "community_id": cid, "available": true,
 			"text": "定位首作根房屋继续改音" if root_in_theme else "定位首作根房屋等待主题轮换"}
+	elif not latest_child.is_empty():
+		action = {"kind": "child", "id": str(latest_child.get("id", "")), "position": latest_child.get("position", []).duplicate(true), "community_id": str(latest_child.get("community_id", cid)), "available": true,
+			"text": "定位最近实际长成的房屋"}
 	elif growth_pending:
 		action = {"kind": "community", "id": cid, "position": [], "community_id": cid, "available": true,
 			"text": "沿这片社区等待第%d句真实生长" % next_growth_phrase}
@@ -94,6 +97,7 @@ static func state(world: RefCounted, work: Dictionary, score: Dictionary = {}) -
 	match action_kind:
 		"reservation": action_label = "继续规划真实留地"
 		"root": action_label = "继续改写首作根屋"
+		"child": action_label = "定位最近新屋"
 		"community": action_label = "沿社区继续组合"
 	return {"available": true, "root_id": root_id, "family_id": family_id,
 		"community_id": cid, "community_name": str(work.get("community_name", cid)),
