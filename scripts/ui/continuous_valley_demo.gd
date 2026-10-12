@@ -1384,7 +1384,15 @@ func _update_expression_menu() -> void:
 			if int(consequence.get("reservation_count",0)) > 0: expression_summary.text += " · 留下1片可再规划空地"
 
 func _expression_preview_identity() -> Array:
-	return [context.get("position",[]),model.next_boundary,model.world.action_serial,hash(model.world.pending_actions),
+	# The preview worker freezes the renderer at the current render cursor.  A
+	# same-phrase cursor shift changes oscillator phases and the four-second PCM,
+	# even when the world and boundary are unchanged.  Use a four-second cursor
+	# slice: it is long enough for the real worker to finish, while a result from
+	# a player who leaves the menu open across a slice is rejected before it is
+	# played or attached to the confirmation UI.
+	var preview_cursor_bucket := maxi(1,int(clock.renderer.transport.sample_rate)*4)
+	var render_cursor := floori(float(clock.renderer.transport.rendered_frames)/preview_cursor_bucket)
+	return [context.get("position",[]),model.next_boundary,render_cursor,model.world.action_serial,hash(model.world.pending_actions),
 		hash(model.sound_events),hash(model.synth.pitch_overrides),model.synth.focused_community,model.synth.listener_community,
 		model.synth.response_enabled,hash(model.synth.muted_communities),model.synth.gain,hash(model.synth.score)].duplicate(true)
 
