@@ -1,0 +1,11 @@
+{
+	"checks": {
+		"actual_gpu_wasapi": true,
+		"actual_hd_land_texture": true,
+		"actual_sparse_natural_details": true,
+		"opening_reaches_device": true
+	},
+	"complete": false,
+	"failures": [],
+	"last_capture": "01_推移与昼光_同一地形"
+}

@@ -8,6 +8,7 @@ const Miniature = preload("res://scripts/visual/miniature_valley_material.gd")
 const CivicCourt = preload("res://scripts/visual/classical_civic_court.gd")
 const ClassicalStreetSurface = preload("res://scripts/visual/classical_street_surface.gd")
 const ClassicalFrontageGround = preload("res://scripts/visual/classical_frontage_ground.gd")
+const ClassicalLandscape = preload("res://scripts/visual/classical_landscape.gd")
 var city: ContinuousWorld
 var role := "terrain"
 var art_style_id := "baseline"
@@ -41,6 +42,7 @@ var street_material_rebuilds := 0
 var civic_court := CivicCourt.new()
 var classical_street_surface := ClassicalStreetSurface.new()
 var classical_frontage_ground := ClassicalFrontageGround.new()
+var classical_landscape := ClassicalLandscape.new()
 var refined_streets_visible := true
 var refined_frontages_visible := true
 # Independent CanvasItems retain exact draw contents in the original layer order.
@@ -49,6 +51,11 @@ var last_prepare_ms := 0.0
 var max_prepare_ms := 0.0
 var last_part_draw_frame := -1
 const URBAN_PARTS = ["roads","centers","corridors","public","lots","fabric"]
+
+func _init() -> void:
+	# The terrain texture carries mipmaps; linear filtering keeps the paper grain
+	# quiet when the camera zooms over the large empty fields.
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 
 func sync(demo: Control) -> void:
 	city = demo.shown_world
@@ -75,11 +82,16 @@ func sync(demo: Control) -> void:
 			next_key.append(classical_frontage_ground.key)
 	var next_terrain := [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])]
 	var terrain_changed := terrain_identity != next_terrain
+	var landscape_changed := false
 	if terrain_changed:
 		projected.clear()
 		point_cache.clear()
 		terrain_identity = next_terrain
-	if key == next_key and not terrain_changed: return
+	if role == "terrain":
+		var clock: Variant = demo.get("clock")
+		var heard_frame := int(clock.renderer.transport.audible_frame) if clock != null else city.phrase_index*int(city.cfg["timing"]["phrase_frames"])
+		landscape_changed = classical_landscape.sync(city,heard_frame)
+	if key == next_key and not terrain_changed and not landscape_changed: return
 	key = next_key
 	update_count += 1
 	camera_zoom = demo.view_zoom
@@ -101,6 +113,7 @@ func _prepare_terrain_geometry() -> void:
 	land_material = []
 	for surface: Dictionary in terrain_geometry.get("continuous_surfaces",[]):
 		land_material.append({"polygon":surface["polygon"],"side":surface["side"],"colors":Miniature.earth_colors(city.terrain,surface["polygon"])})
+	classical_landscape.prepare_terrain(city.terrain,terrain_geometry.get("continuous_surfaces",[]))
 	terrain_geometry_key = terrain_identity.duplicate(true)
 	terrain_geometry_rebuilds += 1
 	terrain_prepare_ms = float(Time.get_ticks_usec()-began)/1000.0
@@ -179,7 +192,8 @@ func _draw_river_terrain() -> void:
 			left_colors[band] = Color(palette["left"][band])
 			right_colors[band] = Color(palette["right"][band])
 	terrain_surface_skips = 0
-	var surfaces: Array = land_material if _miniature_style() else terrain_geometry["surfaces"]
+	var use_classical_landscape := _miniature_style() and city.era == 1 and classical_landscape.land_texture != null
+	var surfaces: Array = classical_landscape.land_material if use_classical_landscape else (land_material if _miniature_style() else terrain_geometry["surfaces"])
 	for surface in surfaces:
 		var colors: Array = left_colors if int(surface["side"]) == 0 else right_colors
 		var projected := _project_polygon(surface["polygon"])
@@ -190,12 +204,21 @@ func _draw_river_terrain() -> void:
 		if not _is_drawable_polygon(projected):
 			terrain_surface_skips += 1
 			continue
-		if _miniature_style(): draw_polygon(projected,surface["colors"])
+		if use_classical_landscape:
+			draw_polygon(projected,surface["colors"],surface.get("uvs",PackedVector2Array()),classical_landscape.land_texture)
+		elif _miniature_style(): draw_polygon(projected,surface["colors"])
 		else: draw_colored_polygon(projected,colors[int(surface["band"])])
 	if _miniature_style():
-		for mark: Dictionary in ground_grain:
-			var color := Color("f0e6c8",0.15) if bool(mark["light"]) else Color("687d5a",0.12)
-			draw_polyline(_project_polygon(mark["path"]),color,0.65,true)
+		if use_classical_landscape:
+			for tuft: Dictionary in classical_landscape.geometry.get("tufts",[]):
+				for path: PackedVector2Array in tuft["paths"]:
+					draw_polyline(_project_polygon(path),tuft["color"],0.72,true)
+			for stone: Dictionary in classical_landscape.geometry.get("stones",[]):
+				draw_colored_polygon(_project_polygon(stone["polygon"]),stone["color"])
+		else:
+			for mark: Dictionary in ground_grain:
+				var color := Color("f0e6c8",0.15) if bool(mark["light"]) else Color("687d5a",0.12)
+				draw_polyline(_project_polygon(mark["path"]),color,0.65,true)
 	else:
 		for ring in patches: draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.08))
 	if not _miniature_style():

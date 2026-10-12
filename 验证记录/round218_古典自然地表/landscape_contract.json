@@ -1,0 +1,30 @@
+{
+	"checks": {
+		"dummy_without_gpu_or_pcm": true,
+		"first_heard_city_builds_derived_natural_geometry": true,
+		"hd_land_texture_is_2048_and_mipped": true,
+		"landscape_prepare_and_sync_are_read_only_to_world_snapshot": true,
+		"later_era_has_no_classical_natural_details": true,
+		"real_surface_polygons_have_continuous_world_uvs_and_do_not_double_multiply_texture": true,
+		"same_value_world_fork_reuses_natural_geometry_without_queries": true,
+		"sparse_tuft_and_stone_caps_are_nonempty": true,
+		"tufts_and_stones_stay_on_land_outside_heard_houses_roads_public_sites_and_reservations": true
+	},
+	"evidence": {
+		"land_material_count": 904,
+		"mipmaps": true,
+		"prepare_count": 1,
+		"prepare_ms": 178.656,
+		"rebuild_count": 2,
+		"spatial_query_count": 1274,
+		"stone_count": 44,
+		"texture_size": [
+			2048,
+			2048
+		],
+		"tuft_count": 96
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Independent classical_landscape helper only. Real river-valley terrain and continuous surfaces, HD world-UV texture, sparse derived tufts/stones, full obstruction read check, same-value World fork cache and era gate. Root owns Ground draw/compositing, river bank treatment, GPU window and human aesthetic review."
+}
