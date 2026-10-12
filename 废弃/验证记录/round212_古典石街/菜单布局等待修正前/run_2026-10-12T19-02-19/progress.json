@@ -1,0 +1,13 @@
+{
+	"checks": {
+		"actual_heard_houses_have_clipped_threshold_material": true,
+		"actual_occupied_roads_have_stone_faces_and_low_curbs": true,
+		"actual_windows_gpu_and_audio": true,
+		"real_opening_reaches_device": true,
+		"same_camera_material_comparison_keeps_world": true,
+		"true_24_house_city_without_decorative_fixture": true
+	},
+	"complete": false,
+	"failures": [],
+	"last_capture": "02_实际开局_连续石街与古典街坊"
+}

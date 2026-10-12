@@ -6,6 +6,8 @@ const TerrainGeometry = preload("res://scripts/visual/valley_terrain_visual_geom
 const ExpressionIdentity = preload("res://scripts/visual/first_expression_identity.gd")
 const Miniature = preload("res://scripts/visual/miniature_valley_material.gd")
 const CivicCourt = preload("res://scripts/visual/classical_civic_court.gd")
+const ClassicalStreetSurface = preload("res://scripts/visual/classical_street_surface.gd")
+const ClassicalFrontageGround = preload("res://scripts/visual/classical_frontage_ground.gd")
 var city: ContinuousWorld
 var role := "terrain"
 var art_style_id := "baseline"
@@ -37,6 +39,10 @@ var street_material: Dictionary = {"curbs":[],"joints":[],"paving":[]}
 var street_material_key: Array = []
 var street_material_rebuilds := 0
 var civic_court := CivicCourt.new()
+var classical_street_surface := ClassicalStreetSurface.new()
+var classical_frontage_ground := ClassicalFrontageGround.new()
+var refined_streets_visible := true
+var refined_frontages_visible := true
 # Independent CanvasItems retain exact draw contents in the original layer order.
 var urban_parts: Dictionary = {}
 var last_prepare_ms := 0.0
@@ -61,6 +67,12 @@ func sync(demo: Control) -> void:
 		civic_court.sync(city,frame,art_style_id)
 		next_key.append(city.era)
 		next_key.append(civic_court.key)
+		if _classical_streets():
+			classical_street_surface.sync(city,frame)
+			# Pure terrain fixtures own no catalogue, sprites or playback clock.
+			if clock != null: classical_frontage_ground.sync(demo)
+			next_key.append(classical_street_surface.key)
+			next_key.append(classical_frontage_ground.key)
 	var next_terrain := [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])]
 	var terrain_changed := terrain_identity != next_terrain
 	if terrain_changed:
@@ -250,6 +262,9 @@ func _draw_roads() -> void:
 			draw_polygon(_project_polygon(road["polygon"]),road["colors"])
 		else:
 			draw_colored_polygon(_project_polygon(road["polygon"]),Color("bda37d") if _classical_streets() else road["color"])
+	if _classical_streets() and refined_streets_visible:
+		_draw_classical_street_surface()
+		return
 	# Empty roads remain dirt at their real width. Light stone and contact
 	# edges belong only to actually inhabited classical street frontages.
 	# Later eras keep their base road material and surviving era-one paving.
@@ -261,6 +276,36 @@ func _draw_roads() -> void:
 		draw_polyline(path,Color("ece0c1",0.85),1.0,true)
 	for joint: PackedVector2Array in street_material["joints"]:
 		draw_polyline(_project_polygon(joint),Color("968b70",0.24),0.6,true)
+
+func _draw_classical_street_surface() -> void:
+	var material: Dictionary = classical_street_surface.material
+	for paving: Dictionary in material["paving"]:
+		draw_colored_polygon(_project_polygon(paving["polygon"]),Color(Color("a49c86"),float(paving["strength"])))
+	for stone: Dictionary in material["stones"]:
+		var tone := float(stone["tone"])
+		var color := Color("bdb59b")
+		color = color.lightened(tone) if tone >= 0.0 else color.darkened(-tone)
+		draw_colored_polygon(_project_polygon(stone["polygon"]),Color(color,float(stone["strength"])))
+	for curb: Dictionary in material["curbs"]:
+		var polygon: PackedVector2Array = curb["polygon"]
+		var edge: PackedVector2Array = curb["edge"]
+		var rise := float(curb["raise"])
+		var strength := float(curb["strength"])
+		var center := Vector2.ZERO
+		for p in polygon: center += p
+		center /= polygon.size()
+		# Only the two camera-facing sides of a low curb have visible height.
+		if ((edge[0]+edge[1])*0.5-center).dot(Vector2.ONE) > 0.0:
+			var wall := PackedVector2Array([_point(edge[0]),_point(edge[1]),_raised_point(edge[1],rise),_raised_point(edge[0],rise)])
+			draw_colored_polygon(wall,Color(Color("898473"),strength))
+		var top := PackedVector2Array()
+		for p in polygon: top.append(_raised_point(p,rise))
+		draw_colored_polygon(top,Color(Color("d1c6a9"),strength))
+	for joint: PackedVector2Array in material["joints"]:
+		draw_polyline(_project_polygon(joint),Color("817e6b",0.28),0.4,true)
+
+func _raised_point(p: Vector2,rise: float) -> Vector2:
+	return _point(p,city.terrain.height_at(p)+rise)
 
 func _draw_occupied_lots() -> void:
 	for lot in city.lots:
@@ -277,6 +322,9 @@ func _draw_occupied_lots() -> void:
 				var edge := polygon.duplicate()
 				edge.append(edge[0])
 				draw_polyline(edge,Color(ink,0.32),0.75,true)
+	if _classical_streets() and refined_frontages_visible:
+		for pad: Dictionary in classical_frontage_ground.pads:
+			draw_colored_polygon(_project_polygon(pad["polygon"]),pad["color"])
 
 func _lot_expression(lot: Dictionary) -> String:
 	var building: Dictionary = city.by_id[str(lot["occupant"])]
@@ -425,6 +473,8 @@ func _sync_urban_parts(terrain_changed: bool) -> void:
 		part.road_material = road_material
 		if name == "roads": part.set_meta("material_key",road_part_key)
 		part.street_material = street_material
+		if name == "roads": part.classical_street_surface = classical_street_surface
+		if name == "lots": part.classical_frontage_ground = classical_frontage_ground
 		if name == "public": part.civic_court = civic_court
 		part.camera_zoom = camera_zoom
 		var content_key: Array = [terrain_identity,contents[name],art_style_id]
@@ -457,6 +507,9 @@ func _urban_contents() -> Dictionary:
 	var content := {"roads":[],"centers":[],"corridors":[],"public":[],"lots":[],"fabric":[]}
 	for road in roads: content["roads"].append([road["polygon"],road["color"]])
 	if _miniature_style(): content["roads"].append([street_material_key,city.era])
+	if _classical_streets():
+		content["roads"].append(classical_street_surface.key)
+		content["lots"].append(classical_frontage_ground.key)
 	for center in city.centers:
 		if bool(center.get("active",true)):
 			content["centers"].append([Vector2(float(center["position"][0]),float(center["position"][1])),str(center.get("level","terrace"))])

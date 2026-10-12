@@ -1,0 +1,72 @@
+{
+	"checks": {
+		"actual_24_heard_houses_produce_continuous_beds_individual_stones_and_low_curbs": true,
+		"actual_degree_one_road_has_a_legal_neighbor_seed": true,
+		"all_surface_areas_stay_in_actual_025_main_and_018_branch_road_union": true,
+		"heard_birth_refreshes_once_and_adds_only_a_true_road_terminal_stone": true,
+		"isolated_dummy_no_device": true,
+		"low_curbs_cover_actual_paved_longitudinal_boundaries_instead_of_only_a_few_coincident_fragments": true,
+		"raw_heard_clock_and_camera_projection_reuse_geometry_on_actual_varying_slope": true,
+		"real_curved_main_branch_junctions_remain_open_with_whole_curb_area_clipped_and_two_vertex_edges": true,
+		"real_render_ahead_seed_does_not_pave_before_its_audible_birth": true,
+		"stone_and_curb_areas_do_not_cover_water_real_houses_occupied_lots_or_owned_land": true,
+		"surface_queries_preserve_actual_world_rng_pending_roads_and_parcels": true,
+		"unbuilt_real_network_keeps_dirt_without_masonry_grid": true,
+		"unequal_staggered_stones_use_stable_local_tones_and_real_mortar_gaps_without_world_rng": true
+	},
+	"evidence": {
+		"curb_coverage": {
+			"actual_by_road": {
+				"east-cross-2": 6.74046325683594,
+				"east-road-2": 9.67223536223173,
+				"east-road-3": 7.16260273009539,
+				"west-cross-2": 6.68367004394531,
+				"west-cross-3": 3.02974700927734,
+				"west-road-1": 15.5747139155865,
+				"west-road-2": 2.70523296296597,
+				"west-road-3": 11.9287797138095,
+				"west-road-4": 0.231051832437515
+			},
+			"covered_samples": 927,
+			"expected_by_road": {
+				"east-cross-2": 6.74055480957031,
+				"east-road-2": 9.65045977057889,
+				"east-road-3": 7.16625634813681,
+				"west-cross-2": 6.68357849121094,
+				"west-cross-3": 3.02983856201172,
+				"west-road-1": 15.5692456094548,
+				"west-road-2": 2.70156638277695,
+				"west-road-3": 11.9234366440214,
+				"west-road-4": 0.23402564227581
+			},
+			"expected_length": 63.6989622600377,
+			"maximum_road_length_ratio": 1.00225643048834,
+			"minimum_road_length_ratio": 0.98729280343224,
+			"sample_count": 927,
+			"sample_coverage": 1.0
+		},
+		"curbs": 252,
+		"heard_birth_build_ms": 13.464,
+		"maximum_outside_road_area": 0.000000764557626098394,
+		"maximum_owned_or_water_overlap": 0.0,
+		"new_source_id": "building-00025",
+		"paving": 9,
+		"prebirth_cached_lookup_ms": 0.132,
+		"stable_tones": 15,
+		"starter_build_ms": 13.757,
+		"stone_lengths": 41,
+		"stones": 237,
+		"terminal_seed": {
+			"node": "west-0",
+			"position": "(12.47461, -1.356663)",
+			"road_id": "west-road-1"
+		},
+		"terrain_height_range": [
+			0.301072423032452,
+			0.924361501809963
+		]
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "One Dummy real 24-house river starter, actual main/branch/curved road masks, existing occupied land, one real render-ahead seed at an existing degree-one road, stable retained geometry. Root owns production draw integration, live A/B and human review."
+}

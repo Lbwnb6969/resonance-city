@@ -1,0 +1,703 @@
+{
+	"checks": {
+		"a_real_confirmed_author_house_gets_its_actual_entry_threshold_only_after_the_birth_is_heard": true,
+		"actual_24_house_opening_uses_real_outer_steps_and_current_baked_street_orientation": true,
+		"birth_audibility_and_complete_actual_sprite_reveal_gate_every_threshold_and_wear_pad": true,
+		"comparison_styles_and_new_era_houses_stay_isolated_while_surviving_classical_houses_keep_their_thresholds": true,
+		"dummy_audio_without_a_window_or_live_device": true,
+		"empty_public_holes_are_explicitly_excluded_and_parcel_identity_refreshes_the_read_only_cache": true,
+		"geometry_and_reveal_queries_preserve_world_save_rng_roads_lots_and_acoustic_state": true,
+		"pan_zoom_and_transport_ticks_reuse_geometry_without_new_spatial_queries": true,
+		"reserved_player_land_is_never_paved_and_its_index_change_invalidates_the_cache": true,
+		"thin_thresholds_and_short_wear_stay_on_existing_owned_ground_off_roads_water_neighbors_public_and_reservations": true
+	},
+	"evidence": {
+		"authored_house": "building-00025",
+		"diagnostics": {
+			"pads": 52,
+			"rebuild_count": 12,
+			"spatial_query_count": 928
+		},
+		"maximum_pad_extent_from_actual_step": 0.226816058158875,
+		"opening_houses_with_pads": 24,
+		"opening_pads": [
+			{
+				"building_id": "building-00001",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [
+					12.3388175964355,
+					1.95959460735321
+				],
+				"entry_id": "refined_house_terrace_o1",
+				"kind": "threshold",
+				"lot_id": "west-lot-1--1",
+				"orientation": 1,
+				"polygon": "[(11.56603, 2.071449), (11.49503, 2.071449), (11.49503, 1.879395), (11.56603, 1.879395)]",
+				"road_id": "",
+				"step_front": "(11.50403, 1.975424)"
+			},
+			{
+				"building_id": "building-00001",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1533)",
+				"entrance": [
+					12.3388175964355,
+					1.95959460735321
+				],
+				"entry_id": "refined_house_terrace_o1",
+				"kind": "wear",
+				"lot_id": "west-lot-1--1",
+				"orientation": 1,
+				"polygon": "[(11.60251, 1.894157), (11.60552, 2.052895), (11.54578, 2.066833), (11.54228, 1.8825)]",
+				"road_id": "west-road-1",
+				"step_front": "(11.50403, 1.975424)"
+			},
+			{
+				"building_id": "building-00001",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1067)",
+				"entrance": [
+					12.3388175964355,
+					1.95959460735321
+				],
+				"entry_id": "refined_house_terrace_o1",
+				"kind": "wear",
+				"lot_id": "west-lot-1--1",
+				"orientation": 1,
+				"polygon": "[(11.66274, 1.905823), (11.66527, 2.038956), (11.60552, 2.052895), (11.60251, 1.894157)]",
+				"road_id": "west-road-1",
+				"step_front": "(11.50403, 1.975424)"
+			},
+			{
+				"building_id": "building-00001",
+				"color": "(0.6627, 0.5765, 0.4392, 0.06)",
+				"entrance": [
+					12.3388175964355,
+					1.95959460735321
+				],
+				"entry_id": "refined_house_terrace_o1",
+				"kind": "wear",
+				"lot_id": "west-lot-1--1",
+				"orientation": 1,
+				"polygon": "[(11.72298, 1.917488), (11.72501, 2.025017), (11.66527, 2.038956), (11.66274, 1.905823)]",
+				"road_id": "west-road-1",
+				"step_front": "(11.50403, 1.975424)"
+			},
+			{
+				"building_id": "building-00002",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [
+					12.3388175964355,
+					2.05003499984741
+				],
+				"entry_id": "refined_house_gabled_o3",
+				"kind": "threshold",
+				"lot_id": "west-lot-1-1",
+				"orientation": 3,
+				"polygon": "[(13.07217, 1.737556), (13.00117, 1.737556), (13.00117, 1.540512), (13.07217, 1.540512)]",
+				"road_id": "",
+				"step_front": "(13.06317, 1.639035)"
+			},
+			{
+				"building_id": "building-00002",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1533)",
+				"entrance": [
+					12.3388175964355,
+					2.05003499984741
+				],
+				"entry_id": "refined_house_gabled_o3",
+				"kind": "wear",
+				"lot_id": "west-lot-1-1",
+				"orientation": 3,
+				"polygon": "[(13.07506, 1.741035), (13.01639, 1.759224), (12.936, 1.617546), (12.9817, 1.576515)]",
+				"road_id": "west-road-1",
+				"step_front": "(13.06317, 1.639035)"
+			},
+			{
+				"building_id": "building-00002",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1067)",
+				"entrance": [
+					12.3388175964355,
+					2.05003499984741
+				],
+				"entry_id": "refined_house_gabled_o3",
+				"kind": "wear",
+				"lot_id": "west-lot-1-1",
+				"orientation": 3,
+				"polygon": "[(13.01639, 1.759224), (12.95773, 1.777405), (12.91882, 1.708824), (12.91882, 1.63298), (12.936, 1.617546)]",
+				"road_id": "west-road-1",
+				"step_front": "(13.06317, 1.639035)"
+			},
+			{
+				"building_id": "building-00002",
+				"color": "(0.6627, 0.5765, 0.4392, 0.06)",
+				"entrance": [
+					12.3388175964355,
+					2.05003499984741
+				],
+				"entry_id": "refined_house_gabled_o3",
+				"kind": "wear",
+				"lot_id": "west-lot-1-1",
+				"orientation": 3,
+				"polygon": "[(12.95773, 1.777405), (12.91882, 1.789467), (12.91882, 1.708824)]",
+				"road_id": "west-road-1",
+				"step_front": "(13.06317, 1.639035)"
+			},
+			{
+				"building_id": "building-00003",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_courtyard_o1",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 1,
+				"polygon": "[(11.73984, 2.851921), (11.66884, 2.851921), (11.66884, 2.674553), (11.73984, 2.674553)]",
+				"road_id": "",
+				"step_front": "(11.67784, 2.763238)"
+			},
+			{
+				"building_id": "building-00004",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_terrace_o3",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 3,
+				"polygon": "[(13.321, 2.68708), (13.28872, 2.68708), (13.28983, 2.675835), (13.31532, 2.591797), (13.321, 2.581161)]",
+				"road_id": "",
+				"step_front": "(13.312, 2.591053)"
+			},
+			{
+				"building_id": "building-00005",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [
+					12.7047891616821,
+					3.54827332496643
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "threshold",
+				"lot_id": "west-lot-2--1",
+				"orientation": 1,
+				"polygon": "[(12.01254, 3.985962), (11.94154, 3.985962), (11.94154, 3.788918), (12.01254, 3.788918)]",
+				"road_id": "",
+				"step_front": "(11.95054, 3.887442)"
+			},
+			{
+				"building_id": "building-00005",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1533)",
+				"entrance": [
+					12.7047891616821,
+					3.54827332496643
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "wear",
+				"lot_id": "west-lot-2--1",
+				"orientation": 1,
+				"polygon": "[(12.07514, 3.920708), (12.02581, 3.957298), (11.94823, 3.784775), (12.00834, 3.772148)]",
+				"road_id": "west-road-1",
+				"step_front": "(11.95054, 3.887442)"
+			},
+			{
+				"building_id": "building-00005",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1067)",
+				"entrance": [
+					12.7047891616821,
+					3.54827332496643
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "wear",
+				"lot_id": "west-lot-2--1",
+				"orientation": 1,
+				"polygon": "[(12.12448, 3.884125), (12.07514, 3.920708), (12.00834, 3.772148), (12.06845, 3.759521)]",
+				"road_id": "west-road-1",
+				"step_front": "(11.95054, 3.887442)"
+			},
+			{
+				"building_id": "building-00005",
+				"color": "(0.6627, 0.5765, 0.4392, 0.06)",
+				"entrance": [
+					12.7047891616821,
+					3.54827332496643
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "wear",
+				"lot_id": "west-lot-2--1",
+				"orientation": 1,
+				"polygon": "[(12.12479, 3.883896), (12.12448, 3.884125), (12.06845, 3.759521), (12.12479, 3.747681)]",
+				"road_id": "west-road-1",
+				"step_front": "(11.95054, 3.887442)"
+			},
+			{
+				"building_id": "building-00006",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [
+					12.7047891616821,
+					3.57273769378662
+				],
+				"entry_id": "refined_house_courtyard_o3",
+				"kind": "threshold",
+				"lot_id": "west-lot-2-1",
+				"orientation": 3,
+				"polygon": "[(13.58727, 3.81192), (13.51627, 3.81192), (13.51627, 3.634552), (13.58727, 3.634552)]",
+				"road_id": "",
+				"step_front": "(13.57827, 3.723238)"
+			},
+			{
+				"building_id": "building-00006",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1533)",
+				"entrance": [
+					12.7047891616821,
+					3.57273769378662
+				],
+				"entry_id": "refined_house_courtyard_o3",
+				"kind": "wear",
+				"lot_id": "west-lot-2-1",
+				"orientation": 3,
+				"polygon": "[(13.52439, 3.800346), (13.46727, 3.778503), (13.49217, 3.63401), (13.55331, 3.632545)]",
+				"road_id": "west-road-1",
+				"step_front": "(13.57827, 3.723238)"
+			},
+			{
+				"building_id": "building-00006",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1067)",
+				"entrance": [
+					12.7047891616821,
+					3.57273769378662
+				],
+				"entry_id": "refined_house_courtyard_o3",
+				"kind": "wear",
+				"lot_id": "west-lot-2-1",
+				"orientation": 3,
+				"polygon": "[(13.46727, 3.778503), (13.41015, 3.756668), (13.43103, 3.635475), (13.49217, 3.63401)]",
+				"road_id": "west-road-1",
+				"step_front": "(13.57827, 3.723238)"
+			},
+			{
+				"building_id": "building-00006",
+				"color": "(0.6627, 0.5765, 0.4392, 0.06)",
+				"entrance": [
+					12.7047891616821,
+					3.57273769378662
+				],
+				"entry_id": "refined_house_courtyard_o3",
+				"kind": "wear",
+				"lot_id": "west-lot-2-1",
+				"orientation": 3,
+				"polygon": "[(13.41015, 3.756668), (13.35303, 3.734825), (13.3699, 3.63694), (13.43103, 3.635475)]",
+				"road_id": "west-road-1",
+				"step_front": "(13.57827, 3.723238)"
+			},
+			{
+				"building_id": "building-00007",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_terrace_o1",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 1,
+				"polygon": "[(12.10123, 4.770638), (12.07574, 4.854683), (12.07006, 4.865311), (12.07006, 4.759399), (12.10234, 4.759399)]",
+				"road_id": "",
+				"step_front": "(12.07906, 4.855423)"
+			},
+			{
+				"building_id": "building-00008",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_gabled_o3",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 3,
+				"polygon": "[(13.64719, 4.617554), (13.62032, 4.617554), (13.62245, 4.59584), (13.64719, 4.514259)]",
+				"road_id": "",
+				"step_front": "(13.6382, 4.519034)"
+			},
+			{
+				"building_id": "building-00009",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_courtyard",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 0,
+				"polygon": "[(12.12286, 14.51887), (11.94549, 14.51887), (11.94549, 14.44787), (12.12286, 14.44787)]",
+				"road_id": "",
+				"step_front": "(12.03417, 14.50987)"
+			},
+			{
+				"building_id": "building-00010",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_terrace_o3",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 3,
+				"polygon": "[(14.02596, 14.78233), (13.99368, 14.78233), (13.99478, 14.7711), (14.02027, 14.68705), (14.02596, 14.67641)]",
+				"road_id": "",
+				"step_front": "(14.01695, 14.68631)"
+			},
+			{
+				"building_id": "building-00011",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 1,
+				"polygon": "[(12.41193, 15.90589), (12.38718, 15.98746), (12.38718, 15.88418), (12.41407, 15.88418)]",
+				"road_id": "",
+				"step_front": "(12.39618, 15.9827)"
+			},
+			{
+				"building_id": "building-00012",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_courtyard_o3",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 3,
+				"polygon": "[(14.03291, 15.90718), (13.96191, 15.90718), (13.96191, 15.72981), (14.03291, 15.72981)]",
+				"road_id": "",
+				"step_front": "(14.02391, 15.81849)"
+			},
+			{
+				"building_id": "building-00013",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_terrace_o1",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 1,
+				"polygon": "[(12.27193, 16.8659), (12.24644, 16.94994), (12.24075, 16.96056), (12.24075, 16.85465), (12.27303, 16.85465)]",
+				"road_id": "",
+				"step_front": "(12.24976, 16.95068)"
+			},
+			{
+				"building_id": "building-00014",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_gabled_o3",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 3,
+				"polygon": "[(13.81789, 16.71281), (13.79101, 16.71281), (13.79314, 16.69109), (13.81789, 16.60952)]",
+				"road_id": "",
+				"step_front": "(13.80889, 16.61429)"
+			},
+			{
+				"building_id": "building-00015",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [
+					12.7580127716064,
+					17.9502258300781
+				],
+				"entry_id": "refined_shop_arcade_o1",
+				"kind": "threshold",
+				"lot_id": "west-lot-10--1",
+				"orientation": 1,
+				"polygon": "[(12.08966, 17.81736), (12.01866, 17.81736), (12.01866, 17.65963), (12.08966, 17.65963)]",
+				"road_id": "",
+				"step_front": "(12.02766, 17.73849)"
+			},
+			{
+				"building_id": "building-00015",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1533)",
+				"entrance": [
+					12.7580127716064,
+					17.9502258300781
+				],
+				"entry_id": "refined_shop_arcade_o1",
+				"kind": "wear",
+				"lot_id": "west-lot-10--1",
+				"orientation": 1,
+				"polygon": "[(12.14185, 17.70372), (12.10555, 17.82896), (12.045, 17.82235), (12.08716, 17.67692)]",
+				"road_id": "west-road-3",
+				"step_front": "(12.02766, 17.73849)"
+			},
+			{
+				"building_id": "building-00015",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1067)",
+				"entrance": [
+					12.7580127716064,
+					17.9502258300781
+				],
+				"entry_id": "refined_shop_arcade_o1",
+				"kind": "wear",
+				"lot_id": "west-lot-10--1",
+				"orientation": 1,
+				"polygon": "[(12.17801, 17.72144), (12.17801, 17.7945), (12.16611, 17.83556), (12.10555, 17.82896), (12.14185, 17.70372)]",
+				"road_id": "west-road-3",
+				"step_front": "(12.02766, 17.73849)"
+			},
+			{
+				"building_id": "building-00015",
+				"color": "(0.6627, 0.5765, 0.4392, 0.06)",
+				"entrance": [
+					12.7580127716064,
+					17.9502258300781
+				],
+				"entry_id": "refined_shop_arcade_o1",
+				"kind": "wear",
+				"lot_id": "west-lot-10--1",
+				"orientation": 1,
+				"polygon": "[(12.17801, 17.83686), (12.16611, 17.83556), (12.17801, 17.7945)]",
+				"road_id": "west-road-3",
+				"step_front": "(12.02766, 17.73849)"
+			},
+			{
+				"building_id": "building-00016",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_terrace_o3",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 3,
+				"polygon": "[(13.61565, 17.66234), (13.58337, 17.66234), (13.58448, 17.65109), (13.60998, 17.56705), (13.61565, 17.55643)]",
+				"road_id": "",
+				"step_front": "(13.60665, 17.56631)"
+			},
+			{
+				"building_id": "building-00017",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [
+					20.2396125793457,
+					11.624529838562
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "threshold",
+				"lot_id": "east-lot-7--1",
+				"orientation": 1,
+				"polygon": "[(19.50719, 11.65504), (19.43619, 11.65504), (19.43619, 11.45799), (19.50719, 11.45799)]",
+				"road_id": "",
+				"step_front": "(19.44519, 11.55651)"
+			},
+			{
+				"building_id": "building-00017",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1533)",
+				"entrance": [
+					20.2396125793457,
+					11.624529838562
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "wear",
+				"lot_id": "east-lot-7--1",
+				"orientation": 1,
+				"polygon": "[(19.55177, 11.48389), (19.53788, 11.64619), (19.47697, 11.65416), (19.49311, 11.46569)]",
+				"road_id": "east-road-2",
+				"step_front": "(19.44519, 11.55651)"
+			},
+			{
+				"building_id": "building-00017",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1067)",
+				"entrance": [
+					20.2396125793457,
+					11.624529838562
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "wear",
+				"lot_id": "east-lot-7--1",
+				"orientation": 1,
+				"polygon": "[(19.61044, 11.5021), (19.59878, 11.63822), (19.53788, 11.64619), (19.55177, 11.48389)]",
+				"road_id": "east-road-2",
+				"step_front": "(19.44519, 11.55651)"
+			},
+			{
+				"building_id": "building-00017",
+				"color": "(0.6627, 0.5765, 0.4392, 0.06)",
+				"entrance": [
+					20.2396125793457,
+					11.624529838562
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "wear",
+				"lot_id": "east-lot-7--1",
+				"orientation": 1,
+				"polygon": "[(19.65961, 11.51736), (19.65961, 11.63026), (19.59878, 11.63822), (19.61044, 11.5021)]",
+				"road_id": "east-road-2",
+				"step_front": "(19.44519, 11.55651)"
+			},
+			{
+				"building_id": "building-00018",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [
+					20.2396125793457,
+					11.5835390090942
+				],
+				"entry_id": "refined_shop_arcade_o3",
+				"kind": "threshold",
+				"lot_id": "east-lot-7-1",
+				"orientation": 3,
+				"polygon": "[(21.02676, 11.47117), (20.95576, 11.47117), (20.95576, 11.31345), (21.02676, 11.31345)]",
+				"road_id": "",
+				"step_front": "(21.01776, 11.39231)"
+			},
+			{
+				"building_id": "building-00018",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1533)",
+				"entrance": [
+					20.2396125793457,
+					11.5835390090942
+				],
+				"entry_id": "refined_shop_arcade_o3",
+				"kind": "wear",
+				"lot_id": "east-lot-7-1",
+				"orientation": 3,
+				"polygon": "[(20.99699, 11.47538), (20.93621, 11.47948), (20.90509, 11.35286), (20.96085, 11.32833)]",
+				"road_id": "east-road-2",
+				"step_front": "(21.01776, 11.39231)"
+			},
+			{
+				"building_id": "building-00018",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1067)",
+				"entrance": [
+					20.2396125793457,
+					11.5835390090942
+				],
+				"entry_id": "refined_shop_arcade_o3",
+				"kind": "wear",
+				"lot_id": "east-lot-7-1",
+				"orientation": 3,
+				"polygon": "[(20.93621, 11.47948), (20.87543, 11.48359), (20.84933, 11.3774), (20.90509, 11.35286)]",
+				"road_id": "east-road-2",
+				"step_front": "(21.01776, 11.39231)"
+			},
+			{
+				"building_id": "building-00018",
+				"color": "(0.6627, 0.5765, 0.4392, 0.06)",
+				"entrance": [
+					20.2396125793457,
+					11.5835390090942
+				],
+				"entry_id": "refined_shop_arcade_o3",
+				"kind": "wear",
+				"lot_id": "east-lot-7-1",
+				"orientation": 3,
+				"polygon": "[(20.87543, 11.48359), (20.81961, 11.48737), (20.81961, 11.39046), (20.84933, 11.3774)]",
+				"road_id": "east-road-2",
+				"step_front": "(21.01776, 11.39231)"
+			},
+			{
+				"building_id": "building-00019",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_terrace_o1",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 1,
+				"polygon": "[(19.54836, 12.4397), (19.52287, 12.52375), (19.51718, 12.53438), (19.51718, 12.42847), (19.54946, 12.42847)]",
+				"road_id": "",
+				"step_front": "(19.52618, 12.52449)"
+			},
+			{
+				"building_id": "building-00020",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_gabled_o3",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 3,
+				"polygon": "[(21.09432, 12.28663), (21.06744, 12.28663), (21.06957, 12.26491), (21.09432, 12.1833)]",
+				"road_id": "",
+				"step_front": "(21.08532, 12.1881)"
+			},
+			{
+				"building_id": "building-00021",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_courtyard_o1",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 1,
+				"polygon": "[(19.60059, 13.40099), (19.52959, 13.40099), (19.52959, 13.22363), (19.60059, 13.22363)]",
+				"road_id": "",
+				"step_front": "(19.53858, 13.31231)"
+			},
+			{
+				"building_id": "building-00022",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_terrace_o2",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 2,
+				"polygon": "[(21.5138, 13.75281), (21.50256, 13.7517), (21.41852, 13.7262), (21.4079, 13.72053), (21.5138, 13.72053)]",
+				"road_id": "",
+				"step_front": "(21.41777, 13.72953)"
+			},
+			{
+				"building_id": "building-00023",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [
+					20.4277153015137,
+					14.0
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "threshold",
+				"lot_id": "east-lot-8--1",
+				"orientation": 1,
+				"polygon": "[(19.72098, 14.53503), (19.64998, 14.53503), (19.64998, 14.33799), (19.72098, 14.33799)]",
+				"road_id": "",
+				"step_front": "(19.65898, 14.43651)"
+			},
+			{
+				"building_id": "building-00023",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1533)",
+				"entrance": [
+					20.4277153015137,
+					14.0
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "wear",
+				"lot_id": "east-lot-8--1",
+				"orientation": 1,
+				"polygon": "[(19.78616, 14.45795), (19.74046, 14.49901), (19.64706, 14.33451), (19.70572, 14.31631)]",
+				"road_id": "east-road-2",
+				"step_front": "(19.65898, 14.43651)"
+			},
+			{
+				"building_id": "building-00023",
+				"color": "(0.6627, 0.5765, 0.4392, 0.1067)",
+				"entrance": [
+					20.4277153015137,
+					14.0
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "wear",
+				"lot_id": "east-lot-8--1",
+				"orientation": 1,
+				"polygon": "[(19.83184, 14.41691), (19.78616, 14.45795), (19.70572, 14.31631), (19.76438, 14.2981)]",
+				"road_id": "east-road-2",
+				"step_front": "(19.65898, 14.43651)"
+			},
+			{
+				"building_id": "building-00023",
+				"color": "(0.6627, 0.5765, 0.4392, 0.06)",
+				"entrance": [
+					20.4277153015137,
+					14.0
+				],
+				"entry_id": "refined_house_gabled_o1",
+				"kind": "wear",
+				"lot_id": "east-lot-8--1",
+				"orientation": 1,
+				"polygon": "[(19.84772, 14.32335), (19.84772, 14.40263), (19.83184, 14.41691), (19.76438, 14.2981), (19.82304, 14.2799)]",
+				"road_id": "east-road-2",
+				"step_front": "(19.65898, 14.43651)"
+			},
+			{
+				"building_id": "building-00024",
+				"color": "(0.8118, 0.749, 0.6196, 0.68)",
+				"entrance": [],
+				"entry_id": "refined_house_courtyard_o1",
+				"kind": "threshold",
+				"lot_id": "",
+				"orientation": 1,
+				"polygon": "[(19.63006, 15.32099), (19.55905, 15.32099), (19.55905, 15.14362), (19.63006, 15.14362)]",
+				"road_id": "",
+				"step_front": "(19.56805, 15.23231)"
+			}
+		],
+		"opening_thresholds": 24,
+		"opening_wear_segments": 24
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Dummy real 24-house World/current production entry geometry, actual heard author birth, existing owned lot/radius bounds, real road/water/neighbor/public/hole/reservation exclusions, era/style separation and retained camera cache. Thin thresholds and short wear do not claim a new route; Root owns actual window/compositing/aesthetic review."
+}

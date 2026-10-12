@@ -1,0 +1,238 @@
+{
+	"checks": {
+		"actual_heard_house_refreshes_its_true_street_source": true,
+		"actual_heard_houses_have_clipped_threshold_material": true,
+		"actual_occupied_roads_have_stone_faces_and_low_curbs": true,
+		"actual_pcm_has_no_clipping_or_added_underrun": true,
+		"actual_revealed_house_refreshes_threshold_cache": true,
+		"actual_seed_is_queued_at_its_real_boundary": true,
+		"actual_sound_entry_remains_playable": true,
+		"actual_warm_four_second_pcm_starts": true,
+		"actual_windows_gpu_and_audio": true,
+		"chosen_author_house_reaches_device": true,
+		"day_night_keeps_same_world_and_geometry": true,
+		"four_seconds_of_actual_city_reach_device": true,
+		"future_house_cannot_pave_or_add_threshold_before_heard_frame": true,
+		"pan_and_zoom_reuse_world_surface_and_threshold_geometry": true,
+		"real_opening_reaches_device": true,
+		"render_ahead_before_heard_birth": true,
+		"road_material_does_not_replace_selected_pcm": true,
+		"same_camera_material_comparison_keeps_world": true,
+		"stone_street_800_compact_actual_panel": true,
+		"stone_street_800_title_retained_and_duplicate_legend_hidden": true,
+		"stone_street_800_true_parcel_community_focus": true,
+		"stone_street_800_whole_actual_target_and_panel_visible": true,
+		"true_24_house_city_without_decorative_fixture": true
+	},
+	"evidence": {
+		"clipped": 0,
+		"layouts": [
+			{
+				"label": "stone_street_800",
+				"orientation": 3,
+				"panel": "[P: (432.0, 78.0), S: (356.0, 474.0)]",
+				"position": [
+					13.7984962463379,
+					18.7742557525635
+				],
+				"selected": "warm",
+				"target": "[P: (122.0, 205.9287), S: (180.0, 170.0)]",
+				"window": "(800.0, 600.0)"
+			}
+		],
+		"peak": 0.295040816068649,
+		"root_id": "building-00025",
+		"sample_rate": 22050,
+		"samples": 88200,
+		"streets": {
+			"heard_pads": 49,
+			"heard_surface": {
+				"curb_count": 256,
+				"curb_raise": 0.014,
+				"frontage_reach": 2.1,
+				"paving_count": 9,
+				"source_ids": [
+					"building-00001",
+					"building-00002",
+					"building-00003",
+					"building-00004",
+					"building-00005",
+					"building-00006",
+					"building-00007",
+					"building-00008",
+					"building-00009",
+					"building-00010",
+					"building-00011",
+					"building-00012",
+					"building-00013",
+					"building-00014",
+					"building-00015",
+					"building-00016",
+					"building-00017",
+					"building-00018",
+					"building-00019",
+					"building-00020",
+					"building-00021",
+					"building-00022",
+					"building-00023",
+					"building-00024",
+					"building-00025"
+				],
+				"spans": [
+					{
+						"from": 0.0,
+						"length": 5.60000038146973,
+						"road_id": "east-cross-2",
+						"to": 3.61776494979858
+					},
+					{
+						"from": 1.08801257610321,
+						"length": 6.01173186302185,
+						"road_id": "east-road-2",
+						"to": 6.01173210144043
+					},
+					{
+						"from": 0.0,
+						"length": 6.11549824476242,
+						"road_id": "east-road-3",
+						"to": 3.67754292488098
+					},
+					{
+						"from": 0.0,
+						"length": 5.59999990463257,
+						"road_id": "west-cross-2",
+						"to": 3.59468746185303
+					},
+					{
+						"from": 0.0,
+						"length": 5.59999990463257,
+						"road_id": "west-cross-3",
+						"to": 1.77015721797943
+					},
+					{
+						"from": 0.531513333320618,
+						"length": 9.34474158287048,
+						"road_id": "west-road-1",
+						"to": 8.31888389587402
+					},
+					{
+						"from": 4.56277799606323,
+						"length": 6.01173180341721,
+						"road_id": "west-road-2",
+						"to": 6.01173162460327
+					},
+					{
+						"from": 0.0,
+						"length": 6.11549866199493,
+						"road_id": "west-road-3",
+						"to": 6.11549854278564
+					},
+					{
+						"from": 0.0,
+						"length": 10.2497448921204,
+						"road_id": "west-road-4",
+						"to": 0.660654425621033
+					}
+				],
+				"stone_count": 240,
+				"terminal_count": 0
+			},
+			"opening_pads": 48,
+			"opening_surface": {
+				"curb_count": 252,
+				"curb_raise": 0.014,
+				"frontage_reach": 2.1,
+				"paving_count": 9,
+				"source_ids": [
+					"building-00001",
+					"building-00002",
+					"building-00003",
+					"building-00004",
+					"building-00005",
+					"building-00006",
+					"building-00007",
+					"building-00008",
+					"building-00009",
+					"building-00010",
+					"building-00011",
+					"building-00012",
+					"building-00013",
+					"building-00014",
+					"building-00015",
+					"building-00016",
+					"building-00017",
+					"building-00018",
+					"building-00019",
+					"building-00020",
+					"building-00021",
+					"building-00022",
+					"building-00023",
+					"building-00024"
+				],
+				"spans": [
+					{
+						"from": 0.0,
+						"length": 5.60000038146973,
+						"road_id": "east-cross-2",
+						"to": 3.61776494979858
+					},
+					{
+						"from": 1.08801257610321,
+						"length": 6.01173186302185,
+						"road_id": "east-road-2",
+						"to": 6.01173210144043
+					},
+					{
+						"from": 0.0,
+						"length": 6.11549824476242,
+						"road_id": "east-road-3",
+						"to": 3.67754292488098
+					},
+					{
+						"from": 0.0,
+						"length": 5.59999990463257,
+						"road_id": "west-cross-2",
+						"to": 3.59468746185303
+					},
+					{
+						"from": 0.0,
+						"length": 5.59999990463257,
+						"road_id": "west-cross-3",
+						"to": 1.77015721797943
+					},
+					{
+						"from": 0.531513333320618,
+						"length": 9.34474158287048,
+						"road_id": "west-road-1",
+						"to": 8.31888389587402
+					},
+					{
+						"from": 4.56277799606323,
+						"length": 6.01173180341721,
+						"road_id": "west-road-2",
+						"to": 6.01173162460327
+					},
+					{
+						"from": 0.0,
+						"length": 6.11549866199493,
+						"road_id": "west-road-3",
+						"to": 6.11549854278564
+					},
+					{
+						"from": 0.0,
+						"length": 10.2497448921204,
+						"road_id": "west-road-4",
+						"to": 0.237723037600517
+					}
+				],
+				"stone_count": 237,
+				"terminal_count": 0
+			},
+			"surface_build_ms": 13.056
+		},
+		"underruns": 0
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Actual Windows/OpenGL/WASAPI; same-city same-camera legacy/refined street comparison, true 24-house opening, actual warm input/confirm/heard birth, future surface gate, camera/day-night caches, small-window clearance. Human aesthetic/listening/fun verdict unverified."
+}
