@@ -1,0 +1,47 @@
+{
+	"checks": {
+		"actual_production_props_draw_without_moving_their_ground_anchors_or_writing_world_rng": true,
+		"both_actual_tree_pngs_have_transparent_border_and_woody_foot_at_shared_zero_origin": true,
+		"both_physical_cast_and_contact_masks_are_prewarmed_and_contact_the_same_tree_foot": true,
+		"cypress_real_production_png_is_prewarmed_mipped_and_hash_verified": true,
+		"integer_tones_keep_two_stable_species_and_later_eras_keep_existing_prop_entry": true,
+		"new_bsp_occlusion_matches_independent_nearest_surface_reference_and_old_silhouettes_changed": true,
+		"olive_crown_has_visible_inner_spaces_and_cypress_is_a_slender_vertical_silhouette": true,
+		"olive_real_production_png_is_prewarmed_mipped_and_hash_verified": true,
+		"only_two_trees_changed_all_32_building_entries_and_256_building_files_are_identical": true
+	},
+	"failures": [],
+	"olive_crown_open_rows": 27,
+	"passed": true,
+	"scope": "Headless Dummy imported production trees and real prop drawing; independent offline geometric occlusion reference; aesthetic review remains Root live window.",
+	"trees": [
+		{
+			"faces": 1352.0,
+			"id": "refined_tree_canopy",
+			"origin": [
+				442.669947741352,
+				983.415433921644
+			],
+			"plot_span": 0.916759666091239,
+			"size": [
+				31.317,
+				37.333
+			],
+			"species": "olive"
+		},
+		{
+			"faces": 2112.0,
+			"id": "refined_tree_pine",
+			"origin": [
+				199.066396535546,
+				979.999880519694
+			],
+			"plot_span": 0.431970517000893,
+			"size": [
+				17.012,
+				43.991
+			],
+			"species": "mediterranean_cypress"
+		}
+	]
+}

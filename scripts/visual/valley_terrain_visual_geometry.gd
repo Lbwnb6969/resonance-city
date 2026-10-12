@@ -5,7 +5,7 @@ const HEIGHT_LEVELS := [0.48,0.82,1.28]
 const CELL_SIZE := 2.0
 
 static func build(terrain: RefCounted) -> Dictionary:
-	var result := {"surfaces":[],"contours":[],"rims":[],"shore_faces":[],"shallow_water":[],"channel":PackedVector2Array()}
+	var result := {"surfaces":[],"continuous_surfaces":[],"contours":[],"rims":[],"shore_faces":[],"shallow_water":[],"channel":PackedVector2Array()}
 	for bank: PackedVector2Array in [terrain.left_bank,terrain.right_bank]:
 		var side := 0 if bank == terrain.left_bank else 1
 		var box := _bounds(bank)
@@ -21,6 +21,9 @@ static func build(terrain: RefCounted) -> Dictionary:
 					var triangles := Geometry2D.triangulate_polygon(piece)
 					for at in range(0,triangles.size(),3):
 						var triangle := PackedVector2Array([piece[triangles[at]],piece[triangles[at+1]],piece[triangles[at+2]]])
+						# The production river town interpolates material at these real
+						# terrain vertices. Keep the clipped bands for art comparisons.
+						result["continuous_surfaces"].append({"polygon":triangle,"side":side})
 						for band in range(HEIGHT_LEVELS.size()+1):
 							var polygon := triangle
 							if band > 0: polygon = _height_clip(terrain,polygon,HEIGHT_LEVELS[band-1],true)

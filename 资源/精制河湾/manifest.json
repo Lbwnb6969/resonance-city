@@ -3709,37 +3709,37 @@
     },
     {
       "id": "refined_tree_canopy",
-      "display_name": "深松团簇阔叶树",
+      "display_name": "分叉灰绿橄榄树",
       "category": "tree",
       "role": "tree",
       "texture": "资源/精制河湾/整图/refined_tree_canopy.png",
       "editable_source": "资源/精制河湾/SVG/refined_tree_canopy.svg",
       "origin": [
-        417.0786775860988,
-        981.0242654327928
+        442.6699477413519,
+        983.4154339216445
       ],
-      "pixels_per_world": 946.2641196190342,
-      "plot_span": 0.7907457438615905,
+      "pixels_per_world": 703.0674745825968,
+      "plot_span": 0.9167596660912387,
       "image_bounds": {
-        "width": 801,
+        "width": 859,
         "height": 1024,
         "crop": [
           0,
           0,
-          801,
+          859,
           1024
         ]
       },
       "model_bounds": {
         "position": [
-          -0.4507999730980485,
+          -0.692110357428873,
           0.0,
-          -0.4165955280557829
+          -0.5051517201180136
         ],
         "size": [
-          0.9215999461960969,
-          1.147821234684088,
-          0.7765315033059875
+          1.416250092104282,
+          1.3947896090275094,
+          1.089950381949485
         ]
       },
       "source": "tools/build_refined_valley_art.py; original project geometry",
@@ -3747,30 +3747,34 @@
       "source_url": "",
       "availability": "production_refined_valley",
       "era": 1,
-      "historical_language": "Classical Greek / Roman stone, terracotta, timber; no modern glass grids",
+      "historical_language": "First-era Mediterranean olive / cypress; project-authored botanical form",
       "camera": {
         "azimuth": 45,
         "elevation": 30,
         "projection": "orthogonal"
       },
-      "geometry_faces": 473,
-      "texture_sha256": "661e9a0d2012e525a2beadcda591a0bed7077532038ea7fd0170ed4586c9c5cd",
-      "source_sha256": "cbbf761899aa1ea0823f7e775bc4c729d74dc4a569a27581567bdffddd87ebd0",
+      "geometry_faces": 1352,
+      "texture_sha256": "2f7fdd00194a2fc26a6d8bda868ad6d73e8860ef34b4311a23c40527ac58c953",
+      "source_sha256": "5abed902ff2aa6edafdd3ae1ef8ad17156dccd05f499a6c1ccd5f4792062d346",
       "refined_valley": true,
+      "tree_species": "olive",
+      "morphology": "gnarled branching limbs, unequal grey-green lobed leaf masses and crown windows",
+      "tree_revision": 208,
+      "stable_tone": 0,
       "shadow_texture": "资源/精制河湾/阴影/refined_tree_canopy_shadow.png",
       "shadow_origin": [
-        35.0,
-        70.0
+        39.0,
+        66.0
       ],
-      "shadow_pixels_per_world": 824.4951998385982,
-      "shadow_sha256": "a590bcc50861d7236f8cc3a26434859ab09c1d969f7216347e8944854d1815d9",
+      "shadow_pixels_per_world": 570.4684798432387,
+      "shadow_sha256": "05d0aa8b7246792a7e820fc77b8fd832eeb97b20d97507c2aec0f36db587e313",
       "contact_texture": "资源/精制河湾/阴影/refined_tree_canopy_contact.png",
       "contact_origin": [
-        397.0,
-        380.0
+        371.0,
+        352.0
       ],
-      "contact_pixels_per_world": 824.4951998385982,
-      "contact_sha256": "ffe2f1a3b0ee5c8a364be62216f243f8ff013c85bd2b2c090325f422a7912515",
+      "contact_pixels_per_world": 570.4684798432387,
+      "contact_sha256": "9a497b44a1468029f109b26d800fbefbba9cff9044b9c91e7d71f0e7231f762d",
       "lighting": {
         "sun_screen_shadow_degrees": 13.12426812279171,
         "ground_anchor_world": [
@@ -3781,86 +3785,98 @@
         "projection": "actual_geometry_to_ground",
         "contact_footprint": [
           [
-            -0.038869595510258675,
-            0.0015933098308927955
+            -0.06468900092585397,
+            -0.010019228078020833
           ],
           [
-            -0.03182415728229532,
-            -0.011271901051638644
+            -0.044224866268272926,
+            -0.022112433134136453
           ],
           [
-            -0.009887842175834702,
-            -0.018862864158882293
+            -0.017719537964506368,
+            -0.031105002151535725
           ],
           [
-            0.016675104175824018,
-            -0.01762768348880119
+            0.015022100643196671,
+            -0.031192941210908924
           ],
           [
-            0.03543558396047484,
-            -0.008144313804430335
+            0.04871614931809987,
+            -0.024358074659049947
           ],
           [
-            0.03761536018737146,
-            0.005149870822999108
+            0.06323533868544627,
+            -0.006878423202880481
           ],
           [
-            0.022194491334434636,
-            0.01603437365790839
+            0.059019775387265105,
+            0.007143460627231123
           ],
           [
-            -0.00361142667817953,
-            0.019416214856068967
+            0.045961940777125586,
+            0.022980970388562793
           ],
           [
-            -0.02772751801153675,
-            0.013712993335883173
+            0.018880270557275373,
+            0.03172499446436504
+          ],
+          [
+            -0.01707308152429897,
+            0.03009680092624372
+          ],
+          [
+            -0.04871926738298271,
+            0.024359633691491356
+          ],
+          [
+            -0.059741556966283874,
+            0.00869323741107727
           ]
         ],
-        "contact_reference_world_pixels": 33.97562475915949,
+        "contact_reference_world_pixels": 25.632358926312488,
         "stage": "UI-006"
       },
       "runtime_reference": {
         "visible_size_px": [
-          28.76,
-          36.767
+          31.317,
+          37.333
         ],
         "ground_anchor": "actual model foot (0,0,0)"
       }
     },
     {
       "id": "refined_tree_pine",
-      "display_name": "层枝河岸松",
+      "display_name": "细长地中海柏",
       "category": "tree",
       "role": "tree",
       "texture": "资源/精制河湾/整图/refined_tree_pine.png",
       "editable_source": "资源/精制河湾/SVG/refined_tree_pine.svg",
       "origin": [
-        371.2203262718863,
-        979.1598416495542
+        199.0663965355462,
+        979.9998805196943
       ],
-      "pixels_per_world": 987.3160608507586,
-      "plot_span": 0.6781611291574007,
+      "pixels_per_world": 891.1514861389361,
+      "plot_span": 0.4319705170008934,
       "image_bounds": {
-        "width": 742,
+        "width": 396,
         "height": 1024,
         "crop": [
           0,
           0,
-          742,
+          396,
           1024
         ]
       },
       "model_bounds": {
         "position": [
-          -0.34748302254885316,
+          -0.22211961987794737,
           0.0,
-          -0.34809436295234875
+          -0.19550074271780127
         ],
         "size": [
-          0.6949660450977063,
-          1.115139026449702,
-          0.6961887259046975
+          0.4468010764097376,
+          1.2303766511980665,
+          0.37960246159174527
         ]
       },
       "source": "tools/build_refined_valley_art.py; original project geometry",
@@ -3868,30 +3884,34 @@
       "source_url": "",
       "availability": "production_refined_valley",
       "era": 1,
-      "historical_language": "Classical Greek / Roman stone, terracotta, timber; no modern glass grids",
+      "historical_language": "First-era Mediterranean olive / cypress; project-authored botanical form",
       "camera": {
         "azimuth": 45,
         "elevation": 30,
         "projection": "orthogonal"
       },
-      "geometry_faces": 1115,
-      "texture_sha256": "65545664630d077a9341b14051c606df85c1c43cc7d3f75d1286a47a70eca699",
-      "source_sha256": "baa8c3f9a9889c9b86fbd66617cdd3ed306d55a0f97183827aabd8d05c60cb4a",
+      "geometry_faces": 2112,
+      "texture_sha256": "9285f84eae4f9f7d1c63f3f9773416801f07339cd8923338d8c657dc3a7ab75e",
+      "source_sha256": "40730df6f6fbe690ab72706b33ee2320415cf9231d489d0a0847e7dff1433dce",
       "refined_valley": true,
+      "tree_species": "mediterranean_cypress",
+      "morphology": "tapered rising trunk, oblique forks and uneven upright foliage fingers",
+      "tree_revision": 208,
+      "stable_tone": 1,
       "shadow_texture": "资源/精制河湾/阴影/refined_tree_pine_shadow.png",
       "shadow_origin": [
-        40.0,
-        96.0
+        42.0,
+        24.0
       ],
-      "shadow_pixels_per_world": 966.0196514992282,
-      "shadow_sha256": "c36ba5c0d86b2210e383b63f5bc0d0cc83c73dce7034a4ce5f6e38f770fd8afe",
+      "shadow_pixels_per_world": 884.5156253853828,
+      "shadow_sha256": "5dba2678faa1a9e41288fe4a237ee162a156823144f4d1f29d392e6fdab367a5",
       "contact_texture": "资源/精制河湾/阴影/refined_tree_pine_contact.png",
       "contact_origin": [
-        414.0,
-        394.0
+        386.0,
+        368.0
       ],
-      "contact_pixels_per_world": 966.0196514992282,
-      "contact_sha256": "c6202b42d2fb85230eba0b9b43b03bb67e97c2d9501303da61c0b5b722ea1964",
+      "contact_pixels_per_world": 884.5156253853828,
+      "contact_sha256": "58a6a11f02e0231e05d8b5fa42c25099b2b73e5e832dbeb0e7c3c3aa955f6a52",
       "lighting": {
         "sun_screen_shadow_degrees": 13.12426812279171,
         "ground_anchor_world": [
@@ -3902,49 +3922,53 @@
         "projection": "actual_geometry_to_ground",
         "contact_footprint": [
           [
-            -0.038869595510258675,
-            0.0015933098308927955
+            -0.04457033624401738,
+            0.011218439655598192
           ],
           [
-            -0.03182415728229532,
-            -0.011271901051638644
+            -0.0437027647701532,
+            -0.002925557905371612
           ],
           [
-            -0.009887842175834702,
-            -0.018862864158882293
+            -0.03537105764980447,
+            -0.017685528824902232
           ],
           [
-            0.016675104175824018,
-            -0.01762768348880119
+            -0.005164858111757936,
+            -0.02328830039173074
           ],
           [
-            0.03543558396047484,
-            -0.008144313804430335
+            0.020284212834444815,
+            -0.020453409774196338
           ],
           [
-            0.03761536018737146,
-            0.005149870822999108
+            0.04131688630234743,
+            -0.010075334937163888
           ],
           [
-            0.022194491334434636,
-            0.01603437365790839
+            0.046000701669080594,
+            0.002295307703311289
           ],
           [
-            -0.00361142667817953,
-            0.019416214856068967
+            0.033234018715767734,
+            0.016617009357883867
           ],
           [
-            -0.02772751801153675,
-            0.013712993335883173
+            0.008863406930284371,
+            0.02337445559446202
+          ],
+          [
+            -0.02104269608306127,
+            0.02015632894340647
           ]
         ],
-        "contact_reference_world_pixels": 38.572602022972454,
+        "contact_reference_world_pixels": 38.28361364012748,
         "stage": "UI-006"
       },
       "runtime_reference": {
         "visible_size_px": [
-          28.989,
-          40.006
+          17.012,
+          43.991
         ],
         "ground_anchor": "actual model foot (0,0,0)"
       }
@@ -4044,5 +4068,6 @@
     "warm": "#728A72",
     "tree": "#4D7960"
   },
-  "production": "Presentation replacement only; retained original resources remain available."
+  "production": "Presentation replacement only; retained original resources remain available.",
+  "vegetation_revision": 208
 }

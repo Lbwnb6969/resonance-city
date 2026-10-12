@@ -29,6 +29,8 @@ var terrain_geometry_rebuilds := 0
 var terrain_prepare_ms := 0.0
 var terrain_surface_skips := 0
 var water_material: Array[Dictionary] = []
+var land_material: Array[Dictionary] = []
+var road_material: Array[Dictionary] = []
 var ground_grain: Array[Dictionary] = []
 var street_material: Dictionary = {"curbs":[],"joints":[],"paving":[]}
 var street_material_key: Array = []
@@ -75,8 +77,11 @@ func _prepare_terrain_geometry() -> void:
 	if terrain_geometry_key == terrain_identity and not terrain_geometry.is_empty(): return
 	var began := Time.get_ticks_usec()
 	terrain_geometry = TerrainGeometry.build(city.terrain) if city.terrain.family == "river_valley" else {"surfaces":[]}
-	water_material = Miniature.water_bands(city.terrain) if city.terrain.family == "river_valley" else []
-	ground_grain = Miniature.land_grain(city.terrain) if city.terrain.family == "river_valley" else []
+	water_material.assign(Miniature.water_bands(city.terrain) if city.terrain.family == "river_valley" else [])
+	ground_grain.assign(Miniature.land_grain(city.terrain) if city.terrain.family == "river_valley" else [])
+	land_material = []
+	for surface: Dictionary in terrain_geometry.get("continuous_surfaces",[]):
+		land_material.append({"polygon":surface["polygon"],"side":surface["side"],"colors":Miniature.earth_colors(city.terrain,surface["polygon"])})
 	terrain_geometry_key = terrain_identity.duplicate(true)
 	terrain_geometry_rebuilds += 1
 	terrain_prepare_ms = float(Time.get_ticks_usec()-began)/1000.0
@@ -155,7 +160,8 @@ func _draw_river_terrain() -> void:
 			left_colors[band] = Color(palette["left"][band])
 			right_colors[band] = Color(palette["right"][band])
 	terrain_surface_skips = 0
-	for surface in terrain_geometry["surfaces"]:
+	var surfaces: Array = land_material if _miniature_style() else terrain_geometry["surfaces"]
+	for surface in surfaces:
 		var colors: Array = left_colors if int(surface["side"]) == 0 else right_colors
 		var projected := _project_polygon(surface["polygon"])
 		# Height clipping can leave a tiny world-space triangle whose projected
@@ -165,15 +171,17 @@ func _draw_river_terrain() -> void:
 		if not _is_drawable_polygon(projected):
 			terrain_surface_skips += 1
 			continue
-		draw_colored_polygon(projected,colors[int(surface["band"])])
+		if _miniature_style(): draw_polygon(projected,surface["colors"])
+		else: draw_colored_polygon(projected,colors[int(surface["band"])])
 	if _miniature_style():
 		for mark: Dictionary in ground_grain:
 			var color := Color("f0e6c8",0.15) if bool(mark["light"]) else Color("687d5a",0.12)
 			draw_polyline(_project_polygon(mark["path"]),color,0.65,true)
 	else:
 		for ring in patches: draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.08))
-	for contour in terrain_geometry["contours"]:
-		draw_polyline(_project_polygon(contour["path"]),Color(0.38,0.49,0.35,0.07) if _miniature_style() else Color(0.45,0.58,0.46,0.18),(0.7 if _miniature_style() else 0.8)/camera_zoom,true)
+	if not _miniature_style():
+		for contour in terrain_geometry["contours"]:
+			draw_polyline(_project_polygon(contour["path"]),Color(0.45,0.58,0.46,0.18),0.8/camera_zoom,true)
 	for rim in terrain_geometry["rims"]: draw_colored_polygon(_project_polygon(rim),Color(palette.get("rim","c2ceb3")))
 	if _miniature_style():
 		for band: Dictionary in water_material: draw_colored_polygon(_project_polygon(band["polygon"],0.0),band["color"])
@@ -230,29 +238,22 @@ func _draw_roads() -> void:
 	if not _miniature_style():
 		for road in roads: draw_colored_polygon(_project_polygon(road["polygon"]),road["color"])
 		return
-	# A narrow contact edge sits below every real road surface. Fill all roads
-	# afterwards, so intersections cover one another's internal borders.
-	if _classical_streets():
-		for road in roads:
-			var edge := _project_polygon(road["polygon"]).duplicate()
-			edge.append(edge[0])
-			draw_polyline(edge,Color("8d8972",0.28),2.4,true)
-	for road in roads:
-		var color := Color("bda37d") if road["color"] == Color("d3bb93") else Color("c6b898")
-		if not _classical_streets(): color = road["color"]
-		draw_colored_polygon(_project_polygon(road["polygon"]),color)
-	if not _classical_streets():
-		# Once a later era is actually heard, retain stone only around surviving
-		# classical buildings. New-era streets use the existing era presentation;
-		# mixed frontages blend without inventing an era field on the road graph.
-		for paving: Dictionary in street_material["paving"]:
-			draw_colored_polygon(_project_polygon(paving["polygon"]),Color(Color("c6b898"),float(paving["strength"])))
+	for road in road_material:
+		if _classical_streets() and not bool(road["bridge"]):
+			draw_polygon(_project_polygon(road["polygon"]),road["colors"])
+		else:
+			draw_colored_polygon(_project_polygon(road["polygon"]),Color("bda37d") if _classical_streets() else road["color"])
+	# Empty roads remain dirt at their real width. Light stone and contact
+	# edges belong only to actually inhabited classical street frontages.
+	# Later eras keep their base road material and surviving era-one paving.
+	for paving: Dictionary in street_material["paving"]:
+		draw_colored_polygon(_project_polygon(paving["polygon"]),Color(Miniature.PAVING_COLOR,float(paving["strength"])))
 	for curb: PackedVector2Array in street_material["curbs"]:
 		var path := _project_polygon(curb)
-		draw_polyline(path,Color("8b826b",0.55),2.2,true)
-		draw_polyline(path,Color("dfd3b4",0.90),1.2,true)
+		draw_polyline(path,Color("8b826b",0.38),2.0,true)
+		draw_polyline(path,Color("ece0c1",0.85),1.0,true)
 	for joint: PackedVector2Array in street_material["joints"]:
-		draw_polyline(_project_polygon(joint),Color("8d8972",0.30),0.6,true)
+		draw_polyline(_project_polygon(joint),Color("968b70",0.24),0.6,true)
 
 func _draw_occupied_lots() -> void:
 	for lot in city.lots:
@@ -379,6 +380,14 @@ func _sync_urban_parts(terrain_changed: bool) -> void:
 	else:
 		street_material_key = []
 		street_material = {"curbs":[],"joints":[],"paving":[]}
+	# Retain vertex material beside the road draw signature; camera motion
+	# never resamples height or rebuilds stone geometry.
+	var road_part_key: Array = [art_style_id]
+	for road: Dictionary in roads: road_part_key.append([road["polygon"],road["color"]])
+	if terrain_changed or not urban_parts.has("roads") or urban_parts["roads"].get_meta("material_key",[]) != road_part_key:
+		road_material = []
+		for road: Dictionary in roads:
+			road_material.append({"polygon":road["polygon"],"color":road["color"],"bridge":road["color"] == Color("d3bb93"),"colors":Miniature.dirt_colors(city.terrain,road["polygon"]) if _miniature_style() else PackedColorArray()})
 	var contents := _urban_contents()
 	last_draw_ms = 0.0
 	var changed := false
@@ -394,6 +403,8 @@ func _sync_urban_parts(terrain_changed: bool) -> void:
 		part.art_style_id = art_style_id
 		part.palette = palette
 		part.roads = roads
+		part.road_material = road_material
+		if name == "roads": part.set_meta("material_key",road_part_key)
 		part.street_material = street_material
 		part.camera_zoom = camera_zoom
 		var content_key: Array = [terrain_identity,contents[name],art_style_id]

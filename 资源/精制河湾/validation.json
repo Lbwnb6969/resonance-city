@@ -355,24 +355,24 @@
     },
     {
       "id": "refined_tree_canopy",
-      "faces": 473,
+      "faces": 1352,
       "alpha_contour": "PASS",
       "anchor": "PASS",
       "hashes": "PASS",
       "visible_size_px": [
-        28.76,
-        36.767
+        31.317,
+        37.333
       ]
     },
     {
       "id": "refined_tree_pine",
-      "faces": 1115,
+      "faces": 2112,
       "alpha_contour": "PASS",
       "anchor": "PASS",
       "hashes": "PASS",
       "visible_size_px": [
-        28.989,
-        40.006
+        17.012,
+        43.991
       ]
     }
   ],

@@ -2,6 +2,7 @@ class_name ValleyScenery
 extends RefCounted
 const SpatialPlanning = preload("res://scripts/world/city_spatial_planning.gd")
 const PublicGeometry = preload("res://scripts/visual/public_space_visual_geometry.gd")
+const GroveLayout = preload("res://scripts/visual/classical_grove_layout.gd")
 ## Props share the building depth sort and the same audio frame as the river and city.
 var props: Dictionary = {}
 var sites: Dictionary = {}
@@ -13,6 +14,8 @@ var prop_projections: Dictionary = {}
 var transit_stop_keys: Dictionary = {}
 var active_stop_keys: Dictionary = {}
 var next_vehicle_ordinal := 4
+var grove_clearance_key: Array = []
+var grove_clearance: Dictionary = {}
 
 func rebuild(demo: Control) -> void:
 	for node in props.values(): node.queue_free()
@@ -23,25 +26,19 @@ func rebuild(demo: Control) -> void:
 	transit_stop_keys.clear()
 	active_stop_keys.clear()
 	site_key.clear()
+	grove_clearance_key.clear()
+	grove_clearance.clear()
 	sites.clear()
 	next_vehicle_ordinal = 4
 	for site in demo.shown_world.public_sites:
 		sites[site["id"]] = site
 	var city: ContinuousWorld = demo.shown_world
-	# Deterministic natural groves, independent of the city's growth RNG.
-	for i in range(110):
-		var x := 1.2+float((i*47+13)%301)/10.0
-		var y := -1.4+float((i*73+29)%327)/10.0
-		var p := Vector2(x,y)
-		if not city.terrain.land_at(p): continue
-		var clear := true
-		for lot in city.lots:
-			if p.distance_to(Vector2(lot["center"][0],lot["center"][1])) < 1.25: clear = false
-		for site in city.public_sites:
-			if SpatialPlanning.point_in_footprint(site,p): clear = false
-		var access := city.network.access(p)
-		if not access.is_empty() and float(access["gap"]) < 0.6: clear = false
-		if clear: _add(demo,"grove-%d" % i,p,"rock" if i%13 == 0 else "tree",i)
+	if city.terrain.family == "river_valley" and city.era == 1 and demo.art_direction.selected_id == "baseline":
+		for record: Dictionary in GroveLayout.build(city):
+			_add(demo,record["id"],record["position"],record["kind"],record["tone"])
+			props[record["id"]].set_meta("natural_scale",record["scale"])
+	else:
+		_rebuild_retained_groves(demo,city)
 	for road in city.roads:
 		if road["bridge"]: continue
 		var path: PackedVector2Array = road["path"]
@@ -56,6 +53,20 @@ func rebuild(demo: Control) -> void:
 	# authored travelers so the era transition does not create a visual burst.
 	for i in range(3): _add(demo,"car-%d" % i,Vector2.ZERO,"car",i+4,"",true)
 	for i in range(10): _add(demo,"walker-%d" % i,Vector2.ZERO,"walker",i)
+
+func _rebuild_retained_groves(demo: Control,city: ContinuousWorld) -> void:
+	# Retained distribution for candidate art and the other terrain/era entries.
+	for i in range(110):
+		var p := Vector2(1.2+float((i*47+13)%301)/10.0,-1.4+float((i*73+29)%327)/10.0)
+		if not city.terrain.land_at(p): continue
+		var clear := true
+		for lot in city.lots:
+			if p.distance_to(Vector2(lot["center"][0],lot["center"][1])) < 1.25: clear = false
+		for site in city.public_sites:
+			if SpatialPlanning.point_in_footprint(site,p): clear = false
+		var access := city.network.access(p)
+		if not access.is_empty() and float(access["gap"]) < 0.6: clear = false
+		if clear: _add(demo,"grove-%d" % i,p,"rock" if i%13 == 0 else "tree",i)
 
 func _add(demo: Control,key: String,p: Vector2,kind: String,tone: int,site: String = "",modern_only: bool = false) -> void:
 	var prop := ValleyProp.new()
@@ -239,6 +250,11 @@ func _index_traffic(traffic: Array,accesses: Dictionary) -> void:
 
 func sync(demo: Control) -> void:
 	var city: ContinuousWorld = demo.shown_world
+	var next_clearance: Array = demo._shown_city_key()+[city.road_index_identity]
+	if grove_clearance_key != next_clearance:
+		grove_clearance_key = next_clearance
+		for key in props:
+			if str(key).begins_with("grove-"): grove_clearance[key] = GroveLayout.clear(city,props[key].get_meta("world_position"))
 	_sync_vehicle_kind(city)
 	var next_site_key := [city,city.phrase_index]
 	if site_key != next_site_key:
@@ -281,6 +297,7 @@ func sync(demo: Control) -> void:
 		var p: Vector2 = prop.get_meta("world_position")
 		var site_id := str(prop.get_meta("site"))
 		prop.visible = true
+		if str(key).begins_with("grove-"): prop.visible = bool(grove_clearance[key])
 		if bool(prop.get_meta("modern_only",false)) and city.vehicle_kind() != "bus":
 			prop.visible = false
 			continue
@@ -330,7 +347,7 @@ func sync(demo: Control) -> void:
 			if not prop_projections.has(key) or prop_projections[key]["key"] != projection_key:
 				prop_projections[key] = {"key":projection_key,"position":WorldProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),city.terrain.height_at(p))}
 			prop.position = prop_projections[key]["position"]
-		prop.scale = Vector2.ONE*float(prop.get_meta("public_scale",1.0))
+		prop.scale = Vector2.ONE*float(prop.get_meta("public_scale",prop.get_meta("natural_scale",1.0)))
 		# Remove building warmth while retaining the world's full daylight tint.
 		prop.modulate = Color(scenery_red,1.0,1.0,prop.reveal)
 		prop.motion = seconds*TAU/4.0

@@ -2,14 +2,38 @@ extends RefCounted
 ## Material geometry for the miniature river town. All marks derive from the
 ## heard terrain and road graph; no simulation RNG or World data is changed.
 const COLORS := {
-	"left":["d6c9a8","c5c8a5","b6c1a0","a6b796"],
-	"right":["cfd0ad","c6cdab","b8c6a4","a8bb9c"],
+	"left":["d6c9a8","cfc9a5","c4c59f","b9c09a"],
+	"right":["d0cbaa","c9c8a5","c1c39f","b7bd99"],
 	"rim":"c7c4a3","water":"538f94","channel":"3c7180","shallow":"9abbaa",
 	"shore":"8b9b88","edge":"dfd8bc","road":"c6b898","road_edge":"ded2b3",
 	"road_joint":"8d8972","plot":"cabd9c","park":"97ae87","park_path":"d1c7a6",
 	"civic":"d1c3a1",
 }
 const WATER_DEPTH_STEPS := 32
+const PAVING_COLOR := Color("d7c9ac")
+const DIRT_COLOR := Color("baa88c")
+
+static func earth_color(terrain: RefCounted,p: Vector2) -> Color:
+	var side := "left" if p.x < terrain.river_x(p.y) else "right"
+	var height: float = terrain.height_at(p)
+	var rise := smoothstep(0.22,1.9,height)
+	var color := Color(COLORS[side][0]).lerp(Color(COLORS[side][3]),rise)
+	# A restrained directional lift reads the actual slope without drawing a
+	# second relief field or discrete contour rings over the small town.
+	var dx: float = terrain.height_at(p+Vector2(0.35,0))-terrain.height_at(p-Vector2(0.35,0))
+	var dy: float = terrain.height_at(p+Vector2(0,0.35))-terrain.height_at(p-Vector2(0,0.35))
+	var lift := clampf(-(dx+dy)*0.055,-0.018,0.018)
+	return Color(clampf(color.r+lift,0.0,1.0),clampf(color.g+lift,0.0,1.0),clampf(color.b+lift,0.0,1.0))
+
+static func earth_colors(terrain: RefCounted,polygon: PackedVector2Array) -> PackedColorArray:
+	var result := PackedColorArray()
+	for p in polygon: result.append(earth_color(terrain,p))
+	return result
+
+static func dirt_colors(terrain: RefCounted,polygon: PackedVector2Array) -> PackedColorArray:
+	var result := PackedColorArray()
+	for p in polygon: result.append(earth_color(terrain,p).lerp(DIRT_COLOR,0.23))
+	return result
 
 static func water_bands(terrain: RefCounted) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -45,7 +69,6 @@ static func street_geometry(city: RefCounted) -> Dictionary:
 		if bool(road.get("bridge",false)): continue
 		var path: PackedVector2Array = road["path"]
 		var width := road_width(city,road)
-		var accumulated := 0.0
 		for index in range(path.size()-1):
 			var a := path[index]
 			var b := path[index+1]
@@ -73,12 +96,19 @@ static func street_geometry(city: RefCounted) -> Dictionary:
 					var offset := normal*width*side
 					if not _inside_other_road(city,midpoint+offset,str(road["id"])):
 						result["curbs"].append(PackedVector2Array([start+offset,finish+offset]))
-				var ordinal := floori((accumulated+distance*(float(step)+0.5)/steps)/0.65)
-				var edge_a := -0.80 if ordinal%2 == 0 else -0.12
-				var edge_b := 0.12 if ordinal%2 == 0 else 0.80
-				if not _inside_other_road(city,midpoint,str(road["id"])):
-					result["joints"].append(PackedVector2Array([midpoint+normal*width*edge_a,midpoint+normal*width*edge_b]))
-			accumulated += distance
+				# Three slender courses with alternating cross joints are readable
+				# stonework at close range, rather than marks across an empty grid.
+				for row in range(3):
+					var edge_a := lerpf(-0.90,0.90,float(row)/3.0)
+					var edge_b := lerpf(-0.90,0.90,float(row+1)/3.0)
+					for seam: float in [0.18,0.68] if row%2 == 0 else [0.43,0.93]:
+						var at := start.lerp(finish,seam)
+						if not _inside_other_road(city,at,str(road["id"])):
+							result["joints"].append(PackedVector2Array([at+normal*width*edge_a,at+normal*width*edge_b]))
+				for divider: float in [-0.30,0.30]:
+					var offset := normal*width*divider
+					if not _inside_other_road(city,midpoint+offset,str(road["id"])):
+						result["joints"].append(PackedVector2Array([start+offset,finish+offset]))
 	return result
 
 static func road_width(city: RefCounted,road: Dictionary) -> float:

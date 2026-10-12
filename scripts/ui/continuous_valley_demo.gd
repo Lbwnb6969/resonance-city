@@ -46,6 +46,7 @@ var street_eaves_layer: Node2D
 var daylight_state: Dictionary = {}
 var daylight_manual_phase := -1.0
 var scenery := ValleyScenery.new()
+var frontage_details: Node2D
 var core_slice_hud: Node2D
 var expression := "bright"
 var starter := true
@@ -261,6 +262,10 @@ func _ready() -> void:
 	street_eaves_layer = StreetEaves.new()
 	street_eaves_layer.name = "StreetEaves"
 	buildings_layer.add_child(street_eaves_layer)
+	frontage_details = preload("res://scripts/visual/classical_frontage_details.gd").new()
+	frontage_details.name = "ClassicalFrontageDetails"
+	buildings_layer.add_child(frontage_details)
+	frontage_details.setup(self)
 	community_label_layer = preload("res://scripts/visual/community_label_layer.gd").new()
 	community_label_layer.name = "CommunityNames"
 	community_label_layer.z_index = 50
@@ -299,8 +304,12 @@ func _ready() -> void:
 	add_child(public_space_activity_layer)
 	tooltip = Label.new()
 	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tooltip.add_theme_font_size_override("font_size",15)
-	tooltip.add_theme_color_override("font_color",Color("465b58"))
+	tooltip.add_theme_font_size_override("font_size",13)
+	tooltip.add_theme_color_override("font_color",RefinedUi.INK)
+	tooltip.add_theme_stylebox_override("normal",RefinedUi.panel(12))
+	tooltip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tooltip.custom_minimum_size.x = 340.0
+	tooltip.size.x = 340.0
 	tooltip.z_index = 100
 	add_child(tooltip)
 	caption = Label.new()
@@ -428,6 +437,7 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 		pan = pan_target
 	_sync_buildings()
 	scenery.sync(self)
+	frontage_details.sync(self)
 	last_saved_event_count = model.world.events.size()
 	last_presented_event_count = model.world.events.size()
 	last_checkpoint_phrase = model.world.phrase_index
@@ -754,7 +764,7 @@ func _frame_first_composition() -> void:
 			bounds = Rect2(projected,Vector2.ZERO)
 			first = false
 		else: bounds = bounds.expand(projected)
-	zoom_target = clampf(minf((size.x-260.0)/maxf(1.0,bounds.size.x),(size.y-260.0)/maxf(1.0,bounds.size.y)),0.65,1.20)
+	zoom_target = clampf(minf((size.x-260.0)/maxf(1.0,bounds.size.x),(size.y-260.0)/maxf(1.0,bounds.size.y)),0.65,1.65)
 	pan_target = -bounds.get_center()*zoom_target+Vector2(0,-12)
 
 func _start_expanded_town() -> void:
@@ -3077,6 +3087,7 @@ func _process(delta: float) -> void:
 	public_space_activity_layer.sync(self)
 	frame_started = Time.get_ticks_usec()
 	scenery.sync(self)
+	frontage_details.sync(self)
 	_profile_frame("traffic_ms",frame_started)
 	frame_started = Time.get_ticks_usec()
 	if shown_world.phrase_index != last_checkpoint_phrase:
@@ -3244,7 +3255,8 @@ func _process(delta: float) -> void:
 		status_line = hover_card_status if status_line.is_empty() else status_line+" · "+hover_card_status
 	caption.text = status_line
 	caption.visible = not black and not status_line.is_empty() and (not first_composition_mode or not (menu.visible or planning_guide.opened))
-	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
+	tooltip.size.y = tooltip.get_combined_minimum_size().y
+	tooltip.position = Vector2(clampf(pointer.x+18,12,maxf(12,size.x-tooltip.size.x-12)),clampf(pointer.y+20,118,maxf(118,size.y-tooltip.size.y-110)))
 	if menu.visible:
 		_update_selected_opportunity()
 		menu.size = menu.get_combined_minimum_size()
@@ -3270,10 +3282,11 @@ func _sync_daylight() -> void:
 	var warmth := 0.03*sin(TAU*frame/float(clock.renderer.transport.sample_rate)/4.0)
 	buildings_layer.modulate = tint*Color(0.96+warmth,1.0,1.0)
 	buildings_layer.set_meta("world_tint",tint)
+	frontage_details.modulate = Color(tint.r/buildings_layer.modulate.r,1.0,1.0)
 	backdrop.color = Color.BLACK if black else daylight_state["backdrop"]
 	shadow_layer.modulate.a = float(daylight_state["shadow_strength"])
 	caption.add_theme_color_override("font_color",RefinedUi.PAPER)
-	tooltip.add_theme_color_override("font_color",daylight_state["ui_ink"])
+	tooltip.add_theme_color_override("font_color",RefinedUi.INK)
 
 func set_art_direction(id: String) -> void:
 	if not art_study_enabled or id not in ArtDirection.STYLE_IDS or id == art_direction.selected_id: return

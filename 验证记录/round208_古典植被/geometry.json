@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "trees": [
+    {
+      "id": "refined_tree_canopy",
+      "species": "olive",
+      "faces": 1352,
+      "nearest_surface_samples": 12263,
+      "bsp_depth_agreement": 0.949034,
+      "rgb_tolerance": 24,
+      "silhouette_change_fraction": 0.247041,
+      "runtime_size": [
+        31.317,
+        37.333
+      ]
+    },
+    {
+      "id": "refined_tree_pine",
+      "species": "mediterranean_cypress",
+      "faces": 2112,
+      "nearest_surface_samples": 7090,
+      "bsp_depth_agreement": 0.943018,
+      "rgb_tolerance": 24,
+      "silhouette_change_fraction": 0.187152,
+      "runtime_size": [
+        17.012,
+        43.991
+      ]
+    }
+  ],
+  "scope": "Independent triangle nearest-depth check against BSP PNG; edge antialias pixels excluded. No human aesthetic approval."
+}

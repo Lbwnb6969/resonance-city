@@ -5,6 +5,7 @@ then baked as transparent PNG plus editable SVG and physical cast/contact masks.
 No downloaded assets, source overwrites, gameplay RNG or Blender runtime required.
 """
 from pathlib import Path
+import argparse
 import hashlib
 import itertools
 import json
@@ -329,32 +330,89 @@ def civic(palette):
     return out
 
 
+def branch(out,nodes,color="#877B64",sides=10):
+    """A continuous bent/tapering woody limb, with real forks and bark facets."""
+    rings=[]
+    for band,(x,y,z,radius) in enumerate(nodes):
+        rings.append([(x+radius*(1+.08*math.sin(i*2.7+band))*math.cos(i*math.tau/sides),y,
+                       z+radius*(1+.06*math.cos(i*2.1-band))*math.sin(i*math.tau/sides)) for i in range(sides)])
+    b.face(out,list(reversed(rings[0])),color)
+    for band,(lower,upper) in enumerate(zip(rings,rings[1:])):
+        for i in range(sides):
+            tint=color if i%4 else "#A2947B"
+            b.face(out,[lower[i],lower[(i+1)%sides],upper[(i+1)%sides],upper[i]],tint)
+    b.face(out,rings[-1],color)
+
+
+def leaf_mass(out,center,radii,color,phase,leaves=True):
+    """An asymmetric lobed solid crown; uneven sprays break the outer contour."""
+    cx,cy,cz=center;rx,ry,rz=radii
+    sides,bands=14,7;rings=[]
+    for band in range(bands+1):
+        latitude=-math.pi/2+band*math.pi/bands
+        radial=max(.006,math.cos(latitude))
+        rings.append([(cx+rx*radial*(1+.13*math.sin(i*2.3+phase)+.05*math.cos(band*3+i))*math.cos(i*math.tau/sides),
+                       cy+ry*math.sin(latitude)+ry*.05*math.sin(i*2.1+phase)*radial,
+                       cz+rz*radial*(1+.11*math.cos(i*2.7+phase))*math.sin(i*math.tau/sides)) for i in range(sides)])
+    b.face(out,list(reversed(rings[0])),color)
+    for band,(lower,upper) in enumerate(zip(rings,rings[1:])):
+        for i in range(sides):
+            tint=color
+            if (i+band*3+round(phase))%9==0: tint="#A4AD91" if cy>1.0 else "#899780"
+            b.face(out,[lower[i],lower[(i+1)%sides],upper[(i+1)%sides],upper[i]],tint)
+    b.face(out,rings[-1],color)
+    if leaves:
+        # Lancet olive leaves are slender folded solids, not painted speckles.
+        for spray in range(13):
+            angle=spray*2.399+phase
+            elevation=.15+.47*(.5+.5*math.sin(spray*1.73+phase))
+            at=np.array([cx+rx*.82*math.cos(angle),cy+ry*elevation,cz+rz*.82*math.sin(angle)])
+            along=np.array([math.cos(angle),.28,math.sin(angle)])*.061
+            across=np.array([-math.sin(angle),.05,math.cos(angle)])*.013
+            ridge=at+np.array([0,.014,0])
+            b.face(out,[at-along,at+across,ridge,at+along],"#A9B298")
+            b.face(out,[at-along,at-across,ridge,at+along],"#7B8B72")
+
+
 def tree(kind):
     out=[]
-    ring_volume(out,[(0,.039,.039),(.79,.025,.025)],"#806B4B",9,.18)
-    for cx,cz in [(-.11,.04),(.10,-.04)]:
-        ring_volume(out,[(.44,.023,.022),(.80,.015,.015)],"#8D7957",7,.2)
-        for i in range(len(out)-9,len(out)):
-            dep,vertices,tint=out[i]
-            out[i]=(dep,[(x+cx,y,z+cz) for x,y,z in vertices],tint)
     if kind=="canopy":
-        clusters=[(-.19,.72,-.03,.27,.24,"#355E4C"),(.21,.74,.06,.27,.25,"#4D7960"),
-                  (-.02,.89,-.15,.30,.27,"#4D7960"),(-.10,1.02,.12,.27,.24,"#6D9270"),
-                  (.15,1.06,-.02,.21,.22,"#6D9270"),(0,1.18,.03,.18,.16,"#8DA87C")]
-        for x,y,z,r,h,tint in clusters: ellipsoid(out,(x,y,z),(r,h,r*.92),tint,12,6)
+        # The olive is low, broad and gnarled; five limbs carry unequal crowns,
+        # while two deliberate crown windows reveal the branching structure.
+        branch(out,[(0,0,0,.065),(-.02,.18,.018,.056),(.025,.40,-.010,.047),
+                    (-.020,.61,-.026,.034),(-.072,.81,-.020,.022)],sides=12)
+        limbs=[[(.004,.35,.006,.042),(-.14,.59,.08,.032),(-.29,.83,.085,.020),(-.43,1.035,.070,.008)],
+               [(.025,.40,-.01,.037),(.18,.63,.12,.029),(.32,.88,.16,.017),(.46,1.09,.18,.007)],
+               [(-.015,.57,-.02,.028),(-.12,.76,-.19,.023),(-.23,.99,-.26,.013),(-.27,1.18,-.25,.006)],
+               [(-.005,.59,-.02,.027),(.12,.79,-.15,.021),(.23,1.04,-.25,.013),(.18,1.24,-.28,.006)],
+               [(.13,.61,.10,.024),(.12,.85,.28,.016),(.035,1.05,.35,.009)]]
+        for limb in limbs: branch(out,limb,sides=9)
+        branch(out,[(-.17,.65,.08,.016),(-.34,.81,-.04,.009),(-.40,.97,-.14,.004)],sides=7)
+        branch(out,[(.25,.77,.14,.014),(.38,.88,.02,.010),(.47,1.015,-.04,.004)],sides=7)
+        clusters=[(-.43,1.11,.07,.25,.18,.21,"#748367"),(.46,1.17,.18,.24,.20,.20,"#839173"),
+                  (-.29,1.25,-.26,.23,.22,.19,"#75896E"),(.18,1.32,-.29,.22,.21,.19,"#8A987D"),
+                  (.025,1.14,.37,.22,.15,.19,"#687B61"),(-.12,1.20,.15,.18,.16,.17,"#879477"),
+                  (-.47,1.02,-.17,.16,.13,.15,"#748168"),(.48,1.09,-.05,.16,.15,.16,"#98A187"),
+                  (-.11,1.41,-.15,.15,.14,.13,"#A0AB90")]
+        for index,(x,y,z,rx,ry,rz,tint) in enumerate(clusters): leaf_mass(out,(x,y,z),(rx,ry,rz),tint,index*.73)
     else:
-        for level,(y,r,h,tint) in enumerate([(.43,.35,.20,"#355E4C"),(.65,.32,.20,"#4D7960"),
-                            (.87,.27,.19,"#4D7960"),(1.07,.21,.17,"#6D9270"),
-                            (1.25,.13,.15,"#6D9270")]):
-            ring_volume(out,[(y,r*.87,r*.90),(y+.045,r,r),(y+h,r*.08,r*.08)],tint,14,.12)
-            # Small, alternating sprays interrupt the regular cones: their
-            # scalloped edge and lit upper lobes read as dense needles.
-            for spray in range(7):
-                angle=spray*math.tau/7+level*.31
-                x,z=math.cos(angle)*r*.66,math.sin(angle)*r*.66
-                color=tint if spray%3 else ["#436D55","#5D8563","#789871"][min(2,level//2)]
-                ellipsoid(out,(x,y+.060,z),(r*.38,h*.39,r*.34),color,8,3)
-        ellipsoid(out,(0,1.40,0),(.060,.11,.057),"#789871",8,3)
+        # Mediterranean cypress: one narrow rising axis, oblique branches and
+        # unequal vertical foliage fingers. No repeated horizontal cone tiers.
+        branch(out,[(0,0,0,.047),(.006,.28,.003,.040),(-.015,.63,-.009,.029),
+                    (.016,1.02,-.006,.023),(.008,1.40,.014,.015),(-.018,1.92,.0,.004)],"#857A62",10)
+        crowns=[(-.08,.59,.015,.14,.28,.11,"#5C7159"),(.08,.83,-.035,.13,.31,.11,"#667D61"),
+                (-.06,1.07,-.09,.125,.32,.10,"#74876C"),(.085,1.20,.075,.115,.31,.10,"#6B8165"),
+                (-.065,1.45,.04,.105,.33,.087,"#7D9073"),(.035,1.62,-.065,.085,.29,.070,"#8A9A7D"),
+                (-.020,1.87,.00,.057,.22,.051,"#96A58A"),(.07,.64,.10,.10,.23,.089,"#536D55"),
+                (-.12,.87,.03,.074,.20,.07,"#6C8066"),(.115,1.04,.02,.068,.21,.063,"#7D8D73")]
+        for index,(x,y,z,rx,ry,rz,tint) in enumerate(crowns):
+            branch(out,[(0,max(.20,y-.27),0,.014),(x*.5,y-.11,z*.5,.009),(x,y+.08,z,.003)],"#91866D",7)
+            leaf_mass(out,(x,y,z),(rx,ry,rz),tint,index*.87,False)
+        # Smaller long sprays supply an irregular needle edge and inner slits.
+        for index in range(9):
+            y=.68+index*.125;angle=index*2.1
+            x,z=.10*math.cos(angle),.07*math.sin(angle)
+            leaf_mass(out,(x,y,z),(.045,.18+.04*math.sin(index),.040),"#819077",index,False)
     return out
 
 
@@ -400,7 +458,7 @@ def rotated_geometry(geometry,orientation):
 def bake(identifier,label,role,geometry,expression="",orientation=0,canonical_id=""):
     plot_span=.8
     if role=="tree":
-        geometry,plot_span=calibrate(geometry,27,38 if "pine" in identifier else 35)
+        geometry,plot_span=calibrate(geometry,15 if "pine" in identifier else 30,42 if "pine" in identifier else 36)
     if role=="civic": plot_span=1.0
     points3=np.asarray([p for _,vertices,_ in geometry for p in vertices])
     points2=np.asarray([b.project(p) for p in points3])
@@ -440,6 +498,12 @@ def bake(identifier,label,role,geometry,expression="",orientation=0,canonical_id
         entry.update({"canonical_id":canonical_id or identifier,"orientation":orientation,
                       "rotation_y_degrees":-orientation*90,
                       "entrance_normal":[round(math.sin(orientation*math.pi/2)),round(-math.cos(orientation*math.pi/2))]})
+    else:
+        olive="canopy" in identifier
+        entry.update({"tree_species":"olive" if olive else "mediterranean_cypress",
+                      "morphology":"gnarled branching limbs, unequal grey-green lobed leaf masses and crown windows" if olive else "tapered rising trunk, oblique forks and uneven upright foliage fingers",
+                      "historical_language":"First-era Mediterranean olive / cypress; project-authored botanical form",
+                      "tree_revision":208,"stable_tone":0 if olive else 1})
     masks(entry,[(np.asarray(vertices),face_normal(vertices)) for _,vertices,_ in geometry],OUTPUT,OUTPUT)
     for path in [png,ROOT/entry["shadow_texture"],ROOT/entry["contact_texture"]]: write_texture_import(path)
     entry["category"]="residential" if role in ["terrace","gabled","courtyard"] else role
@@ -487,7 +551,13 @@ def preview(entries):
 
 
 def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--trees-only",action="store_true",help="Bake only two trees; preserve every building entry and file byte for byte")
+    args=parser.parse_args()
     for folder in ["SVG","整图","阴影"]: (OUTPUT/folder).mkdir(parents=True,exist_ok=True)
+    if args.trees_only:
+        rebuild_trees()
+        return
     makers=[("refined_house_terrace","石檐露台住宅","terrace",terrace(ROOFS["tile"]),""),
             ("refined_house_gabled","陶瓦坡屋住宅","gabled",gabled(ROOFS["tile"]),""),
             ("refined_house_courtyard","开庭连翼住宅","courtyard",courtyard(ROOFS["tile"]),""),
@@ -496,8 +566,8 @@ def main():
             ("refined_deep_terrace","深流石蓝露台","terrace",terrace(ROOFS["deep"]),"deep"),
             ("refined_weave_shop","织机陶瓦商铺","commercial",shop(ROOFS["tile"]),"weave"),
             ("refined_warm_courtyard","暖庭绿灰庭院","courtyard",courtyard(ROOFS["warm"]),"warm"),
-            ("refined_tree_canopy","深松团簇阔叶树","tree",tree("canopy"),""),
-            ("refined_tree_pine","层枝河岸松","tree",tree("pine"),"")]
+            ("refined_tree_canopy","分叉灰绿橄榄树","tree",tree("canopy"),""),
+            ("refined_tree_pine","细长地中海柏","tree",tree("pine"),"")]
     entries=[];orientations={}
     for identifier,label,role,geometry,expression in makers:
         indices=range(4) if role != "tree" else [0]
@@ -522,6 +592,100 @@ def main():
     validate(entries)
     preview(entries)
     print("REFINED_VALLEY_ART",len(entries),"assets / alpha, origin and hashes PASS")
+
+
+def rebuild_trees():
+    manifest=json.loads((OUTPUT/"manifest.json").read_text(encoding="utf-8"))
+    buildings=[entry for entry in manifest["entries"] if entry["role"]!="tree"]
+    before={}
+    for entry in buildings:
+        for key in ["texture","editable_source","shadow_texture","contact_texture"]:
+            path=ROOT/entry[key]
+            for file in [path,path.with_suffix(path.suffix+".import")]:
+                if file.exists(): before[file.relative_to(ROOT).as_posix()]=hashlib.sha256(file.read_bytes()).hexdigest()
+    replacements={}
+    for identifier,label,kind in [("refined_tree_canopy","分叉灰绿橄榄树","canopy"),("refined_tree_pine","细长地中海柏","pine")]:
+        geometry=tree(kind)
+        print("BAKE_TREE",identifier,len(geometry),flush=True)
+        replacements[identifier]=bake(identifier,label,"tree",geometry)
+    manifest["entries"]=[replacements.get(entry["id"],entry) for entry in manifest["entries"]]
+    manifest["vegetation_revision"]=208
+    (OUTPUT/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    after={path:hashlib.sha256((ROOT/path).read_bytes()).hexdigest() for path in before}
+    assert before==after and buildings==[entry for entry in manifest["entries"] if entry["role"]!="tree"]
+    validate(manifest["entries"])
+    preview(manifest["entries"])
+    evidence=ROOT/"验证记录/round208_古典植被"
+    evidence.mkdir(parents=True,exist_ok=True)
+    (evidence/"building_unchanged.json").write_text(json.dumps({"passed":True,"building_entries":len(buildings),"building_files":len(before),"hashes":after,"command":"python tools/build_refined_valley_art.py --trees-only"},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    tree_evidence(manifest)
+    print("TREES_ONLY 2 bakes /",len(buildings),"building entries and",len(before),"building files unchanged / PASS")
+
+
+def tree_evidence(manifest):
+    """Check BSP visibility against a separate triangle depth raster, and show
+    old/new silhouettes at their real runtime scale without rebuilding houses.
+    """
+    archive=ROOT/"废弃/美术/round208_树形替换前"
+    evidence=ROOT/"验证记录/round208_古典植被"
+    evidence.mkdir(parents=True,exist_ok=True)
+    old=json.loads((archive/"manifest.json").read_text(encoding="utf-8"))
+    old_entries={entry["id"]:entry for entry in old["entries"] if entry["role"]=="tree"}
+    entries={entry["id"]:entry for entry in manifest["entries"] if entry["role"]=="tree"}
+    sheet=Image.new("RGB",(1200,680),"#DED5BA");draw=ImageDraw.Draw(sheet)
+    draw.text((24,18),"CLASSICAL TREES / same runtime ground scale x7 / old and new",fill="#415E57")
+    results=[]
+    for species,identifier in [("canopy","refined_tree_canopy"),("pine","refined_tree_pine")]:
+        entry=entries[identifier]
+        geometry,_=calibrate(tree(species),15 if species=="pine" else 30,42 if species=="pine" else 36)
+        size=np.array([entry["image_bounds"]["width"],entry["image_bounds"]["height"]])
+        ratio=192/max(size);wh=np.maximum(1,np.rint(size*ratio).astype(int))
+        depth=np.full((wh[1],wh[0]),-np.inf);reference=np.zeros((wh[1],wh[0],3))
+        for _,vertices,color in geometry:
+            projected=np.asarray([b.project(v) for v in vertices])*entry["pixels_per_world"]*ratio+np.asarray(entry["origin"])*ratio
+            distance=np.asarray([b.depth(v) for v in vertices]);rgb=np.array(list(bytes.fromhex(shade_hex(color,vertices)[1:])))
+            for index in range(1,len(vertices)-1):
+                tri=projected[[0,index,index+1]];d=distance[[0,index,index+1]]
+                lo=np.maximum(0,np.ceil(tri.min(0)).astype(int));hi=np.minimum(wh-1,np.floor(tri.max(0)).astype(int))
+                if np.any(hi<lo): continue
+                xx,yy=np.meshgrid(np.arange(lo[0],hi[0]+1)+.5,np.arange(lo[1],hi[1]+1)+.5)
+                (ax,ay),(bx,by),(cx,cy)=tri;den=(by-cy)*(ax-cx)+(cx-bx)*(ay-cy)
+                if abs(den)<1e-8: continue
+                a=((by-cy)*(xx-cx)+(cx-bx)*(yy-cy))/den
+                c=((cy-ay)*(xx-cx)+(ax-cx)*(yy-cy))/den;f=1-a-c
+                dd=a*d[0]+c*d[1]+f*d[2]
+                region=depth[lo[1]:hi[1]+1,lo[0]:hi[0]+1]
+                mask=(a>.01)&(c>.01)&(f>.01)&(dd>=region-1e-6)
+                region[mask]=dd[mask];reference[lo[1]:hi[1]+1,lo[0]:hi[0]+1][mask]=rgb
+        actual=np.asarray(Image.open(ROOT/entry["texture"]).resize(tuple(wh),Image.Resampling.LANCZOS)).astype(float)
+        visible=np.isfinite(depth)&(actual[:,:,3]>250)
+        agreement=float((np.abs(actual[:,:,:3]-reference).max(-1)[visible]<24).mean())
+        assert agreement>.93
+        old_alpha=np.asarray(Image.open(archive/old_entries[identifier]["texture"]).resize((128,128)).getchannel("A"))>127
+        new_alpha=np.asarray(Image.open(ROOT/entry["texture"]).resize((128,128)).getchannel("A"))>127
+        difference=float(np.logical_xor(old_alpha,new_alpha).sum()/np.logical_or(old_alpha,new_alpha).sum())
+        assert difference>.15
+        results.append({"id":identifier,"species":entry["tree_species"],"faces":len(geometry),"nearest_surface_samples":int(visible.sum()),"bsp_depth_agreement":round(agreement,6),"rgb_tolerance":24,"silhouette_change_fraction":round(difference,6),"runtime_size":entry["runtime_reference"]["visible_size_px"]})
+        column=0 if species=="canopy" else 2
+        for version,item,base in [(0,old_entries[identifier],archive),(1,entry,ROOT)]:
+            x=(column+version)*300
+            draw.rounded_rectangle((x+12,50,x+288,654),12,fill="#F3EAD3")
+            title=("OLD / ROUND CANOPY" if species=="canopy" else "OLD / LAYERED PINE") if version==0 else ("NEW / OLIVE" if species=="canopy" else "NEW / CYPRESS")
+            draw.text((x+26,71),title,fill="#415E57")
+            image=Image.open(base/item["texture"]).convert("RGBA")
+            factor=28*math.sqrt(2)*item["plot_span"]/max(item["model_bounds"]["size"][0],item["model_bounds"]["size"][2])/item["pixels_per_world"]*7
+            rendered=image.resize((round(image.width*factor),round(image.height*factor)),Image.Resampling.LANCZOS)
+            ground=(x+150,430)
+            at=(round(ground[0]-item["origin"][0]*factor),round(ground[1]-item["origin"][1]*factor))
+            sheet.paste(rendered,at,rendered)
+            draw.line((x+24,430,x+276,430),fill="#BCAF8F",width=1)
+            draw.text((x+26,476),f'Geometry: {item["geometry_faces"]} faces',fill="#596A57")
+            draw.text((x+26,498),f'City: {item["runtime_reference"]["visible_size_px"]} px',fill="#596A57")
+            # Actual city-size cutout is also shown, not only an enlarged tree.
+            small=image.resize((max(1,round(image.width*factor/7)),max(1,round(image.height*factor/7))),Image.Resampling.LANCZOS)
+            sheet.paste(small,(x+150-small.width//2,540),small)
+    sheet.save(evidence/"树形旧新对照.png")
+    (evidence/"geometry.json").write_text(json.dumps({"passed":True,"trees":results,"scope":"Independent triangle nearest-depth check against BSP PNG; edge antialias pixels excluded. No human aesthetic approval."},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 
 
 if __name__=="__main__": main()

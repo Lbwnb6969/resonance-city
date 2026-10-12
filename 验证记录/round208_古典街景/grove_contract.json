@@ -1,0 +1,430 @@
+{
+	"checks": {
+		"actual_heard_houses_cannot_keep_a_decorative_tree_at_their_foot": true,
+		"groves_cannot_extend_into_real_water": true,
+		"most_trees_form_local_groves_instead_of_even_grid_spacing": true,
+		"natural_grove_queries_preserve_world_rng_occupancy_sound_and_archive_state": true,
+		"real_banks_supply_visible_natural_groves": true,
+		"same_terrain_produces_stable_cluster_positions_and_scales": true,
+		"tree_feet_clear_real_future_parcels_public_spaces_and_road_access": true
+	},
+	"clustered": 57,
+	"count": 59,
+	"failures": [],
+	"passed": true,
+	"records": [
+		{
+			"id": "grove-0",
+			"kind": "rock",
+			"position": "(9.04113, 3.821688)",
+			"scale": 0.82,
+			"tone": 0
+		},
+		{
+			"id": "grove-1",
+			"kind": "tree",
+			"position": "(9.838874, 4.387217)",
+			"scale": 0.985,
+			"tone": 1
+		},
+		{
+			"id": "grove-2",
+			"kind": "tree",
+			"position": "(8.08913, 4.247087)",
+			"scale": 0.875,
+			"tone": 2
+		},
+		{
+			"id": "grove-3",
+			"kind": "tree",
+			"position": "(9.901557, 3.288479)",
+			"scale": 1.04,
+			"tone": 3
+		},
+		{
+			"id": "grove-4",
+			"kind": "tree",
+			"position": "(9.323941, 5.185201)",
+			"scale": 0.93,
+			"tone": 4
+		},
+		{
+			"id": "grove-5",
+			"kind": "tree",
+			"position": "(7.893663, 3.274493)",
+			"scale": 0.82,
+			"tone": 5
+		},
+		{
+			"id": "grove-6",
+			"kind": "tree",
+			"position": "(7.759973, 5.096685)",
+			"scale": 0.875,
+			"tone": 7
+		},
+		{
+			"id": "grove-7",
+			"kind": "tree",
+			"position": "(9.259254, 2.5313)",
+			"scale": 1.04,
+			"tone": 8
+		},
+		{
+			"id": "grove-8",
+			"kind": "tree",
+			"position": "(9.690346, 16.50396)",
+			"scale": 0.985,
+			"tone": 5
+		},
+		{
+			"id": "grove-9",
+			"kind": "tree",
+			"position": "(6.950486, 15.22848)",
+			"scale": 0.82,
+			"tone": 9
+		},
+		{
+			"id": "grove-10",
+			"kind": "tree",
+			"position": "(10.57606, 15.90055)",
+			"scale": 0.985,
+			"tone": 10
+		},
+		{
+			"id": "grove-11",
+			"kind": "tree",
+			"position": "(6.840779, 22.14258)",
+			"scale": 0.875,
+			"tone": 3
+		},
+		{
+			"id": "grove-12",
+			"kind": "tree",
+			"position": "(5.787147, 22.37354)",
+			"scale": 1.04,
+			"tone": 4
+		},
+		{
+			"id": "grove-13",
+			"kind": "tree",
+			"position": "(6.831779, 21.31149)",
+			"scale": 0.93,
+			"tone": 5
+		},
+		{
+			"id": "grove-14",
+			"kind": "tree",
+			"position": "(7.020089, 22.96881)",
+			"scale": 0.82,
+			"tone": 6
+		},
+		{
+			"id": "grove-15",
+			"kind": "tree",
+			"position": "(5.128672, 21.63731)",
+			"scale": 0.985,
+			"tone": 7
+		},
+		{
+			"id": "grove-16",
+			"kind": "tree",
+			"position": "(8.049865, 21.67595)",
+			"scale": 0.875,
+			"tone": 8
+		},
+		{
+			"id": "grove-17",
+			"kind": "tree",
+			"position": "(5.633141, 23.26699)",
+			"scale": 1.04,
+			"tone": 9
+		},
+		{
+			"id": "grove-18",
+			"kind": "tree",
+			"position": "(6.020113, 20.66947)",
+			"scale": 0.93,
+			"tone": 10
+		},
+		{
+			"id": "grove-19",
+			"kind": "tree",
+			"position": "(8.215826, 22.93524)",
+			"scale": 0.82,
+			"tone": 11
+		},
+		{
+			"id": "grove-20",
+			"kind": "rock",
+			"position": "(6.790631, 28.29706)",
+			"scale": 0.985,
+			"tone": 4
+		},
+		{
+			"id": "grove-21",
+			"kind": "tree",
+			"position": "(5.786384, 27.96464)",
+			"scale": 0.875,
+			"tone": 5
+		},
+		{
+			"id": "grove-22",
+			"kind": "tree",
+			"position": "(7.497621, 27.65706)",
+			"scale": 1.04,
+			"tone": 6
+		},
+		{
+			"id": "grove-23",
+			"kind": "tree",
+			"position": "(6.218075, 29.01564)",
+			"scale": 0.93,
+			"tone": 7
+		},
+		{
+			"id": "grove-24",
+			"kind": "tree",
+			"position": "(5.915145, 27.08339)",
+			"scale": 0.82,
+			"tone": 8
+		},
+		{
+			"id": "grove-25",
+			"kind": "tree",
+			"position": "(8.116204, 28.52435)",
+			"scale": 0.985,
+			"tone": 9
+		},
+		{
+			"id": "grove-26",
+			"kind": "tree",
+			"position": "(4.901155, 28.57358)",
+			"scale": 0.875,
+			"tone": 10
+		},
+		{
+			"id": "grove-27",
+			"kind": "tree",
+			"position": "(7.428287, 26.77385)",
+			"scale": 1.04,
+			"tone": 11
+		},
+		{
+			"id": "grove-28",
+			"kind": "tree",
+			"position": "(7.161462, 29.5677)",
+			"scale": 0.93,
+			"tone": 12
+		},
+		{
+			"id": "grove-29",
+			"kind": "rock",
+			"position": "(23.51905, 3.821688)",
+			"scale": 0.82,
+			"tone": 0
+		},
+		{
+			"id": "grove-30",
+			"kind": "tree",
+			"position": "(24.31679, 4.387217)",
+			"scale": 0.985,
+			"tone": 1
+		},
+		{
+			"id": "grove-31",
+			"kind": "tree",
+			"position": "(22.56705, 4.247087)",
+			"scale": 0.875,
+			"tone": 2
+		},
+		{
+			"id": "grove-32",
+			"kind": "tree",
+			"position": "(24.37948, 3.288479)",
+			"scale": 1.04,
+			"tone": 3
+		},
+		{
+			"id": "grove-33",
+			"kind": "tree",
+			"position": "(23.80186, 5.185201)",
+			"scale": 0.93,
+			"tone": 4
+		},
+		{
+			"id": "grove-34",
+			"kind": "tree",
+			"position": "(22.37158, 3.274493)",
+			"scale": 0.82,
+			"tone": 5
+		},
+		{
+			"id": "grove-35",
+			"kind": "tree",
+			"position": "(25.42286, 4.035865)",
+			"scale": 0.985,
+			"tone": 6
+		},
+		{
+			"id": "grove-36",
+			"kind": "tree",
+			"position": "(23.73717, 2.5313)",
+			"scale": 1.04,
+			"tone": 8
+		},
+		{
+			"id": "grove-37",
+			"kind": "tree",
+			"position": "(22.99813, 9.697202)",
+			"scale": 0.985,
+			"tone": 3
+		},
+		{
+			"id": "grove-38",
+			"kind": "tree",
+			"position": "(23.13677, 11.01133)",
+			"scale": 1.04,
+			"tone": 5
+		},
+		{
+			"id": "grove-39",
+			"kind": "tree",
+			"position": "(23.68405, 8.858878)",
+			"scale": 0.93,
+			"tone": 6
+		},
+		{
+			"id": "grove-40",
+			"kind": "rock",
+			"position": "(25.28379, 15.95866)",
+			"scale": 1.04,
+			"tone": 2
+		},
+		{
+			"id": "grove-41",
+			"kind": "tree",
+			"position": "(24.6717, 22.14258)",
+			"scale": 0.875,
+			"tone": 3
+		},
+		{
+			"id": "grove-42",
+			"kind": "tree",
+			"position": "(23.61807, 22.37354)",
+			"scale": 1.04,
+			"tone": 4
+		},
+		{
+			"id": "grove-43",
+			"kind": "tree",
+			"position": "(24.6627, 21.31149)",
+			"scale": 0.93,
+			"tone": 5
+		},
+		{
+			"id": "grove-44",
+			"kind": "tree",
+			"position": "(24.85101, 22.96881)",
+			"scale": 0.82,
+			"tone": 6
+		},
+		{
+			"id": "grove-45",
+			"kind": "tree",
+			"position": "(22.95959, 21.63731)",
+			"scale": 0.985,
+			"tone": 7
+		},
+		{
+			"id": "grove-46",
+			"kind": "tree",
+			"position": "(25.88078, 21.67595)",
+			"scale": 0.875,
+			"tone": 8
+		},
+		{
+			"id": "grove-47",
+			"kind": "tree",
+			"position": "(23.46406, 23.26699)",
+			"scale": 1.04,
+			"tone": 9
+		},
+		{
+			"id": "grove-48",
+			"kind": "tree",
+			"position": "(23.85103, 20.66947)",
+			"scale": 0.93,
+			"tone": 10
+		},
+		{
+			"id": "grove-49",
+			"kind": "tree",
+			"position": "(26.04675, 22.93524)",
+			"scale": 0.82,
+			"tone": 11
+		},
+		{
+			"id": "grove-50",
+			"kind": "rock",
+			"position": "(24.51272, 28.29706)",
+			"scale": 0.985,
+			"tone": 4
+		},
+		{
+			"id": "grove-51",
+			"kind": "tree",
+			"position": "(23.50847, 27.96464)",
+			"scale": 0.875,
+			"tone": 5
+		},
+		{
+			"id": "grove-52",
+			"kind": "tree",
+			"position": "(25.21971, 27.65706)",
+			"scale": 1.04,
+			"tone": 6
+		},
+		{
+			"id": "grove-53",
+			"kind": "tree",
+			"position": "(23.94016, 29.01564)",
+			"scale": 0.93,
+			"tone": 7
+		},
+		{
+			"id": "grove-54",
+			"kind": "tree",
+			"position": "(23.63724, 27.08339)",
+			"scale": 0.82,
+			"tone": 8
+		},
+		{
+			"id": "grove-55",
+			"kind": "tree",
+			"position": "(25.83829, 28.52435)",
+			"scale": 0.985,
+			"tone": 9
+		},
+		{
+			"id": "grove-56",
+			"kind": "tree",
+			"position": "(22.62325, 28.57358)",
+			"scale": 0.875,
+			"tone": 10
+		},
+		{
+			"id": "grove-57",
+			"kind": "tree",
+			"position": "(25.15038, 26.77385)",
+			"scale": 1.04,
+			"tone": 11
+		},
+		{
+			"id": "grove-58",
+			"kind": "tree",
+			"position": "(24.88355, 29.5677)",
+			"scale": 0.93,
+			"tone": 12
+		}
+	]
+}
