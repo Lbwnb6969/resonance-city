@@ -83,6 +83,7 @@ var water_flow: Node2D
 var community_label_layer: Node2D
 var expression_audition_layer: Node2D
 var authored_growth_trail: Node2D
+var pending_authored_path: Node2D
 var pending_composition_choice: Dictionary = {}
 var pending_expression_choice: Dictionary = {}
 var music_activity_layer: Node2D
@@ -266,6 +267,10 @@ func _ready() -> void:
 	authored_growth_trail.name = "AuthoredGrowthTrail"
 	authored_growth_trail.z_index = 56
 	add_child(authored_growth_trail)
+	pending_authored_path = preload("res://scripts/visual/pending_authored_path.gd").new()
+	pending_authored_path.name = "PendingAuthoredPath"
+	pending_authored_path.setup(self)
+	add_child(pending_authored_path)
 	authored_voice_badges = preload("res://scripts/visual/authored_voice_badges.gd").new()
 	authored_voice_badges.name = "AuthoredVoiceBadges"
 	authored_voice_badges.z_index = 65
@@ -3020,6 +3025,7 @@ func _process(delta: float) -> void:
 	_sync_daylight()
 	expression_audition_layer.sync(self)
 	authored_growth_trail.sync(self)
+	pending_authored_path.sync()
 	authored_voice_badges.sync(self)
 	core_slice_hud.sync()
 	if first_composition_mode: authored_reservation_layer.sync(self)
