@@ -58,7 +58,7 @@ func _run() -> void:
 	demo.expression_choices["deep"].emit_signal("pressed")
 	var deadline := Time.get_ticks_msec()+10000
 	while Time.get_ticks_msec() < deadline and demo.expression_audition_layer.ghost.is_empty(): await process_frame
-	check(not demo.expression_audition_layer.ghost.is_empty() and not demo.preview_requested and not demo.preview_player.playing,"choosing_builds_actual_house_ghost_without_autoplay")
+	check(not demo.expression_audition_layer.ghost.is_empty() and demo.preview_requested and demo.preview_player.playing,"choosing_auditions_actual_branch_with_house_ghost")
 	var entries: Array[String] = []
 	var source_key := str(demo.expression_comparison.get("source_key",""))
 	for choice: String in ["deep","weave","warm"]:
@@ -70,7 +70,6 @@ func _run() -> void:
 		var ghost: Dictionary = demo.expression_audition_layer.ghost
 		check(not ghost.is_empty() and ghost["expression"] == choice and ghost["root_id"] == variant["birth"]["building"]["district_id"],choice+"_ghost_uses_accepted_branch_house")
 		entries.append(str(ghost.get("entry_id","")))
-		demo.expression_listen.emit_signal("pressed")
 		await process_frame
 		await process_frame
 		deadline = Time.get_ticks_msec()+2500

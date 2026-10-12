@@ -95,7 +95,6 @@ func _run() -> void:
 	guide.next_action_button.emit_signal("pressed")
 	check(demo.menu.visible and demo.expression_choice.is_empty(),"first_voice_has_no_default_choice")
 	demo.expression_choices["deep"].emit_signal("pressed")
-	demo.expression_listen.emit_signal("pressed")
 	var deadline := Time.get_ticks_msec()+10000
 	while Time.get_ticks_msec() < deadline and not demo.preview_started: await process_frame
 	check(demo.preview_started,"first_direction_has_actual_audition")

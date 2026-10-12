@@ -96,7 +96,6 @@ func _run() -> void:
 	demo.expression_choices["deep"].emit_signal("pressed")
 	check(demo.model.world.snapshot() == before,"candidate_button_does_not_submit")
 	check(demo.expression_listen.disabled == false,"choosing_a_direction_enables_click_audition")
-	demo.expression_listen.emit_signal("pressed")
 	check(await _preview(),"three_actual_pcm_candidates_ready")
 	if demo.expression_comparison.is_empty():
 		await _finish()
@@ -111,7 +110,7 @@ func _run() -> void:
 		demo.expression_choices[choice].emit_signal("pressed")
 		check(demo.preview_player.stream.data == comparison["variants"][choice]["pcm"] and str(demo.expression_comparison["source_key"]) == source_key,"switch_"+choice+"_reuses_same_source_pcm")
 	check(await _until(int(demo.clock.renderer.transport.audible_frame)+rate*5),"click_audition_runs_its_four_seconds")
-	check(not demo.preview_requested and not demo.preview_started and not demo.model.synth.ducking and demo.expression_listen.text.begins_with("听四秒"),"click_audition_automatically_restores_real_city")
+	check(not demo.preview_requested and not demo.preview_started and not demo.model.synth.ducking and demo.expression_listen.text.begins_with("再听四秒"),"click_audition_automatically_restores_real_city")
 	_key(KEY_SPACE)
 	check(await _preview(),"hold_space_audition_remains_available")
 	_key(KEY_SPACE,false)

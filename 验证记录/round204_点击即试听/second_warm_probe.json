@@ -1,0 +1,474 @@
+{
+	"duet_candidates": [
+		{
+			"allowed": true,
+			"bank": 1,
+			"community_id": "east-2",
+			"frontage": 2,
+			"growth_delay": 1,
+			"lot_id": "east-lot-9--1",
+			"max_form": "腔",
+			"near_house_distance": 0.980000197887421,
+			"near_house_id": "building-00024",
+			"position": [
+				19.1641426086426,
+				16.2107467651367
+			],
+			"preview": "沿街地块 · 可成长",
+			"reason": "沿街地块 · 可成长；下一乐句落定",
+			"source_distance": 5.94657373428345,
+			"source_is_root": true,
+			"source_member_id": "building-00025",
+			"source_root_id": "building-00025",
+			"spatial_opportunity": true,
+			"tier": "L1"
+		},
+		{
+			"allowed": true,
+			"bank": 1,
+			"community_id": "east-2",
+			"frontage": 3,
+			"growth_delay": 1,
+			"lot_id": "east-lot-9--1",
+			"max_form": "腔",
+			"near_house_distance": 1.09389936923981,
+			"near_house_id": "building-00024",
+			"position": [
+				19.3384418487549,
+				16.3197135925293
+			],
+			"preview": "沿街地块 · 可成长",
+			"reason": "沿街地块 · 可成长；下一乐句落定",
+			"source_distance": 6.05935430526733,
+			"source_is_root": true,
+			"source_member_id": "building-00025",
+			"source_root_id": "building-00025",
+			"spatial_opportunity": true,
+			"tier": "L1"
+		},
+		{
+			"allowed": true,
+			"bank": 1,
+			"community_id": "east-2",
+			"frontage": 2,
+			"growth_delay": 1,
+			"lot_id": "",
+			"max_form": "腔",
+			"near_house_distance": 2.04999899864197,
+			"near_house_id": "building-00024",
+			"position": [
+				19.1037750244141,
+				17.2790412902832
+			],
+			"preview": "沿街地块 · 可成长",
+			"reason": "沿街地块 · 可成长；任意合法陆地都能播种",
+			"source_distance": 5.51195526123047,
+			"source_is_root": true,
+			"source_member_id": "building-00025",
+			"source_root_id": "building-00025",
+			"spatial_opportunity": true,
+			"tier": "L1"
+		},
+		{
+			"allowed": true,
+			"bank": 1,
+			"community_id": "east-2",
+			"frontage": 2,
+			"growth_delay": 1,
+			"lot_id": "east-lot-9--1",
+			"max_form": "腔",
+			"near_house_distance": 1.54999983310699,
+			"near_house_id": "building-00024",
+			"position": [
+				19.1319847106934,
+				16.7798385620117
+			],
+			"preview": "沿街地块 · 可成长",
+			"reason": "沿街地块 · 可成长；下一乐句落定",
+			"source_distance": 5.69419002532959,
+			"source_is_root": true,
+			"source_member_id": "building-00025",
+			"source_root_id": "building-00025",
+			"spatial_opportunity": true,
+			"tier": "L1"
+		},
+		{
+			"allowed": true,
+			"bank": 1,
+			"community_id": "east-2",
+			"frontage": 2,
+			"growth_delay": 1,
+			"lot_id": "east-lot-9--1",
+			"max_form": "腔",
+			"near_house_distance": 1.23398447036743,
+			"near_house_id": "building-00024",
+			"position": [
+				19.0968265533447,
+				16.4601860046387
+			],
+			"preview": "沿街地块 · 可成长",
+			"reason": "沿街地块 · 可成长；下一乐句落定",
+			"source_distance": 5.78162813186646,
+			"source_is_root": true,
+			"source_member_id": "building-00025",
+			"source_root_id": "building-00025",
+			"spatial_opportunity": true,
+			"tier": "L1"
+		}
+	],
+	"first_charter": [
+		{
+			"card_refs": [
+				"infill_pulse"
+			],
+			"community_ids": [
+				"west-2"
+			],
+			"event_id": 1,
+			"frame": 352800,
+			"id": "scope:west-2",
+			"kind": "charter",
+			"plan_id": "compact"
+		}
+	],
+	"first_root": {
+		"base_midi": 48,
+		"civic_support": false,
+		"community_houses": 9,
+		"community_id": "west-2",
+		"community_name": "石桥",
+		"current_midi": 48,
+		"expression": "warm",
+		"family_houses": 1,
+		"family_id": "family-00025",
+		"form": "胚",
+		"mature": 0,
+		"met_conditions": [
+			"已有公共内院"
+		],
+		"missing_conditions": [
+			"继续沿街连片",
+			"还需6栋成熟房屋"
+		],
+		"next_growth_phrase": 3,
+		"position": [
+			13.7984962463379,
+			18.7742557525635
+		],
+		"reservation_id": "reservation-00002",
+		"retuned": false,
+		"root_heard_retune": false,
+		"root_id": "building-00025",
+		"root_in_theme": false,
+		"theme_eligible": false,
+		"theme_playing": false
+	},
+	"first_sound_context": {
+		"community_id": "west-2",
+		"first_composition": true,
+		"kind": "seed",
+		"position": [
+			13.7984962463379,
+			18.7742557525635
+		]
+	},
+	"phrase": 3,
+	"scope": "Dummy production planning: compact west-2, no public build, first warm root, bluegreen east-2 civic, actual AuthoredDuet sound candidate and ExpressionPreview.",
+	"second_pending": [
+		{
+			"card_refs": [
+				"anchor_bloom"
+			],
+			"community_ids": [
+				"east-2"
+			],
+			"event_id": 3,
+			"frame": 1058400,
+			"id": "scope:east-2",
+			"kind": "charter",
+			"plan_id": "bluegreen"
+		},
+		{
+			"event_id": 4,
+			"frame": 1058400,
+			"kind": "civic",
+			"polygon": "[(18.3123, 9.323889), (19.55231, 9.323889), (19.55231, 10.60389), (18.3123, 10.60389)]",
+			"position": [
+				18.9323043823242,
+				9.96388912200928
+			],
+			"source_lot_ids": [
+				"east-lot-6--1"
+			],
+			"source_site_id": "east-lot-6--1"
+		}
+	],
+	"second_public_context": {
+		"allowed": true,
+		"community_id": "east-2",
+		"polygon": "[(18.3123, 9.323889), (19.55231, 9.323889), (19.55231, 10.60389), (18.3123, 10.60389)]",
+		"position": [
+			18.9323043823242,
+			9.96388912200928
+		],
+		"preserved_sound_positions": [
+			[
+				19.1641426086426,
+				16.2107467651367
+			],
+			[
+				19.3384418487549,
+				16.3197135925293
+			],
+			[
+				19.1037750244141,
+				17.2790412902832
+			],
+			[
+				19.1319847106934,
+				16.7798385620117
+			],
+			[
+				19.0968265533447,
+				16.4601860046387
+			]
+		],
+		"reason": "",
+		"source_lot_ids": [
+			"east-lot-6--1"
+		],
+		"source_root_id": "building-00025",
+		"source_site_id": "east-lot-6--1"
+	},
+	"second_sound_context": {
+		"community_id": "east-2",
+		"first_composition": true,
+		"kind": "seed",
+		"position": [
+			19.1641426086426,
+			16.2107467651367
+		]
+	},
+	"source_frame": 1062810,
+	"variants": {
+		"deep": {
+			"accepted": true,
+			"consequences": {
+				"city_buildings": 28,
+				"community_id": "east-2",
+				"expression": "deep",
+				"family_buildings": 1,
+				"mature": 7,
+				"next_growth_phrase": 6,
+				"reservation_count": 0,
+				"reservations": [],
+				"theme_eligible": true,
+				"type": "residential"
+			},
+			"operation": {
+				"expression": "deep",
+				"kind": "seed",
+				"midi": 36,
+				"player_expression": true,
+				"position": [
+					19.1641426086426,
+					16.2107467651367
+				]
+			},
+			"pcm_bytes": 352800,
+			"reason": ""
+		},
+		"warm": {
+			"accepted": false,
+			"consequences": {},
+			"operation": {
+				"expression": "warm",
+				"kind": "seed",
+				"midi": 48,
+				"player_expression": true,
+				"position": [
+					19.1641426086426,
+					16.2107467651367
+				]
+			},
+			"pcm_bytes": 0,
+			"reason": "暖庭需要附近一块可保留的真实空地，请换一个落点"
+		},
+		"weave": {
+			"accepted": true,
+			"consequences": {
+				"city_buildings": 28,
+				"community_id": "east-2",
+				"expression": "weave",
+				"family_buildings": 1,
+				"mature": 7,
+				"next_growth_phrase": 5,
+				"reservation_count": 0,
+				"reservations": [],
+				"theme_eligible": true,
+				"type": "commercial"
+			},
+			"operation": {
+				"expression": "weave",
+				"kind": "seed",
+				"midi": 60,
+				"player_expression": true,
+				"position": [
+					19.1641426086426,
+					16.2107467651367
+				]
+			},
+			"pcm_bytes": 352800,
+			"reason": ""
+		}
+	},
+	"warm_accepted_alternative_preview": {
+		"position": [
+			19.3384418487549,
+			16.3197135925293
+		],
+		"variants": {
+			"deep": {
+				"accepted": true,
+				"consequences": {
+					"city_buildings": 28,
+					"community_id": "east-2",
+					"expression": "deep",
+					"family_buildings": 1,
+					"mature": 7,
+					"next_growth_phrase": 6,
+					"reservation_count": 0,
+					"reservations": [],
+					"theme_eligible": true,
+					"type": "residential"
+				},
+				"operation": {
+					"expression": "deep",
+					"kind": "seed",
+					"midi": 36,
+					"player_expression": true,
+					"position": [
+						19.3384418487549,
+						16.3197135925293
+					]
+				},
+				"pcm_bytes": 352800,
+				"reason": ""
+			},
+			"warm": {
+				"accepted": true,
+				"consequences": {
+					"city_buildings": 28,
+					"community_id": "east-2",
+					"expression": "warm",
+					"family_buildings": 1,
+					"mature": 7,
+					"next_growth_phrase": 5,
+					"reservation_count": 1,
+					"reservations": [
+						{
+							"created_phrase": 4,
+							"id": "reservation-00005",
+							"polygon": "[(22.04113, 12.51702), (23.14113, 12.51702), (23.14113, 13.61702), (22.04113, 13.61702)]",
+							"position": [
+								22.5911331176758,
+								13.0670223236084
+							],
+							"reservation_id": "reservation-00005",
+							"source_lot_ids": [],
+							"source_site_id": "expression-clear:22.59113:13.06702"
+						}
+					],
+					"theme_eligible": true,
+					"type": "residential"
+				},
+				"operation": {
+					"expression": "warm",
+					"kind": "seed",
+					"midi": 48,
+					"player_expression": true,
+					"position": [
+						19.3384418487549,
+						16.3197135925293
+					]
+				},
+				"pcm_bytes": 352800,
+				"reason": ""
+			},
+			"weave": {
+				"accepted": true,
+				"consequences": {
+					"city_buildings": 28,
+					"community_id": "east-2",
+					"expression": "weave",
+					"family_buildings": 1,
+					"mature": 7,
+					"next_growth_phrase": 5,
+					"reservation_count": 0,
+					"reservations": [],
+					"theme_eligible": true,
+					"type": "commercial"
+				},
+				"operation": {
+					"expression": "weave",
+					"kind": "seed",
+					"midi": 60,
+					"player_expression": true,
+					"position": [
+						19.3384418487549,
+						16.3197135925293
+					]
+				},
+				"pcm_bytes": 352800,
+				"reason": ""
+			}
+		}
+	},
+	"warm_duet_alternatives": [
+		{
+			"accepted": false,
+			"position": [
+				19.1641426086426,
+				16.2107467651367
+			],
+			"reason": "暖庭需要附近一块可保留的真实空地，请换一个落点"
+		},
+		{
+			"accepted": true,
+			"position": [
+				19.3384418487549,
+				16.3197135925293
+			],
+			"reason": ""
+		},
+		{
+			"accepted": false,
+			"position": [
+				19.1037750244141,
+				17.2790412902832
+			],
+			"reason": "暖庭需要附近一块可保留的真实空地，请换一个落点"
+		},
+		{
+			"accepted": false,
+			"position": [
+				19.1319847106934,
+				16.7798385620117
+			],
+			"reason": "暖庭需要附近一块可保留的真实空地，请换一个落点"
+		},
+		{
+			"accepted": false,
+			"position": [
+				19.0968265533447,
+				16.4601860046387
+			],
+			"reason": "暖庭需要附近一块可保留的真实空地，请换一个落点"
+		}
+	],
+	"warm_request": {
+		"accepted": false,
+		"reason": "暖庭需要附近一块可保留的真实空地，请换一个落点"
+	},
+	"warm_requested_reservation": []
+}

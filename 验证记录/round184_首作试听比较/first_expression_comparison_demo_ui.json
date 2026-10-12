@@ -1,5 +1,5 @@
 {
-	"card": "深流 · 低音长响，慢慢铺底 · 住宅生长\n▶ 织机 · 高音短促，密集织拍 · 商业生长\n留地 · 中音长响，留出空隙 · 住宅生长，保留1片空地",
+	"card": "深流 · 低音长响，慢慢铺底 · 住宅生长\n▶ 织机 · 高音短促，密集织拍 · 商业生长\n暖庭 · 中音长和声，留出空隙 · 住宅生长，保留1片空地",
 	"checks": {
 		"comparison_card_does_not_submit_or_mutate_city": true,
 		"comparison_card_fits_800x600": true,
@@ -8,6 +8,6 @@
 		"sound_choice_opens_at_real_community": true
 	},
 	"failures": [],
-	"menu_rect": "[P: (200.0, 70.0), S: (588.0, 518.0)]",
+	"menu_rect": "[P: (12.0, 78.0), S: (344.0, 518.0)]",
 	"passed": true
 }

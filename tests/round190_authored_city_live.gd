@@ -86,7 +86,6 @@ func _run() -> void:
 	var recommendation: Dictionary = First.opportunities(demo.shown_world)["seed_candidates"].filter(func(candidate: Dictionary) -> bool: return str(candidate["community_id"]) == str(site["community_id"]))[0]
 	check(demo.context["position"] == recommendation["position"],"real_public_followup_uses_the_connected_street_opportunity")
 	demo.expression_choices[route].emit_signal("pressed")
-	demo.expression_listen.emit_signal("pressed")
 	var deadline := Time.get_ticks_msec()+10000
 	while Time.get_ticks_msec() < deadline and not demo.preview_started: await process_frame
 	check(demo.preview_started,"chosen_route_four_second_audition_plays")

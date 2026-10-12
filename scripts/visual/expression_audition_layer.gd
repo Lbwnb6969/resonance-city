@@ -2,10 +2,12 @@ extends Node2D
 ## The house and rhythm shown here come from the same accepted audition branch.
 const Identity = preload("res://scripts/visual/first_expression_identity.gd")
 const Coupling = preload("res://scripts/world/world_coupling.gd")
+const PendingChoice = preload("res://scripts/ui/pending_composition_choice.gd")
 var queued: Dictionary = {}
 var queued_boundary := -1
 var queued_event := -1
 var ghost: Dictionary = {}
+var pending_marker: Dictionary = {}
 var arrivals: Array[Dictionary] = []
 var source_model: RefCounted
 
@@ -27,6 +29,7 @@ func sync(demo: Control) -> void:
 		queued_boundary = -1
 	visible = demo.first_composition_mode and not demo.black
 	ghost.clear()
+	pending_marker.clear()
 	arrivals.clear()
 	if not visible: return
 	var variant: Dictionary = {}
@@ -61,6 +64,19 @@ func sync(demo: Control) -> void:
 			"origin":Vector2(entry["origin"][0],entry["origin"][1]),"ink":identity["ink"],"pulse":pulse,"pulse_onset":pulse_onset,"preview_frame":preview_frame,
 			"polygon":demo._project_polygon(demo.shown_world.building_polygon(Coupling.position_of(building))),
 			"text":mode+" · "+str(identity["label"])+( " · %.1f秒" % maxf(0.0,(queued_boundary-frame)/rate) if mode == "待落成" else "")}
+	if ghost.is_empty():
+		# An accepted click can outrun the audition worker. Its real transaction
+		# still owns this land until the device hears it, including render-ahead.
+		# Mark only that accepted position; a future house needs its own branch.
+		var pending := PendingChoice.state(demo)
+		var expression := str(pending.get("kind",""))
+		if Identity.STYLES.has(expression):
+			var position: Vector2 = pending["position"]
+			pending_marker = {"expression":expression,"position":demo.point(position),
+				"ink":Identity.STYLES[expression]["ink"],"event_id":pending["event_id"],
+				"boundary_frame":pending["boundary_frame"],"world_position":position,
+				"polygon":demo._project_polygon(demo.shown_world.building_polygon(position)),
+				"text":"待落成 · %s · %.1f秒" % [str(pending["label"]),float(pending["time_to_boundary"])]}
 	# A real authored birth gets one short arrival gesture on the audible clock.
 	if not demo.preview_started:
 		for building: Dictionary in demo.shown_world.buildings:
@@ -84,6 +100,18 @@ func _draw() -> void:
 		var pulse: float = ghost["pulse"]
 		if pulse > 0.0: draw_arc(at,15.0+12.0*(1.0-pulse),0.0,TAU,40,Color(ink,pulse*0.9),2.0,true)
 		var label := str(ghost["text"])
+		var label_width := ThemeDB.fallback_font.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,13).x
+		var badge := Rect2(at+Vector2(-label_width*0.5-8.0,23.0),Vector2(label_width+16.0,24.0))
+		draw_rect(badge,Color("f4f0df",0.95))
+		draw_string(ThemeDB.fallback_font,badge.position+Vector2(8,17),label,HORIZONTAL_ALIGNMENT_LEFT,-1,13,ink.darkened(0.20))
+	if not pending_marker.is_empty():
+		var at: Vector2 = pending_marker["position"]
+		var ink: Color = pending_marker["ink"]
+		var polygon: PackedVector2Array = pending_marker["polygon"]
+		draw_colored_polygon(polygon,Color(ink,0.18))
+		for i in range(polygon.size()): draw_dashed_line(polygon[i],polygon[(i+1)%polygon.size()],Color(ink,0.9),1.8,5.0,true)
+		draw_arc(at,10.0,0.0,TAU,32,Color(ink,0.85),1.5,true)
+		var label := str(pending_marker["text"])
 		var label_width := ThemeDB.fallback_font.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,13).x
 		var badge := Rect2(at+Vector2(-label_width*0.5-8.0,23.0),Vector2(label_width+16.0,24.0))
 		draw_rect(badge,Color("f4f0df",0.95))

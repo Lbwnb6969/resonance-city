@@ -86,7 +86,6 @@ func _run() -> void:
 	check(demo.menu.visible and demo.expression_choice.is_empty() and demo.context["community_id"] == "west-2","player_chooses_sound_without_a_default")
 	check(demo.expression_choices["warm"].text.contains("暖庭") and not demo.expression_choices["warm"].text.contains("留地"),"warm_route_is_distinct_from_land_reservation")
 	demo.expression_choices["warm"].emit_signal("pressed")
-	demo.expression_listen.emit_signal("pressed")
 	var deadline := Time.get_ticks_msec()+8000
 	while Time.get_ticks_msec() < deadline and not demo.preview_started: await process_frame
 	check(demo.preview_started,"warm_garden_plays_the_real_next_phrase")

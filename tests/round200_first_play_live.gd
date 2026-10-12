@@ -105,7 +105,6 @@ func _run() -> void:
 	guide.next_action_button.emit_signal("pressed")
 	check(demo.menu.visible and demo.expression_choice.is_empty(),"sound_is_still_chosen_by_player")
 	demo.expression_choices["warm"].emit_signal("pressed")
-	demo.expression_listen.emit_signal("pressed")
 	var deadline := Time.get_ticks_msec()+8000
 	while Time.get_ticks_msec() < deadline and not demo.preview_started: await process_frame
 	check(demo.preview_started,"warm_route_real_audition")

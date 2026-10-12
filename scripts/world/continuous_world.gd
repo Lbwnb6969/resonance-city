@@ -1209,7 +1209,7 @@ func request(operation: Dictionary, frame: int) -> Dictionary:
 			return {"accepted":false,"reason":"请选择深流、织机或协和表达"}
 		if bool(operation.get("player_expression",false)) and str(operation.get("expression","")) == "warm":
 			var reservation := FirstComposition.warm_reservation(self,Vector2(float(operation["position"][0]),float(operation["position"][1])))
-			if reservation.is_empty(): return {"accepted":false,"reason":"留地表达需要附近一块可保留的真实空地，请换一个落点"}
+			if reservation.is_empty(): return {"accepted":false,"reason":"暖庭需要附近一块可保留的真实空地，请换一个落点"}
 			operation["expression_reservation"] = reservation
 	elif kind == "charter":
 		var reason := Charter.reason(self,operation)

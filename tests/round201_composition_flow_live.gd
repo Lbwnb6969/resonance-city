@@ -8,6 +8,7 @@ var demo: ContinuousValleyDemo
 var checks: Dictionary = {}
 var failures: Array[String] = []
 var recording: LiveRecording
+var auditions: Dictionary = {}
 
 class LiveRecording extends RefCounted:
 	var model: ContinuousAudioModel
@@ -48,6 +49,24 @@ func _capture(name: String) -> void:
 	await process_frame
 	await RenderingServer.frame_post_draw
 	demo.get_viewport().get_texture().get_image().save_png(output+name+".png")
+func _audition(choice: String) -> void:
+	demo.expression_choices[choice].emit_signal("pressed")
+	await process_frame
+	await process_frame
+	var deadline := Time.get_ticks_msec()+8000
+	while Time.get_ticks_msec() < deadline and not demo.preview_started: await process_frame
+	check(demo.preview_started and demo.preview_player.playing,choice+"_route_click_starts_actual_audition")
+	if not demo.preview_started: return
+	var variant: Dictionary = demo.expression_comparison["variants"][choice]
+	check(demo.preview_player.stream.data == variant["pcm"] and demo.expression_audition_layer.ghost.get("expression","") == choice,choice+"_playing_pcm_and_visible_house_share_branch")
+	var wav := AudioStreamWAV.new()
+	wav.format = AudioStreamWAV.FORMAT_16_BITS
+	wav.mix_rate = demo.clock.renderer.transport.sample_rate
+	wav.stereo = true
+	wav.data = variant["pcm"]
+	wav.save_to_wav(output+choice+"_点击即试听.wav")
+	auditions[choice] = {"source_key":demo.expression_comparison["source_key"],"bytes":variant["pcm"].size(),"entry_id":demo.expression_audition_layer.ghost.get("entry_id","")}
+	await _capture("试听_"+choice+"_点击即听")
 func _choose_scope(cid: String,plan_index: int) -> Dictionary:
 	var guide = demo.planning_guide
 	guide.cards.get_child(plan_index).emit_signal("pressed")
@@ -59,6 +78,7 @@ func _choose_scope(cid: String,plan_index: int) -> Dictionary:
 	guide.confirm.emit_signal("pressed")
 	return site
 func _run() -> void:
+	if "--round204-audition" in OS.get_cmdline_user_args(): output = "res://验证记录/round204_点击即试听/"
 	output += "run_"+Time.get_datetime_string_from_system().replace(":","-")+"/"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output))
 	DisplayServer.window_set_size(Vector2i(1440,900))
@@ -82,22 +102,33 @@ func _run() -> void:
 	check(await _until(frame+rate/5),"first_charter_reaches_device_boundary")
 	check(demo.pending_composition_choice.is_empty() and guide.ready_sound_community() == "west-2","waiting_ends_only_at_actual_heard_charter")
 	guide.next_action_button.emit_signal("pressed")
+	var before_choices := demo.model.world.snapshot()
+	for choice: String in ["deep","weave","warm"]: await _audition(choice)
+	check(demo.model.world.snapshot() == before_choices,"route_click_comparison_does_not_submit_city_changes")
+	# Reopen to exercise the independent legal fast-confirm path while its new
+	# comparison worker is still in flight, after observing all three routes.
+	demo._show_context_menu()
 	demo.expression_choices["warm"].emit_signal("pressed")
 	# Two immediate button presses are legal player input: the asynchronous
 	# audition comparison has not returned and has not been played.
 	demo.expression_confirm.emit_signal("pressed")
 	frame = demo.model.next_boundary
 	await process_frame
+	await process_frame
 	check(demo.expression_audition_layer.queued.is_empty() and demo.pending_composition_choice.get("kind","") == "warm" and demo.caption.text.contains("暖庭已选好"),"confirmation_without_audition_still_has_truthful_wait_feedback")
+	check(not demo.expression_audition_layer.pending_marker.is_empty(),"immediate_confirmation_keeps_real_expression_location_marker")
 	await _capture("02_暖庭已选好_无需先播放试听")
 	check(await _until(frame-rate/10),"reaches_render_ahead_before_root_is_heard")
 	await process_frame
 	check(demo.model.world.pending_actions.is_empty() and demo.pending_composition_choice.get("kind","") == "warm" and demo._first_authored_state().is_empty(),"render_ahead_keeps_wait_without_claiming_future_author_root")
+	check(not demo.expression_audition_layer.pending_marker.is_empty(),"render_ahead_keeps_pending_location_until_heard")
+	await _capture("02b_暖庭标记_渲染领先仍待播")
 	check(await _until(frame+rate/4),"first_author_root_reaches_device_boundary")
 	var work := demo._first_authored_state()
 	var first_root := str(work.get("root_id",""))
 	check(not first_root.is_empty() and not bool(work["retuned"]) and demo.first_composition_guide.visible and demo.first_composition_guide.action == "authored" and demo.first_composition_guide.text.contains("改音与继续"),"new_author_root_has_reentry_without_maturity_or_retune_gate")
 	check(demo.pending_composition_choice.is_empty(),"heard_root_finishes_wait_feedback")
+	check(demo.expression_audition_layer.pending_marker.is_empty(),"heard_root_clears_pending_location_marker")
 	demo.first_composition_guide.emit_signal("pressed")
 	check(demo.menu.visible and demo.selected_id == first_root and (demo.menu.get_meta("compose_more") as Control).visible and (demo.menu.get_meta("care_for_land") as Control).visible,"actual_root_menu_offers_notes_land_and_next_segment")
 	await _capture("03_根屋刚落成_改音与继续")
@@ -119,11 +150,14 @@ func _run() -> void:
 	await _capture("05_对岸文化馆_同一节拍等待")
 	check(await _until(frame+rate/5),"opposite_civic_space_reaches_device_boundary")
 	guide.next_action_button.emit_signal("pressed")
-	demo.expression_choices["weave"].emit_signal("pressed")
+	await _audition("weave")
+	var finish_deadline := Time.get_ticks_msec()+5500
+	while Time.get_ticks_msec() < finish_deadline and demo.preview_requested: await process_frame
+	check(not demo.preview_requested and not demo.preview_started and not demo.model.synth.ducking,"click_audition_finishes_and_restores_city")
 	demo.expression_listen.emit_signal("pressed")
 	var deadline := Time.get_ticks_msec()+8000
 	while Time.get_ticks_msec() < deadline and not demo.preview_started: await process_frame
-	check(demo.preview_started,"next_segment_still_auditions_real_weave_music")
+	check(demo.preview_started,"listen_button_replays_actual_weave_after_auto_finish")
 	demo.expression_confirm.emit_signal("pressed")
 	frame = demo.model.next_boundary
 	await process_frame
@@ -160,7 +194,7 @@ func _run() -> void:
 	heard.data = Renderer.pcm16(recording.samples)
 	heard.save_to_wav(output+"两岸合奏_设备输入.wav")
 	demo.clock.stop_output()
-	var report := {"passed":failures.is_empty(),"checks":checks,"failures":failures,"evidence":{"first_root":first_root,"second_root":second_root,"reservation_id":kept_id,"houses":demo.shown_world.buildings.size(),"underruns":demo.clock.underruns-skips,"sample_rate":rate,"samples":recording.samples.size(),"peak":peak,"clipped":clipped},"scope":"Real Windows/OpenGL/WASAPI waiting strip, immediate confirmation without audition, audible root entry and two segments without forced retune; no human fun or listening-quality claim."}
+	var report := {"passed":failures.is_empty(),"checks":checks,"failures":failures,"evidence":{"first_root":first_root,"second_root":second_root,"reservation_id":kept_id,"houses":demo.shown_world.buildings.size(),"underruns":demo.clock.underruns-skips,"sample_rate":rate,"samples":recording.samples.size(),"peak":peak,"clipped":clipped,"auditions":auditions},"scope":"Real Windows/OpenGL/WASAPI route-click audition, automatic four-second finish and replay, immediate-confirmation location marker through render-ahead, audible root entry and two segments; no human fun or listening-quality claim."}
 	FileAccess.open(output+"live.json",FileAccess.WRITE).store_string(JSON.stringify(report,"\t")+"\n")
 	print("ROUND201_COMPOSITION_FLOW ",checks.size()-failures.size(),"/",checks.size()," ",JSON.stringify(failures)," output=",output)
 	demo.queue_free()

@@ -101,5 +101,5 @@ func _draw() -> void:
 	var font := ThemeDB.fallback_font
 	var mid := line[line.size()/2]+Vector2(0,-11)
 	var width := font.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,11).x
-	draw_rect(Rect2(mid-Vector2(width*0.5+5,13),Vector2(width+10,18)),Color("f4f0df",alpha*0.92),true)
-	draw_string(font,mid+Vector2(-width*0.5,4),label,HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color(ink,alpha))
+	draw_rect(Rect2(mid-Vector2(width*0.5+5,13),Vector2(width+10,18)),Color("f4f0df",0.96),true)
+	draw_string(font,mid+Vector2(-width*0.5,4),label,HORIZONTAL_ALIGNMENT_LEFT,-1,11,ink.darkened(0.28))

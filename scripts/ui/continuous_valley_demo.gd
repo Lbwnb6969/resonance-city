@@ -473,7 +473,7 @@ func _make_menu() -> void:
 	for choice: Dictionary in PlayerExpression.catalogue():
 		var button := Button.new()
 		button.text = "%s · %s" % [choice["label"],choice["sound"]]
-		button.tooltip_text = str(choice["city"])
+		button.tooltip_text = "点击听四秒 · "+str(choice["city"])+"；确认才种下"
 		button.toggle_mode = true
 		button.custom_minimum_size.y = 38
 		_apply_expression_button_style(button,str(choice["id"]))
@@ -492,7 +492,7 @@ func _make_menu() -> void:
 	expression_comparison_summary.hide()
 	expression_box.add_child(expression_comparison_summary)
 	expression_listen = Button.new()
-	expression_listen.text = "听四秒 · 先选一个方向"
+	expression_listen.text = "点上方方向，立即听四秒"
 	expression_listen.custom_minimum_size.y = 34
 	expression_listen.pressed.connect(_toggle_expression_listen)
 	expression_box.add_child(expression_listen)
@@ -1335,15 +1335,18 @@ func _begin_first_sound_choice(cid: String,_at: Vector2 = Vector2.INF) -> bool:
 	planning_guide._focus_planning_position(context["position"])
 	pointer = point(position)
 	_show_context_menu()
-	_message("选择这块地怎样唱 · 点‘听四秒’听下一句，确认才种下；可点其他空地换落点")
+	_message("选择这块地怎样唱 · 点方向立即听四秒，确认才种下；可点其他空地换落点")
 	return true
 
 func _select_player_expression(choice: String) -> void:
 	if not _expression_context(): return
 	expression_choice = choice
+	# A deliberate route click is the audition action. Keep held Space's
+	# release-to-return behavior, otherwise the four-second stream ends itself.
+	expression_click_preview = not Input.is_key_pressed(KEY_SPACE)
 	_update_expression_menu()
-	if preview_requested: _request_expression_preview()
-	else: _prepare_expression_comparison()
+	_request_expression_preview()
+	_sync_expression_listen()
 
 func _toggle_expression_listen() -> void:
 	if not _expression_context() or expression_choice.is_empty(): return
@@ -1357,8 +1360,8 @@ func _toggle_expression_listen() -> void:
 func _sync_expression_listen() -> void:
 	if not is_instance_valid(expression_listen): return
 	expression_listen.disabled = expression_choice.is_empty()
-	expression_listen.text = "停止试听 · 回到城市" if preview_requested else "听四秒 · 也可按住空格"
-	if expression_choice.is_empty(): expression_listen.text = "听四秒 · 先选一个方向"
+	expression_listen.text = "停止试听 · 回到城市" if preview_requested else "再听四秒 · 也可按住空格"
+	if expression_choice.is_empty(): expression_listen.text = "点上方方向，立即听四秒"
 
 func _update_expression_menu() -> void:
 	_sync_expression_listen()
@@ -1374,10 +1377,10 @@ func _update_expression_menu() -> void:
 	var name_text := str(shown_world.communities.get(cid,{}).get("name","这片街坊"))
 	menu_info.text = "%s · 在这块地写下一段\n三种声音会改变实际房屋与社区唱法" % name_text
 	if expression_choice.is_empty():
-		expression_summary.text = "亲自选一个方向，再点‘听四秒’\n试听时切换方向；确认才种下"
+		expression_summary.text = "点一个方向，立即听四秒\n切换方向比较；确认才种下"
 		return
 	var choice := PlayerExpression.definition(expression_choice)
-	expression_summary.text = str(choice["city"])+"\n点‘听四秒’比较 · Enter或按钮确认"
+	expression_summary.text = str(choice["city"])+"\n点另一方向比较 · Enter或按钮确认"
 	if not expression_comparison.is_empty() and expression_comparison_key == _expression_preview_identity():
 		var variant: Dictionary = expression_comparison["variants"][expression_choice]
 		if not bool(variant["accepted"]):
@@ -1403,7 +1406,7 @@ func _expression_preview_identity() -> Array:
 
 func _request_expression_preview() -> void:
 	if expression_choice.is_empty():
-		_message("先亲自选择深流、织机或暖庭，再点‘听四秒’")
+		_message("点深流、织机或暖庭，立即试听；确认才种下")
 		return
 	preview_requested = true
 	preview_public = false
@@ -1417,6 +1420,14 @@ func _prepare_expression_comparison() -> void:
 	var key := _expression_preview_identity()
 	if not expression_comparison.is_empty() and expression_comparison_key == key: return
 	if preview_thread != null: return
+	# A stale branch must stop before a new worker starts. Its finished signal
+	# must not cancel the new click's request while the replacement is preparing.
+	if preview_player.playing:
+		preview_player.stop()
+		if preview_duck_owned:
+			model.synth.ducking = preview_saved_ducking
+			model.synth.duck_release_at = preview_saved_release
+			preview_duck_owned = false
 	var frozen := model.freeze()
 	if preview_duck_owned:
 		frozen.synth.ducking = preview_saved_ducking
