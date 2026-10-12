@@ -1,0 +1,503 @@
+{
+	"actual_draws": {
+		"2": [
+			"infill_pulse",
+			"anchor_bloom"
+		],
+		"3": [
+			"infill_pulse",
+			"anchor_bloom",
+			"road_echo"
+		]
+	},
+	"checks": {
+		"all_current_variations_show_complete_real_tendency_tradeoff_and_3_or_4_phrase_duration_at_narrow_widths": false,
+		"dummy_without_production_scene_or_audio_device": true,
+		"layout_and_native_input_preserve_planning_definitions_and_add_no_outcomes": true,
+		"native_column_uses_exactly_the_actual_two_or_three_drawn_variations_without_extra_cards": false,
+		"native_keyboard_focus_activates_the_real_direction_and_disabled_rows_do_not_activate": true,
+		"three_charters_fit_312_and_324px_with_complete_native_14px_body_and_readable_116px_rows": true,
+		"three_distinct_native_directions_keep_actual_titles_tendencies_tradeoffs_without_an_automatic_charter": true,
+		"title_and_wrapped_tradeoff_regions_click_their_actual_native_row_once": true
+	},
+	"failures": [
+		"all_current_variations_show_complete_real_tendency_tradeoff_and_3_or_4_phrase_duration_at_narrow_widths",
+		"native_column_uses_exactly_the_actual_two_or_three_drawn_variations_without_extra_cards"
+	],
+	"passed": false,
+	"rows": [
+		{
+			"id": "compact",
+			"row": "[P: (20.0, 20.0), S: (312.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(72.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (214.0, 27.0)]",
+					"text": "紧凑核心",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (86.0, 39.0), S: (214.0, 36.0)]",
+					"text": "围绕社区中心填满街坊",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (288.0, 36.0)]",
+					"text": "取舍 · 更少向外伸展的空间",
+					"visible_lines": 1
+				}
+			],
+			"variation": false,
+			"width": 312
+		},
+		{
+			"id": "corridor",
+			"row": "[P: (20.0, 142.0), S: (312.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(72.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (214.0, 27.0)]",
+					"text": "走廊连接",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (86.0, 39.0), S: (214.0, 36.0)]",
+					"text": "沿真实道路与站点延展",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (288.0, 36.0)]",
+					"text": "取舍 · 社区会更细长，依赖道路",
+					"visible_lines": 1
+				}
+			],
+			"variation": false,
+			"width": 312
+		},
+		{
+			"id": "bluegreen",
+			"row": "[P: (20.0, 264.0), S: (312.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(108.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (214.0, 27.0)]",
+					"text": "蓝绿文化网络",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (86.0, 39.0), S: (214.0, 36.0)]",
+					"text": "围绕公园与文化馆组织成长",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (288.0, 36.0)]",
+					"text": "取舍 · 公共占地会挤占房屋空间",
+					"visible_lines": 1
+				}
+			],
+			"variation": false,
+			"width": 312
+		},
+		{
+			"id": "compact",
+			"row": "[P: (20.0, 20.0), S: (324.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(72.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (226.0, 27.0)]",
+					"text": "紧凑核心",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (86.0, 39.0), S: (226.0, 36.0)]",
+					"text": "围绕社区中心填满街坊",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (300.0, 36.0)]",
+					"text": "取舍 · 更少向外伸展的空间",
+					"visible_lines": 1
+				}
+			],
+			"variation": false,
+			"width": 324
+		},
+		{
+			"id": "corridor",
+			"row": "[P: (20.0, 142.0), S: (324.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(72.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (226.0, 27.0)]",
+					"text": "走廊连接",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (86.0, 39.0), S: (226.0, 36.0)]",
+					"text": "沿真实道路与站点延展",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (300.0, 36.0)]",
+					"text": "取舍 · 社区会更细长，依赖道路",
+					"visible_lines": 1
+				}
+			],
+			"variation": false,
+			"width": 324
+		},
+		{
+			"id": "bluegreen",
+			"row": "[P: (20.0, 264.0), S: (324.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(108.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (226.0, 27.0)]",
+					"text": "蓝绿文化网络",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (86.0, 39.0), S: (226.0, 36.0)]",
+					"text": "围绕公园与文化馆组织成长",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (300.0, 36.0)]",
+					"text": "取舍 · 公共占地会挤占房屋空间",
+					"visible_lines": 1
+				}
+			],
+			"variation": false,
+			"width": 324
+		},
+		{
+			"id": "infill_pulse",
+			"row": "[P: (20.0, 20.0), S: (312.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(72.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (170.0, 27.0)]",
+					"text": "街墙聚拢",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 2,
+					"minimum": "(1.0, 40.0)",
+					"rect": "[P: (86.0, 39.0), S: (214.0, 40.0)]",
+					"text": "同社区已有房屋旁的候选更早被看见",
+					"visible_lines": 2
+				},
+				{
+					"font_pixels": 14,
+					"lines": 2,
+					"minimum": "(1.0, 40.0)",
+					"rect": "[P: (12.0, 78.0), S: (288.0, 40.0)]",
+					"text": "取舍 · 远端空地仍可成长，但不会抢过连片边缘",
+					"visible_lines": 2
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(22.0, 20.0)",
+					"rect": "[P: (258.0, 14.0), S: (42.0, 22.0)]",
+					"text": "3句",
+					"visible_lines": 1
+				}
+			],
+			"variation": true,
+			"width": 312
+		},
+		{
+			"id": "road_echo",
+			"row": "[P: (20.0, 142.0), S: (312.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(72.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (170.0, 27.0)]",
+					"text": "沿路回声",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (86.0, 39.0), S: (214.0, 40.0)]",
+					"text": "真实道路与站点旁的候选更早接入",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (288.0, 36.0)]",
+					"text": "取舍 · 道路不通的孤点要等下一次机会",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(22.0, 20.0)",
+					"rect": "[P: (258.0, 14.0), S: (42.0, 22.0)]",
+					"text": "4句",
+					"visible_lines": 1
+				}
+			],
+			"variation": true,
+			"width": 312
+		},
+		{
+			"id": "anchor_bloom",
+			"row": "[P: (20.0, 264.0), S: (312.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(72.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (170.0, 27.0)]",
+					"text": "锚点回响",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 2,
+					"minimum": "(1.0, 40.0)",
+					"rect": "[P: (86.0, 39.0), S: (214.0, 40.0)]",
+					"text": "已有公园或文化馆影响内的候选更有资格",
+					"visible_lines": 2
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (288.0, 36.0)]",
+					"text": "取舍 · 公共影响外不增加额外优先级",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(22.0, 20.0)",
+					"rect": "[P: (258.0, 14.0), S: (42.0, 22.0)]",
+					"text": "3句",
+					"visible_lines": 1
+				}
+			],
+			"variation": true,
+			"width": 312
+		},
+		{
+			"id": "infill_pulse",
+			"row": "[P: (20.0, 20.0), S: (324.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(72.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (182.0, 27.0)]",
+					"text": "街墙聚拢",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (86.0, 39.0), S: (226.0, 40.0)]",
+					"text": "同社区已有房屋旁的候选更早被看见",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (300.0, 40.0)]",
+					"text": "取舍 · 远端空地仍可成长，但不会抢过连片边缘",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(22.0, 20.0)",
+					"rect": "[P: (270.0, 14.0), S: (42.0, 22.0)]",
+					"text": "3句",
+					"visible_lines": 1
+				}
+			],
+			"variation": true,
+			"width": 324
+		},
+		{
+			"id": "road_echo",
+			"row": "[P: (20.0, 142.0), S: (324.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(72.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (182.0, 27.0)]",
+					"text": "沿路回声",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (86.0, 39.0), S: (226.0, 36.0)]",
+					"text": "真实道路与站点旁的候选更早接入",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (300.0, 36.0)]",
+					"text": "取舍 · 道路不通的孤点要等下一次机会",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(22.0, 20.0)",
+					"rect": "[P: (270.0, 14.0), S: (42.0, 22.0)]",
+					"text": "4句",
+					"visible_lines": 1
+				}
+			],
+			"variation": true,
+			"width": 324
+		},
+		{
+			"id": "anchor_bloom",
+			"row": "[P: (20.0, 264.0), S: (324.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(72.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (182.0, 27.0)]",
+					"text": "锚点回响",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 2,
+					"minimum": "(1.0, 40.0)",
+					"rect": "[P: (86.0, 39.0), S: (226.0, 40.0)]",
+					"text": "已有公园或文化馆影响内的候选更有资格",
+					"visible_lines": 2
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (300.0, 36.0)]",
+					"text": "取舍 · 公共影响外不增加额外优先级",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(22.0, 20.0)",
+					"rect": "[P: (270.0, 14.0), S: (42.0, 22.0)]",
+					"text": "3句",
+					"visible_lines": 1
+				}
+			],
+			"variation": true,
+			"width": 324
+		},
+		{
+			"id": "infill_pulse",
+			"row": "[P: (20.0, 20.0), S: (324.0, 116.0)]",
+			"shaped_text": [
+				{
+					"font_pixels": 18,
+					"lines": 1,
+					"minimum": "(72.0, 26.0)",
+					"rect": "[P: (86.0, 10.0), S: (182.0, 27.0)]",
+					"text": "街墙聚拢",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (86.0, 39.0), S: (226.0, 40.0)]",
+					"text": "同社区已有房屋旁的候选更早被看见",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(1.0, 20.0)",
+					"rect": "[P: (12.0, 78.0), S: (300.0, 40.0)]",
+					"text": "取舍 · 远端空地仍可成长，但不会抢过连片边缘",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"minimum": "(22.0, 20.0)",
+					"rect": "[P: (270.0, 14.0), S: (42.0, 22.0)]",
+					"text": "3句",
+					"visible_lines": 1
+				}
+			],
+			"variation": true,
+			"width": 324
+		}
+	],
+	"scope": "Dummy native VBox/Button rows under production theme, current Charter/PlanningCard content, shaped complete >=14px body at 312/324px, 116px rows, actual mouse hits and keyboard/disabled behavior, real 2/3-card draws. Root owns narrow production panel/scroll/actual world placement and GPU review; no claimed player aesthetic judgement."
+}

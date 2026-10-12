@@ -15,7 +15,7 @@ func setup(owner_demo: Control) -> void:
 
 func sync() -> void:
 	visible = demo.first_composition_mode and not demo.black
-	legend_visible = not (demo.menu.visible and demo._expression_context())
+	legend_visible = not (demo.planning_guide.opened or demo.menu.visible and demo._expression_context())
 	if visible: queue_redraw()
 
 func _draw() -> void:

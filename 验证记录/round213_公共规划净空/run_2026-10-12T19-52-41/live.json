@@ -1,0 +1,39 @@
+{
+	"checks": {
+		"1440_actual_native_public_preview_plays": true,
+		"1440_all_four_uses_visible_during_actual_comparison": true,
+		"1440_changing_report_remains_inside_window": true,
+		"1440_real_civic_pcm_is_preserved": true,
+		"1440_whole_actual_public_facade_has_clearance": true,
+		"800_actual_native_public_preview_plays": true,
+		"800_all_four_uses_visible_during_actual_comparison": true,
+		"800_changing_report_remains_inside_window": true,
+		"800_real_civic_pcm_is_preserved": true,
+		"800_whole_actual_public_facade_has_clearance": true,
+		"actual_gpu_and_audio": true,
+		"actual_native_planning_reaches_selected_community": true,
+		"actual_opening_reaches_device": true,
+		"close_keeps_the_actual_unfinished_public_draft": true,
+		"layout_and_preview_do_not_commit_a_public_choice": true,
+		"same_actual_legal_public_candidate": true
+	},
+	"clearances": [
+		{
+			"actions": "[P: (448.0, 237.0), S: (316.0, 88.0)]",
+			"facade": "[P: (255.9988, 216.1747), S: (160.0, 145.0)]",
+			"panel": "[P: (432.0, 76.0), S: (356.0, 500.0)]",
+			"visible_choices": 4,
+			"window": "(800, 600)"
+		},
+		{
+			"actions": "[P: (1088.0, 237.0), S: (316.0, 88.0)]",
+			"facade": "[P: (691.0969, 322.7135), S: (160.0, 145.0)]",
+			"panel": "[P: (1072.0, 76.0), S: (356.0, 800.0)]",
+			"visible_choices": 4,
+			"window": "(1440, 900)"
+		}
+	],
+	"failures": [],
+	"passed": true,
+	"scope": "Focused actual Windows/OpenGL/WASAPI supplement to preserved 38/39 complete native journey. It validates the failed facade clearance plus visible public tools during real PCM comparison; it does not repeat or relabel that full run. No human verdict."
+}

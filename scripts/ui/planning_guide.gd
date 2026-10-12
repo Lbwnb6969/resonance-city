@@ -1,6 +1,7 @@
 extends PanelContainer
 const RefinedUi = preload("res://scripts/ui/valley_ui_theme.gd")
 const DirectionCard = preload("res://scripts/ui/planning_direction_card.gd")
+const PlanningKeyboard = preload("res://scripts/ui/planning_keyboard_navigation.gd")
 ## A transient planning tool. Closing it never removes a committed city choice.
 const Charter = preload("res://scripts/world/development_charter.gd")
 const PlanningCard = preload("res://scripts/world/planning_card.gd")
@@ -37,16 +38,16 @@ var flow_hint: Label
 var detail: Label
 var theme_rework_button: Button
 var charter_theme_key: Array = []
-var actions: HBoxContainer
-var cards: HBoxContainer
-var card_choices: HBoxContainer
+var actions: HFlowContainer
+var cards: VBoxContainer
+var card_choices: VBoxContainer
 var drawn_card_ids: Array[String] = []
 var confirm: Button
 var transit_anchor_button: Button
-var transit_edit_row: HBoxContainer
+var transit_edit_row: HFlowContainer
 var transit_redraw_button: Button
 var transit_edit_cancel_button: Button
-var transit_compare_row: HBoxContainer
+var transit_compare_row: HFlowContainer
 var transit_keep_button: Button
 var transit_change_button: Button
 var transit_choice := "edit"
@@ -68,13 +69,18 @@ var causal_feedback_count := 0
 ## populated from the selected public-preview branch and becomes actionable
 ## only when a matching charter birth is visible in the presentation world.
 var next_action: Dictionary = {}
-var next_action_row: HBoxContainer
+var next_action_row: HFlowContainer
 var next_action_button: Button
 var next_combo_button: Button
 var next_replan_button: Button
-var next_partial_row: HBoxContainer
+var next_partial_row: HFlowContainer
 var next_reservation_button: Button
 var next_served_button: Button
+var content_box: VBoxContainer
+var header_box: VBoxContainer
+var content_scroll: ScrollContainer
+var back_button: Button
+var planning_camera_key: Array = []
 
 func setup(owner_demo: Control) -> void:
 	demo = owner_demo
@@ -82,13 +88,15 @@ func setup(owner_demo: Control) -> void:
 	z_index = 120
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	theme = RefinedUi.make_theme()
-	add_theme_stylebox_override("panel",RefinedUi.panel(20))
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation",10)
-	add_child(box)
+	add_theme_stylebox_override("panel",RefinedUi.panel(16))
+	header_box = VBoxContainer.new()
+	header_box.add_theme_constant_override("separation",10)
+	add_child(header_box)
 	var top := HBoxContainer.new()
 	heading = Label.new()
-	heading.add_theme_font_size_override("font_size",23)
+	heading.add_theme_font_size_override("font_size",19)
+	heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	heading.custom_minimum_size.x = 206
 	heading.add_theme_color_override("font_color",RefinedUi.INK)
 	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(heading)
@@ -96,14 +104,30 @@ func setup(owner_demo: Control) -> void:
 	close.text = "收起 · P"
 	close.pressed.connect(hide_tool)
 	top.add_child(close)
-	box.add_child(top)
+	header_box.add_child(top)
 	flow_hint = Label.new()
-	flow_hint.custom_minimum_size.x = 720
+	flow_hint.custom_minimum_size.x = 324
 	flow_hint.add_theme_font_size_override("font_size",13)
 	flow_hint.add_theme_color_override("font_color",RefinedUi.MUTED)
 	flow_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	box.add_child(flow_hint)
-	cards = HBoxContainer.new()
+	header_box.add_child(flow_hint)
+	back_button = Button.new()
+	back_button.text = "上一步"
+	back_button.pressed.connect(_previous_step)
+	header_box.add_child(back_button)
+	content_scroll = ScrollContainer.new()
+	content_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	content_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	content_scroll.follow_focus = true
+	content_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	header_box.add_child(content_scroll)
+	var box := VBoxContainer.new()
+	content_box = box
+	box.custom_minimum_size.x = 310
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_theme_constant_override("separation",10)
+	content_scroll.add_child(box)
+	cards = VBoxContainer.new()
 	cards.add_theme_constant_override("separation",10)
 	for id: String in ["compact","corridor","bluegreen"]:
 		var spec: Dictionary = Charter.PLANS[id]
@@ -112,7 +136,7 @@ func setup(owner_demo: Control) -> void:
 		button.pressed.connect(choose_plan.bind(id))
 		cards.add_child(button)
 	box.add_child(cards)
-	card_choices = HBoxContainer.new()
+	card_choices = VBoxContainer.new()
 	card_choices.add_theme_constant_override("separation",10)
 	drawn_card_ids = ["infill_pulse","road_echo","anchor_bloom"]
 	_rebuild_card_choices()
@@ -122,7 +146,7 @@ func setup(owner_demo: Control) -> void:
 	comparison_community_choices.add_theme_constant_override("v_separation",6)
 	box.add_child(comparison_community_choices)
 	detail = Label.new()
-	detail.custom_minimum_size.x = 720
+	detail.custom_minimum_size.x = 310
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	detail.add_theme_color_override("font_color",Color("51665c"))
 	detail.add_theme_font_size_override("font_size",15)
@@ -130,7 +154,7 @@ func setup(owner_demo: Control) -> void:
 	theme_rework_button = Button.new()
 	theme_rework_button.pressed.connect(_take_theme_building)
 	box.add_child(theme_rework_button)
-	next_action_row = HBoxContainer.new()
+	next_action_row = HFlowContainer.new()
 	next_action_row.add_theme_constant_override("separation",8)
 	next_action_button = Button.new()
 	RefinedUi.primary(next_action_button)
@@ -149,7 +173,7 @@ func setup(owner_demo: Control) -> void:
 	next_replan_button.pressed.connect(_replan_next_action)
 	next_action_row.add_child(next_replan_button)
 	box.add_child(next_action_row)
-	next_partial_row = HBoxContainer.new()
+	next_partial_row = HFlowContainer.new()
 	next_partial_row.add_theme_constant_override("separation",8)
 	next_reservation_button = Button.new()
 	next_reservation_button.text = "继续规划剩余留地"
@@ -160,25 +184,30 @@ func setup(owner_demo: Control) -> void:
 	next_served_button.pressed.connect(_take_served_building)
 	next_partial_row.add_child(next_served_button)
 	box.add_child(next_partial_row)
-	actions = HBoxContainer.new()
+	actions = HFlowContainer.new()
 	confirm = Button.new()
 	RefinedUi.primary(confirm)
 	confirm.text = "确认社区范围 → 摆放锚点"
 	confirm.pressed.connect(_confirm_stage)
+	confirm.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	actions.add_child(confirm)
 	for item in [["暂不建设","none"],["公园 · 留白","park"],["文化馆 · 主题","civic"],["留地 · 呼吸","reserve"]]:
 		var button := Button.new()
 		button.text = item[0]
 		button.toggle_mode = true
+		button.custom_minimum_size = Vector2(154,42)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.set_meta("anchor_kind",item[1])
 		button.pressed.connect(choose_anchor.bind(item[1]))
 		actions.add_child(button)
 	box.add_child(actions)
+	# Keep the map tools above the changing comparison report.
+	box.move_child(actions,detail.get_index())
 	transit_anchor_button = Button.new()
 	transit_anchor_button.text = "公交 · 连接社区"
 	transit_anchor_button.pressed.connect(_choose_transit_anchor)
 	box.add_child(transit_anchor_button)
-	transit_edit_row = HBoxContainer.new()
+	transit_edit_row = HFlowContainer.new()
 	transit_redraw_button = Button.new()
 	transit_redraw_button.text = "清空站序 · 重画"
 	transit_redraw_button.pressed.connect(func() -> void: demo._redraw_transit_edit())
@@ -188,7 +217,7 @@ func setup(owner_demo: Control) -> void:
 	transit_edit_cancel_button.pressed.connect(hide_tool)
 	transit_edit_row.add_child(transit_edit_cancel_button)
 	box.add_child(transit_edit_row)
-	transit_compare_row = HBoxContainer.new()
+	transit_compare_row = HFlowContainer.new()
 	for item in [["保留原线","keep"],["改站","edit"]]:
 		var button := Button.new()
 		button.text = item[0]
@@ -198,6 +227,7 @@ func setup(owner_demo: Control) -> void:
 		if item[1] == "keep": transit_keep_button = button
 		else: transit_change_button = button
 	box.add_child(transit_compare_row)
+	demo.resized.connect(_layout_panel)
 	hide()
 
 ## Read-only entry point for the route UI.  The main Demo owns pointer input
@@ -218,6 +248,7 @@ func transit_feedback_text(payload: Dictionary, settled := false) -> String:
 	return str(summary.get("text",""))
 
 func reset_for_city() -> void:
+	planning_camera_key.clear()
 	composition_public_hint.clear()
 	composition_anchor_draft = false
 	committed_charter_id = ""
@@ -244,6 +275,7 @@ func reset_for_city() -> void:
 	refresh()
 
 func open_tool() -> void:
+	planning_camera_key.clear()
 	if unfinished_public_choice():
 		demo.menu.hide()
 		opened = true
@@ -508,8 +540,7 @@ func choose_plan(id: String) -> void:
 	card_id = drawn_card_ids[0]
 	_rebuild_card_choices()
 	stage = "card"
-	if scope_source.is_empty(): scope.clear()
-	else: _apply_scope_seed()
+	if not scope_source.is_empty(): _apply_scope_seed()
 	scope_version.clear()
 	refresh()
 
@@ -518,8 +549,7 @@ func choose_card(id: String) -> void:
 	if not drawn_card_ids.is_empty() and not drawn_card_ids.has(id): return
 	card_id = id
 	stage = "scope"
-	if scope_source.is_empty(): scope.clear()
-	else: _apply_scope_seed()
+	if not scope_source.is_empty(): _apply_scope_seed()
 	scope_version.clear()
 	refresh()
 
@@ -555,6 +585,8 @@ func refresh() -> void:
 	_update_flow_hint()
 	cards.visible = stage == "charter"
 	card_choices.visible = stage == "card"
+	back_button.visible = stage in ["card","scope"]
+	for card: Button in card_choices.get_children(): card.set_pressed_no_signal(str(card.get_meta("planning_choice_id","")) == card_id)
 	var audible_theme: Dictionary = demo.model.audible_theme()
 	charter_theme_key = [str(audible_theme.get("cid","")),audible_theme.get("source_ids",[])]
 	var has_theme_house: bool = audible_theme.get("source_ids",[]).any(func(raw_id: Variant) -> bool: return demo.shown_world.by_id.has(str(raw_id)))
@@ -610,8 +642,8 @@ func refresh() -> void:
 		heading.text = "你想让这片城市怎样生长？"
 		detail.text = "先选倾向，再在地图选社区；公园、文化馆或留地由你安排，房屋沿合法空地自动长。"
 		if _first_composition_mode():
-			heading.text = "写第一段 · 先选发展章程" if authored.is_empty() else "再写一段 · 选择生长方向"
-			detail.text = "选一种生长方向，再点一片社区。公园、文化馆或留地由你安排，随后亲自选一个声音。"
+			heading.text = "第一段 · 发展方向" if authored.is_empty() else "再写一段 · 发展方向"
+			detail.text = "选一种生长方向，再在地图选社区。"
 		if not authored.is_empty() and bool(authored["theme_eligible"]):
 			theme_rework_button.text = "改写"+str(authored["community_name"])+" · 你种下的"+str(demo.PlayerExpression.definition(str(authored["expression"]))["label"])
 			detail.text += "\n你的社区已有主题；回到亲自种下的房屋，改一个音。"
@@ -623,8 +655,8 @@ func refresh() -> void:
 		var source_hint := _scope_source_hint()
 		if not source_hint.is_empty(): detail.text += "\n"+source_hint+"；选完章程和变化卡后会带入社区范围。"
 	elif stage == "card":
-		heading.text = str(Charter.PLANS[plan_id]["title"]) + " · 选一张章首变化卡"
-		detail.text = "变化卡只影响已有规划关系的候选优先级或生长时机，持续几句后自然退场；不会增加全城活力，也不会锁住公共设施。\n当前默认 · " + str(PlanningCard.CARDS[card_id]["title"]) + "（可直接点地图继续，也可改选下面任意一张）"
+		heading.text = str(Charter.PLANS[plan_id]["title"]) + " · 变化卡"
+		detail.text = "改变后续几句的生长优先级。当前：" + str(PlanningCard.CARDS[card_id]["title"]) + "；可改选，或点地图继续。"
 		var source_hint := _scope_source_hint()
 		if not source_hint.is_empty(): detail.text += "\n"+source_hint
 	elif stage == "scope":
@@ -666,9 +698,68 @@ func refresh() -> void:
 		detail.text += "\n不建会保留章程与正常成长；留地才会让下一句绕开这里，暂时不新增声音。"
 		if not _first_composition_mode(): detail.text += "\n也可选择公交锚点，沿真实道路连接这些社区。"
 	preview_key.clear()
-	reset_size()
-	position = Vector2(maxf(16.0,(demo.size.x-size.x)*0.5),76)
+	_layout_panel()
+	content_scroll.scroll_vertical = 0
+	call_deferred("_layout_panel")
 	visible = opened and not demo.black
+	PlanningKeyboard.focus_stage(self)
+	call_deferred("_focus_stage")
+
+func _focus_stage() -> void:
+	PlanningKeyboard.focus_stage(self)
+
+func _previous_step() -> void:
+	# These choices are still UI drafts; committed scope has no back button.
+	if stage == "scope": stage = "card"
+	elif stage == "card": stage = "charter"
+	else: return
+	refresh()
+
+func _layout_panel() -> void:
+	if demo == null or content_box == null: return
+	# A bounded scroll viewport retains native pixels and leaves the city open.
+	var header_height: float = header_box.get_child(0).get_combined_minimum_size().y
+	var natural: float = content_box.get_combined_minimum_size().y+header_height+flow_hint.get_combined_minimum_size().y+62.0
+	if back_button.visible: natural += back_button.get_combined_minimum_size().y+10.0
+	size = Vector2(356,minf(natural,maxf(160.0,demo.size.y-100.0)))
+	position = Vector2(maxf(12.0,demo.size.x-size.x-12.0),76)
+	if opened and _first_composition_mode() and stage in ["charter","card","scope","anchor"]:
+		var selected := stage == "anchor"
+		var camera_key: Array = [demo.size,"anchor" if selected else "scope",scope.duplicate() if selected else []]
+		if planning_camera_key != camera_key:
+			planning_camera_key = camera_key
+			_frame_planning_city(selected)
+
+func _focus_selected_scope() -> void:
+	_frame_planning_city(true)
+
+func _frame_planning_city(selected: bool) -> void:
+	var points: Array[Vector2] = []
+	for building: Dictionary in demo.shown_world.buildings:
+		if selected and not scope.has(str(building["community_id"])): continue
+		if int(building["birth_frame"]) > demo.clock.renderer.transport.audible_frame: continue
+		points.append(Vector2(float(building["position"][0]),float(building["position"][1])))
+	if selected:
+		for candidate: Dictionary in demo.FirstComposition.opportunities(demo.shown_world)["public_candidates"]:
+			if not scope.has(str(candidate["community_id"])): continue
+			points.append(Vector2(float(candidate["position"][0]),float(candidate["position"][1])))
+	if points.is_empty(): return
+	var bounds := Rect2()
+	var first := true
+	for p: Vector2 in points:
+		var projected: Vector2 = demo.Projection2D.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),demo.shown_world.terrain.height_at(p))
+		if first:
+			bounds = Rect2(projected,Vector2.ZERO)
+			first = false
+		else: bounds = bounds.expand(projected)
+	var clear := Rect2(Vector2(16,92),Vector2(position.x-32.0,demo.size.y-116.0))
+	if selected:
+		# Facade clearance is in screen pixels, independent of camera zoom.
+		clear = clear.grow_individual(-80,-85,-80,-60)
+	else:
+		bounds = bounds.grow_individual(55,70,55,55)
+	demo.zoom_target = clampf(minf(clear.size.x/bounds.size.x,clear.size.y/bounds.size.y),0.55,1.65)
+	demo.pan_target = clear.get_center()-Vector2(demo.size.x*0.5,demo.size.y*0.52)-bounds.get_center()*demo.zoom_target
 
 func _rebuild_card_choices() -> void:
 	if card_choices == null: return
@@ -678,6 +769,7 @@ func _rebuild_card_choices() -> void:
 		var spec: Dictionary = PlanningCard.CARDS[id]
 		var button := DirectionCard.new()
 		button.setup(id,spec,true)
+		button.toggle_mode = true
 		button.pressed.connect(choose_card.bind(id))
 		card_choices.add_child(button)
 	card_choices.visible = stage == "card"
@@ -1375,6 +1467,7 @@ func commit_scope() -> void:
 	committed_charter_id = "charter-%05d" % int(result["event_id"])
 	committed_charter_frame = int(result["frame"])
 	stage = "anchor"
+	_focus_selected_scope()
 	composition_anchor_draft = _first_composition_mode()
 	composition_public_hint.clear()
 	if _first_composition_mode() and demo.shown_world.by_id.has(str(demo.composition_source_id)):
@@ -1717,6 +1810,7 @@ func sync() -> void:
 				demo._message("%s · %s以%s落地，%s%s；下一步可继续调音或按P规划下一片社区" % [title,kind,shape,"音级"+pitch+" · " if pitch != "待定音级" else "", "沿你的规划生长"])
 				if not (bool(next_action.get("partial",false)) or bool(next_action.get("reuse",false)) or bool(next_action.get("transit_anchor",false))): break
 	if not visible: return
+	_layout_panel()
 	if stage == "charter":
 		var audible_theme: Dictionary = demo.model.audible_theme()
 		var theme_key: Array = [str(audible_theme.get("cid","")),audible_theme.get("source_ids",[])]

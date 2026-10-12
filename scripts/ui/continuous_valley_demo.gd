@@ -2653,7 +2653,9 @@ func _verb(verb: String) -> void:
 	menu.hide()
 
 func _input(event: InputEvent) -> void:
-	if not event is InputEventKey or event.echo: return
+	if not event is InputEventKey: return
+	if planning_guide.PlanningKeyboard.route(self,event): return
+	if event.echo: return
 	if event.pressed and event.ctrl_pressed and event.keycode == KEY_S:
 		save_city()
 		get_viewport().set_input_as_handled()

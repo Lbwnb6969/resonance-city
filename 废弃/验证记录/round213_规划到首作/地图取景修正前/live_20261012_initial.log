@@ -1,0 +1,85 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+ERROR: true_24_house_opening_without_gifted_public_space
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:44)
+       [2] until_frame (res://tests/round209_classical_night_live.gd:34)
+ERROR: actual_native_map_click_selects_true_community
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:76)
+       [2] click_map (res://tests/round213_planning_live.gd:22)
+ERROR: back_keeps_uncommitted_scope_without_world_writes
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:79)
+ERROR: real_change_card_reselection_keeps_draft_community
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:81)
+       [2] press_button (res://tests/round211_sound_stage_live.gd:27)
+ERROR: native_scope_enter_queues_one_real_charter
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:84)
+ERROR: actual_public_target_and_its_facade_have_map_clearance
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:91)
+ERROR: actual_space_plays_selected_public_comparison
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:93)
+       [2] playing (res://tests/round211_sound_stage_live.gd:32)
+ERROR: actual_civic_comparison_uses_the_same_world_pcm
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:94)
+       [2] playing (res://tests/round211_sound_stage_live.gd:32)
+ERROR: enter_confirms_the_actual_public_pointer_once
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:101)
+       [2] tap (res://tests/round211_sound_stage_live.gd:16)
+ERROR: actual_public_result_offers_sound_continuation
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:105)
+ERROR: native_feedback_enter_opens_actual_sound_choice
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:110)
+ERROR: actual_warm_four_second_audition_after_planning
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:112)
+       [2] playing (res://tests/round211_sound_stage_live.gd:32)
+SCRIPT ERROR: Invalid access to property or key 'position' on a base object of type 'Dictionary'.
+   at: layout (res://tests/round211_sound_stage_live.gd:41)
+   GDScript backtrace (most recent call first):
+       [0] layout (res://tests/round211_sound_stage_live.gd:41)
+       [1] _run (res://tests/round213_planning_live.gd:114)
+ERROR: complete_native_journey_has_real_public_and_author_house
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round213_planning_live.gd:120)
+       [2] until_frame (res://tests/round209_classical_night_live.gd:34)
+ROUND213_PLANNING_LIVE 22/35 ["true_24_house_opening_without_gifted_public_space","actual_native_map_click_selects_true_community","back_keeps_uncommitted_scope_without_world_writes","real_change_card_reselection_keeps_draft_community","native_scope_enter_queues_one_real_charter","actual_public_target_and_its_facade_have_map_clearance","actual_space_plays_selected_public_comparison","actual_civic_comparison_uses_the_same_world_pcm","enter_confirms_the_actual_public_pointer_once","actual_public_result_offers_sound_continuation","native_feedback_enter_opens_actual_sound_choice","actual_warm_four_second_audition_after_planning","complete_native_journey_has_real_public_and_author_house"] output=res://验证记录/round213_规划到首作/run_2026-10-12T19-37-39/
