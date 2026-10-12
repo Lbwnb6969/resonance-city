@@ -21,7 +21,7 @@ func _draw() -> void:
 	draw_style_box(panel_style,panel)
 	draw_string(ThemeDB.fallback_font,panel.position+Vector2(14,21),"这座城市会演奏",HORIZONTAL_ALIGNMENT_LEFT,-1,16,ink)
 	draw_string(ThemeDB.fallback_font,panel.position+Vector2(14,41),"选方向 · 放锚点 · 听它沿街生长",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(ink,0.76))
-	var chips := [["深流","低音 · 慢拍",Color("6f8d92")],["织机","高音 · 短拍",Color("bd8760")],["留地","中音 · 留白",Color("809475")]]
+	var chips := [["深流","低音 · 慢拍",Color("6f8d92")],["织机","高音 · 短拍",Color("bd8760")],["暖庭","中音 · 长和声",Color("809475")]]
 	var x := panel.position.x+14.0
 	for chip: Array in chips:
 		draw_circle(Vector2(x+5,panel.position.y+65),4.0,chip[2])

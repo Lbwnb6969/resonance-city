@@ -12,7 +12,7 @@ const STYLES := {
 		"hashes":{"era1_commercial_01":"f367ecbabd32b4a41874e1b570aaeac0e95b7742097e8eee6701449f364a5f49","valley_house_hipped":"fbf7d0723b69b61f583f966d1486ee054d2b157c6bacbf5d86ea2988535fdb1e"},
 		"palette":{"#DAB8A7":"#D49C79","#DBB9A8":"#D49C79","#D9B7A6":"#D49C79","#D6B5A5":"#C88F70",
 			"#E5DBCC":"#EBD9BC","#BDBBBD":"#C9B7A7","#F6EFE5":"#FFF0D7"}},
-	"warm":{"label":"留地","residential_id":"valley_house_gabled","ink":Color("809475"),
+	"warm":{"label":"暖庭","residential_id":"valley_house_gabled","ink":Color("809475"),
 		"textures":{"valley_house_gabled":"资源/首作声音路线/SVG/warm_valley_house_gabled.svg"},
 		"hashes":{"valley_house_gabled":"c3961eb0dfc1d70028f3b017c1d11381406fd2e788b6afba9641863dc9983e04"},
 		"palette":{"#D6B5A5":"#91A483","#D9B7A6":"#A5B494","#DBB9A8":"#A5B494",

@@ -64,7 +64,7 @@ func _run() -> void:
 	for pair: String in ["deep_weave","deep_warm","weave_warm"]:
 		check(float(result["pair_pcm_max_abs"][pair]) > 0.005,pair+"_reports_measured_pcm_difference")
 	var readable := Compare.text(result)
-	check(readable.contains("深流") and readable.contains("织机") and readable.contains("留地"),"readable_result_names_all_routes")
+	check(readable.contains("深流") and readable.contains("织机") and readable.contains("暖庭"),"readable_result_names_all_routes")
 	check(readable.split("\n").size() == 3 and not readable.contains("PCM") and readable.contains("低音长响") and readable.contains("高音短促"),"readable_result_exposes_three_plain_sound_choices")
 	check(readable.contains("住宅生长") and readable.contains("商业生长") and readable.contains("保留1片空地"),"readable_result_exposes_city_consequences")
 	check(Compare.technical_text(result).contains("PCM差异（实际试听）") and Compare.technical_text(result).contains("每"),"technical_details_remain_available_separately")

@@ -8,7 +8,7 @@ extends RefCounted
 const EXPRESSIONS := {
 	"deep": "深流",
 	"weave": "织机",
-	"warm": "留地",
+	"warm": "暖庭",
 	"bright": "晴岸",
 }
 const TYPES := {

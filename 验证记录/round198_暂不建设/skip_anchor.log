@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+ROUND198_SKIP_ANCHOR {"checks":{"P_recovers_same_sound_step":true,"actual_charter_unlocks_selected_community_sound_without_fake_anchor":true,"closed_feedback_keeps_one_light_sound_entry":true,"declining_after_charter_reveal_continues_immediately":true,"different_charter_at_same_boundary_cannot_unlock_sound":true,"independent_retune_keeps_skipped_anchor_followup":true,"light_entry_opens_three_sounds_without_autoselection_or_submission":true,"not_building_queues_sound_after_its_charter":true,"ordinary_city_keeps_existing_no_build_followup":true,"real_boundary_has_no_birth_to_depend_on":true,"render_ahead_does_not_unlock_unheard_charter":true,"skip_submits_no_facility_reservation_or_house":true,"sound_step_does_not_open_before_audible_charter":true,"withdrawn_charter_does_not_unlock_sound":true},"failures":[],"passed":true,"scope":"Dummy production UI and real World settlements. Presentation is controlled to verify charter reveal, P and light-entry recovery. No physical audio, screenshot or human-fun claim."}

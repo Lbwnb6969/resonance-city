@@ -80,6 +80,7 @@ var expression_audition_layer: Node2D
 var music_activity_layer: Node2D
 var public_space_activity_layer: Node2D
 var authored_reservation_layer: Node2D
+var authored_voice_badges: Node2D
 var overlay_key: Array = []
 var overlay_candidates: Array[Dictionary] = []
 var overlay_communities: Array[Dictionary] = []
@@ -242,6 +243,10 @@ func _ready() -> void:
 	expression_audition_layer.name = "ExpressionAudition"
 	expression_audition_layer.z_index = 54
 	add_child(expression_audition_layer)
+	authored_voice_badges = preload("res://scripts/visual/authored_voice_badges.gd").new()
+	authored_voice_badges.name = "AuthoredVoiceBadges"
+	authored_voice_badges.z_index = 65
+	add_child(authored_voice_badges)
 	core_slice_hud = preload("res://scripts/ui/core_slice_hud.gd").new()
 	core_slice_hud.name = "CoreSliceHud"
 	core_slice_hud.z_index = 100
@@ -1058,6 +1063,10 @@ func _gui_input(event: InputEvent) -> void:
 				_show_context_menu()
 				return
 			if planning_guide.map_click(world_at(pointer),Input.is_key_pressed(KEY_SHIFT)): return
+			var authored_root: String = authored_voice_badges.hit_root(pointer)
+			if not authored_root.is_empty():
+				_open_authored_root(authored_root)
+				return
 			var landmark_index := _landmark_candidate_at(pointer)
 			if landmark_index >= 0:
 				_select_landmark_candidate(landmark_index)
@@ -1130,6 +1139,21 @@ func _first_authored_state(preferred_root: String = "") -> Dictionary:
 func _begin_first_authored_theme() -> bool:
 	var work := _first_authored_state()
 	return _begin_authored_theme(str(work.get("root_id","")))
+
+func _open_authored_root(root_id: String) -> void:
+	var work := _first_authored_state(root_id)
+	if work.is_empty(): return
+	if bool(work["theme_eligible"]):
+		_begin_authored_theme(root_id)
+		return
+	_cancel_preview_playback()
+	planning_guide.hide_tool()
+	selected_id = root_id
+	context = {"kind":"retune","id":root_id}
+	planning_guide._focus_planning_position(work["position"])
+	pointer = point(Coupling.position_of(shown_world.by_id[root_id]))
+	_show_context_menu()
+	_message("你的"+str(PlayerExpression.definition(str(work["expression"]))["label"])+" · 点音符改音，或选择下一段继续规划")
 
 func _begin_authored_theme(root_id: String) -> bool:
 	if root_id.is_empty(): return false
@@ -1324,7 +1348,7 @@ func _expression_preview_identity() -> Array:
 
 func _request_expression_preview() -> void:
 	if expression_choice.is_empty():
-		_message("先亲自选择深流、织机或留地，再点‘听四秒’")
+		_message("先亲自选择深流、织机或暖庭，再点‘听四秒’")
 		return
 	preview_requested = true
 	preview_public = false
@@ -1397,6 +1421,7 @@ func _choose_note(choice: int) -> void:
 	else: _message(result["reason"])
 
 func _show_context_menu() -> void:
+	authored_voice_badges.hide()
 	var retuning: bool = context.get("kind","") == "retune"
 	if _expression_context():
 		_cancel_preview_playback()
@@ -2941,6 +2966,7 @@ func _process(delta: float) -> void:
 	street_eaves_layer.sync(self)
 	_sync_daylight()
 	expression_audition_layer.sync(self)
+	authored_voice_badges.sync(self)
 	core_slice_hud.sync()
 	if first_composition_mode: authored_reservation_layer.sync(self)
 	else: authored_reservation_layer.hide()
@@ -3022,7 +3048,13 @@ func _process(delta: float) -> void:
 	var station_hover := _transit_station_at(p)
 	var landmark := shown_world.landmark_at(p)
 	var hover_card_status := ""
-	if transit_route_mode:
+	var hovered_author_root: String = authored_voice_badges.hit_root(pointer)
+	if not hovered_author_root.is_empty():
+		hover_id = hovered_author_root
+		var author_house: Dictionary = shown_world.by_id[hovered_author_root]
+		var author_label := str(PlayerExpression.definition(str(author_house["expression"]))["label"])
+		tooltip.text = "你的"+author_label+" · "+str(shown_world.communities[str(author_house["community_id"])]["name"])+"\n点击听自己的声音 / 改音，也可继续规划下一段"
+	elif transit_route_mode:
 		var transit_hover := _transit_route_preview(true)
 		if bool(transit_hover.get("accepted",false)):
 			var road_ids := _transit_road_ids(transit_hover)

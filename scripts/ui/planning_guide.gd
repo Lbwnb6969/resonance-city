@@ -18,6 +18,7 @@ var stage := "charter"
 var plan_id := ""
 var card_id := ""
 var committed_charter_id := ""
+var committed_charter_frame := -1
 var scope: Array = []
 ## A transit station can hand its real catchment into the normal planning flow.
 ## Keep this seed separate from the editable scope so choosing a charter/card
@@ -253,6 +254,7 @@ func transit_feedback_text(payload: Dictionary, settled := false) -> String:
 func reset_for_city() -> void:
 	composition_public_hint.clear()
 	committed_charter_id = ""
+	committed_charter_frame = -1
 	scope.clear()
 	scope_seed.clear()
 	scope_source.clear()
@@ -278,6 +280,7 @@ func open_tool() -> void:
 	composition_public_hint.clear()
 	if not demo.transit_charter_context.is_empty() or not demo.transit_edit_context.is_empty(): demo._clear_transit_route()
 	committed_charter_id = ""
+	committed_charter_frame = -1
 	partial_site.clear()
 	reuse_site.clear()
 	comparison.clear()
@@ -297,6 +300,8 @@ func open_tool() -> void:
 
 func ready_sound_community() -> String:
 	if not _first_composition_mode() or next_action.get("state","") != "ready" or not bool(next_action.get("first_composition_anchor",false)): return ""
+	if str(next_action.get("choice","")) == "none":
+		return str(next_action.get("community_id","")) if not _first_composition_charter().is_empty() else ""
 	return str(_first_composition_anchor().get("community_id",""))
 
 func _first_composition_mode() -> bool:
@@ -344,6 +349,7 @@ func _scope_source_hint() -> String:
 func hide_tool() -> void:
 	if stage in ["transit_anchor","transit_edit"]: demo._clear_transit_route()
 	committed_charter_id = ""
+	committed_charter_frame = -1
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
 	comparison_key.clear()
@@ -595,7 +601,7 @@ func refresh() -> void:
 		next_replan_button.hide()
 	else: next_replan_button.show()
 	next_action_button.tooltip_text = "打开真实落成公共设施的规划入口" if partial_feedback else "选中刚落地的房屋，打开已有聚焦与调音入口"
-	if first_sound_feedback: next_action_button.tooltip_text = "在这处实际落成公共空间所属社区，亲自试听与选择声音"
+	if first_sound_feedback: next_action_button.tooltip_text = "在你选择的真实社区，亲自试听与选择声音"
 	next_partial_row.visible = partial_feedback
 	next_reservation_button.visible = partial_feedback and not next_action.get("remaining_reservation_ids",[]).is_empty()
 	next_served_button.visible = partial_feedback and not next_action.get("served_building_ids",[]).is_empty()
@@ -726,9 +732,16 @@ func map_click(p: Vector2,multiple: bool) -> bool:
 			none_variant = comparison["variants"].get("none",{})
 		if none_variant.is_empty(): none_variant = {"accepted":true,"choice":"none","opportunity_preview":{}}
 		_queue_next_action(none_variant)
+		if _first_composition_mode():
+			next_action["first_composition_anchor"] = true
+			next_action["charter_id"] = committed_charter_id
+			next_action["expected_boundary_frame"] = committed_charter_frame
+			next_action["community_id"] = str(candidate["community_id"])
+			next_action["choice"] = "none"
 		demo.model.cancel_planning()
-		demo._message("这里暂不建设 · 章程保留，普通成长照常继续")
+		demo._message("这里暂不建设 · 章程落定后，继续给社区选声音" if _first_composition_mode() else "这里暂不建设 · 章程保留，普通成长照常继续")
 		_close_after_commit()
+		if _first_composition_mode(): _activate_first_composition_anchor({})
 		return true
 	if anchor_kind != "reserve" and not bool(preview.get("access",false)):
 		demo._message("这片公共空间没有能接入道路的真实入口")
@@ -872,6 +885,8 @@ func _next_action_event_matches(event: Dictionary) -> bool:
 	if next_action.get("state","") != "queued": return false
 	var event_kind := str(event.get("kind",""))
 	if bool(next_action.get("first_composition_anchor",false)):
+		if str(next_action.get("choice","")) == "none":
+			return event_kind == "charter" and str(event.get("id","")) == str(next_action["charter_id"]) and int(event.get("frame",-1)) == int(next_action["expected_boundary_frame"])
 		return event_kind == str(next_action["choice"]) and str(event.get("id","")) == str(next_action["public_id"]) and int(event.get("frame",-1)) == int(next_action["expected_boundary_frame"])
 	if bool(next_action.get("transit_edit",false)):
 		return event_kind == "transit_line" and bool(event.get("edit",false)) and str(event.get("id","")) == str(next_action["edit_id"]) \
@@ -922,6 +937,13 @@ func _next_action_event_matches(event: Dictionary) -> bool:
 func _expire_next_action_if_stale() -> void:
 	if next_action.get("state","") != "queued" or demo.shown_world == null: return
 	if bool(next_action.get("first_composition_anchor",false)):
+		if str(next_action.get("choice","")) == "none":
+			if not _first_composition_charter(demo.model.world).is_empty(): return
+			for pending in demo.model.world.pending_actions:
+				if str(pending.get("kind","")) == "charter" and "charter-%05d" % int(pending.get("event_id",-1)) == str(next_action["charter_id"]) and int(pending.get("frame",-1)) == int(next_action["expected_boundary_frame"]): return
+			next_action["state"] = "expired"
+			next_action["reason"] = "这次发展方向已撤回；按P重新选择社区。"
+			return
 		for pending in demo.model.world.pending_actions:
 			if str(pending.get("kind","")) == str(next_action["choice"]) and int(pending.get("event_id",-2)) == int(next_action["event_id"]) and int(pending.get("frame",-1)) == int(next_action["expected_boundary_frame"]): return
 		for event in demo.model.world.events:
@@ -1009,6 +1031,14 @@ func _activate_next_action(event: Dictionary) -> void:
 	refresh()
 	demo._message("规划结果已经落地 · 下一次行动由你选择")
 
+func _first_composition_charter(world: RefCounted = null) -> Dictionary:
+	var source: RefCounted = demo.shown_world if world == null else world
+	var cid := str(next_action.get("community_id",""))
+	for charter: Dictionary in source.development_charters:
+		if str(charter["charter_id"]) == str(next_action.get("charter_id","")) and charter["community_ids"].has(cid) and int(charter["committed_phrase"])*int(source.cfg["timing"]["phrase_frames"]) == int(next_action.get("expected_boundary_frame",-1)):
+			return charter
+	return {}
+
 func _first_composition_anchor() -> Dictionary:
 	if str(next_action.get("choice","")) == "reserve":
 		for reservation: Dictionary in demo.shown_world.planning_reservations:
@@ -1022,6 +1052,14 @@ func _first_composition_anchor() -> Dictionary:
 	return {}
 
 func _activate_first_composition_anchor(_event: Dictionary) -> void:
+	if str(next_action.get("choice","")) == "none":
+		if _first_composition_charter().is_empty(): return
+		next_action["state"] = "ready"
+		stage = "feedback"
+		opened = true
+		refresh()
+		demo._message("你选择的发展方向已落定 · 不建公共设施也能继续选声音")
+		return
 	var site := _first_composition_anchor()
 	if site.is_empty(): return
 	next_action["state"] = "ready"
@@ -1113,6 +1151,8 @@ func _next_action_detail() -> String:
 	if demo != null and demo.shown_world != null:
 		community_name = str(demo.shown_world.communities.get(str(next_action.get("community_id","")),{}).get("name",community_name))
 	if bool(next_action.get("first_composition_anchor",false)):
+		if str(next_action.get("choice","")) == "none":
+			return "%s · %s · 发展方向已落定\n没有新增公共设施。亲自试听并选一个声音，房屋会沿你选的社区与章程继续生长。" % [choice,community_name]
 		return "%s · %s · %s\n选择低音、协和或节奏方向，试听后由你决定。房屋会沿真实章程与锚点继续生长。" % [choice,community_name,"已保留" if str(next_action.get("choice","")) == "reserve" else "已落成"]
 	if bool(next_action.get("transit_anchor",false)):
 		var covered := "、".join(demo._transit_community_names(next_action.get("covered_scope_community_ids",[])))
@@ -1217,6 +1257,11 @@ func _take_theme_building() -> void:
 func _take_next_action() -> void:
 	if next_action.get("state","") != "ready": return
 	if bool(next_action.get("first_composition_anchor",false)):
+		if str(next_action.get("choice","")) == "none":
+			var cid := ready_sound_community()
+			if not cid.is_empty() and bool(demo._begin_first_sound_choice(cid)):
+				next_action["state"] = "consumed"
+			return
 		var site := _first_composition_anchor()
 		if site.is_empty():
 			next_action["state"] = "expired"
@@ -1342,6 +1387,7 @@ func commit_scope() -> void:
 		demo._message(str(result["reason"]))
 		return
 	committed_charter_id = "charter-%05d" % int(result["event_id"])
+	committed_charter_frame = int(result["frame"])
 	stage = "anchor"
 	composition_public_hint.clear()
 	if _first_composition_mode() and demo.shown_world.by_id.has(str(demo.composition_source_id)):
@@ -1657,6 +1703,8 @@ func _show_comparison() -> void:
 
 func sync() -> void:
 	visible = opened and not demo.black
+	if bool(next_action.get("first_composition_anchor",false)) and str(next_action.get("choice","")) == "none" and next_action.get("state","") == "queued":
+		_activate_first_composition_anchor({})
 	if (bool(next_action.get("transit_anchor",false)) or bool(next_action.get("first_composition_anchor",false))) and next_action.get("state","") == "queued": _expire_next_action_if_stale()
 	if observed_phrase != demo.shown_world.phrase_index:
 		observed_phrase = demo.shown_world.phrase_index

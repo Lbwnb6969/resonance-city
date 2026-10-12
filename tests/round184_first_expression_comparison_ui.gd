@@ -22,7 +22,7 @@ func _run() -> void:
 	}}
 	var text := Card.text(comparison,"weave")
 	check(text.split("\n").size() == 3,"card_keeps_three_short_route_rows")
-	check(text.contains("深流") and text.contains("织机") and text.contains("留地"),"card_lists_all_three_routes")
+	check(text.contains("深流") and text.contains("织机") and text.contains("暖庭"),"card_lists_all_three_routes")
 	check(not text.contains("PCM") and not text.contains("秒") and not text.contains("第1句"),"card_omits_engine_measurements")
 	check(text.contains("住宅生长") and text.contains("商业生长") and text.contains("保留1片空地"),"card_reports_real_city_consequences")
 	check(text.contains("低音长响，慢慢铺底") and text.contains("高音短促，密集织拍") and text.contains("中音长响，留出空隙"),"card_reports_sound_character_from_actual_profile")

@@ -5,7 +5,7 @@ extends RefCounted
 ## player can continue composing.  It deliberately derives every identity
 ## from the current World and audible score: no next building, reservation or
 ## theme source is invented, and no continuation state is persisted here.
-const EXPRESSIONS := {"deep": "深流", "weave": "织机", "warm": "留地"}
+const EXPRESSIONS := {"deep": "深流", "weave": "织机", "warm": "暖庭"}
 
 static func _event(world: RefCounted, kind: String, district_id: String) -> Dictionary:
 	var latest: Dictionary = {}

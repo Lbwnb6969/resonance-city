@@ -7,7 +7,7 @@ extends RefCounted
 const PlayerExpression = preload("res://scripts/world/player_expression.gd")
 
 const CONTRACT := "P12-EXPRESSION-COMPARE-RESULT/v1"
-const LABELS := {"deep":"深流", "weave":"织机", "warm":"留地"}
+const LABELS := {"deep":"深流", "weave":"织机", "warm":"暖庭"}
 const NOTE_NAMES := {0:"C", 2:"D", 4:"E", 7:"G", 9:"A"}
 const CITY_TYPES := {"residential":"住宅", "commercial":"商业", "industrial":"工业", "park":"公园", "civic":"公共设施"}
 
@@ -101,7 +101,7 @@ static func _sound_character(route: Dictionary) -> String:
 	# generic octave cutoff of 64 mislabeled the weave C4 as "中音" even though
 	# the choice and button promise a high, bright register.
 	var register := "低音" if pitch < 48 else ("中音" if pitch < 60 else "高音")
-	var length := "短促" if float(rhythm.get("tail_seconds",0.0)) < 0.5 else "长响"
+	var length := "短促" if float(rhythm.get("tail_seconds",0.0)) < 0.5 else ("长和声" if str(route.get("route","")) == "warm" else "长响")
 	var movement := "密集织拍" if spacing < 1.0 else ("慢慢铺底" if spacing < 3.0 else "留出空隙")
 	return register+length+"，"+movement
 

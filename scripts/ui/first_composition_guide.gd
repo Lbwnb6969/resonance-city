@@ -8,7 +8,7 @@ var action := "planning"
 var authored_state: Dictionary = {}
 var continuation_state: Dictionary = {}
 var heard_root := ""
-const EXPRESSIONS := {"deep":"深流","weave":"织机","warm":"留地"}
+const EXPRESSIONS := {"deep":"深流","weave":"织机","warm":"暖庭"}
 
 func setup(owner_demo: Control) -> void:
 	demo = owner_demo
@@ -57,7 +57,7 @@ func sync() -> void:
 			entered = true
 			action = "sound"
 			text = "给"+str(demo.shown_world.communities[ready_cid]["name"])+"选一个声音"
-			tooltip_text = "公共空间已经落成，继续选择声音；确认才种下"
+			tooltip_text = "发展方向已经落定，继续选择声音；确认才种下"
 			disabled = false
 			visible = not _blocked()
 			_place_entry()

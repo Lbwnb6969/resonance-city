@@ -8,7 +8,7 @@ extends RefCounted
 const PlayerExpression = preload("res://scripts/world/player_expression.gd")
 
 const NOTE_NAMES := {0:"C",2:"D",4:"E",7:"G",9:"A"}
-const EXPRESSIONS := {"deep":"深流","weave":"织机","warm":"留地"}
+const EXPRESSIONS := {"deep":"深流","weave":"织机","warm":"暖庭"}
 
 static func note_label(midi: int) -> String:
 	var name := str(NOTE_NAMES.get(posmod(midi,12),"音"))
