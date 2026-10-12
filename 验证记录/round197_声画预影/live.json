@@ -1,0 +1,54 @@
+{
+	"checks": {
+		"accepted_choice_keeps_its_house_as_queued_ghost": true,
+		"anchor_reaches_actual_device_boundary": true,
+		"authored_house_reaches_audible_boundary": true,
+		"choosing_builds_actual_house_ghost_without_autoplay": true,
+		"deep_audition_and_ghost_share_frozen_source": true,
+		"deep_ghost_pulse_follows_playing_branch_event": true,
+		"deep_ghost_uses_accepted_branch_house": true,
+		"ghost_hands_off_to_actual_house_and_audible_birth_gesture": true,
+		"ghost_survives_render_ahead_without_claiming_real_birth": true,
+		"idle_choice_rebuilds_after_boundary_without_autoplay": true,
+		"idle_selected_choice_crosses_next_real_phrase": true,
+		"no_new_audio_underrun": true,
+		"physical_window_and_audio": true,
+		"reaches_last_tenth_second_before_birth": true,
+		"right_click_withdraws_real_choice_and_its_ghost": true,
+		"three_visual_identities_leave_real_city_unchanged": true,
+		"warm_audition_and_ghost_share_frozen_source": true,
+		"warm_ghost_pulse_follows_playing_branch_event": true,
+		"warm_ghost_uses_accepted_branch_house": true,
+		"weave_audition_and_ghost_share_frozen_source": true,
+		"weave_ghost_pulse_follows_playing_branch_event": true,
+		"weave_ghost_uses_accepted_branch_house": true
+	},
+	"evidence": {
+		"deep": {
+			"entry_id": "valley_house_terrace:first_expression:deep",
+			"preview_frame": 706047.415545533,
+			"pulse": 0.932363485180134,
+			"pulse_onset": 705600,
+			"reservations": 0
+		},
+		"houses": 26,
+		"underruns": 0,
+		"warm": {
+			"entry_id": "valley_house_gabled:first_expression:warm",
+			"preview_frame": 706081.901745533,
+			"pulse": 0.927150151846812,
+			"pulse_onset": 705600,
+			"reservations": 1
+		},
+		"weave": {
+			"entry_id": "era1_commercial_01:first_expression:weave",
+			"preview_frame": 706027.901295533,
+			"pulse": 0.935313485180135,
+			"pulse_onset": 705600,
+			"reservations": 0
+		}
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Actual Windows/WASAPI first-composition controls and branch PCM; screenshots verify style and read-only ghost handoff."
+}

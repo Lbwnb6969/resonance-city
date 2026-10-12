@@ -3,6 +3,7 @@ const Coupling = preload("res://scripts/world/world_coupling.gd")
 const IsoProjection = preload("res://scripts/world/world_projection.gd")
 const PublicGeometry = preload("res://scripts/visual/public_space_visual_geometry.gd")
 const TerrainGeometry = preload("res://scripts/visual/valley_terrain_visual_geometry.gd")
+const ExpressionIdentity = preload("res://scripts/visual/first_expression_identity.gd")
 var city: ContinuousWorld
 var role := "terrain"
 var key: Array = []
@@ -175,9 +176,22 @@ func _draw_urban() -> void:
 func _draw_occupied_lots() -> void:
 	for lot in city.lots:
 		if lot["occupant"] != "":
-			# Slightly stronger lot tint keeps each family legible as a block while
-			# leaving the river, roads and building silhouettes visually dominant.
-			draw_colored_polygon(_project_polygon(lot["polygon"]),Color(0.68,0.73,0.57,0.24))
+			var expression := _lot_expression(lot)
+			var polygon := _project_polygon(lot["polygon"])
+			if expression.is_empty():
+				draw_colored_polygon(polygon,Color(0.68,0.73,0.57,0.24))
+			else:
+				# The same authored palette reaches the street, not just the roof.
+				# Subtle paved plots make the growing family read as one place.
+				var ink: Color = ExpressionIdentity.STYLES[expression]["ink"]
+				draw_colored_polygon(polygon,Color(ink,0.29))
+				var edge := polygon.duplicate()
+				edge.append(edge[0])
+				draw_polyline(edge,Color(ink,0.32),0.75,true)
+
+func _lot_expression(lot: Dictionary) -> String:
+	var building: Dictionary = city.by_id[str(lot["occupant"])]
+	return ExpressionIdentity.expression_for(building,city.families.get(str(building.get("family_id","")),{}))
 
 func _draw_center_markers() -> void:
 	for center in city.centers:
@@ -335,7 +349,7 @@ func _urban_contents() -> Dictionary:
 			if p == Vector2.INF: continue
 			content["public"].append(["stop",p])
 	for lot in city.lots:
-		if lot["occupant"] != "": content["lots"].append(lot["polygon"])
+		if lot["occupant"] != "": content["lots"].append([lot["polygon"],_lot_expression(lot)])
 	var cache: Dictionary = city.fabric_cache
 	for courtyard in cache.get("courtyards",[]):
 		content["fabric"].append(["court",Vector2(float(courtyard["center"][0]),float(courtyard["center"][1])),

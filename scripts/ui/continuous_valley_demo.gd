@@ -37,7 +37,7 @@ var street_eaves_layer: Node2D
 var daylight_state: Dictionary = {}
 var daylight_manual_phase := -1.0
 var scenery := ValleyScenery.new()
-var slice_panel_style: StyleBoxFlat
+var core_slice_hud: Node2D
 var expression := "bright"
 var starter := true
 var first_composition_mode := true
@@ -76,6 +76,7 @@ var terrain_layer: Node2D
 var city_ground_layer: Node2D
 var water_flow: Node2D
 var community_label_layer: Node2D
+var expression_audition_layer: Node2D
 var music_activity_layer: Node2D
 var public_space_activity_layer: Node2D
 var authored_reservation_layer: Node2D
@@ -237,6 +238,15 @@ func _ready() -> void:
 	community_label_layer.name = "CommunityNames"
 	community_label_layer.z_index = 50
 	add_child(community_label_layer)
+	expression_audition_layer = preload("res://scripts/visual/expression_audition_layer.gd").new()
+	expression_audition_layer.name = "ExpressionAudition"
+	expression_audition_layer.z_index = 54
+	add_child(expression_audition_layer)
+	core_slice_hud = preload("res://scripts/ui/core_slice_hud.gd").new()
+	core_slice_hud.name = "CoreSliceHud"
+	core_slice_hud.z_index = 100
+	core_slice_hud.setup(self)
+	add_child(core_slice_hud)
 	music_activity_layer = preload("res://scripts/visual/city_music_activity_layer.gd").new()
 	music_activity_layer.name = "MusicActivity"
 	music_activity_layer.z_index = 60
@@ -1262,6 +1272,7 @@ func _select_player_expression(choice: String) -> void:
 	expression_choice = choice
 	_update_expression_menu()
 	if preview_requested: _request_expression_preview()
+	else: _prepare_expression_comparison()
 
 func _toggle_expression_listen() -> void:
 	if not _expression_context() or expression_choice.is_empty(): return
@@ -1321,6 +1332,11 @@ func _request_expression_preview() -> void:
 	if not expression_comparison.is_empty() and expression_comparison_key == key:
 		_play_expression_preview()
 		return
+	_prepare_expression_comparison()
+
+func _prepare_expression_comparison() -> void:
+	var key := _expression_preview_identity()
+	if not expression_comparison.is_empty() and expression_comparison_key == key: return
 	if preview_thread != null: return
 	var frozen := model.freeze()
 	if preview_duck_owned:
@@ -1329,7 +1345,7 @@ func _request_expression_preview() -> void:
 	preview_started = false
 	preview_thread = Thread.new()
 	preview_thread.start(_build_expression_preview.bind(frozen,context["position"].duplicate(),clock.renderer.state.duplicate(true),clock.renderer.transport.rendered_frames,key))
-	_message("取得同一下一句 · 三种真实声音正在准备")
+	if preview_requested: _message("取得同一下一句 · 三种真实声音正在准备")
 
 func _build_expression_preview(source: ContinuousAudioModel,position: Array,state: Dictionary,at: int,key: Array) -> Dictionary:
 	var result := ExpressionPreview.build(source,position,state,at)
@@ -1349,11 +1365,14 @@ func _play_expression_preview() -> void:
 func _confirm_player_expression() -> void:
 	if not _expression_context() or expression_choice.is_empty() or expression_confirm.disabled: return
 	var operation := PlayerExpression.operation(expression_choice,context["position"])
+	var visual_variant: Dictionary = expression_comparison.get("variants",{}).get(expression_choice,{}) if expression_comparison_key == _expression_preview_identity() else {}
 	_cancel_preview_playback()
 	var result := model.submit(operation)
 	if not bool(result["accepted"]):
 		_message(str(result["reason"]))
 		return
+	if not visual_variant.is_empty() and int(expression_comparison["boundary_frame"]) == int(result["frame"]) and visual_variant["operation"] == operation:
+		expression_audition_layer.queue_choice(visual_variant,int(result["frame"]),int(result["event_id"]))
 	var p: Array = operation["position"]
 	ripple_position = Vector2(float(p[0]),float(p[1]))
 	ripple_seconds = 0.6
@@ -2914,11 +2933,15 @@ func _process(delta: float) -> void:
 				else: _cancel_preview_playback()
 			elif not planning_guide.opened and result.get("request_key",preview_context_key) == preview_context_key: _play_preview_pcm(result["pcm"])
 			else: _cancel_preview_playback()
+	if menu.visible and _expression_context() and not expression_choice.is_empty() and not preview_started and expression_comparison_key != _expression_preview_identity():
+		_prepare_expression_comparison()
 	var frame_started := Time.get_ticks_usec()
 	_sync_buildings()
 	_profile_frame("buildings_ms",frame_started)
 	street_eaves_layer.sync(self)
 	_sync_daylight()
+	expression_audition_layer.sync(self)
+	core_slice_hud.sync()
 	if first_composition_mode: authored_reservation_layer.sync(self)
 	else: authored_reservation_layer.hide()
 	music_activity_layer.sync(self)
@@ -3234,6 +3257,8 @@ func _draw() -> void:
 		if op["kind"] != "seed": continue
 		var p := Vector2(op["position"][0],op["position"][1])
 		var color := Color(0.87,0.78,0.53,0.55+0.10*sin(flow*TAU*2.0))
+		if bool(op.get("player_expression",false)):
+			color = Color(FirstExpressionIdentity.STYLES[str(op["expression"])]["ink"],0.35)
 		draw_colored_polygon(_project_polygon(shown_world.building_polygon(p)),color)
 		draw_arc(point(p),10.0*view_zoom,0,TAU,24,color,1.0,true)
 	if ripple_seconds > 0.0:
@@ -3245,7 +3270,6 @@ func _draw() -> void:
 	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,ui_ink)
 	var composition_title := _composition_title()
 	draw_string(font,Vector2(47,67),composition_title,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color(ui_ink,0.78))
-	_draw_slice_hud(Color("435c59"))
 	_draw_authored_voice_legend(ui_ink)
 	_draw_landmark_bar()
 	if not black:
@@ -3261,35 +3285,6 @@ func _draw() -> void:
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
 	draw_line(Vector2(48,size.y-32),Vector2(48+(size.x-96)*progress,size.y-32),Color("af9c6a"),3.0)
 	_profile_frame("draw_ms",draw_started)
-
-func _draw_slice_hud(ui_ink: Color) -> void:
-	## A compact, always-visible explanation of the playable slice. It uses the
-	## same three authored identities as the real sound/building systems so the
-	## player can read the visual promise before opening the planning panel.
-	if not first_composition_mode or black: return
-	var panel := Rect2(size.x-386.0,24.0,350.0,86.0)
-	draw_style_box(_slice_panel_style(),panel)
-	draw_string(ThemeDB.fallback_font,panel.position+Vector2(14,21),"这座城市会演奏",HORIZONTAL_ALIGNMENT_LEFT,-1,16,ui_ink)
-	draw_string(ThemeDB.fallback_font,panel.position+Vector2(14,41),"选方向 · 放锚点 · 听它沿街生长",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(ui_ink,0.76))
-	var chips := [["深流","低音 · 慢拍",Color("6f8d92")],["织机","高音 · 短拍",Color("bd8760")],["留地","中音 · 留白",Color("809475")]]
-	var chip_x := panel.position.x+14.0
-	for chip: Array in chips:
-		var label := str(chip[0])
-		var sub := str(chip[1])
-		var width := 98.0
-		draw_circle(Vector2(chip_x+5,panel.position.y+65),4.0,chip[2])
-		draw_string(ThemeDB.fallback_font,Vector2(chip_x+13,panel.position.y+63),label,HORIZONTAL_ALIGNMENT_LEFT,-1,11,chip[2])
-		draw_string(ThemeDB.fallback_font,Vector2(chip_x+13,panel.position.y+77),sub,HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color(ui_ink,0.66))
-		chip_x += width
-
-func _slice_panel_style() -> StyleBoxFlat:
-	if slice_panel_style == null:
-		slice_panel_style = StyleBoxFlat.new()
-		slice_panel_style.bg_color = Color("f4f0df",0.91)
-		slice_panel_style.border_color = Color("b5b89d",0.72)
-		slice_panel_style.set_border_width_all(1)
-		slice_panel_style.set_corner_radius_all(10)
-	return slice_panel_style
 
 func _composition_title() -> String:
 	if not first_composition_mode:
