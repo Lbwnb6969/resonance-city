@@ -1,0 +1,117 @@
+{
+	"checks": {
+		"accepted_warm_ghost_uses_same_actual_parcel": true,
+		"actual_city_pcm_no_clipping_or_added_underrun": true,
+		"actual_east_production_sound_entry": true,
+		"actual_selected_context_four_second_pcm": true,
+		"actual_west_production_sound_entry": true,
+		"actual_windows_gpu_and_audio": true,
+		"back_cancels_preparing_preview_and_late_result": true,
+		"back_without_confirmation_keeps_city": true,
+		"black_hides_picker_and_immediately_restores_actual_city_audio": true,
+		"card_selection_and_full_audition_do_not_write_world": true,
+		"confirmed_author_house_reaches_actual_device": true,
+		"east_1440_empty_compact_actual_panel": true,
+		"east_1440_empty_title_retained_and_duplicate_legend_hidden": true,
+		"east_1440_empty_true_parcel_community_focus": true,
+		"east_1440_empty_whole_actual_target_and_panel_visible": true,
+		"east_800_empty_compact_actual_panel": true,
+		"east_800_empty_title_retained_and_duplicate_legend_hidden": true,
+		"east_800_empty_true_parcel_community_focus": true,
+		"east_800_empty_whole_actual_target_and_panel_visible": true,
+		"enter_submits_one_actual_chosen_seed": true,
+		"footer_progress_reads_actual_player": true,
+		"four_seconds_actual_city_pcm_reach_device": true,
+		"full_four_seconds_finish_and_restore_city_keep_choice": true,
+		"heard_chosen_house_clears_menu_focus": true,
+		"native_tab_moves_card_focus_without_city_solo": true,
+		"no_automatic_choice_or_confirmation": true,
+		"opening_reaches_device": true,
+		"rapid_real_card_switch_plays_current_warm": true,
+		"real_deep_preview_for_keyboard_lifecycle": true,
+		"real_relisten_starts": true,
+		"reopen_east_after_cancel": true,
+		"return_from_black_does_not_restart_cancelled_preview": true,
+		"space_black_and_cancel_do_not_submit_city_choice": true,
+		"space_release_stops_only_current_preview": true,
+		"unchanged_actual_24_house_opening": true,
+		"unique_actual_selected_and_listening_card": true,
+		"west_1440_selected_compact_actual_panel": true,
+		"west_1440_selected_title_retained_and_duplicate_legend_hidden": true,
+		"west_1440_selected_true_parcel_community_focus": true,
+		"west_1440_selected_whole_actual_target_and_panel_visible": true,
+		"west_800_empty_compact_actual_panel": true,
+		"west_800_empty_title_retained_and_duplicate_legend_hidden": true,
+		"west_800_empty_true_parcel_community_focus": true,
+		"west_800_empty_whole_actual_target_and_panel_visible": true
+	},
+	"evidence": {
+		"clipped": 0,
+		"layouts": [
+			{
+				"label": "west_800_empty",
+				"orientation": 3,
+				"panel": "[P: (432.0, 78.0), S: (356.0, 474.0)]",
+				"position": [
+					13.7984962463379,
+					18.7742557525635
+				],
+				"selected": "",
+				"target": "[P: (121.7494, 206.6614), S: (180.0, 170.0)]",
+				"window": "(800.0, 600.0)"
+			},
+			{
+				"label": "west_1440_selected",
+				"orientation": 3,
+				"panel": "[P: (1072.0, 213.0), S: (356.0, 474.0)]",
+				"position": [
+					13.7984962463379,
+					18.7742557525635
+				],
+				"selected": "warm",
+				"target": "[P: (442.0, 361.9287), S: (180.0, 170.0)]",
+				"window": "(1440.0, 900.0)"
+			},
+			{
+				"label": "east_1440_empty",
+				"orientation": 3,
+				"panel": "[P: (12.0, 213.0), S: (356.0, 474.0)]",
+				"position": [
+					21.3323040008545,
+					9.95230770111084
+				],
+				"selected": "",
+				"target": "[P: (713.3711, 355.7006), S: (180.0, 170.0)]",
+				"window": "(1440.0, 900.0)"
+			},
+			{
+				"label": "east_800_empty",
+				"orientation": 3,
+				"panel": "[P: (12.0, 78.0), S: (356.0, 474.0)]",
+				"position": [
+					21.3323040008545,
+					9.95230770111084
+				],
+				"selected": "",
+				"target": "[P: (389.6825, 199.8828), S: (180.0, 170.0)]",
+				"window": "(800.0, 600.0)"
+			}
+		],
+		"peak": 0.296553790569305,
+		"progress": {
+			"duration": 4.0,
+			"elapsed": 0.807510424085975,
+			"ink": "(0.502, 0.5804, 0.4588, 1.0)",
+			"playing": true,
+			"progress": 0.201877606021494,
+			"text": "暖庭 · 正在试听"
+		},
+		"root_id": "building-00025",
+		"sample_rate": 22050,
+		"samples": 88200,
+		"underruns": 0
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Windows/OpenGL/WASAPI; native card/Tab/Space/Enter input, full four-second selected preview, true heard author house, preparing/back/black cancellation; two actual river banks at 800 and 1440. Human aesthetic/fun/listening judgement unverified."
+}

@@ -1,0 +1,4 @@
+ERROR: Failed to open log file for writing: 验证记录/round211_声音选择行/card_dummy.log
+SCRIPT ERROR: Parse Error: The member "Expression" shadows a native class.
+at: GDScript::reload (res://tests/round211_voice_rows.gd:5)
+ERROR: Failed to load script with error Parse error. No asset or UI contract executed.

@@ -1,0 +1,141 @@
+{
+	"checks": {
+		"dummy_only_without_a_scene_audio_device_or_world": true,
+		"existing_street_orientation_update_replaces_only_the_real_thumbnail_and_preserves_choice_and_toggle": true,
+		"layout_keyboard_and_texture_updates_keep_all_route_and_asset_data_read_only": true,
+		"native_disabled_row_does_not_activate_or_emit_a_new_selection": true,
+		"native_space_pressed_signal_allows_the_owner_to_keep_exactly_one_selected_row": true,
+		"real_listening_flag_shows_a_static_short_state_then_restores_selection_without_a_fake_amplitude_animation": true,
+		"three_76px_rows_fit_312px_with_complete_native_font_sound_labels_and_nonoverlapping_parts": true,
+		"three_76px_rows_fit_330px_with_complete_native_font_sound_labels_and_nonoverlapping_parts": true,
+		"three_native_buttons_preserve_real_route_labels_types_and_distinct_actual_thumbnail_textures": true,
+		"unselected_rows_have_no_white_panel_frame_and_selection_alone_has_a_pine_surface_with_native_focus": true
+	},
+	"failures": [],
+	"passed": true,
+	"rows": [
+		{
+			"motif_onsets": [
+				0,
+				8,
+				16,
+				24
+			],
+			"rect": "[P: (20.0, 20.0), S: (312.0, 76.0)]",
+			"route": "deep",
+			"sound_available": "(222.0, 22.0)",
+			"sound_font_pixels": 14,
+			"sound_pixels": "(96.0, 20.0)",
+			"thumbnail": "refined_deep_terrace",
+			"title_font_pixels": 18,
+			"use_font_pixels": 13,
+			"width": 312
+		},
+		{
+			"motif_onsets": [
+				0,
+				1,
+				2,
+				4,
+				6,
+				8,
+				10,
+				12,
+				16,
+				18,
+				20,
+				24,
+				26,
+				28,
+				30
+			],
+			"rect": "[P: (20.0, 102.0), S: (312.0, 76.0)]",
+			"route": "weave",
+			"sound_available": "(222.0, 22.0)",
+			"sound_font_pixels": 14,
+			"sound_pixels": "(96.0, 20.0)",
+			"thumbnail": "refined_weave_shop",
+			"title_font_pixels": 18,
+			"use_font_pixels": 13,
+			"width": 312
+		},
+		{
+			"motif_onsets": [
+				0,
+				12,
+				24
+			],
+			"rect": "[P: (20.0, 184.0), S: (312.0, 76.0)]",
+			"route": "warm",
+			"sound_available": "(222.0, 22.0)",
+			"sound_font_pixels": 14,
+			"sound_pixels": "(82.0, 20.0)",
+			"thumbnail": "refined_warm_courtyard",
+			"title_font_pixels": 18,
+			"use_font_pixels": 13,
+			"width": 312
+		},
+		{
+			"motif_onsets": [
+				0,
+				8,
+				16,
+				24
+			],
+			"rect": "[P: (20.0, 20.0), S: (330.0, 76.0)]",
+			"route": "deep",
+			"sound_available": "(240.0, 22.0)",
+			"sound_font_pixels": 14,
+			"sound_pixels": "(96.0, 20.0)",
+			"thumbnail": "refined_deep_terrace",
+			"title_font_pixels": 18,
+			"use_font_pixels": 13,
+			"width": 330
+		},
+		{
+			"motif_onsets": [
+				0,
+				1,
+				2,
+				4,
+				6,
+				8,
+				10,
+				12,
+				16,
+				18,
+				20,
+				24,
+				26,
+				28,
+				30
+			],
+			"rect": "[P: (20.0, 102.0), S: (330.0, 76.0)]",
+			"route": "weave",
+			"sound_available": "(240.0, 22.0)",
+			"sound_font_pixels": 14,
+			"sound_pixels": "(96.0, 20.0)",
+			"thumbnail": "refined_weave_shop",
+			"title_font_pixels": 18,
+			"use_font_pixels": 13,
+			"width": 330
+		},
+		{
+			"motif_onsets": [
+				0,
+				12,
+				24
+			],
+			"rect": "[P: (20.0, 184.0), S: (330.0, 76.0)]",
+			"route": "warm",
+			"sound_available": "(240.0, 22.0)",
+			"sound_font_pixels": 14,
+			"sound_pixels": "(82.0, 20.0)",
+			"thumbnail": "refined_warm_courtyard",
+			"title_font_pixels": 18,
+			"use_font_pixels": 13,
+			"width": 330
+		}
+	],
+	"scope": "Dummy standalone native Button rows under the production UI theme, actual current route textures and orientation update. 312/330px complete text and 76px height, selected hierarchy, keyboard/disabled/listening API, no World/PCM mutation. Root owns narrow 356px production panel and real audio/footer/compositing review. No human aesthetic conclusion."
+}

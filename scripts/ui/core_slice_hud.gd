@@ -4,6 +4,7 @@ const Ui = preload("res://scripts/ui/valley_ui_theme.gd")
 var demo: Control
 var panel_style: StyleBoxFlat
 var title_style: StyleBoxFlat
+var legend_visible := true
 
 func setup(owner_demo: Control) -> void:
 	demo = owner_demo
@@ -14,16 +15,18 @@ func setup(owner_demo: Control) -> void:
 
 func sync() -> void:
 	visible = demo.first_composition_mode and not demo.black
+	legend_visible = not (demo.menu.visible and demo._expression_context())
 	if visible: queue_redraw()
 
 func _draw() -> void:
 	var ink := Ui.INK
 	var font := ThemeDB.fallback_font
-	draw_style_box(title_style,Rect2(24,24,244,82))
+	draw_style_box(title_style,Rect2(24,24,244,82 if legend_visible else 44))
 	# A restrained music mark and clear title stay readable over any terrain.
 	for i in range(5):
 		draw_line(Vector2(42+i*5,42-i%3*3),Vector2(42+i*5,60+i%2*4),Ui.GOLD,2,true)
-	draw_string(font,Vector2(80,57),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,24,Ui.PAPER)
+	draw_string(font,Vector2(80,57 if legend_visible else 54),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,24 if legend_visible else 20,Ui.PAPER)
+	if not legend_visible: return
 	draw_string(font,Vector2(80,83),demo._composition_title(),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("c2d1bd"))
 	var panel := Rect2(demo.size.x-386.0,24.0,350.0,86.0)
 	var roots: Array = demo.AuthoredDuet.roots(demo.shown_world,demo.model.audible_pitches())

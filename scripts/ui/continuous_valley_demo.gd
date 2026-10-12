@@ -17,6 +17,7 @@ const FirstComposition = preload("res://scripts/world/first_composition.gd")
 const FirstSoundPlacement = preload("res://scripts/world/first_sound_placement.gd")
 const RefinedUi = preload("res://scripts/ui/valley_ui_theme.gd")
 const CityVoiceCard = preload("res://scripts/ui/city_voice_card.gd")
+const FirstSoundStatus = preload("res://scripts/ui/first_sound_status.gd")
 const StreetOrientation = preload("res://scripts/visual/building_street_orientation.gd")
 const AuthoredDuet = preload("res://scripts/world/authored_duet.gd")
 const FirstAuthoredWork = preload("res://scripts/world/first_authored_work.gd")
@@ -61,6 +62,7 @@ var expression_comparison: Dictionary = {}
 var expression_comparison_key: Array = []
 var expression_confirm: Button
 var expression_listen: Button
+var expression_status: Control
 var expression_click_preview := false
 var authored_badge_style: StyleBoxFlat
 var expression_summary: Label
@@ -89,6 +91,7 @@ var city_ground_layer: Node2D
 var water_flow: Node2D
 var community_label_layer: Node2D
 var expression_audition_layer: Node2D
+var first_sound_focus: Node2D
 var authored_growth_trail: Node2D
 var pending_authored_path: Node2D
 var pending_composition_choice: Dictionary = {}
@@ -276,6 +279,9 @@ func _ready() -> void:
 	expression_audition_layer.name = "ExpressionAudition"
 	expression_audition_layer.z_index = 54
 	add_child(expression_audition_layer)
+	first_sound_focus = preload("res://scripts/visual/first_sound_focus.gd").new()
+	first_sound_focus.name = "FirstSoundFocus"
+	add_child(first_sound_focus)
 	authored_growth_trail = preload("res://scripts/visual/authored_growth_trail.gd").new()
 	authored_growth_trail.name = "AuthoredGrowthTrail"
 	authored_growth_trail.z_index = 56
@@ -463,7 +469,12 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 func _make_menu() -> void:
 	menu = PanelContainer.new()
 	menu.z_index = 110
-	menu.add_theme_stylebox_override("panel",RefinedUi.panel(18))
+	menu.set_meta("regular_panel",RefinedUi.panel(18))
+	var voice_panel := RefinedUi.panel(16)
+	voice_panel.set_corner_radius_all(6)
+	voice_panel.border_color = Color("b9aa88")
+	menu.set_meta("voice_panel",voice_panel)
+	menu.add_theme_stylebox_override("panel",menu.get_meta("regular_panel"))
 	var shell := VBoxContainer.new()
 	shell.add_theme_constant_override("separation",12)
 	menu.add_child(shell)
@@ -493,9 +504,8 @@ func _make_menu() -> void:
 		expression_box.add_child(button)
 	expression_summary = Label.new()
 	expression_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	expression_summary.add_theme_font_size_override("font_size",14)
+	expression_summary.add_theme_font_size_override("font_size",13)
 	expression_summary.add_theme_color_override("font_color",Color("435c59"))
-	expression_box.add_child(expression_summary)
 	expression_comparison_summary = Label.new()
 	expression_comparison_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	expression_comparison_summary.add_theme_font_size_override("font_size",13)
@@ -506,22 +516,30 @@ func _make_menu() -> void:
 	expression_footer.add_theme_constant_override("separation",6)
 	menu.set_meta("expression_footer",expression_footer)
 	shell.add_child(expression_footer)
+	expression_status = FirstSoundStatus.new()
+	expression_footer.add_child(expression_status)
+	expression_footer.add_child(expression_summary)
 	var listen_row := HBoxContainer.new()
 	listen_row.add_theme_constant_override("separation",8)
 	expression_listen = Button.new()
-	expression_listen.text = "点上方方向，立即听四秒"
+	expression_listen.text = "试听"
+	expression_listen.tooltip_text = "试听当前声音四秒；也可按住空格，松开回到城市"
 	expression_listen.custom_minimum_size.y = 34
 	expression_listen.pressed.connect(_toggle_expression_listen)
 	expression_listen.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	listen_row.add_child(expression_listen)
 	expression_confirm = Button.new()
-	expression_confirm.text = "确认种下 · 下一句生长"
+	expression_confirm.text = "种下这个声音"
+	expression_confirm.tooltip_text = "确认后在下一乐句种下当前选中的声音 · Enter"
 	expression_confirm.custom_minimum_size.y = 38
 	RefinedUi.primary(expression_confirm)
 	expression_confirm.pressed.connect(_confirm_player_expression)
 	expression_footer.add_child(expression_confirm)
 	var expression_back := Button.new()
-	expression_back.text = "回到河湾 · Esc"
+	expression_back.text = "回到河湾"
+	expression_back.tooltip_text = "收起面板并结束试听 · Esc / 右键"
+	expression_back.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	menu.set_meta("expression_back",expression_back)
 	expression_back.pressed.connect(func() -> void:
 		_cancel_preview_playback()
 		menu.hide())
@@ -688,6 +706,8 @@ func _make_menu() -> void:
 	terrain_button.pressed.connect(_cycle_terrain)
 	city_tools.add_child(terrain_button)
 	add_child(menu)
+	menu.visibility_changed.connect(func() -> void:
+		if not menu.visible and _expression_context(): _cancel_preview_playback())
 	menu.hide()
 
 func _apply_expression_button_style(button: Button, choice_id: String) -> void:
@@ -1382,8 +1402,8 @@ func _sync_expression_listen() -> void:
 	for choice_id: String in expression_choices:
 		expression_choices[choice_id].set_listening(preview_started and preview_requested and choice_id == expression_choice)
 	expression_listen.disabled = expression_choice.is_empty()
-	expression_listen.text = "停止试听 · 回到城市" if preview_requested else "再听四秒 · 也可按住空格"
-	if expression_choice.is_empty(): expression_listen.text = "点上方方向，立即听四秒"
+	expression_listen.text = "停止试听" if preview_requested else "再听四秒"
+	if expression_choice.is_empty(): expression_listen.text = "试听"
 
 func _update_expression_menu() -> void:
 	_sync_expression_listen()
@@ -1402,9 +1422,9 @@ func _update_expression_menu() -> void:
 			expression_comparison_summary.text = FirstExpressionComparisonCard.text(expression_comparison,expression_choice)
 	var cid := str(context.get("community_id",""))
 	var name_text := str(shown_world.communities.get(cid,{}).get("name","这片街坊"))
-	menu_info.text = name_text+" · 种下你的声音"
+	menu_info.text = name_text+" · 声音性格"
 	if expression_choice.is_empty():
-		expression_summary.text = "点卡片听四秒，确认后种下。"
+		expression_summary.text = "确认后，在这块地长出你的房屋。"
 		return
 	var choice := PlayerExpression.definition(expression_choice)
 	expression_summary.text = str(choice["city"])
@@ -1415,8 +1435,8 @@ func _update_expression_menu() -> void:
 			expression_confirm.disabled = true
 		else:
 			var consequence: Dictionary = variant["consequences"]
-			expression_summary.text = "下一句长出%s · 社区%d栋成熟房屋" % ["商业" if consequence["type"] == "commercial" else "住宅",int(consequence["mature"])]
-			if int(consequence.get("reservation_count",0)) > 0: expression_summary.text += " · 留下1片可再规划空地"
+			expression_summary.text = "下一句长出%s" % ("商业" if consequence["type"] == "commercial" else "住宅")
+			if int(consequence.get("reservation_count",0)) > 0: expression_summary.text += " · 留下可规划空地"
 
 func _expression_preview_identity() -> Array:
 	# The preview worker freezes the renderer at the current render cursor.  A
@@ -1523,6 +1543,7 @@ func _show_context_menu() -> void:
 		expression_comparison.clear()
 		expression_comparison_key.clear()
 		_update_expression_menu()
+		zoom_target = 1.9
 	var details_toggle: Button = menu.get_meta("details_toggle")
 	details_toggle.set_pressed_no_signal(false)
 	(menu.get_meta("details_label") as Label).hide()
@@ -1541,6 +1562,7 @@ func _show_context_menu() -> void:
 	menu.set_meta("target_on_right",pointer.x >= size.x*0.5)
 	_place_first_composition_menu()
 	menu.show()
+	if _expression_context(): expression_choices["deep"].grab_focus()
 
 func _place_first_composition_menu() -> void:
 	if not first_composition_mode or not (_expression_context() or _authored_retune() or _authored_reservation_context()): return
@@ -1703,11 +1725,12 @@ func _planning_menu() -> void:
 	var scroll: ScrollContainer = menu.get_meta("scroll")
 	var box: VBoxContainer = menu.get_meta("content")
 	var width := maxf(1.0,minf(560.0,size.x-52.0))
-	if choosing_expression: width = minf(422.0,width)
-	box.custom_minimum_size.x = maxf(1.0,width-18.0)
+	if choosing_expression: width = minf(324.0,width)
+	menu.add_theme_stylebox_override("panel",menu.get_meta("voice_panel" if choosing_expression else "regular_panel"))
+	box.custom_minimum_size.x = maxf(1.0,width if choosing_expression else width-18.0)
 	var footer := menu.get_meta("expression_footer") as Control
 	var footer_height := footer.get_combined_minimum_size().y+12.0 if choosing_expression else 0.0
-	var available_height := maxf(1.0,minf(590.0,size.y-94.0)-36.0-footer_height)
+	var available_height := maxf(1.0,minf(590.0,size.y-94.0)-(32.0 if choosing_expression else 36.0)-footer_height)
 	scroll.custom_minimum_size = Vector2(width,minf(box.get_combined_minimum_size().y,available_height))
 	var candidate: Dictionary = {}
 	if context.has("position"):
@@ -2643,6 +2666,8 @@ func _input(event: InputEvent) -> void:
 		load_city()
 		get_viewport().set_input_as_handled()
 		return
+	# In the sound picker Tab belongs to the native buttons, not city solo.
+	if menu.visible and _expression_context() and event.keycode == KEY_TAB: return
 	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_BACKSPACE,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y,KEY_E,KEY_ENTER,KEY_P]: get_viewport().set_input_as_handled()
 	if event.keycode == KEY_SPACE and not event.pressed:
 		_cancel_preview_playback()
@@ -3080,6 +3105,8 @@ func _process(delta: float) -> void:
 	street_eaves_layer.sync(self)
 	_sync_daylight()
 	expression_audition_layer.sync(self)
+	first_sound_focus.sync(self)
+	expression_status.sync(self)
 	authored_growth_trail.sync(self)
 	pending_authored_path.sync()
 	authored_voice_badges.sync(self)
@@ -3903,6 +3930,7 @@ func _draw_public_labels() -> void:
 
 func _sync_map_labels() -> void:
 	community_label_layer.sync(self)
+	if menu.visible and _expression_context(): community_label_layer.hide()
 
 func _draw_community_names() -> void:
 	# CommunityNames retains these commands independently of the live HUD.
