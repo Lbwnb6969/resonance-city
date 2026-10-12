@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+ERROR: audible_beat_reveals_new_note_without_early_world_pitch_or_other_author_listening_changes
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round217_authored_retune_audio.gd:22)
+       [1] _run (res://tests/round217_authored_retune_audio.gd:181)
+ROUND217_AUTHORED_RETUNE_AUDIO 10/11 res://验证记录/round217_作者回访_音频/run_3791060/contract.json

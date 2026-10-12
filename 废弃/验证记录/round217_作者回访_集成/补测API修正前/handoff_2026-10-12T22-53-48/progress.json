@@ -1,0 +1,11 @@
+{
+	"checks": {
+		"800_long_legacy_tools_scroll_inside_window_with_fixed_back_button": true,
+		"native_author_card_entry": true,
+		"real_authored_house_reaches_device": true,
+		"real_sound_entry": true
+	},
+	"complete": false,
+	"failures": [],
+	"last_capture": "00_800_长工具在窗口内滚动"
+}

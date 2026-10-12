@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot find member "STRETCH_KEEP_ASPECT_CENTER" in base "TextureRect".
+   at: GDScript::reload (res://scripts/ui/authored_house_card.gd:39)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scripts/ui/continuous_valley_demo.gd:0)
+ERROR: Failed to load script "res://scripts/ui/continuous_valley_demo.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

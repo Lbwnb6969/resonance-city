@@ -18,6 +18,7 @@ const FirstSoundPlacement = preload("res://scripts/world/first_sound_placement.g
 const RefinedUi = preload("res://scripts/ui/valley_ui_theme.gd")
 const PlayerNeighborhoods = preload("res://scripts/world/player_neighborhoods.gd")
 const CityVoiceCard = preload("res://scripts/ui/city_voice_card.gd")
+const AuthoredHouseCard = preload("res://scripts/ui/authored_house_card.gd")
 const FirstSoundStatus = preload("res://scripts/ui/first_sound_status.gd")
 const StreetOrientation = preload("res://scripts/visual/building_street_orientation.gd")
 const AuthoredDuet = preload("res://scripts/world/authored_duet.gd")
@@ -58,6 +59,8 @@ var first_composition_mode := true
 var first_composition_guide: Button
 var composition_source_id := ""
 var authored_composition_choices: VBoxContainer
+var authored_house_card: VBoxContainer
+var authored_card_advanced := false
 var expression_choices: Dictionary = {}
 var expression_choice := ""
 var expression_comparison: Dictionary = {}
@@ -530,6 +533,17 @@ func _make_menu() -> void:
 	var shell := VBoxContainer.new()
 	shell.add_theme_constant_override("separation",12)
 	menu.add_child(shell)
+	menu.set_meta("legacy_shell",shell)
+	var back_to_house := Button.new()
+	back_to_house.text = "回到房屋改音卡"
+	back_to_house.pressed.connect(func() -> void:
+		authored_card_advanced = false
+		_planning_menu()
+		menu.size = menu.get_combined_minimum_size()
+		_place_first_composition_menu()
+		authored_house_card.next_button.grab_focus())
+	shell.add_child(back_to_house)
+	menu.set_meta("back_to_house",back_to_house)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
@@ -760,6 +774,24 @@ func _make_menu() -> void:
 	terrain_button.tooltip_text = "河谷、湖盆、林岭、海湾平原、高地峡谷共享连续城市操作"
 	terrain_button.pressed.connect(_cycle_terrain)
 	city_tools.add_child(terrain_button)
+	authored_house_card = AuthoredHouseCard.new()
+	authored_house_card.setup()
+	authored_house_card.hide()
+	menu.add_child(authored_house_card)
+	authored_house_card.note_requested.connect(_choose_note)
+	authored_house_card.next_requested.connect(_begin_next_composition)
+	authored_house_card.land_requested.connect(func() -> void:
+		if _authored_retune():
+			var family: Dictionary = shown_world.families[str(shown_world.by_id[selected_id]["family_id"])]
+			_begin_first_authored_continuation(str(family["root"])))
+	authored_house_card.naming_requested.connect(_open_player_neighborhood)
+	authored_house_card.tools_requested.connect(func() -> void:
+		authored_card_advanced = true
+		_planning_menu()
+		menu.size = menu.get_combined_minimum_size()
+		_place_first_composition_menu()
+		back_to_house.grab_focus())
+	authored_house_card.closed.connect(func() -> void: menu.hide())
 	add_child(menu)
 	menu.visibility_changed.connect(func() -> void:
 		if not menu.visible and _expression_context(): _cancel_preview_playback())
@@ -1175,6 +1207,9 @@ func _gui_input(event: InputEvent) -> void:
 			if community_workbench.opened:
 				community_workbench.close_tool()
 				return
+			if menu.visible and _compact_authored_card():
+				menu.hide()
+				return
 			var cancelling_transit_edit := not transit_edit_context.is_empty()
 			_clear_transit_route()
 			transit_station_focus_id = ""
@@ -1456,9 +1491,6 @@ func _begin_first_authored_theme() -> bool:
 func _open_authored_root(root_id: String) -> void:
 	var work := _first_authored_state(root_id)
 	if work.is_empty(): return
-	if bool(work["theme_eligible"]):
-		_begin_authored_theme(root_id)
-		return
 	_cancel_preview_playback()
 	planning_guide.hide_tool()
 	selected_id = root_id
@@ -1761,6 +1793,7 @@ func _choose_note(choice: int) -> void:
 	else: _message(result["reason"])
 
 func _show_context_menu() -> void:
+	authored_card_advanced = false
 	authored_voice_badges.hide()
 	var retuning: bool = context.get("kind","") == "retune"
 	if _expression_context():
@@ -1789,6 +1822,7 @@ func _show_context_menu() -> void:
 	_place_first_composition_menu()
 	menu.show()
 	if _expression_context(): expression_choices["deep"].grab_focus()
+	elif _compact_authored_card(): authored_house_card.next_button.grab_focus()
 
 func _place_first_composition_menu() -> void:
 	if not first_composition_mode or not (_expression_context() or _authored_retune() or _authored_reservation_context()): return
@@ -1809,6 +1843,49 @@ func _place_first_composition_menu() -> void:
 	# destination camera so animation does not repeatedly add the same offset.
 	if target_screen.x < free_left+90.0 or target_screen.x > free_right-90.0:
 		pan_target.x += (free_left+free_right)*0.5-target_screen.x
+	if _compact_authored_card():
+		# The ground anchor alone can leave the roof above the screen. Keep the
+		# actual full sprite, including its door, inside the clear map region.
+		var sprite: Sprite2D = sprites[selected_id]
+		var rect := sprite.get_rect()
+		var local_bounds := Rect2(rect.position*sprite.scale,rect.size*sprite.scale)
+		var top := target_screen.y+local_bounds.position.y*zoom_target
+		var bottom := top+local_bounds.size.y*zoom_target
+		if top < 100.0: pan_target.y += 100.0-top
+		elif bottom > size.y-66.0: pan_target.y += size.y-66.0-bottom
+
+func _compact_authored_card() -> bool:
+	return first_composition_mode and _authored_retune() and not authored_card_advanced
+
+func _sync_authored_house_card() -> void:
+	if not _compact_authored_card(): return
+	var building: Dictionary = shown_world.by_id[selected_id]
+	var family: Dictionary = shown_world.families[str(building["family_id"])]
+	var work := _first_authored_state(str(family["root"]))
+	var heard := int(model.audible_pitches().get(selected_id,building["current_midi"]))
+	var names: Array[String] = []
+	for neighborhood: Dictionary in player_neighborhoods.for_member(selected_id): names.append(str(neighborhood["name"]))
+	var place := "、".join(names) if not names.is_empty() else "尚未命名 · 给这片街道起名"
+	var pending := ""
+	var pending_frame := 9223372036854775807
+	var events: Array = model.sound_events+model.sound_trace
+	for event: Dictionary in events:
+		var frame := int(event.get("sound_frame",-1))
+		if event.get("kind","") == "retune" and str(event.get("id","")) == selected_id and frame > clock.renderer.transport.audible_frame and frame < pending_frame:
+			pending_frame = frame
+			var pitch := int(event["midi"])
+			pending = "待播 · %s%d · 下一可写拍" % [note_name(pitch),pitch/12-1]
+	var choices: Array[Dictionary] = []
+	for base: int in [48,50,52,55,57]:
+		var pitch := _note_pitch(base)
+		choices.append({"base":base,"pitch":pitch,"text":"%s%d" % [note_name(pitch),pitch/12-1],"current":pitch == heard})
+	var cost := float(World.Legacy.load_values()["proposals"]["retune_cost"])
+	authored_house_card.set_state({"title":"你的"+str(PlayerExpression.definition(str(family["expression"]))["label"]),
+		"place":place,"heard":"已听 · %s%d" % [note_name(heard),heard/12-1],"pending":pending,
+		"growth":"这一段已长成%d栋 · 每栋仍有自己的声音" % int(work["family_houses"]),
+		"cost":"点击改音 · 下一句结算 −%d 活力\nShift 降八度 · 最低 C2" % cost,
+		"texture":sprites[selected_id].texture,"choices":choices,"has_land":not str(work["reservation_id"]).is_empty(),
+		"next_label":"继续写下一段"})
 
 func _sync_note_buttons() -> void:
 	var note_choices: Array = [48,50,52,55,57]
@@ -1916,6 +1993,11 @@ func _response_button_text() -> String:
 	return "跨河应答 · "+("开" if bool(model.synth.response_enabled) else "关")
 
 func _planning_menu() -> void:
+	var compact_authored := _compact_authored_card()
+	(menu.get_meta("legacy_shell") as Control).visible = not compact_authored
+	authored_house_card.visible = compact_authored
+	(menu.get_meta("back_to_house") as Control).visible = _authored_retune() and authored_card_advanced
+	_sync_authored_house_card()
 	(menu.get_meta("neighborhood_button") as Button).visible = context.get("kind","") == "retune" and shown_world.by_id.has(selected_id)
 	_refresh_transit_edit_choices()
 	authored_composition_choices.sync()
@@ -1953,11 +2035,13 @@ func _planning_menu() -> void:
 	var box: VBoxContainer = menu.get_meta("content")
 	var width := maxf(1.0,minf(560.0,size.x-52.0))
 	if choosing_expression: width = minf(324.0,width)
-	menu.add_theme_stylebox_override("panel",menu.get_meta("voice_panel" if choosing_expression else "regular_panel"))
+	menu.add_theme_stylebox_override("panel",menu.get_meta("voice_panel" if choosing_expression or compact_authored else "regular_panel"))
 	box.custom_minimum_size.x = maxf(1.0,width if choosing_expression else width-18.0)
 	var footer := menu.get_meta("expression_footer") as Control
 	var footer_height := footer.get_combined_minimum_size().y+12.0 if choosing_expression else 0.0
 	var available_height := maxf(1.0,minf(590.0,size.y-94.0)-(32.0 if choosing_expression else 36.0)-footer_height)
+	if _authored_retune() and authored_card_advanced:
+		available_height = maxf(1.0,available_height-(menu.get_meta("back_to_house") as Control).get_combined_minimum_size().y-12.0)
 	scroll.custom_minimum_size = Vector2(width,minf(box.get_combined_minimum_size().y,available_height))
 	var candidate: Dictionary = {}
 	if context.has("position"):
@@ -2931,6 +3015,11 @@ func _input(event: InputEvent) -> void:
 		return
 	# In the sound picker Tab belongs to the native buttons, not city solo.
 	if menu.visible and _expression_context() and event.keycode == KEY_TAB: return
+	if menu.visible and _compact_authored_card() and event.keycode == KEY_ESCAPE:
+		if event.pressed: menu.hide()
+		get_viewport().set_input_as_handled()
+		return
+	if menu.visible and _compact_authored_card() and event.keycode in [KEY_TAB,KEY_ENTER,KEY_KP_ENTER,KEY_SPACE]: return
 	if event.keycode in [KEY_SPACE,KEY_ESCAPE,KEY_B,KEY_G,KEY_TAB,KEY_BACKSPACE,KEY_M,KEY_F,KEY_R,KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_N,KEY_V,KEY_H,KEY_T,KEY_Y,KEY_E,KEY_ENTER,KEY_P]: get_viewport().set_input_as_handled()
 	if event.keycode == KEY_SPACE and not event.pressed:
 		_cancel_preview_playback()
@@ -3476,7 +3565,10 @@ func _process(delta: float) -> void:
 		hover_id = hovered_author_root
 		var author_house: Dictionary = shown_world.by_id[hovered_author_root]
 		var author_label := str(PlayerExpression.definition(str(author_house["expression"]))["label"])
-		tooltip.text = "你的"+author_label+" · "+str(shown_world.communities[str(author_house["community_id"])]["name"])+"\n点击听自己的声音 / 改音，也可继续规划下一段"
+		var names: Array[String] = []
+		for neighborhood: Dictionary in player_neighborhoods.for_member(hovered_author_root): names.append(str(neighborhood["name"]))
+		var place := "、".join(names) if not names.is_empty() else "尚未命名"
+		tooltip.text = "你的"+author_label+" · "+place+"\n点击改音，或继续规划下一段 · K选房起名"
 	elif transit_route_mode:
 		var transit_hover := _transit_route_preview(true)
 		if bool(transit_hover.get("accepted",false)):
@@ -3573,9 +3665,9 @@ func _process(delta: float) -> void:
 	tooltip.position = Vector2(clampf(pointer.x+18,12,maxf(12,size.x-tooltip.size.x-12)),clampf(pointer.y+20,118,maxf(118,size.y-tooltip.size.y-110)))
 	if menu.visible:
 		_update_selected_opportunity()
+		_planning_menu()
 		menu.size = menu.get_combined_minimum_size()
 		menu.position = Vector2(clampf(menu.position.x,12,maxf(12,size.x-menu.size.x-12)),clampf(menu.position.y,70,maxf(70,size.y-menu.size.y-12)))
-		_planning_menu()
 		_place_first_composition_menu()
 		if pointer_inside and not _expression_context() and not _authored_retune() and not _authored_reservation_context() and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()

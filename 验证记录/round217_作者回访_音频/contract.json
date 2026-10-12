@@ -1,0 +1,106 @@
+{
+	"checks": {
+		"audible_beat_reveals_new_note_without_early_world_pitch_or_other_author_listening_changes": true,
+		"complete_same_source_stereo_pcm_is_formal_exact_and_really_changes_after_retune": true,
+		"dummy_driver_only": true,
+		"five_real_note_buttons_use_older_authors_current_c2_register": true,
+		"full_prebeat_pcm_matches_both_formal_and_unchanged_source": true,
+		"opening_older_author_card_keeps_model_phases_pending_and_heard_listening_controls": true,
+		"production_button_submits_same_next_writable_beat_operation_and_keeps_independent_charter": true,
+		"queued_retune_keeps_heard_pitch_world_family_rng_controls_and_shows_real_pending_note": true,
+		"real_transactions_keep_two_distinct_authored_families": true,
+		"render_ahead_consumed_retune_still_shows_old_heard_note_and_future_trace_note": true,
+		"repeated_ui_sync_is_read_only_for_complete_world_rng_pending_audio_and_phase": true
+	},
+	"evidence": {
+		"actual_float32_sha256": "3e1736fc1a73d53d64b983be5e2ed3e6185dfc2d1af9f5834e71aecb02b5b27d",
+		"after_heard": {
+			"audible_frame": 750212.0,
+			"audible_pitches": {
+				"building-00025": 40
+			},
+			"heard": "已听 · E2",
+			"pending": "",
+			"pending_visible": false,
+			"rendered_frame": 751748
+		},
+		"before": {
+			"audible_frame": 738676.0,
+			"audible_pitches": {},
+			"heard": "已听 · C2",
+			"pending": "",
+			"pending_visible": false,
+			"rendered_frame": 738676
+		},
+		"formal_float32_sha256": "3e1736fc1a73d53d64b983be5e2ed3e6185dfc2d1af9f5834e71aecb02b5b27d",
+		"formal_max_abs_error": 0.0,
+		"formal_request": {
+			"accepted": true,
+			"event_id": 4,
+			"frame": 1058400,
+			"sound_frame": 749700
+		},
+		"heard_controls_after": {
+			"focused_community": "west-1",
+			"listener_community": "west-1",
+			"muted_communities": {
+				"east-2": true
+			}
+		},
+		"heard_controls_before": {
+			"focused_community": "west-1",
+			"listener_community": "west-1",
+			"muted_communities": {
+				"east-2": true
+			}
+		},
+		"independent_pending": [
+			{
+				"community_ids": [
+					"east-2"
+				],
+				"event_id": 3,
+				"frame": 1058400,
+				"id": "scope:east-2",
+				"kind": "charter",
+				"plan_id": "compact"
+			}
+		],
+		"later_family": "family-00026",
+		"later_root": "building-00026",
+		"older_family": "family-00025",
+		"older_root": "building-00025",
+		"operation": {
+			"expression": "bright",
+			"id": "building-00025",
+			"kind": "retune",
+			"midi": 40
+		},
+		"pcm_frames": 13072,
+		"postbeat_frames": 2048,
+		"queued": {
+			"audible_frame": 738676.0,
+			"audible_pitches": {},
+			"heard": "已听 · C2",
+			"pending": "待播 · E2 · 下一可写拍",
+			"pending_visible": true,
+			"rendered_frame": 738676
+		},
+		"render_ahead_before_heard": {
+			"audible_frame": 749699.0,
+			"audible_pitches": {},
+			"heard": "已听 · C2",
+			"pending": "待播 · E2 · 下一可写拍",
+			"pending_visible": true,
+			"rendered_frame": 751748
+		},
+		"sample_rate": 22050,
+		"seed": "2026100900000062",
+		"sound_frame": 749700,
+		"structure_frame": 1058400,
+		"unchanged_source_postbeat_max_abs_difference": 0.0175477275624871
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "One genuine older deep root and a later weave family. Production card button versus same-source formal retune; full float32 stereo PCM, queued/render-ahead/audible labels, pure UI and original listening controls. Dummy only, no GPU, device or human listening claim."
+}
