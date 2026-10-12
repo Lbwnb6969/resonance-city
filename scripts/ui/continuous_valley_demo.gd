@@ -16,6 +16,7 @@ const TransitReworkPreview = preload("res://scripts/world/transit_rework_preview
 const FirstComposition = preload("res://scripts/world/first_composition.gd")
 const FirstSoundPlacement = preload("res://scripts/world/first_sound_placement.gd")
 const RefinedUi = preload("res://scripts/ui/valley_ui_theme.gd")
+const PlayerNeighborhoods = preload("res://scripts/world/player_neighborhoods.gd")
 const CityVoiceCard = preload("res://scripts/ui/city_voice_card.gd")
 const FirstSoundStatus = preload("res://scripts/ui/first_sound_status.gd")
 const StreetOrientation = preload("res://scripts/visual/building_street_orientation.gd")
@@ -93,6 +94,11 @@ var water_flow: Node2D
 var community_label_layer: Node2D
 var community_workbench: PanelContainer
 var community_member_focus: Node2D
+var player_neighborhoods := PlayerNeighborhoods.new()
+var neighborhood_editor: PanelContainer
+var neighborhood_focus: Node2D
+var neighborhood_labels: Node2D
+var neighborhood_camera_key: Array = []
 var community_camera_key: Array = []
 var community_listening_owned := false
 var community_saved_listening: Dictionary = {}
@@ -362,6 +368,17 @@ func _ready() -> void:
 	community_member_focus.z_index = 21
 	add_child(community_member_focus)
 	community_member_focus.setup(self)
+	neighborhood_editor = preload("res://scripts/ui/player_neighborhood_editor.gd").new()
+	add_child(neighborhood_editor)
+	neighborhood_editor.setup(self)
+	neighborhood_editor.confirm_requested.connect(_confirm_player_neighborhood)
+	neighborhood_focus = preload("res://scripts/visual/player_neighborhood_focus.gd").new()
+	neighborhood_focus.z_index = 22
+	add_child(neighborhood_focus)
+	neighborhood_focus.setup(self)
+	neighborhood_labels = preload("res://scripts/visual/player_neighborhood_labels.gd").new()
+	neighborhood_labels.z_index = 51
+	add_child(neighborhood_labels)
 	first_composition_guide = preload("res://scripts/ui/first_composition_guide.gd").new()
 	add_child(first_composition_guide)
 	first_composition_guide.setup(self)
@@ -389,6 +406,16 @@ func _ready() -> void:
 	mouse_exited.connect(func() -> void: pointer_inside = false)
 
 func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null) -> void:
+	var incoming_authorship := PlayerNeighborhoods.new()
+	incoming_authorship.reset()
+	if saved.has("authorship"):
+		var restored: Dictionary = incoming_authorship.restore(saved["authorship"])
+		if not bool(restored["ok"]):
+			_message(str(restored["reason"]))
+			return
+	player_neighborhoods = incoming_authorship
+	neighborhood_editor.close_tool()
+	neighborhood_camera_key.clear()
 	if community_workbench.opened: community_workbench.close_tool()
 	community_camera_key.clear()
 	composition_source_id = ""
@@ -596,9 +623,12 @@ func _make_menu() -> void:
 	box.add_child(expressions)
 	menu.set_meta("legacy_expressions",expressions)
 	var verbs := HFlowContainer.new()
-	for item in [["规划片区工具 · C","community"],["独听这一带","solo"],["静音这一带","mute"],["聚焦","focus"],["跨河应答","response"],["继续规划 · P","planning"]]:
+	for item in [["给这片街道起名","neighborhood"],["规划片区工具 · C","community"],["独听这一带","solo"],["静音这一带","mute"],["聚焦","focus"],["跨河应答","response"],["继续规划 · P","planning"]]:
 		var button := Button.new()
 		button.text = item[0]
+		if item[1] == "neighborhood":
+			menu.set_meta("neighborhood_button",button)
+			button.tooltip_text = "明确选房、起名并保存；也可按 K"
 		if item[1] == "response":
 			response_button = button
 			button.tooltip_text = "全城唯一跨河应答槽；切换在下一拍生效"
@@ -864,6 +894,7 @@ func _stop_preview() -> void:
 
 func capture_city() -> Dictionary:
 	return {"model":model.capture_state(),"renderer":clock.renderer.snapshot(),
+		"authorship":player_neighborhoods.snapshot(),
 		"view":{"expression":expression,"first_composition_mode":first_composition_mode,"starter":starter,"town_starter":town_starter,"zoom":view_zoom,"pan":pan,
 			"selected_id":selected_id,"travelers":scenery.snapshot()}}
 
@@ -1138,6 +1169,9 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
 			zoom_target = clampf(zoom_target*(1.12 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.12),0.18 if int(shown_world.cfg["city"].get("regional_count",1)) > 1 else 0.55,1.9)
 		elif event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+			if neighborhood_editor.opened:
+				neighborhood_editor.close_tool()
+				return
 			if community_workbench.opened:
 				community_workbench.close_tool()
 				return
@@ -1154,6 +1188,9 @@ func _gui_input(event: InputEvent) -> void:
 			planning_guide.hide_tool()
 			context.clear()
 		elif event.pressed and event.button_index == MOUSE_BUTTON_LEFT and not black:
+			if neighborhood_editor.opened:
+				neighborhood_editor.toggle_member(_hit(pointer))
+				return
 			if transit_route_mode:
 				_append_transit_stop(world_at(pointer))
 				return
@@ -1168,6 +1205,10 @@ func _gui_input(event: InputEvent) -> void:
 				return
 			if partial_mode:
 				_submit_partial_at(world_at(pointer))
+				return
+			var neighborhood_id: String = neighborhood_labels.hit(pointer)
+			if not neighborhood_id.is_empty():
+				_open_player_neighborhood(neighborhood_id)
 				return
 			var station_click := _transit_station_at(world_at(pointer))
 			if not station_click.is_empty():
@@ -1312,6 +1353,60 @@ func _open_workbench_author(root_id: String) -> void:
 		model.submit({"kind":"mute","community":shown_world.by_id[root_id]["community_id"],"enabled":false})
 	community_workbench.close_tool()
 	_open_authored_root(root_id)
+
+func _open_player_neighborhood(record_id: String = "") -> void:
+	var initial_ids: Array[String] = []
+	if shown_world.by_id.has(selected_id): initial_ids.append(selected_id)
+	_cancel_preview_playback()
+	if community_workbench.opened: community_workbench.close_tool()
+	planning_guide.hide_tool()
+	_clear_transit_route()
+	_clear_partial_draft()
+	transit_station_focus_id = ""
+	reservation_draw_mode = false
+	reservation_draw_points.clear()
+	relocation_mode = false
+	relocation_site_id = ""
+	menu.hide()
+	context.clear()
+	neighborhood_camera_key.clear()
+	neighborhood_editor.open_selection(initial_ids,record_id)
+
+func _confirm_player_neighborhood() -> void:
+	var result: Dictionary = player_neighborhoods.confirm(shown_world,int(clock.renderer.transport.audible_frame),
+		neighborhood_editor.selected_ids,neighborhood_editor.name_edit.text,neighborhood_editor.record_id)
+	if not bool(result["ok"]):
+		_message(str(result["reason"]))
+		return
+	var record: Dictionary = result["record"]
+	# The last clicked house may just have been removed. Save a view of the
+	# confirmed members, so the new name is reachable immediately and on F9.
+	_frame_player_neighborhood()
+	pan = pan_target
+	view_zoom = zoom_target
+	_sync_buildings()
+	neighborhood_editor.close_tool()
+	var saved := save_city("街坊命名")
+	if bool(saved["ok"]): _message("「%s」已保存 · %d栋房屋 · K继续修改" % [str(record["name"]),record["member_ids"].size()])
+
+func _frame_player_neighborhood() -> void:
+	var bounds := Rect2()
+	var first := true
+	for id: String in neighborhood_editor.selected_ids:
+		if not shown_world.by_id.has(id): continue
+		var p: Vector2 = Coupling.position_of(shown_world.by_id[id])
+		var projected := Projection2D.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),shown_world.terrain.height_at(p))
+		if first:
+			bounds = Rect2(projected,Vector2.ZERO)
+			first = false
+		else: bounds = bounds.expand(projected)
+	var clear := Rect2(Vector2(36,148),Vector2(neighborhood_editor.position.x-72,size.y-244))
+	if first:
+		# Keep the current map center, giving it the clear area beside the card.
+		pan_target = pan+clear.get_center()-size*Vector2(0.5,0.52)
+	else:
+		zoom_target = clampf(minf(clear.size.x/maxf(180,bounds.size.x+100),clear.size.y/maxf(170,bounds.size.y+100)),0.55,1.65)
+		pan_target = clear.get_center()-Vector2(size.x*0.5,size.y*0.52)-bounds.get_center()*zoom_target
 
 func _frame_workbench_community() -> void:
 	var bounds := Rect2()
@@ -1821,6 +1916,7 @@ func _response_button_text() -> String:
 	return "跨河应答 · "+("开" if bool(model.synth.response_enabled) else "关")
 
 func _planning_menu() -> void:
+	(menu.get_meta("neighborhood_button") as Button).visible = context.get("kind","") == "retune" and shown_world.by_id.has(selected_id)
 	_refresh_transit_edit_choices()
 	authored_composition_choices.sync()
 	var choosing_expression := _expression_context()
@@ -2595,6 +2691,9 @@ func _submit_free_reservation() -> void:
 		_message(str(result.get("reason","这片范围暂时不能留地")))
 
 func _verb(verb: String) -> void:
+	if verb == "neighborhood":
+		_open_player_neighborhood()
+		return
 	if verb == "community":
 		var cid := str(shown_world.by_id.get(selected_id,{}).get("community_id",""))
 		if not cid.is_empty(): _open_community_workbench(cid)
@@ -2791,6 +2890,16 @@ func _verb(verb: String) -> void:
 
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey: return
+	# The naming draft owns map gestures; native text/focus controls own keys.
+	if neighborhood_editor.opened:
+		if event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+			neighborhood_editor.close_tool()
+			get_viewport().set_input_as_handled()
+		return
+	if event.pressed and not event.echo and event.keycode == KEY_K and not event.ctrl_pressed and not event.meta_pressed and not black:
+		_open_player_neighborhood()
+		get_viewport().set_input_as_handled()
+		return
 	if community_workbench.opened:
 		if event.keycode in [KEY_TAB,KEY_ENTER,KEY_KP_ENTER,KEY_SPACE]: return
 		if event.keycode in [KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_M,KEY_F]:
@@ -3337,10 +3446,18 @@ func _process(delta: float) -> void:
 			community_camera_key = community_key
 			_frame_workbench_community()
 	community_member_focus.sync()
+	neighborhood_editor.sync()
+	if neighborhood_editor.opened:
+		var next_neighborhood_key: Array = [size,neighborhood_editor.record_id]
+		if neighborhood_camera_key != next_neighborhood_key:
+			neighborhood_camera_key = next_neighborhood_key
+			_frame_player_neighborhood()
+	neighborhood_focus.sync()
+	neighborhood_labels.sync(self)
 	first_composition_guide.sync()
-	if community_workbench.opened: first_composition_guide.hide()
+	if community_workbench.opened or neighborhood_editor.opened: first_composition_guide.hide()
 	caption.position = Vector2(48,size.y-68)
-	tooltip.visible = not black and pointer_inside and not menu.visible and not planning_guide.opened and not community_workbench.opened
+	tooltip.visible = not black and pointer_inside and not menu.visible and not planning_guide.opened and not community_workbench.opened and not neighborhood_editor.opened
 	shadow_layer.visible = not black
 	buildings_layer.visible = not black
 	if black: menu.hide()
@@ -3400,6 +3517,9 @@ func _process(delta: float) -> void:
 		tooltip.text = "站点 · %s · %s\n%s · %s\n覆盖%d栋 · 社区：%s\n%s\n%s\n点击查看站点并规划下一条线路" % [role_text,str(station_hover["id"]),transfer_hint,str(station_record.get("road", "真实道路")),station_record.get("covered_building_ids",[]).size(),station_community_text,rhythm_text,str(station_feedback.get("next_text","下一乐句继续组合线路"))]
 	elif not hover_id.is_empty():
 		var b: Dictionary = shown_world.by_id[hover_id]
+		var player_names: Array[String] = []
+		for neighborhood: Dictionary in player_neighborhoods.for_member(hover_id): player_names.append(str(neighborhood["name"]))
+		var place_name := "、".join(player_names) if not player_names.is_empty() else str(shown_world.communities[b["community_id"]]["name"])
 		tooltip.text = "%s · %s · %s\n%s  ·  活力 %.0f\n点击选音   Tab独听社区   F聚焦" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),b["form"],shown_world.communities[b["community_id"]]["name"],b["vitality"]]
 		var charter := World.Charter.for_community(shown_world,str(b["community_id"]))
 		if not charter.is_empty(): tooltip.text += "\n发展章程 · "+str(World.Charter.PLANS[charter["plan_id"]]["title"])+" · P重新规划"
@@ -3409,7 +3529,8 @@ func _process(delta: float) -> void:
 			tooltip.text += "\n"+card_feedback
 		tooltip.text += "\n跨河应答 · "+_response_state_label()+"\n点击查看社区音型、当前声部与下一步机会"
 		if first_composition_mode:
-			tooltip.text = "%s · %s\n%s\n点击改音 · Tab独听这个街坊" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),shown_world.communities[b["community_id"]]["name"]]
+			tooltip.text = "%s · %s\n%s\n点击改音 · K选房起名" % ["律动街" if b["type"] == "commercial" else "长音房",note_name(int(model.audible_pitches().get(b["district_id"],b["current_midi"]))),place_name]
+		elif not player_names.is_empty(): tooltip.text += "\n你的街坊 · "+place_name
 	elif not bridge_hover.is_empty():
 		var names: Array = bridge_hover.get("community_names",[])
 		var before := "未连通" if is_inf(float(bridge_hover.get("route_before",INF))) else ("%.1f步" % float(bridge_hover.get("route_before",0.0)))
@@ -3447,7 +3568,7 @@ func _process(delta: float) -> void:
 	elif not hover_card_status.is_empty():
 		status_line = hover_card_status if status_line.is_empty() else status_line+" · "+hover_card_status
 	caption.text = status_line
-	caption.visible = not black and not status_line.is_empty() and not community_workbench.opened and (not first_composition_mode or not (menu.visible or planning_guide.opened))
+	caption.visible = not black and not status_line.is_empty() and not community_workbench.opened and not neighborhood_editor.opened and (not first_composition_mode or not (menu.visible or planning_guide.opened))
 	tooltip.size.y = tooltip.get_combined_minimum_size().y
 	tooltip.position = Vector2(clampf(pointer.x+18,12,maxf(12,size.x-tooltip.size.x-12)),clampf(pointer.y+20,118,maxf(118,size.y-tooltip.size.y-110)))
 	if menu.visible:
@@ -3669,7 +3790,7 @@ func _draw() -> void:
 		draw_string(font,Vector2(47,67),_composition_title(),HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color(ui_ink,0.78))
 	_draw_authored_voice_legend(ui_ink)
 	_draw_landmark_bar()
-	if not black and (not first_composition_mode or not (menu.visible or planning_guide.opened)):
+	if not black and not neighborhood_editor.opened and (not first_composition_mode or not (menu.visible or planning_guide.opened)):
 		var lead := str(model.audible_theme().get("cid",""))
 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
 		var decree_slots := " · 政令槽%d" % shown_world.landmark_intervention_slots() if shown_world.landmark_intervention_slots() > 1 else ""

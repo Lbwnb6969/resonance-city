@@ -1,0 +1,175 @@
+{
+	"checks": {
+		"another_selection_starts_a_clean_draft_without_replacing_an_existing_record": true,
+		"cancel_discards_the_draft_once_and_preserves_all_saved_records": true,
+		"clicking_a_real_saved_name_loads_only_its_exact_members_into_an_uncommitted_edit": true,
+		"dummy_native_ui_without_demo_world_or_device": true,
+		"individual_member_toggle_changes_only_the_explicit_draft_and_not_saved_members": true,
+		"native_14px_labels_and_fixed_name_confirm_fit_800_and_1440_while_many_long_saved_names_scroll_vertically": true,
+		"native_chinese_typing_and_confirm_emit_the_draft_only_without_persistence_or_sound_actions": true,
+		"native_enter_in_name_edit_submits_exactly_one_valid_request": true,
+		"native_map_click_outside_the_356px_panel_is_not_intercepted": true,
+		"native_tab_moves_from_text_input_to_a_panel_button": true,
+		"opening_only_normalizes_explicit_ids_and_keeps_map_first_focus_without_writing_a_record": true,
+		"the_last_scrolled_saved_name_is_natively_clickable_and_keeps_its_full_name_and_identity": true,
+		"whitespace_name_and_empty_members_disable_native_confirmation": true
+	},
+	"failures": [],
+	"layouts": [
+		{
+			"body_minimum": "(112.0, 314.0)",
+			"confirm": "[P: (448.0, 364.0), S: (324.0, 42.0)]",
+			"labels": [
+				{
+					"font_pixels": 19,
+					"lines": 1,
+					"rect": "[P: (448.0, 97.0), S: (227.0, 27.0)]",
+					"text": "给街道起名",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (448.0, 138.0), S: (324.0, 20.0)]",
+					"text": "点房屋增减；仅给所选房屋命名",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (448.0, 166.0), S: (324.0, 20.0)]",
+					"text": "已选 2 栋房屋",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (448.0, 194.0), S: (324.0, 20.0)]",
+					"text": "名字",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (448.0, 281.0), S: (232.0, 20.0)]",
+					"text": "已留下的名字",
+					"visible_lines": 1
+				}
+			],
+			"name_edit": "[P: (448.0, 222.0), S: (324.0, 42.0)]",
+			"panel": "[P: (432.0, 76.0), S: (356.0, 346.0)]",
+			"saved_scroll": "[P: (448.0, 318.0), S: (324.0, 38.0)]",
+			"window": "(800.0, 600.0)"
+		},
+		{
+			"body_minimum": "(112.0, 444.0)",
+			"confirm": "[P: (448.0, 494.0), S: (324.0, 42.0)]",
+			"labels": [
+				{
+					"font_pixels": 19,
+					"lines": 1,
+					"rect": "[P: (448.0, 97.0), S: (227.0, 27.0)]",
+					"text": "给街道起名",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (448.0, 138.0), S: (324.0, 20.0)]",
+					"text": "点房屋增减；仅给所选房屋命名",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (448.0, 166.0), S: (324.0, 20.0)]",
+					"text": "已选 2 栋房屋",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (448.0, 194.0), S: (324.0, 20.0)]",
+					"text": "名字",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (448.0, 281.0), S: (232.0, 20.0)]",
+					"text": "已留下的名字",
+					"visible_lines": 1
+				}
+			],
+			"name_edit": "[P: (448.0, 222.0), S: (324.0, 42.0)]",
+			"panel": "[P: (432.0, 76.0), S: (356.0, 476.0)]",
+			"saved_scroll": "[P: (448.0, 318.0), S: (324.0, 168.0)]",
+			"window": "(800.0, 600.0)"
+		},
+		{
+			"body_minimum": "(112.0, 444.0)",
+			"confirm": "[P: (1088.0, 494.0), S: (324.0, 42.0)]",
+			"labels": [
+				{
+					"font_pixels": 19,
+					"lines": 1,
+					"rect": "[P: (1088.0, 97.0), S: (227.0, 27.0)]",
+					"text": "给街道起名",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (1088.0, 138.0), S: (324.0, 20.0)]",
+					"text": "点房屋增减；仅给所选房屋命名",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (1088.0, 166.0), S: (324.0, 20.0)]",
+					"text": "已选 2 栋房屋",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (1088.0, 194.0), S: (324.0, 20.0)]",
+					"text": "名字",
+					"visible_lines": 1
+				},
+				{
+					"font_pixels": 14,
+					"lines": 1,
+					"rect": "[P: (1088.0, 281.0), S: (232.0, 20.0)]",
+					"text": "已留下的名字",
+					"visible_lines": 1
+				}
+			],
+			"name_edit": "[P: (1088.0, 222.0), S: (324.0, 42.0)]",
+			"panel": "[P: (1072.0, 76.0), S: (356.0, 476.0)]",
+			"saved_scroll": "[P: (1088.0, 318.0), S: (324.0, 168.0)]",
+			"window": "(1440.0, 900.0)"
+		}
+	],
+	"passed": true,
+	"requests": [
+		{
+			"member_ids": [
+				"house-1",
+				"house-3"
+			],
+			"name": "河畔小街",
+			"record_id": ""
+		},
+		{
+			"member_ids": [
+				"house-3",
+				"house-4"
+			],
+			"name": "河畔小街",
+			"record_id": ""
+		}
+	],
+	"scope": "Dummy native PanelContainer, Buttons and LineEdit over an independent read-only record fixture. Map hit outside the panel, exact draft members, existing-record editing, native typing/Enter/Tab and 800/1440 layout only. Root owns real-building eligibility, Escape/right-click routing, persistence, GPU and user experience."
+}

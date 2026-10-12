@@ -1,0 +1,77 @@
+{
+  "base_commit": "0099f10",
+  "passed": true,
+  "comparison": "Archive keeps original workspace bytes. Git-normalized CRLF/LF and UTF-8 BOM accepted only for source-content comparison.",
+  "files": [
+    {
+      "path": "scripts/ui/core_slice_hud.gd",
+      "archive_sha256": "19036327ee0cf11163842e766de655680c10071fb634568f8cb0d735560b204a",
+      "git_sha256": "ae432f509faa41a43891bc419545a98b78668de6ed1613bcd90e2d11bf97ad68",
+      "byte_identical": false,
+      "content_identical": true
+    },
+    {
+      "path": "PROJECT.md",
+      "archive_sha256": "aeb444e147343a418904a73177f9a4e3982d9d2b4b4dc0f63a52fc13d7f69d2a",
+      "git_sha256": "2e9e2e2f2205fade5dd12f84982bceecdd7790d28a8c3431623d73eb55e7d35c",
+      "byte_identical": false,
+      "content_identical": true
+    },
+    {
+      "path": "scripts/ui/continuous_valley_demo.gd",
+      "archive_sha256": "360ab4b97cfb0c1ceb7b77b364276a3b337b0f428211e67227a06f285439c9f6",
+      "git_sha256": "aa8308e3bb0e4e6a99387f8cf637141e43436cd43ba975a743f9b1124d690add",
+      "byte_identical": false,
+      "content_identical": true
+    },
+    {
+      "path": "scripts/world/city_archive.gd",
+      "archive_sha256": "369992166cbdb1a3f5bbe4f711ddb0ee4a07d4e193b1946c8dd558a18c1afa94",
+      "git_sha256": "369992166cbdb1a3f5bbe4f711ddb0ee4a07d4e193b1946c8dd558a18c1afa94",
+      "byte_identical": true,
+      "content_identical": true
+    },
+    {
+      "path": "数据/world_v2.json",
+      "archive_sha256": "d008d4bf371a3ec39945bfc4fedb7a17b1f0ff662dd8ef4a358edfce36e06395",
+      "git_sha256": "d008d4bf371a3ec39945bfc4fedb7a17b1f0ff662dd8ef4a358edfce36e06395",
+      "byte_identical": true,
+      "content_identical": true
+    },
+    {
+      "path": "文档/01_执行规格/spec.run.md",
+      "archive_sha256": "cdee7295b43bcd610b5afe6ab3fa267ba583bb1a150fc6f188ca6e6caec155f6",
+      "git_sha256": "3e6f9270b2079a497e87115f1cd2e7371779eac4a604ae2de12756d00e03f4cf",
+      "byte_identical": false,
+      "content_identical": true
+    },
+    {
+      "path": "文档/16_界面与反馈.md",
+      "archive_sha256": "8c502e0618a2280a6d00e332d021eb234d3c19e352172a0a94c9d730bb75ba5a",
+      "git_sha256": "fe0c74f5f927403ac3e9896750513e73e8a4fc4a687c82ae660ac5b41e8a4a60",
+      "byte_identical": false,
+      "content_identical": true
+    },
+    {
+      "path": "文档/19_城市生成管线.md",
+      "archive_sha256": "0af97ca0ef757260af1e5d17de000b7ded445159f59288bbfcb32381c5856c64",
+      "git_sha256": "1e7884c3e38192118251f5b3d479d2f1dc4985bb2bdaebfa95c1f6f3cb1c93f7",
+      "byte_identical": false,
+      "content_identical": true
+    },
+    {
+      "path": "文档/Demo快速开始.md",
+      "archive_sha256": "6d5c32cd9768c10ce94f1def402ca9dfd625bff3523ebfbf233b09e7a2f24066",
+      "git_sha256": "63db21a31a189abb8d23fbaf1623a124b4d93b8383963ce654836703d8395a7e",
+      "byte_identical": false,
+      "content_identical": true
+    },
+    {
+      "path": "文档/共鸣之城_文档合并精简版.md",
+      "archive_sha256": "dbe2d2e0eb4838f84924f87c2af5521f877d7ff599f2f76ea3391f6c962db64a",
+      "git_sha256": "42932b66f2944aea3c2beb8c7142ca4cdb621531f6819be5214007279ac60e7d",
+      "byte_identical": false,
+      "content_identical": true
+    }
+  ]
+}

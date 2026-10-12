@@ -1,0 +1,18 @@
+{
+	"checks": {
+		"03_1440_已保存石桥小街的精确成员_native_card_fits_window": true,
+		"03_1440_已保存石桥小街的精确成员_no_duplicate_first_play_guides": true,
+		"actual_gpu_wasapi_edit_followup": true,
+		"complete_native_right_cancel_keeps_real_pending_work": true,
+		"native_confirm_updates_existing_record_and_closes": true,
+		"native_edit_can_hit_the_actual_second_member": true,
+		"native_f9_handoff_keeps_existing_authorship": true,
+		"native_f9_restores_revised_members_name_and_revision": true,
+		"real_house_hover_shows_its_player_defined_name": true,
+		"revised_actual_demo_city_dna_roundtrip": true,
+		"revised_identity_name_members_and_revision_are_saved": true
+	},
+	"complete": false,
+	"failures": [],
+	"last_capture": "03_1440_已保存石桥小街的精确成员"
+}

@@ -2,8 +2,17 @@ class_name CityArchive
 extends RefCounted
 ## Immutable checkpoints. Publish by rename only after a complete flushed write.
 const AudioModel = preload("res://scripts/audio/continuous_audio_model.gd")
+const Neighborhoods = preload("res://scripts/world/player_neighborhoods.gd")
 const DIRECTORY := "user://resonance_cities"
 const MAGIC := "RESONANCE_CITY_1\n"
+
+static func _checked_authorship(city: Dictionary) -> Dictionary:
+	var authors := Neighborhoods.new()
+	if city.has("authorship"):
+		if not city["authorship"] is Dictionary: return {"ok":false,"reason":"街坊作者容器格式不支持"}
+		var restored := authors.restore(city["authorship"])
+		if not bool(restored["ok"]): return restored
+	return {"ok":true,"authorship":authors.snapshot()}
 
 static func _digest(bytes: PackedByteArray) -> String:
 	var hash := HashingContext.new()
@@ -12,11 +21,15 @@ static func _digest(bytes: PackedByteArray) -> String:
 	return hash.finish().hex_encode()
 
 static func save(city: Dictionary, reason: String = "手动保存", directory: String = DIRECTORY) -> Dictionary:
+	var authors := _checked_authorship(city)
+	if not bool(authors["ok"]): return authors
+	var saved_city := city.duplicate()
+	saved_city["authorship"] = authors["authorship"]
 	var error := DirAccess.make_dir_recursive_absolute(directory)
 	if error != OK: return {"ok":false,"reason":"无法创建作品目录"}
 	var stamp := int(Time.get_unix_time_from_system())
 	var path := "%s/%012d_%016d.city" % [directory,stamp,Time.get_ticks_usec()]
-	var payload := var_to_bytes({"version":1,"saved_at":stamp,"reason":reason,"city":city})
+	var payload := var_to_bytes({"version":1,"saved_at":stamp,"reason":reason,"city":saved_city})
 	var file := FileAccess.open(path+".tmp",FileAccess.WRITE)
 	if file == null: return {"ok":false,"reason":"作品写入失败"}
 	file.store_buffer(MAGIC.to_utf8_buffer())
@@ -52,6 +65,8 @@ static func _json_value(value: Variant) -> Variant:
 	return value
 
 static func export_dna(city: Dictionary, directory: String = DIRECTORY+"/exports") -> Dictionary:
+	var authors := _checked_authorship(city)
+	if not bool(authors["ok"]): return authors
 	var error := DirAccess.make_dir_recursive_absolute(directory)
 	if error != OK: return {"ok":false,"reason":"无法创建DNA导出目录"}
 	var stamp := int(Time.get_unix_time_from_system())
@@ -79,6 +94,7 @@ static func export_dna(city: Dictionary, directory: String = DIRECTORY+"/exports
 		"landmarks":world.get("landmarks",[]),
 		"landmark_progress":world.get("landmark_progress",{}),
 		"families":world.get("families",{}),
+		"authorship":authors["authorship"],
 		"plan":{
 			"roads":plan.get("roads",[]),
 			"lots":plan.get("lots",[]),
@@ -115,6 +131,7 @@ static func export_dna(city: Dictionary, directory: String = DIRECTORY+"/exports
 		"runtime":{
 			"model":model,
 			"renderer":city.get("renderer",{}),
+			"authorship":authors["authorship"],
 			"view":city.get("view",{})
 		},
 		"view":city.get("view",{})
@@ -139,7 +156,13 @@ static func read_dna(path: String) -> Dictionary:
 		return {"ok":false,"reason":"DNA版本不支持"}
 	if not parsed.has("runtime") or not parsed["runtime"] is Dictionary or not parsed["runtime"].has("model"):
 		return {"ok":false,"reason":"DNA缺少可恢复运行时"}
-	return {"ok":true,"dna":parsed,"model":parsed["runtime"]["model"],"renderer":parsed["runtime"].get("renderer",{}),"view":parsed["runtime"].get("view",{}),"path":path}
+	var authors := _checked_authorship(parsed["runtime"])
+	if not bool(authors["ok"]): return authors
+	if parsed.has("authorship"):
+		var readable := _checked_authorship(parsed)
+		if not bool(readable["ok"]): return readable
+		if readable["authorship"] != authors["authorship"]: return {"ok":false,"reason":"DNA街坊作者记录与运行时不一致"}
+	return {"ok":true,"dna":parsed,"model":parsed["runtime"]["model"],"renderer":parsed["runtime"].get("renderer",{}),"view":parsed["runtime"].get("view",{}),"authorship":authors["authorship"],"path":path}
 
 static func _audio_source(source: Variant) -> Dictionary:
 	if source is String:
@@ -387,6 +410,9 @@ static func read(path: String) -> Dictionary:
 	var city: Dictionary = payload["city"]
 	if not city.has_all(["model","renderer","view"]) or not city["model"] is Dictionary or not city["renderer"] is Dictionary:
 		return {"ok":false,"reason":"作品内容不完整"}
+	var authors := _checked_authorship(city)
+	if not bool(authors["ok"]): return authors
+	city["authorship"] = authors["authorship"]
 	return {"ok":true,"city":city,"path":path,"saved_at":payload["saved_at"],"reason":payload["reason"]}
 
 static func latest_dna(directory: String = DIRECTORY+"/exports") -> Dictionary:

@@ -1,0 +1,20 @@
+{
+	"checks": {
+		"native_confirm_updates_existing_record_and_closes": true,
+		"native_edit_can_hit_the_actual_second_member": true
+	},
+	"failures": [],
+	"notice": "「石桥小街」已保存 · 1栋房屋 · 点名字继续修改",
+	"passed": true,
+	"record": {
+		"created_audio_frame": 197981,
+		"id": "neighborhood-000001",
+		"member_ids": [
+			"building-00001"
+		],
+		"modified_audio_frame": 248075,
+		"name": "石桥小街",
+		"revision": 2,
+		"selection_kind": "explicit_buildings"
+	}
+}

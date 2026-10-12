@@ -55,6 +55,7 @@ P0只实现种子/生成/选择可追溯接口；完整Run、祝福、图鉴重�
 | 随机 | 根 seed、五条命名子流计数器；试听/悬停不推进正式子流 |
 | 世界 | 连续坐标、原始地形/排水信息、道路拓扑与几何、地块/建筑/社区稳定 ID |
 | 玩家规划（已有切片） | `planning_reservations` 及留地/释放/用途转换事件，字段与旧档默认值见 [spec.proposal P10](spec.proposal.md#表-p10--留地与后续兑现)；纳入 WorldSnapshot、DNA 与后台结算副本，不能仅存 UI 轮廓 |
+| 玩家街坊作者记录 | 作品级 `authorship={schema:1,next_neighborhood_id,neighborhoods}`，独立于 World；记录 `id/name/revision/member_ids/selection_kind:explicit_buildings/created_audio_frame/modified_audio_frame`。二进制存 `city.authorship`，DNA 以 `runtime.authorship` 恢复、顶层同名字段供阅读；旧档缺失为空，未知 schema 或无效字段拒绝。成员为已确认真实建筑稳定 ID，可跨 CID，不随出生/分裂扩张；编辑保留历史失效成员。字段详见 [19 §8.2/8.5](../19_城市生成管线.md#82-世界数据边界)，不证明精确范围听音或调音完成 |
 | 渐进时代（待实施） | R10 的 `era_transition`、正式入代事件及城市乐句新锚点；当前正式时代与局部音色/外观进度分别保存，不按数组顺序重建传播 |
 | 客流 | `transit_demand`及有序`transit_flow_pending`；生成器版本136，旧档缺观察队列按空恢复。归集时点见spec.city合同；后台任务句柄不进DNA |
 | 决策 | 已接受事件、来源操作、请求音频帧、提交乐句帧、待提交 `WorldDelta` |

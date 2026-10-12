@@ -1,0 +1,9 @@
+{
+	"checks": {
+		"native_confirm_updates_existing_record_and_closes": true,
+		"native_edit_can_hit_the_actual_second_member": true
+	},
+	"complete": false,
+	"failures": [],
+	"last_capture": "01_修改确认后"
+}

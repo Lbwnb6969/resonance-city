@@ -1,0 +1,13 @@
+{
+	"checks": {
+		"actual_gpu_window_and_wasapi": true,
+		"native_house_verb_starts_with_only_one_house": false,
+		"native_real_house_opens_its_menu": true,
+		"real_opening_is_heard": true
+	},
+	"complete": false,
+	"failures": [
+		"native_house_verb_starts_with_only_one_house"
+	],
+	"last_capture": "entry_failure"
+}

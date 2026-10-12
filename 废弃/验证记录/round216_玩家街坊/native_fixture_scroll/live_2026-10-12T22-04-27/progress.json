@@ -1,0 +1,27 @@
+{
+	"checks": {
+		"00_1440_跨分组逐栋选房命名_native_card_fits_window": false,
+		"00_1440_跨分组逐栋选房命名_no_duplicate_first_play_guides": true,
+		"01_800_保留逐栋草稿与原生输入框_native_card_fits_window": false,
+		"01_800_保留逐栋草稿与原生输入框_no_duplicate_first_play_guides": true,
+		"actual_gpu_window_and_wasapi": true,
+		"explicit_cross_cid_selection_has_only_two_actual_footprints": false,
+		"native_chinese_and_global_shortcut_letters_are_text_only": false,
+		"native_house_verb_starts_with_only_one_house": false,
+		"native_other_partition_house_can_be_clicked": false,
+		"native_real_house_opens_its_menu": true,
+		"real_opening_is_heard": true,
+		"second_native_click_removes_only_that_house": false
+	},
+	"complete": false,
+	"failures": [
+		"native_house_verb_starts_with_only_one_house",
+		"native_other_partition_house_can_be_clicked",
+		"explicit_cross_cid_selection_has_only_two_actual_footprints",
+		"second_native_click_removes_only_that_house",
+		"native_chinese_and_global_shortcut_letters_are_text_only",
+		"00_1440_跨分组逐栋选房命名_native_card_fits_window",
+		"01_800_保留逐栋草稿与原生输入框_native_card_fits_window"
+	],
+	"last_capture": "01_800_保留逐栋草稿与原生输入框"
+}

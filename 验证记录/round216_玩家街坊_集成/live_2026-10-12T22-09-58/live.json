@@ -1,0 +1,114 @@
+{
+	"checks": {
+		"00_1440_跨分组逐栋选房命名_native_card_fits_window": true,
+		"00_1440_跨分组逐栋选房命名_no_duplicate_first_play_guides": true,
+		"01_800_保留逐栋草稿与原生输入框_native_card_fits_window": true,
+		"01_800_保留逐栋草稿与原生输入框_no_duplicate_first_play_guides": true,
+		"03_1440_保存后继续精确修改_native_card_fits_window": true,
+		"03_1440_保存后继续精确修改_no_duplicate_first_play_guides": true,
+		"actual_demo_city_dna_roundtrip_keeps_revised_authorship": true,
+		"actual_gpu_window_and_wasapi": true,
+		"confirmation_actively_saves_metadata_without_a_world_event": true,
+		"escape_discards_only_unconfirmed_name_edit": true,
+		"explicit_cross_cid_selection_has_only_two_actual_footprints": true,
+		"four_seconds_of_current_city_audio_reach_device": true,
+		"naming_and_reload_keep_nonzero_device_audio_without_clipping_or_new_underrun": true,
+		"native_chinese_and_global_shortcut_letters_are_text_only": true,
+		"native_edit_keeps_identity_updates_name_and_removes_only_selected_member": false,
+		"native_enter_confirms_exact_members_once": true,
+		"native_f9_restores_the_saved_player_name_and_members": true,
+		"native_house_verb_starts_with_only_one_house": true,
+		"native_map_player_name_opens_its_edit": true,
+		"native_other_partition_house_can_be_clicked": true,
+		"native_real_house_opens_its_menu": true,
+		"native_saved_name_reopens_exact_existing_members": true,
+		"real_opening_is_heard": true,
+		"restored_player_name_has_a_visible_real_member_anchor": true,
+		"right_cancel_keeps_actual_pending_retune_and_sound_event": true,
+		"second_native_click_removes_only_that_house": true
+	},
+	"clipped": 0,
+	"failures": [
+		"native_edit_keeps_identity_updates_name_and_removes_only_selected_member"
+	],
+	"initial_record": {
+		"created_audio_frame": 197981,
+		"id": "neighborhood-000001",
+		"member_ids": [
+			"building-00001",
+			"building-00009"
+		],
+		"modified_audio_frame": 197981,
+		"name": "河畔NTYREBK135",
+		"revision": 1,
+		"selection_kind": "explicit_buildings"
+	},
+	"passed": false,
+	"peak": 0.271898776292801,
+	"revised_record": {
+		"created_audio_frame": 197981,
+		"id": "neighborhood-000001",
+		"member_ids": [
+			"building-00001",
+			"building-00009"
+		],
+		"modified_audio_frame": 197981,
+		"name": "河畔NTYREBK135",
+		"revision": 1,
+		"selection_kind": "explicit_buildings"
+	},
+	"samples": 88200,
+	"scope": "One isolated actual GPU/WASAPI city: native individual map clicks across CID, text input, confirm/edit/cancel, .city/F9, map labels and DNA. InputEvent unicode tests native LineEdit text, not the OS IME composition UI. Device PCM is renderer input, not speaker loopback. No human aesthetics/audio/fun verdict.",
+	"underruns": 0,
+	"views": [
+		{
+			"footprints": [
+				{
+					"id": "building-00001",
+					"polygon": "[(259.9402, -291.9218), (277.7592, -281.4123), (259.9402, -272.5688), (242.1211, -283.1098), (259.9402, -291.9218)]"
+				},
+				{
+					"id": "building-00009",
+					"polygon": "[(-79.08106, -85.21195), (-61.26196, -76.28836), (-79.08106, -67.19245), (-96.90016, -76.10743), (-79.08106, -85.21195)]"
+				}
+			],
+			"panel": "[P: (1072.0, 76.0), S: (356.0, 254.0)]",
+			"selected": [
+				"building-00001",
+				"building-00009"
+			],
+			"window": "(1440.0, 900.0)"
+		},
+		{
+			"footprints": [
+				{
+					"id": "building-00001",
+					"polygon": "[(259.9402, -291.9218), (277.7592, -281.4123), (259.9402, -272.5688), (242.1211, -283.1098), (259.9402, -291.9218)]"
+				},
+				{
+					"id": "building-00009",
+					"polygon": "[(-79.08106, -85.21195), (-61.26196, -76.28836), (-79.08106, -67.19245), (-96.90016, -76.10743), (-79.08106, -85.21195)]"
+				}
+			],
+			"panel": "[P: (432.0, 76.0), S: (356.0, 254.0)]",
+			"selected": [
+				"building-00001",
+				"building-00009"
+			],
+			"window": "(800.0, 600.0)"
+		},
+		{
+			"footprints": [
+				{
+					"id": "building-00001",
+					"polygon": "[(259.9402, -291.9218), (277.7592, -281.4123), (259.9402, -272.5688), (242.1211, -283.1098), (259.9402, -291.9218)]"
+				}
+			],
+			"panel": "[P: (1072.0, 76.0), S: (356.0, 346.0)]",
+			"selected": [
+				"building-00001"
+			],
+			"window": "(1440.0, 900.0)"
+		}
+	]
+}
