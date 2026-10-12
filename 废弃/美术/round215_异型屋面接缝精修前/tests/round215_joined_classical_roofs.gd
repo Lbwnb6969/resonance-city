@@ -1,0 +1,155 @@
+extends SceneTree
+## True starter + controlled geometric counterexamples. Dummy only.
+const World = preload("res://scripts/world/continuous_world.gd")
+const Joined = preload("res://scripts/visual/joined_classical_roofs.gd")
+const Catalog = preload("res://scripts/visual/building_variant_catalog.gd")
+const Orientation = preload("res://scripts/visual/building_street_orientation.gd")
+const IsoProjection = preload("res://scripts/world/world_projection.gd")
+const Coupling = preload("res://scripts/world/world_coupling.gd")
+const OUTPUT := "res://验证记录/round215_古典联合屋顶/roof_contract.json"
+var checks: Dictionary = {}
+var failures: Array[String] = []
+var entries: Dictionary = {}
+
+class DummyTransport extends RefCounted:
+	var audible_frame := 0.0
+class DummyRenderer extends RefCounted:
+	var transport := DummyTransport.new()
+class DummyClock extends RefCounted:
+	var renderer := DummyRenderer.new()
+class DummySprite extends RefCounted:
+	var progress := 1.0
+class DummyDemo extends Control:
+	var shown_world: RefCounted
+	var clock := DummyClock.new()
+	var black := false
+	var building_geometry: Dictionary = {}
+	var sprites: Dictionary = {}
+
+func _initialize() -> void: call_deferred("_run")
+func check(ok: bool,label: String) -> void:
+	checks[label] = ok
+	if not ok: failures.append(label); push_error(label)
+
+func _prepare(view: Control,city: RefCounted) -> void:
+	view.shown_world = city
+	view.building_geometry.clear(); view.sprites.clear()
+	var base_ids := ["refined_house_terrace","refined_house_gabled","refined_house_courtyard"]
+	for building: Dictionary in city.buildings:
+		var id := str(building["district_id"])
+		var p := Coupling.position_of(building)
+		var facing := Orientation.street_orientation(city,p)
+		var canonical: String = base_ids[Catalog.variant_index(id)] if str(building["type"]) == "residential" else "refined_shop_arcade"
+		var style := str(building.get("expression","")) if bool(building.get("player_expression",false)) else ""
+		if style == "warm": canonical = "refined_warm_courtyard"
+		elif style == "deep": canonical = "refined_deep_terrace"
+		elif style == "weave" and str(building["type"]) == "commercial": canonical = "refined_weave_shop"
+		var entry: Dictionary = entries[canonical+("_o%d" % facing if facing != 0 else "")]
+		var geometry := {"entry":entry,"position":IsoProjection.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),city.terrain.height_at(p)),
+			"scale":28.0*sqrt(2.0)*0.8/maxf(float(entry["model_bounds"]["size"][0]),float(entry["model_bounds"]["size"][2]))/float(entry["pixels_per_world"])}
+		view.building_geometry[id] = geometry
+		view.sprites[id] = DummySprite.new()
+
+func _pairs(layer: Node2D) -> Array:
+	var result: Array = []
+	for patch in layer.patches:
+		var pair: Array = patch.row_ids.duplicate(); pair.sort(); result.append(pair)
+	return result
+
+func _fixture(source: RefCounted,count: int = 2) -> RefCounted:
+	var city: RefCounted = source.fork()
+	city.buildings.clear(); city.by_id.clear(); city.index = city.Index.new()
+	city.lots.clear(); city.public_sites.clear(); city.planning_reservations.clear()
+	city.roads.assign([{"id":"fixture-road","path":PackedVector2Array([Vector2(8,4),Vector2(8,16)]),"from":"f-a","to":"f-b","kind":"street","bridge":false}])
+	city.nodes = {"f-a":[8.0,4.0],"f-b":[8.0,16.0]}
+	city.communities = {"left":{"id":"left","members":[],"bank":-1,"name":"旧分区甲"},"right":{"id":"right","members":[],"bank":-1,"name":"旧分区乙"}}
+	var exemplar: Dictionary = source.buildings[0]
+	for i in range(count):
+		var building := exemplar.duplicate(true)
+		var id := "fixture-%02d" % (count-i)
+		building["district_id"] = id; building["position"] = [9.0,6.0+float(i)*0.96]
+		building["community_id"] = "left" if i%2 == 0 else "right"
+		building["type"] = "residential"; building["radius"] = 0.45
+		building["lot_id"] = ""; building["birth_frame"] = 0
+		city.buildings.append(building); city.by_id[id] = building
+		city.index.put(id,Coupling.position_of(building),0.45)
+		city.communities[building["community_id"]]["members"].append(id)
+	city.road_index_identity = ""; city.parcel_index_identity = ""
+	city.rebuild_graph(); city.refresh_fabric()
+	return city
+
+func _run() -> void:
+	check(AudioServer.get_driver_name() == "Dummy" and DisplayServer.get_name() == "headless","headless_dummy_no_gpu_or_device")
+	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://资源/精制河湾/manifest.json"))
+	for entry: Dictionary in manifest["entries"]: entries[str(entry["id"])] = entry
+	var city := World.new("2026100900000062",true,"river_valley")
+	city.build_first_composition_starter()
+	var view := DummyDemo.new(); root.add_child(view); _prepare(view,city)
+	var joined := Joined.new(); view.add_child(joined)
+	var before: Dictionary = city.snapshot()
+	joined.setup(view)
+	var actual: Dictionary = joined.diagnostics()
+	check(city.buildings.size() == 24 and actual["patches"] > 0,"real_24_house_starter_has_true_joined_roof_bodies")
+	var true_edges: Array = []
+	for edge: Dictionary in city.fabric_cache["shared_walls"]:
+		var pair: Array = [edge["a"],edge["b"]]; pair.sort(); true_edges.append(pair)
+	check(_pairs(joined).all(func(pair: Array) -> bool: return true_edges.has(pair)),"every_visual_union_comes_from_actual_shared_wall_relationship")
+	var solid := not joined.patches.is_empty()
+	for patch in joined.patches:
+		solid = solid and patch.top_a.size() == 4 and patch.top_b.size() == 4 and patch.fascia_a.size() == 4 and patch.world_footprint.size() == 4
+		var area := absf(patch.world_footprint[0].cross(patch.world_footprint[1])+patch.world_footprint[1].cross(patch.world_footprint[2])+patch.world_footprint[2].cross(patch.world_footprint[3])+patch.world_footprint[3].cross(patch.world_footprint[0]))*0.5
+		solid = solid and area > 0.15
+	check(solid,"union_is_solid_half_meter_wide_roof_geometry_with_four_surfaces_not_a_line")
+	check(city.snapshot() == before,"presentation_does_not_modify_world_rng_pending_identity_or_pitch")
+	var rebuilt: int = joined.rebuild_count
+	view.position = Vector2(64,-22); view.scale = Vector2.ONE*0.7
+	view.clock.renderer.transport.audible_frame = 1234
+	joined.sync(view)
+	check(joined.rebuild_count == rebuilt,"camera_and_heard_clock_reuse_retained_roof_geometry")
+	var fixture := _fixture(city,7); _prepare(view,fixture); joined.sync(view)
+	var seven: Dictionary = joined.diagnostics()
+	check(seven["rows"].size() == 1 and seven["rows"][0]["ids"].size() == 6 and seven["patches"] == 5,"seven_house_chain_stops_at_six_and_leaves_next_seam_open")
+	check(seven["rows"][0]["ids"][0] == "fixture-07" and seven["rows"][0]["ids"][-1] == "fixture-02","row_order_follows_real_road_arc_instead_of_building_id_order")
+	var cross_ids: Array = seven["rows"][0]["ids"]
+	check(cross_ids.any(func(id: String) -> bool: return str(fixture.by_id[id]["community_id"]) == "left") and cross_ids.any(func(id: String) -> bool: return str(fixture.by_id[id]["community_id"]) == "right"),"tightly_related_houses_join_across_old_community_ids")
+	fixture = _fixture(city); _prepare(view,fixture)
+	var ids: Array = fixture.by_id.keys()
+	view.building_geometry[ids[1]]["entry"] = view.building_geometry[ids[1]]["entry"].duplicate(true)
+	view.building_geometry[ids[1]]["entry"]["orientation"] = posmod(int(view.building_geometry[ids[0]]["entry"]["orientation"])+2,4)
+	joined.sync(view)
+	check(joined.patches.is_empty(),"different_actual_baked_facades_never_join")
+	_prepare(view,fixture); fixture.by_id[ids[1]]["birth_frame"] = 2000
+	joined.sync(view)
+	check(joined.patches.is_empty(),"render_ahead_future_house_does_not_gain_a_union")
+	fixture.by_id[ids[1]]["birth_frame"] = 0
+	view.sprites[ids[1]].progress = 0.5; joined.sync(view)
+	check(joined.patches.is_empty(),"unfinished_reveal_waits_until_actual_second_roof_is_visible")
+	_prepare(view,fixture); fixture.by_id[ids[1]]["type"] = "civic"; joined.sync(view)
+	check(joined.patches.is_empty(),"public_culture_building_stays_independent")
+	fixture = _fixture(city); _prepare(view,fixture)
+	ids = fixture.by_id.keys()
+	fixture.by_id[ids[1]]["position"][0] = 7.0
+	fixture.index.put(ids[1],Coupling.position_of(fixture.by_id[ids[1]]),0.45)
+	fixture.fabric_cache["shared_walls"] = [{"a":ids[0],"b":ids[1],"gap":0.06}]
+	_prepare(view,fixture); joined.sync(view)
+	check(joined.patches.is_empty(),"opposite_sides_of_same_road_do_not_join_even_with_a_stale_candidate")
+	fixture = _fixture(city); ids = fixture.by_id.keys()
+	var middle := (Coupling.position_of(fixture.by_id[ids[0]])+Coupling.position_of(fixture.by_id[ids[1]]))*0.5
+	fixture.terrain.water = PackedVector2Array([middle+Vector2(-0.5,-0.1),middle+Vector2(0.5,-0.1),middle+Vector2(0.5,0.1),middle+Vector2(-0.5,0.1)])
+	_prepare(view,fixture); joined.sync(view)
+	check(joined.patches.is_empty(),"water_between_real_houses_blocks_joined_roof")
+	fixture = _fixture(city); _prepare(view,fixture); ids = fixture.by_id.keys()
+	fixture.by_id[ids[0]]["player_expression"] = true; fixture.by_id[ids[0]]["expression"] = "deep"
+	fixture.by_id[ids[1]]["player_expression"] = true; fixture.by_id[ids[1]]["expression"] = "deep"
+	_prepare(view,fixture); joined.sync(view)
+	check(joined.patches.size() == 1 and joined.patches[0].roof_color == Color("597a83"),"actual_deep_author_roofs_keep_their_stone_blue_identity")
+	view.black = true; joined.sync(view)
+	check(not joined.visible and joined.patches.is_empty(),"black_screen_clears_roof_presentation")
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUTPUT).get_base_dir())
+	var report := {"checks":checks,"failures":failures,"passed":checks.size()-failures.size(),"total":checks.size(),
+		"actual_starter":actual,"controlled_seven_house_chain":seven,
+		"scope":"Dummy structural/geometry/read-only contract. No GPU pixels, PCM or human quality verdict."}
+	FileAccess.open(OUTPUT,FileAccess.WRITE).store_string(JSON.stringify(report,"\t")+"\n")
+	print("ROUND215 JOINED CLASSICAL ROOFS %d/%d" % [checks.size()-failures.size(),checks.size()])
+	view.free()
+	quit(0 if failures.is_empty() else 1)

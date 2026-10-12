@@ -1,0 +1,184 @@
+{
+	"checks": {
+		"an_empty_actual_community_cannot_open_a_fake_workbench": true,
+		"audible_pitch_override_updates_the_true_note_and_histogram_without_changing_world_members_or_sound": true,
+		"closing_emits_once_and_preserves_existing_works_without_a_listen_or_world_write": true,
+		"dummy_only_without_demo_gpu_or_device_playback": true,
+		"every_actual_authored_root_has_its_own_native_scrollable_change_pitch_button_instead_of_a_latest_root_alias": true,
+		"native_356px_workbench_fits_800x600_and_1440x900_with_complete_14px_body_and_fixed_actions": true,
+		"native_fixed_actions_emit_only_the_selected_cid_and_empty_full_city_request_with_audible_listening_truth": true,
+		"opening_reads_only_three_actual_eight_house_communities_and_current_heard_pitch_without_an_author_or_auto_action": true,
+		"real_author_rows_stay_inside_the_scroll_region_while_the_planning_and_listening_actions_remain_visible": true,
+		"switching_an_actual_nonempty_community_only_updates_its_read_only_workbench": true
+	},
+	"evidence": {
+		"author_roots": [
+			"building-00025",
+			"building-00026"
+		],
+		"layouts": [
+			{
+				"all_city_rect": "[P: (613.0, 398.0), S: (159.0, 38.0)]",
+				"body_minimum": "(264.0, 204.0)",
+				"labels": [
+					{
+						"font_pixels": 19,
+						"lines": 1,
+						"minimum": "(1.0, 27.0)",
+						"rect": "[P: (448.0, 97.0), S: (240.0, 27.0)]",
+						"text": "石桥 · 规划片区",
+						"visible_lines": 1
+					},
+					{
+						"font_pixels": 14,
+						"lines": 1,
+						"minimum": "(1.0, 20.0)",
+						"rect": "[P: (448.0, 188.0), S: (324.0, 20.0)]",
+						"text": "8栋 · 住宅7 / 商业1",
+						"visible_lines": 1
+					},
+					{
+						"font_pixels": 14,
+						"lines": 1,
+						"minimum": "(1.0, 20.0)",
+						"rect": "[P: (448.0, 324.0), S: (324.0, 20.0)]",
+						"text": "主题未成形 · 沿街成形、还需6栋成熟房屋",
+						"visible_lines": 1
+					},
+					{
+						"font_pixels": 14,
+						"lines": 1,
+						"minimum": "(1.0, 20.0)",
+						"rect": "[P: (448.0, 218.0), S: (324.0, 20.0)]",
+						"text": "已听音级 · 8个声音",
+						"visible_lines": 1
+					}
+				],
+				"listening_rect": "[P: (448.0, 398.0), S: (159.0, 38.0)]",
+				"panel": "[P: (432.0, 76.0), S: (356.0, 376.0)]",
+				"planning_rect": "[P: (448.0, 354.0), S: (324.0, 38.0)]",
+				"scroll": "[P: (448.0, 140.0), S: (324.0, 204.0)]",
+				"window": "(800.0, 600.0)"
+			},
+			{
+				"all_city_rect": "[P: (1253.0, 398.0), S: (159.0, 38.0)]",
+				"body_minimum": "(264.0, 204.0)",
+				"labels": [
+					{
+						"font_pixels": 19,
+						"lines": 1,
+						"minimum": "(1.0, 27.0)",
+						"rect": "[P: (1088.0, 97.0), S: (240.0, 27.0)]",
+						"text": "石桥 · 规划片区",
+						"visible_lines": 1
+					},
+					{
+						"font_pixels": 14,
+						"lines": 1,
+						"minimum": "(1.0, 20.0)",
+						"rect": "[P: (1088.0, 188.0), S: (324.0, 20.0)]",
+						"text": "8栋 · 住宅7 / 商业1",
+						"visible_lines": 1
+					},
+					{
+						"font_pixels": 14,
+						"lines": 1,
+						"minimum": "(1.0, 20.0)",
+						"rect": "[P: (1088.0, 324.0), S: (324.0, 20.0)]",
+						"text": "主题未成形 · 沿街成形、还需6栋成熟房屋",
+						"visible_lines": 1
+					},
+					{
+						"font_pixels": 14,
+						"lines": 1,
+						"minimum": "(1.0, 20.0)",
+						"rect": "[P: (1088.0, 218.0), S: (324.0, 20.0)]",
+						"text": "已听音级 · 8个声音",
+						"visible_lines": 1
+					}
+				],
+				"listening_rect": "[P: (1088.0, 398.0), S: (159.0, 38.0)]",
+				"panel": "[P: (1072.0, 76.0), S: (356.0, 376.0)]",
+				"planning_rect": "[P: (1088.0, 354.0), S: (324.0, 38.0)]",
+				"scroll": "[P: (1088.0, 140.0), S: (324.0, 204.0)]",
+				"window": "(1440.0, 900.0)"
+			},
+			{
+				"all_city_rect": "[P: (613.0, 522.0), S: (159.0, 38.0)]",
+				"body_minimum": "(264.0, 328.0)",
+				"labels": [
+					{
+						"font_pixels": 19,
+						"lines": 1,
+						"minimum": "(1.0, 27.0)",
+						"rect": "[P: (448.0, 97.0), S: (240.0, 27.0)]",
+						"text": "松丘 · 规划片区",
+						"visible_lines": 1
+					},
+					{
+						"font_pixels": 14,
+						"lines": 1,
+						"minimum": "(1.0, 20.0)",
+						"rect": "[P: (448.0, 188.0), S: (324.0, 20.0)]",
+						"text": "10栋 · 住宅9 / 商业1",
+						"visible_lines": 1
+					},
+					{
+						"font_pixels": 14,
+						"lines": 1,
+						"minimum": "(1.0, 20.0)",
+						"rect": "[P: (448.0, 324.0), S: (324.0, 20.0)]",
+						"text": "主题可用",
+						"visible_lines": 1
+					},
+					{
+						"font_pixels": 14,
+						"lines": 1,
+						"minimum": "(1.0, 20.0)",
+						"rect": "[P: (448.0, 218.0), S: (324.0, 20.0)]",
+						"text": "已听音级 · 10个声音",
+						"visible_lines": 1
+					}
+				],
+				"listening_rect": "[P: (448.0, 522.0), S: (159.0, 38.0)]",
+				"panel": "[P: (432.0, 76.0), S: (356.0, 500.0)]",
+				"planning_rect": "[P: (448.0, 478.0), S: (324.0, 38.0)]",
+				"scroll": "[P: (448.0, 140.0), S: (324.0, 328.0)]",
+				"window": "(800.0, 600.0)"
+			}
+		],
+		"requests": [
+			{
+				"kind": "planning",
+				"value": "west-2"
+			},
+			{
+				"kind": "listen",
+				"value": "west-2"
+			},
+			{
+				"kind": "listen",
+				"value": ""
+			},
+			{
+				"kind": "author",
+				"value": "building-00025"
+			},
+			{
+				"kind": "author",
+				"value": "building-00026"
+			},
+			{
+				"kind": "closed",
+				"value": ""
+			},
+			{
+				"kind": "closed",
+				"value": ""
+			}
+		]
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Dummy native 356px workbench over production 24-house World and two actual seed settlements. Read-only UI content, fixed actions, native clicks, actual root identity and audible pitch override; Root owns production listening commits, camera, GPU and human experience."
+}

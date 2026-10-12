@@ -4,7 +4,7 @@ const Workbench = preload("res://scripts/ui/community_workbench.gd")
 const World = preload("res://scripts/world/continuous_world.gd")
 const First = preload("res://scripts/world/first_composition.gd")
 const PlayerExpression = preload("res://scripts/world/player_expression.gd")
-const OUTPUT := "res://验证记录/round214_社区工作台/panel_contract.json"
+const OUTPUT := "res://验证记录/round215_古典联合屋顶/optional_panel_contract.json"
 var checks: Dictionary = {}
 var failures: Array[String] = []
 var requests: Array[Dictionary] = []
@@ -103,7 +103,7 @@ func _run() -> void:
 	fixture.model.score["listener_community"] = "west-2"
 	panel.sync()
 	await process_frame
-	var actual_listening: bool = panel.listen_button.disabled and panel.listen_button.text == "正在听这个街坊" and not panel.all_city_button.disabled
+	var actual_listening: bool = panel.listen_button.disabled and panel.listen_button.text == "正在听这一带" and not panel.all_city_button.disabled
 	await _click(panel.all_city_button)
 	check(requests == [{"kind":"planning","value":"west-2"},{"kind":"listen","value":"west-2"},{"kind":"listen","value":""}] and actual_listening and city.snapshot() == before,"native_fixed_actions_emit_only_the_selected_cid_and_empty_full_city_request_with_audible_listening_truth")
 	fixture.model.score["listener_community"] = ""
@@ -150,5 +150,5 @@ func _run() -> void:
 	var report := {"passed":failures.is_empty(),"checks":checks,"failures":failures,"evidence":{"layouts":layouts,"author_roots":roots,"requests":requests},"scope":"Dummy native 356px workbench over production 24-house World and two actual seed settlements. Read-only UI content, fixed actions, native clicks, actual root identity and audible pitch override; Root owns production listening commits, camera, GPU and human experience."}
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUTPUT.get_base_dir()))
 	FileAccess.open(OUTPUT,FileAccess.WRITE).store_string(JSON.stringify(report,"\t")+"\n")
-	print("ROUND214_COMMUNITY_PANEL ",checks.size()-failures.size(),"/",checks.size()," ",JSON.stringify(failures))
+	print("ROUND215_OPTIONAL_PANEL ",checks.size()-failures.size(),"/",checks.size()," ",JSON.stringify(failures))
 	quit(0 if failures.is_empty() else 1)

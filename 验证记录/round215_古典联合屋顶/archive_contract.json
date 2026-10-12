@@ -1,0 +1,25 @@
+{
+  "all_archived_originals_match_pre_stage_git": true,
+  "count": 18,
+  "originals": [
+    "文档/00_设计意图.md",
+    "文档/01_执行规格/spec.audio.md",
+    "文档/01_执行规格/spec.fabric.md",
+    "文档/01_执行规格/spec.proposal.md",
+    "文档/01_执行规格/spec.space.md",
+    "文档/01_执行规格/spec.ui.md",
+    "文档/10_世界模型.md",
+    "文档/11_核心循环.md",
+    "文档/12_声音架构.md",
+    "文档/14_城市生长.md",
+    "文档/16_界面与反馈.md",
+    "文档/17_美术规格.md",
+    "文档/18_城市规模.md",
+    "文档/19_城市生成管线.md",
+    "文档/Demo快速开始.md",
+    "文档/README.md",
+    "PROJECT.md",
+    "数据/world_v2.json"
+  ],
+  "line_endings_normalized_for_git_comparison": true
+}

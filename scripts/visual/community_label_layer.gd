@@ -13,10 +13,8 @@ var last_draw_ms := 0.0
 
 func sync(demo: Control) -> void:
 	var started := Time.get_ticks_usec()
-	# The opening slice frames the three starter blocks a little closer than
-	# the long-term city view. Keep their names visible there so choosing a
-	# community is a map action, not a lookup through an abstract list.
-	visible = not demo.black and (demo.view_zoom < 1.0 or bool(demo.first_composition_mode))
+	# Legacy planning partitions are an optional tool, not imposed neighborhoods.
+	visible = not demo.black and (demo.planning_guide.opened or demo.community_workbench.opened)
 	if not visible:
 		last_sync_ms = float(Time.get_ticks_usec()-started)/1000.0
 		return

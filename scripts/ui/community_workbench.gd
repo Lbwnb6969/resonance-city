@@ -121,14 +121,14 @@ func setup(owner_demo: Control) -> void:
 	footer = VBoxContainer.new()
 	footer.add_theme_constant_override("separation",6)
 	column.add_child(footer)
-	planning_button = _button("规划这个街坊")
+	planning_button = _button("在此继续规划")
 	Ui.primary(planning_button)
 	planning_button.pressed.connect(func() -> void: planning_requested.emit(community_id))
 	footer.add_child(planning_button)
 	var listening_row := HBoxContainer.new()
 	listening_row.add_theme_constant_override("separation",6)
 	footer.add_child(listening_row)
-	listen_button = _button("听这个街坊")
+	listen_button = _button("听这一带")
 	listen_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	listen_button.pressed.connect(func() -> void: listen_requested.emit(community_id))
 	listening_row.add_child(listen_button)
@@ -201,7 +201,7 @@ func sync() -> void:
 		_refresh(communities)
 	var score: Dictionary = demo.model.audible_score()
 	var listening := str(score.get("listener_community","")) == community_id
-	listen_button.text = "正在听这个街坊" if listening else "听这个街坊"
+	listen_button.text = "正在听这一带" if listening else "听这一带"
 	listen_button.disabled = listening
 	# Returning to the ensemble clears solo/focus and preserves player mutes.
 	all_city_button.disabled = str(score.get("listener_community","")).is_empty() and str(score.get("focused_community","")).is_empty()
@@ -214,7 +214,7 @@ func _clear(container: Container) -> void:
 		child.queue_free()
 
 func _refresh(communities: Array[Dictionary]) -> void:
-	title_label.text = str(state["name"])
+	title_label.text = str(state["name"])+" · 规划片区"
 	_clear(community_rows)
 	for community: Dictionary in communities:
 		var cid := str(community["id"])

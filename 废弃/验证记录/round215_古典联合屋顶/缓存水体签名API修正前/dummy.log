@@ -1,0 +1,40 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+SCRIPT ERROR: Invalid call. Nonexistent function 'hash' in base 'PackedVector2Array'.
+   at: JoinedClassicalRoofs.sync (res://scripts/visual/joined_classical_roofs.gd:73)
+   GDScript backtrace (most recent call first):
+       [0] sync (res://scripts/visual/joined_classical_roofs.gd:73)
+       [1] setup (res://scripts/visual/joined_classical_roofs.gd:53)
+       [2] _run (res://tests/round215_joined_classical_roofs.gd:90)
+ERROR: real_24_house_starter_has_true_joined_roof_bodies
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round215_joined_classical_roofs.gd:32)
+       [1] _run (res://tests/round215_joined_classical_roofs.gd:92)
+ERROR: union_is_solid_half_meter_wide_roof_geometry_with_four_surfaces_not_a_line
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round215_joined_classical_roofs.gd:32)
+       [1] _run (res://tests/round215_joined_classical_roofs.gd:102)
+SCRIPT ERROR: Invalid call. Nonexistent function 'hash' in base 'PackedVector2Array'.
+   at: JoinedClassicalRoofs.sync (res://scripts/visual/joined_classical_roofs.gd:73)
+   GDScript backtrace (most recent call first):
+       [0] sync (res://scripts/visual/joined_classical_roofs.gd:73)
+       [1] _run (res://tests/round215_joined_classical_roofs.gd:107)
+SCRIPT ERROR: Invalid call. Nonexistent function 'hash' in base 'PackedVector2Array'.
+   at: JoinedClassicalRoofs.sync (res://scripts/visual/joined_classical_roofs.gd:73)
+   GDScript backtrace (most recent call first):
+       [0] sync (res://scripts/visual/joined_classical_roofs.gd:73)
+       [1] _run (res://tests/round215_joined_classical_roofs.gd:109)
+ERROR: seven_house_chain_stops_at_six_and_leaves_next_seam_open
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round215_joined_classical_roofs.gd:32)
+       [1] _run (res://tests/round215_joined_classical_roofs.gd:111)
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array'.
+   at: _run (res://tests/round215_joined_classical_roofs.gd:112)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/round215_joined_classical_roofs.gd:112)

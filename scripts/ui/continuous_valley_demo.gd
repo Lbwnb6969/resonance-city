@@ -45,6 +45,7 @@ var art_study_enabled := false
 var art_direction := ArtDirection.new()
 var art_review_panel: PanelContainer
 var street_eaves_layer: Node2D
+var joined_classical_roofs: Node2D
 var daylight_state: Dictionary = {}
 var daylight_manual_phase := -1.0
 var scenery := ValleyScenery.new()
@@ -92,7 +93,6 @@ var water_flow: Node2D
 var community_label_layer: Node2D
 var community_workbench: PanelContainer
 var community_member_focus: Node2D
-var community_entry: Button
 var community_camera_key: Array = []
 var community_listening_owned := false
 var community_saved_listening: Dictionary = {}
@@ -274,6 +274,10 @@ func _ready() -> void:
 	street_eaves_layer = StreetEaves.new()
 	street_eaves_layer.name = "StreetEaves"
 	buildings_layer.add_child(street_eaves_layer)
+	joined_classical_roofs = preload("res://scripts/visual/joined_classical_roofs.gd").new()
+	joined_classical_roofs.name = "JoinedClassicalRoofs"
+	buildings_layer.add_child(joined_classical_roofs)
+	joined_classical_roofs.setup(self)
 	frontage_details = preload("res://scripts/visual/classical_frontage_details.gd").new()
 	frontage_details.name = "ClassicalFrontageDetails"
 	buildings_layer.add_child(frontage_details)
@@ -358,15 +362,6 @@ func _ready() -> void:
 	community_member_focus.z_index = 21
 	add_child(community_member_focus)
 	community_member_focus.setup(self)
-	community_entry = Button.new()
-	community_entry.text = "街坊 · C"
-	community_entry.tooltip_text = "查看整片街坊，听它的声音并继续规划；也可点击地图社区名"
-	community_entry.theme = planning_guide.theme
-	community_entry.position = Vector2(280,24)
-	community_entry.custom_minimum_size = Vector2(108,44)
-	community_entry.z_index = 115
-	community_entry.pressed.connect(_toggle_community_workbench)
-	add_child(community_entry)
 	first_composition_guide = preload("res://scripts/ui/first_composition_guide.gd").new()
 	add_child(first_composition_guide)
 	first_composition_guide.setup(self)
@@ -601,7 +596,7 @@ func _make_menu() -> void:
 	box.add_child(expressions)
 	menu.set_meta("legacy_expressions",expressions)
 	var verbs := HFlowContainer.new()
-	for item in [["查看这个街坊","community"],["独听社区","solo"],["静音社区","mute"],["聚焦","focus"],["跨河应答","response"],["规划社区 · P","planning"]]:
+	for item in [["规划片区工具 · C","community"],["独听这一带","solo"],["静音这一带","mute"],["聚焦","focus"],["跨河应答","response"],["继续规划 · P","planning"]]:
 		var button := Button.new()
 		button.text = item[0]
 		if item[1] == "response":
@@ -3262,6 +3257,7 @@ func _process(delta: float) -> void:
 	_sync_buildings()
 	_profile_frame("buildings_ms",frame_started)
 	street_eaves_layer.sync(self)
+	joined_classical_roofs.sync(self)
 	_sync_daylight()
 	expression_audition_layer.sync(self)
 	first_sound_focus.sync(self)
@@ -3341,7 +3337,6 @@ func _process(delta: float) -> void:
 			community_camera_key = community_key
 			_frame_workbench_community()
 	community_member_focus.sync()
-	community_entry.visible = first_composition_mode and not black and not community_workbench.opened and not planning_guide.opened and not menu.visible
 	first_composition_guide.sync()
 	if community_workbench.opened: first_composition_guide.hide()
 	caption.position = Vector2(48,size.y-68)
@@ -3500,10 +3495,12 @@ func set_art_direction(id: String) -> void:
 	art_direction.selected_id = id
 	# Retained cornices use the new entry's real roof height and extents.
 	street_eaves_layer.clear()
+	joined_classical_roofs.clear()
 	_sync_buildings()
 	_sync_daylight()
 	for prop: ValleyProp in scenery.props.values(): scenery._sync_prop_art(self,prop)
 	street_eaves_layer.sync(self)
+	joined_classical_roofs.sync(self)
 	expression_audition_layer.sync(self)
 	queue_redraw()
 
