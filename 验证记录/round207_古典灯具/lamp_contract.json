@@ -1,0 +1,12 @@
+{
+	"checks": {
+		"all_later_eras_keep_the_original_globe_lamp_branch": true,
+		"dummy_audio_only": true,
+		"era_draw_dispatch_preserves_transport_and_prop_state_without_a_light_node": true,
+		"first_era_production_draw_selects_stone_and_terracotta_oil_lamp": true,
+		"returning_to_classical_era_does_not_depend_on_motion_or_tone": true
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Dummy production ValleyProp._draw dispatch with branch probes. First-era lamps use fixed stone/terracotta geometry, eras 2-4 retain the original globe branch, and transport/prop state is untouched. Real-window shape review remains with Root."
+}

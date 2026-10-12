@@ -49,6 +49,8 @@ func _capture(name: String) -> void:
 	await process_frame
 	await RenderingServer.frame_post_draw
 	demo.get_viewport().get_texture().get_image().save_png(output+name+".png")
+	if "--round206-style" in OS.get_cmdline_user_args():
+		FileAccess.open(output+"progress.json",FileAccess.WRITE).store_string(JSON.stringify({"last_capture":name,"checks":checks,"failures":failures,"auditions":auditions,"complete":false},"\t"))
 func _audition(choice: String,phase: String = "首段") -> void:
 	demo.expression_choices[choice].emit_signal("pressed")
 	await process_frame
@@ -59,6 +61,8 @@ func _audition(choice: String,phase: String = "首段") -> void:
 	if not demo.preview_started: return
 	var variant: Dictionary = demo.expression_comparison["variants"][choice]
 	check(demo.preview_player.stream.data == variant["pcm"] and demo.expression_audition_layer.ghost.get("expression","") == choice,phase+"_"+choice+"_playing_pcm_and_visible_house_share_branch")
+	if "--round206-style" in OS.get_cmdline_user_args():
+		check(demo.expression_choices[choice].thumbnail_entry["id"] == demo.expression_audition_layer.ghost["entry_id"],phase+"_"+choice+"_card_and_real_preview_share_road_facing_template")
 	var wav := AudioStreamWAV.new()
 	wav.format = AudioStreamWAV.FORMAT_16_BITS
 	wav.mix_rate = demo.clock.renderer.transport.sample_rate
@@ -81,6 +85,8 @@ func _choose_scope(cid: String,plan_index: int) -> Dictionary:
 func _run() -> void:
 	if "--round204-audition" in OS.get_cmdline_user_args(): output = "res://验证记录/round204_点击即试听/"
 	if "--round205-placement" in OS.get_cmdline_user_args(): output = "res://验证记录/round205_声音推荐落点/"
+	var refined := "--round206-style" in OS.get_cmdline_user_args()
+	if refined: output = "res://验证记录/round206_精制河湾/"
 	output += "run_"+Time.get_datetime_string_from_system().replace(":","-")+"/"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output))
 	DisplayServer.window_set_size(Vector2i(1440,900))
@@ -93,10 +99,19 @@ func _run() -> void:
 	var skips := demo.clock.underruns
 	check(AudioServer.get_driver_name() == "WASAPI" and DisplayServer.get_name() != "headless","physical_window_and_audio")
 	var guide = demo.planning_guide
+	if refined:
+		check(await _until(rate*6),"new_valley_reaches_its_real_opening")
+		await _capture("00_精制河湾_24栋真实开局")
 	guide.open_tool()
+	if refined:
+		await _capture("00a_发展方向_插画选择卡")
+		guide.cards.get_child(0).emit_signal("pressed")
+		await _capture("00b_变化卡_统一界面")
+		guide.stage = "charter"
 	var site := _choose_scope("west-2",0)
 	guide.choose_anchor("none")
 	_click(demo.point(Vector2(float(site["position"][0]),float(site["position"][1]))))
+	await process_frame
 	await process_frame
 	check(demo.pending_composition_choice.get("kind","") == "none" and demo.caption.text.contains("暂不建设") and demo._show_pending_composition_choice(),"unbuilt_public_choice_explains_its_real_next_step")
 	await _capture("01_不建也有下一句_真实等待节拍")
@@ -153,7 +168,7 @@ func _run() -> void:
 	check(await _until(frame+rate/5),"opposite_civic_space_reaches_device_boundary")
 	guide.next_action_button.emit_signal("pressed")
 	check(demo.expression_choice.is_empty() and not demo.preview_requested,"second_sound_recommendation_does_not_choose_expression")
-	if "--round205-placement" in OS.get_cmdline_user_args():
+	if "--round205-placement" in OS.get_cmdline_user_args() or refined:
 		for choice: String in ["deep","warm","weave"]: await _audition(choice,"第二段")
 	else: await _audition("weave","第二段")
 	var finish_deadline := Time.get_ticks_msec()+5500
@@ -168,12 +183,14 @@ func _run() -> void:
 	await process_frame
 	check(demo.pending_composition_choice.get("kind","") == "weave" and demo.caption.text.contains("织机已选好"),"auditioned_voice_uses_same_wait_feedback")
 	await _capture("06_织机已选好_下一句长出商业")
+	if refined: print("REFINED_LIVE second_voice_pending; begin device input capture")
 	recording = LiveRecording.new()
 	recording.model = demo.model
 	recording.begin = frame
 	recording.end = frame+rate*8
 	demo.clock.renderer.source = recording._mix_frame
 	check(await _until(frame+rate/4),"second_author_root_reaches_device_boundary")
+	if refined: print("REFINED_LIVE second_author_root_is_heard")
 	var second_root := str(demo._first_authored_state().get("root_id",""))
 	check(second_root != first_root and demo._composition_title() == "河湾 · 两岸合奏" and not bool(demo._first_authored_state(first_root)["retuned"]),"two_player_segments_exist_without_mandatory_first_retune")
 	demo._open_authored_root(first_root)
@@ -198,6 +215,34 @@ func _run() -> void:
 	heard.stereo = true
 	heard.data = Renderer.pcm16(recording.samples)
 	heard.save_to_wav(output+"两岸合奏_设备输入.wav")
+	if refined:
+		var saved_city := demo.model.world.snapshot()
+		demo.daylight_manual_phase = 0.0
+		demo.menu.hide()
+		demo.zoom_target = 2.1
+		var root_position := demo.Coupling.position_of(demo.shown_world.by_id[first_root])
+		demo.pan_target = -demo.Projection2D.to_screen(root_position-Vector2(16,16),Vector2.ZERO,demo.zoom_target,Vector2(28,14),demo.shown_world.terrain.height_at(root_position))+Vector2(0,25)
+		await create_timer(0.8).timeout
+		await _capture("08_暖庭近景_瓦窗檐廊与接地")
+		demo.daylight_manual_phase = 0.53
+		await process_frame
+		await _capture("09_精制河湾_夜色")
+		demo.daylight_manual_phase = 0.0
+		DisplayServer.window_set_size(Vector2i(800,600))
+		await process_frame
+		await process_frame
+		guide.open_tool()
+		await process_frame
+		check(Rect2(Vector2.ZERO,Vector2(800,600)).encloses(guide.get_global_rect()),"refined_planning_cards_fit_800x600")
+		await _capture("10_800x600_发展卡")
+		guide.hide_tool()
+		demo._begin_first_sound_choice("east-2")
+		await process_frame
+		await process_frame
+		check(Rect2(Vector2.ZERO,Vector2(800,600)).encloses(demo.menu.get_global_rect()),"refined_voice_cards_fit_800x600")
+		check(demo.expression_choices.values().all(func(card: Button) -> bool: return str(card.thumbnail_entry["texture"]).contains("精制河湾")),"voice_cards_use_actual_refined_route_asset")
+		await _capture("11_800x600_声音卡")
+		check(demo.model.world.snapshot() == saved_city,"style_and_small_window_checks_do_not_change_city")
 	demo.clock.stop_output()
 	var report := {"passed":failures.is_empty(),"checks":checks,"failures":failures,"evidence":{"first_root":first_root,"second_root":second_root,"reservation_id":kept_id,"houses":demo.shown_world.buildings.size(),"underruns":demo.clock.underruns-skips,"sample_rate":rate,"samples":recording.samples.size(),"peak":peak,"clipped":clipped,"auditions":auditions},"scope":"Real Windows/OpenGL/WASAPI route-click audition, automatic four-second finish and replay, immediate-confirmation location marker through render-ahead, audible root entry and two segments; no human fun or listening-quality claim."}
 	FileAccess.open(output+"live.json",FileAccess.WRITE).store_string(JSON.stringify(report,"\t")+"\n")

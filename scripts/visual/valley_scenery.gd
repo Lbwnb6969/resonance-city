@@ -61,6 +61,7 @@ func _add(demo: Control,key: String,p: Vector2,kind: String,tone: int,site: Stri
 	var prop := ValleyProp.new()
 	prop.kind = kind
 	prop.tone = tone
+	prop.era = demo.shown_world.era
 	prop.set_meta("world_position",p)
 	prop.set_meta("site",site)
 	prop.set_meta("modern_only",modern_only)
@@ -273,6 +274,9 @@ func sync(demo: Control) -> void:
 	var scenery_red: float = world_tint.r/demo.buildings_layer.modulate.r
 	for key in props:
 		var prop: ValleyProp = props[key]
+		if prop.era != city.era:
+			prop.era = city.era
+			prop.queue_redraw()
 		_sync_prop_art(demo,prop)
 		var p: Vector2 = prop.get_meta("world_position")
 		var site_id := str(prop.get_meta("site"))
@@ -337,8 +341,14 @@ func sync(demo: Control) -> void:
 
 func _sync_prop_art(demo: Control,prop: ValleyProp) -> void:
 	if prop.kind not in ["tree","civic"]: return
-	if demo.art_direction.selected_id == "baseline" and prop.art_entry.is_empty(): return
-	var entry: Dictionary = demo.art_direction.prop_entry(prop.kind,prop.tone)
+	var era: int = demo.shown_world.era
+	var orientation := 0
+	if prop.kind == "civic":
+		var site: Dictionary = sites[str(prop.get_meta("site"))]
+		era = demo.shown_world.era_for_phrase(int(site.get("created_phrase",int(site["frame"])/int(demo.shown_world.cfg["timing"]["phrase_frames"]))))
+		var entry_at := Vector2(float(site["entrance"][0]),float(site["entrance"][1]))
+		orientation = demo._street_orientation(prop.get_meta("world_position"),entry_at)
+	var entry: Dictionary = demo.building_catalog.prop_entry(prop.kind,prop.tone,era,orientation) if demo.art_direction.selected_id == "baseline" else demo.art_direction.prop_entry(prop.kind,prop.tone)
 	if str(prop.art_entry.get("id","")) == str(entry.get("id","")): return
 	prop.art_entry = entry
 	if not entry.is_empty():

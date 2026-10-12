@@ -4,6 +4,7 @@ const IsoProjection = preload("res://scripts/world/world_projection.gd")
 const PublicGeometry = preload("res://scripts/visual/public_space_visual_geometry.gd")
 const TerrainGeometry = preload("res://scripts/visual/valley_terrain_visual_geometry.gd")
 const ExpressionIdentity = preload("res://scripts/visual/first_expression_identity.gd")
+const Miniature = preload("res://scripts/visual/miniature_valley_material.gd")
 var city: ContinuousWorld
 var role := "terrain"
 var art_style_id := "baseline"
@@ -27,6 +28,11 @@ var terrain_geometry_key: Array = []
 var terrain_geometry_rebuilds := 0
 var terrain_prepare_ms := 0.0
 var terrain_surface_skips := 0
+var water_material: Array[Dictionary] = []
+var ground_grain: Array[Dictionary] = []
+var street_material: Dictionary = {"curbs":[],"joints":[],"paving":[]}
+var street_material_key: Array = []
+var street_material_rebuilds := 0
 # Independent CanvasItems retain exact draw contents in the original layer order.
 var urban_parts: Dictionary = {}
 var last_prepare_ms := 0.0
@@ -38,12 +44,14 @@ func sync(demo: Control) -> void:
 	city = demo.shown_world
 	art_style_id = demo.art_direction.selected_id
 	palette = demo.art_direction.palette()
+	if _miniature_style(): palette = Miniature.COLORS
 	for part in urban_parts.values(): part.city = city
 	position = Vector2(demo.size.x*0.5,demo.size.y*0.52)+demo.pan
 	scale = Vector2.ONE*demo.view_zoom
 	visible = not demo.black
 	var geometry_key: Array = [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])] if role == "terrain" else demo._shown_city_key()
 	var next_key := geometry_key+[snappedf(demo.view_zoom,0.00001),art_style_id]
+	if role == "urban": next_key.append(city.era)
 	var next_terrain := [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])]
 	var terrain_changed := terrain_identity != next_terrain
 	if terrain_changed:
@@ -67,9 +75,17 @@ func _prepare_terrain_geometry() -> void:
 	if terrain_geometry_key == terrain_identity and not terrain_geometry.is_empty(): return
 	var began := Time.get_ticks_usec()
 	terrain_geometry = TerrainGeometry.build(city.terrain) if city.terrain.family == "river_valley" else {"surfaces":[]}
+	water_material = Miniature.water_bands(city.terrain) if city.terrain.family == "river_valley" else []
+	ground_grain = Miniature.land_grain(city.terrain) if city.terrain.family == "river_valley" else []
 	terrain_geometry_key = terrain_identity.duplicate(true)
 	terrain_geometry_rebuilds += 1
 	terrain_prepare_ms = float(Time.get_ticks_usec()-began)/1000.0
+
+func _miniature_style() -> bool:
+	return city != null and city.terrain.family == "river_valley" and art_style_id == "baseline"
+
+func _classical_streets() -> bool:
+	return _miniature_style() and city.era == 1
 
 func _point(p: Vector2, height: float = -1.0) -> Vector2:
 	var point_key := [p,height]
@@ -98,8 +114,7 @@ func _draw() -> void:
 	rebuild_count += 1
 	match role:
 		"terrain": _draw_terrain()
-		"roads":
-			for road in roads: draw_colored_polygon(_project_polygon(road["polygon"]),road["color"])
+		"roads": _draw_roads()
 		"centers": _draw_center_markers()
 		"corridors": _draw_green_corridors()
 		"public": _draw_public_space()
@@ -151,19 +166,49 @@ func _draw_river_terrain() -> void:
 			terrain_surface_skips += 1
 			continue
 		draw_colored_polygon(projected,colors[int(surface["band"])])
-	for ring in patches: draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.08))
+	if _miniature_style():
+		for mark: Dictionary in ground_grain:
+			var color := Color("f0e6c8",0.15) if bool(mark["light"]) else Color("687d5a",0.12)
+			draw_polyline(_project_polygon(mark["path"]),color,0.65,true)
+	else:
+		for ring in patches: draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.08))
 	for contour in terrain_geometry["contours"]:
-		draw_polyline(_project_polygon(contour["path"]),Color(0.45,0.58,0.46,0.18),0.8/camera_zoom,true)
+		draw_polyline(_project_polygon(contour["path"]),Color(0.38,0.49,0.35,0.07) if _miniature_style() else Color(0.45,0.58,0.46,0.18),(0.7 if _miniature_style() else 0.8)/camera_zoom,true)
 	for rim in terrain_geometry["rims"]: draw_colored_polygon(_project_polygon(rim),Color(palette.get("rim","c2ceb3")))
-	draw_colored_polygon(_project_polygon(city.terrain.water,0.0),Color(palette.get("water","91b1b3")))
-	draw_colored_polygon(_project_polygon(terrain_geometry["channel"],0.0),Color(palette.get("channel","78a4ad")))
-	for shallow in terrain_geometry["shallow_water"]: draw_colored_polygon(_project_polygon(shallow,0.0),Color(palette.get("shallow","acc6be")))
+	if _miniature_style():
+		for band: Dictionary in water_material: draw_colored_polygon(_project_polygon(band["polygon"],0.0),band["color"])
+	else:
+		draw_colored_polygon(_project_polygon(city.terrain.water,0.0),Color(palette.get("water","91b1b3")))
+		draw_colored_polygon(_project_polygon(terrain_geometry["channel"],0.0),Color(palette.get("channel","78a4ad")))
+		for shallow in terrain_geometry["shallow_water"]: draw_colored_polygon(_project_polygon(shallow,0.0),Color(palette.get("shallow","acc6be")))
 	for face in terrain_geometry["shore_faces"]:
 		var edge: PackedVector2Array = face["edge"]
 		var top := PackedVector2Array([_point(edge[0],float(face["heights"][0])),_point(edge[1],float(face["heights"][1]))])
 		var wall := PackedVector2Array([top[0],top[1],_point(edge[1],0.0),_point(edge[0],0.0)])
-		draw_colored_polygon(wall,Color(palette.get("shore","9fac9c")))
-		draw_polyline(top,Color(palette.get("edge","d8dfc7")),0.8/camera_zoom,true)
+		if _miniature_style():
+			_draw_stone_bank(top,wall)
+		else:
+			draw_colored_polygon(wall,Color(palette.get("shore","9fac9c")))
+			draw_polyline(top,Color(palette.get("edge","d8dfc7")),0.8/camera_zoom,true)
+
+func _draw_stone_bank(top: PackedVector2Array,wall: PackedVector2Array) -> void:
+	# The bank's bottom is water level and its cap is the real terrain height.
+	# Stone courses add relief without extruding or moving the shoreline.
+	var colors := [Color("b6b79a"),Color("96a48c"),Color("728c80")]
+	for index in range(3):
+		var above := float(index)/3.0
+		var below := float(index+1)/3.0
+		var a := wall[0].lerp(wall[3],above)
+		var b := wall[1].lerp(wall[2],above)
+		var c := wall[1].lerp(wall[2],below)
+		var d := wall[0].lerp(wall[3],below)
+		var course := PackedVector2Array([a,b,c,d])
+		if _is_drawable_polygon(course): draw_colored_polygon(course,colors[index])
+		if index > 0: draw_line(a,b,Color("566f65",0.26),0.65,true)
+		var joint := 0.38 if index%2 == 0 else 0.70
+		draw_line(a.lerp(b,joint),d.lerp(c,joint),Color("596e60",0.24),0.65,true)
+	draw_polyline(top,Color("dfd8bc"),1.0,true)
+	draw_line(wall[2],wall[3],Color("2f6370",0.30),1.8,true)
 
 func _is_drawable_polygon(polygon: PackedVector2Array) -> bool:
 	if polygon.size() < 3: return false
@@ -174,12 +219,40 @@ func _is_drawable_polygon(polygon: PackedVector2Array) -> bool:
 	return not Geometry2D.triangulate_polygon(polygon).is_empty()
 
 func _draw_urban() -> void:
-	for road in roads: draw_colored_polygon(_project_polygon(road["polygon"]),road["color"])
+	_draw_roads()
 	_draw_center_markers()
 	_draw_green_corridors()
 	_draw_public_space()
 	_draw_occupied_lots()
 	_draw_fabric_overlay()
+
+func _draw_roads() -> void:
+	if not _miniature_style():
+		for road in roads: draw_colored_polygon(_project_polygon(road["polygon"]),road["color"])
+		return
+	# A narrow contact edge sits below every real road surface. Fill all roads
+	# afterwards, so intersections cover one another's internal borders.
+	if _classical_streets():
+		for road in roads:
+			var edge := _project_polygon(road["polygon"]).duplicate()
+			edge.append(edge[0])
+			draw_polyline(edge,Color("8d8972",0.28),2.4,true)
+	for road in roads:
+		var color := Color("bda37d") if road["color"] == Color("d3bb93") else Color("c6b898")
+		if not _classical_streets(): color = road["color"]
+		draw_colored_polygon(_project_polygon(road["polygon"]),color)
+	if not _classical_streets():
+		# Once a later era is actually heard, retain stone only around surviving
+		# classical buildings. New-era streets use the existing era presentation;
+		# mixed frontages blend without inventing an era field on the road graph.
+		for paving: Dictionary in street_material["paving"]:
+			draw_colored_polygon(_project_polygon(paving["polygon"]),Color(Color("c6b898"),float(paving["strength"])))
+	for curb: PackedVector2Array in street_material["curbs"]:
+		var path := _project_polygon(curb)
+		draw_polyline(path,Color("8b826b",0.55),2.2,true)
+		draw_polyline(path,Color("dfd3b4",0.90),1.2,true)
+	for joint: PackedVector2Array in street_material["joints"]:
+		draw_polyline(_project_polygon(joint),Color("8d8972",0.30),0.6,true)
 
 func _draw_occupied_lots() -> void:
 	for lot in city.lots:
@@ -187,7 +260,7 @@ func _draw_occupied_lots() -> void:
 			var expression := _lot_expression(lot)
 			var polygon := _project_polygon(lot["polygon"])
 			if expression.is_empty():
-				draw_colored_polygon(polygon,Color(0.68,0.73,0.57,0.24))
+				draw_colored_polygon(polygon,Color("cabd9c",0.75) if _miniature_style() else Color(0.68,0.73,0.57,0.24))
 			else:
 				# The same authored palette reaches the street, not just the roof.
 				# Subtle paved plots make the growing family read as one place.
@@ -202,6 +275,8 @@ func _lot_expression(lot: Dictionary) -> String:
 	return ExpressionIdentity.expression_for(building,city.families.get(str(building.get("family_id","")),{}))
 
 func _draw_center_markers() -> void:
+	# Centers are graph anchors, not circular objects built into the landscape.
+	if _miniature_style(): return
 	for center in city.centers:
 		if not bool(center.get("active",true)): continue
 		var p := Vector2(float(center["position"][0]),float(center["position"][1]))
@@ -235,12 +310,13 @@ func _draw_public_space() -> void:
 	for site in city.public_sites:
 		for component in PublicGeometry.components(site):
 			if site["active"]:
-				var color := Color("bacda7") if site["kind"] == "park" else Color("ded5b9")
+				var color := Color("97ae87") if site["kind"] == "park" else Color("d1c3a1")
+				if not _miniature_style(): color = Color("bacda7") if site["kind"] == "park" else Color("ded5b9")
 				for piece in component["pieces"]: draw_colored_polygon(_project_polygon(piece),color)
 				if site["kind"] == "park":
 					var details := PublicGeometry.park_details(component)
-					for path in details["paths"]: draw_colored_polygon(_project_polygon(path),Color("e6e2c9"))
-					for pool in details["pools"]: draw_colored_polygon(_project_polygon(pool),Color("9bb9af"))
+					for path in details["paths"]: draw_colored_polygon(_project_polygon(path),Color("d1c7a6") if _miniature_style() else Color("e6e2c9"))
+					for pool in details["pools"]: draw_colored_polygon(_project_polygon(pool),Color("6e9c94") if _miniature_style() else Color("9bb9af"))
 				else:
 					var center := _point(component["position"])
 					var mark_scale := minf(1.0,float(component["clearance"])/0.9)
@@ -248,7 +324,7 @@ func _draw_public_space() -> void:
 						draw_circle(center+Vector2((level-1)*7,15)*mark_scale,2.2*mark_scale,Color("927851"))
 					if site.get("served",[]).size() >= int(site.get("service_capacity",18)):
 						draw_arc(center,14*mark_scale,0,TAU,32,Color("b58b55"),1.2/camera_zoom,true)
-			else:
+			elif not _miniature_style():
 				var outline := _project_polygon(component["outer"]).duplicate()
 				outline.append(outline[0])
 				draw_polyline(outline,Color(0.45,0.59,0.43,0.34),1.1/camera_zoom,true)
@@ -269,16 +345,16 @@ func _draw_fabric_overlay() -> void:
 			polygon = PackedVector2Array([center+Vector2(-0.58,0),center+Vector2(0,-0.42),center+Vector2(0.58,0),center+Vector2(0,0.42)])
 		var closed := polygon.duplicate()
 		closed.append(closed[0])
-		draw_colored_polygon(_project_polygon(polygon,0.01),Color(0.82,0.78,0.60,0.18))
-		draw_polyline(_project_polygon(closed,0.015),Color(0.74,0.66,0.48,0.50),1.1*1.0,true)
-		draw_circle(_point(center,0.025),2.0*1.0,Color(0.88,0.80,0.52,0.56))
+		draw_colored_polygon(_project_polygon(polygon,0.01),Color("c6b68e",0.36) if _miniature_style() else Color(0.82,0.78,0.60,0.18))
+		draw_polyline(_project_polygon(closed,0.015),Color("a69d80",0.38) if _miniature_style() else Color(0.74,0.66,0.48,0.50),0.9 if _miniature_style() else 1.1,true)
+		if not _miniature_style(): draw_circle(_point(center,0.025),2.0,Color(0.88,0.80,0.52,0.56))
 	for relation in cache.get("shared_walls",[]):
 		if not city.by_id.has(relation["a"]) or not city.by_id.has(relation["b"]): continue
 		var a := _point(Coupling.position_of(city.by_id[relation["a"]]),city.terrain.height_at(Coupling.position_of(city.by_id[relation["a"]]))+0.04)
 		var b := _point(Coupling.position_of(city.by_id[relation["b"]]),city.terrain.height_at(Coupling.position_of(city.by_id[relation["b"]]))+0.04)
 		# Shared walls carry the block rhythm. Keep the accent under the houses
 		# so closely packed starter homes read as one street frontage.
-		draw_line(a,b,Color(0.74,0.52,0.31,0.78),2.5*1.0,true)
+		draw_line(a,b,Color("8d8972",0.42) if _miniature_style() else Color(0.74,0.52,0.31,0.78),2.0 if _miniature_style() else 2.5,true)
 	for row in cache.get("rows",[]):
 		var members: Array = row["members"]
 		for i in range(members.size()-1):
@@ -287,11 +363,22 @@ func _draw_fabric_overlay() -> void:
 			var b := _point(Coupling.position_of(city.by_id[members[i+1]]),0.05)
 			# A translucent sidewalk ribbon turns the row relation into a visible
 			# street block. It is presentation-only and remains beneath buildings.
-			draw_line(a,b,Color(0.52,0.63,0.48,0.16),6.0*1.0,true)
-			draw_line(a,b,Color(0.62,0.67,0.49,0.52),1.8*1.0,true)
+			draw_line(a,b,Color("c6b898",0.34) if _miniature_style() else Color(0.52,0.63,0.48,0.16),6.0,true)
+			draw_line(a,b,Color("a49d80",0.40) if _miniature_style() else Color(0.62,0.67,0.49,0.52),1.4 if _miniature_style() else 1.8,true)
 
 func _sync_urban_parts(terrain_changed: bool) -> void:
 	var began := Time.get_ticks_usec()
+	if _miniature_style():
+		var footprint_key: Array = []
+		for building: Dictionary in city.buildings: footprint_key.append([building["district_id"],Coupling.position_of(building),int(building.get("era",1))])
+		var next_material_key: Array = [terrain_identity,city.network.topology,footprint_key]
+		if street_material_key != next_material_key:
+			street_material_key = next_material_key
+			street_material = Miniature.street_geometry(city)
+			street_material_rebuilds += 1
+	else:
+		street_material_key = []
+		street_material = {"curbs":[],"joints":[],"paving":[]}
 	var contents := _urban_contents()
 	last_draw_ms = 0.0
 	var changed := false
@@ -307,6 +394,7 @@ func _sync_urban_parts(terrain_changed: bool) -> void:
 		part.art_style_id = art_style_id
 		part.palette = palette
 		part.roads = roads
+		part.street_material = street_material
 		part.camera_zoom = camera_zoom
 		var content_key: Array = [terrain_identity,contents[name],art_style_id]
 		# Public outline widths are screen-constant. Other urban marks scale with
@@ -337,6 +425,7 @@ func _urban_contents() -> Dictionary:
 	# Fresh arrays own the signature; packed geometry uses value semantics.
 	var content := {"roads":[],"centers":[],"corridors":[],"public":[],"lots":[],"fabric":[]}
 	for road in roads: content["roads"].append([road["polygon"],road["color"]])
+	if _miniature_style(): content["roads"].append([street_material_key,city.era])
 	for center in city.centers:
 		if bool(center.get("active",true)):
 			content["centers"].append([Vector2(float(center["position"][0]),float(center["position"][1])),str(center.get("level","terrace"))])

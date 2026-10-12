@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+ROUND184_FIRST_EXPRESSION_COMPARISON_DEMO_UI {"card":"深流 · 低音长响，慢慢铺底 · 住宅生长\n▶ 织机 · 高音短促，密集织拍 · 商业生长\n暖庭 · 中音长和声，留出空隙 · 住宅生长，保留1片空地","checks":{"comparison_card_does_not_submit_or_mutate_city":true,"comparison_card_fits_800x600":true,"illustrated_choices_keep_actual_result_without_three_duplicate_rows":true,"sound_choice_opens_at_real_community":true,"three_route_cards_show_actual_building_thumbnails":true},"failures":[],"menu_rect":"[P: (12.0, 78.0), S: (458.0, 506.0)]","passed":true,"selected_result":"下一句长出商业 · 社区4栋成熟房屋"}

@@ -1,0 +1,46 @@
+{
+	"checks": {
+		"all_three_routes_have_distinct_real_building_thumbnails": true,
+		"deep_card_shrinks_for_a_small_window": true,
+		"deep_full_card_fits_the_compact_menu": true,
+		"deep_native_label_toggle_focus_tooltip_and_route_data_survive_setup": true,
+		"deep_thumbnail_is_the_actual_route_catalogue_texture": true,
+		"deep_thumbnail_preserves_real_residential_or_commercial_use": true,
+		"dummy_audio_only": true,
+		"ended_preview_returns_to_the_selected_card_without_an_idle_animation": true,
+		"listening_state_is_visible_and_animates_only_while_playing": true,
+		"native_disabled_card_does_not_activate": true,
+		"native_keyboard_activation_selects_and_keeps_focus": true,
+		"silent_selection_updates_preserve_button_api_and_idle_status": true,
+		"warm_card_shrinks_for_a_small_window": true,
+		"warm_full_card_fits_the_compact_menu": true,
+		"warm_native_label_toggle_focus_tooltip_and_route_data_survive_setup": true,
+		"warm_thumbnail_is_the_actual_route_catalogue_texture": true,
+		"warm_thumbnail_preserves_real_residential_or_commercial_use": true,
+		"weave_card_shrinks_for_a_small_window": true,
+		"weave_full_card_fits_the_compact_menu": true,
+		"weave_native_label_toggle_focus_tooltip_and_route_data_survive_setup": true,
+		"weave_thumbnail_is_the_actual_route_catalogue_texture": true,
+		"weave_thumbnail_preserves_real_residential_or_commercial_use": true
+	},
+	"failures": [],
+	"passed": true,
+	"routes": {
+		"deep": {
+			"entry": "refined_deep_terrace",
+			"rect": "[P: (24.0, 20.0), S: (392.0, 94.0)]",
+			"texture": "资源/精制河湾/整图/refined_deep_terrace.png"
+		},
+		"warm": {
+			"entry": "refined_warm_courtyard",
+			"rect": "[P: (24.0, 224.0), S: (392.0, 94.0)]",
+			"texture": "资源/精制河湾/整图/refined_warm_courtyard.png"
+		},
+		"weave": {
+			"entry": "refined_weave_shop",
+			"rect": "[P: (24.0, 122.0), S: (392.0, 94.0)]",
+			"texture": "资源/精制河湾/整图/refined_weave_shop.png"
+		}
+	},
+	"scope": "Dummy standalone production Button cards using current real catalogue route textures. Covers native keyboard activation, toggle/focus/disabled behaviour, 94px rows in 392px and 250px columns, distinct real building uses and local listening status. No physical device, World mutation or human art-quality claim."
+}

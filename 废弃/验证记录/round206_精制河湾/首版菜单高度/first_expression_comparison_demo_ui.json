@@ -1,0 +1,16 @@
+{
+	"card": "深流 · 低音长响，慢慢铺底 · 住宅生长\n▶ 织机 · 高音短促，密集织拍 · 商业生长\n暖庭 · 中音长和声，留出空隙 · 住宅生长，保留1片空地",
+	"checks": {
+		"comparison_card_does_not_submit_or_mutate_city": true,
+		"comparison_card_fits_800x600": false,
+		"illustrated_choices_keep_actual_result_without_three_duplicate_rows": true,
+		"sound_choice_opens_at_real_community": true,
+		"three_route_cards_show_actual_building_thumbnails": true
+	},
+	"failures": [
+		"comparison_card_fits_800x600"
+	],
+	"menu_rect": "[P: (12.0, 78.0), S: (458.0, 530.0)]",
+	"passed": false,
+	"selected_result": "下一句长出商业 · 社区4栋成熟房屋"
+}

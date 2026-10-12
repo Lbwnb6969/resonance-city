@@ -1,0 +1,28 @@
+{
+	"checks": {
+		"adjacent_depth_layers_have_a_small_continuous_color_step": true,
+		"author_frontage_materials_remain_read_only_after_real_birth": true,
+		"black_listening_hides_all_refined_ground": true,
+		"default_river_uses_the_unified_warm_stone_and_teal_material_palette": true,
+		"later_era_base_streets_keep_only_actual_classical_frontage_stone": true,
+		"layered_water_material_stays_inside_the_real_river": true,
+		"material_queries_preserve_world_rng_occupancy_audio_and_save_state": true,
+		"optional_art_comparison_keeps_its_existing_material_path": true,
+		"pan_and_zoom_retain_stone_and_terrain_material_geometry": true,
+		"real_author_growth_updates_occupied_frontage_without_replacing_its_identity": true,
+		"slow_reflection_traces_follow_the_real_channel": true,
+		"stone_edges_and_joints_use_existing_occupied_streets": true
+	},
+	"evidence": {
+		"authored_buildings": 25,
+		"initial_buildings": 24,
+		"land_grain": 230,
+		"maximum_depth_color_step": 0.0160394180566072,
+		"street_curbs": 134,
+		"street_joints": 62,
+		"water_bands": 32
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Dummy read-only material geometry, actual street/water bounds, real authored birth, camera retention and style isolation; final screenshots handled by Root."
+}

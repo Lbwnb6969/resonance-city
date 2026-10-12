@@ -1,0 +1,361 @@
+{
+	"checks": {
+		"actual_contact_patch_contains_same_foot_and_uses_same_refined_entry": true,
+		"actual_starter_contains_24_real_buildings": true,
+		"actual_warm_reservation_and_weave_commercial_gameplay_are_retained": true,
+		"all_24_starter_buildings_use_three_house_silhouettes_and_actual_commercial_shop": true,
+		"all_34_bakes_have_transparent_border_opaque_geometry_and_matching_hashes": true,
+		"all_eight_building_geometries_have_four_actual_ground_anchored_cardinal_templates": true,
+		"all_production_textures_and_physical_masks_are_prewarmed_with_mipmaps": true,
+		"all_texture_and_shadow_geometries_share_actual_zero_ground_foot": true,
+		"all_three_route_assets_and_hit_images_exist_before_first_choice": true,
+		"deep_real_author_root_and_sound_card_share_typed_production_entry": true,
+		"deep_visual_lookup_preserves_saved_city_audio_fields_rng_and_reservations": true,
+		"integer_scenery_tone_supplies_two_tree_geometries_and_columned_civic": true,
+		"live_production_hit_uses_new_png_opaque_geometry_and_ignores_transparent_border": true,
+		"live_sprite_origin_is_actual_world_foot_with_retained_plot_scale": true,
+		"production_catalog_and_visual_sync_are_read_only_for_actual_world": true,
+		"refined_era1_scope_preserves_retained_later_era_category_and_original_props": true,
+		"warm_real_author_root_and_sound_card_share_typed_production_entry": true,
+		"warm_visual_lookup_preserves_saved_city_audio_fields_rng_and_reservations": true,
+		"weave_real_author_root_and_sound_card_share_typed_production_entry": true,
+		"weave_visual_lookup_preserves_saved_city_audio_fields_rng_and_reservations": true
+	},
+	"evidence": {
+		"live_alpha_hit_building": "building-00022",
+		"resources": [
+			{
+				"city_size": [
+					41.787,
+					38.36
+				],
+				"faces": 530.0,
+				"id": "refined_house_terrace",
+				"texture": "资源/精制河湾/整图/refined_house_terrace.png"
+			},
+			{
+				"city_size": [
+					41.787,
+					38.36
+				],
+				"faces": 530.0,
+				"id": "refined_house_terrace_o1",
+				"texture": "资源/精制河湾/整图/refined_house_terrace_o1.png"
+			},
+			{
+				"city_size": [
+					41.787,
+					38.36
+				],
+				"faces": 530.0,
+				"id": "refined_house_terrace_o2",
+				"texture": "资源/精制河湾/整图/refined_house_terrace_o2.png"
+			},
+			{
+				"city_size": [
+					41.787,
+					38.36
+				],
+				"faces": 530.0,
+				"id": "refined_house_terrace_o3",
+				"texture": "资源/精制河湾/整图/refined_house_terrace_o3.png"
+			},
+			{
+				"city_size": [
+					43.651,
+					36.575
+				],
+				"faces": 671.0,
+				"id": "refined_house_gabled",
+				"texture": "资源/精制河湾/整图/refined_house_gabled.png"
+			},
+			{
+				"city_size": [
+					43.651,
+					40.454
+				],
+				"faces": 671.0,
+				"id": "refined_house_gabled_o1",
+				"texture": "资源/精制河湾/整图/refined_house_gabled_o1.png"
+			},
+			{
+				"city_size": [
+					43.651,
+					36.575
+				],
+				"faces": 671.0,
+				"id": "refined_house_gabled_o2",
+				"texture": "资源/精制河湾/整图/refined_house_gabled_o2.png"
+			},
+			{
+				"city_size": [
+					43.651,
+					36.575
+				],
+				"faces": 671.0,
+				"id": "refined_house_gabled_o3",
+				"texture": "资源/精制河湾/整图/refined_house_gabled_o3.png"
+			},
+			{
+				"city_size": [
+					39.278,
+					33.447
+				],
+				"faces": 1523.0,
+				"id": "refined_house_courtyard",
+				"texture": "资源/精制河湾/整图/refined_house_courtyard.png"
+			},
+			{
+				"city_size": [
+					39.278,
+					33.447
+				],
+				"faces": 1523.0,
+				"id": "refined_house_courtyard_o1",
+				"texture": "资源/精制河湾/整图/refined_house_courtyard_o1.png"
+			},
+			{
+				"city_size": [
+					39.278,
+					33.447
+				],
+				"faces": 1523.0,
+				"id": "refined_house_courtyard_o2",
+				"texture": "资源/精制河湾/整图/refined_house_courtyard_o2.png"
+			},
+			{
+				"city_size": [
+					39.278,
+					33.447
+				],
+				"faces": 1523.0,
+				"id": "refined_house_courtyard_o3",
+				"texture": "资源/精制河湾/整图/refined_house_courtyard_o3.png"
+			},
+			{
+				"city_size": [
+					42.195,
+					33.707
+				],
+				"faces": 728.0,
+				"id": "refined_shop_arcade",
+				"texture": "资源/精制河湾/整图/refined_shop_arcade.png"
+			},
+			{
+				"city_size": [
+					42.195,
+					34.201
+				],
+				"faces": 728.0,
+				"id": "refined_shop_arcade_o1",
+				"texture": "资源/精制河湾/整图/refined_shop_arcade_o1.png"
+			},
+			{
+				"city_size": [
+					42.195,
+					34.201
+				],
+				"faces": 728.0,
+				"id": "refined_shop_arcade_o2",
+				"texture": "资源/精制河湾/整图/refined_shop_arcade_o2.png"
+			},
+			{
+				"city_size": [
+					42.195,
+					33.707
+				],
+				"faces": 728.0,
+				"id": "refined_shop_arcade_o3",
+				"texture": "资源/精制河湾/整图/refined_shop_arcade_o3.png"
+			},
+			{
+				"city_size": [
+					52.137,
+					44.755
+				],
+				"faces": 1507.0,
+				"id": "refined_civic_loggia",
+				"texture": "资源/精制河湾/整图/refined_civic_loggia.png"
+			},
+			{
+				"city_size": [
+					52.137,
+					45.009
+				],
+				"faces": 1507.0,
+				"id": "refined_civic_loggia_o1",
+				"texture": "资源/精制河湾/整图/refined_civic_loggia_o1.png"
+			},
+			{
+				"city_size": [
+					52.137,
+					45.009
+				],
+				"faces": 1507.0,
+				"id": "refined_civic_loggia_o2",
+				"texture": "资源/精制河湾/整图/refined_civic_loggia_o2.png"
+			},
+			{
+				"city_size": [
+					52.137,
+					44.755
+				],
+				"faces": 1507.0,
+				"id": "refined_civic_loggia_o3",
+				"texture": "资源/精制河湾/整图/refined_civic_loggia_o3.png"
+			},
+			{
+				"city_size": [
+					41.787,
+					38.36
+				],
+				"faces": 530.0,
+				"id": "refined_deep_terrace",
+				"texture": "资源/精制河湾/整图/refined_deep_terrace.png"
+			},
+			{
+				"city_size": [
+					41.787,
+					38.36
+				],
+				"faces": 530.0,
+				"id": "refined_deep_terrace_o1",
+				"texture": "资源/精制河湾/整图/refined_deep_terrace_o1.png"
+			},
+			{
+				"city_size": [
+					41.787,
+					38.36
+				],
+				"faces": 530.0,
+				"id": "refined_deep_terrace_o2",
+				"texture": "资源/精制河湾/整图/refined_deep_terrace_o2.png"
+			},
+			{
+				"city_size": [
+					41.787,
+					38.36
+				],
+				"faces": 530.0,
+				"id": "refined_deep_terrace_o3",
+				"texture": "资源/精制河湾/整图/refined_deep_terrace_o3.png"
+			},
+			{
+				"city_size": [
+					42.195,
+					33.707
+				],
+				"faces": 728.0,
+				"id": "refined_weave_shop",
+				"texture": "资源/精制河湾/整图/refined_weave_shop.png"
+			},
+			{
+				"city_size": [
+					42.195,
+					34.201
+				],
+				"faces": 728.0,
+				"id": "refined_weave_shop_o1",
+				"texture": "资源/精制河湾/整图/refined_weave_shop_o1.png"
+			},
+			{
+				"city_size": [
+					42.195,
+					34.201
+				],
+				"faces": 728.0,
+				"id": "refined_weave_shop_o2",
+				"texture": "资源/精制河湾/整图/refined_weave_shop_o2.png"
+			},
+			{
+				"city_size": [
+					42.195,
+					33.707
+				],
+				"faces": 728.0,
+				"id": "refined_weave_shop_o3",
+				"texture": "资源/精制河湾/整图/refined_weave_shop_o3.png"
+			},
+			{
+				"city_size": [
+					39.278,
+					33.447
+				],
+				"faces": 1523.0,
+				"id": "refined_warm_courtyard",
+				"texture": "资源/精制河湾/整图/refined_warm_courtyard.png"
+			},
+			{
+				"city_size": [
+					39.278,
+					33.447
+				],
+				"faces": 1523.0,
+				"id": "refined_warm_courtyard_o1",
+				"texture": "资源/精制河湾/整图/refined_warm_courtyard_o1.png"
+			},
+			{
+				"city_size": [
+					39.278,
+					33.447
+				],
+				"faces": 1523.0,
+				"id": "refined_warm_courtyard_o2",
+				"texture": "资源/精制河湾/整图/refined_warm_courtyard_o2.png"
+			},
+			{
+				"city_size": [
+					39.278,
+					33.447
+				],
+				"faces": 1523.0,
+				"id": "refined_warm_courtyard_o3",
+				"texture": "资源/精制河湾/整图/refined_warm_courtyard_o3.png"
+			},
+			{
+				"city_size": [
+					28.76,
+					36.767
+				],
+				"faces": 473.0,
+				"id": "refined_tree_canopy",
+				"texture": "资源/精制河湾/整图/refined_tree_canopy.png"
+			},
+			{
+				"city_size": [
+					28.989,
+					40.006
+				],
+				"faces": 1115.0,
+				"id": "refined_tree_pine",
+				"texture": "资源/精制河湾/整图/refined_tree_pine.png"
+			}
+		],
+		"routes": {
+			"deep": {
+				"asset": "refined_deep_terrace",
+				"reservation_count": 0,
+				"type": "residential"
+			},
+			"warm": {
+				"asset": "refined_warm_courtyard",
+				"reservation_count": 1,
+				"type": "residential"
+			},
+			"weave": {
+				"asset": "refined_weave_shop",
+				"reservation_count": 0,
+				"type": "commercial"
+			}
+		},
+		"scope": "Headless Dummy; actual production Demo and imported PNGs, no real audio device or aesthetic approval.",
+		"starter_assets": [
+			"refined_house_terrace",
+			"refined_house_gabled",
+			"refined_house_courtyard",
+			"refined_shop_arcade"
+		]
+	},
+	"failures": [],
+	"passed": true
+}

@@ -3,7 +3,7 @@ extends SceneTree
 const DemoScene = preload("res://scenes/continuous_valley.tscn")
 const World = preload("res://scripts/world/continuous_world.gd")
 const First = preload("res://scripts/world/first_composition.gd")
-const OUT := "res://验证记录/round184_首作试听比较/first_expression_comparison_demo_ui.json"
+const OUT := "res://验证记录/round206_精制河湾/first_expression_comparison_demo_ui.json"
 var checks: Dictionary = {}
 var failures: Array[String] = []
 var demo: ContinuousValleyDemo
@@ -48,10 +48,10 @@ func _run() -> void:
 	await process_frame
 	var bounds := Rect2(Vector2.ZERO,Vector2(800,600))
 	check(demo.menu.visible and bounds.encloses(demo.menu.get_global_rect()),"comparison_card_fits_800x600")
-	check(demo.expression_comparison_summary.visible and demo.expression_comparison_summary.text.split("\n").size() == 3 and demo.expression_comparison_summary.text.contains("高音短促，密集织拍") and demo.expression_comparison_summary.text.contains("保留1片空地") and not demo.expression_comparison_summary.text.contains("PCM"),"comparison_card_shows_plain_sound_and_city_choices")
-	check(demo.expression_comparison_summary.get_global_rect().size.y > 0.0,"comparison_card_is_visible_in_menu")
+	check(not demo.expression_comparison_summary.visible and demo.expression_comparison_summary.text.split("\n").size() == 3 and demo.expression_comparison_summary.text.contains("高音短促，密集织拍") and demo.expression_summary.text.contains("商业") and not demo.expression_summary.text.contains("PCM"),"illustrated_choices_keep_actual_result_without_three_duplicate_rows")
+	check(demo.expression_choices.values().all(func(card: Button) -> bool: return card.visible and card.custom_minimum_size.y >= 90.0 and not card.thumbnail_entry.is_empty()),"three_route_cards_show_actual_building_thumbnails")
 	check(demo.model.world.snapshot() == before,"comparison_card_does_not_submit_or_mutate_city")
-	var report := {"passed":failures.is_empty(),"checks":checks,"failures":failures,"card":demo.expression_comparison_summary.text,"menu_rect":demo.menu.get_global_rect()}
+	var report := {"passed":failures.is_empty(),"checks":checks,"failures":failures,"card":demo.expression_comparison_summary.text,"menu_rect":demo.menu.get_global_rect(),"selected_result":demo.expression_summary.text}
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT.get_base_dir()))
 	FileAccess.open(OUT,FileAccess.WRITE).store_string(JSON.stringify(report,"\t"))
 	print("ROUND184_FIRST_EXPRESSION_COMPARISON_DEMO_UI ",JSON.stringify(report))

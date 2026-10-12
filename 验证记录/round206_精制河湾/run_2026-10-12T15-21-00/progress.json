@@ -1,0 +1,95 @@
+{
+	"auditions": {
+		"第二段": {
+			"deep": {
+				"bytes": 352800,
+				"entry_id": "refined_deep_terrace_o1",
+				"source_key": "3189007617"
+			},
+			"warm": {
+				"bytes": 352800,
+				"entry_id": "refined_warm_courtyard_o1",
+				"source_key": "3189007617"
+			},
+			"weave": {
+				"bytes": 352800,
+				"entry_id": "refined_weave_shop_o1",
+				"source_key": "3189007617"
+			}
+		},
+		"首段": {
+			"deep": {
+				"bytes": 352800,
+				"entry_id": "refined_deep_terrace_o3",
+				"source_key": "3248446291"
+			},
+			"warm": {
+				"bytes": 352800,
+				"entry_id": "refined_warm_courtyard_o3",
+				"source_key": "3248446291"
+			},
+			"weave": {
+				"bytes": 352800,
+				"entry_id": "refined_weave_shop_o3",
+				"source_key": "3248446291"
+			}
+		}
+	},
+	"checks": {
+		"actual_root_menu_offers_notes_land_and_next_segment": true,
+		"auditioned_voice_uses_same_wait_feedback": true,
+		"captures_eight_seconds_of_actual_two_segment_output": true,
+		"click_audition_finishes_and_restores_city": true,
+		"confirmation_without_audition_still_has_truthful_wait_feedback": true,
+		"earlier_root_land_action_is_not_replaced_by_latest_family": true,
+		"earlier_warm_segment_keeps_its_land_action": true,
+		"first_author_root_reaches_device_boundary": true,
+		"first_charter_reaches_device_boundary": true,
+		"heard_root_clears_pending_location_marker": true,
+		"heard_root_finishes_wait_feedback": true,
+		"immediate_confirmation_keeps_real_expression_location_marker": true,
+		"listen_button_replays_actual_weave_after_auto_finish": true,
+		"new_author_root_has_reentry_without_maturity_or_retune_gate": true,
+		"new_valley_reaches_its_real_opening": true,
+		"next_public_choice_wait_names_opposite_community_and_civic_space": true,
+		"no_new_audio_underrun": true,
+		"opposite_civic_space_reaches_device_boundary": true,
+		"physical_window_and_audio": true,
+		"player_starts_next_segment_without_a_forced_retune": true,
+		"reaches_render_ahead_before_root_is_heard": true,
+		"refined_planning_cards_fit_800x600": true,
+		"refined_voice_cards_fit_800x600": true,
+		"render_ahead_keeps_pending_location_until_heard": true,
+		"render_ahead_keeps_wait_without_claiming_future_author_root": true,
+		"root_menu_locates_its_actual_reserved_land": true,
+		"route_click_comparison_does_not_submit_city_changes": true,
+		"second_author_root_reaches_device_boundary": true,
+		"second_sound_recommendation_does_not_choose_expression": true,
+		"two_player_segments_exist_without_mandatory_first_retune": true,
+		"two_segment_device_input_has_no_clipping": true,
+		"unbuilt_public_choice_explains_its_real_next_step": true,
+		"voice_cards_use_actual_refined_route_asset": true,
+		"waiting_ends_only_at_actual_heard_charter": true,
+		"第二段_deep_card_and_real_preview_share_road_facing_template": true,
+		"第二段_deep_playing_pcm_and_visible_house_share_branch": true,
+		"第二段_deep_route_click_starts_actual_audition": true,
+		"第二段_warm_card_and_real_preview_share_road_facing_template": true,
+		"第二段_warm_playing_pcm_and_visible_house_share_branch": true,
+		"第二段_warm_route_click_starts_actual_audition": true,
+		"第二段_weave_card_and_real_preview_share_road_facing_template": true,
+		"第二段_weave_playing_pcm_and_visible_house_share_branch": true,
+		"第二段_weave_route_click_starts_actual_audition": true,
+		"首段_deep_card_and_real_preview_share_road_facing_template": true,
+		"首段_deep_playing_pcm_and_visible_house_share_branch": true,
+		"首段_deep_route_click_starts_actual_audition": true,
+		"首段_warm_card_and_real_preview_share_road_facing_template": true,
+		"首段_warm_playing_pcm_and_visible_house_share_branch": true,
+		"首段_warm_route_click_starts_actual_audition": true,
+		"首段_weave_card_and_real_preview_share_road_facing_template": true,
+		"首段_weave_playing_pcm_and_visible_house_share_branch": true,
+		"首段_weave_route_click_starts_actual_audition": true
+	},
+	"complete": false,
+	"failures": [],
+	"last_capture": "11_800x600_声音卡"
+}

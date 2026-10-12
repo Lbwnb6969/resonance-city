@@ -44,7 +44,7 @@ func sync(demo: Control) -> void:
 		var building: Dictionary = variant["birth"]["building"]
 		var family: Dictionary = variant["birth"]["family"]
 		var identity := Identity.identity(building,family)
-		var entry: Dictionary = demo.building_catalog.entry_for(building,demo.assets[building["type"]],family)
+		var entry: Dictionary = demo.building_catalog.entry_for(building,demo.assets[building["type"]],family,demo._street_orientation(Coupling.position_of(building)))
 		var at: Vector2 = demo.point(Coupling.position_of(building))
 		var scale_factor: float = 28.0*sqrt(2.0)*0.8/maxf(float(entry["model_bounds"]["size"][0]),float(entry["model_bounds"]["size"][2]))/float(entry["pixels_per_world"])*demo.view_zoom
 		var pulse := 0.0

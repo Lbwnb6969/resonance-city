@@ -1,6 +1,11 @@
 class_name ValleyProp
 extends Node2D
 var kind := "tree"
+var era := 1:
+	set(value):
+		if era == value: return
+		era = value
+		queue_redraw()
 var tone := 0
 var motion := 0.0
 var direction := Vector2.RIGHT
@@ -194,8 +199,29 @@ func _draw() -> void:
 		draw_line(Vector2(0,-4),facing+Vector2(stride,-3),Color("c6ad86"),1.0,true)
 		draw_circle(facing*0.3+Vector2(0,-6.4),1.4,Color("dfcba4"))
 	elif kind == "lamp":
-		draw_line(Vector2.ZERO,Vector2(0,-13),Color("829585"),1.3,true)
-		draw_circle(Vector2(0,-13),2.3,Color("e4d6a6"))
+		if era == 1: _draw_classical_lamp()
+		else: _draw_retained_lamp()
 	elif kind == "rock":
 		draw_colored_polygon(PackedVector2Array([Vector2(-7,1),Vector2(-3,-5),Vector2(4,-6),Vector2(8,0),Vector2(3,4)]),Color("bdc4b5"))
 		draw_line(Vector2(-3,-5),Vector2(3,-1),Color("dbe0ce"),1,true)
+
+func _draw_classical_lamp() -> void:
+	# A small stone pedestal holds an open terracotta oil bowl. Its fixed
+	# surfaces share the scene's daylight tint; there is no glass globe or glow.
+	draw_colored_polygon(PackedVector2Array([Vector2(-2,1),Vector2(3,-1),Vector2(6,1),Vector2(1,3)]),Color("415445",0.13))
+	draw_colored_polygon(PackedVector2Array([Vector2(-3.4,0),Vector2(0,-1.7),Vector2(3.4,0),Vector2(0,1.7)]),Color("c3b397"))
+	draw_colored_polygon(PackedVector2Array([Vector2(-1.5,-1),Vector2(0,-0.3),Vector2(0,-8.8),Vector2(-1.2,-9.4)]),Color("d9c9aa"))
+	draw_colored_polygon(PackedVector2Array([Vector2(0,-0.3),Vector2(1.5,-1),Vector2(1.2,-9.4),Vector2(0,-8.8)]),Color("aa9b7f"))
+	draw_line(Vector2(-1.25,-4.9),Vector2(0,-4.3),Color("bdad8f"),0.6,true)
+	draw_line(Vector2(0,-4.3),Vector2(1.3,-4.9),Color("92866e"),0.6,true)
+	draw_colored_polygon(PackedVector2Array([Vector2(-2.7,-9.3),Vector2(0,-10.7),Vector2(2.7,-9.3),Vector2(0,-7.9)]),Color("e4d5b6"))
+	draw_colored_polygon(PackedVector2Array([Vector2(-3.1,-11.2),Vector2(-2.0,-9.9),Vector2(1.6,-9.9),Vector2(3.0,-11.2)]),Color("ae7454"))
+	draw_colored_polygon(PackedVector2Array([Vector2(-3.1,-11.2),Vector2(-1.3,-12.0),Vector2(1.4,-12.0),Vector2(3.0,-11.2),Vector2(1.3,-10.6),Vector2(-1.5,-10.6)]),Color("d0a078"))
+	draw_colored_polygon(PackedVector2Array([Vector2(-2.0,-11.2),Vector2(-1.0,-11.7),Vector2(1.1,-11.7),Vector2(2.0,-11.2),Vector2(1.1,-10.9),Vector2(-1.1,-10.9)]),Color("6c5843"))
+	draw_line(Vector2(1.7,-11.1),Vector2(3.5,-11.7),Color("bd8861"),1.2,true)
+	draw_line(Vector2(3.2,-11.6),Vector2(3.8,-12.3),Color("514f3c"),0.7,true)
+
+func _draw_retained_lamp() -> void:
+	# Retained later-era lamp, unchanged from the original production prop.
+	draw_line(Vector2.ZERO,Vector2(0,-13),Color("829585"),1.3,true)
+	draw_circle(Vector2(0,-13),2.3,Color("e4d6a6"))

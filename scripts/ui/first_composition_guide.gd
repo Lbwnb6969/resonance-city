@@ -1,4 +1,5 @@
 extends Button
+const RefinedUi = preload("res://scripts/ui/valley_ui_theme.gd")
 ## One small entry follows a real first composition from planning to its own house.
 var demo: Control
 var origin_frame := 0.0
@@ -15,20 +16,7 @@ func setup(owner_demo: Control) -> void:
 	theme = demo.planning_guide.theme
 	add_theme_font_size_override("font_size",16)
 	custom_minimum_size = Vector2(318,44)
-	var entry_style := StyleBoxFlat.new()
-	entry_style.bg_color = Color("e6dfc7",0.96)
-	entry_style.border_color = Color("b19263")
-	entry_style.set_border_width_all(1)
-	entry_style.set_corner_radius_all(9)
-	entry_style.content_margin_left = 14
-	entry_style.content_margin_right = 14
-	entry_style.content_margin_top = 8
-	entry_style.content_margin_bottom = 8
-	add_theme_stylebox_override("normal",entry_style)
-	var entry_hover := entry_style.duplicate()
-	entry_hover.bg_color = Color("f1e4bf",0.99)
-	entry_hover.border_color = Color("9d7d4d")
-	add_theme_stylebox_override("hover",entry_hover)
+	RefinedUi.primary(self)
 	z_index = 115
 	pressed.connect(_begin)
 	hide()
@@ -94,7 +82,7 @@ func sync() -> void:
 
 func _place_entry() -> void:
 	reset_size()
-	position = Vector2(24,90)
+	position = Vector2(24,118)
 
 func _blocked() -> bool:
 	return demo.black or demo.menu.visible or demo.planning_guide.opened or get_tree().paused or not demo.clock.active or demo.clock.player.stream_paused

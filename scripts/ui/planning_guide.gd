@@ -1,4 +1,6 @@
 extends PanelContainer
+const RefinedUi = preload("res://scripts/ui/valley_ui_theme.gd")
+const DirectionCard = preload("res://scripts/ui/planning_direction_card.gd")
 ## A transient planning tool. Closing it never removes a committed city choice.
 const Charter = preload("res://scripts/world/development_charter.gd")
 const PlanningCard = preload("res://scripts/world/planning_card.gd")
@@ -79,75 +81,34 @@ func setup(owner_demo: Control) -> void:
 	name = "PlanningGuide"
 	z_index = 120
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	var theme_style := Theme.new()
-	for state: String in ["normal","hover","pressed","disabled","focus"]:
-		var button_style := StyleBoxFlat.new()
-		button_style.bg_color = Color("d7e2cd") if state == "hover" else (Color("bfd1b4") if state == "pressed" else Color("e7ebde"))
-		button_style.border_color = Color("91a581")
-		button_style.set_border_width_all(1 if state != "focus" else 2)
-		button_style.set_corner_radius_all(8)
-		button_style.content_margin_left = 10
-		button_style.content_margin_right = 10
-		button_style.content_margin_top = 7
-		button_style.content_margin_bottom = 7
-		theme_style.set_stylebox(state,"Button",button_style)
-	for state: String in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
-		theme_style.set_color(state,"Button",Color("435b50"))
-	theme_style.set_color("font_disabled_color","Button",Color("93a08b"))
-	theme = theme_style
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("eef0e7f5")
-	style.border_color = Color("9bab91")
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(12)
-	style.content_margin_left = 18
-	style.content_margin_right = 18
-	style.content_margin_top = 14
-	style.content_margin_bottom = 14
-	add_theme_stylebox_override("panel",style)
+	theme = RefinedUi.make_theme()
+	add_theme_stylebox_override("panel",RefinedUi.panel(20))
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation",10)
 	add_child(box)
 	var top := HBoxContainer.new()
 	heading = Label.new()
-	heading.add_theme_font_size_override("font_size",20)
-	heading.add_theme_color_override("font_color",Color("435c59"))
+	heading.add_theme_font_size_override("font_size",23)
+	heading.add_theme_color_override("font_color",RefinedUi.INK)
 	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(heading)
 	var close := Button.new()
-	close.text = "先随便玩 · P收起"
+	close.text = "收起 · P"
 	close.pressed.connect(hide_tool)
 	top.add_child(close)
 	box.add_child(top)
 	flow_hint = Label.new()
 	flow_hint.custom_minimum_size.x = 720
 	flow_hint.add_theme_font_size_override("font_size",13)
-	flow_hint.add_theme_color_override("font_color",Color("6a7d70"))
+	flow_hint.add_theme_color_override("font_color",RefinedUi.MUTED)
 	flow_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(flow_hint)
 	cards = HBoxContainer.new()
 	cards.add_theme_constant_override("separation",10)
 	for id: String in ["compact","corridor","bluegreen"]:
 		var spec: Dictionary = Charter.PLANS[id]
-		var button := Button.new()
-		var accent: Color = {"compact":Color("587487"),"corridor":Color("a56d4d"),"bluegreen":Color("638a78")}[id]
-		button.text = "%s\n\n%s\n取舍 · %s\n机会 · %s" % [spec["title"],spec["tendency"],spec["tradeoff"],spec["opportunity"]]
-		button.custom_minimum_size = Vector2(224,132)
-		button.add_theme_font_size_override("font_size",15)
-		button.add_theme_color_override("font_color",accent.darkened(0.12))
-		button.add_theme_color_override("font_hover_color",accent.darkened(0.18))
-		button.add_theme_color_override("font_pressed_color",accent.darkened(0.2))
-		for state: String in ["normal","hover","pressed","focus"]:
-			var card_style := StyleBoxFlat.new()
-			card_style.bg_color = Color("eef0e7") if state == "normal" else accent.lerp(Color.WHITE,0.78 if state == "hover" else 0.7)
-			card_style.border_color = accent
-			card_style.set_border_width_all(2 if state in ["hover","pressed","focus"] else 1)
-			card_style.set_corner_radius_all(8)
-			card_style.content_margin_left = 10
-			card_style.content_margin_right = 10
-			card_style.content_margin_top = 7
-			card_style.content_margin_bottom = 7
-			button.add_theme_stylebox_override(state,card_style)
+		var button := DirectionCard.new()
+		button.setup(id,spec)
 		button.pressed.connect(choose_plan.bind(id))
 		cards.add_child(button)
 	box.add_child(cards)
@@ -172,6 +133,7 @@ func setup(owner_demo: Control) -> void:
 	next_action_row = HBoxContainer.new()
 	next_action_row.add_theme_constant_override("separation",8)
 	next_action_button = Button.new()
+	RefinedUi.primary(next_action_button)
 	next_action_button.text = "定位落地房屋 · 继续调音"
 	next_action_button.tooltip_text = "选中刚落地的房屋，打开已有聚焦与调音入口"
 	next_action_button.pressed.connect(_take_next_action)
@@ -200,6 +162,7 @@ func setup(owner_demo: Control) -> void:
 	box.add_child(next_partial_row)
 	actions = HBoxContainer.new()
 	confirm = Button.new()
+	RefinedUi.primary(confirm)
 	confirm.text = "确认社区范围 → 摆放锚点"
 	confirm.pressed.connect(_confirm_stage)
 	actions.add_child(confirm)
@@ -713,10 +676,8 @@ func _rebuild_card_choices() -> void:
 	for id: String in drawn_card_ids:
 		if not PlanningCard.CARDS.has(id): continue
 		var spec: Dictionary = PlanningCard.CARDS[id]
-		var button := Button.new()
-		button.text = "%s\n\n%s\n取舍 · %s\n持续 · %d句" % [spec["title"],spec["tendency"],spec["tradeoff"],int(spec["duration_phrases"])]
-		button.custom_minimum_size = Vector2(224,132)
-		button.add_theme_font_size_override("font_size",15)
+		var button := DirectionCard.new()
+		button.setup(id,spec,true)
 		button.pressed.connect(choose_card.bind(id))
 		card_choices.add_child(button)
 	card_choices.visible = stage == "card"

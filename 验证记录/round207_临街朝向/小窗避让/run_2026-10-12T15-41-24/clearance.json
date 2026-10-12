@@ -1,0 +1,35 @@
+{
+	"checks": {
+		"camera_clearance_does_not_change_city": true,
+		"east-2_choices_hide_redundant_map_instructions": true,
+		"east-2_menu_fits_native_window": true,
+		"east-2_opens_actual_parcel": true,
+		"east-2_target_stays_in_view": true,
+		"east-2_whole_parcel_and_facade_clear_of_menu": true,
+		"native_ui_pixels_at_800x600": true,
+		"opening_houses_are_revealed_before_screenshots": true,
+		"physical_native_window": true,
+		"west-2_choices_hide_redundant_map_instructions": true,
+		"west-2_menu_fits_native_window": true,
+		"west-2_opens_actual_parcel": true,
+		"west-2_target_stays_in_view": true,
+		"west-2_whole_parcel_and_facade_clear_of_menu": true
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Physical 800x600 camera/menu clearance only; audio route chain was already validated separately.",
+	"shots": {
+		"east-2": {
+			"community": "east-2",
+			"menu": "[P: (12.0, 78.0), S: (458.0, 492.0)]",
+			"target": "(635.3925, 305.9232)",
+			"target_bounds": "[P: (545.3925, 205.9232), S: (180.0, 170.0)]"
+		},
+		"west-2": {
+			"community": "west-2",
+			"menu": "[P: (330.0, 78.0), S: (458.0, 492.0)]",
+			"target": "(164.9928, 305.9678)",
+			"target_bounds": "[P: (74.99277, 205.9678), S: (180.0, 170.0)]"
+		}
+	}
+}

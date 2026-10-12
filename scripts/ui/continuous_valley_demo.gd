@@ -15,6 +15,9 @@ const TransitRework = preload("res://scripts/world/transit_line_rework.gd")
 const TransitReworkPreview = preload("res://scripts/world/transit_rework_preview.gd")
 const FirstComposition = preload("res://scripts/world/first_composition.gd")
 const FirstSoundPlacement = preload("res://scripts/world/first_sound_placement.gd")
+const RefinedUi = preload("res://scripts/ui/valley_ui_theme.gd")
+const CityVoiceCard = preload("res://scripts/ui/city_voice_card.gd")
+const StreetOrientation = preload("res://scripts/visual/building_street_orientation.gd")
 const AuthoredDuet = preload("res://scripts/world/authored_duet.gd")
 const FirstAuthoredWork = preload("res://scripts/world/first_authored_work.gd")
 const FirstAuthoredContinuation = preload("res://scripts/world/first_authored_continuation.gd")
@@ -170,6 +173,8 @@ var overlay_rebuild_count := 0
 var hit_sort_count := 0
 var revealing_buildings: Dictionary = {}
 var building_geometry: Dictionary = {}
+var street_orientation_cache: Dictionary = {}
+var street_orientation_key: Array = []
 var shadow_records: Dictionary = {}
 var shadow_terrain_key: Array = []
 var projected_ground: Dictionary = {}
@@ -300,15 +305,15 @@ func _ready() -> void:
 	add_child(tooltip)
 	caption = Label.new()
 	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	caption.add_theme_font_size_override("font_size",18)
-	caption.add_theme_color_override("font_color",Color("586a65"))
+	caption.add_theme_font_size_override("font_size",14)
+	caption.add_theme_color_override("font_color",RefinedUi.PAPER)
 	var caption_style := StyleBoxFlat.new()
-	caption_style.bg_color = Color("f1efdf",0.92)
-	caption_style.set_corner_radius_all(7)
-	caption_style.content_margin_left = 10
-	caption_style.content_margin_right = 10
-	caption_style.content_margin_top = 5
-	caption_style.content_margin_bottom = 5
+	caption_style.bg_color = Color(RefinedUi.GREEN,0.96)
+	caption_style.set_corner_radius_all(6)
+	caption_style.content_margin_left = 14
+	caption_style.content_margin_right = 14
+	caption_style.content_margin_top = 8
+	caption_style.content_margin_bottom = 8
 	caption.add_theme_stylebox_override("normal",caption_style)
 	caption.z_index = 100
 	add_child(caption)
@@ -445,39 +450,31 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 func _make_menu() -> void:
 	menu = PanelContainer.new()
 	menu.z_index = 110
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.95,0.95,0.89,0.94)
-	style.set_corner_radius_all(14)
-	style.content_margin_left = 14
-	style.content_margin_right = 14
-	style.content_margin_top = 12
-	style.content_margin_bottom = 12
-	menu.add_theme_stylebox_override("panel",style)
+	menu.add_theme_stylebox_override("panel",RefinedUi.panel(18))
+	var shell := VBoxContainer.new()
+	shell.add_theme_constant_override("separation",12)
+	menu.add_child(shell)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	scroll.follow_focus = true
-	menu.add_child(scroll)
+	shell.add_child(scroll)
 	menu.set_meta("scroll",scroll)
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation",8)
+	box.add_theme_constant_override("separation",12)
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(box)
 	menu.set_meta("content",box)
 	menu_info = Label.new()
 	menu_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	menu_info.add_theme_color_override("font_color",Color("435c59"))
-	menu_info.add_theme_font_size_override("font_size",16)
+	menu_info.add_theme_font_size_override("font_size",21)
 	box.add_child(menu_info)
 	var expression_box := VBoxContainer.new()
 	expression_box.add_theme_constant_override("separation",6)
 	for choice: Dictionary in PlayerExpression.catalogue():
-		var button := Button.new()
-		button.text = "%s · %s" % [choice["label"],choice["sound"]]
-		button.tooltip_text = "点击听四秒 · "+str(choice["city"])+"；确认才种下"
-		button.toggle_mode = true
-		button.custom_minimum_size.y = 38
-		_apply_expression_button_style(button,str(choice["id"]))
+		var button := CityVoiceCard.new()
+		button.setup(choice,self)
 		button.pressed.connect(_select_player_expression.bind(str(choice["id"])))
 		expression_choices[choice["id"]] = button
 		expression_box.add_child(button)
@@ -492,22 +489,31 @@ func _make_menu() -> void:
 	expression_comparison_summary.add_theme_color_override("font_color",Color("51665c"))
 	expression_comparison_summary.hide()
 	expression_box.add_child(expression_comparison_summary)
+	var expression_footer := VBoxContainer.new()
+	expression_footer.add_theme_constant_override("separation",6)
+	menu.set_meta("expression_footer",expression_footer)
+	shell.add_child(expression_footer)
+	var listen_row := HBoxContainer.new()
+	listen_row.add_theme_constant_override("separation",8)
 	expression_listen = Button.new()
 	expression_listen.text = "点上方方向，立即听四秒"
 	expression_listen.custom_minimum_size.y = 34
 	expression_listen.pressed.connect(_toggle_expression_listen)
-	expression_box.add_child(expression_listen)
+	expression_listen.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	listen_row.add_child(expression_listen)
 	expression_confirm = Button.new()
 	expression_confirm.text = "确认种下 · 下一句生长"
 	expression_confirm.custom_minimum_size.y = 38
+	RefinedUi.primary(expression_confirm)
 	expression_confirm.pressed.connect(_confirm_player_expression)
-	expression_box.add_child(expression_confirm)
+	expression_footer.add_child(expression_confirm)
 	var expression_back := Button.new()
 	expression_back.text = "回到河湾 · Esc"
 	expression_back.pressed.connect(func() -> void:
 		_cancel_preview_playback()
 		menu.hide())
-	expression_box.add_child(expression_back)
+	listen_row.add_child(expression_back)
+	expression_footer.add_child(listen_row)
 	box.add_child(expression_box)
 	menu.set_meta("expression_choices",expression_box)
 	transit_edit_choices = VBoxContainer.new()
@@ -1360,6 +1366,8 @@ func _toggle_expression_listen() -> void:
 
 func _sync_expression_listen() -> void:
 	if not is_instance_valid(expression_listen): return
+	for choice_id: String in expression_choices:
+		expression_choices[choice_id].set_listening(preview_started and preview_requested and choice_id == expression_choice)
 	expression_listen.disabled = expression_choice.is_empty()
 	expression_listen.text = "停止试听 · 回到城市" if preview_requested else "再听四秒 · 也可按住空格"
 	if expression_choice.is_empty(): expression_listen.text = "点上方方向，立即听四秒"
@@ -1368,20 +1376,25 @@ func _update_expression_menu() -> void:
 	_sync_expression_listen()
 	for choice: String in expression_choices:
 		(expression_choices[choice] as Button).set_pressed_no_signal(choice == expression_choice)
+		if context.has("position"):
+			var at := Vector2(float(context["position"][0]),float(context["position"][1]))
+			expression_choices[choice].set_building_entry(building_catalog.preview_entry(choice,_street_orientation(at)),self)
 	expression_confirm.disabled = expression_choice.is_empty()
 	var comparison_ready := not expression_comparison.is_empty() and expression_comparison_key == _expression_preview_identity()
 	if is_instance_valid(expression_comparison_summary):
-		expression_comparison_summary.visible = comparison_ready
+		# Each illustrated route already states its identity. Keep the full
+		# comparison text available without repeating all three beneath it.
+		expression_comparison_summary.hide()
 		if comparison_ready:
 			expression_comparison_summary.text = FirstExpressionComparisonCard.text(expression_comparison,expression_choice)
 	var cid := str(context.get("community_id",""))
 	var name_text := str(shown_world.communities.get(cid,{}).get("name","这片街坊"))
-	menu_info.text = "%s · 在这块地写下一段\n三种声音会改变实际房屋与社区唱法" % name_text
+	menu_info.text = name_text+" · 种下你的声音"
 	if expression_choice.is_empty():
-		expression_summary.text = "点一个方向，立即听四秒\n切换方向比较；确认才种下"
+		expression_summary.text = "点卡片听四秒，确认后种下。"
 		return
 	var choice := PlayerExpression.definition(expression_choice)
-	expression_summary.text = str(choice["city"])+"\n点另一方向比较 · Enter或按钮确认"
+	expression_summary.text = str(choice["city"])
 	if not expression_comparison.is_empty() and expression_comparison_key == _expression_preview_identity():
 		var variant: Dictionary = expression_comparison["variants"][expression_choice]
 		if not bool(variant["accepted"]):
@@ -1389,7 +1402,7 @@ func _update_expression_menu() -> void:
 			expression_confirm.disabled = true
 		else:
 			var consequence: Dictionary = variant["consequences"]
-			expression_summary.text += "\n下一句：%s · 社区%d栋成熟房屋" % ["商业" if consequence["type"] == "commercial" else "住宅",int(consequence["mature"])]
+			expression_summary.text = "下一句长出%s · 社区%d栋成熟房屋" % ["商业" if consequence["type"] == "commercial" else "住宅",int(consequence["mature"])]
 			if int(consequence.get("reservation_count",0)) > 0: expression_summary.text += " · 留下1片可再规划空地"
 
 func _expression_preview_identity() -> Array:
@@ -1519,8 +1532,22 @@ func _show_context_menu() -> void:
 func _place_first_composition_menu() -> void:
 	if not first_composition_mode or not (_expression_context() or _authored_retune() or _authored_reservation_context()): return
 	# Keep the player's actual parcel/house visible beside its choices.
-	menu.position.x = 12.0 if bool(menu.get_meta("target_on_right",true)) else maxf(12.0,size.x-menu.size.x-12.0)
+	var target_on_right := bool(menu.get_meta("target_on_right",true))
+	menu.position.x = 12.0 if target_on_right else maxf(12.0,size.x-menu.size.x-12.0)
 	menu.position.y = clampf(size.y*0.5-menu.size.y*0.5,78.0,maxf(78.0,size.y-menu.size.y-82.0))
+	var at := Vector2.INF
+	if context.has("position"):
+		at = Vector2(float(context["position"][0]),float(context["position"][1]))
+	elif _authored_retune() and shown_world.by_id.has(selected_id):
+		at = Coupling.position_of(shown_world.by_id[selected_id])
+	if at == Vector2.INF: return
+	var free_left := menu.position.x+menu.size.x+12.0 if target_on_right else 12.0
+	var free_right := size.x-12.0 if target_on_right else menu.position.x-12.0
+	var target_screen := Projection2D.to_screen(at-Vector2(16,16),Vector2(size.x*0.5,size.y*0.52)+pan_target,zoom_target,Vector2(28,14),shown_world.terrain.height_at(at))
+	# Account for the whole parcel and facade, not just their centre. Use the
+	# destination camera so animation does not repeatedly add the same offset.
+	if target_screen.x < free_left+90.0 or target_screen.x > free_right-90.0:
+		pan_target.x += (free_left+free_right)*0.5-target_screen.x
 
 func _sync_note_buttons() -> void:
 	var note_choices: Array = [48,50,52,55,57]
@@ -1640,6 +1667,7 @@ func _planning_menu() -> void:
 		care_for_land.visible = not str(_first_authored_state(root_id).get("reservation_id","")).is_empty()
 	(menu.get_meta("authored_reservation_choices") as Control).visible = authored_reservation
 	(menu.get_meta("expression_choices") as Control).visible = choosing_expression
+	(menu.get_meta("expression_footer") as Control).visible = choosing_expression
 	(menu.get_meta("notes") as Control).visible = not choosing_expression and not authored_reservation
 	(menu.get_meta("legacy_expressions") as Control).visible = not choosing_expression and not _authored_retune() and not authored_reservation
 	(menu.get_meta("listening_verbs") as Control).visible = not choosing_expression
@@ -1662,9 +1690,12 @@ func _planning_menu() -> void:
 	var scroll: ScrollContainer = menu.get_meta("scroll")
 	var box: VBoxContainer = menu.get_meta("content")
 	var width := maxf(1.0,minf(560.0,size.x-52.0))
-	if choosing_expression: width = minf(width,maxf(280.0,(size.x-168.0)*0.5))
+	if choosing_expression: width = minf(422.0,width)
 	box.custom_minimum_size.x = maxf(1.0,width-18.0)
-	scroll.custom_minimum_size = Vector2(width,minf(box.get_combined_minimum_size().y,maxf(1.0,minf(520.0,size.y-106.0))))
+	var footer := menu.get_meta("expression_footer") as Control
+	var footer_height := footer.get_combined_minimum_size().y+12.0 if choosing_expression else 0.0
+	var available_height := maxf(1.0,minf(590.0,size.y-94.0)-36.0-footer_height)
+	scroll.custom_minimum_size = Vector2(width,minf(box.get_combined_minimum_size().y,available_height))
 	var candidate: Dictionary = {}
 	if context.has("position"):
 		candidate = model.world.planning_candidate(Vector2(float(context["position"][0]),float(context["position"][1])))
@@ -3105,8 +3136,7 @@ func _process(delta: float) -> void:
 	planning_guide.sync()
 	first_composition_guide.sync()
 	caption.position = Vector2(48,size.y-68)
-	caption.visible = not black
-	tooltip.visible = not black and pointer_inside and not menu.visible
+	tooltip.visible = not black and pointer_inside and not menu.visible and not planning_guide.opened
 	shadow_layer.visible = not black
 	buildings_layer.visible = not black
 	if black: menu.hide()
@@ -3197,6 +3227,7 @@ func _process(delta: float) -> void:
 			if hover_seconds > 0.18 and hover_seconds < 0.18+delta: _light_note(midi+12 if midi < 48 else midi)
 		elif not site.is_empty():
 			tooltip.text = site["name"]+"\n"+("已落成 · 沿道路覆盖%d栋\n公园为主题留白" % site.get("covered",[]).size() if site["active"] else "公共保留地 · 点击营造\n公园让音乐呼吸，文化设施组织主题")
+			if first_composition_mode and not bool(site["active"]): tooltip.visible = false
 			if site["active"] and site["kind"] == "civic":
 				tooltip.text = "%s · 文化设施%d级\n覆盖%d栋 · 已服务%d/%d栋\n%s" % [site["name"],int(site.get("service_level",1)),site.get("covered",[]).size(),site.get("served",[]).size(),int(site.get("service_capacity",18)),"点击后选公共设施，下一句扩容" if int(site.get("service_level",1)) < 3 else "三级扩容完成 · 文化主题继续演奏"]
 		else:
@@ -3212,7 +3243,7 @@ func _process(delta: float) -> void:
 	elif not hover_card_status.is_empty():
 		status_line = hover_card_status if status_line.is_empty() else status_line+" · "+hover_card_status
 	caption.text = status_line
-	caption.visible = not black and not status_line.is_empty()
+	caption.visible = not black and not status_line.is_empty() and (not first_composition_mode or not (menu.visible or planning_guide.opened))
 	tooltip.position = Vector2(clampf(pointer.x+18,12,size.x-420),clampf(pointer.y+20,70,size.y-125))
 	if menu.visible:
 		_update_selected_opportunity()
@@ -3241,7 +3272,7 @@ func _sync_daylight() -> void:
 	buildings_layer.set_meta("world_tint",tint)
 	backdrop.color = Color.BLACK if black else daylight_state["backdrop"]
 	shadow_layer.modulate.a = float(daylight_state["shadow_strength"])
-	caption.add_theme_color_override("font_color",Color("435c59"))
+	caption.add_theme_color_override("font_color",RefinedUi.PAPER)
 	tooltip.add_theme_color_override("font_color",daylight_state["ui_ink"])
 
 func set_art_direction(id: String) -> void:
@@ -3255,6 +3286,17 @@ func set_art_direction(id: String) -> void:
 	street_eaves_layer.sync(self)
 	expression_audition_layer.sync(self)
 	queue_redraw()
+
+func _street_orientation(at: Vector2,entrance: Vector2 = Vector2.INF) -> int:
+	# The displayed road graph owns orientation; never scan it at every draw.
+	var key := _shown_city_key()+[shown_world.road_index_identity]
+	if street_orientation_key != key:
+		street_orientation_key = key
+		street_orientation_cache.clear()
+	var query := Vector4(at.x,at.y,entrance.x,entrance.y)
+	if not street_orientation_cache.has(query):
+		street_orientation_cache[query] = StreetOrientation.street_orientation(shown_world,at,entrance)
+	return int(street_orientation_cache[query])
 
 func _sync_buildings() -> void:
 	_prepare_ground()
@@ -3273,7 +3315,7 @@ func _sync_buildings() -> void:
 	buildings_layer.modulate = Color(0.96+warmth,1.0,1.0,1.0)
 	shadow_layer.position = origin
 	shadow_layer.scale = Vector2.ONE*view_zoom
-	var display_key := _shown_city_key()+[shown_world.buildings.size(),pitches.hash(),art_direction.selected_id]
+	var display_key := _shown_city_key()+[shown_world.buildings.size(),pitches.hash(),art_direction.selected_id,shown_world.road_index_identity]
 	if building_display_key == display_key and sprites.size() == shown_world.buildings.size():
 		var shadow_changes: Array[Dictionary] = []
 		for id in revealing_buildings.keys():
@@ -3308,8 +3350,8 @@ func _sync_buildings() -> void:
 		append_only = false
 	for building in shown_world.buildings:
 		var id: String = building["district_id"]
-		var entry: Dictionary = building_catalog.entry_for(building,assets[building["type"]],shown_world.families.get(str(building.get("family_id","")),{}))
 		var world_position := Coupling.position_of(building)
+		var entry: Dictionary = building_catalog.entry_for(building,assets[building["type"]],shown_world.families.get(str(building.get("family_id","")),{}),_street_orientation(world_position))
 		var key := [world_position,entry["id"]]
 		var geometry_dirty := false
 		if not building_geometry.has(id) or building_geometry[id]["key"] != key:
@@ -3395,12 +3437,12 @@ func _draw() -> void:
 		draw_arc(point(Coupling.position_of(shown_world.by_id[hover_id])),18*view_zoom,0,TAU,48,Color(0.62,0.72,0.5,0.8),1.5,true)
 	var font := ThemeDB.fallback_font
 	var ui_ink: Color = daylight_state.get("ui_ink",Color("4b6561"))
-	draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,ui_ink)
-	var composition_title := _composition_title()
-	draw_string(font,Vector2(47,67),composition_title,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color(ui_ink,0.78))
+	if not first_composition_mode:
+		draw_string(font,Vector2(46,44),"共鸣之城",HORIZONTAL_ALIGNMENT_LEFT,-1,22,ui_ink)
+		draw_string(font,Vector2(47,67),_composition_title(),HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color(ui_ink,0.78))
 	_draw_authored_voice_legend(ui_ink)
 	_draw_landmark_bar()
-	if not black:
+	if not black and (not first_composition_mode or not (menu.visible or planning_guide.opened)):
 		var lead := str(model.audible_theme().get("cid",""))
 		var name := str(shown_world.communities.get(lead,{}).get("name","留白"))
 		var decree_slots := " · 政令槽%d" % shown_world.landmark_intervention_slots() if shown_world.landmark_intervention_slots() > 1 else ""
@@ -3436,6 +3478,7 @@ func _composition_title() -> String:
 
 func _draw_authored_voice_legend(ui_ink: Color) -> void:
 	if not first_composition_mode: return
+	if is_instance_valid(core_slice_hud) and core_slice_hud.visible: return
 	var roots: Array[Dictionary] = AuthoredDuet.roots(shown_world,model.audible_pitches())
 	if roots.size() < 2: return
 	var font := ThemeDB.fallback_font
@@ -3815,9 +3858,10 @@ func _draw_bridge_preview() -> void:
 	draw_string(ThemeDB.fallback_font,(pa+pb)*0.5+Vector2(8,-8)*view_zoom,label,HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("725d39"))
 
 func _draw_public_labels() -> void:
-	if not pointer_inside: return
+	if not pointer_inside or menu.visible or planning_guide.opened: return
 	var p := world_at(pointer)
 	for site in shown_world.near_public_sites(p):
+		if first_composition_mode and not bool(site["active"]): continue
 		if not SpatialPlanning.point_in_footprint(site,p): continue
 		var center := Vector2(site["position"][0],site["position"][1])
 		draw_string(ThemeDB.fallback_font,point(center)+Vector2(-30,30)*view_zoom,site["name"],HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("617b69"))
