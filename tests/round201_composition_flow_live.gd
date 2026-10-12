@@ -49,24 +49,25 @@ func _capture(name: String) -> void:
 	await process_frame
 	await RenderingServer.frame_post_draw
 	demo.get_viewport().get_texture().get_image().save_png(output+name+".png")
-func _audition(choice: String) -> void:
+func _audition(choice: String,phase: String = "首段") -> void:
 	demo.expression_choices[choice].emit_signal("pressed")
 	await process_frame
 	await process_frame
 	var deadline := Time.get_ticks_msec()+8000
 	while Time.get_ticks_msec() < deadline and not demo.preview_started: await process_frame
-	check(demo.preview_started and demo.preview_player.playing,choice+"_route_click_starts_actual_audition")
+	check(demo.preview_started and demo.preview_player.playing,phase+"_"+choice+"_route_click_starts_actual_audition")
 	if not demo.preview_started: return
 	var variant: Dictionary = demo.expression_comparison["variants"][choice]
-	check(demo.preview_player.stream.data == variant["pcm"] and demo.expression_audition_layer.ghost.get("expression","") == choice,choice+"_playing_pcm_and_visible_house_share_branch")
+	check(demo.preview_player.stream.data == variant["pcm"] and demo.expression_audition_layer.ghost.get("expression","") == choice,phase+"_"+choice+"_playing_pcm_and_visible_house_share_branch")
 	var wav := AudioStreamWAV.new()
 	wav.format = AudioStreamWAV.FORMAT_16_BITS
 	wav.mix_rate = demo.clock.renderer.transport.sample_rate
 	wav.stereo = true
 	wav.data = variant["pcm"]
-	wav.save_to_wav(output+choice+"_点击即试听.wav")
-	auditions[choice] = {"source_key":demo.expression_comparison["source_key"],"bytes":variant["pcm"].size(),"entry_id":demo.expression_audition_layer.ghost.get("entry_id","")}
-	await _capture("试听_"+choice+"_点击即听")
+	wav.save_to_wav(output+phase+"_"+choice+"_点击即试听.wav")
+	if not auditions.has(phase): auditions[phase] = {}
+	auditions[phase][choice] = {"source_key":demo.expression_comparison["source_key"],"bytes":variant["pcm"].size(),"entry_id":demo.expression_audition_layer.ghost.get("entry_id","")}
+	await _capture("试听_"+phase+"_"+choice+"_点击即听")
 func _choose_scope(cid: String,plan_index: int) -> Dictionary:
 	var guide = demo.planning_guide
 	guide.cards.get_child(plan_index).emit_signal("pressed")
@@ -79,6 +80,7 @@ func _choose_scope(cid: String,plan_index: int) -> Dictionary:
 	return site
 func _run() -> void:
 	if "--round204-audition" in OS.get_cmdline_user_args(): output = "res://验证记录/round204_点击即试听/"
+	if "--round205-placement" in OS.get_cmdline_user_args(): output = "res://验证记录/round205_声音推荐落点/"
 	output += "run_"+Time.get_datetime_string_from_system().replace(":","-")+"/"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output))
 	DisplayServer.window_set_size(Vector2i(1440,900))
@@ -150,7 +152,10 @@ func _run() -> void:
 	await _capture("05_对岸文化馆_同一节拍等待")
 	check(await _until(frame+rate/5),"opposite_civic_space_reaches_device_boundary")
 	guide.next_action_button.emit_signal("pressed")
-	await _audition("weave")
+	check(demo.expression_choice.is_empty() and not demo.preview_requested,"second_sound_recommendation_does_not_choose_expression")
+	if "--round205-placement" in OS.get_cmdline_user_args():
+		for choice: String in ["deep","warm","weave"]: await _audition(choice,"第二段")
+	else: await _audition("weave","第二段")
 	var finish_deadline := Time.get_ticks_msec()+5500
 	while Time.get_ticks_msec() < finish_deadline and demo.preview_requested: await process_frame
 	check(not demo.preview_requested and not demo.preview_started and not demo.model.synth.ducking,"click_audition_finishes_and_restores_city")

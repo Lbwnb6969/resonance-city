@@ -14,6 +14,7 @@ const TransitCharter = preload("res://scripts/world/transit_charter_anchor.gd")
 const TransitRework = preload("res://scripts/world/transit_line_rework.gd")
 const TransitReworkPreview = preload("res://scripts/world/transit_rework_preview.gd")
 const FirstComposition = preload("res://scripts/world/first_composition.gd")
+const FirstSoundPlacement = preload("res://scripts/world/first_sound_placement.gd")
 const AuthoredDuet = preload("res://scripts/world/authored_duet.gd")
 const FirstAuthoredWork = preload("res://scripts/world/first_authored_work.gd")
 const FirstAuthoredContinuation = preload("res://scripts/world/first_authored_continuation.gd")
@@ -1314,14 +1315,14 @@ func _authored_reservation_context() -> bool:
 
 func _begin_first_sound_choice(cid: String,_at: Vector2 = Vector2.INF) -> bool:
 	var choices: Array = FirstComposition.opportunities(shown_world).get("seed_candidates",[])
-	var candidate: Dictionary = {}
+	var candidates: Array = []
 	for possible: Dictionary in choices:
 		if str(possible.get("community_id","")) == cid:
-			candidate = possible
-			break
+			candidates.append(possible)
 	if shown_world.by_id.has(composition_source_id):
-		var duet_candidates: Array = AuthoredDuet.candidates(shown_world,composition_source_id,cid,1)
-		if not duet_candidates.is_empty(): candidate = duet_candidates[0]
+		var duet_candidates: Array = AuthoredDuet.candidates(shown_world,composition_source_id,cid,-1)
+		if not duet_candidates.is_empty(): candidates = duet_candidates
+	var candidate := FirstSoundPlacement.recommend(model.world,candidates,model.next_boundary)
 	if candidate.is_empty():
 		_message("这片社区的空地已占用 · 点另一处街边继续选声音")
 		return false

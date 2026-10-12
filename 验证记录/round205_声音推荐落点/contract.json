@@ -1,0 +1,79 @@
+{
+	"checks": {
+		"complete_preview_keeps_source_world_unchanged": true,
+		"deep_chosen_lot_has_complete_real_four_second_preview": true,
+		"deep_independent_actual_request_is_accepted": true,
+		"empty_pool_has_no_recommendation": true,
+		"existing_independent_pending_intent_survives_recommendation": true,
+		"existing_order_remains_authoritative_when_first_candidate_is_available": true,
+		"existing_sorted_duet_pool_has_multiple_legal_street_candidates": true,
+		"fallback_and_empty_queries_remain_read_only": true,
+		"fixture_has_actual_warm_root_and_opposite_civic": true,
+		"isolated_dummy_driver": true,
+		"no_common_legal_voice_lot_falls_back_to_original_candidate": true,
+		"original_first_duet_lot_rejects_warm_without_real_reserved_land": true,
+		"recommendation_preserves_actual_world_rng_and_pending": true,
+		"recommendation_preserves_pool_and_does_not_choose_voice": true,
+		"recommendation_uses_first_all_voice_candidate_in_existing_order": true,
+		"warm_chosen_lot_has_complete_real_four_second_preview": true,
+		"warm_independent_actual_request_is_accepted": true,
+		"warm_preview_commits_real_reserved_parcel_owned_by_actual_family": true,
+		"weave_chosen_lot_has_complete_real_four_second_preview": true,
+		"weave_independent_actual_request_is_accepted": true
+	},
+	"evidence": {
+		"boundary_frame": 1411200,
+		"first_root": "building-00025",
+		"original_position": [
+			19.1641426086426,
+			16.2107467651367
+		],
+		"original_warm_rejection": "暖庭需要附近一块可保留的真实空地，请换一个落点",
+		"phrase": 3,
+		"pool_size": 5,
+		"recommendation_ms": 32.131,
+		"recommended_position": [
+			19.3384418487549,
+			16.3197135925293
+		],
+		"seed": "2026100900000062",
+		"variants": {
+			"deep": {
+				"accepted": true,
+				"pcm_bytes": 352800,
+				"reason": "",
+				"type": "residential"
+			},
+			"warm": {
+				"accepted": true,
+				"pcm_bytes": 352800,
+				"reason": "",
+				"type": "residential"
+			},
+			"weave": {
+				"accepted": true,
+				"pcm_bytes": 352800,
+				"reason": "",
+				"type": "commercial"
+			}
+		},
+		"warm_reservation_id": "reservation-00005",
+		"warm_reservations": [
+			{
+				"created_phrase": 4,
+				"id": "reservation-00005",
+				"polygon": "[(22.04113, 12.51702), (23.14113, 12.51702), (23.14113, 13.61702), (22.04113, 13.61702)]",
+				"position": [
+					22.5911331176758,
+					13.0670223236084
+				],
+				"reservation_id": "reservation-00005",
+				"source_lot_ids": [],
+				"source_site_id": "expression-clear:22.59113:13.06702"
+			}
+		]
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Dummy real two-segment production planning and request semantics; sorted pool and source World remain unchanged, with actual ExpressionPreview PCM and warm reservation. Single timing sample; no device output or human listening claim."
+}

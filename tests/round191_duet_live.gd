@@ -135,8 +135,8 @@ func _run() -> void:
 	check(demo.first_composition_guide.action == "sound","light_entry_restores_second_community_sound_choice")
 	demo.first_composition_guide.emit_signal("pressed")
 	check(demo.menu.visible and demo.expression_choice.is_empty() and str(demo.context.get("community_id","")) == "east-2","second_voice_has_real_opposite_site_and_no_default")
-	var candidates: Array = Duet.candidates(demo.shown_world,first_root,"east-2",1)
-	check(not candidates.is_empty() and candidates[0]["position"] == demo.context["position"],"second_voice_uses_actual_cross_bank_street_opportunity")
+	var candidates: Array = Duet.candidates(demo.shown_world,first_root,"east-2",-1)
+	check(candidates.any(func(candidate: Dictionary) -> bool: return candidate["position"] == demo.context["position"]),"second_voice_uses_actual_cross_bank_street_opportunity")
 	await _capture("second_sound_choice")
 	demo.expression_choices["weave"].emit_signal("pressed")
 	root_boundary = demo.model.next_boundary
