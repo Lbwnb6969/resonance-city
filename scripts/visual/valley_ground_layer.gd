@@ -5,6 +5,7 @@ const PublicGeometry = preload("res://scripts/visual/public_space_visual_geometr
 const TerrainGeometry = preload("res://scripts/visual/valley_terrain_visual_geometry.gd")
 const ExpressionIdentity = preload("res://scripts/visual/first_expression_identity.gd")
 const Miniature = preload("res://scripts/visual/miniature_valley_material.gd")
+const CivicCourt = preload("res://scripts/visual/classical_civic_court.gd")
 var city: ContinuousWorld
 var role := "terrain"
 var art_style_id := "baseline"
@@ -35,6 +36,7 @@ var ground_grain: Array[Dictionary] = []
 var street_material: Dictionary = {"curbs":[],"joints":[],"paving":[]}
 var street_material_key: Array = []
 var street_material_rebuilds := 0
+var civic_court := CivicCourt.new()
 # Independent CanvasItems retain exact draw contents in the original layer order.
 var urban_parts: Dictionary = {}
 var last_prepare_ms := 0.0
@@ -53,7 +55,12 @@ func sync(demo: Control) -> void:
 	visible = not demo.black
 	var geometry_key: Array = [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])] if role == "terrain" else demo._shown_city_key()
 	var next_key := geometry_key+[snappedf(demo.view_zoom,0.00001),art_style_id]
-	if role == "urban": next_key.append(city.era)
+	if role == "urban":
+		var clock: Variant = demo.get("clock")
+		var frame: float = clock.renderer.transport.audible_frame if clock != null else float(city.phrase_index*int(city.cfg["timing"]["phrase_frames"]))
+		civic_court.sync(city,frame,art_style_id)
+		next_key.append(city.era)
+		next_key.append(civic_court.key)
 	var next_terrain := [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])]
 	var terrain_changed := terrain_identity != next_terrain
 	if terrain_changed:
@@ -309,6 +316,9 @@ func _draw_public_space() -> void:
 		polygon.append(polygon[0])
 		draw_polyline(polygon,Color(0.40,0.56,0.40,0.72),1.5/camera_zoom,true)
 	for site in city.public_sites:
+		if CivicCourt.applies(city,site,art_style_id):
+			_draw_classical_civic_court(str(site["id"]))
+			continue
 		for component in PublicGeometry.components(site):
 			if site["active"]:
 				var color := Color("97ae87") if site["kind"] == "park" else Color("d1c3a1")
@@ -336,6 +346,15 @@ func _draw_public_space() -> void:
 			var at := _point(stop_position)
 			draw_circle(at,3.5*1.0,Color("e9d4a0"))
 			draw_arc(at,4.2*1.0,0,TAU,16,Color("899d87"),1.0/camera_zoom,true)
+
+func _draw_classical_civic_court(site_id: String) -> void:
+	for court: Dictionary in civic_court.courts.get(site_id,[]):
+		for piece: PackedVector2Array in court["pieces"]:
+			draw_colored_polygon(_project_polygon(piece),Color("d5c8aa"))
+		for path: PackedVector2Array in court["paths"]:
+			draw_colored_polygon(_project_polygon(path),Color("eadfc4",0.44))
+		for joint: PackedVector2Array in court["joints"]:
+			draw_polyline(_project_polygon(joint),Color("998d73",0.28),0.6,true)
 
 func _draw_fabric_overlay() -> void:
 	var cache: Dictionary = city.fabric_cache
@@ -406,6 +425,7 @@ func _sync_urban_parts(terrain_changed: bool) -> void:
 		part.road_material = road_material
 		if name == "roads": part.set_meta("material_key",road_part_key)
 		part.street_material = street_material
+		if name == "public": part.civic_court = civic_court
 		part.camera_zoom = camera_zoom
 		var content_key: Array = [terrain_identity,contents[name],art_style_id]
 		# Public outline widths are screen-constant. Other urban marks scale with
@@ -453,6 +473,7 @@ func _urban_contents() -> Dictionary:
 		else:
 			content["public"].append(["civic",footprint,Vector2(site["position"][0],site["position"][1]),
 				int(site.get("service_level",1)),site.get("served",[]).size() >= int(site.get("service_capacity",18))])
+	content["public"].append(["classical_civic_courts",civic_court.key])
 	for line in city.transit_lines:
 		for node in line["stops"]:
 			var p := city.transit_stop_position(str(node))

@@ -291,42 +291,68 @@ def shop(palette):
     return out
 
 
-def civic(palette):
+def civic(palette,sections=None):
     out=[]
-    for index in range(3): block(out,(0,.028+index*.038,.07),(2.02-index*.09,.056,1.66-index*.09),STONE)
-    block(out,(0,.52,-.15),(1.54,.77,1.04),WALL)
-    masonry(out,1.54,1.04,.135,.77,cz=-.15)
+    # The existing lowest stylobate retains the ground contact and public scale.
+    # Its upper steps now support an open peristyle instead of a front-only porch.
+    for index in range(3):
+        block(out,(0,.028+index*.038,.07-index*.0175),(2.02-index*.09,.056,1.66-index*.045),STONE)
+    block(out,(0,.52,-.035),(1.24,.77,.81),WALL)
+    masonry(out,1.24,.81,.135,.77,cz=-.035)
     arched_door(out,0,.135,.377,.34,.58)
-    for x in [-.53,.53]: framed_window(out,x,.42,.377,.20,.28)
-    for z in [-.44,-.03,.28]: framed_window(out,z,.43,.775,.22,.29,True)
+    for x in [-.43,.43]: framed_window(out,x,.43,.377,.17,.27)
+    for z in [-.23,.16]: framed_window(out,z,.44,.626,.18,.28,True)
     rear=[];left=[]
-    for x in [-.46,.46]: framed_window(rear,x,.43,.677,.25,.30)
-    for z in [-.44,-.03,.28]: framed_window(left,z,.43,.775,.22,.29,True)
+    for x in [-.36,.36]: framed_window(rear,x,.44,.446,.20,.27)
+    for z in [-.23,.16]: framed_window(left,z,.44,.626,.18,.28,True)
     reflected_details(out,rear,2);reflected_details(out,left,0)
-    # Hexastyle Greek portico: fluted Doric shafts, entasis, echinus and
-    # abacus, continuous architrave, alternating triglyphs/metopes, pediment.
-    for x in [-.80,-.48,-.16,.16,.48,.80]: classical_column(out,x,.70,.13,.955,.047)
-    block(out,(0,.982,.67),(1.96,.072,.40),STONE)
-    block(out,(0,1.043,.67),(1.98,.050,.42),WALL)
+    columns=[]
+    positions=[(float(x),z,side) for side,z in [("front",.70),("back",-.66)] for x in [-.80,-.48,-.16,.16,.48,.80]]
+    positions += [(x,z,side) for side,x in [("right",.80),("left",-.80)] for z in [-.388,-.116,.156,.428]]
+    for x,z,side in positions:
+        start=len(out);classical_column(out,x,z,.13,.955,.047)
+        columns.append({"position":[x,.13,z],"side":side,"faces":[start,len(out)]})
+    # A continuous Doric entablature turns every corner. The narrow inner hall
+    # leaves real daylight gaps behind the shafts on all four facades.
+    frieze_start=len(out)
+    block(out,(0,.982,.02),(1.96,.072,1.55),STONE)
+    block(out,(0,1.043,.02),(1.98,.050,1.57),WALL)
+    front=[];side=[]
     for x in np.linspace(-.88,.88,11):
-        block(out,(float(x),1.045,.894),(.048,.063,.028),STONE)
-        for line in [-.012,.012]: plane(out,float(x)+line,1.025,.910,.004,.038,"#A8987F")
-    cornice(out,1.97,1.55,1.095,cz=-.02)
-    tiled_roof(out,2.10,1.66,1.16,.33,palette,cz=-.02)
-    # Full-width exposed tympanum with a raised raking geison and inset relief.
-    b.face(out,[(-1.015,1.136,.862),(1.015,1.136,.862),(0,1.48,.862)],STONE[2])
-    b.face(out,[(-.82,1.18,.874),(.82,1.18,.874),(0,1.438,.874)],WALL[1])
+        block(front,(float(x),1.045,.810),(.048,.063,.028),STONE)
+        for line in [-.012,.012]: plane(front,float(x)+line,1.025,.827,.004,.038,"#A8987F")
+    for z in np.linspace(-.63,.67,9):
+        block(side,(.996,1.045,float(z)),(.028,.063,.048),STONE)
+        for line in [-.012,.012]: plane(side,float(z)+line,1.025,1.013,.004,.038,"#A8987F",True)
+    out.extend(front);out.extend(side)
+    back=[(depth,[(x,y,z-.04) for x,y,z in vertices],tint) for depth,vertices,tint in front]
+    reflected_details(out,back,2);reflected_details(out,side,0)
+    cornice(out,1.97,1.55,1.095,cz=.02)
+    frieze_end=len(out)
+    tiled_roof(out,2.10,1.66,1.16,.33,palette,cz=.02)
+    # Both gable ends have full stone tympana, raking geisa and carved relief.
+    # They are actual planes before rotation/shading/BSP, never screen outlines.
+    pediment=[]
+    b.face(pediment,[(-1.015,1.136,.862),(1.015,1.136,.862),(0,1.48,.862)],STONE[2])
+    b.face(pediment,[(-.82,1.18,.874),(.82,1.18,.874),(0,1.438,.874)],WALL[1])
     for sign in [-1,1]:
-        b.face(out,[(0,1.49,.887),(sign*1.045,1.154,.887),(sign*1.035,1.122,.887),(0,1.456,.887)],STONE[2])
-    block(out,(0,1.155,.882),(2.12,.044,.064),STONE)
-    # A stone disk and two stylized relief figures belong to the tympanum.
+        b.face(pediment,[(0,1.49,.887),(sign*1.045,1.154,.887),(sign*1.035,1.122,.887),(0,1.456,.887)],STONE[2])
+    block(pediment,(0,1.155,.882),(2.12,.044,.064),STONE)
     relief=[]
     ring_volume(relief,[(0,.06,.06),(.020,.06,.06)],STONE[2],20)
-    for _,vertices,tint in relief: b.face(out,[(vx,1.292+vz,.891+vy) for vx,vy,vz in vertices],tint)
+    for _,vertices,tint in relief: b.face(pediment,[(vx,1.292+vz,.891+vy) for vx,vy,vz in vertices],tint)
     for x in [-.24,.24]:
-        block(out,(x,1.27,.888),(.037,.11,.023),STONE)
-        ellipsoid(out,(x,1.343,.888),(.030,.032,.018),STONE[2],8,3)
+        block(pediment,(x,1.27,.888),(.037,.11,.023),STONE)
+        ellipsoid(pediment,(x,1.343,.888),(.030,.032,.018),STONE[2],8,3)
+    pediments=[]
+    start=len(out);out.extend(pediment);pediments.append([start,len(out)])
+    back=[(depth,[(x,y,z-.04) for x,y,z in vertices],tint) for depth,vertices,tint in pediment]
+    start=len(out);reflected_details(out,back,2);pediments.append([start,len(out)])
     for x in [-.70,.70]: planter(out,x,.77,.13,.19)
+    if sections is not None:
+        sections.update({"columns":columns,"pediments":pediments,"entablature":[frieze_start,frieze_end],
+                         "cella_width":1.24,"cella_length":.81,"entrance_position":[0,.135,.410],
+                         "ground_stylobate":[2.02,1.66,.07]})
     return out
 
 
@@ -554,9 +580,14 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trees-only",action="store_true",help="Bake only two trees; preserve every building entry and file byte for byte")
     parser.add_argument("--emission-only",action="store_true",help="Bake only sparse classical doorway/window night masks; preserve all existing assets")
+    parser.add_argument("--civic-only",action="store_true",help="Bake only four civic geometries and their four night masks; preserve every other asset")
+    parser.add_argument("--emission-role",choices=["civic"],help="With --emission-only, update only the selected role in the independent night manifest")
     args=parser.parse_args()
     if args.emission_only:
-        rebuild_emission()
+        rebuild_emission(args.emission_role)
+        return
+    if args.civic_only:
+        rebuild_civic()
         return
     for folder in ["SVG","整图","阴影"]: (OUTPUT/folder).mkdir(parents=True,exist_ok=True)
     if args.trees_only:
@@ -624,6 +655,127 @@ def rebuild_trees():
     (evidence/"building_unchanged.json").write_text(json.dumps({"passed":True,"building_entries":len(buildings),"building_files":len(before),"hashes":after,"command":"python tools/build_refined_valley_art.py --trees-only"},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     tree_evidence(manifest)
     print("TREES_ONLY 2 bakes /",len(buildings),"building entries and",len(before),"building files unchanged / PASS")
+
+
+def rebuild_civic():
+    manifest=json.loads((OUTPUT/"manifest.json").read_text(encoding="utf-8"))
+    original=[entry for entry in manifest["entries"] if entry["role"]!="civic"]
+    previous={entry["id"]:entry for entry in manifest["entries"] if entry["role"]=="civic"}
+    previous_images={identifier:Image.open(ROOT/entry["texture"]).convert("RGBA") for identifier,entry in previous.items()}
+    night=json.loads((OUTPUT/"夜光/manifest.json").read_text(encoding="utf-8"))
+    preserved={}
+    for entry in original:
+        for key in ["texture","editable_source","shadow_texture","contact_texture"]:
+            path=ROOT/entry[key]
+            for file in [path,path.with_suffix(path.suffix+".import")]: preserved[file.relative_to(ROOT).as_posix()]=hashlib.sha256(file.read_bytes()).hexdigest()
+    for entry in night["entries"]:
+        if entry["id"] in previous: continue
+        path=ROOT/entry["emission_texture"]
+        for file in [path,path.with_suffix(path.suffix+".import")]: preserved[file.relative_to(ROOT).as_posix()]=hashlib.sha256(file.read_bytes()).hexdigest()
+    geometry=civic(ROOFS["tile"]);replacements={}
+    for orientation in range(4):
+        identifier="refined_civic_loggia"+(f"_o{orientation}" if orientation else "")
+        print("BAKE_CIVIC",identifier,len(geometry),flush=True)
+        entry=bake(identifier,"四面环柱文化馆","civic",rotated_geometry(geometry,orientation),orientation=orientation,canonical_id="refined_civic_loggia")
+        entry.update({"civic_revision":210,"civic_architecture":{"doric_columns":20,"colonnade_sides":["front","back","left","right"],
+                     "complete_pediments":2,"cella_width":1.24,"cella_length":.81,"main_entrance":"original +z doorway; World orientation contract unchanged"}})
+        replacements[identifier]=entry
+    manifest["entries"]=[replacements.get(entry["id"],entry) for entry in manifest["entries"]]
+    manifest["civic_revision"]=210
+    (OUTPUT/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    validate(manifest["entries"]);preview(manifest["entries"])
+    rebuild_emission("civic")
+    after={path:hashlib.sha256((ROOT/path).read_bytes()).hexdigest() for path in preserved}
+    assert after==preserved and original==[entry for entry in manifest["entries"] if entry["role"]!="civic"]
+    proof=ROOT/"验证记录/round210_文化馆四向";proof.mkdir(parents=True,exist_ok=True)
+    (proof/"civic_generation.json").write_text(json.dumps({"passed":True,"civic_entries":4,"preserved_noncivic_files":len(after),
+          "preserved_noncivic_hashes":after,"command":"python -B tools/build_refined_valley_art.py --civic-only",
+          "scope":"Only four civic geometries, shadows/contact and four sparse night masks; all 28 houses/shops, two trees and 28 noncivic night masks retained byte for byte."},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    civic_evidence(manifest,previous,previous_images)
+    print("CIVIC_ONLY 4 geometry + 4 emission /",len(after),"noncivic files unchanged / PASS",flush=True)
+
+
+def _civic_depth_evidence(entry,geometry,sections):
+    """Independent triangle raster proves exposed architecture, world light
+    and BSP visibility. This uses primitive face identity, not color guessing.
+    """
+    ratio=256/max(entry["image_bounds"]["width"],entry["image_bounds"]["height"])
+    wh=np.maximum(1,np.rint(np.array([entry["image_bounds"]["width"],entry["image_bounds"]["height"]])*ratio).astype(int))
+    depth=np.full((wh[1],wh[0]),-np.inf);owner=np.full(depth.shape,-1,dtype=int)
+    margin=np.zeros(depth.shape);reference=np.zeros((*depth.shape,3))
+    for face_id,(_,vertices,tint) in enumerate(geometry):
+        points=np.asarray([b.project(p) for p in vertices])*entry["pixels_per_world"]*ratio+np.asarray(entry["origin"])*ratio
+        distance=np.asarray([b.depth(p) for p in vertices]);rgb=np.array(list(bytes.fromhex(shade_hex(tint,vertices)[1:])))
+        for index in range(1,len(vertices)-1):
+            triangle=points[[0,index,index+1]];d=distance[[0,index,index+1]]
+            lo=np.maximum(0,np.floor(triangle.min(0)).astype(int));hi=np.minimum(wh-1,np.ceil(triangle.max(0)).astype(int))
+            if np.any(hi<lo): continue
+            xx,yy=np.meshgrid(np.arange(lo[0],hi[0]+1)+.5,np.arange(lo[1],hi[1]+1)+.5)
+            (ax,ay),(bx,by),(cx,cy)=triangle;den=(by-cy)*(ax-cx)+(cx-bx)*(ay-cy)
+            if abs(den)<1e-10: continue
+            a=((by-cy)*(xx-cx)+(cx-bx)*(yy-cy))/den
+            c=((cy-ay)*(xx-cx)+(ax-cx)*(yy-cy))/den;f=1-a-c
+            dd=a*d[0]+c*d[1]+f*d[2]
+            region=depth[lo[1]:hi[1]+1,lo[0]:hi[0]+1];mask=(a>=0)&(c>=0)&(f>=0)&(dd>=region-1e-9)
+            region[mask]=dd[mask]
+            owner[lo[1]:hi[1]+1,lo[0]:hi[0]+1][mask]=face_id
+            margin[lo[1]:hi[1]+1,lo[0]:hi[0]+1][mask]=np.minimum(np.minimum(a,c),f)[mask]
+            reference[lo[1]:hi[1]+1,lo[0]:hi[0]+1][mask]=rgb
+    actual=np.asarray(Image.open(ROOT/entry["texture"]).convert("RGBA").resize(tuple(wh),Image.Resampling.LANCZOS)).astype(float)
+    visible=np.isfinite(depth)&(actual[:,:,3]>250)&(margin>.012)
+    agreement=float((np.abs(actual[:,:,:3]-reference).max(-1)[visible]<24).mean())
+    assert agreement>.93,(entry["id"],agreement)
+    architectural=np.isfinite(depth)&(actual[:,:,3]>250)
+    columns=[]
+    for column in sections["columns"]:
+        low,high=column["faces"];count=int(np.count_nonzero(architectural&(owner>=low)&(owner<high)))
+        if count>=6: columns.append({"position":column["position"],"side":column["side"],"visible_pixels":count})
+    gables=[int(np.count_nonzero(architectural&(owner>=low)&(owner<high))) for low,high in sections["pediments"]]
+    low,high=sections["entablature"];entablature=int(np.count_nonzero(architectural&(owner>=low)&(owner<high)))
+    assert len(columns)>=6 and max(gables)>100 and entablature>100,(entry["id"],columns,gables,entablature)
+    return {"id":entry["id"],"geometry_faces":len(geometry),"world_light_bsp_depth_agreement":round(agreement,6),
+            "nearest_surface_samples":int(visible.sum()),"visible_doric_columns":columns,"visible_pediment_pixels":gables,
+            "visible_entablature_pixels":entablature,"reference_long_edge":256,"rgb_tolerance":24}
+
+
+def civic_evidence(manifest,old_entries,old_images):
+    entries=[entry for entry in manifest["entries"] if entry["role"]=="civic"]
+    night=json.loads((OUTPUT/"夜光/manifest.json").read_text(encoding="utf-8"))
+    night_entries={entry["id"]:entry for entry in night["entries"] if entry["id"] in old_entries}
+    sections={};geometry=civic(ROOFS["tile"],sections)
+    results=[];sheet=Image.new("RGB",(1440,1030),"#DED5BA");draw=ImageDraw.Draw(sheet)
+    draw.text((22,16),"CIVIC / original World orientation / same ground scale x5 / front + rear complete pediments",fill="#415E57")
+    for index,entry in enumerate(entries):
+        results.append(_civic_depth_evidence(entry,rotated_geometry(geometry,int(entry["orientation"])),sections))
+        x=index*360
+        draw.text((x+22,42),f'O{entry["orientation"]} / entrance {entry["entrance_normal"]}',fill="#415E57")
+        for row,item,label in [(0,old_entries[entry["id"]],"BEFORE / retained current civic"),(1,entry,"AFTER / four-side Doric ring")]:
+            y=70+row*320
+            draw.rounded_rectangle((x+12,y,x+348,y+300),12,fill="#F3EAD3")
+            draw.text((x+24,y+18),label,fill="#415E57")
+            image=old_images[item["id"]] if row==0 else Image.open(ROOT/item["texture"]).convert("RGBA")
+            factor=28*math.sqrt(2)*item["plot_span"]/max(item["model_bounds"]["size"][0],item["model_bounds"]["size"][2])/item["pixels_per_world"]*5
+            rendered=image.resize((round(image.width*factor),round(image.height*factor)),Image.Resampling.LANCZOS)
+            at=(round(x+180-item["origin"][0]*factor),round(y+235-item["origin"][1]*factor))
+            sheet.paste(rendered,at,rendered)
+            small=image.resize((max(1,round(image.width*factor/5*.62/.7)),max(1,round(image.height*factor/5*.62/.7))),Image.Resampling.LANCZOS)
+            sheet.paste(small,(x+276,y+242),small)
+            draw.text((x+24,y+264),f'{item["geometry_faces"]} faces / origin (0,0,0)',fill="#596A57")
+        y=710;draw.rounded_rectangle((x+12,y,x+348,y+300),12,fill="#4D626E")
+        draw.text((x+24,y+18),"NEW / sparse actual aperture light",fill="#F4E3BF")
+        base_pixels=np.asarray(Image.open(ROOT/entry["texture"]).convert("RGBA"),dtype=float)/255
+        emission=np.asarray(Image.open(ROOT/night_entries[entry["id"]]["emission_texture"]).convert("RGBA"),dtype=float)/255
+        rgb=np.clip(base_pixels[:,:,:3]*np.array([.48,.61,.73])+emission[:,:,:3]*emission[:,:,3:4],0,1)
+        image=Image.fromarray(np.rint(np.concatenate((rgb,base_pixels[:,:,3:4]),axis=-1)*255).astype(np.uint8))
+        rendered=image.resize((round(image.width*factor),round(image.height*factor)),Image.Resampling.LANCZOS)
+        at=(round(x+180-entry["origin"][0]*factor),round(y+235-entry["origin"][1]*factor));sheet.paste(rendered,at,rendered)
+        small=image.resize((max(1,round(image.width*factor/5*.62/.7)),max(1,round(image.height*factor/5*.62/.7))),Image.Resampling.LANCZOS)
+        sheet.paste(small,(x+276,y+258),small)
+        draw.text((x+24,y+264),f'{len(results[-1]["visible_doric_columns"])} exposed columns / .62 site >',fill="#F4E3BF")
+    proof=ROOT/"验证记录/round210_文化馆四向"
+    sheet.save(proof/"文化馆四向旧新对照.png")
+    (proof/"geometry.json").write_text(json.dumps({"passed":True,"civic_revision":210,"doric_columns":20,"complete_pediments":2,
+        "sections":sections,"entries":results,"scope":"Independent nearest-triangle face identity and same world-light RGB against real BSP PNG. Same foot scale; no live window or human aesthetic approval."},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 
 
 def tree_evidence(manifest):
@@ -718,8 +870,8 @@ def _night_window_candidates(role):
         for x in [-.39,.39]: candidates.append(_night_window(x,.17,.461,.17,.22,mirror=2))
         for z in [-.18,.20]: candidates.append(_night_window(z,.19,.566,.17,.21,True,0))
     else:
-        for x in [-.46,.46]: candidates.append(_night_window(x,.43,.677,.25,.30,mirror=2))
-        for z in [-.44,-.03,.28]: candidates.append(_night_window(z,.43,.775,.22,.29,True,0))
+        for x in [-.36,.36]: candidates.append(_night_window(x,.44,.446,.20,.27,mirror=2))
+        for z in [-.23,.16]: candidates.append(_night_window(z,.44,.626,.18,.28,True,0))
     if role=="terrace":
         candidates.append(_night_window(.24,.17,.456,.26,.23))
         for z in [-.21,.22]: candidates.append(_night_window(z,.17,.516,.21,.23,True))
@@ -732,8 +884,8 @@ def _night_window_candidates(role):
     elif role=="commercial":
         for z,width in [(-.18,.27),(.22,.23)]: candidates.append(_night_window(z,.21,.546,width,.26,True))
     else:
-        for x in [-.53,.53]: candidates.append(_night_window(x,.42,.377,.20,.28))
-        for z in [-.44,-.03,.28]: candidates.append(_night_window(z,.43,.775,.22,.29,True))
+        for x in [-.43,.43]: candidates.append(_night_window(x,.43,.377,.17,.27))
+        for z in [-.23,.16]: candidates.append(_night_window(z,.44,.626,.18,.28,True))
     return candidates
 
 
@@ -885,18 +1037,26 @@ def _independent_emission_depth(entry,oriented,view,alpha):
             "nearest_surface_agreement":round(float(owner[interior].mean()),6) if interior.any() else 1.0}
 
 
-def rebuild_emission():
+def rebuild_emission(role=None):
     manifest_path=OUTPUT/"manifest.json"
     manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
-    buildings=[entry for entry in manifest["entries"] if entry["role"]!="tree"]
+    all_buildings=[entry for entry in manifest["entries"] if entry["role"]!="tree"]
+    buildings=[entry for entry in all_buildings if role is None or entry["role"]==role]
+    retained_night=json.loads((OUTPUT/"夜光/manifest.json").read_text(encoding="utf-8")) if role else None
+    selected={entry["id"] for entry in buildings}
+    retained_entries=[entry for entry in retained_night["entries"] if entry["id"] not in selected] if role else []
+    retained_hashes={}
+    for entry in retained_entries:
+        path=ROOT/entry["emission_texture"]
+        for file in [path,path.with_suffix(path.suffix+".import")]: retained_hashes[file.relative_to(ROOT).as_posix()]=hashlib.sha256(file.read_bytes()).hexdigest()
     before={manifest_path.relative_to(ROOT).as_posix():hashlib.sha256(manifest_path.read_bytes()).hexdigest()}
-    for entry in buildings:
+    for entry in all_buildings:
         for key in ["texture","editable_source","shadow_texture","contact_texture"]:
             path=ROOT/entry[key]
             for file in [path,path.with_suffix(path.suffix+".import")]:
                 assert file.exists(),file
                 before[file.relative_to(ROOT).as_posix()]=hashlib.sha256(file.read_bytes()).hexdigest()
-    assert len(buildings)==32 and len(before)==257
+    assert len(all_buildings)==32 and len(before)==257
     makers={"terrace":terrace,"gabled":gabled,"courtyard":courtyard,"commercial":shop,"civic":civic}
     folder=OUTPUT/"夜光";folder.mkdir(parents=True,exist_ok=True)
     records=[];evidence=[];geometry_cache={}
@@ -936,18 +1096,24 @@ def rebuild_emission():
            "source_manifest_sha256":before[manifest_path.relative_to(ROOT).as_posix()],"entries":records,
            "alpha_contract":"Straight-alpha #FFC982, doorway peak 0.56 (taberna 0.46), at most one ray-visible recess peak 0.30; multiply once by runtime night_strength and heard reveal, preserve local sprite depth. No halo outside original silhouette. A genuinely fully occluded angle may be empty.",
            "occlusion_contract":"Same rotated original geometry, exact retained SVG viewport, opaque non-emissive BSP occluders, final base-alpha clipping"}
+    if role:
+        replacement={entry["id"]:entry for entry in records}
+        night["entries"]=[replacement.get(entry["id"],entry) for entry in retained_night["entries"]]
+        assert retained_entries==[entry for entry in night["entries"] if entry["id"] not in selected]
+        assert all(hashlib.sha256((ROOT/path).read_bytes()).hexdigest()==value for path,value in retained_hashes.items())
     (folder/"manifest.json").write_text(json.dumps(night,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    proof=ROOT/"验证记录/round209_古典夜光资产";proof.mkdir(parents=True,exist_ok=True)
-    (proof/"generation.json").write_text(json.dumps({"passed":True,"building_entries":len(buildings),"building_files":len(before)-1,
+    proof=ROOT/("验证记录/round210_文化馆四向" if role else "验证记录/round209_古典夜光资产");proof.mkdir(parents=True,exist_ok=True)
+    (proof/("emission_generation.json" if role else "generation.json")).write_text(json.dumps({"passed":True,"building_entries":len(buildings),"building_files":len(before)-1,
         "original_hashes":before,"after_hashes":after,"emission_entries":evidence,
-        "command":"python tools/build_refined_valley_art.py --emission-only",
+        "retained_night_entries":len(retained_entries),"retained_night_hashes":retained_hashes,
+        "command":"python tools/build_refined_valley_art.py --emission-only"+(" --emission-role "+role if role else ""),
         "scope":"Exact original aperture match, full BSP occlusion and independent nearest-triangle checks at bright texels. Original main manifest and 256 building files remain unchanged."},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     _night_sheet(buildings,records,proof)
-    print("EMISSION_ONLY 32 masks / 256 building files + main manifest unchanged / PASS",flush=True)
+    print("EMISSION_ONLY",len(buildings),"masks / 256 building files + main manifest unchanged during emission bake / PASS",flush=True)
 
 
 def _night_sheet(buildings,records,proof):
-    sheet=Image.new("RGB",(1440,8*245+50),"#4D626E");draw=ImageDraw.Draw(sheet)
+    sheet=Image.new("RGB",(1440,math.ceil(len(buildings)/4)*245+50),"#4D626E");draw=ImageDraw.Draw(sheet)
     draw.text((20,15),"CLASSICAL NIGHT / original four facades / sparse doorway and one visible original recess",fill="#F4E3BF")
     for index,(base,mask) in enumerate(zip(buildings,records)):
         x=(index%4)*360;y=index//4*245+50

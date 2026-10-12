@@ -2,7 +2,7 @@
   "schema_version": 1,
   "era": 1,
   "source_manifest": "资源/精制河湾/manifest.json",
-  "source_manifest_sha256": "292e3f5a7b6d445cd77434e1334404fdb826a80d1c2d52eb68a1beb9b9d7219e",
+  "source_manifest_sha256": "26986268b3585d71afbbb4a7972f0ec4e508f4d4faad62357e02807fa321591e",
   "entries": [
     {
       "id": "refined_house_terrace",
@@ -552,12 +552,12 @@
       "id": "refined_civic_loggia",
       "emission_texture": "资源/精制河湾/夜光/refined_civic_loggia_emission.png",
       "emission_origin": [
-        502.40212167887717,
-        639.5025511682514
+        506.8562604915699,
+        634.0415758607161
       ],
-      "emission_pixels_per_world": 366.8499916686089,
-      "emission_sha256": "594f9e53a47764295dbea9b6cc118c07e3dd045834f90394bb9da9b575e1bb5b",
-      "base_texture_sha256": "f03dcc326700279ece75a565d93c85ddf1d16210bc0bbd2cc33efb8d91e4ff67",
+      "emission_pixels_per_world": 363.71730870680983,
+      "emission_sha256": "b6421e69b9d72f65ddb4c4596d71e601091cc1a97db18e657339b85b665de04b",
+      "base_texture_sha256": "fa636cf1bf52b8cba5503ffbab8f26b5c9949b600419b940f3add012e5ee5980",
       "orientation": 0,
       "entrance_normal": [
         0,
@@ -568,7 +568,7 @@
       "feature_policy": "An independent narrow light face within the original doorway/shop recess and at most one ray-visible original stone aperture; every original face is an opaque BSP occluder",
       "emission_color": "#FFC982",
       "maximum_alpha": 0.298039,
-      "visible_emission_fraction": 0.003431,
+      "visible_emission_fraction": 0.002257,
       "features": [
         {
           "kind": "door",
@@ -577,8 +577,8 @@
         },
         {
           "kind": "window",
-          "visible_pixels": 1916,
-          "peak_alpha": 0.299726
+          "visible_pixels": 1242,
+          "peak_alpha": 0.299792
         }
       ]
     },
@@ -586,12 +586,12 @@
       "id": "refined_civic_loggia_o1",
       "emission_texture": "资源/精制河湾/夜光/refined_civic_loggia_o1_emission.png",
       "emission_origin": [
-        502.40212167887717,
-        627.090556965395
+        506.8562604915699,
+        628.8978363522859
       ],
-      "emission_pixels_per_world": 366.8499916686089,
-      "emission_sha256": "f3216fc86501e35eeb9914ed4037845adab28bffc7788de55f718bb11b3029ef",
-      "base_texture_sha256": "8f1e9c5fdd3690b1040d31bd677c03e343d441674359455cfe16227c9b223cbe",
+      "emission_pixels_per_world": 363.71730870680983,
+      "emission_sha256": "2580a3c82761d1e89102708329f30a5401a1da10bd1f7a70723004529d3d3695",
+      "base_texture_sha256": "cf5aa5a986f105944e482163eb137b02c6d641d55c4c042ca11e27204baa5542",
       "orientation": 1,
       "entrance_normal": [
         1,
@@ -602,17 +602,17 @@
       "feature_policy": "An independent narrow light face within the original doorway/shop recess and at most one ray-visible original stone aperture; every original face is an opaque BSP occluder",
       "emission_color": "#FFC982",
       "maximum_alpha": 0.560784,
-      "visible_emission_fraction": 0.00959,
+      "visible_emission_fraction": 0.008936,
       "features": [
         {
           "kind": "door",
-          "visible_pixels": 3864,
-          "peak_alpha": 0.559911
+          "visible_pixels": 3770,
+          "peak_alpha": 0.559891
         },
         {
           "kind": "window",
-          "visible_pixels": 1627,
-          "peak_alpha": 0.299623
+          "visible_pixels": 1242,
+          "peak_alpha": 0.29977
         }
       ]
     },
@@ -620,12 +620,12 @@
       "id": "refined_civic_loggia_o2",
       "emission_texture": "资源/精制河湾/夜光/refined_civic_loggia_o2_emission.png",
       "emission_origin": [
-        521.5978783211228,
-        627.090556965395
+        517.1437395084303,
+        628.8978363522859
       ],
-      "emission_pixels_per_world": 366.8499916686089,
-      "emission_sha256": "5e72cc46ef61178d9674ff92d1f4c883614551eed6bcea4045a6e6be6fec700a",
-      "base_texture_sha256": "1d49d147e35d431ad197b99f4b81d808b21892f8d5fba2901237932c8f7b69c0",
+      "emission_pixels_per_world": 363.71730870680983,
+      "emission_sha256": "e65dbe17ab49a6c71d0238fcb0b6142c9e256ce67b463cdcb63646ecd386f34f",
+      "base_texture_sha256": "22b832b6b015ccb7db2411a2a47c3a61fd0b6b0acfa2e5a3b2bbb3ca5f3ec3bc",
       "orientation": 2,
       "entrance_normal": [
         0,
@@ -636,17 +636,17 @@
       "feature_policy": "An independent narrow light face within the original doorway/shop recess and at most one ray-visible original stone aperture; every original face is an opaque BSP occluder",
       "emission_color": "#FFC982",
       "maximum_alpha": 0.560784,
-      "visible_emission_fraction": 0.009583,
+      "visible_emission_fraction": 0.008933,
       "features": [
         {
           "kind": "door",
-          "visible_pixels": 3860,
-          "peak_alpha": 0.559911
+          "visible_pixels": 3769,
+          "peak_alpha": 0.559891
         },
         {
           "kind": "window",
-          "visible_pixels": 1627,
-          "peak_alpha": 0.299623
+          "visible_pixels": 1242,
+          "peak_alpha": 0.299771
         }
       ]
     },
@@ -654,12 +654,12 @@
       "id": "refined_civic_loggia_o3",
       "emission_texture": "资源/精制河湾/夜光/refined_civic_loggia_o3_emission.png",
       "emission_origin": [
-        521.5978783211228,
-        639.5025511682514
+        517.1437395084303,
+        634.0415758607161
       ],
-      "emission_pixels_per_world": 366.8499916686089,
-      "emission_sha256": "fbf597a9c8c76cdc8e63b64177ec575d15ab74f005d7af2c2b7e7cfaca45e850",
-      "base_texture_sha256": "6623c03f0f58f942f5b596b40d8f65adbe9786e2c88d6b3d2491b342c9c3b787",
+      "emission_pixels_per_world": 363.71730870680983,
+      "emission_sha256": "2ef7483868b6d43d1b48f431e4600dc58a2920d83c48795d797f42f6f4e6e555",
+      "base_texture_sha256": "070e77744fdfc26815b1a95e325d3fe8602b4db6515c967b6e5b9081a91e371f",
       "orientation": 3,
       "entrance_normal": [
         -1,
@@ -670,7 +670,7 @@
       "feature_policy": "An independent narrow light face within the original doorway/shop recess and at most one ray-visible original stone aperture; every original face is an opaque BSP occluder",
       "emission_color": "#FFC982",
       "maximum_alpha": 0.298039,
-      "visible_emission_fraction": 0.003431,
+      "visible_emission_fraction": 0.002257,
       "features": [
         {
           "kind": "door",
@@ -679,8 +679,8 @@
         },
         {
           "kind": "window",
-          "visible_pixels": 1916,
-          "peak_alpha": 0.29979
+          "visible_pixels": 1242,
+          "peak_alpha": 0.299791
         }
       ]
     },

@@ -1,0 +1,825 @@
+{
+  "passed": true,
+  "civic_revision": 210,
+  "doric_columns": 20,
+  "complete_pediments": 2,
+  "sections": {
+    "columns": [
+      {
+        "position": [
+          -0.8,
+          0.13,
+          0.7
+        ],
+        "side": "front",
+        "faces": [
+          340,
+          432
+        ]
+      },
+      {
+        "position": [
+          -0.48,
+          0.13,
+          0.7
+        ],
+        "side": "front",
+        "faces": [
+          432,
+          524
+        ]
+      },
+      {
+        "position": [
+          -0.16,
+          0.13,
+          0.7
+        ],
+        "side": "front",
+        "faces": [
+          524,
+          616
+        ]
+      },
+      {
+        "position": [
+          0.16,
+          0.13,
+          0.7
+        ],
+        "side": "front",
+        "faces": [
+          616,
+          708
+        ]
+      },
+      {
+        "position": [
+          0.48,
+          0.13,
+          0.7
+        ],
+        "side": "front",
+        "faces": [
+          708,
+          800
+        ]
+      },
+      {
+        "position": [
+          0.8,
+          0.13,
+          0.7
+        ],
+        "side": "front",
+        "faces": [
+          800,
+          892
+        ]
+      },
+      {
+        "position": [
+          -0.8,
+          0.13,
+          -0.66
+        ],
+        "side": "back",
+        "faces": [
+          892,
+          984
+        ]
+      },
+      {
+        "position": [
+          -0.48,
+          0.13,
+          -0.66
+        ],
+        "side": "back",
+        "faces": [
+          984,
+          1076
+        ]
+      },
+      {
+        "position": [
+          -0.16,
+          0.13,
+          -0.66
+        ],
+        "side": "back",
+        "faces": [
+          1076,
+          1168
+        ]
+      },
+      {
+        "position": [
+          0.16,
+          0.13,
+          -0.66
+        ],
+        "side": "back",
+        "faces": [
+          1168,
+          1260
+        ]
+      },
+      {
+        "position": [
+          0.48,
+          0.13,
+          -0.66
+        ],
+        "side": "back",
+        "faces": [
+          1260,
+          1352
+        ]
+      },
+      {
+        "position": [
+          0.8,
+          0.13,
+          -0.66
+        ],
+        "side": "back",
+        "faces": [
+          1352,
+          1444
+        ]
+      },
+      {
+        "position": [
+          0.8,
+          0.13,
+          -0.388
+        ],
+        "side": "right",
+        "faces": [
+          1444,
+          1536
+        ]
+      },
+      {
+        "position": [
+          0.8,
+          0.13,
+          -0.116
+        ],
+        "side": "right",
+        "faces": [
+          1536,
+          1628
+        ]
+      },
+      {
+        "position": [
+          0.8,
+          0.13,
+          0.156
+        ],
+        "side": "right",
+        "faces": [
+          1628,
+          1720
+        ]
+      },
+      {
+        "position": [
+          0.8,
+          0.13,
+          0.428
+        ],
+        "side": "right",
+        "faces": [
+          1720,
+          1812
+        ]
+      },
+      {
+        "position": [
+          -0.8,
+          0.13,
+          -0.388
+        ],
+        "side": "left",
+        "faces": [
+          1812,
+          1904
+        ]
+      },
+      {
+        "position": [
+          -0.8,
+          0.13,
+          -0.116
+        ],
+        "side": "left",
+        "faces": [
+          1904,
+          1996
+        ]
+      },
+      {
+        "position": [
+          -0.8,
+          0.13,
+          0.156
+        ],
+        "side": "left",
+        "faces": [
+          1996,
+          2088
+        ]
+      },
+      {
+        "position": [
+          -0.8,
+          0.13,
+          0.428
+        ],
+        "side": "left",
+        "faces": [
+          2088,
+          2180
+        ]
+      }
+    ],
+    "pediments": [
+      [
+        2719,
+        2812
+      ],
+      [
+        2812,
+        2905
+      ]
+    ],
+    "entablature": [
+      2180,
+      2510
+    ],
+    "cella_width": 1.24,
+    "cella_length": 0.81,
+    "entrance_position": [
+      0,
+      0.135,
+      0.41
+    ],
+    "ground_stylobate": [
+      2.02,
+      1.66,
+      0.07
+    ]
+  },
+  "entries": [
+    {
+      "id": "refined_civic_loggia",
+      "geometry_faces": 3029,
+      "world_light_bsp_depth_agreement": 0.941751,
+      "nearest_surface_samples": 30816,
+      "visible_doric_columns": [
+        {
+          "position": [
+            -0.8,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 471
+        },
+        {
+          "position": [
+            -0.48,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 134
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 564
+        },
+        {
+          "position": [
+            -0.48,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 557
+        },
+        {
+          "position": [
+            -0.16,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 569
+        },
+        {
+          "position": [
+            0.16,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 559
+        },
+        {
+          "position": [
+            0.48,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 555
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 502
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            -0.388
+          ],
+          "side": "right",
+          "visible_pixels": 149
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            -0.388
+          ],
+          "side": "left",
+          "visible_pixels": 506
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            -0.116
+          ],
+          "side": "left",
+          "visible_pixels": 520
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            0.156
+          ],
+          "side": "left",
+          "visible_pixels": 500
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            0.428
+          ],
+          "side": "left",
+          "visible_pixels": 503
+        }
+      ],
+      "visible_pediment_pixels": [
+        147,
+        2328
+      ],
+      "visible_entablature_pixels": 2058,
+      "reference_long_edge": 256,
+      "rgb_tolerance": 24
+    },
+    {
+      "id": "refined_civic_loggia_o1",
+      "geometry_faces": 3029,
+      "world_light_bsp_depth_agreement": 0.948695,
+      "nearest_surface_samples": 31069,
+      "visible_doric_columns": [
+        {
+          "position": [
+            -0.8,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 532
+        },
+        {
+          "position": [
+            -0.48,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 504
+        },
+        {
+          "position": [
+            -0.16,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 569
+        },
+        {
+          "position": [
+            0.16,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 559
+        },
+        {
+          "position": [
+            0.48,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 554
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 348
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 467
+        },
+        {
+          "position": [
+            -0.48,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 111
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            0.156
+          ],
+          "side": "right",
+          "visible_pixels": 33
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            0.428
+          ],
+          "side": "right",
+          "visible_pixels": 151
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            -0.388
+          ],
+          "side": "left",
+          "visible_pixels": 503
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            -0.116
+          ],
+          "side": "left",
+          "visible_pixels": 507
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            0.156
+          ],
+          "side": "left",
+          "visible_pixels": 520
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            0.428
+          ],
+          "side": "left",
+          "visible_pixels": 506
+        }
+      ],
+      "visible_pediment_pixels": [
+        2325,
+        144
+      ],
+      "visible_entablature_pixels": 2052,
+      "reference_long_edge": 256,
+      "rgb_tolerance": 24
+    },
+    {
+      "id": "refined_civic_loggia_o2",
+      "geometry_faces": 3029,
+      "world_light_bsp_depth_agreement": 0.948201,
+      "nearest_surface_samples": 31101,
+      "visible_doric_columns": [
+        {
+          "position": [
+            -0.8,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 354
+        },
+        {
+          "position": [
+            -0.48,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 554
+        },
+        {
+          "position": [
+            -0.16,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 559
+        },
+        {
+          "position": [
+            0.16,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 569
+        },
+        {
+          "position": [
+            0.48,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 503
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 532
+        },
+        {
+          "position": [
+            0.48,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 111
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 467
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            -0.388
+          ],
+          "side": "right",
+          "visible_pixels": 503
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            -0.116
+          ],
+          "side": "right",
+          "visible_pixels": 507
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            0.156
+          ],
+          "side": "right",
+          "visible_pixels": 520
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            0.428
+          ],
+          "side": "right",
+          "visible_pixels": 506
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            0.156
+          ],
+          "side": "left",
+          "visible_pixels": 33
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            0.428
+          ],
+          "side": "left",
+          "visible_pixels": 151
+        }
+      ],
+      "visible_pediment_pixels": [
+        2326,
+        146
+      ],
+      "visible_entablature_pixels": 2047,
+      "reference_long_edge": 256,
+      "rgb_tolerance": 24
+    },
+    {
+      "id": "refined_civic_loggia_o3",
+      "geometry_faces": 3029,
+      "world_light_bsp_depth_agreement": 0.945584,
+      "nearest_surface_samples": 30763,
+      "visible_doric_columns": [
+        {
+          "position": [
+            0.48,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 134
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            0.7
+          ],
+          "side": "front",
+          "visible_pixels": 471
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 502
+        },
+        {
+          "position": [
+            -0.48,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 555
+        },
+        {
+          "position": [
+            -0.16,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 559
+        },
+        {
+          "position": [
+            0.16,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 569
+        },
+        {
+          "position": [
+            0.48,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 557
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            -0.66
+          ],
+          "side": "back",
+          "visible_pixels": 564
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            -0.388
+          ],
+          "side": "right",
+          "visible_pixels": 506
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            -0.116
+          ],
+          "side": "right",
+          "visible_pixels": 520
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            0.156
+          ],
+          "side": "right",
+          "visible_pixels": 500
+        },
+        {
+          "position": [
+            0.8,
+            0.13,
+            0.428
+          ],
+          "side": "right",
+          "visible_pixels": 503
+        },
+        {
+          "position": [
+            -0.8,
+            0.13,
+            -0.388
+          ],
+          "side": "left",
+          "visible_pixels": 149
+        }
+      ],
+      "visible_pediment_pixels": [
+        148,
+        2328
+      ],
+      "visible_entablature_pixels": 2057,
+      "reference_long_edge": 256,
+      "rgb_tolerance": 24
+    }
+  ],
+  "scope": "Independent nearest-triangle face identity and same world-light RGB against real BSP PNG. Same foot scale; no live window or human aesthetic approval."
+}

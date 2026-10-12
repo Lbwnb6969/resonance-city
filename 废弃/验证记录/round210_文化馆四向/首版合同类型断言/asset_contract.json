@@ -1,0 +1,28 @@
+{
+	"checks": {
+		"all_16_imported_civic_base_shadow_contact_and_light_textures_have_actual_mipmaps": true,
+		"all_28_houses_shops_two_trees_and_28_other_night_masks_keep_entries_and_296_file_hashes": true,
+		"all_49_replaced_source_assets_manifests_and_evidence_are_preserved_in_the_dedicated_archive": true,
+		"all_four_png_svg_physical_shadow_and_contact_hashes_match_the_new_manifest": true,
+		"four_actual_rotated_classical_civic_geometries_have_20_ring_columns_two_pediments_and_the_original_road_entrance": false,
+		"four_sparse_warm_masks_stay_inside_the_new_silhouette_and_all_actual_columns_and_roofs_block_light": true,
+		"independent_nearest_triangle_and_world_light_confirm_exposed_columns_pediment_and_entablature_in_every_view": true,
+		"only_four_new_civic_night_masks_match_the_new_actual_door_recess_geometry_canvas_and_scale": true,
+		"public_world_scale_lowest_stylobate_contact_anchor_and_world_sun_contract_remain_identical": true,
+		"uses_dummy_audio_only": true
+	},
+	"evidence": {
+		"checked_emission_pixels": 3594240,
+		"maximum_emission_alpha_byte": 143,
+		"minimum_emission_depth_agreement": 1.0,
+		"minimum_visible_doric_columns": 13,
+		"minimum_world_light_bsp_depth_agreement": 0.941751,
+		"new_civic_geometries": 4,
+		"preserved_noncivic_files": 296
+	},
+	"failures": [
+		"four_actual_rotated_classical_civic_geometries_have_20_ring_columns_two_pediments_and_the_original_road_entrance"
+	],
+	"passed": false,
+	"scope": "One directed civic raw/imported asset contract with Dummy; independent original geometry visibility and full hash preservation. Root owns actual .62-clearance public-site compositing and the only live window. No human aesthetic approval."
+}

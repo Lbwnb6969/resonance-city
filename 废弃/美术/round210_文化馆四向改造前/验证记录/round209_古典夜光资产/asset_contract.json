@@ -1,0 +1,286 @@
+{
+	"checks": {
+		"all_32_new_masks_enable_mipmaps_for_distant_view": true,
+		"all_32_original_classical_buildings_have_exactly_one_four_view_mask": true,
+		"all_masks_preserve_canvas_origin_pixels_per_world_actual_entrance_and_era": true,
+		"at_most_one_actual_recess_and_hidden_back_or_courtyard_doors_remain_dark": true,
+		"each_mask_occupies_less_than_3_5_percent_of_its_actual_building": true,
+		"every_lit_pixel_is_warm_sparse_alpha_inside_the_original_silhouette": true,
+		"independent_nearest_triangle_rays_confirm_full_bsp_geometry_occlusion": true,
+		"main_manifest_and_all_256_round208_building_files_and_imports_are_unchanged": true,
+		"mask_hashes_and_original_base_identity_match_the_independent_manifest": true,
+		"uses_dummy_audio_only": true
+	},
+	"evidence": {
+		"building_entries": 32,
+		"decoded_pixels": 28812288,
+		"hidden_original_door_angles": 20,
+		"images": [
+			{
+				"door_visible": false,
+				"fraction": 0.0057658819940514,
+				"id": "refined_house_terrace",
+				"lit_pixels": 3629,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 629392
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.013750064940483,
+				"id": "refined_house_terrace_o1",
+				"lit_pixels": 8734,
+				"maximum_alpha_byte": 143,
+				"solid_pixels": 635197
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.0154082549958358,
+				"id": "refined_house_terrace_o2",
+				"lit_pixels": 9787,
+				"maximum_alpha_byte": 143,
+				"solid_pixels": 635179
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00577403767364674,
+				"id": "refined_house_terrace_o3",
+				"lit_pixels": 3629,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 628503
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00564047005719786,
+				"id": "refined_house_gabled",
+				"lit_pixels": 3129,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 554741
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.0139834027109735,
+				"id": "refined_house_gabled_o1",
+				"lit_pixels": 7864,
+				"maximum_alpha_byte": 143,
+				"solid_pixels": 562381
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.0160299956049728,
+				"id": "refined_house_gabled_o2",
+				"lit_pixels": 8790,
+				"maximum_alpha_byte": 143,
+				"solid_pixels": 548347
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00568337138255351,
+				"id": "refined_house_gabled_o3",
+				"lit_pixels": 3077,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 541404
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00528044948999737,
+				"id": "refined_house_courtyard",
+				"lit_pixels": 2795,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 529311
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00488562379976148,
+				"id": "refined_house_courtyard_o1",
+				"lit_pixels": 2712,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 555098
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00505840220782683,
+				"id": "refined_house_courtyard_o2",
+				"lit_pixels": 2808,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 555116
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00530482932165062,
+				"id": "refined_house_courtyard_o3",
+				"lit_pixels": 2808,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 529329
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00605678688499697,
+				"id": "refined_shop_arcade",
+				"lit_pixels": 3191,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 526847
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.011608706889125,
+				"id": "refined_shop_arcade_o1",
+				"lit_pixels": 6468,
+				"maximum_alpha_byte": 104,
+				"solid_pixels": 557168
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.0146090546038947,
+				"id": "refined_shop_arcade_o2",
+				"lit_pixels": 8154,
+				"maximum_alpha_byte": 104,
+				"solid_pixels": 558147
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00620295962181342,
+				"id": "refined_shop_arcade_o3",
+				"lit_pixels": 3262,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 525878
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00343109076810948,
+				"id": "refined_civic_loggia",
+				"lit_pixels": 1916,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 558423
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.00959004354029967,
+				"id": "refined_civic_loggia_o1",
+				"lit_pixels": 5491,
+				"maximum_alpha_byte": 143,
+				"solid_pixels": 572573
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.00958327511527176,
+				"id": "refined_civic_loggia_o2",
+				"lit_pixels": 5487,
+				"maximum_alpha_byte": 143,
+				"solid_pixels": 572560
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00343115221171427,
+				"id": "refined_civic_loggia_o3",
+				"lit_pixels": 1916,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 558413
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.0057658819940514,
+				"id": "refined_deep_terrace",
+				"lit_pixels": 3629,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 629392
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.013750064940483,
+				"id": "refined_deep_terrace_o1",
+				"lit_pixels": 8734,
+				"maximum_alpha_byte": 143,
+				"solid_pixels": 635197
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.0154082549958358,
+				"id": "refined_deep_terrace_o2",
+				"lit_pixels": 9787,
+				"maximum_alpha_byte": 143,
+				"solid_pixels": 635179
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00577403767364674,
+				"id": "refined_deep_terrace_o3",
+				"lit_pixels": 3629,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 628503
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00605678688499697,
+				"id": "refined_weave_shop",
+				"lit_pixels": 3191,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 526847
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.011608706889125,
+				"id": "refined_weave_shop_o1",
+				"lit_pixels": 6468,
+				"maximum_alpha_byte": 104,
+				"solid_pixels": 557168
+			},
+			{
+				"door_visible": true,
+				"fraction": 0.0146090546038947,
+				"id": "refined_weave_shop_o2",
+				"lit_pixels": 8154,
+				"maximum_alpha_byte": 104,
+				"solid_pixels": 558147
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00620295962181342,
+				"id": "refined_weave_shop_o3",
+				"lit_pixels": 3262,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 525878
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00528044948999737,
+				"id": "refined_warm_courtyard",
+				"lit_pixels": 2795,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 529311
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00488562379976148,
+				"id": "refined_warm_courtyard_o1",
+				"lit_pixels": 2712,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 555098
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00505840220782683,
+				"id": "refined_warm_courtyard_o2",
+				"lit_pixels": 2808,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 555116
+			},
+			{
+				"door_visible": false,
+				"fraction": 0.00530482932165062,
+				"id": "refined_warm_courtyard_o3",
+				"lit_pixels": 2808,
+				"maximum_alpha_byte": 76,
+				"solid_pixels": 529329
+			}
+		],
+		"independent_bright_samples": 147965,
+		"lit_pixels": 153624,
+		"maximum_emission_fraction": 0.0160299956049728,
+		"minimum_nearest_surface_agreement": 0.999868,
+		"preserved_original_files": 257,
+		"raster_edge_disagreements": 2
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Raw assets with Dummy audio only. Full-pixel alpha, source hashes, original geometry depth and mipmap configuration. Root owns production Sprite reveal, compositor and live review."
+}

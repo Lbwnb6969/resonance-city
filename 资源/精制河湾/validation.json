@@ -179,46 +179,46 @@
     },
     {
       "id": "refined_civic_loggia",
-      "faces": 1507,
+      "faces": 3029,
       "alpha_contour": "PASS",
       "anchor": "PASS",
       "hashes": "PASS",
       "visible_size_px": [
-        52.137,
-        44.755
+        52.586,
+        44.729
       ]
     },
     {
       "id": "refined_civic_loggia_o1",
-      "faces": 1507,
+      "faces": 3029,
       "alpha_contour": "PASS",
       "anchor": "PASS",
       "hashes": "PASS",
       "visible_size_px": [
-        52.137,
-        45.009
+        52.586,
+        45.397
       ]
     },
     {
       "id": "refined_civic_loggia_o2",
-      "faces": 1507,
+      "faces": 3029,
       "alpha_contour": "PASS",
       "anchor": "PASS",
       "hashes": "PASS",
       "visible_size_px": [
-        52.137,
-        45.009
+        52.586,
+        45.397
       ]
     },
     {
       "id": "refined_civic_loggia_o3",
-      "faces": 1507,
+      "faces": 3029,
       "alpha_contour": "PASS",
       "anchor": "PASS",
       "hashes": "PASS",
       "visible_size_px": [
-        52.137,
-        44.755
+        52.586,
+        44.729
       ]
     },
     {

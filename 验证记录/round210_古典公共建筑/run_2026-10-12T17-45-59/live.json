@@ -1,0 +1,81 @@
+{
+	"checks": {
+		"800_voice_ui_keeps_actual_target_clear": true,
+		"actual_city_pcm_has_no_clipping_or_added_underrun": true,
+		"actual_windows_gpu_and_audio": true,
+		"audition_plays_the_actual_context_pcm": true,
+		"both_actual_civics_keep_their_own_night_masks": true,
+		"camera_pan_and_zoom_reuse_actual_court_geometry": true,
+		"civic_to_actual_warm_four_second_audition": true,
+		"confirmed_author_house_reaches_device": true,
+		"day_night_and_camera_review_keep_same_city": true,
+		"east-2_actual_heard_public_site_owns_its_court": true,
+		"east-2_actual_road_entrance_selects_its_geometric_template": true,
+		"east-2_has_actual_legal_public_site": true,
+		"east-2_heard_civic_is_revealed": true,
+		"east-2_night_mask_matches_actual_oriented_civic": true,
+		"east-2_production_ui_queues_actual_civic": true,
+		"first_civic_reaches_audible_reveal": true,
+		"first_civic_reaches_render_ahead": true,
+		"four_seconds_of_actual_city_reach_device": true,
+		"heard_civic_sparse_window_light_appears_at_night": true,
+		"new_city_keeps_24_houses_and_no_gifted_civic": true,
+		"opening_reaches_device": true,
+		"opposite_civic_reaches_audible_reveal": true,
+		"player_civic_and_warm_voice_create_actual_revealed_author_root": true,
+		"render_ahead_does_not_reveal_future_civic_or_court": true,
+		"two_real_street_sites_exercise_distinct_geometric_angles": true,
+		"west-2_actual_heard_public_site_owns_its_court": true,
+		"west-2_actual_road_entrance_selects_its_geometric_template": true,
+		"west-2_has_actual_legal_public_site": true,
+		"west-2_heard_civic_is_revealed": true,
+		"west-2_night_mask_matches_actual_oriented_civic": true,
+		"west-2_production_ui_queues_actual_civic": true
+	},
+	"evidence": {
+		"civics": [
+			{
+				"community": "west-2",
+				"entrance": [
+					12.9379835128784,
+					10.1166458129883
+				],
+				"entry_id": "refined_civic_loggia_o3",
+				"frame": 352800,
+				"orientation": 3,
+				"position": [
+					14.1323041915894,
+					10.0584936141968
+				],
+				"scale": 0.885714113712311,
+				"site_id": "player-civic-00002"
+			},
+			{
+				"community": "east-2",
+				"entrance": [
+					20.1302394866943,
+					9.92901706695557
+				],
+				"entry_id": "refined_civic_loggia_o1",
+				"frame": 1058400,
+				"orientation": 1,
+				"position": [
+					18.9323043823242,
+					9.96388912200928
+				],
+				"scale": 0.885715484619141,
+				"site_id": "player-civic-00005"
+			}
+		],
+		"clipped": 0,
+		"houses": 26,
+		"peak": 0.288839042186737,
+		"root_id": "building-00025",
+		"sample_rate": 22050,
+		"samples": 88200,
+		"underruns": 0
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Actual Windows/OpenGL/WASAPI; two production-UI civic choices, distinct actual road orientations, true warm audition and author root, day/night/camera review. Human aesthetic/fun/listening judgements remain unverified."
+}
