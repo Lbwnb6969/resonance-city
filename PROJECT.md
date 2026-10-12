@@ -8,7 +8,9 @@
 
 ## 本机美术工具与待选风格
 
-用户已安装 Blender：`D:\SteamLibrary\steamapps\common\Blender\blender.exe`；2026-10-12 核对为5.2.2 LTS（d13f752e3b9c）。独立 factory-startup CLI/Python 探针已通过材质/物体修改、保存 .blend、GLB 导出与64×64 CPU渲染，证据 `验证记录/Blender直接调用_2026-10-12/`。可直接用于离线资产与风格小样；本次没有安装或配置 Blender MCP。MCP 仅在需要操作打开的 Blender 会话时另接插件、服务与客户端，不作为资产生产前置。
+用户已安装 Blender：`D:\SteamLibrary\steamapps\common\Blender\blender.exe`；2026-10-12 核对为5.2.2 LTS（d13f752e3b9c）。独立 factory-startup CLI/Python 探针已通过材质/物体修改、保存 .blend、GLB 导出与64×64 CPU渲染，证据 `验证记录/Blender直接调用_2026-10-12/`。可直接用于离线资产与风格小样。
+
+当前采用社区版 `ahujasid/mcp-for-blender`：Blender 用户插件已安装并启用，MCP Server 使用 `C:\Users\Administrator\.local\bin\uvx.exe` 启动，Codex 条目为 `blender`，Codex 插件 `mcp-for-blender` 2.1.1 已启用，端口 `9876`，长任务超时 `600` 秒；官方 Blender Lab 扩展已移除，避免双服务冲突。`get_addon_status` 与 `get_scene_info` 已通过。MCP 只负责打开场景的检查和小步迭代，批处理、固定种子和可复现导出仍用 Blender Python/CLI。
 
 最终美术风格尚未确定；已认可的古典小景和现有概念图是候选与施工基线，不是全项目最终签核。下一次美术任务先按 `17` §2.3 做同街坊2–3组轮廓/材质/植被/光色候选与 Godot 对照，用户选定后再批量深化；原素材与未选方案保留。
 
@@ -72,6 +74,8 @@ Blender/Geometry Nodes 为可选离线资产工具，不启动运行时 3D 或�
 本轮最新版独立试玩：`交付/共鸣之城_声画联动试玩_2026-10-12/启动Demo.cmd`及同名ZIP，旧核心试玩包保留。独立GPU+Dummy 14/14、478资源/48贴图/0禁入项，隔离及直接启动均无引擎脚本错误；源码指纹、截图和构建记录在`验证记录/round197_声画联动试玩包/`。继续城市入口仍正常保存。
 
 ## Git与协作
+
+2026-10-12 已保留 `codex/backup-before-mcp-config-20261012` 备份分支；MCP 流程补充前的 `PROJECT.md`、`文档/17_美术规格.md` 和 `文档/03_任务/P1.md` 原文保留在 `废弃/文档/2026-10-12_MCP流程补充前/`。本次配置不改生产游戏代码。
 
 第198轮开工前备份分支`codex/backup-before-round198`指向`ffa9f12`，集成提交`6f771e2`。本轮只推进不建首作接续、声音路线显示名和真实作者名牌；并行出现的`验证记录/BlenderMCP配置_2026-10-12/`属于其他任务，未纳入本轮提交。
 
