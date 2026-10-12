@@ -1,0 +1,28 @@
+{
+	"checks": {
+		"actual_legal_civic_uses_its_projected_emission_mask": true,
+		"actual_oil_bowls_have_night_light": true,
+		"actual_warm_audition_keeps_existing_city_lit": true,
+		"actual_window_and_output": true,
+		"authored_root_reaches_actual_audible_reveal": true,
+		"black_mode_hides_actual_facade_lights": true,
+		"black_mode_returns_to_same_heard_lights": true,
+		"day_night_and_black_review_do_not_write_city": true,
+		"heard_authored_root_lights_its_own_sorted_facade": true,
+		"night_small_window_keeps_whole_target_clear": true,
+		"night_voice_menu_uses_actual_street_parcel": true,
+		"only_real_fully_revealed_houses_emit_at_night": true,
+		"reaches_render_ahead_before_audible_birth": true,
+		"real_24_house_daylight_has_no_emission": true,
+		"real_four_angle_masks_are_imported_and_prewarmed": true,
+		"real_opening_reaches_device": true,
+		"render_ahead_cannot_light_future_authored_house": true,
+		"returning_daylight_extinguishes_doorway_emission": true,
+		"switching_city_discards_all_old_light_children": false
+	},
+	"complete": false,
+	"failures": [
+		"switching_city_discards_all_old_light_children"
+	],
+	"last_capture": "04_实际文化馆_柱廊与石街夜色"
+}

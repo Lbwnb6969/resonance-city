@@ -3,6 +3,7 @@ extends RefCounted
 ## Deterministic presentation only: no city RNG, acoustic state, or saved author choices.
 const MANIFEST := "res://资源/街坊建筑变体/manifest.json"
 const REFINED_MANIFEST := "res://资源/精制河湾/manifest.json"
+const EMISSION_MANIFEST := "res://资源/精制河湾/夜光/manifest.json"
 const ERA_MANIFEST := "res://资源/时代城市/manifest.json"
 const FirstExpressionIdentity = preload("res://scripts/visual/first_expression_identity.gd")
 var entries: Array[Dictionary] = []
@@ -12,6 +13,8 @@ var retained_era_entries: Dictionary = {}
 var textures: Dictionary = {}
 var images: Dictionary = {}
 var shadow_images: Dictionary = {}
+var emission_entries: Dictionary = {}
+var emission_textures: Dictionary = {}
 var art_direction: RefCounted
 
 func load_catalog() -> void:
@@ -24,6 +27,10 @@ func load_catalog() -> void:
 	for entry: Dictionary in refined_manifest["entries"]:
 		refined_entries[str(entry["id"])] = entry
 		_prewarm_entry(entry)
+	var lamps: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(EMISSION_MANIFEST))
+	for entry: Dictionary in lamps["entries"]:
+		emission_entries[str(entry["id"])] = entry
+		emission_textures[str(entry["id"])] = load("res://"+str(entry["emission_texture"]))
 	var eras: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(ERA_MANIFEST))
 	for entry: Dictionary in eras["entries"]:
 		if int(entry["era"]) <= 1: continue
@@ -107,3 +114,7 @@ func image_for(entry: Dictionary) -> Image:
 	var path := "res://"+str(entry["texture"])
 	if not images.has(path): images[path] = texture_for(entry).get_image()
 	return images[path]
+
+func emission_for(entry: Dictionary) -> Texture2D:
+	# Independent sparse masks leave the original geometry and hit image intact.
+	return emission_textures.get(str(entry.get("id","")))

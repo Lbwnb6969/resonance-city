@@ -350,6 +350,8 @@ func sync(demo: Control) -> void:
 		prop.scale = Vector2.ONE*float(prop.get_meta("public_scale",prop.get_meta("natural_scale",1.0)))
 		# Remove building warmth while retaining the world's full daylight tint.
 		prop.modulate = Color(scenery_red,1.0,1.0,prop.reveal)
+		if prop.kind == "lamp": prop.sync_classical_lamp_light(float(demo.daylight_state.get("night_strength",0.0)),demo.daylight_state.get("world_tint",Color.WHITE))
+		if prop.kind == "civic": prop.sync_classical_facade_light(demo.building_catalog.emission_for(prop.art_entry),float(demo.daylight_state.get("night_strength",0.0)),demo.daylight_state.get("world_tint",Color.WHITE))
 		prop.motion = seconds*TAU/4.0
 		# Station signs, lamps, rocks and civic geometry keep their draw commands.
 		# Reveal alpha remains a CanvasItem property; trees/travelers keep animating.

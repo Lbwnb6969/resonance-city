@@ -1,0 +1,42 @@
+{
+	"checks": {
+		"actual_legal_civic_uses_its_projected_emission_mask": true,
+		"actual_oil_bowls_have_night_light": true,
+		"actual_warm_audition_keeps_existing_city_lit": true,
+		"actual_window_and_output": true,
+		"authored_root_reaches_actual_audible_reveal": true,
+		"black_mode_hides_actual_facade_lights": true,
+		"black_mode_returns_to_same_heard_lights": true,
+		"day_night_and_black_review_do_not_write_city": true,
+		"heard_authored_root_lights_its_own_sorted_facade": true,
+		"night_presentation_adds_no_output_underrun": true,
+		"night_scene_device_input_is_complete_and_unclipped": true,
+		"night_scene_four_seconds_reach_device": true,
+		"night_small_window_keeps_whole_target_clear": true,
+		"night_voice_menu_uses_actual_street_parcel": true,
+		"only_real_fully_revealed_houses_emit_at_night": true,
+		"reaches_render_ahead_before_audible_birth": true,
+		"real_24_house_daylight_has_no_emission": true,
+		"real_four_angle_masks_are_imported_and_prewarmed": true,
+		"real_opening_reaches_device": true,
+		"render_ahead_cannot_light_future_authored_house": true,
+		"returning_daylight_extinguishes_doorway_emission": true,
+		"switching_city_discards_all_old_light_children": false
+	},
+	"evidence": {
+		"actual_oil_lamps": 8,
+		"authored_houses": 25,
+		"civic_fixture_houses": 26,
+		"clipped": 0,
+		"opening_houses": 24,
+		"peak": 0.310087442398071,
+		"sample_rate": 22050,
+		"samples": 88200,
+		"underruns": 0
+	},
+	"failures": [
+		"switching_city_discards_all_old_light_children"
+	],
+	"passed": false,
+	"scope": "Actual window/audio, one voice choice and a legal civic fixture. Technical, screenshot, human aesthetic/fun/listening judgements remain separate."
+}

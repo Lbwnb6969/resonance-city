@@ -45,3 +45,13 @@ static func sample(frame: float,rate: int,manual_phase: float = -1.0) -> Diction
 		"night_strength":night,"shadow_strength":lerpf(1.0,0.52,night),
 		"ui_ink":Color("465b58").lerp(Color("e3eae6"),night),
 		"window_color":Color("ffd98a"),"cycle_seconds":CYCLE_SECONDS}
+
+static func classical(state: Dictionary) -> Dictionary:
+	# Baseline classical stone stays readable under cool moonlight. Emissive
+	# oil and doorway light is drawn separately at real positions.
+	var result := state.duplicate()
+	var night := float(state["night_strength"])
+	result["world_tint"] = state["world_tint"].lerp(Color(0.52,0.57,0.75),night)
+	result["water_tint"] = state["water_tint"].lerp(Color(0.50,0.66,0.87),night)
+	result["backdrop"] = state["backdrop"].lerp(Color("475468"),night)
+	return result

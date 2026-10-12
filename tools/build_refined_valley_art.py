@@ -553,7 +553,11 @@ def preview(entries):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trees-only",action="store_true",help="Bake only two trees; preserve every building entry and file byte for byte")
+    parser.add_argument("--emission-only",action="store_true",help="Bake only sparse classical doorway/window night masks; preserve all existing assets")
     args=parser.parse_args()
+    if args.emission_only:
+        rebuild_emission()
+        return
     for folder in ["SVG","整图","阴影"]: (OUTPUT/folder).mkdir(parents=True,exist_ok=True)
     if args.trees_only:
         rebuild_trees()
@@ -686,6 +690,277 @@ def tree_evidence(manifest):
             sheet.paste(small,(x+150-small.width//2,540),small)
     sheet.save(evidence/"树形旧新对照.png")
     (evidence/"geometry.json").write_text(json.dumps({"passed":True,"trees":results,"scope":"Independent triangle nearest-depth check against BSP PNG; edge antialias pixels excluded. No human aesthetic approval."},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+
+
+def _night_window(x,bottom,front,width,height,side=False,mirror=None):
+    source=[]
+    framed_window(source,x,bottom,front,width,height,side)
+    opening=[item for item in source if item[2]==OPENING]
+    origin=np.array((front+.028,bottom,x) if side else (x,bottom,front+.028))
+    along=np.array((0,0,1) if side else (1,0,0),dtype=float)
+    outward=np.array((1,0,0) if side else (0,0,1),dtype=float)
+    if mirror is not None:
+        mirrored=[];reflected_details(mirrored,opening,mirror);opening=mirrored
+        origin[mirror]*=-1;along[mirror]*=-1;outward[mirror]*=-1
+    return {"kind":"window","geometry":opening,"origin":origin,"along":along,"outward":outward,
+            "width":width,"height":height,"peak":.30,"spread":.34}
+
+
+def _night_window_candidates(role):
+    # Exact calls from the production makers, excluding the gable clerestory.
+    dimensions={"terrace":(1.02,.90,.17,.23),"gabled":(1.03,.92,.20,.22),"commercial":(1.08,.85,.20,.23)}
+    candidates=[]
+    if role in dimensions:
+        w,l,bottom,height=dimensions[role]
+        for x in [-w*.22,w*.22]: candidates.append(_night_window(x,bottom,l/2+.006,.20,height,mirror=2))
+        for z in [-l*.22,l*.22]: candidates.append(_night_window(z,bottom,w/2+.006,.20,height,True,0))
+    elif role=="courtyard":
+        for x in [-.39,.39]: candidates.append(_night_window(x,.17,.461,.17,.22,mirror=2))
+        for z in [-.18,.20]: candidates.append(_night_window(z,.19,.566,.17,.21,True,0))
+    else:
+        for x in [-.46,.46]: candidates.append(_night_window(x,.43,.677,.25,.30,mirror=2))
+        for z in [-.44,-.03,.28]: candidates.append(_night_window(z,.43,.775,.22,.29,True,0))
+    if role=="terrace":
+        candidates.append(_night_window(.24,.17,.456,.26,.23))
+        for z in [-.21,.22]: candidates.append(_night_window(z,.17,.516,.21,.23,True))
+    elif role=="gabled":
+        candidates.append(_night_window(.24,.18,.466,.24,.24))
+        for z in [-.20,.23]: candidates.append(_night_window(z,.20,.521,.22,.22,True))
+    elif role=="courtyard":
+        for x in [-.39,.39]: candidates.append(_night_window(x,.17,.461,.17,.22))
+        for z in [-.18,.20]: candidates.append(_night_window(z,.19,.566,.17,.21,True))
+    elif role=="commercial":
+        for z,width in [(-.18,.27),(.22,.23)]: candidates.append(_night_window(z,.21,.546,width,.26,True))
+    else:
+        for x in [-.53,.53]: candidates.append(_night_window(x,.42,.377,.20,.28))
+        for z in [-.44,-.03,.28]: candidates.append(_night_window(z,.43,.775,.22,.29,True))
+    return candidates
+
+
+def _night_visible_window(geometry,candidates,orientation):
+    """Select at most one existing recess using independent nearest-surface rays.
+    A window behind a wing, a roof, a column or the back wall cannot win.
+    """
+    keys={_face_key(vertices):index for index,(_,vertices,_) in enumerate(geometry)}
+    triangles=[];depths=[];owners=[]
+    for face_id,(_,vertices,_) in enumerate(rotated_geometry(geometry,orientation)):
+        for at in range(1,len(vertices)-1):
+            triangle=[vertices[0],vertices[at],vertices[at+1]]
+            triangles.append([b.project(p) for p in triangle]);depths.append([b.depth(p) for p in triangle]);owners.append(face_id)
+    triangles=np.asarray(triangles);depths=np.asarray(depths);owners=np.asarray(owners)
+    ax,ay=triangles[:,0,:].T;bx,by=triangles[:,1,:].T;cx,cy=triangles[:,2,:].T
+    denominator=(by-cy)*(ax-cx)+(cx-bx)*(ay-cy)
+    valid=abs(denominator)>1e-10
+    ax,ay,bx,by,cx,cy,denominator,depths,owners=[value[valid] for value in [ax,ay,bx,by,cx,cy,denominator,depths,owners]]
+    best=None;score=0
+    for candidate in candidates:
+        key=_face_key(candidate["geometry"][0][1]);assert key in keys
+        points=[b.project(_night_rotation(candidate["origin"]+candidate["along"]*candidate["width"]*u+
+                                         np.array([0,candidate["height"]*v,0]),orientation))
+                for u,v in [(0,.4),(-.12,.32),(.12,.32),(0,.52)]]
+        x,y=np.asarray(points).T
+        a=((by-cy)[:,None]*(x-cx[:,None])+(cx-bx)[:,None]*(y-cy[:,None]))/denominator[:,None]
+        c=((cy-ay)[:,None]*(x-cx[:,None])+(ax-cx)[:,None]*(y-cy[:,None]))/denominator[:,None];f=1-a-c
+        z=a*depths[:,0,None]+c*depths[:,1,None]+f*depths[:,2,None]
+        z[(a<0)|(c<0)|(f<0)]=-np.inf
+        nearest=owners[z.argmax(axis=0)]
+        count=int(np.count_nonzero(nearest==keys[key]))
+        if count>score: best=candidate;score=count
+        if score==4: break
+    return best
+
+
+def _night_features(role,geometry,orientation):
+    """One narrow doorway patch and at most one geometrically visible recess.
+    Original frames/planks are identity evidence, never recolored emitters.
+    """
+    door=[]
+    specs={"terrace":(-.26,.052,.456,.20,.34),
+           "gabled":(-.25,.055,.466,.20,.35),
+           "courtyard":(0,.05,-.164,.16,.31),
+           "civic":(0,.135,.377,.34,.58)}
+    if role=="commercial":
+        plane(door,0,.068,.460,.78,.35,OPENING)
+        x,bottom,front,width,height=0,.068,.430,.78,.35
+    else:
+        x,bottom,front,width,height=specs[role]
+        arched_door(door,x,bottom,front,width,height)
+        door=[item for item in door if item[2] in [WOOD[0],WOOD[1]]]
+    result=[{"kind":"door","geometry":door,"origin":np.array((x,bottom,front+.033 if role!="commercial" else .460)),
+             "along":np.array((1,0,0)),"outward":np.array((0,0,1)),"width":width,"height":height,
+             "peak":.56 if role!="commercial" else .46,"spread":.33 if role!="commercial" else .18}]
+    window=_night_visible_window(geometry,_night_window_candidates(role),orientation)
+    if window is not None: result.append(window)
+    return result
+
+
+def _face_key(vertices):
+    return tuple(sorted(tuple(round(value,8) for value in point) for point in vertices))
+
+
+def _emission_support(entry,geometry,features):
+    """All original faces remain opaque BSP occluders; only independent small
+    faces within selected apertures carry red/green feature labels.
+    """
+    original={_face_key(vertices) for _,vertices,_ in geometry}
+    selected={_face_key(vertices) for feature in features for _,vertices,_ in feature["geometry"]}
+    assert selected<=original,(entry["id"],"aperture does not match original geometry")
+    # Every original face is an opaque black occluder. Each light is a small
+    # independent face immediately above its original recess/timber surface.
+    tagged=[(depth,vertices,"#000000") for depth,vertices,_ in geometry]
+    for index,feature in enumerate(features):
+        origin=feature["origin"]+feature["outward"]*.0005
+        half=feature["width"]*(.34 if feature["kind"]=="window" else feature["spread"])
+        bottom=feature["height"]*.17;top=feature["height"]*.63
+        points=[origin+feature["along"]*u+np.array([0,v,0]) for u,v in [(-half,bottom),(half,bottom),(half,top),(-half,top)]]
+        b.face(tagged,[tuple(p) for p in points],["#FF0000","#00FF00"][index])
+    oriented=rotated_geometry(tagged,int(entry["orientation"]))
+    doc=ET.parse(ROOT/entry["editable_source"]).getroot()
+    left,top,width,height=map(float,doc.attrib["viewBox"].split())
+    w,h=int(doc.attrib["width"]),int(doc.attrib["height"])
+    canvas=Image.new("RGB",(w*2,h*2));draw=ImageDraw.Draw(canvas)
+    for _,vertices,tint in b.painter_order(oriented):
+        projected=[tuple(round(value,6) for value in b.project(p)) for p in vertices]
+        draw.polygon([((x-left)/width*w*2,(y-top)/height*h*2) for x,y in projected],fill=tint)
+    support=np.asarray(canvas.resize((w,h),Image.Resampling.LANCZOS),dtype=np.float32)/255
+    return support,oriented,(left,top,width,height,w,h),len(selected)
+
+
+def _night_rotation(point,orientation):
+    angle=math.radians(180-orientation*90);c,s=math.cos(angle),math.sin(angle)
+    x,y,z=point
+    return (c*x+s*z,y,-s*x+c*z)
+
+
+def _emission_alpha(entry,support,view,features):
+    left,top,width,height,w,h=view
+    alpha=np.zeros((h,w),dtype=np.float32);records=[]
+    for index,feature in enumerate(features):
+        visible=support[:,:,index]>.72
+        yy,xx=np.where(visible)
+        if not len(xx):
+            records.append({"kind":feature["kind"],"visible_pixels":0,"peak_alpha":0.0})
+            continue
+        orientation=int(entry["orientation"])
+        origin=np.asarray(feature["origin"])
+        p=np.asarray(b.project(_night_rotation(origin,orientation)))
+        u=np.asarray(b.project(_night_rotation(origin+feature["along"],orientation)))-p
+        v=np.asarray(b.project(_night_rotation(origin+[0,1,0],orientation)))-p
+        screen=np.stack((left+(xx+.5)/w*width,top+(yy+.5)/h*height),axis=-1)
+        local=(screen-p) @ np.linalg.inv(np.stack((u,v),axis=-1)).T
+        falloff=np.exp(-2.0*((local[:,0]/(feature["width"]*feature["spread"]))**2+
+                            ((local[:,1]-feature["height"]*.40)/(feature["height"]*.34))**2))
+        values=falloff*feature["peak"]*support[yy,xx,index]
+        alpha[yy,xx]=np.maximum(alpha[yy,xx],values)
+        records.append({"kind":feature["kind"],"visible_pixels":int(np.count_nonzero(values>1/255)),
+                        "peak_alpha":round(float(values.max()),6)})
+    return alpha,records
+
+
+def _independent_emission_depth(entry,oriented,view,alpha):
+    """Independent nearest-triangle depth at final PNG texel centers. Measure
+    aperture ownership at bright pixels, excluding one raster edge texel.
+    """
+    left,top,width,height,w,h=view
+    yy,xx=np.where(alpha>.035)
+    x=left+(xx+.5)/w*width;y=top+(yy+.5)/h*height
+    depth=np.full(len(xx),-np.inf);owner=np.zeros(len(xx),dtype=np.uint8)
+    margin=np.zeros(len(xx),dtype=np.float32)
+    for _,vertices,tint in oriented:
+        points=np.asarray([b.project(p) for p in vertices]);dist=np.asarray([b.depth(p) for p in vertices])
+        for index in range(1,len(vertices)-1):
+            tri=points[[0,index,index+1]];d=dist[[0,index,index+1]]
+            (ax,ay),(bx,by),(cx,cy)=tri
+            denominator=(by-cy)*(ax-cx)+(cx-bx)*(ay-cy)
+            if abs(denominator)<1e-10: continue
+            a=((by-cy)*(x-cx)+(cx-bx)*(y-cy))/denominator
+            c=((cy-ay)*(x-cx)+(ax-cx)*(y-cy))/denominator;f=1-a-c
+            z=a*d[0]+c*d[1]+f*d[2]
+            inside=(a>=0)&(c>=0)&(f>=0)&(z>=depth-1e-9)
+            depth[inside]=z[inside];owner[inside]=1 if tint!="#000000" else 0
+            margin[inside]=np.minimum(np.minimum(a,c),f)[inside]
+    interior=margin>.004
+    bad=interior&(owner==0)
+    return {"bright_samples":len(xx),"interior_samples":int(interior.sum()),"occluded_bright_samples":int(bad.sum()),
+            "nearest_surface_agreement":round(float(owner[interior].mean()),6) if interior.any() else 1.0}
+
+
+def rebuild_emission():
+    manifest_path=OUTPUT/"manifest.json"
+    manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
+    buildings=[entry for entry in manifest["entries"] if entry["role"]!="tree"]
+    before={manifest_path.relative_to(ROOT).as_posix():hashlib.sha256(manifest_path.read_bytes()).hexdigest()}
+    for entry in buildings:
+        for key in ["texture","editable_source","shadow_texture","contact_texture"]:
+            path=ROOT/entry[key]
+            for file in [path,path.with_suffix(path.suffix+".import")]:
+                assert file.exists(),file
+                before[file.relative_to(ROOT).as_posix()]=hashlib.sha256(file.read_bytes()).hexdigest()
+    assert len(buildings)==32 and len(before)==257
+    makers={"terrace":terrace,"gabled":gabled,"courtyard":courtyard,"commercial":shop,"civic":civic}
+    folder=OUTPUT/"夜光";folder.mkdir(parents=True,exist_ok=True)
+    records=[];evidence=[];geometry_cache={}
+    for entry in buildings:
+        canonical=entry["canonical_id"];role=entry["role"]
+        if canonical not in geometry_cache:
+            roof="deep" if entry.get("first_expression_style")=="deep" else ("warm" if entry.get("first_expression_style")=="warm" else "tile")
+            geometry_cache[canonical]=makers[role](ROOFS[roof])
+        features=_night_features(role,geometry_cache[canonical],int(entry["orientation"]))
+        support,oriented,view,matched=_emission_support(entry,geometry_cache[canonical],features)
+        alpha,visible=_emission_alpha(entry,support,view,features)
+        base_alpha=np.asarray(Image.open(ROOT/entry["texture"]).getchannel("A"),dtype=np.float32)/255
+        alpha=np.minimum(alpha,base_alpha)
+        depth_check=_independent_emission_depth(entry,oriented,view,alpha)
+        assert depth_check["nearest_surface_agreement"]>.995,(entry["id"],depth_check)
+        rgba=np.zeros((*alpha.shape,4),dtype=np.uint8)
+        rgba[:,:,:3]=[255,201,130];rgba[:,:,3]=np.rint(alpha*255).astype(np.uint8)
+        path=folder/(entry["id"]+"_emission.png")
+        Image.fromarray(rgba).save(path);write_texture_import(path)
+        lit=int(np.count_nonzero(rgba[:,:,3]));solid=int(np.count_nonzero(base_alpha>.5))
+        assert lit/solid<.035,(entry["id"],lit,solid)
+        record={"id":entry["id"],"emission_texture":path.relative_to(ROOT).as_posix(),
+                "emission_origin":entry["origin"],"emission_pixels_per_world":entry["pixels_per_world"],
+                "emission_sha256":hashlib.sha256(path.read_bytes()).hexdigest(),"base_texture_sha256":entry["texture_sha256"],
+                "orientation":entry["orientation"],"entrance_normal":entry["entrance_normal"],"era":1,
+                "visible_feature_count":sum(feature["visible_pixels"]>0 for feature in visible),
+                "feature_policy":"An independent narrow light face within the original doorway/shop recess and at most one ray-visible original stone aperture; every original face is an opaque BSP occluder",
+                "emission_color":"#FFC982","maximum_alpha":round(float(rgba[:,:,3].max()/255),6),
+                "visible_emission_fraction":round(lit/solid,6),"features":visible}
+        records.append(record)
+        evidence.append({"id":entry["id"],"matched_original_faces":matched,**depth_check,
+                         "bright_fraction":record["visible_emission_fraction"],"features":visible})
+        print("EMISSION",entry["id"],record["visible_feature_count"],depth_check["nearest_surface_agreement"],flush=True)
+    after={path:hashlib.sha256((ROOT/path).read_bytes()).hexdigest() for path in before}
+    assert before==after
+    night={"schema_version":1,"era":1,"source_manifest":"资源/精制河湾/manifest.json",
+           "source_manifest_sha256":before[manifest_path.relative_to(ROOT).as_posix()],"entries":records,
+           "alpha_contract":"Straight-alpha #FFC982, doorway peak 0.56 (taberna 0.46), at most one ray-visible recess peak 0.30; multiply once by runtime night_strength and heard reveal, preserve local sprite depth. No halo outside original silhouette. A genuinely fully occluded angle may be empty.",
+           "occlusion_contract":"Same rotated original geometry, exact retained SVG viewport, opaque non-emissive BSP occluders, final base-alpha clipping"}
+    (folder/"manifest.json").write_text(json.dumps(night,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    proof=ROOT/"验证记录/round209_古典夜光资产";proof.mkdir(parents=True,exist_ok=True)
+    (proof/"generation.json").write_text(json.dumps({"passed":True,"building_entries":len(buildings),"building_files":len(before)-1,
+        "original_hashes":before,"after_hashes":after,"emission_entries":evidence,
+        "command":"python tools/build_refined_valley_art.py --emission-only",
+        "scope":"Exact original aperture match, full BSP occlusion and independent nearest-triangle checks at bright texels. Original main manifest and 256 building files remain unchanged."},ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    _night_sheet(buildings,records,proof)
+    print("EMISSION_ONLY 32 masks / 256 building files + main manifest unchanged / PASS",flush=True)
+
+
+def _night_sheet(buildings,records,proof):
+    sheet=Image.new("RGB",(1440,8*245+50),"#4D626E");draw=ImageDraw.Draw(sheet)
+    draw.text((20,15),"CLASSICAL NIGHT / original four facades / sparse doorway and one visible original recess",fill="#F4E3BF")
+    for index,(base,mask) in enumerate(zip(buildings,records)):
+        x=(index%4)*360;y=index//4*245+50
+        original=np.asarray(Image.open(ROOT/base["texture"]).convert("RGBA"),dtype=float)/255
+        emission=np.asarray(Image.open(ROOT/mask["emission_texture"]).convert("RGBA"),dtype=float)/255
+        rgb=np.clip(original[:,:,:3]*np.array([.48,.61,.73])+emission[:,:,:3]*emission[:,:,3:4],0,1)
+        image=Image.fromarray(np.rint(np.concatenate((rgb,original[:,:,3:4]),axis=-1)*255).astype(np.uint8))
+        scale=28*math.sqrt(2)*base["plot_span"]/max(base["model_bounds"]["size"][0],base["model_bounds"]["size"][2])/base["pixels_per_world"]*4.5
+        image=image.resize((round(image.width*scale),round(image.height*scale)),Image.Resampling.LANCZOS)
+        sheet.paste(image,(x+180-image.width//2,y+24),image)
+        draw.text((x+18,y+188),base["id"].replace("refined_",""),fill="#F4E3BF")
+        draw.text((x+18,y+208),f'{mask["visible_feature_count"]} visible / {mask["visible_emission_fraction"]:.3%} sparse mask',fill="#D4D1B5")
+    sheet.save(proof/"四向夜光接触表.png")
 
 
 if __name__=="__main__": main()

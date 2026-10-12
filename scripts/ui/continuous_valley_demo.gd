@@ -29,6 +29,7 @@ const PlayerExpression = preload("res://scripts/world/player_expression.gd")
 const ExpressionPreview = preload("res://scripts/world/expression_preview.gd")
 const Config = preload("res://scripts/world/world_values.gd")
 const GrowthSprite = preload("res://scripts/visual/audio_growth_mask.gd")
+const FacadeLight = preload("res://scripts/visual/classical_facade_light.gd")
 const Shadows = preload("res://scripts/visual/city_shadow_layer.gd")
 const Renderer = preload("res://scripts/audio/sample_renderer.gd")
 const GroundLayer = preload("res://scripts/visual/valley_ground_layer.gd")
@@ -79,6 +80,7 @@ var assets: Dictionary = {}
 var textures: Dictionary = {}
 var asset_images: Dictionary = {}
 var sprites: Dictionary = {}
+var facade_lights: Dictionary = {}
 var buildings_layer: Node2D
 var shadow_layer: CityShadowLayer
 var backdrop: ColorRect
@@ -363,6 +365,7 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	clock.stop_output()
 	for sprite in sprites.values(): sprite.queue_free()
 	sprites.clear()
+	facade_lights.clear()
 	if saved.is_empty():
 		var world := example_world if example_world != null else World.new("2026100900000062",true,terrain_family)
 		if example_world == null:
@@ -3273,6 +3276,8 @@ func _show_pending_composition_choice() -> bool:
 func _sync_daylight() -> void:
 	daylight_state = Daylight.sample(clock.renderer.transport.audible_frame,clock.renderer.transport.sample_rate,daylight_manual_phase)
 	daylight_state = art_direction.daylight(daylight_state)
+	if art_direction.selected_id == "baseline" and shown_world.era == 1:
+		daylight_state = Daylight.classical(daylight_state)
 	if art_review_panel != null: art_review_panel.sync()
 	var tint: Color = daylight_state["world_tint"]
 	terrain_layer.modulate = tint
@@ -3283,6 +3288,13 @@ func _sync_daylight() -> void:
 	buildings_layer.modulate = tint*Color(0.96+warmth,1.0,1.0)
 	buildings_layer.set_meta("world_tint",tint)
 	frontage_details.modulate = Color(tint.r/buildings_layer.modulate.r,1.0,1.0)
+	var night := float(daylight_state["night_strength"])
+	for id: String in facade_lights:
+		var light: FacadeLight = facade_lights[id]
+		if int(shown_world.by_id[id]["birth_frame"]) > frame:
+			light.hide()
+		else:
+			light.sync(sprites[id].progress >= 1.0,night,buildings_layer.modulate*sprites[id].modulate)
 	backdrop.color = Color.BLACK if black else daylight_state["backdrop"]
 	shadow_layer.modulate.a = float(daylight_state["shadow_strength"])
 	caption.add_theme_color_override("font_color",RefinedUi.PAPER)
@@ -3357,6 +3369,7 @@ func _sync_buildings() -> void:
 		if shown_world.by_id.has(id): continue
 		sprites[id].queue_free()
 		sprites.erase(id)
+		facade_lights.erase(id)
 		building_geometry.erase(id)
 		shadow_records.erase(id)
 		shadows_dirty = true
@@ -3377,6 +3390,9 @@ func _sync_buildings() -> void:
 		var scale_factor: float = geometry["scale"]
 		if not sprites.has(id):
 			shadows_dirty = true
+			# A restored city can reuse geometry while owning entirely new sprites.
+			# Attach its facade to the new actual parent even when that cache hits.
+			geometry_dirty = true
 			var sprite := GrowthSprite.new()
 			sprite.use_master_clock = false
 			sprite.texture = building_catalog.texture_for(entry)
@@ -3389,6 +3405,12 @@ func _sync_buildings() -> void:
 		if geometry_dirty:
 			sprite.texture = building_catalog.texture_for(entry)
 			sprite.offset = -Vector2(entry["origin"][0],entry["origin"][1])
+			var mask := building_catalog.emission_for(entry)
+			if mask != null and not facade_lights.has(id):
+				var light := FacadeLight.new()
+				sprite.add_child(light)
+				facade_lights[id] = light
+			if facade_lights.has(id): facade_lights[id].set_entry(entry,mask)
 		sprite.position = geometry["position"]
 		sprite.scale = Vector2.ONE*scale_factor
 		if sprite.progress < 1.0:

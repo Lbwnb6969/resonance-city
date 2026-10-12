@@ -1,10 +1,13 @@
 class_name ValleyProp
 extends Node2D
+const ClassicalLampLight = preload("res://scripts/visual/classical_lamp_light.gd")
+const ClassicalFacadeLight = preload("res://scripts/visual/classical_facade_light.gd")
 var kind := "tree"
 var era := 1:
 	set(value):
 		if era == value: return
 		era = value
+		if era != 1 and classical_lamp_light != null: classical_lamp_light.visible = false
 		queue_redraw()
 var tone := 0
 var motion := 0.0
@@ -17,6 +20,31 @@ var art_entry: Dictionary = {}
 var art_texture: Texture2D
 var art_shadow: Texture2D
 var art_contact: Texture2D
+var classical_lamp_light: Node2D
+var classical_facade_light: Sprite2D
+
+func sync_classical_lamp_light(night_strength: float,world_tint: Color) -> void:
+	if kind != "lamp" or era != 1:
+		if classical_lamp_light != null: classical_lamp_light.visible = false
+		return
+	if classical_lamp_light == null:
+		classical_lamp_light = ClassicalLampLight.new()
+		classical_lamp_light.name = "OilWickLight"
+		add_child(classical_lamp_light)
+	classical_lamp_light.sync(night_strength,world_tint)
+
+func sync_classical_facade_light(mask: Texture2D,night_strength: float,world_tint: Color) -> void:
+	if kind != "civic" or art_entry.is_empty() or mask == null:
+		if classical_facade_light != null: classical_facade_light.visible = false
+		return
+	if classical_facade_light == null:
+		classical_facade_light = ClassicalFacadeLight.new()
+		add_child(classical_facade_light)
+	classical_facade_light.set_entry(art_entry,mask)
+	var bounds: Array = art_entry["model_bounds"]["size"]
+	var world_scale := 28.0*sqrt(2.0)*float(art_entry["plot_span"])/maxf(float(bounds[0]),float(bounds[2]))
+	classical_facade_light.scale = Vector2.ONE*world_scale/float(art_entry["pixels_per_world"])
+	classical_facade_light.sync(reveal >= 1.0,night_strength,world_tint)
 
 func _project(p: Vector2) -> Vector2:
 	return Vector2((p.x-p.y)*28.0,(p.x+p.y)*14.0)
@@ -207,7 +235,7 @@ func _draw() -> void:
 
 func _draw_classical_lamp() -> void:
 	# A small stone pedestal holds an open terracotta oil bowl. Its fixed
-	# surfaces share the scene's daylight tint; there is no glass globe or glow.
+	# surfaces share daylight tint; the separate oil wick supplies night emission.
 	draw_colored_polygon(PackedVector2Array([Vector2(-2,1),Vector2(3,-1),Vector2(6,1),Vector2(1,3)]),Color("415445",0.13))
 	draw_colored_polygon(PackedVector2Array([Vector2(-3.4,0),Vector2(0,-1.7),Vector2(3.4,0),Vector2(0,1.7)]),Color("c3b397"))
 	draw_colored_polygon(PackedVector2Array([Vector2(-1.5,-1),Vector2(0,-0.3),Vector2(0,-8.8),Vector2(-1.2,-9.4)]),Color("d9c9aa"))

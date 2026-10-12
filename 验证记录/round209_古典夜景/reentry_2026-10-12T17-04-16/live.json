@@ -1,0 +1,28 @@
+{
+	"checks": {
+		"actual_window_and_output": true,
+		"black_mode_hides_new_city_houses_and_civic_together": true,
+		"daylight_extinguishes_new_city_facades_and_civic": true,
+		"first_city_has_24_heard_facade_lights": true,
+		"four_seconds_of_new_city_reach_device": true,
+		"legal_civic_keeps_its_actual_oriented_mask": true,
+		"new_city_device_input_is_complete_with_no_clip_or_added_underrun": true,
+		"new_city_has_no_old_emission_nodes": true,
+		"night_returns_to_same_actual_city_without_writing_world": true,
+		"opening_reaches_actual_device_reveal": true,
+		"reused_geometry_binds_all_26_current_masks_to_their_new_real_parents": true
+	},
+	"evidence": {
+		"civic_id": "refined_civic_loggia_o3",
+		"clipped": 0,
+		"houses": 26,
+		"lit_facades": 26,
+		"peak": 0.310087442398071,
+		"sample_rate": 22050,
+		"samples": 88200,
+		"underruns": 0
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Focused actual window repair verification for switching city with retained geometry; human aesthetic/fun/listening judgements remain separate."
+}
