@@ -1,0 +1,18 @@
+{
+	"checks": {
+		"actual_windows_opengl_wasapi": true,
+		"escape_closes_the_transient_workbench_and_planning_layers": true,
+		"native_c_opens_an_actual_nonempty_community": true,
+		"native_workbench_reflows_on_large_window": true,
+		"opening_reaches_device": true,
+		"opening_workbench_does_not_write_world": true,
+		"planning_from_workbench_preserves_the_actual_community_scope": true,
+		"workbench_and_planning_preview_do_not_write_world": true,
+		"workbench_draws_only_actual_heard_member_footprints": true,
+		"workbench_listen_requests_real_temporary_community_audio": true,
+		"workbench_planning_returns_to_real_charter_flow": true
+	},
+	"complete": false,
+	"failures": [],
+	"last_capture": "02_1440_实际街坊工作台"
+}

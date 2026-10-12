@@ -1,0 +1,127 @@
+{
+	"checks": {
+		"actual_civic_and_upgrade_maturity_are_hidden_before_the_heard_boundary": true,
+		"actual_warm_transaction_is_accepted_after_the_civic": true,
+		"dummy_only_no_device_playback": true,
+		"empty_and_invalid_communities_keep_an_empty_ui_contract": true,
+		"fork_has_the_same_heard_community_without_identity_or_rng_changes": true,
+		"heard_active_civic_has_its_real_identity_and_commit_frame": true,
+		"heard_pitch_override_updates_counts_and_author_without_changing_planning_membership_or_structure_early": true,
+		"heard_warm_root_and_family_owned_land_are_the_actual_transaction_results": true,
+		"player_source_family_is_distinct_from_the_mixed_nine_house_planning_community": true,
+		"queued_unheard_retune_does_not_change_workbench_pitch": true,
+		"real_author_growth_stays_one_root_while_unrelated_reserved_land_is_not_claimed_as_player_sound": true,
+		"real_retune_commit_preserves_the_community_and_authored_root": true,
+		"real_three_eight_house_communities_have_exact_members_centers_and_no_fake_authors": true,
+		"render_ahead_birth_author_and_real_reservation_cannot_enter_the_workbench_early": true,
+		"repeated_queries_do_not_write_world_rng_pending_geometry_or_audible_pitches": true,
+		"theme_qualification_and_short_missing_status_follow_production_music_rules": true,
+		"ui_owned_return_records_cannot_mutate_source_world": true
+	},
+	"evidence": {
+		"civic_frame": 352800,
+		"civic_id": "player-civic-00001",
+		"core_describe_ms": 0.439,
+		"heard_community_count": 10,
+		"heard_family_members": [
+			"building-00025",
+			"building-00026"
+		],
+		"only_playback_driver": "Dummy",
+		"reservation_id": "reservation-00002",
+		"retune_sound_frame": 1069425,
+		"retune_structure_frame": 1411200,
+		"root_id": "building-00025",
+		"starter": {
+			"east-2": {
+				"count": 8,
+				"midi_counts": {
+					"55": 8
+				},
+				"status": {
+					"cid": "east-2",
+					"commercial": 1,
+					"courtyards": 2,
+					"deep": 0,
+					"deep_mature": 0,
+					"formed": false,
+					"lowest": 55,
+					"mature": 0,
+					"members": 8,
+					"missing_conditions": [
+						"沿街成形",
+						"还需6栋成熟房屋"
+					],
+					"public_anchor": false,
+					"street_formed": false,
+					"text": "主题未成形 · 沿街成形、还需6栋成熟房屋",
+					"theme_eligible": false
+				},
+				"type_counts": {
+					"commercial": 1,
+					"residential": 7
+				}
+			},
+			"west-1": {
+				"count": 8,
+				"midi_counts": {
+					"48": 8
+				},
+				"status": {
+					"cid": "west-1",
+					"commercial": 0,
+					"courtyards": 2,
+					"deep": 0,
+					"deep_mature": 0,
+					"formed": true,
+					"lowest": 48,
+					"mature": 0,
+					"members": 8,
+					"missing_conditions": [
+						"还需6栋成熟房屋"
+					],
+					"public_anchor": false,
+					"street_formed": true,
+					"text": "主题未成形 · 还需6栋成熟房屋",
+					"theme_eligible": false
+				},
+				"type_counts": {
+					"residential": 8
+				}
+			},
+			"west-2": {
+				"count": 8,
+				"midi_counts": {
+					"52": 8
+				},
+				"status": {
+					"cid": "west-2",
+					"commercial": 1,
+					"courtyards": 2,
+					"deep": 0,
+					"deep_mature": 0,
+					"formed": false,
+					"lowest": 52,
+					"mature": 0,
+					"members": 8,
+					"missing_conditions": [
+						"沿街成形",
+						"还需6栋成熟房屋"
+					],
+					"public_anchor": false,
+					"street_formed": false,
+					"text": "主题未成形 · 沿街成形、还需6栋成熟房屋",
+					"theme_eligible": false
+				},
+				"type_counts": {
+					"commercial": 1,
+					"residential": 7
+				}
+			}
+		},
+		"warm_frame": 705600
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "One real 24-house starter, civic/warm/reserve/retune transactions and audible snapshots; read-only community query. No GPU/device, bulk tuning, SP6 completion, or human experience verdict."
+}

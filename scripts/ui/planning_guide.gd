@@ -347,6 +347,21 @@ func open_tool_from_transit_station(station: Dictionary) -> void:
 	# player can select a neighboring community manually.
 	refresh()
 
+func open_tool_from_community(cid: String) -> void:
+	# An accepted unfinished public choice keeps its original community.
+	var unfinished := unfinished_public_choice()
+	open_tool()
+	if unfinished: return
+	if stage == "feedback":
+		if ready_sound_community() == cid: return
+		# Explicit planning elsewhere starts a new UI draft, keeping built works.
+		next_action.clear()
+		stage = "charter"
+	scope_seed.assign([cid])
+	scope_source = {"kind":"community_workbench","community_ids":[cid]}
+	_apply_scope_seed()
+	refresh()
+
 func _apply_scope_seed() -> void:
 	if scope_seed.is_empty(): return
 	scope = scope_seed.duplicate()
@@ -355,6 +370,8 @@ func _apply_scope_seed() -> void:
 
 func _scope_source_hint() -> String:
 	if scope_source.is_empty(): return ""
+	if str(scope_source.get("kind","")) == "community_workbench":
+		return "从"+str(demo.shown_world.communities[str(scope_source["community_ids"][0])]["name"])+"继续规划 · 已预选这片街坊\n点击地图可替换，Shift点击可加入另一片"
 	var community_count: int = scope_source.get("community_ids",[]).size()
 	var building_count: int = scope_source.get("covered_building_ids",[]).size()
 	if str(scope_source.get("kind","")) == "community_combo":

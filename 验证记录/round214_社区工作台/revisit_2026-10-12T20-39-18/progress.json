@@ -1,0 +1,16 @@
+{
+	"checks": {
+		"actual_public_feedback_enters_voice_without_closing_its_open_panel": true,
+		"actual_public_result_is_ready_at_the_heard_boundary": true,
+		"actual_visible_map_label_west-2": true,
+		"actual_warm_author_is_confirmed_and_heard": true,
+		"author_handoff_clears_prior_temporary_and_saved_community_solo": true,
+		"community_author_action_opens_that_actual_root": true,
+		"explicit_author_handoff_hears_the_previously_muted_community": true,
+		"same_community_revisit_shows_real_civic_author_and_land": true,
+		"same_community_warm_audition_really_plays": true
+	},
+	"complete": false,
+	"failures": [],
+	"last_capture": "01_街坊作者入口回到真实暖庭"
+}

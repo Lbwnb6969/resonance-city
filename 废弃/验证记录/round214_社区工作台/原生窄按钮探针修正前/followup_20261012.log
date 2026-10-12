@@ -1,0 +1,41 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6570
+[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
+ERROR: native_community_switch_uses_east_members_and_camera
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round214_community_followup_live.gd:68)
+ERROR: temporary_listen_hears_even_the_previously_muted_community
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round214_community_followup_live.gd:71)
+       [2] hear_controls (res://tests/round214_community_followup_live.gd:8)
+       [3] until_frame (res://tests/round209_classical_night_live.gd:34)
+ERROR: actual_named_community_is_preserved_through_direction_and_card
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round214_community_followup_live.gd:87)
+       [2] tap (res://tests/round211_sound_stage_live.gd:16)
+ERROR: workbench_planning_submits_a_real_public_place
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round214_community_followup_live.gd:98)
+       [2] click_map (res://tests/round213_planning_live.gd:22)
+ERROR: real_public_place_continues_to_actual_sound_choice
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round214_community_followup_live.gd:104)
+ERROR: revisiting_same_community_shows_actual_public_author_and_land_results
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/round209_classical_night_live.gd:28)
+       [1] _run (res://tests/round214_community_followup_live.gd:114)
+ROUND214_COMMUNITY_FOLLOWUP 10/16 ["native_community_switch_uses_east_members_and_camera","temporary_listen_hears_even_the_previously_muted_community","actual_named_community_is_preserved_through_direction_and_card","workbench_planning_submits_a_real_public_place","real_public_place_continues_to_actual_sound_choice","revisiting_same_community_shows_actual_public_author_and_land_results"] output=res://验证记录/round214_社区工作台/followup_2026-10-12T20-27-12/

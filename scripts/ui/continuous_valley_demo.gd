@@ -90,6 +90,13 @@ var terrain_layer: Node2D
 var city_ground_layer: Node2D
 var water_flow: Node2D
 var community_label_layer: Node2D
+var community_workbench: PanelContainer
+var community_member_focus: Node2D
+var community_entry: Button
+var community_camera_key: Array = []
+var community_listening_owned := false
+var community_saved_listening: Dictionary = {}
+var community_saved_mutes: Dictionary = {}
 var expression_audition_layer: Node2D
 var first_sound_focus: Node2D
 var authored_growth_trail: Node2D
@@ -339,6 +346,27 @@ func _ready() -> void:
 	add_child(planning_guide)
 	planning_guide.setup(self)
 	menu.theme = planning_guide.theme
+	community_workbench = preload("res://scripts/ui/community_workbench.gd").new()
+	add_child(community_workbench)
+	community_workbench.setup(self)
+	community_workbench.listen_requested.connect(_listen_workbench_community)
+	community_workbench.planning_requested.connect(_plan_workbench_community)
+	community_workbench.author_requested.connect(_open_workbench_author)
+	community_workbench.closed.connect(_restore_workbench_listening)
+	community_member_focus = preload("res://scripts/visual/community_member_focus.gd").new()
+	community_member_focus.name = "CommunityMemberFocus"
+	community_member_focus.z_index = 21
+	add_child(community_member_focus)
+	community_member_focus.setup(self)
+	community_entry = Button.new()
+	community_entry.text = "街坊 · C"
+	community_entry.tooltip_text = "查看整片街坊，听它的声音并继续规划；也可点击地图社区名"
+	community_entry.theme = planning_guide.theme
+	community_entry.position = Vector2(280,24)
+	community_entry.custom_minimum_size = Vector2(108,44)
+	community_entry.z_index = 115
+	community_entry.pressed.connect(_toggle_community_workbench)
+	add_child(community_entry)
 	first_composition_guide = preload("res://scripts/ui/first_composition_guide.gd").new()
 	add_child(first_composition_guide)
 	first_composition_guide.setup(self)
@@ -366,6 +394,8 @@ func _ready() -> void:
 	mouse_exited.connect(func() -> void: pointer_inside = false)
 
 func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null) -> void:
+	if community_workbench.opened: community_workbench.close_tool()
+	community_camera_key.clear()
 	composition_source_id = ""
 	_stop_preview()
 	clock.stop_output()
@@ -571,7 +601,7 @@ func _make_menu() -> void:
 	box.add_child(expressions)
 	menu.set_meta("legacy_expressions",expressions)
 	var verbs := HFlowContainer.new()
-	for item in [["独听社区","solo"],["静音社区","mute"],["聚焦","focus"],["跨河应答","response"],["规划社区 · P","planning"]]:
+	for item in [["查看这个街坊","community"],["独听社区","solo"],["静音社区","mute"],["聚焦","focus"],["跨河应答","response"],["规划社区 · P","planning"]]:
 		var button := Button.new()
 		button.text = item[0]
 		if item[1] == "response":
@@ -1113,6 +1143,9 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
 			zoom_target = clampf(zoom_target*(1.12 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.12),0.18 if int(shown_world.cfg["city"].get("regional_count",1)) > 1 else 0.55,1.9)
 		elif event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+			if community_workbench.opened:
+				community_workbench.close_tool()
+				return
 			var cancelling_transit_edit := not transit_edit_context.is_empty()
 			_clear_transit_route()
 			transit_station_focus_id = ""
@@ -1150,6 +1183,16 @@ func _gui_input(event: InputEvent) -> void:
 				_show_context_menu()
 				return
 			if planning_guide.map_click(world_at(pointer),Input.is_key_pressed(KEY_SHIFT)): return
+			var named_community: String = community_label_layer.hit_community(pointer)
+			if not named_community.is_empty():
+				_open_community_workbench(named_community)
+				return
+			if community_workbench.opened:
+				var member_id := _hit(pointer)
+				if not member_id.is_empty():
+					_open_community_workbench(str(shown_world.by_id[member_id]["community_id"]))
+				else: community_workbench.close_tool()
+				return
 			var authored_root: String = authored_voice_badges.hit_root(pointer)
 			if not authored_root.is_empty():
 				_open_authored_root(authored_root)
@@ -1196,6 +1239,99 @@ func _gui_input(event: InputEvent) -> void:
 				menu_info.text = "播种声音 · "+str(check["preview"])+"\n也可选定这片地营造公共空间"
 			_planning_menu()
 			_show_context_menu()
+
+func _toggle_community_workbench() -> void:
+	if community_workbench.opened:
+		community_workbench.close_tool()
+		return
+	var cid := str(shown_world.by_id.get(selected_id,{}).get("community_id",""))
+	if cid.is_empty():
+		var nearest := INF
+		for community: Dictionary in overlay_communities:
+			if int(community["members"]) == 0: continue
+			var distance: float = point(community["position"]).distance_squared_to(pointer)
+			if distance < nearest:
+				nearest = distance
+				cid = str(community["id"])
+	if cid.is_empty():
+		_message("先种下一段声音，再查看它所在的街坊")
+		return
+	_open_community_workbench(cid)
+
+func _open_community_workbench(cid: String) -> void:
+	_cancel_preview_playback()
+	_clear_transit_route()
+	_clear_partial_draft()
+	reservation_draw_mode = false
+	reservation_draw_points.clear()
+	relocation_mode = false
+	relocation_site_id = ""
+	planning_guide.hide_tool()
+	menu.hide()
+	selected_id = ""
+	context.clear()
+	community_camera_key.clear()
+	community_workbench.open_community(cid)
+
+func _workbench_sound(operation: Dictionary) -> void:
+	var tagged := operation.duplicate(true)
+	tagged["workbench_listener"] = true
+	model.submit(tagged)
+
+func _listen_workbench_community(cid: String) -> void:
+	if cid.is_empty():
+		_restore_workbench_listening(true)
+		return
+	if not community_listening_owned:
+		var score := model.audible_score()
+		community_saved_listening = {"listener":str(score.get("listener_community","")),"focus":str(score.get("focused_community",""))}
+		community_listening_owned = true
+	if not community_saved_mutes.has(cid):
+		community_saved_mutes[cid] = bool(model.audible_score().get("muted_communities",{}).get(cid,false))
+	# Replace only this temporary workbench's not-yet-rendered controls.
+	model.sound_events = model.sound_events.filter(func(event: Dictionary) -> bool: return not bool(event.get("workbench_listener",false)))
+	_workbench_sound({"kind":"mute","community":cid,"enabled":false})
+	_workbench_sound({"kind":"focus","community":""})
+	_workbench_sound({"kind":"solo","community":cid})
+
+func _restore_workbench_listening(full_city: bool = false) -> void:
+	if not community_listening_owned and not full_city: return
+	model.sound_events = model.sound_events.filter(func(event: Dictionary) -> bool: return not bool(event.get("workbench_listener",false)))
+	for cid: String in community_saved_mutes:
+		_workbench_sound({"kind":"mute","community":cid,"enabled":community_saved_mutes[cid]})
+	_workbench_sound({"kind":"solo","community":"" if full_city else str(community_saved_listening.get("listener",""))})
+	_workbench_sound({"kind":"focus","community":"" if full_city else str(community_saved_listening.get("focus",""))})
+	community_listening_owned = false
+	community_saved_listening.clear()
+	community_saved_mutes.clear()
+
+func _plan_workbench_community(cid: String) -> void:
+	_restore_workbench_listening(true)
+	community_workbench.close_tool()
+	planning_guide.open_tool_from_community(cid)
+
+func _open_workbench_author(root_id: String) -> void:
+	_restore_workbench_listening(true)
+	# The explicit author action must follow the queued restoration of its mute.
+	if shown_world.by_id.has(root_id):
+		model.submit({"kind":"mute","community":shown_world.by_id[root_id]["community_id"],"enabled":false})
+	community_workbench.close_tool()
+	_open_authored_root(root_id)
+
+func _frame_workbench_community() -> void:
+	var bounds := Rect2()
+	var first := true
+	for id: String in community_workbench.state.get("member_ids",[]):
+		var p: Vector2 = Coupling.position_of(shown_world.by_id[id])
+		var projected: Vector2 = Projection2D.to_screen(p-Vector2(16,16),Vector2.ZERO,1.0,Vector2(28,14),shown_world.terrain.height_at(p))
+		if first:
+			bounds = Rect2(projected,Vector2.ZERO)
+			first = false
+		else: bounds = bounds.expand(projected)
+	if first: return
+	var clear := Rect2(Vector2(86,166),Vector2(community_workbench.position.x-172,size.y-292))
+	zoom_target = clampf(minf(clear.size.x/maxf(1,bounds.size.x),clear.size.y/maxf(1,bounds.size.y)),0.55,1.65)
+	pan_target = clear.get_center()-Vector2(size.x*0.5,size.y*0.52)-bounds.get_center()*zoom_target
 
 func _start_first_composition() -> void:
 	_save_before_switch()
@@ -2464,6 +2600,10 @@ func _submit_free_reservation() -> void:
 		_message(str(result.get("reason","这片范围暂时不能留地")))
 
 func _verb(verb: String) -> void:
+	if verb == "community":
+		var cid := str(shown_world.by_id.get(selected_id,{}).get("community_id",""))
+		if not cid.is_empty(): _open_community_workbench(cid)
+		return
 	var station_context := context.duplicate(true) if context.get("kind","") == "transit_station" else {}
 	var transit_anchor_id := str(station_context.get("id",""))
 	var station_record: Dictionary = shown_world.transit_stop_record(transit_anchor_id) if not transit_anchor_id.is_empty() else {}
@@ -2489,6 +2629,8 @@ func _verb(verb: String) -> void:
 	if verb == "planning":
 		if not station_context.is_empty() and not station_record.is_empty():
 			planning_guide.open_tool_from_transit_station({"id":transit_anchor_id,"record":station_record})
+		elif shown_world.by_id.has(selected_id):
+			planning_guide.open_tool_from_community(str(shown_world.by_id[selected_id]["community_id"]))
 		else:
 			planning_guide.open_tool()
 		return
@@ -2654,6 +2796,21 @@ func _verb(verb: String) -> void:
 
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey: return
+	if community_workbench.opened:
+		if event.keycode in [KEY_TAB,KEY_ENTER,KEY_KP_ENTER,KEY_SPACE]: return
+		if event.keycode in [KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_M,KEY_F]:
+			get_viewport().set_input_as_handled()
+			return
+		if event.pressed and not event.echo and event.keycode in [KEY_C,KEY_ESCAPE,KEY_P]:
+			get_viewport().set_input_as_handled()
+			if event.keycode == KEY_P: _plan_workbench_community(community_workbench.community_id)
+			else: community_workbench.close_tool()
+			return
+		if event.pressed and event.keycode == KEY_B: community_workbench.close_tool()
+	if event.pressed and not event.echo and event.keycode == KEY_C and not black:
+		get_viewport().set_input_as_handled()
+		_toggle_community_workbench()
+		return
 	if planning_guide.PlanningKeyboard.route(self,event): return
 	if event.echo: return
 	if event.pressed and event.ctrl_pressed and event.keycode == KEY_S:
@@ -3177,9 +3334,18 @@ func _process(delta: float) -> void:
 	notice_seconds = maxf(0.0,notice_seconds-delta)
 	ripple_seconds = maxf(0.0,ripple_seconds-delta)
 	planning_guide.sync()
+	community_workbench.sync()
+	if community_workbench.opened:
+		var community_key: Array = [size,community_workbench.community_id]
+		if community_camera_key != community_key:
+			community_camera_key = community_key
+			_frame_workbench_community()
+	community_member_focus.sync()
+	community_entry.visible = first_composition_mode and not black and not community_workbench.opened and not planning_guide.opened and not menu.visible
 	first_composition_guide.sync()
+	if community_workbench.opened: first_composition_guide.hide()
 	caption.position = Vector2(48,size.y-68)
-	tooltip.visible = not black and pointer_inside and not menu.visible and not planning_guide.opened
+	tooltip.visible = not black and pointer_inside and not menu.visible and not planning_guide.opened and not community_workbench.opened
 	shadow_layer.visible = not black
 	buildings_layer.visible = not black
 	if black: menu.hide()
@@ -3286,7 +3452,7 @@ func _process(delta: float) -> void:
 	elif not hover_card_status.is_empty():
 		status_line = hover_card_status if status_line.is_empty() else status_line+" · "+hover_card_status
 	caption.text = status_line
-	caption.visible = not black and not status_line.is_empty() and (not first_composition_mode or not (menu.visible or planning_guide.opened))
+	caption.visible = not black and not status_line.is_empty() and not community_workbench.opened and (not first_composition_mode or not (menu.visible or planning_guide.opened))
 	tooltip.size.y = tooltip.get_combined_minimum_size().y
 	tooltip.position = Vector2(clampf(pointer.x+18,12,maxf(12,size.x-tooltip.size.x-12)),clampf(pointer.y+20,118,maxf(118,size.y-tooltip.size.y-110)))
 	if menu.visible:
