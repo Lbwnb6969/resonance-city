@@ -1,0 +1,77 @@
+{
+	"checks": [
+		{
+			"description": "development server excluded",
+			"passed": true
+		},
+		{
+			"description": "tests excluded from playable pack",
+			"passed": true
+		},
+		{
+			"description": "external native audio and shadow DLL loaded",
+			"passed": true
+		},
+		{
+			"description": "main scene enters fresh core composition",
+			"passed": true
+		},
+		{
+			"description": "opening has 24 rendered buildings",
+			"passed": true
+		},
+		{
+			"description": "opening has three eight-building communities",
+			"passed": true
+		},
+		{
+			"description": "opening has no prebuilt public space or reservation",
+			"passed": true
+		},
+		{
+			"description": "opening audio uses packaged native mixer",
+			"passed": true
+		},
+		{
+			"description": "packed opening textures are usable",
+			"passed": true
+		},
+		{
+			"description": "first choice waits during audible overture",
+			"passed": true
+		},
+		{
+			"description": "three community nameplates appear at opening camera",
+			"passed": true
+		},
+		{
+			"description": "five audible seconds expose the first composition entry",
+			"passed": true
+		},
+		{
+			"description": "first entry opens three development choices",
+			"passed": true
+		},
+		{
+			"description": "packed planning retains five-step progress hint",
+			"passed": true
+		}
+	],
+	"engine": "4.7.2-stable (official)",
+	"opening": {
+		"audible_seconds": 5.00209738548753,
+		"communities": 3,
+		"community_names": [
+			"钟庭",
+			"松丘",
+			"石桥"
+		],
+		"display": "Windows",
+		"driver": "Dummy",
+		"houses": 24,
+		"native_mixer": true,
+		"registered_community_areas": 10
+	},
+	"scope": "Exported 24-building core opening with real GPU and Dummy clock; no physical listening or long stress",
+	"status": "PASS"
+}
