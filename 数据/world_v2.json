@@ -171,16 +171,16 @@
   },
   "legacy_audio_contract_sha256": "1c4968251b745260ddd91f5b9d00a3fb14ad4f0e530b66cfd2b5199629b647e7",
   "sources": {
-    "spec.asset.md": "bf4ac1a2112ee709134c29ecfab88160f2f4e0512de2d262fa36602cfd72eabd",
-    "spec.audio.md": "0174fd44bc2a673dbb7bd58127ce73e99ef318187e1c0dfe87b0607da4fce15e",
-    "spec.city.md": "6b28b78a183d62c6acc6435d31af344e3c6a6d4b92c488418ea1a578f7beeeed",
-    "spec.fabric.md": "22f7b6d43d28ea95f20e2c9cdd08f6f2cb22c7a59accda396f0a0b35b1e13c72",
+    "spec.asset.md": "38d84daf6da1ea0037e5ee4ff6d9fcf71f3400a109b662d96845dad63ce92023",
+    "spec.audio.md": "075f541c037d85d2120785a3eb30f70fb993d69c36dfc4f15b324a055bb52175",
+    "spec.city.md": "77340e3a1350a64f6871823f7dcc4cbec9150d756a2db0f297a3e9001e1d6575",
+    "spec.fabric.md": "45b51df669697edd5eb0777b5152641440ec0e1a414d2253bcfd2ea0f6f48d52",
     "spec.harmony.md": "6d3b8868d1b0a1f66679a0592b6dab92cd48de6fcddfd7b378fab63a53074c0e",
-    "spec.proposal.md": "2d3e382f84e24a577dfa3214143ce0f2716e297e6b62a4037820438ca0903ecf",
-    "spec.run.md": "ac2d905ffb4a68f867844b8624c5144157aaa4f954e40a48255350461c221c18",
-    "spec.space.md": "81331dd471272cb003e81b5daf01d1ec57722e0566284395cff7bfc644d65e58",
-    "spec.terrain.md": "82a0dbaaef5049a25a7d43f49deb6f33c11e5931a64f9eb27886549a16afca23",
-    "spec.ui.md": "152397a6b926178d7d8363d7bca81e77012a1020637d76443f9620859946aac5"
+    "spec.proposal.md": "f031a4715abf7b565b5e4c6c7af247208fc1462f41aa85878c5340952e4aa145",
+    "spec.run.md": "25ad400323f3c46607650e5de7995ae41975928948b8d89fc49a06d93703e409",
+    "spec.space.md": "bb519bee3140cc0365cef8b3bb47ab5a1081e6cf7ca2ddb8b03affbfcbfb0616",
+    "spec.terrain.md": "528a3697fcca1500774b550614cc6e6edbb598e023d398e1d229030e36a3c65b",
+    "spec.ui.md": "46a78e33fca1dfebcf3f8977de4af8cc50ff0470841f8c8ab42cd7b5bec547b7"
   },
   "distance_reference": {
     "0": 2.0,

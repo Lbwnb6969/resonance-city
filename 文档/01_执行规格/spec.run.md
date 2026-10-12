@@ -54,7 +54,7 @@ P0只实现种子/生成/选择可追溯接口；完整Run、祝福、图鉴重�
 | 版本 | `schema_version`、生成器版本、规格哈希、资产 manifest 哈希 |
 | 随机 | 根 seed、五条命名子流计数器；试听/悬停不推进正式子流 |
 | 世界 | 连续坐标、原始地形/排水信息、道路拓扑与几何、地块/建筑/社区稳定 ID |
-| 玩家规划（待实施） | `planning_reservations` 及留地/释放/用途转换事件，字段与旧档默认值见 [spec.proposal P10](spec.proposal.md#表-p10--留地与后续兑现)；纳入 WorldSnapshot、DNA 与后台结算副本，不能仅存 UI 轮廓 |
+| 玩家规划（已有切片） | `planning_reservations` 及留地/释放/用途转换事件，字段与旧档默认值见 [spec.proposal P10](spec.proposal.md#表-p10--留地与后续兑现)；纳入 WorldSnapshot、DNA 与后台结算副本，不能仅存 UI 轮廓 |
 | 渐进时代（待实施） | R10 的 `era_transition`、正式入代事件及城市乐句新锚点；当前正式时代与局部音色/外观进度分别保存，不按数组顺序重建传播 |
 | 客流 | `transit_demand`及有序`transit_flow_pending`；生成器版本136，旧档缺观察队列按空恢复。归集时点见spec.city第136轮合同；后台任务句柄不进DNA |
 | 决策 | 已接受事件、来源操作、请求音频帧、提交乐句帧、待提交 `WorldDelta` |

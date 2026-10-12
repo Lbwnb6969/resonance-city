@@ -39,7 +39,7 @@
 | 条件 | 值 |
 |---|---|
 | 在地图可建区内 | spec.terrain 可建性判定 |
-| 不落水 / 不落陡坡 / 不落保留地 | spec.terrain；玩家主动留地的占地排除见 [spec.proposal P10](spec.proposal.md#表-p10--留地与后续兑现)（待实施），覆盖 L1/L2/L3，包括庭院内地 |
+| 不落水 / 不落陡坡 / 不落保留地 | spec.terrain；玩家主动留地的占地排除见 [spec.proposal P10](spec.proposal.md#表-p10--留地与后续兑现)（已有留地/释放/转换切片，验收范围见 P1 任务26），覆盖 L1/L2/L3，包括庭院内地 |
 | 不与已有建筑占地重叠 | `D ≥ r_i + r_j`（D 为中心距；FB2 的 d 为占地净间隙）（spec.space 表 SP1） |
 | 不在成路街道上 | spec.city 道路层 |
 
