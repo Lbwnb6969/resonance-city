@@ -20,6 +20,7 @@ const FirstAuthoredContinuation = preload("res://scripts/world/first_authored_co
 const FirstAuthoredRouteResult = preload("res://scripts/ui/first_authored_route_result.gd")
 const FirstExpressionComparisonCard = preload("res://scripts/ui/first_expression_comparison_card.gd")
 const GrowthFeedback = preload("res://scripts/world/growth_feedback.gd")
+const PendingCompositionChoice = preload("res://scripts/ui/pending_composition_choice.gd")
 const PlayerExpression = preload("res://scripts/world/player_expression.gd")
 const ExpressionPreview = preload("res://scripts/world/expression_preview.gd")
 const Config = preload("res://scripts/world/world_values.gd")
@@ -82,6 +83,8 @@ var water_flow: Node2D
 var community_label_layer: Node2D
 var expression_audition_layer: Node2D
 var authored_growth_trail: Node2D
+var pending_composition_choice: Dictionary = {}
+var pending_expression_choice: Dictionary = {}
 var music_activity_layer: Node2D
 var public_space_activity_layer: Node2D
 var authored_reservation_layer: Node2D
@@ -365,6 +368,8 @@ func _start_world(saved: Dictionary = {}, example_world: ContinuousWorld = null)
 	expression_choice = ""
 	expression_comparison.clear()
 	expression_comparison_key.clear()
+	pending_expression_choice.clear()
+	pending_composition_choice.clear()
 	relocation_mode = false
 	relocation_site_id = ""
 	transit_station_focus_id = ""
@@ -539,6 +544,13 @@ func _make_menu() -> void:
 	compose_more.pressed.connect(_begin_next_composition)
 	box.add_child(compose_more)
 	menu.set_meta("compose_more",compose_more)
+	var care_for_land := Button.new()
+	care_for_land.text = "照看这段留下的空地"
+	care_for_land.pressed.connect(func() -> void:
+		if _authored_retune():
+			_begin_first_authored_continuation(str(shown_world.families[str(shown_world.by_id[selected_id]["family_id"])]["root"])))
+	box.add_child(care_for_land)
+	menu.set_meta("care_for_land",care_for_land)
 	authored_composition_choices = preload("res://scripts/ui/authored_composition_choices.gd").new()
 	authored_composition_choices.setup(self)
 	box.add_child(authored_composition_choices)
@@ -1209,12 +1221,12 @@ func _begin_authored_theme(root_id: String) -> bool:
 	_message(str(work["community_name"])+" · 听自己种下的主题，亲自改一个音；Esc回到全城")
 	return true
 
-func _begin_first_authored_continuation() -> bool:
+func _begin_first_authored_continuation(preferred_root: String = "") -> bool:
 	## Locate the next real authored result without creating a new save state.
 	## A live reservation gets the planning context; otherwise the actual root
 	## house is opened for listening/retuning. Theme entry keeps its existing
 	## focus behavior once the community is genuinely eligible.
-	var work := _first_authored_state()
+	var work := _first_authored_state(preferred_root)
 	if work.is_empty() or shown_world == null: return false
 	var score: Dictionary = model.audible_score()
 	var continuation := FirstAuthoredContinuation.state(shown_world,work,score)
@@ -1241,7 +1253,7 @@ func _begin_first_authored_continuation() -> bool:
 		# actual authored root as the player's concrete entry to that community.
 		var root_id := str(action.get("id",work.get("root_id",""))) if kind == "child" else str(work.get("root_id",action.get("id","")))
 		if root_id.is_empty() or not shown_world.by_id.has(root_id): return false
-		if kind != "child" and bool(work.get("theme_eligible",false)): return _begin_first_authored_theme()
+		if kind != "child" and bool(work.get("theme_eligible",false)): return _begin_authored_theme(root_id)
 		_cancel_preview_playback()
 		planning_guide.hide_tool()
 		selected_id = root_id
@@ -1425,13 +1437,14 @@ func _confirm_player_expression() -> void:
 	if not bool(result["accepted"]):
 		_message(str(result["reason"]))
 		return
+	pending_expression_choice = {"operation":operation.duplicate(true),"boundary_frame":int(result["frame"]),"event_id":int(result["event_id"]),"source_model":model}
 	if not visual_variant.is_empty() and int(expression_comparison["boundary_frame"]) == int(result["frame"]) and visual_variant["operation"] == operation:
 		expression_audition_layer.queue_choice(visual_variant,int(result["frame"]),int(result["event_id"]))
 	var p: Array = operation["position"]
 	ripple_position = Vector2(float(p[0]),float(p[1]))
 	ripple_seconds = 0.6
 	menu.hide()
-	_message(str(PlayerExpression.definition(expression_choice)["label"])+"已种下 · 下一句长出房屋，成熟后点房屋改一个音")
+	_message(str(PlayerExpression.definition(expression_choice)["label"])+"已选好 · 下一句长出房屋；落成后可改音或继续下一段")
 
 func _choose_note(choice: int) -> void:
 	if _expression_context(): return
@@ -1595,6 +1608,11 @@ func _planning_menu() -> void:
 	var choosing_expression := _expression_context()
 	var authored_reservation := _authored_reservation_context()
 	(menu.get_meta("compose_more") as Control).visible = first_composition_mode and (_authored_retune() or authored_reservation)
+	var care_for_land := menu.get_meta("care_for_land") as Button
+	care_for_land.visible = false
+	if _authored_retune():
+		var root_id := str(shown_world.families[str(shown_world.by_id[selected_id]["family_id"])]["root"])
+		care_for_land.visible = not str(_first_authored_state(root_id).get("reservation_id","")).is_empty()
 	(menu.get_meta("authored_reservation_choices") as Control).visible = authored_reservation
 	(menu.get_meta("expression_choices") as Control).visible = choosing_expression
 	(menu.get_meta("notes") as Control).visible = not choosing_expression and not authored_reservation
@@ -2758,13 +2776,10 @@ func _planning_status_hint() -> String:
 		if not str(label).is_empty(): pending_labels.append(str(label))
 	if not pending_labels.is_empty():
 		return "待播规划 · %s · 下一乐句落定" % "、".join(pending_labels)
-	# The first authored community deliberately asks for one audible retune
-	# before opening the next composition. Keep that causal handoff visible after
-	# the transient toast fades, so the small top-left entry is understandable.
 	if first_composition_mode:
 		var authored := _first_authored_state()
-		if not authored.is_empty() and bool(authored.get("theme_eligible",false)) and not bool(authored.get("root_heard_retune",false)):
-			return "%s已成熟 · 改一个音并听见它，下一段入口就会出现 · 点击左上按钮" % str(authored.get("community_name","你的社区"))
+		if not authored.is_empty():
+			return "你的%s已在%s落成 · 点左上改音与继续，或按 P 规划下一段" % [str(PlayerExpression.definition(str(authored["expression"]))["label"]),str(authored.get("community_name","社区"))]
 	# A bridge is a structural player choice whose one-shot toast expires after
 	# a few seconds. Keep the resulting road and acoustic connection in the
 	# persistent caption so the planning cause remains visible while the city
@@ -3160,8 +3175,15 @@ func _process(delta: float) -> void:
 				tooltip.text = "%s · 文化设施%d级\n覆盖%d栋 · 已服务%d/%d栋\n%s" % [site["name"],int(site.get("service_level",1)),site.get("covered",[]).size(),site.get("served",[]).size(),int(site.get("service_capacity",18)),"点击后选公共设施，下一句扩容" if int(site.get("service_level",1)) < 3 else "三级扩容完成 · 文化主题继续演奏"]
 		else:
 			tooltip.text = str(check["reason"])+("\n滚轮缩放 · 中键移动" if first_composition_mode else "\n滚轮缩放 · 中键移动 · G建桥 · H全城 · Y切换地形 · E扩展城\nR晴岸 · V深流 · T林荫交响 · N空地\nCtrl+S存一版 · F9继续")
+	pending_composition_choice = PendingCompositionChoice.state(self)
 	var status_line := notice if notice_seconds > 0.0 else _planning_status_hint()
-	if not hover_card_status.is_empty():
+	if _show_pending_composition_choice():
+		var result_text := "下一句长出你的房屋" if str(pending_composition_choice["kind"]) in ["deep","weave","warm"] else "下一句落定，再给社区选声音"
+		if str(pending_composition_choice["kind"]) == "none": result_text = "下一句给社区选声音"
+		status_line = "%s · %s已选好 · %s" % [pending_composition_choice["community"],pending_composition_choice["label"],result_text]
+		if pointer_inside and pointer.y >= size.y-45:
+			status_line += " · 还剩%d拍（%.1f秒）" % [ceili(float(pending_composition_choice["beats_to_boundary"])),float(pending_composition_choice["time_to_boundary"])]
+	elif not hover_card_status.is_empty():
 		status_line = hover_card_status if status_line.is_empty() else status_line+" · "+hover_card_status
 	caption.text = status_line
 	caption.visible = not black and not status_line.is_empty()
@@ -3175,6 +3197,9 @@ func _process(delta: float) -> void:
 		if pointer_inside and not _expression_context() and not _authored_retune() and not _authored_reservation_context() and not menu.get_global_rect().grow(100).has_point(pointer): menu.hide()
 	queue_redraw()
 	_profile_frame("interaction_ms",frame_started)
+
+func _show_pending_composition_choice() -> bool:
+	return not pending_composition_choice.is_empty() and not black and not menu.visible and not planning_guide.opened and not preview_started
 
 func _sync_daylight() -> void:
 	daylight_state = Daylight.sample(clock.renderer.transport.audible_frame,clock.renderer.transport.sample_rate,daylight_manual_phase)
@@ -3355,12 +3380,24 @@ func _draw() -> void:
 		var decree_slots := " · 政令槽%d" % shown_world.landmark_intervention_slots() if shown_world.landmark_intervention_slots() > 1 else ""
 		var service := overlay_service
 		var status := "第%d句 · %s · %s · %d栋/%d社区 · %d功能区 · %d条线路 · 文化%d/%d栋 · %d段待播 · 主题%s%s" % [shown_world.phrase_index,shown_world.era_title(),shown_world.vehicle_label(),shown_world.buildings.size(),shown_world.active_community_count(),shown_world.functional_zones.size(),shown_world.transit_lines.size(),int(service.get("served",0)),shown_world.buildings.size(),model.world.pending_actions.size(),name,decree_slots]
-		if first_composition_mode: status = "第%d句 · %d栋房屋 · %s主题%s" % [shown_world.phrase_index,shown_world.buildings.size(),name," · 选择待播" if not model.world.pending_actions.is_empty() else ""]
+		if first_composition_mode: status = "第%d句 · %d栋房屋 · %s主题%s" % [shown_world.phrase_index,shown_world.buildings.size(),name," · 选择待播" if not pending_composition_choice.is_empty() or not model.world.pending_actions.is_empty() else ""]
 		draw_string(font,Vector2(size.x-(380 if first_composition_mode else 760),size.y-64),status,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color(ui_ink,0.85))
 	var duration := float(model.phrase_frames)
 	var progress := fposmod(float(clock.renderer.transport.audible_frame),duration)/duration
 	draw_line(Vector2(48,size.y-32),Vector2(size.x-48,size.y-32),Color(0.59,0.66,0.6,0.25),2.0)
-	draw_line(Vector2(48,size.y-32),Vector2(48+(size.x-96)*progress,size.y-32),Color("af9c6a"),3.0)
+	if _show_pending_composition_choice():
+		var ink := Color("a89059")
+		var kind := str(pending_composition_choice["kind"])
+		if FirstExpressionIdentity.STYLES.has(kind): ink = FirstExpressionIdentity.STYLES[kind]["ink"]
+		var group_width := (size.x-96)/8.0
+		for group in range(8):
+			var from := Vector2(48+group_width*group,size.y-32)
+			var to := from+Vector2(group_width-5,0)
+			draw_line(from,to,Color(ink,0.24),4.0)
+			var group_progress := clampf(float(pending_composition_choice["progress"])*8.0-group,0.0,1.0)
+			if group_progress > 0.0: draw_line(from,from.lerp(to,group_progress),Color(ink,0.9),4.0)
+	else:
+		draw_line(Vector2(48,size.y-32),Vector2(48+(size.x-96)*progress,size.y-32),Color("af9c6a"),3.0)
 	_profile_frame("draw_ms",draw_started)
 
 func _composition_title() -> String:

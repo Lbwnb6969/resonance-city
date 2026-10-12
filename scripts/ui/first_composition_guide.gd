@@ -1,13 +1,10 @@
 extends Button
-## One small entry follows a real first composition from planning to its own theme.
-const FirstAuthoredContinuation = preload("res://scripts/world/first_authored_continuation.gd")
+## One small entry follows a real first composition from planning to its own house.
 var demo: Control
 var origin_frame := 0.0
 var entered := false
 var action := "planning"
 var authored_state: Dictionary = {}
-var continuation_state: Dictionary = {}
-var heard_root := ""
 const EXPRESSIONS := {"deep":"深流","weave":"织机","warm":"暖庭"}
 
 func setup(owner_demo: Control) -> void:
@@ -41,8 +38,6 @@ func reset_for_city() -> void:
 	entered = false
 	action = "planning"
 	authored_state.clear()
-	continuation_state.clear()
-	heard_root = ""
 	disabled = false
 	hide()
 
@@ -75,49 +70,14 @@ func sync() -> void:
 	var root_id := str(authored_state.get("root_id",""))
 	if not root_id.is_empty():
 		entered = true
-		continuation_state.clear()
-		# The continuation is derived from the live World.  Test doubles and
-		# older callers without a ContinuousWorld stay on the existing status
-		# path instead of inventing a target.
-		if demo.shown_world != null and demo.shown_world.has_method("snapshot"):
-			var score: Dictionary = demo.model.audible_score() if demo.model != null and demo.model.has_method("audible_score") else {}
-			continuation_state = FirstAuthoredContinuation.state(demo.shown_world,authored_state,score)
-		if bool(authored_state.get("root_heard_retune",false)):
-			heard_root = root_id
-		if heard_root == root_id and bool(authored_state.get("theme_eligible",false)):
-			if bool(continuation_state.get("reservation_active",false)):
-				action = "continuation"
-				text = "照看你留下的空地 · "+str(authored_state["community_name"])
-				tooltip_text = "保留留白，或亲自把它营造成公共空间"
-			else:
-				action = "compose"
-				text = "下一段 · 街坊 / 公共空间 / 声音 · P"
-				tooltip_text = "点击这里或按 P：重新选发展方向与社区，再选择公共空间和下一段声音"
-			disabled = false
-			visible = not _blocked()
-			_place_entry()
-			return
-		var community := str(authored_state["community_name"])
+		# A surviving house in the audible World is enough to return to one's
+		# work. Theme qualification and a heard retune describe the music; they
+		# do not lock the existing house menu or the player's next composition.
 		var expression := str(EXPRESSIONS.get(str(authored_state["expression"]),"声音"))
-		if bool(authored_state.get("theme_eligible",false)):
-			action = "theme"
-			disabled = false
-			text = "%s · 改写你种下的%s" % [community,expression]
-			tooltip_text = "回到你亲自种下的房屋，改一个音并听见它；听见后开放下一段规划"
-		else:
-			var continuation: Dictionary = continuation_state.get("action",{})
-			if bool(continuation.get("available",false)) and str(continuation.get("kind","")) in ["root","reservation","community","child"]:
-				action = "continuation"
-				disabled = false
-				var continuation_kind := str(continuation.get("kind",""))
-				var continuation_label := "定位真实留地" if continuation_kind == "reservation" else ("沿社区继续组合" if continuation_kind == "community" else ("定位最近新屋" if continuation_kind == "child" else "定位首作房屋"))
-				text = "%s · %s" % [community,continuation_label]
-				tooltip_text = str(continuation.get("text","沿真实结果继续组合"))
-			else:
-				action = "growth"
-				disabled = true
-				text = "%s · 你种下的%s在生长" % [community,expression]
-				tooltip_text = "同一家族已有%d栋房屋；社区至少六栋成熟房屋后才能形成主题" % int(authored_state.get("family_houses",1))
+		action = "authored"
+		disabled = false
+		text = "你的%s · 改音与继续" % expression
+		tooltip_text = "%s · 回到你种下的房屋，改音、照看留白，或开始下一段" % str(authored_state["community_name"])
 		visible = not _blocked()
 	elif _has_started_work():
 		entered = true
@@ -153,25 +113,14 @@ func _begin() -> void:
 	if action == "sound":
 		demo.planning_guide._take_next_action()
 		return
-	if action == "compose":
+	if action == "authored":
+		var current: Dictionary = demo._first_authored_state()
+		var root_id := str(authored_state.get("root_id",""))
+		if root_id.is_empty() or str(current.get("root_id","")) != root_id:
+			sync()
+			return
+		demo._open_authored_root(root_id)
 		hide()
-		if demo.has_method("_begin_next_composition"): demo._begin_next_composition()
-		else: demo.planning_guide.open_tool()
-		return
-	if action == "theme":
-		var current: Dictionary = demo._first_authored_state()
-		if str(current.get("root_id","")) != str(authored_state.get("root_id","")) or not bool(current.get("theme_eligible",false)):
-			sync()
-			return
-		if bool(demo._begin_first_authored_theme()): hide()
-		return
-	if action == "continuation":
-		var current: Dictionary = demo._first_authored_state()
-		if current.is_empty():
-			sync()
-			return
-		if demo.has_method("_begin_first_authored_continuation") and bool(demo._begin_first_authored_continuation()):
-			hide()
 		return
 	entered = true
 	hide()
