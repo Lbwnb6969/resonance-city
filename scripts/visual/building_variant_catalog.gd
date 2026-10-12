@@ -7,6 +7,7 @@ var entries: Array[Dictionary] = []
 var textures: Dictionary = {}
 var images: Dictionary = {}
 var shadow_images: Dictionary = {}
+var art_direction: RefCounted
 
 func load_catalog() -> void:
 	if not entries.is_empty(): return
@@ -29,6 +30,9 @@ func prewarm_masks(shadow_layer: Node2D) -> void:
 	shadow_layer.mask_images.merge(shadow_images,true)
 
 func entry_for(building: Dictionary,fallback_entry: Dictionary = {},family: Dictionary = {}) -> Dictionary:
+	if art_direction != null:
+		var candidate: Dictionary = art_direction.building_entry(building,family,variant_index(str(building["district_id"])))
+		if not candidate.is_empty(): return candidate
 	var base := fallback_entry
 	if str(building.get("type","")) == "residential": base = entries[variant_index(str(building["district_id"]))]
 	return FirstExpressionIdentity.entry_for(building,base,entries,family)

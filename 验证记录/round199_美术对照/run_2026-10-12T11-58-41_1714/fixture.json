@@ -1,0 +1,3613 @@
+{
+	"action_serial": 5,
+	"authored_transit_lines": [],
+	"authored_transit_stops": {},
+	"bridge": false,
+	"buildings": [
+		{
+			"anchor_id": "family-00001",
+			"base_midi": 48,
+			"birth_frame": 0,
+			"community_id": "west-1",
+			"current_midi": 48,
+			"district_id": "building-00001",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": true,
+			"family_id": "family-00001",
+			"footprint": [
+				[
+					11.0868158340454,
+					1.80323827266693
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "west-lot-1--1",
+			"placement_tier": "L1",
+			"position": [
+				11.0868158340454,
+				1.80323827266693
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00001",
+			"base_midi": 48,
+			"birth_frame": 0,
+			"community_id": "west-1",
+			"current_midi": 48,
+			"district_id": "building-00002",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00001",
+			"footprint": [
+				[
+					13.4868154525757,
+					1.80323827266693
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "west-lot-1-1",
+			"placement_tier": "L1",
+			"position": [
+				13.4868154525757,
+				1.80323827266693
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00001",
+			"base_midi": 48,
+			"birth_frame": 0,
+			"community_id": "west-1",
+			"current_midi": 48,
+			"district_id": "building-00003",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00001",
+			"footprint": [
+				[
+					11.3292150497437,
+					2.76323819160461
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L1",
+			"position": [
+				11.3292150497437,
+				2.76323819160461
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00001",
+			"base_midi": 48,
+			"birth_frame": 0,
+			"community_id": "west-1",
+			"current_midi": 48,
+			"district_id": "building-00004",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00001",
+			"footprint": [
+				[
+					13.7292146682739,
+					2.76323819160461
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L1",
+			"position": [
+				13.7292146682739,
+				2.76323819160461
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00001",
+			"base_midi": 48,
+			"birth_frame": 0,
+			"community_id": "west-1",
+			"current_midi": 48,
+			"district_id": "building-00005",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 1,
+			"family_anchor": false,
+			"family_id": "family-00001",
+			"footprint": [
+				[
+					11.5268926620483,
+					3.72323822975159
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "west-lot-2--1",
+			"placement_tier": "L1",
+			"position": [
+				11.5268926620483,
+				3.72323822975159
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00001",
+			"base_midi": 48,
+			"birth_frame": 0,
+			"community_id": "west-1",
+			"current_midi": 48,
+			"district_id": "building-00006",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 1,
+			"family_anchor": false,
+			"family_id": "family-00001",
+			"footprint": [
+				[
+					13.9268922805786,
+					3.72323822975159
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "west-lot-2-1",
+			"placement_tier": "L1",
+			"position": [
+				13.9268922805786,
+				3.72323822975159
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00001",
+			"base_midi": 48,
+			"birth_frame": 0,
+			"community_id": "west-1",
+			"current_midi": 48,
+			"district_id": "building-00007",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00001",
+			"footprint": [
+				[
+					11.6618423461914,
+					4.68323802947998
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L1",
+			"position": [
+				11.6618423461914,
+				4.68323802947998
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00001",
+			"base_midi": 48,
+			"birth_frame": 0,
+			"community_id": "west-1",
+			"current_midi": 48,
+			"district_id": "building-00008",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 1,
+			"family_anchor": false,
+			"family_id": "family-00001",
+			"footprint": [
+				[
+					14.0618419647217,
+					4.68323802947998
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L2",
+			"position": [
+				14.0618419647217,
+				4.68323802947998
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00009",
+			"base_midi": 52,
+			"birth_frame": 0,
+			"community_id": "west-2",
+			"current_midi": 52,
+			"district_id": "building-00009",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 3,
+			"family_anchor": true,
+			"family_id": "family-00009",
+			"footprint": [
+				[
+					12.0341701507568,
+					14.8584938049316
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L1",
+			"position": [
+				12.0341701507568,
+				14.8584938049316
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00009",
+			"base_midi": 52,
+			"birth_frame": 0,
+			"community_id": "west-2",
+			"current_midi": 52,
+			"district_id": "building-00010",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 1,
+			"family_anchor": false,
+			"family_id": "family-00009",
+			"footprint": [
+				[
+					14.4341707229614,
+					14.8584938049316
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L2",
+			"position": [
+				14.4341707229614,
+				14.8584938049316
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00009",
+			"base_midi": 52,
+			"birth_frame": 0,
+			"community_id": "west-2",
+			"current_midi": 52,
+			"district_id": "building-00011",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00009",
+			"footprint": [
+				[
+					11.9725360870361,
+					15.8184938430786
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L1",
+			"position": [
+				11.9725360870361,
+				15.8184938430786
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00009",
+			"base_midi": 52,
+			"birth_frame": 0,
+			"community_id": "west-2",
+			"current_midi": 52,
+			"district_id": "building-00012",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 1,
+			"family_anchor": false,
+			"family_id": "family-00009",
+			"footprint": [
+				[
+					14.3725366592407,
+					15.8184938430786
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L2",
+			"position": [
+				14.3725366592407,
+				15.8184938430786
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00009",
+			"base_midi": 52,
+			"birth_frame": 0,
+			"community_id": "west-2",
+			"current_midi": 52,
+			"district_id": "building-00013",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00009",
+			"footprint": [
+				[
+					11.832537651062,
+					16.7784938812256
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L1",
+			"position": [
+				11.832537651062,
+				16.7784938812256
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00009",
+			"base_midi": 52,
+			"birth_frame": 0,
+			"community_id": "west-2",
+			"current_midi": 52,
+			"district_id": "building-00014",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00009",
+			"footprint": [
+				[
+					14.2325382232666,
+					16.7784938812256
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L1",
+			"position": [
+				14.2325382232666,
+				16.7784938812256
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00009",
+			"base_midi": 52,
+			"birth_frame": 0,
+			"community_id": "west-2",
+			"current_midi": 52,
+			"district_id": "building-00015",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00009",
+			"footprint": [
+				[
+					11.6238718032837,
+					17.7384929656982
+				]
+			],
+			"form": "胚",
+			"form_count": 0,
+			"is_anchor": false,
+			"lot_id": "west-lot-10--1",
+			"placement_tier": "L1",
+			"position": [
+				11.6238718032837,
+				17.7384929656982
+			],
+			"radius": 0.45,
+			"type": "commercial",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00009",
+			"base_midi": 52,
+			"birth_frame": 0,
+			"community_id": "west-2",
+			"current_midi": 52,
+			"district_id": "building-00016",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00009",
+			"footprint": [
+				[
+					14.0238723754883,
+					17.7384929656982
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L1",
+			"position": [
+				14.0238723754883,
+				17.7384929656982
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00017",
+			"base_midi": 55,
+			"birth_frame": 0,
+			"community_id": "east-2",
+			"current_midi": 55,
+			"district_id": "building-00017",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 1,
+			"family_anchor": true,
+			"family_id": "family-00017",
+			"footprint": [
+				[
+					19.0215454101563,
+					11.3923072814941
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "east-lot-7--1",
+			"placement_tier": "L1",
+			"position": [
+				19.0215454101563,
+				11.3923072814941
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00017",
+			"base_midi": 55,
+			"birth_frame": 0,
+			"community_id": "east-2",
+			"current_midi": 55,
+			"district_id": "building-00018",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00017",
+			"footprint": [
+				[
+					21.4215450286865,
+					11.3923072814941
+				]
+			],
+			"form": "胚",
+			"form_count": 0,
+			"is_anchor": false,
+			"lot_id": "east-lot-7-1",
+			"placement_tier": "L1",
+			"position": [
+				21.4215450286865,
+				11.3923072814941
+			],
+			"radius": 0.45,
+			"type": "commercial",
+			"vitality": 88.5,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00017",
+			"base_midi": 55,
+			"birth_frame": 0,
+			"community_id": "east-2",
+			"current_midi": 55,
+			"district_id": "building-00019",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 1,
+			"family_anchor": false,
+			"family_id": "family-00017",
+			"footprint": [
+				[
+					19.1089630126953,
+					12.3523073196411
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L2",
+			"position": [
+				19.1089630126953,
+				12.3523073196411
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00017",
+			"base_midi": 55,
+			"birth_frame": 0,
+			"community_id": "east-2",
+			"current_midi": 55,
+			"district_id": "building-00020",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00017",
+			"footprint": [
+				[
+					21.5089626312256,
+					12.3523073196411
+				]
+			],
+			"form": "群",
+			"form_count": 1,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L1",
+			"position": [
+				21.5089626312256,
+				12.3523073196411
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 88.5,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00017",
+			"base_midi": 55,
+			"birth_frame": 0,
+			"community_id": "east-2",
+			"current_midi": 55,
+			"district_id": "building-00021",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 1,
+			"family_anchor": false,
+			"family_id": "family-00017",
+			"footprint": [
+				[
+					19.1899604797363,
+					13.3123073577881
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L2",
+			"position": [
+				19.1899604797363,
+				13.3123073577881
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00017",
+			"base_midi": 55,
+			"birth_frame": 0,
+			"community_id": "east-2",
+			"current_midi": 55,
+			"district_id": "building-00022",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 2,
+			"family_anchor": false,
+			"family_id": "family-00017",
+			"footprint": [
+				[
+					21.5899600982666,
+					13.3123073577881
+				]
+			],
+			"form": "群",
+			"form_count": 1,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L1",
+			"position": [
+				21.5899600982666,
+				13.3123073577881
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 88.5,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00017",
+			"base_midi": 55,
+			"birth_frame": 0,
+			"community_id": "east-2",
+			"current_midi": 55,
+			"district_id": "building-00023",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 1,
+			"family_anchor": false,
+			"family_id": "family-00017",
+			"footprint": [
+				[
+					19.235330581665,
+					14.2723073959351
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "east-lot-8--1",
+			"placement_tier": "L1",
+			"position": [
+				19.235330581665,
+				14.2723073959351
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00017",
+			"base_midi": 55,
+			"birth_frame": 0,
+			"community_id": "east-2",
+			"current_midi": 55,
+			"district_id": "building-00024",
+			"era": 1,
+			"expression": "warm",
+			"fabric_frontage": 1,
+			"family_anchor": false,
+			"family_id": "family-00017",
+			"footprint": [
+				[
+					19.2194309234619,
+					15.232307434082
+				]
+			],
+			"form": "群",
+			"form_count": 2,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L2",
+			"position": [
+				19.2194309234619,
+				15.232307434082
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 98.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00025",
+			"base_midi": 36,
+			"birth_frame": 1058400,
+			"community_id": "west-2",
+			"current_midi": 36,
+			"district_id": "building-00025",
+			"era": 1,
+			"expression": "deep",
+			"fabric_frontage": 2,
+			"family_anchor": true,
+			"family_id": "family-00025",
+			"footprint": [
+				[
+					13.7984962463379,
+					18.7742557525635
+				]
+			],
+			"form": "群",
+			"form_count": 0,
+			"is_anchor": false,
+			"lot_id": "",
+			"placement_tier": "L1",
+			"player_expression": true,
+			"position": [
+				13.7984962463379,
+				18.7742557525635
+			],
+			"radius": 0.45,
+			"type": "residential",
+			"vitality": 74.0,
+			"voice_level": 0.2
+		},
+		{
+			"anchor_id": "family-00026",
+			"base_midi": 60,
+			"birth_frame": 1411200,
+			"community_id": "east-2",
+			"current_midi": 60,
+			"district_id": "building-00026",
+			"era": 1,
+			"expression": "weave",
+			"fabric_frontage": 2,
+			"family_anchor": true,
+			"family_id": "family-00026",
+			"footprint": [
+				[
+					21.3323040008545,
+					9.95230770111084
+				]
+			],
+			"form": "胚",
+			"form_count": 0,
+			"is_anchor": false,
+			"lot_id": "east-lot-6-1",
+			"placement_tier": "L1",
+			"player_expression": true,
+			"position": [
+				21.3323040008545,
+				9.95230770111084
+			],
+			"radius": 0.45,
+			"type": "commercial",
+			"vitality": 62.0,
+			"voice_level": 0.2
+		}
+	],
+	"development_charters": [
+		{
+			"card_refs": [
+				"infill_pulse"
+			],
+			"charter_id": "charter-00001",
+			"committed_phrase": 1,
+			"community_ids": [
+				"west-2"
+			],
+			"plan_id": "compact",
+			"source_operation": 1,
+			"world_version": [
+				1,
+				2,
+				0
+			]
+		}
+	],
+	"era": 1,
+	"events": [
+		{
+			"district_id": "building-00001",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00002",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00003",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00004",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00005",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00006",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00007",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00008",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00009",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00010",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00011",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00012",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00013",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00014",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00015",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00016",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00017",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00018",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00019",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00020",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00021",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00022",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00023",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"district_id": "building-00024",
+			"frame": 0,
+			"kind": "birth",
+			"phrase": 0
+		},
+		{
+			"card_refs": [
+				"infill_pulse"
+			],
+			"community_ids": [
+				"west-2"
+			],
+			"frame": 352800,
+			"id": "charter-00001",
+			"kind": "charter",
+			"plan_id": "compact"
+		},
+		{
+			"converted_reservation": "",
+			"frame": 352800,
+			"id": "player-civic-00002",
+			"kind": "civic",
+			"source_lot_ids": [
+				"west-lot-6-1"
+			],
+			"source_site_id": "west-lot-6-1"
+		},
+		{
+			"converted_reservation": "",
+			"frame": 705600,
+			"id": "player-park-00003",
+			"kind": "park",
+			"source_lot_ids": [
+				"east-lot-6--1"
+			],
+			"source_site_id": "east-lot-6--1"
+		},
+		{
+			"district_id": "building-00001",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00002",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00003",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00004",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00005",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00006",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00007",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00008",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00009",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00010",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00011",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00012",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00013",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00014",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00016",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00017",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00019",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00020",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00021",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00022",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00023",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00024",
+			"form": "群",
+			"frame": 705600,
+			"kind": "upgrade"
+		},
+		{
+			"district_id": "building-00025",
+			"frame": 1058400,
+			"kind": "birth",
+			"phrase": 3
+		},
+		{
+			"frame": 1058400,
+			"kind": "landmark_awakened",
+			"name": "圆形剧场",
+			"phrase": 3
+		},
+		{
+			"district_id": "building-00026",
+			"frame": 1411200,
+			"kind": "birth",
+			"phrase": 4
+		},
+		{
+			"district_id": "building-00025",
+			"form": "群",
+			"frame": 1411200,
+			"kind": "upgrade"
+		}
+	],
+	"expanded_plan": false,
+	"families": {
+		"family-00001": {
+			"created_phrase": 0,
+			"expression": "warm",
+			"growth_house_limit": 8,
+			"root": "building-00001"
+		},
+		"family-00009": {
+			"created_phrase": 0,
+			"expression": "warm",
+			"growth_house_limit": 8,
+			"root": "building-00009"
+		},
+		"family-00017": {
+			"created_phrase": 0,
+			"expression": "warm",
+			"growth_house_limit": 8,
+			"root": "building-00017"
+		},
+		"family-00025": {
+			"created_phrase": 3,
+			"expression": "deep",
+			"next_growth_phrase": 5,
+			"player_expression": true,
+			"root": "building-00025"
+		},
+		"family-00026": {
+			"created_phrase": 4,
+			"expression": "weave",
+			"next_growth_phrase": 5,
+			"player_expression": true,
+			"root": "building-00026"
+		}
+	},
+	"functional_zones": [
+		{
+			"building_count": 23,
+			"community_ids": [
+				"west-2",
+				"east-2",
+				"west-1"
+			],
+			"id": "zone-residential-core",
+			"line_ids": [],
+			"music_role": "home",
+			"role": "residential",
+			"site_ids": [],
+			"title": "居住带"
+		},
+		{
+			"building_count": 0,
+			"community_ids": [
+				"west-2",
+				"east-2"
+			],
+			"id": "zone-mixed-center",
+			"line_ids": [],
+			"music_role": "center",
+			"role": "mixed",
+			"site_ids": [],
+			"title": "混合中心"
+		}
+	],
+	"generation_version": 136,
+	"landmark_progress": {
+		"元老院": {
+			"awakened": false,
+			"last_phrase": 4,
+			"streak": 0
+		},
+		"圆形剧场": {
+			"awakened": true,
+			"last_phrase": 4,
+			"streak": 3
+		},
+		"神殿": {
+			"awakened": false,
+			"last_phrase": 4,
+			"streak": 0
+		}
+	},
+	"landmarks": [],
+	"last_reason": "在河边选择一块临街空地，播下第一段声音",
+	"lifecycle": {
+		"ended": false,
+		"gray": false,
+		"low_phrases": 0
+	},
+	"mode": "free",
+	"next_id": 27,
+	"pending": {},
+	"pending_actions": [],
+	"phrase_index": 4,
+	"plan": {
+		"blocks": [
+			{
+				"community_id": "west-2",
+				"id": "west-block-1",
+				"polygon": "[(12.92363, 8.0), (12.91702, 8.375), (12.91311, 8.75), (12.91306, 9.125), (12.91775, 9.5), (12.92774, 9.875), (12.94327, 10.25), (12.96421, 10.625), (12.99008, 11.0), (13.02008, 11.375), (13.0531, 11.75), (13.08779, 12.125), (13.12256, 12.5), (13.15572, 12.875), (13.18547, 13.25), (13.21004, 13.625), (13.22771, 14.0), (7.627715, 14.0), (7.61004, 13.625), (7.585472, 13.25), (7.555719, 12.875), (7.522563, 12.5), (7.487788, 12.125), (7.453103, 11.75), (7.420078, 11.375), (7.390077, 11.0), (7.364206, 10.625), (7.343272, 10.25), (7.327745, 9.875), (7.31775, 9.5), (7.313061, 9.125), (7.313109, 8.75), (7.317016, 8.375), (7.323627, 8.0)]"
+			},
+			{
+				"community_id": "west-3",
+				"id": "west-block-2",
+				"polygon": "[(13.22771, 14.0), (13.23693, 14.375), (13.23633, 14.75), (13.22484, 15.125), (13.20168, 15.5), (13.16645, 15.875), (13.1191, 16.25), (13.05998, 16.625), (12.98981, 17.0), (12.9097, 17.375), (12.82104, 17.75), (12.72553, 18.125), (12.62507, 18.5), (12.52173, 18.875), (12.41765, 19.25), (12.315, 19.625), (12.21586, 20.0), (6.615858, 20.0), (6.715001, 19.625), (6.817654, 19.25), (6.921728, 18.875), (7.025068, 18.5), (7.125527, 18.125), (7.22104, 17.75), (7.309699, 17.375), (7.389814, 17.0), (7.459975, 16.625), (7.519096, 16.25), (7.566448, 15.875), (7.601685, 15.5), (7.624842, 15.125), (7.636335, 14.75), (7.636931, 14.375), (7.627715, 14.0)]"
+			},
+			{
+				"community_id": "east-2",
+				"id": "east-block-1",
+				"polygon": "[(20.12363, 8.0), (20.11702, 8.375), (20.11311, 8.75), (20.11306, 9.125), (20.11775, 9.5), (20.12774, 9.875), (20.14327, 10.25), (20.16421, 10.625), (20.19008, 11.0), (20.22008, 11.375), (20.2531, 11.75), (20.28779, 12.125), (20.32256, 12.5), (20.35572, 12.875), (20.38547, 13.25), (20.41004, 13.625), (20.42772, 14.0), (26.02772, 14.0), (26.01004, 13.625), (25.98547, 13.25), (25.95572, 12.875), (25.92256, 12.5), (25.88779, 12.125), (25.8531, 11.75), (25.82008, 11.375), (25.79008, 11.0), (25.76421, 10.625), (25.74327, 10.25), (25.72775, 9.875), (25.71775, 9.5), (25.71306, 9.125), (25.71311, 8.75), (25.71702, 8.375), (25.72363, 8.0)]"
+			},
+			{
+				"community_id": "east-3",
+				"id": "east-block-2",
+				"polygon": "[(20.42772, 14.0), (20.43693, 14.375), (20.43633, 14.75), (20.42484, 15.125), (20.40168, 15.5), (20.36645, 15.875), (20.3191, 16.25), (20.25998, 16.625), (20.18981, 17.0), (20.1097, 17.375), (20.02104, 17.75), (19.92553, 18.125), (19.82507, 18.5), (19.72173, 18.875), (19.61765, 19.25), (19.515, 19.625), (19.41586, 20.0), (25.01586, 20.0), (25.115, 19.625), (25.21765, 19.25), (25.32173, 18.875), (25.42507, 18.5), (25.52553, 18.125), (25.62104, 17.75), (25.7097, 17.375), (25.78981, 17.0), (25.85998, 16.625), (25.9191, 16.25), (25.96645, 15.875), (26.00168, 15.5), (26.02484, 15.125), (26.03633, 14.75), (26.03693, 14.375), (26.02772, 14.0)]"
+			},
+			{
+				"community_id": "west-garden-1",
+				"id": "west-garden-block",
+				"polygon": "[(7.323627, 8.0), (7.315351, 8.5), (7.312588, 9.0), (7.31775, 9.5), (7.332304, 10.0), (7.356649, 10.5), (7.390077, 11.0), (7.430813, 11.5), (7.476135, 12.0), (7.522563, 12.5), (7.566103, 13.0), (7.602535, 13.5), (7.627715, 14.0), (7.637882, 14.5), (7.629938, 15.0), (7.601685, 15.5), (7.552001, 16.0), (7.480952, 16.5), (7.389814, 17.0), (7.281017, 17.5), (7.158012, 18.0), (7.025068, 18.5), (6.887012, 19.0), (6.74893, 19.5), (6.615858, 20.0), (1.015858, 20.0), (1.14893, 19.5), (1.287011, 19.0), (1.425068, 18.5), (1.558012, 18.0), (1.681017, 17.5), (1.789814, 17.0), (1.880952, 16.5), (1.952001, 16.0), (2.001684, 15.5), (2.029938, 15.0), (2.037882, 14.5), (2.027715, 14.0), (2.002535, 13.5), (1.966103, 13.0), (1.922563, 12.5), (1.876135, 12.0), (1.830813, 11.5), (1.790077, 11.0), (1.756649, 10.5), (1.732305, 10.0), (1.71775, 9.5), (1.712588, 9.0), (1.715351, 8.5), (1.723627, 8.0)]"
+			},
+			{
+				"community_id": "east-garden-1",
+				"id": "east-garden-block",
+				"polygon": "[(25.72363, 8.0), (25.71535, 8.5), (25.71259, 9.0), (25.71775, 9.5), (25.7323, 10.0), (25.75665, 10.5), (25.79008, 11.0), (25.83081, 11.5), (25.87613, 12.0), (25.92256, 12.5), (25.9661, 13.0), (26.00253, 13.5), (26.02772, 14.0), (26.03788, 14.5), (26.02994, 15.0), (26.00168, 15.5), (25.952, 16.0), (25.88095, 16.5), (25.78981, 17.0), (25.68102, 17.5), (25.55801, 18.0), (25.42507, 18.5), (25.28701, 19.0), (25.14893, 19.5), (25.01586, 20.0), (30.61586, 20.0), (30.74893, 19.5), (30.88701, 19.0), (31.02507, 18.5), (31.15801, 18.0), (31.28102, 17.5), (31.38981, 17.0), (31.48095, 16.5), (31.552, 16.0), (31.60168, 15.5), (31.62994, 15.0), (31.63788, 14.5), (31.62771, 14.0), (31.60254, 13.5), (31.5661, 13.0), (31.52256, 12.5), (31.47614, 12.0), (31.43081, 11.5), (31.39008, 11.0), (31.35665, 10.5), (31.3323, 10.0), (31.31775, 9.5), (31.31259, 9.0), (31.31535, 8.5), (31.32363, 8.0)]"
+			}
+		],
+		"centers": [
+			{
+				"active": true,
+				"community_id": "west-2",
+				"id": "west-primary-center",
+				"level": "primary",
+				"node_id": "west-2",
+				"position": [
+					13.2277145385742,
+					14.0
+				]
+			},
+			{
+				"active": true,
+				"community_id": "west-garden-1",
+				"id": "west-secondary-center",
+				"level": "secondary",
+				"node_id": "west-garden-2",
+				"position": [
+					2.02771472930908,
+					14.0
+				]
+			},
+			{
+				"active": true,
+				"community_id": "east-2",
+				"id": "east-primary-center",
+				"level": "primary",
+				"node_id": "east-2",
+				"position": [
+					20.4277153015137,
+					14.0
+				]
+			},
+			{
+				"active": true,
+				"community_id": "east-garden-1",
+				"id": "east-secondary-center",
+				"level": "secondary",
+				"node_id": "east-garden-2",
+				"position": [
+					31.6277141571045,
+					14.0
+				]
+			}
+		],
+		"communities": {
+			"east-1": {
+				"bank": 1,
+				"id": "east-1",
+				"members": [],
+				"name": "晴岸",
+				"parent_id": ""
+			},
+			"east-2": {
+				"bank": 1,
+				"center_id": "east-primary-center",
+				"center_level": "primary",
+				"id": "east-2",
+				"members": [
+					"building-00017",
+					"building-00018",
+					"building-00019",
+					"building-00020",
+					"building-00021",
+					"building-00022",
+					"building-00023",
+					"building-00024",
+					"building-00026"
+				],
+				"name": "钟庭",
+				"parent_id": ""
+			},
+			"east-3": {
+				"bank": 1,
+				"id": "east-3",
+				"members": [],
+				"name": "白沙",
+				"parent_id": ""
+			},
+			"east-garden-1": {
+				"bank": 1,
+				"center_id": "east-secondary-center",
+				"center_level": "secondary",
+				"id": "east-garden-1",
+				"members": [],
+				"name": "花浦",
+				"parent_id": "east-2"
+			},
+			"east-garden-2": {
+				"bank": 1,
+				"id": "east-garden-2",
+				"members": [],
+				"name": "长夏",
+				"parent_id": "east-2"
+			},
+			"west-1": {
+				"bank": -1,
+				"id": "west-1",
+				"members": [
+					"building-00001",
+					"building-00002",
+					"building-00003",
+					"building-00004",
+					"building-00005",
+					"building-00006",
+					"building-00007",
+					"building-00008"
+				],
+				"name": "松丘",
+				"parent_id": ""
+			},
+			"west-2": {
+				"bank": -1,
+				"center_id": "west-primary-center",
+				"center_level": "primary",
+				"id": "west-2",
+				"members": [
+					"building-00009",
+					"building-00010",
+					"building-00011",
+					"building-00012",
+					"building-00013",
+					"building-00014",
+					"building-00015",
+					"building-00016",
+					"building-00025"
+				],
+				"name": "石桥",
+				"parent_id": ""
+			},
+			"west-3": {
+				"bank": -1,
+				"id": "west-3",
+				"members": [],
+				"name": "芦湾",
+				"parent_id": ""
+			},
+			"west-garden-1": {
+				"bank": -1,
+				"center_id": "west-secondary-center",
+				"center_level": "secondary",
+				"id": "west-garden-1",
+				"members": [],
+				"name": "林前",
+				"parent_id": "west-2"
+			},
+			"west-garden-2": {
+				"bank": -1,
+				"id": "west-garden-2",
+				"members": [],
+				"name": "松径",
+				"parent_id": "west-2"
+			}
+		},
+		"green_corridors": [],
+		"lots": [
+			{
+				"bank": -1,
+				"center": [
+					10.7152280807495,
+					0.377162158489227
+				],
+				"community_id": "west-1",
+				"entrance": [
+					11.9152278900146,
+					0.377162158489227
+				],
+				"id": "west-lot-0--1",
+				"occupant": "",
+				"polygon": "[(10.09523, -0.262838), (11.33523, -0.262838), (11.33523, 1.017162), (10.09523, 1.017162)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					13.1152276992798,
+					0.363238245248795
+				],
+				"community_id": "west-1",
+				"entrance": [
+					11.9152278900146,
+					0.363238245248795
+				],
+				"id": "west-lot-0-1",
+				"occupant": "",
+				"polygon": "[(12.49523, -0.276762), (13.73523, -0.276762), (13.73523, 1.003238), (12.49523, 1.003238)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					11.1388177871704,
+					1.95959460735321
+				],
+				"community_id": "west-1",
+				"entrance": [
+					12.3388175964355,
+					1.95959460735321
+				],
+				"id": "west-lot-1--1",
+				"occupant": "building-00001",
+				"polygon": "[(10.51882, 1.319595), (11.75882, 1.319595), (11.75882, 2.599595), (10.51882, 2.599595)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					13.5388174057007,
+					2.05003499984741
+				],
+				"community_id": "west-1",
+				"entrance": [
+					12.3388175964355,
+					2.05003499984741
+				],
+				"id": "west-lot-1-1",
+				"occupant": "building-00002",
+				"polygon": "[(12.91882, 1.410035), (14.15882, 1.410035), (14.15882, 2.690035), (12.91882, 2.690035)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					11.5047883987427,
+					3.54827332496643
+				],
+				"community_id": "west-1",
+				"entrance": [
+					12.7047891616821,
+					3.54827332496643
+				],
+				"id": "west-lot-2--1",
+				"occupant": "building-00005",
+				"polygon": "[(10.88479, 2.908273), (12.12479, 2.908273), (12.12479, 4.188273), (10.88479, 4.188273)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					13.9047889709473,
+					3.57273769378662
+				],
+				"community_id": "west-1",
+				"entrance": [
+					12.7047891616821,
+					3.57273769378662
+				],
+				"id": "west-lot-2-1",
+				"occupant": "building-00006",
+				"polygon": "[(13.28479, 2.932738), (14.52479, 2.932738), (14.52479, 4.212738), (13.28479, 4.212738)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					11.7069063186646,
+					5.22309827804565
+				],
+				"community_id": "west-1",
+				"entrance": [
+					12.9069061279297,
+					5.22309827804565
+				],
+				"id": "west-lot-3--1",
+				"occupant": "",
+				"polygon": "[(11.08691, 4.583098), (12.32691, 4.583098), (12.32691, 5.863098), (11.08691, 5.863098)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					14.1069059371948,
+					5.16688203811646
+				],
+				"community_id": "west-1",
+				"entrance": [
+					12.9069061279297,
+					5.16688203811646
+				],
+				"id": "west-lot-3-1",
+				"occupant": "",
+				"polygon": "[(13.48691, 4.526882), (14.72691, 4.526882), (14.72691, 5.806882), (13.48691, 5.806882)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					11.7459707260132,
+					6.73682165145874
+				],
+				"community_id": "west-1",
+				"entrance": [
+					12.9459705352783,
+					6.73682165145874
+				],
+				"id": "west-lot-4--1",
+				"occupant": "",
+				"polygon": "[(11.12597, 6.096822), (12.36597, 6.096822), (12.36597, 7.376822), (11.12597, 7.376822)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					14.1459712982178,
+					6.77885389328003
+				],
+				"community_id": "west-1",
+				"entrance": [
+					12.9459705352783,
+					6.77885389328003
+				],
+				"id": "west-lot-4-1",
+				"occupant": "",
+				"polygon": "[(13.52597, 6.138854), (14.76597, 6.138854), (14.76597, 7.418854), (13.52597, 7.418854)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					14.1166572570801,
+					8.43689155578613
+				],
+				"community_id": "west-1",
+				"entrance": [
+					12.9166564941406,
+					8.43689155578613
+				],
+				"id": "west-lot-5-1",
+				"occupant": "",
+				"polygon": "[(13.49666, 7.796892), (14.73666, 7.796892), (14.73666, 9.076892), (13.49666, 9.076892)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					14.1323041915894,
+					10.0584936141968
+				],
+				"community_id": "west-2",
+				"entrance": [
+					12.9323043823242,
+					10.0584936141968
+				],
+				"id": "west-lot-6-1",
+				"occupant": "",
+				"polygon": "[(13.5123, 9.418493), (14.7523, 9.418493), (14.7523, 10.69849), (13.5123, 10.69849)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					14.2396125793457,
+					11.536301612854
+				],
+				"community_id": "west-2",
+				"entrance": [
+					13.0396118164063,
+					11.536301612854
+				],
+				"id": "west-lot-7-1",
+				"occupant": "",
+				"polygon": "[(13.61961, 10.8963), (14.85961, 10.8963), (14.85961, 12.1763), (13.61961, 12.1763)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					14.4277143478394,
+					14.0
+				],
+				"community_id": "west-2",
+				"entrance": [
+					13.2277145385742,
+					14.0
+				],
+				"id": "west-lot-8-1",
+				"occupant": "",
+				"polygon": "[(13.80771, 13.36), (15.04771, 13.36), (15.04771, 14.64), (13.80771, 14.64)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					11.8968276977539,
+					16.4093036651611
+				],
+				"community_id": "west-2",
+				"entrance": [
+					13.096827507019,
+					16.4093036651611
+				],
+				"id": "west-lot-9--1",
+				"occupant": "",
+				"polygon": "[(11.27683, 15.7693), (12.51683, 15.7693), (12.51683, 17.0493), (11.27683, 17.0493)]",
+				"use": "commercial"
+			},
+			{
+				"bank": -1,
+				"center": [
+					14.2968273162842,
+					16.3818473815918
+				],
+				"community_id": "west-2",
+				"entrance": [
+					13.096827507019,
+					16.3818473815918
+				],
+				"id": "west-lot-9-1",
+				"occupant": "",
+				"polygon": "[(13.67683, 15.74185), (14.91683, 15.74185), (14.91683, 17.02185), (13.67683, 17.02185)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					11.558012008667,
+					17.9502258300781
+				],
+				"community_id": "west-2",
+				"entrance": [
+					12.7580127716064,
+					17.9502258300781
+				],
+				"id": "west-lot-10--1",
+				"occupant": "building-00015",
+				"polygon": "[(10.93801, 17.31023), (12.17801, 17.31023), (12.17801, 18.59023), (10.93801, 18.59023)]",
+				"use": "commercial"
+			},
+			{
+				"bank": -1,
+				"center": [
+					10.7434911727905,
+					21.2004547119141
+				],
+				"community_id": "west-3",
+				"entrance": [
+					11.9434909820557,
+					21.2004547119141
+				],
+				"id": "west-lot-12--1",
+				"occupant": "",
+				"polygon": "[(10.12349, 20.56046), (11.36349, 20.56046), (11.36349, 21.84045), (10.12349, 21.84045)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					10.5389204025269,
+					22.7744293212891
+				],
+				"community_id": "west-3",
+				"entrance": [
+					11.738920211792,
+					22.7744293212891
+				],
+				"id": "west-lot-13--1",
+				"occupant": "",
+				"polygon": "[(9.918921, 22.13443), (11.15892, 22.13443), (11.15892, 23.41443), (9.918921, 23.41443)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					12.9389200210571,
+					22.8621368408203
+				],
+				"community_id": "west-3",
+				"entrance": [
+					11.738920211792,
+					22.8621368408203
+				],
+				"id": "west-lot-13-1",
+				"occupant": "",
+				"polygon": "[(12.31892, 22.22214), (13.55892, 22.22214), (13.55892, 23.50214), (12.31892, 23.50214)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					10.5185699462891,
+					24.371826171875
+				],
+				"community_id": "west-3",
+				"entrance": [
+					11.7185707092285,
+					24.371826171875
+				],
+				"id": "west-lot-14--1",
+				"occupant": "",
+				"polygon": "[(9.89857, 23.73183), (11.13857, 23.73183), (11.13857, 25.01183), (9.89857, 25.01183)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					12.9185705184937,
+					24.4340286254883
+				],
+				"community_id": "west-3",
+				"entrance": [
+					11.7185707092285,
+					24.4340286254883
+				],
+				"id": "west-lot-14-1",
+				"occupant": "",
+				"polygon": "[(12.29857, 23.79403), (13.53857, 23.79403), (13.53857, 25.07403), (12.29857, 25.07403)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					10.5923938751221,
+					25.9508762359619
+				],
+				"community_id": "west-3",
+				"entrance": [
+					11.7923946380615,
+					25.9508762359619
+				],
+				"id": "west-lot-15--1",
+				"occupant": "",
+				"polygon": "[(9.972394, 25.31088), (11.21239, 25.31088), (11.21239, 26.59088), (9.972394, 26.59088)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					10.6402587890625,
+					27.5502243041992
+				],
+				"community_id": "west-3",
+				"entrance": [
+					11.8402585983276,
+					27.5502243041992
+				],
+				"id": "west-lot-16--1",
+				"occupant": "",
+				"polygon": "[(10.02026, 26.91022), (11.26026, 26.91022), (11.26026, 28.19022), (10.02026, 28.19022)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					17.9152278900146,
+					0.448473483324051
+				],
+				"community_id": "east-1",
+				"entrance": [
+					19.1152286529541,
+					0.448473483324051
+				],
+				"id": "east-lot-0--1",
+				"occupant": "",
+				"polygon": "[(17.29523, -0.191527), (18.53523, -0.191527), (18.53523, 1.088473), (17.29523, 1.088473)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					20.3152275085449,
+					0.3752101957798
+				],
+				"community_id": "east-1",
+				"entrance": [
+					19.1152286529541,
+					0.3752101957798
+				],
+				"id": "east-lot-0-1",
+				"occupant": "",
+				"polygon": "[(19.69523, -0.26479), (20.93523, -0.26479), (20.93523, 1.01521), (19.69523, 1.01521)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					18.3388175964355,
+					1.99082577228546
+				],
+				"community_id": "east-1",
+				"entrance": [
+					19.538818359375,
+					1.99082577228546
+				],
+				"id": "east-lot-1--1",
+				"occupant": "",
+				"polygon": "[(17.71882, 1.350826), (18.95882, 1.350826), (18.95882, 2.630826), (17.71882, 2.630826)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					20.7388172149658,
+					1.94488990306854
+				],
+				"community_id": "east-1",
+				"entrance": [
+					19.538818359375,
+					1.94488990306854
+				],
+				"id": "east-lot-1-1",
+				"occupant": "",
+				"polygon": "[(20.11882, 1.30489), (21.35882, 1.30489), (21.35882, 2.58489), (20.11882, 2.58489)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					18.7047882080078,
+					3.59655165672302
+				],
+				"community_id": "east-1",
+				"entrance": [
+					19.9047889709473,
+					3.59655165672302
+				],
+				"id": "east-lot-2--1",
+				"occupant": "",
+				"polygon": "[(18.08479, 2.956552), (19.32479, 2.956552), (19.32479, 4.236552), (18.08479, 4.236552)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					21.1047897338867,
+					3.617112159729
+				],
+				"community_id": "east-1",
+				"entrance": [
+					19.9047889709473,
+					3.617112159729
+				],
+				"id": "east-lot-2-1",
+				"occupant": "",
+				"polygon": "[(20.48479, 2.977112), (21.72479, 2.977112), (21.72479, 4.257112), (20.48479, 4.257112)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					18.9069061279297,
+					5.25576066970825
+				],
+				"community_id": "east-1",
+				"entrance": [
+					20.1069068908691,
+					5.25576066970825
+				],
+				"id": "east-lot-3--1",
+				"occupant": "",
+				"polygon": "[(18.28691, 4.615761), (19.52691, 4.615761), (19.52691, 5.895761), (18.28691, 5.895761)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					21.30690574646,
+					5.2001953125
+				],
+				"community_id": "east-1",
+				"entrance": [
+					20.1069068908691,
+					5.2001953125
+				],
+				"id": "east-lot-3-1",
+				"occupant": "",
+				"polygon": "[(20.6869, 4.560195), (21.92691, 4.560195), (21.92691, 5.840195), (20.6869, 5.840195)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					18.9459705352783,
+					6.77612113952637
+				],
+				"community_id": "east-1",
+				"entrance": [
+					20.1459712982178,
+					6.77612113952637
+				],
+				"id": "east-lot-4--1",
+				"occupant": "",
+				"polygon": "[(18.32597, 6.136121), (19.56597, 6.136121), (19.56597, 7.416121), (18.32597, 7.416121)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					21.3459701538086,
+					6.84691190719604
+				],
+				"community_id": "east-1",
+				"entrance": [
+					20.1459712982178,
+					6.84691190719604
+				],
+				"id": "east-lot-4-1",
+				"occupant": "",
+				"polygon": "[(20.72597, 6.206912), (21.96597, 6.206912), (21.96597, 7.486912), (20.72597, 7.486912)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					18.9166564941406,
+					8.39459991455078
+				],
+				"community_id": "east-1",
+				"entrance": [
+					20.1166572570801,
+					8.39459991455078
+				],
+				"id": "east-lot-5--1",
+				"occupant": "",
+				"polygon": "[(18.29666, 7.7546), (19.53666, 7.7546), (19.53666, 9.0346), (18.29666, 9.0346)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					18.9323043823242,
+					9.96388912200928
+				],
+				"community_id": "east-2",
+				"entrance": [
+					20.1323051452637,
+					9.96388912200928
+				],
+				"id": "east-lot-6--1",
+				"occupant": "",
+				"polygon": "[(18.3123, 9.323889), (19.55231, 9.323889), (19.55231, 10.60389), (18.3123, 10.60389)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					21.3323040008545,
+					9.95230770111084
+				],
+				"community_id": "east-2",
+				"entrance": [
+					20.1323051452637,
+					9.95230770111084
+				],
+				"id": "east-lot-6-1",
+				"occupant": "building-00026",
+				"polygon": "[(20.7123, 9.312307), (21.9523, 9.312307), (21.9523, 10.59231), (20.7123, 10.59231)]",
+				"use": "commercial"
+			},
+			{
+				"bank": 1,
+				"center": [
+					19.0396118164063,
+					11.624529838562
+				],
+				"community_id": "east-2",
+				"entrance": [
+					20.2396125793457,
+					11.624529838562
+				],
+				"id": "east-lot-7--1",
+				"occupant": "building-00017",
+				"polygon": "[(18.41961, 10.98453), (19.65961, 10.98453), (19.65961, 12.26453), (18.41961, 12.26453)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					21.4396114349365,
+					11.5835390090942
+				],
+				"community_id": "east-2",
+				"entrance": [
+					20.2396125793457,
+					11.5835390090942
+				],
+				"id": "east-lot-7-1",
+				"occupant": "building-00018",
+				"polygon": "[(20.81961, 10.94354), (22.05961, 10.94354), (22.05961, 12.22354), (20.81961, 12.22354)]",
+				"use": "commercial"
+			},
+			{
+				"bank": 1,
+				"center": [
+					19.2277145385742,
+					14.0
+				],
+				"community_id": "east-2",
+				"entrance": [
+					20.4277153015137,
+					14.0
+				],
+				"id": "east-lot-8--1",
+				"occupant": "building-00023",
+				"polygon": "[(18.60771, 13.36), (19.84772, 13.36), (19.84772, 14.64), (18.60771, 14.64)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					19.0968265533447,
+					16.4601860046387
+				],
+				"community_id": "east-2",
+				"entrance": [
+					20.2968273162842,
+					16.4601860046387
+				],
+				"id": "east-lot-9--1",
+				"occupant": "",
+				"polygon": "[(18.47683, 15.82019), (19.71683, 15.82019), (19.71683, 17.10019), (18.47683, 17.10019)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					18.7580127716064,
+					17.9884834289551
+				],
+				"community_id": "east-2",
+				"entrance": [
+					19.9580116271973,
+					17.9884834289551
+				],
+				"id": "east-lot-10--1",
+				"occupant": "",
+				"polygon": "[(18.13801, 17.34848), (19.37801, 17.34848), (19.37801, 18.62848), (18.13801, 18.62848)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					20.3434906005859,
+					21.1447601318359
+				],
+				"community_id": "east-3",
+				"entrance": [
+					19.1434917449951,
+					21.1447601318359
+				],
+				"id": "east-lot-12-1",
+				"occupant": "",
+				"polygon": "[(19.72349, 20.50476), (20.96349, 20.50476), (20.96349, 21.78476), (19.72349, 21.78476)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					17.738920211792,
+					22.8089141845703
+				],
+				"community_id": "east-3",
+				"entrance": [
+					18.9389209747314,
+					22.8089141845703
+				],
+				"id": "east-lot-13--1",
+				"occupant": "",
+				"polygon": "[(17.11892, 22.16891), (18.35892, 22.16891), (18.35892, 23.44891), (17.11892, 23.44891)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					20.1389198303223,
+					22.7827568054199
+				],
+				"community_id": "east-3",
+				"entrance": [
+					18.9389209747314,
+					22.7827568054199
+				],
+				"id": "east-lot-13-1",
+				"occupant": "",
+				"polygon": "[(19.51892, 22.14276), (20.75892, 22.14276), (20.75892, 23.42276), (19.51892, 23.42276)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					20.1185703277588,
+					24.3720874786377
+				],
+				"community_id": "east-3",
+				"entrance": [
+					18.9185695648193,
+					24.3720874786377
+				],
+				"id": "east-lot-14-1",
+				"occupant": "",
+				"polygon": "[(19.49857, 23.73209), (20.73857, 23.73209), (20.73857, 25.01209), (19.49857, 25.01209)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					20.1923942565918,
+					25.9655799865723
+				],
+				"community_id": "east-3",
+				"entrance": [
+					18.9923934936523,
+					25.9655799865723
+				],
+				"id": "east-lot-15-1",
+				"occupant": "",
+				"polygon": "[(19.57239, 25.32558), (20.8124, 25.32558), (20.8124, 26.60558), (19.57239, 26.60558)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					20.2402591705322,
+					27.6255702972412
+				],
+				"community_id": "east-3",
+				"entrance": [
+					19.0402584075928,
+					27.6255702972412
+				],
+				"id": "east-lot-16-1",
+				"occupant": "",
+				"polygon": "[(19.62026, 26.98557), (20.86026, 26.98557), (20.86026, 28.26557), (19.62026, 28.26557)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					6.15101528167725,
+					10.3999996185303
+				],
+				"community_id": "west-2",
+				"entrance": [
+					7.35101526513846,
+					10.4
+				],
+				"id": "west-outer-lot-1--1",
+				"occupant": "",
+				"polygon": "[(5.531015, 9.759999), (6.771015, 9.759999), (6.771015, 11.04), (5.531015, 11.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					6.27613496780396,
+					12.0
+				],
+				"community_id": "west-2",
+				"entrance": [
+					7.47613515272585,
+					12.0
+				],
+				"id": "west-outer-lot-2--1",
+				"occupant": "",
+				"polygon": "[(5.656135, 11.36), (6.896135, 11.36), (6.896135, 12.64), (5.656135, 12.64)]",
+				"use": "commercial"
+			},
+			{
+				"bank": -1,
+				"center": [
+					8.82116222381592,
+					15.1999998092651
+				],
+				"community_id": "west-2",
+				"entrance": [
+					7.62116227219439,
+					15.2
+				],
+				"id": "west-outer-lot-4-1",
+				"occupant": "",
+				"polygon": "[(8.201162, 14.56), (9.441162, 14.56), (9.441162, 15.84), (8.201162, 15.84)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					6.22854948043823,
+					16.7999992370605
+				],
+				"community_id": "west-2",
+				"entrance": [
+					7.42854946757108,
+					16.8
+				],
+				"id": "west-outer-lot-5--1",
+				"occupant": "",
+				"polygon": "[(5.60855, 16.16), (6.848549, 16.16), (6.848549, 17.44), (5.60855, 17.44)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					8.62854957580566,
+					16.7999992370605
+				],
+				"community_id": "west-2",
+				"entrance": [
+					7.42854946757108,
+					16.8
+				],
+				"id": "west-outer-lot-5-1",
+				"occupant": "",
+				"polygon": "[(8.00855, 16.16), (9.248549, 16.16), (9.248549, 17.44), (8.00855, 17.44)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					5.85222625732422,
+					18.3999996185303
+				],
+				"community_id": "west-2",
+				"entrance": [
+					7.05222626739416,
+					18.4
+				],
+				"id": "west-outer-lot-6--1",
+				"occupant": "",
+				"polygon": "[(5.232226, 17.76), (6.472226, 17.76), (6.472226, 19.04), (5.232226, 19.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					8.25222587585449,
+					18.3999996185303
+				],
+				"community_id": "west-2",
+				"entrance": [
+					7.05222626739416,
+					18.4
+				],
+				"id": "west-outer-lot-6-1",
+				"occupant": "",
+				"polygon": "[(7.632226, 17.76), (8.872226, 17.76), (8.872226, 19.04), (7.632226, 19.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					24.5510158538818,
+					10.3999996185303
+				],
+				"community_id": "east-2",
+				"entrance": [
+					25.7510152651385,
+					10.4
+				],
+				"id": "east-outer-lot-1--1",
+				"occupant": "",
+				"polygon": "[(23.93102, 9.759999), (25.17102, 9.759999), (25.17102, 11.04), (23.93102, 11.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					26.9510154724121,
+					10.3999996185303
+				],
+				"community_id": "east-2",
+				"entrance": [
+					25.7510152651385,
+					10.4
+				],
+				"id": "east-outer-lot-1-1",
+				"occupant": "",
+				"polygon": "[(26.33101, 9.759999), (27.57102, 9.759999), (27.57102, 11.04), (26.33101, 11.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					24.6761360168457,
+					12.0
+				],
+				"community_id": "east-2",
+				"entrance": [
+					25.8761351527258,
+					12.0
+				],
+				"id": "east-outer-lot-2--1",
+				"occupant": "",
+				"polygon": "[(24.05614, 11.36), (25.29614, 11.36), (25.29614, 12.64), (24.05614, 12.64)]",
+				"use": "commercial"
+			},
+			{
+				"bank": 1,
+				"center": [
+					27.076135635376,
+					12.0
+				],
+				"community_id": "east-2",
+				"entrance": [
+					25.8761351527258,
+					12.0
+				],
+				"id": "east-outer-lot-2-1",
+				"occupant": "",
+				"polygon": "[(26.45613, 11.36), (27.69614, 11.36), (27.69614, 12.64), (26.45613, 12.64)]",
+				"use": "commercial"
+			},
+			{
+				"bank": 1,
+				"center": [
+					27.0285491943359,
+					16.7999992370605
+				],
+				"community_id": "east-2",
+				"entrance": [
+					25.8285494675711,
+					16.8
+				],
+				"id": "east-outer-lot-5-1",
+				"occupant": "",
+				"polygon": "[(26.40855, 16.16), (27.64855, 16.16), (27.64855, 17.44), (26.40855, 17.44)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					26.6522254943848,
+					18.3999996185303
+				],
+				"community_id": "east-2",
+				"entrance": [
+					25.4522262673942,
+					18.4
+				],
+				"id": "east-outer-lot-6-1",
+				"occupant": "",
+				"polygon": "[(26.03222, 17.76), (27.27223, 17.76), (27.27223, 19.04), (26.03222, 19.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					0.512857377529144,
+					8.80000019073486
+				],
+				"community_id": "west-garden-1",
+				"entrance": [
+					1.71285735679592,
+					8.8
+				],
+				"id": "west-garden-lot-0--1",
+				"occupant": "",
+				"polygon": "[(-0.107143, 8.16), (1.132857, 8.16), (1.132857, 9.440001), (-0.107143, 9.440001)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					0.551015257835388,
+					10.3999996185303
+				],
+				"community_id": "west-garden-1",
+				"entrance": [
+					1.75101526513846,
+					10.4
+				],
+				"id": "west-garden-lot-1--1",
+				"occupant": "",
+				"polygon": "[(-0.068985, 9.759999), (1.171015, 9.759999), (1.171015, 11.04), (-0.068985, 11.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					2.95101523399353,
+					10.3999996185303
+				],
+				"community_id": "west-garden-1",
+				"entrance": [
+					1.75101526513846,
+					10.4
+				],
+				"id": "west-garden-lot-1-1",
+				"occupant": "",
+				"polygon": "[(2.331015, 9.759999), (3.571015, 9.759999), (3.571015, 11.04), (2.331015, 11.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					0.676135182380676,
+					12.0
+				],
+				"community_id": "west-garden-1",
+				"entrance": [
+					1.87613515272585,
+					12.0
+				],
+				"id": "west-garden-lot-2--1",
+				"occupant": "",
+				"polygon": "[(0.056135, 11.36), (1.296135, 11.36), (1.296135, 12.64), (0.056135, 12.64)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					3.07613515853882,
+					12.0
+				],
+				"community_id": "west-garden-1",
+				"entrance": [
+					1.87613515272585,
+					12.0
+				],
+				"id": "west-garden-lot-2-1",
+				"occupant": "",
+				"polygon": "[(2.456135, 11.36), (3.696135, 11.36), (3.696135, 12.64), (2.456135, 12.64)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					0.808598697185516,
+					13.6000003814697
+				],
+				"community_id": "west-garden-1",
+				"entrance": [
+					2.00859870188504,
+					13.6
+				],
+				"id": "west-garden-lot-3--1",
+				"occupant": "",
+				"polygon": "[(0.188599, 12.96), (1.428599, 12.96), (1.428599, 14.24), (0.188599, 14.24)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					3.20859861373901,
+					13.6000003814697
+				],
+				"community_id": "west-garden-1",
+				"entrance": [
+					2.00859870188504,
+					13.6
+				],
+				"id": "west-garden-lot-3-1",
+				"occupant": "",
+				"polygon": "[(2.588599, 12.96), (3.828598, 12.96), (3.828598, 14.24), (2.588599, 14.24)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					0.821162283420563,
+					15.1999998092651
+				],
+				"community_id": "west-garden-2",
+				"entrance": [
+					2.02116227219439,
+					15.2
+				],
+				"id": "west-garden-lot-4--1",
+				"occupant": "",
+				"polygon": "[(0.201162, 14.56), (1.441162, 14.56), (1.441162, 15.84), (0.201162, 15.84)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					3.22116231918335,
+					15.1999998092651
+				],
+				"community_id": "west-garden-2",
+				"entrance": [
+					2.02116227219439,
+					15.2
+				],
+				"id": "west-garden-lot-4-1",
+				"occupant": "",
+				"polygon": "[(2.601162, 14.56), (3.841162, 14.56), (3.841162, 15.84), (2.601162, 15.84)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					0.628549456596375,
+					16.7999992370605
+				],
+				"community_id": "west-garden-2",
+				"entrance": [
+					1.82854946757108,
+					16.8
+				],
+				"id": "west-garden-lot-5--1",
+				"occupant": "",
+				"polygon": "[(0.008549, 16.16), (1.248549, 16.16), (1.248549, 17.44), (0.008549, 17.44)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					3.02854943275452,
+					16.7999992370605
+				],
+				"community_id": "west-garden-2",
+				"entrance": [
+					1.82854946757108,
+					16.8
+				],
+				"id": "west-garden-lot-5-1",
+				"occupant": "",
+				"polygon": "[(2.408549, 16.16), (3.64855, 16.16), (3.64855, 17.44), (2.408549, 17.44)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					0.252226263284683,
+					18.3999996185303
+				],
+				"community_id": "west-garden-2",
+				"entrance": [
+					1.45222626739416,
+					18.4
+				],
+				"id": "west-garden-lot-6--1",
+				"occupant": "",
+				"polygon": "[(-0.367774, 17.76), (0.872226, 17.76), (0.872226, 19.04), (-0.367774, 19.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": -1,
+				"center": [
+					2.6522262096405,
+					18.3999996185303
+				],
+				"community_id": "west-garden-2",
+				"entrance": [
+					1.45222626739416,
+					18.4
+				],
+				"id": "west-garden-lot-6-1",
+				"occupant": "",
+				"polygon": "[(2.032226, 17.76), (3.272226, 17.76), (3.272226, 19.04), (2.032226, 19.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					32.5128555297852,
+					8.80000019073486
+				],
+				"community_id": "east-garden-1",
+				"entrance": [
+					31.3128573567959,
+					8.8
+				],
+				"id": "east-garden-lot-0-1",
+				"occupant": "",
+				"polygon": "[(31.89285, 8.16), (33.13285, 8.16), (33.13285, 9.440001), (31.89285, 9.440001)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					30.1510143280029,
+					10.3999996185303
+				],
+				"community_id": "east-garden-1",
+				"entrance": [
+					31.3510152651385,
+					10.4
+				],
+				"id": "east-garden-lot-1--1",
+				"occupant": "",
+				"polygon": "[(29.53101, 9.759999), (30.77102, 9.759999), (30.77102, 11.04), (29.53101, 11.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					32.5510139465332,
+					10.3999996185303
+				],
+				"community_id": "east-garden-1",
+				"entrance": [
+					31.3510152651385,
+					10.4
+				],
+				"id": "east-garden-lot-1-1",
+				"occupant": "",
+				"polygon": "[(31.93101, 9.759999), (33.17101, 9.759999), (33.17101, 11.04), (31.93101, 11.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					30.2761344909668,
+					12.0
+				],
+				"community_id": "east-garden-1",
+				"entrance": [
+					31.4761351527258,
+					12.0
+				],
+				"id": "east-garden-lot-2--1",
+				"occupant": "",
+				"polygon": "[(29.65613, 11.36), (30.89614, 11.36), (30.89614, 12.64), (29.65613, 12.64)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					32.6761360168457,
+					12.0
+				],
+				"community_id": "east-garden-1",
+				"entrance": [
+					31.4761351527258,
+					12.0
+				],
+				"id": "east-garden-lot-2-1",
+				"occupant": "",
+				"polygon": "[(32.05614, 11.36), (33.29613, 11.36), (33.29613, 12.64), (32.05614, 12.64)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					30.408597946167,
+					13.6000003814697
+				],
+				"community_id": "east-garden-1",
+				"entrance": [
+					31.608598701885,
+					13.6
+				],
+				"id": "east-garden-lot-3--1",
+				"occupant": "",
+				"polygon": "[(29.7886, 12.96), (31.0286, 12.96), (31.0286, 14.24), (29.7886, 14.24)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					32.8085975646973,
+					13.6000003814697
+				],
+				"community_id": "east-garden-1",
+				"entrance": [
+					31.608598701885,
+					13.6
+				],
+				"id": "east-garden-lot-3-1",
+				"occupant": "",
+				"polygon": "[(32.1886, 12.96), (33.4286, 12.96), (33.4286, 14.24), (32.1886, 14.24)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					30.4211616516113,
+					15.1999998092651
+				],
+				"community_id": "east-garden-2",
+				"entrance": [
+					31.6211622721944,
+					15.2
+				],
+				"id": "east-garden-lot-4--1",
+				"occupant": "",
+				"polygon": "[(29.80116, 14.56), (31.04116, 14.56), (31.04116, 15.84), (29.80116, 15.84)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					32.8211631774902,
+					15.1999998092651
+				],
+				"community_id": "east-garden-2",
+				"entrance": [
+					31.6211622721944,
+					15.2
+				],
+				"id": "east-garden-lot-4-1",
+				"occupant": "",
+				"polygon": "[(32.20116, 14.56), (33.44116, 14.56), (33.44116, 15.84), (32.20116, 15.84)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					30.2285499572754,
+					16.7999992370605
+				],
+				"community_id": "east-garden-2",
+				"entrance": [
+					31.4285494675711,
+					16.8
+				],
+				"id": "east-garden-lot-5--1",
+				"occupant": "",
+				"polygon": "[(29.60855, 16.16), (30.84855, 16.16), (30.84855, 17.44), (29.60855, 17.44)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					32.628547668457,
+					16.7999992370605
+				],
+				"community_id": "east-garden-2",
+				"entrance": [
+					31.4285494675711,
+					16.8
+				],
+				"id": "east-garden-lot-5-1",
+				"occupant": "",
+				"polygon": "[(32.00855, 16.16), (33.24855, 16.16), (33.24855, 17.44), (32.00855, 17.44)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					29.8522262573242,
+					18.3999996185303
+				],
+				"community_id": "east-garden-2",
+				"entrance": [
+					31.0522262673942,
+					18.4
+				],
+				"id": "east-garden-lot-6--1",
+				"occupant": "",
+				"polygon": "[(29.23223, 17.76), (30.47223, 17.76), (30.47223, 19.04), (29.23223, 19.04)]",
+				"use": "residential"
+			},
+			{
+				"bank": 1,
+				"center": [
+					32.2522277832031,
+					18.3999996185303
+				],
+				"community_id": "east-garden-2",
+				"entrance": [
+					31.0522262673942,
+					18.4
+				],
+				"id": "east-garden-lot-6-1",
+				"occupant": "",
+				"polygon": "[(31.63223, 17.76), (32.87223, 17.76), (32.87223, 19.04), (31.63223, 19.04)]",
+				"use": "residential"
+			}
+		],
+		"nodes": {
+			"east-0": [
+				18.7883472442627,
+				-1.20000004768372
+			],
+			"east-1": [
+				20.1236267089844,
+				8.0
+			],
+			"east-2": [
+				20.4277153015137,
+				14.0
+			],
+			"east-3": [
+				19.4158592224121,
+				20.0
+			],
+			"east-4": [
+				18.9434566497803,
+				30.2000007629395
+			],
+			"east-garden-1": [
+				31.3236274719238,
+				8.0
+			],
+			"east-garden-2": [
+				31.6277141571045,
+				14.0
+			],
+			"east-garden-3": [
+				30.6158580780029,
+				20.0
+			],
+			"east-outer-1": [
+				25.7236270904541,
+				8.0
+			],
+			"east-outer-2": [
+				26.0277156829834,
+				14.0
+			],
+			"east-outer-3": [
+				25.0158596038818,
+				20.0
+			],
+			"west-0": [
+				11.5883464813232,
+				-1.20000004768372
+			],
+			"west-1": [
+				12.9236268997192,
+				8.0
+			],
+			"west-2": [
+				13.2277145385742,
+				14.0
+			],
+			"west-3": [
+				12.2158584594727,
+				20.0
+			],
+			"west-4": [
+				11.7434568405151,
+				30.2000007629395
+			],
+			"west-garden-1": [
+				1.72362685203552,
+				8.0
+			],
+			"west-garden-2": [
+				2.02771472930908,
+				14.0
+			],
+			"west-garden-3": [
+				1.01585829257965,
+				20.0
+			],
+			"west-outer-1": [
+				7.32362699508667,
+				8.0
+			],
+			"west-outer-2": [
+				7.62771463394165,
+				14.0
+			],
+			"west-outer-3": [
+				6.61585855484009,
+				20.0
+			]
+		},
+		"roads": [
+			{
+				"bridge": false,
+				"from": "west-0",
+				"id": "west-road-1",
+				"length": 9.34474158287048,
+				"path": "[(11.58835, -1.2), (11.72387, -0.433333), (11.89864, 0.333333), (12.09778, 1.1), (12.30366, 1.866667), (12.49847, 2.633333), (12.66674, 3.4), (12.79756, 4.166667), (12.88599, 4.933333), (12.93353, 5.7), (12.94751, 6.466667), (12.9396, 7.233333), (12.92363, 8.0)]",
+				"to": "west-1"
+			},
+			{
+				"bridge": false,
+				"from": "west-1",
+				"id": "west-road-2",
+				"length": 6.01173180341721,
+				"path": "[(12.92363, 8.0), (12.91535, 8.5), (12.91259, 9.0), (12.91775, 9.5), (12.9323, 10.0), (12.95665, 10.5), (12.99008, 11.0), (13.03081, 11.5), (13.07613, 12.0), (13.12256, 12.5), (13.1661, 13.0), (13.20253, 13.5), (13.22771, 14.0)]",
+				"to": "west-2"
+			},
+			{
+				"bridge": false,
+				"from": "west-2",
+				"id": "west-road-3",
+				"length": 6.11549866199493,
+				"path": "[(13.22771, 14.0), (13.23788, 14.5), (13.22994, 15.0), (13.20168, 15.5), (13.152, 16.0), (13.08095, 16.5), (12.98981, 17.0), (12.88102, 17.5), (12.75801, 18.0), (12.62507, 18.5), (12.48701, 19.0), (12.34893, 19.5), (12.21586, 20.0)]",
+				"to": "west-3"
+			},
+			{
+				"bridge": false,
+				"from": "west-3",
+				"id": "west-road-4",
+				"length": 10.2497448921204,
+				"path": "[(12.21586, 20.0), (12.01405, 20.85), (11.85804, 21.7), (11.75762, 22.55), (11.71285, 23.4), (11.71457, 24.25), (11.74673, 25.1), (11.78992, 25.95), (11.82569, 26.8), (11.84039, 27.65), (11.82814, 28.5), (11.79201, 29.35), (11.74346, 30.2)]",
+				"to": "west-4"
+			},
+			{
+				"bridge": false,
+				"from": "east-0",
+				"id": "east-road-1",
+				"length": 9.3447413444519,
+				"path": "[(18.78835, -1.2), (18.92387, -0.433333), (19.09864, 0.333333), (19.29778, 1.1), (19.50366, 1.866667), (19.69847, 2.633333), (19.86674, 3.4), (19.99756, 4.166667), (20.08599, 4.933333), (20.13353, 5.7), (20.14751, 6.466667), (20.1396, 7.233333), (20.12363, 8.0)]",
+				"to": "east-1"
+			},
+			{
+				"bridge": false,
+				"from": "east-1",
+				"id": "east-road-2",
+				"length": 6.01173186302185,
+				"path": "[(20.12363, 8.0), (20.11535, 8.5), (20.11259, 9.0), (20.11775, 9.5), (20.13231, 10.0), (20.15665, 10.5), (20.19008, 11.0), (20.23081, 11.5), (20.27613, 12.0), (20.32256, 12.5), (20.3661, 13.0), (20.40253, 13.5), (20.42772, 14.0)]",
+				"to": "east-2"
+			},
+			{
+				"bridge": false,
+				"from": "east-2",
+				"id": "east-road-3",
+				"length": 6.11549824476242,
+				"path": "[(20.42772, 14.0), (20.43788, 14.5), (20.42994, 15.0), (20.40168, 15.5), (20.352, 16.0), (20.28095, 16.5), (20.18981, 17.0), (20.08102, 17.5), (19.95801, 18.0), (19.82507, 18.5), (19.68701, 19.0), (19.54893, 19.5), (19.41586, 20.0)]",
+				"to": "east-3"
+			},
+			{
+				"bridge": false,
+				"from": "east-3",
+				"id": "east-road-4",
+				"length": 10.2497448325157,
+				"path": "[(19.41586, 20.0), (19.21405, 20.85), (19.05804, 21.7), (18.95762, 22.55), (18.91285, 23.4), (18.91458, 24.25), (18.94673, 25.1), (18.98992, 25.95), (19.02569, 26.8), (19.04039, 27.65), (19.02814, 28.5), (18.99201, 29.35), (18.94346, 30.2)]",
+				"to": "east-4"
+			},
+			{
+				"bridge": false,
+				"from": "west-1",
+				"id": "west-cross-1",
+				"kind": "branch",
+				"length": 5.59999990463257,
+				"path": "[(12.92363, 8.0), (7.323627, 8.0)]",
+				"to": "west-outer-1"
+			},
+			{
+				"bridge": false,
+				"from": "west-2",
+				"id": "west-cross-2",
+				"kind": "branch",
+				"length": 5.59999990463257,
+				"path": "[(13.22771, 14.0), (7.627715, 14.0)]",
+				"to": "west-outer-2"
+			},
+			{
+				"bridge": false,
+				"from": "west-outer-1",
+				"id": "west-outer-road-2",
+				"kind": "branch",
+				"length": 6.01175838708878,
+				"path": "[(7.323627, 8.0), (7.317016, 8.375), (7.313109, 8.75), (7.313061, 9.125), (7.31775, 9.5), (7.327745, 9.875), (7.343272, 10.25), (7.364206, 10.625), (7.390077, 11.0), (7.420078, 11.375), (7.453103, 11.75), (7.487788, 12.125), (7.522563, 12.5), (7.555719, 12.875), (7.585472, 13.25), (7.61004, 13.625), (7.627715, 14.0)]",
+				"to": "west-outer-2"
+			},
+			{
+				"bridge": false,
+				"from": "west-3",
+				"id": "west-cross-3",
+				"kind": "branch",
+				"length": 5.59999990463257,
+				"path": "[(12.21586, 20.0), (6.615859, 20.0)]",
+				"to": "west-outer-3"
+			},
+			{
+				"bridge": false,
+				"from": "west-outer-2",
+				"id": "west-outer-road-3",
+				"kind": "branch",
+				"length": 6.11560153961182,
+				"path": "[(7.627715, 14.0), (7.636931, 14.375), (7.636335, 14.75), (7.624842, 15.125), (7.601685, 15.5), (7.566448, 15.875), (7.519096, 16.25), (7.459975, 16.625), (7.389814, 17.0), (7.309699, 17.375), (7.22104, 17.75), (7.125527, 18.125), (7.025068, 18.5), (6.921728, 18.875), (6.817654, 19.25), (6.715001, 19.625), (6.615858, 20.0)]",
+				"to": "west-outer-3"
+			},
+			{
+				"bridge": false,
+				"from": "east-1",
+				"id": "east-cross-1",
+				"kind": "branch",
+				"length": 5.60000038146973,
+				"path": "[(20.12363, 8.0), (25.72363, 8.0)]",
+				"to": "east-outer-1"
+			},
+			{
+				"bridge": false,
+				"from": "east-2",
+				"id": "east-cross-2",
+				"kind": "branch",
+				"length": 5.60000038146973,
+				"path": "[(20.42772, 14.0), (26.02772, 14.0)]",
+				"to": "east-outer-2"
+			},
+			{
+				"bridge": false,
+				"from": "east-outer-1",
+				"id": "east-outer-road-2",
+				"kind": "branch",
+				"length": 6.01175850629807,
+				"path": "[(25.72363, 8.0), (25.71702, 8.375), (25.71311, 8.75), (25.71306, 9.125), (25.71775, 9.5), (25.72775, 9.875), (25.74327, 10.25), (25.76421, 10.625), (25.79008, 11.0), (25.82008, 11.375), (25.8531, 11.75), (25.88779, 12.125), (25.92256, 12.5), (25.95572, 12.875), (25.98547, 13.25), (26.01004, 13.625), (26.02772, 14.0)]",
+				"to": "east-outer-2"
+			},
+			{
+				"bridge": false,
+				"from": "east-3",
+				"id": "east-cross-3",
+				"kind": "branch",
+				"length": 5.60000038146973,
+				"path": "[(19.41586, 20.0), (25.01586, 20.0)]",
+				"to": "east-outer-3"
+			},
+			{
+				"bridge": false,
+				"from": "east-outer-2",
+				"id": "east-outer-road-3",
+				"kind": "branch",
+				"length": 6.11560165882111,
+				"path": "[(26.02772, 14.0), (26.03693, 14.375), (26.03633, 14.75), (26.02484, 15.125), (26.00168, 15.5), (25.96645, 15.875), (25.9191, 16.25), (25.85998, 16.625), (25.78981, 17.0), (25.7097, 17.375), (25.62104, 17.75), (25.52553, 18.125), (25.42507, 18.5), (25.32173, 18.875), (25.21765, 19.25), (25.115, 19.625), (25.01586, 20.0)]",
+				"to": "east-outer-3"
+			},
+			{
+				"bridge": false,
+				"from": "west-outer-1",
+				"id": "west-garden-cross-1",
+				"kind": "branch",
+				"length": 5.60000038146973,
+				"path": "[(7.323627, 8.0), (1.723627, 8.0)]",
+				"to": "west-garden-1"
+			},
+			{
+				"bridge": false,
+				"from": "west-garden-1",
+				"id": "west-garden-road-2",
+				"kind": "branch",
+				"length": 6.01175844669342,
+				"path": "[(1.723627, 8.0), (1.717016, 8.375), (1.713109, 8.75), (1.713061, 9.125), (1.71775, 9.5), (1.727745, 9.875), (1.743271, 10.25), (1.764206, 10.625), (1.790077, 11.0), (1.820078, 11.375), (1.853103, 11.75), (1.887788, 12.125), (1.922563, 12.5), (1.955719, 12.875), (1.985472, 13.25), (2.01004, 13.625), (2.027715, 14.0)]",
+				"to": "west-garden-2"
+			},
+			{
+				"bridge": false,
+				"from": "west-outer-3",
+				"id": "west-garden-cross-3",
+				"kind": "branch",
+				"length": 5.60000038146973,
+				"path": "[(6.615859, 20.0), (1.015858, 20.0)]",
+				"to": "west-garden-3"
+			},
+			{
+				"bridge": false,
+				"from": "west-garden-2",
+				"id": "west-garden-road-3",
+				"kind": "branch",
+				"length": 6.11560156941414,
+				"path": "[(2.027715, 14.0), (2.036931, 14.375), (2.036335, 14.75), (2.024842, 15.125), (2.001684, 15.5), (1.966448, 15.875), (1.919096, 16.25), (1.859975, 16.625), (1.789814, 17.0), (1.709699, 17.375), (1.62104, 17.75), (1.525527, 18.125), (1.425068, 18.5), (1.321728, 18.875), (1.217654, 19.25), (1.115001, 19.625), (1.015858, 20.0)]",
+				"to": "west-garden-3"
+			},
+			{
+				"bridge": false,
+				"from": "east-outer-1",
+				"id": "east-garden-cross-1",
+				"kind": "branch",
+				"length": 5.60000038146973,
+				"path": "[(25.72363, 8.0), (31.32363, 8.0)]",
+				"to": "east-garden-1"
+			},
+			{
+				"bridge": false,
+				"from": "east-garden-1",
+				"id": "east-garden-road-2",
+				"kind": "branch",
+				"length": 6.01175847649574,
+				"path": "[(31.32363, 8.0), (31.31701, 8.375), (31.31311, 8.75), (31.31306, 9.125), (31.31775, 9.5), (31.32775, 9.875), (31.34327, 10.25), (31.36421, 10.625), (31.39008, 11.0), (31.42008, 11.375), (31.4531, 11.75), (31.48779, 12.125), (31.52256, 12.5), (31.55572, 12.875), (31.58547, 13.25), (31.61004, 13.625), (31.62771, 14.0)]",
+				"to": "east-garden-2"
+			},
+			{
+				"bridge": false,
+				"from": "east-outer-3",
+				"id": "east-garden-cross-3",
+				"kind": "branch",
+				"length": 5.59999847412109,
+				"path": "[(25.01586, 20.0), (30.61586, 20.0)]",
+				"to": "east-garden-3"
+			},
+			{
+				"bridge": false,
+				"from": "east-garden-2",
+				"id": "east-garden-road-3",
+				"kind": "branch",
+				"length": 6.11560165882111,
+				"path": "[(31.62771, 14.0), (31.63693, 14.375), (31.63634, 14.75), (31.62484, 15.125), (31.60168, 15.5), (31.56645, 15.875), (31.5191, 16.25), (31.45998, 16.625), (31.38981, 17.0), (31.3097, 17.375), (31.22104, 17.75), (31.12553, 18.125), (31.02507, 18.5), (30.92173, 18.875), (30.81765, 19.25), (30.715, 19.625), (30.61586, 20.0)]",
+				"to": "east-garden-3"
+			}
+		]
+	},
+	"planning_reservations": [],
+	"profile": "warm",
+	"public_sites": [
+		{
+			"active": false,
+			"community_id": "west-2",
+			"covered": [],
+			"entrance": [
+				11.8827354431152,
+				10.9
+			],
+			"frame": 0,
+			"id": "west-park",
+			"kind": "park",
+			"name": "松影公园",
+			"polygon": "[(8.482736, 8.9), (11.88274, 8.9), (11.88274, 12.9), (8.482736, 12.9)]",
+			"position": [
+				10.1827354431152,
+				10.8999996185303
+			],
+			"served": [],
+			"service_capacity": 0,
+			"service_demand": 0
+		},
+		{
+			"active": false,
+			"community_id": "west-2",
+			"covered": [],
+			"entrance": [
+				7.62771463394165,
+				14.0
+			],
+			"frame": 0,
+			"id": "west-civic",
+			"kind": "civic",
+			"name": "河谷图书馆",
+			"polygon": "[(5.027714, 13.1), (6.627715, 13.1), (6.627715, 14.9), (5.027714, 14.9)]",
+			"position": [
+				5.82771444320679,
+				14.0
+			],
+			"served": [],
+			"service_capacity": 18,
+			"service_demand": 0
+		},
+		{
+			"active": false,
+			"community_id": "east-2",
+			"covered": [],
+			"entrance": [
+				21.2693717956543,
+				17.1
+			],
+			"frame": 0,
+			"id": "east-park",
+			"kind": "park",
+			"name": "晴岸花园",
+			"polygon": "[(21.26937, 15.1), (24.66937, 15.1), (24.66937, 19.1), (21.26937, 19.1)]",
+			"position": [
+				22.9693717956543,
+				17.1000003814697
+			],
+			"served": [],
+			"service_capacity": 0,
+			"service_demand": 0
+		},
+		{
+			"active": false,
+			"community_id": "east-2",
+			"covered": [],
+			"entrance": [
+				26.0277156829834,
+				14.0
+			],
+			"frame": 0,
+			"id": "east-civic",
+			"kind": "civic",
+			"name": "晴岸音乐亭",
+			"polygon": "[(27.02772, 13.1), (28.62771, 13.1), (28.62771, 14.9), (27.02772, 14.9)]",
+			"position": [
+				27.8277149200439,
+				14.0
+			],
+			"served": [],
+			"service_capacity": 18,
+			"service_demand": 0
+		},
+		{
+			"access_path": "[(14.1323, 10.05849), (12.93798, 10.11665)]",
+			"active": true,
+			"anchor_id": "player-civic-00002",
+			"community_id": "west-2",
+			"covered": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00007",
+				"building-00008",
+				"building-00009",
+				"building-00010",
+				"building-00011",
+				"building-00012",
+				"building-00013",
+				"building-00014",
+				"building-00015",
+				"building-00016",
+				"building-00025"
+			],
+			"created_phrase": 1,
+			"entrance": [
+				12.9379835128784,
+				10.1166458129883
+			],
+			"frame": 352800,
+			"id": "player-civic-00002",
+			"influence_config": {
+				"planning_radius": 6.0,
+				"relation": "支持"
+			},
+			"kind": "civic",
+			"name": "自选文化馆",
+			"player_planned": true,
+			"polygon": "[(13.5123, 9.418493), (14.7523, 9.418493), (14.7523, 10.69849), (13.5123, 10.69849)]",
+			"position": [
+				14.1323041915894,
+				10.0584936141968
+			],
+			"road_id": "west-road-2",
+			"served": [
+				"building-00001",
+				"building-00002",
+				"building-00003",
+				"building-00004",
+				"building-00005",
+				"building-00006",
+				"building-00007",
+				"building-00008",
+				"building-00009",
+				"building-00010",
+				"building-00011",
+				"building-00012",
+				"building-00013",
+				"building-00014",
+				"building-00015",
+				"building-00016",
+				"building-00025"
+			],
+			"service_capacity": 18,
+			"service_demand": 17,
+			"service_level": 1,
+			"source_lot_ids": [
+				"west-lot-6-1"
+			],
+			"source_reservation_id": "",
+			"source_site_id": "west-lot-6-1"
+		},
+		{
+			"access_path": "[(18.9323, 9.963889), (20.13024, 9.929017)]",
+			"active": true,
+			"anchor_id": "player-park-00003",
+			"community_id": "east-2",
+			"covered": [
+				"building-00017",
+				"building-00018",
+				"building-00019",
+				"building-00020",
+				"building-00021",
+				"building-00022",
+				"building-00023",
+				"building-00024",
+				"building-00026"
+			],
+			"created_phrase": 2,
+			"entrance": [
+				20.1302394866943,
+				9.92901706695557
+			],
+			"frame": 705600,
+			"id": "player-park-00003",
+			"influence_config": {
+				"planning_radius": 5.0,
+				"relation": "吸引"
+			},
+			"kind": "park",
+			"name": "自选公园",
+			"player_planned": true,
+			"polygon": "[(18.3123, 9.323889), (19.55231, 9.323889), (19.55231, 10.60389), (18.3123, 10.60389)]",
+			"position": [
+				18.9323043823242,
+				9.96388912200928
+			],
+			"road_id": "east-road-2",
+			"served": [],
+			"service_capacity": 0,
+			"service_demand": 0,
+			"service_level": 1,
+			"source_lot_ids": [
+				"east-lot-6--1"
+			],
+			"source_reservation_id": "",
+			"source_site_id": "east-lot-6--1"
+		}
+	],
+	"rng": {
+		"counters": {
+			"boons": 0,
+			"events": 0,
+			"form": 64,
+			"mode": 0,
+			"terrain": 2
+		},
+		"seed_hex": "2026100900000062"
+	},
+	"schema_version": 2,
+	"seed_hex": "2026100900000062",
+	"settings": {
+		"city": {
+			"branch_road_half_width": 0.18,
+			"bus_dwell_beats": 2.0,
+			"bus_speed": 1.8,
+			"car_speed": 2.8,
+			"carriage_speed": 0.95,
+			"civic_half_length": 0.9,
+			"civic_half_width": 0.8,
+			"garden_lot_rows": 7.0,
+			"garden_street_depth": 5.6,
+			"growth_compact_neighbor_weight": 10000.0,
+			"neighborhood_depth": 5.6,
+			"park_half_length": 2.0,
+			"park_half_width": 1.7,
+			"service_walk_radius": 18.0,
+			"starter_buildings_per_region": 6.0,
+			"starter_region_count": 3.0,
+			"tram_speed": 2.2
+		},
+		"distance_reference": {
+			"0": 2.0,
+			"0.5": 1.85148253184877,
+			"1": 1.46888734385946,
+			"1.5": 0.998703577198552,
+			"2": 0.58192091772862,
+			"3": 0.124353048044233,
+			"4": 0.0143339500752248
+		},
+		"harmony": {
+			"base_growth": 1.0,
+			"collapse_phrases": 3.0,
+			"decay": 0.5,
+			"decay_threshold": 60.0,
+			"empty_resonance": 100.0,
+			"gray_entry": 40.0,
+			"gray_exit": 48.0,
+			"initial_vitality": 50.0,
+			"intervals": {
+				"0": {
+					"name": "同度 / 纯八度",
+					"score": 1.0,
+					"vitality_delta": 8.0
+				},
+				"1": {
+					"name": "小二 / 大七",
+					"score": 0.05,
+					"vitality_delta": -8.0
+				},
+				"10": {
+					"name": "大二 / 小七",
+					"score": 0.3,
+					"vitality_delta": -3.0
+				},
+				"11": {
+					"name": "小二 / 大七",
+					"score": 0.05,
+					"vitality_delta": -8.0
+				},
+				"2": {
+					"name": "大二 / 小七",
+					"score": 0.3,
+					"vitality_delta": -3.0
+				},
+				"3": {
+					"name": "小三 / 小六",
+					"score": 0.6,
+					"vitality_delta": 0.0
+				},
+				"4": {
+					"name": "大三 / 大六",
+					"score": 0.85,
+					"vitality_delta": 5.0
+				},
+				"5": {
+					"name": "纯五 / 纯四",
+					"score": 0.9,
+					"vitality_delta": 5.0
+				},
+				"6": {
+					"name": "三全音",
+					"score": 0.0,
+					"vitality_delta": -8.0
+				},
+				"7": {
+					"name": "纯五 / 纯四",
+					"score": 0.9,
+					"vitality_delta": 5.0
+				},
+				"8": {
+					"name": "小三 / 小六",
+					"score": 0.6,
+					"vitality_delta": 0.0
+				},
+				"9": {
+					"name": "大三 / 大六",
+					"score": 0.85,
+					"vitality_delta": 5.0
+				}
+			},
+			"maximum_vitality": 100.0,
+			"minimum_vitality": 0.0,
+			"net_change_cap": 12.0
+		},
+		"legacy_audio_contract_sha256": "1c4968251b745260ddd91f5b9d00a3fb14ad4f0e530b66cfd2b5199629b647e7",
+		"schema_version": 2.0,
+		"score": {
+			"background_gain": 0.125892541,
+			"bed_gain": 0.006,
+			"control_fade_beats": 2.0,
+			"pad_gain": 0.075,
+			"pad_group_limit": 30.0,
+			"pad_reference_communities": 3.0,
+			"pitch_glide_seconds": 0.04,
+			"render_voice_limit": 70.0,
+			"response_gain": 0.022,
+			"response_slot_limit": 1.0,
+			"rhythm_gain": 0.032,
+			"rhythm_slot_limit": 2.0,
+			"theme_gain": 0.04,
+			"theme_rest_phrases": 7.0,
+			"theme_rotate_phrases": 4.0,
+			"theme_slot_limit": 1.0
+		},
+		"sources": {
+			"spec.asset.md": "1ba05c885b8185524341db8bdc43eb8ee4d328293c57af98a7fb27dd704b7100",
+			"spec.audio.md": "075f541c037d85d2120785a3eb30f70fb993d69c36dfc4f15b324a055bb52175",
+			"spec.city.md": "77340e3a1350a64f6871823f7dcc4cbec9150d756a2db0f297a3e9001e1d6575",
+			"spec.fabric.md": "45b51df669697edd5eb0777b5152641440ec0e1a414d2253bcfd2ea0f6f48d52",
+			"spec.harmony.md": "6d3b8868d1b0a1f66679a0592b6dab92cd48de6fcddfd7b378fab63a53074c0e",
+			"spec.proposal.md": "f031a4715abf7b565b5e4c6c7af247208fc1462f41aa85878c5340952e4aa145",
+			"spec.run.md": "25ad400323f3c46607650e5de7995ae41975928948b8d89fc49a06d93703e409",
+			"spec.space.md": "bb519bee3140cc0365cef8b3bb47ab5a1081e6cf7ca2ddb8b03affbfcbfb0616",
+			"spec.terrain.md": "528a3697fcca1500774b550614cc6e6edbb598e023d398e1d229030e36a3c65b",
+			"spec.ui.md": "46a78e33fca1dfebcf3f8977de4af8cc50ff0470841f8c8ab42cd7b5bec547b7"
+		},
+		"space": {
+			"base_coupling": 2.0,
+			"community_max": 40.0,
+			"community_min": 4.0,
+			"comparison_tolerance": 0.000001,
+			"distance_sigma": 1.8,
+			"forest_factor": 0.85,
+			"gap_cutoff": 4.0,
+			"homogeneity_M": 0.7,
+			"homogeneity_dv_scale": 0.5,
+			"homogeneity_threshold": 0.4,
+			"industrial_factor": 1.3,
+			"near_neighbour_count": 12.0,
+			"pan_divisor": 12.0,
+			"pan_limit": 0.8,
+			"partial_occlusion": 0.7,
+			"projection_x": 28.0,
+			"projection_y": 14.0,
+			"residential_radius": 0.45,
+			"schema_version": 2.0,
+			"terrain_height_screen_scale": 14.0,
+			"water_factor": 1.15,
+			"world_max": 40.0,
+			"world_min": -8.0
+		},
+		"terrain": {
+			"attempt_limit": 8.0,
+			"minimum_buildable_ratio": 0.45,
+			"noise_frequency": 0.065,
+			"noise_gain": 0.5,
+			"noise_lacunarity": 2.0,
+			"noise_octaves": 4.0,
+			"template_bridge_y": 14.0,
+			"template_building_max_grade": 0.577350269,
+			"template_land_max": 36.0,
+			"template_land_min": -4.0,
+			"template_lot_half_length": 0.64,
+			"template_lot_half_width": 0.62,
+			"template_lot_road_offset": 1.2,
+			"template_lot_spacing": 1.6,
+			"template_river_base_half_width": 1.05,
+			"template_river_center": 16.0,
+			"template_river_widening": 0.025,
+			"template_road_bank_offset": 3.6,
+			"template_road_half_width": 0.25,
+			"template_shore_buffer_ratio": 0.12,
+			"template_slice_building_budget": 24.0
+		},
+		"timing": {
+			"bars_per_phrase": 8.0,
+			"beats_per_bar": 4.0,
+			"bpm": 120.0,
+			"buffer_seconds": 0.12,
+			"phrase_frames": 352800.0,
+			"sample_rate": 22050.0
+		},
+		"world_model": "continuous"
+	},
+	"terrain_state": {
+		"family": "river_valley",
+		"noise_seed": 348856521,
+		"river_phase": 5.69006679825868
+	},
+	"transit": {},
+	"transit_demand": {},
+	"transit_flow_pending": [],
+	"transit_lines": []
+}

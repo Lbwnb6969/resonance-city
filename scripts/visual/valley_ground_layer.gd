@@ -6,6 +6,8 @@ const TerrainGeometry = preload("res://scripts/visual/valley_terrain_visual_geom
 const ExpressionIdentity = preload("res://scripts/visual/first_expression_identity.gd")
 var city: ContinuousWorld
 var role := "terrain"
+var art_style_id := "baseline"
+var palette: Dictionary = {}
 var key: Array = []
 var projected: Dictionary = {}
 var point_cache: Dictionary = {}
@@ -34,12 +36,14 @@ const URBAN_PARTS = ["roads","centers","corridors","public","lots","fabric"]
 
 func sync(demo: Control) -> void:
 	city = demo.shown_world
+	art_style_id = demo.art_direction.selected_id
+	palette = demo.art_direction.palette()
 	for part in urban_parts.values(): part.city = city
 	position = Vector2(demo.size.x*0.5,demo.size.y*0.52)+demo.pan
 	scale = Vector2.ONE*demo.view_zoom
 	visible = not demo.black
 	var geometry_key: Array = [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])] if role == "terrain" else demo._shown_city_key()
-	var next_key := geometry_key+[snappedf(demo.view_zoom,0.00001)]
+	var next_key := geometry_key+[snappedf(demo.view_zoom,0.00001),art_style_id]
 	var next_terrain := [city.terrain.noise_seed,city.terrain.river_phase,city.terrain.family,hash(city.cfg["terrain"])]
 	var terrain_changed := terrain_identity != next_terrain
 	if terrain_changed:
@@ -131,6 +135,10 @@ func _draw_river_terrain() -> void:
 	_prepare_terrain_geometry()
 	var left_colors := [Color("e9e1cb"),Color("d4dcc0"),Color("becfb0"),Color("acbfae")]
 	var right_colors := [Color("e0e5d6"),Color("ced9c5"),Color("b9ccb8"),Color("acbfae")]
+	if not palette.is_empty():
+		for band in range(4):
+			left_colors[band] = Color(palette["left"][band])
+			right_colors[band] = Color(palette["right"][band])
 	terrain_surface_skips = 0
 	for surface in terrain_geometry["surfaces"]:
 		var colors: Array = left_colors if int(surface["side"]) == 0 else right_colors
@@ -146,16 +154,16 @@ func _draw_river_terrain() -> void:
 	for ring in patches: draw_colored_polygon(_project_polygon(ring),Color(0.72,0.77,0.59,0.08))
 	for contour in terrain_geometry["contours"]:
 		draw_polyline(_project_polygon(contour["path"]),Color(0.45,0.58,0.46,0.18),0.8/camera_zoom,true)
-	for rim in terrain_geometry["rims"]: draw_colored_polygon(_project_polygon(rim),Color("c2ceb3"))
-	draw_colored_polygon(_project_polygon(city.terrain.water,0.0),Color("91b1b3"))
-	draw_colored_polygon(_project_polygon(terrain_geometry["channel"],0.0),Color("78a4ad"))
-	for shallow in terrain_geometry["shallow_water"]: draw_colored_polygon(_project_polygon(shallow,0.0),Color("acc6be"))
+	for rim in terrain_geometry["rims"]: draw_colored_polygon(_project_polygon(rim),Color(palette.get("rim","c2ceb3")))
+	draw_colored_polygon(_project_polygon(city.terrain.water,0.0),Color(palette.get("water","91b1b3")))
+	draw_colored_polygon(_project_polygon(terrain_geometry["channel"],0.0),Color(palette.get("channel","78a4ad")))
+	for shallow in terrain_geometry["shallow_water"]: draw_colored_polygon(_project_polygon(shallow,0.0),Color(palette.get("shallow","acc6be")))
 	for face in terrain_geometry["shore_faces"]:
 		var edge: PackedVector2Array = face["edge"]
 		var top := PackedVector2Array([_point(edge[0],float(face["heights"][0])),_point(edge[1],float(face["heights"][1]))])
 		var wall := PackedVector2Array([top[0],top[1],_point(edge[1],0.0),_point(edge[0],0.0)])
-		draw_colored_polygon(wall,Color("9fac9c"))
-		draw_polyline(top,Color("d8dfc7"),0.8/camera_zoom,true)
+		draw_colored_polygon(wall,Color(palette.get("shore","9fac9c")))
+		draw_polyline(top,Color(palette.get("edge","d8dfc7")),0.8/camera_zoom,true)
 
 func _is_drawable_polygon(polygon: PackedVector2Array) -> bool:
 	if polygon.size() < 3: return false
@@ -296,9 +304,11 @@ func _sync_urban_parts(terrain_changed: bool) -> void:
 			urban_parts[name] = part
 		var part: Node2D = urban_parts[name]
 		part.city = city
+		part.art_style_id = art_style_id
+		part.palette = palette
 		part.roads = roads
 		part.camera_zoom = camera_zoom
-		var content_key: Array = [terrain_identity,contents[name]]
+		var content_key: Array = [terrain_identity,contents[name],art_style_id]
 		# Public outline widths are screen-constant. Other urban marks scale with
 		# their parent, so camera motion/zoom reuses their exact draw commands.
 		if name == "public": content_key.append(camera_zoom)

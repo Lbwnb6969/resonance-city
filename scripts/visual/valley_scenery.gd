@@ -273,6 +273,7 @@ func sync(demo: Control) -> void:
 	var scenery_red: float = world_tint.r/demo.buildings_layer.modulate.r
 	for key in props:
 		var prop: ValleyProp = props[key]
+		_sync_prop_art(demo,prop)
 		var p: Vector2 = prop.get_meta("world_position")
 		var site_id := str(prop.get_meta("site"))
 		prop.visible = true
@@ -333,3 +334,19 @@ func sync(demo: Control) -> void:
 		# Reveal alpha remains a CanvasItem property; trees/travelers keep animating.
 		if prop.kind in ["tree","bus","carriage","tram","car","walker"]: prop.queue_redraw()
 	_sync_stop_activity(stop_activity)
+
+func _sync_prop_art(demo: Control,prop: ValleyProp) -> void:
+	if prop.kind not in ["tree","civic"]: return
+	if demo.art_direction.selected_id == "baseline" and prop.art_entry.is_empty(): return
+	var entry: Dictionary = demo.art_direction.prop_entry(prop.kind,prop.tone)
+	if str(prop.art_entry.get("id","")) == str(entry.get("id","")): return
+	prop.art_entry = entry
+	if not entry.is_empty():
+		prop.art_texture = demo.building_catalog.texture_for(entry)
+		prop.art_shadow = load("res://"+str(entry["shadow_texture"]))
+		prop.art_contact = load("res://"+str(entry["contact_texture"]))
+	else:
+		prop.art_texture = null
+		prop.art_shadow = null
+		prop.art_contact = null
+	prop.queue_redraw()

@@ -32,7 +32,11 @@ const BuildingVariants = preload("res://scripts/visual/building_variant_catalog.
 const FirstExpressionIdentity = preload("res://scripts/visual/first_expression_identity.gd")
 const StreetEaves = preload("res://scripts/visual/street_eaves_layer.gd")
 const Daylight = preload("res://scripts/visual/valley_daylight.gd")
+const ArtDirection = preload("res://scripts/visual/city_art_direction.gd")
 var building_catalog := BuildingVariants.new()
+var art_study_enabled := false
+var art_direction := ArtDirection.new()
+var art_review_panel: PanelContainer
 var street_eaves_layer: Node2D
 var daylight_state: Dictionary = {}
 var daylight_manual_phase := -1.0
@@ -183,6 +187,13 @@ func _profile_frame(stage: String, started: int) -> void:
 
 func _ready() -> void:
 	if "--isolated-session" in OS.get_cmdline_user_args(): session_persistence = false
+	for arg: String in OS.get_cmdline_user_args():
+		if arg == "--art-study" or arg.begins_with("--art-study="):
+			art_study_enabled = true
+			session_persistence = false
+			if arg.begins_with("--art-study="):
+				var requested_style := arg.trim_prefix("--art-study=")
+				art_direction.selected_id = requested_style if requested_style in ArtDirection.STYLE_IDS else "baseline"
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -198,6 +209,10 @@ func _ready() -> void:
 		building_catalog.texture_for(entry)
 		building_catalog.image_for(entry)
 	building_catalog.prewarm_first_expressions(assets)
+	if art_study_enabled:
+		art_direction.load_catalog(building_catalog)
+		building_catalog.art_direction = art_direction
+		daylight_manual_phase = 0.0
 	backdrop = ColorRect.new()
 	backdrop.name = "Backdrop"
 	backdrop.z_index = -40
@@ -291,6 +306,10 @@ func _ready() -> void:
 	first_composition_guide = preload("res://scripts/ui/first_composition_guide.gd").new()
 	add_child(first_composition_guide)
 	first_composition_guide.setup(self)
+	if art_study_enabled:
+		art_review_panel = preload("res://scripts/ui/art_direction_review.gd").new()
+		add_child(art_review_panel)
+		art_review_panel.setup(self)
 	light_player = AudioStreamPlayer.new()
 	light_player.volume_db = -8.0
 	add_child(light_player)
@@ -301,7 +320,11 @@ func _ready() -> void:
 	var calibration: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://数据/valley_score_calibration.json"))
 	fixed_gain = float(calibration["gain"])
 	clock = get_node("/root/AudioClock") as AudibleAudioClock
-	_start_world()
+	var sample_world: ContinuousWorld = null
+	if art_study_enabled and "--art-sample" in OS.get_cmdline_user_args():
+		sample_world = preload("res://scripts/world/art_direction_sample.gd").build()
+	_start_world({},sample_world)
+	if sample_world != null: _message("示例河湾 · 换一套画面，点房屋改音，或按P继续规划")
 	_warm_notes()
 	if not session_persistence or not load_city(true): clock.start_output(model._mix_frame,{},clock.renderer.snapshot())
 	mouse_exited.connect(func() -> void: pointer_inside = false)
@@ -883,8 +906,9 @@ func _prepare_ground() -> void:
 				var p := Vector2(4,2)+Vector2.from_angle(TAU*step/64.0)*radius
 				if shown_world.terrain.land_at(p): contour.append(p)
 			if contour.size() > 2: ground_contours.append(contour)
-	if road_draw_key == shown_world.network.topology: return
-	road_draw_key = shown_world.network.topology
+	var road_style_key: String = shown_world.network.topology+":"+art_direction.selected_id
+	if road_draw_key == road_style_key: return
+	road_draw_key = road_style_key
 	road_draw_polygons.clear()
 	# Polygon projections depend on mutable occupancy/derived geometry too;
 	# prune those entries at each topology or city phrase instead of keeping history.
@@ -892,7 +916,8 @@ func _prepare_ground() -> void:
 	for road in shown_world.roads:
 		var width := 0.55 if road["bridge"] else (float(shown_world.cfg["city"]["branch_road_half_width"]) if road.get("kind","") == "branch" else float(shown_world.cfg["terrain"]["template_road_half_width"]))
 		for polygon in Geometry2D.offset_polyline(road["path"],width,Geometry2D.JOIN_ROUND,Geometry2D.END_BUTT):
-			road_draw_polygons.append({"polygon":polygon,"color":Color("d3bb93") if road["bridge"] else Color("f1eee0")})
+			var palette: Dictionary = art_direction.palette()
+			road_draw_polygons.append({"polygon":polygon,"color":Color(palette.get("bridge","d3bb93")) if road["bridge"] else Color(palette.get("road","f1eee0"))})
 
 func _shown_city_key() -> Array:
 	return [model.presentation_token,shown_world.phrase_index]
@@ -3147,6 +3172,8 @@ func _process(delta: float) -> void:
 
 func _sync_daylight() -> void:
 	daylight_state = Daylight.sample(clock.renderer.transport.audible_frame,clock.renderer.transport.sample_rate,daylight_manual_phase)
+	daylight_state = art_direction.daylight(daylight_state)
+	if art_review_panel != null: art_review_panel.sync()
 	var tint: Color = daylight_state["world_tint"]
 	terrain_layer.modulate = tint
 	city_ground_layer.modulate = tint
@@ -3159,6 +3186,18 @@ func _sync_daylight() -> void:
 	shadow_layer.modulate.a = float(daylight_state["shadow_strength"])
 	caption.add_theme_color_override("font_color",Color("435c59"))
 	tooltip.add_theme_color_override("font_color",daylight_state["ui_ink"])
+
+func set_art_direction(id: String) -> void:
+	if not art_study_enabled or id not in ArtDirection.STYLE_IDS or id == art_direction.selected_id: return
+	art_direction.selected_id = id
+	# Retained cornices use the new entry's real roof height and extents.
+	street_eaves_layer.clear()
+	_sync_buildings()
+	_sync_daylight()
+	for prop: ValleyProp in scenery.props.values(): scenery._sync_prop_art(self,prop)
+	street_eaves_layer.sync(self)
+	expression_audition_layer.sync(self)
+	queue_redraw()
 
 func _sync_buildings() -> void:
 	_prepare_ground()
@@ -3177,7 +3216,7 @@ func _sync_buildings() -> void:
 	buildings_layer.modulate = Color(0.96+warmth,1.0,1.0,1.0)
 	shadow_layer.position = origin
 	shadow_layer.scale = Vector2.ONE*view_zoom
-	var display_key := _shown_city_key()+[shown_world.buildings.size(),pitches.hash()]
+	var display_key := _shown_city_key()+[shown_world.buildings.size(),pitches.hash(),art_direction.selected_id]
 	if building_display_key == display_key and sprites.size() == shown_world.buildings.size():
 		var shadow_changes: Array[Dictionary] = []
 		for id in revealing_buildings.keys():

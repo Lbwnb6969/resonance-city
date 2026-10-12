@@ -1,0 +1,3461 @@
+{
+	"checks": {
+		"baseline_actual_author_images_have_opaque_hits_and_transparent_misses": true,
+		"baseline_actual_author_route_identity_survives": true,
+		"baseline_actual_trees_and_civic_show_matching_art_and_masks": true,
+		"baseline_cached_geometry_image_and_sprite_show_the_selected_catalogue": true,
+		"baseline_independent_same_world_ten_second_PCM_is_identical": true,
+		"baseline_review_button_selects_the_style": true,
+		"baseline_screenshots_hold_identical_city_travelers_and_device_cursor": true,
+		"baseline_selected_building_masks_reach_the_union_layer": true,
+		"baseline_style_button_preserves_complete_work_and_audio_state": true,
+		"baseline_terrain_and_retained_urban_parts_refresh": true,
+		"candidate_art_keeps_actual_playable_retune": true,
+		"capture_01_baseline_同城全景": true,
+		"capture_01_clay_同城全景": true,
+		"capture_01_garden_同城全景": true,
+		"capture_01_paper_同城全景": true,
+		"capture_02_baseline_同街近景": true,
+		"capture_02_clay_同街近景": true,
+		"capture_02_garden_同街近景": true,
+		"capture_02_paper_同街近景": true,
+		"capture_03_纸上城镇_真实建筑改音菜单": true,
+		"capture_04_纸上城镇_真实换音后城市": true,
+		"clay_actual_author_images_have_opaque_hits_and_transparent_misses": true,
+		"clay_actual_author_route_identity_survives": true,
+		"clay_actual_trees_and_civic_show_matching_art_and_masks": true,
+		"clay_cached_geometry_image_and_sprite_show_the_selected_catalogue": true,
+		"clay_independent_same_world_ten_second_PCM_is_identical": true,
+		"clay_review_button_selects_the_style": true,
+		"clay_screenshots_hold_identical_city_travelers_and_device_cursor": true,
+		"clay_selected_building_masks_reach_the_union_layer": true,
+		"clay_style_button_preserves_complete_work_and_audio_state": true,
+		"clay_terrain_and_retained_urban_parts_refresh": true,
+		"clicking_candidate_building_opens_its_real_retune_menu": true,
+		"device_input_contains_exactly_eight_seconds": true,
+		"eight_second_device_input_recording_finishes": true,
+		"fixture_contains_actual_authored_civic": true,
+		"fixture_contains_actual_authored_park": true,
+		"fixture_contains_two_real_authors_and_actual_commercial_use": true,
+		"fixture_enters_the_actual_device_timeline": true,
+		"fixture_uses_four_real_settlements_and_one_actual_charter": true,
+		"garden_actual_author_images_have_opaque_hits_and_transparent_misses": true,
+		"garden_actual_author_route_identity_survives": true,
+		"garden_actual_trees_and_civic_show_matching_art_and_masks": true,
+		"garden_cached_geometry_image_and_sprite_show_the_selected_catalogue": true,
+		"garden_independent_same_world_ten_second_PCM_is_identical": true,
+		"garden_review_button_selects_the_style": true,
+		"garden_screenshots_hold_identical_city_travelers_and_device_cursor": true,
+		"garden_selected_building_masks_reach_the_union_layer": true,
+		"garden_style_button_preserves_complete_work_and_audio_state": true,
+		"garden_terrain_and_retained_urban_parts_refresh": true,
+		"live_baseline_cursor_is_monotonic": true,
+		"live_baseline_style_changes_only_presentation": true,
+		"live_clay_cursor_is_monotonic": true,
+		"live_clay_style_changes_only_presentation": true,
+		"live_clock_reaches_style_1": true,
+		"live_clock_reaches_style_2": true,
+		"live_clock_reaches_style_3": true,
+		"live_device_input_is_audible_and_has_no_clipped_frame": true,
+		"live_garden_cursor_is_monotonic": true,
+		"live_garden_style_changes_only_presentation": true,
+		"live_paper_cursor_is_monotonic": true,
+		"live_paper_style_changes_only_presentation": true,
+		"live_style_switches_and_retune_have_no_new_underrun": true,
+		"paper_actual_author_images_have_opaque_hits_and_transparent_misses": true,
+		"paper_actual_author_route_identity_survives": true,
+		"paper_actual_trees_and_civic_show_matching_art_and_masks": true,
+		"paper_author_building_has_a_clickable_actual_pixel": true,
+		"paper_cached_geometry_image_and_sprite_show_the_selected_catalogue": true,
+		"paper_independent_same_world_ten_second_PCM_is_identical": true,
+		"paper_review_button_selects_the_style": true,
+		"paper_screenshots_hold_identical_city_travelers_and_device_cursor": true,
+		"paper_selected_building_masks_reach_the_union_layer": true,
+		"paper_style_button_preserves_complete_work_and_audio_state": true,
+		"paper_terrain_and_retained_urban_parts_refresh": true,
+		"physical_window_and_WASAPI_device": true,
+		"real_retune_reaches_the_device_beat": true,
+		"returning_to_baseline_restores_all_original_procedural_props": true,
+		"style_comparison_never_restarts_or_replaces_the_audio_queue": true
+	},
+	"evidence": {
+		"fixed_comparison": {
+			"audible_frame": 1433423.33565493,
+			"city_sha256": "8adb24efd4c473ecb174cd74b295f64be2da5d67b307410d115b8dda8c381437",
+			"close_pan": [
+				-110.005073547363,
+				63.6020355224609
+			],
+			"close_zoom": 1.9,
+			"daylight_phase": 0.0,
+			"offline_pcm_sha256": {
+				"baseline": "e5eb07cc644a735a8ba7b2606bd0cf9d1233beb800ed2d3313ba23253a4eefbb",
+				"clay": "e5eb07cc644a735a8ba7b2606bd0cf9d1233beb800ed2d3313ba23253a4eefbb",
+				"garden": "e5eb07cc644a735a8ba7b2606bd0cf9d1233beb800ed2d3313ba23253a4eefbb",
+				"paper": "e5eb07cc644a735a8ba7b2606bd0cf9d1233beb800ed2d3313ba23253a4eefbb"
+			},
+			"pause_scope": "Device queue and clock/demo processing held for fixed screenshots and isolated PCM comparison, then resumed in place.",
+			"styles": {
+				"baseline": {
+					"buildings": {
+						"building-00001": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_terrace",
+							"expression": "",
+							"position": [
+								259.940185546875,
+								-282.245971679688
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_terrace_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_terrace.svg"
+						},
+						"building-00002": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_gabled",
+							"expression": "",
+							"position": [
+								327.140167236328,
+								-243.944366455078
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_gabled_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_gabled.svg"
+						},
+						"building-00003": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_hipped",
+							"expression": "",
+							"position": [
+								239.847351074219,
+								-264.796508789063
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_hipped_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_hipped.svg"
+						},
+						"building-00004": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_terrace",
+							"expression": "",
+							"position": [
+								307.04736328125,
+								-226.596710205078
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_terrace_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_terrace.svg"
+						},
+						"building-00005": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_gabled",
+							"expression": "",
+							"position": [
+								218.502334594727,
+								-247.858322143555
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_gabled_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_gabled.svg"
+						},
+						"building-00006": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_hipped",
+							"expression": "",
+							"position": [
+								285.702331542969,
+								-209.830795288086
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_hipped_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_hipped.svg"
+						},
+						"building-00007": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_terrace",
+							"expression": "",
+							"position": [
+								195.400924682617,
+								-231.741302490234
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_terrace_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_terrace.svg"
+						},
+						"building-00008": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_gabled",
+							"expression": "",
+							"position": [
+								262.600921630859,
+								-194.154739379883
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_gabled_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_gabled.svg"
+						},
+						"building-00009": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_hipped",
+							"expression": "",
+							"position": [
+								-79.0810623168945,
+								-76.1885070800781
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_hipped_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_hipped.svg"
+						},
+						"building-00010": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_terrace",
+							"expression": "",
+							"position": [
+								-11.881046295166,
+								-42.6979141235352
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_terrace_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_terrace.svg"
+						},
+						"building-00011": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_gabled",
+							"expression": "",
+							"position": [
+								-107.686813354492,
+								-63.3869934082031
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_gabled_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_gabled.svg"
+						},
+						"building-00012": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_hipped",
+							"expression": "",
+							"position": [
+								-40.4868011474609,
+								-30.0280647277832
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_hipped_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_hipped.svg"
+						},
+						"building-00013": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_terrace",
+							"expression": "",
+							"position": [
+								-138.486770629883,
+								-51.6841888427734
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_terrace_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_terrace.svg"
+						},
+						"building-00014": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_gabled",
+							"expression": "",
+							"position": [
+								-71.2867584228516,
+								-18.455114364624
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_gabled_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_gabled.svg"
+						},
+						"building-00015": {
+							"actual_type": "commercial",
+							"entry_id": "era1_commercial_01",
+							"expression": "",
+							"position": [
+								-171.209396362305,
+								-41.0804061889648
+							],
+							"shadow": "资源/时代城市/阴影/era1_commercial_01_shadow.png",
+							"texture": "资源/时代城市/SVG/era1_commercial_01.svg"
+						},
+						"building-00016": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_terrace",
+							"expression": "",
+							"position": [
+								-104.009376525879,
+								-7.77556180953979
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_terrace_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_terrace.svg"
+						},
+						"building-00017": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_gabled",
+							"expression": "",
+							"position": [
+								213.618667602539,
+								-27.2561817169189
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_gabled_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_gabled.svg"
+						},
+						"building-00018": {
+							"actual_type": "commercial",
+							"entry_id": "era1_commercial_01",
+							"expression": "",
+							"position": [
+								280.818664550781,
+								6.16952323913574
+							],
+							"shadow": "资源/时代城市/阴影/era1_commercial_01_shadow.png",
+							"texture": "资源/时代城市/SVG/era1_commercial_01.svg"
+						},
+						"building-00019": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_terrace",
+							"expression": "",
+							"position": [
+								189.18635559082,
+								-12.466215133667
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_terrace_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_terrace.svg"
+						},
+						"building-00020": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_gabled",
+							"expression": "",
+							"position": [
+								256.386352539063,
+								20.8661441802979
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_gabled_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_gabled.svg"
+						},
+						"building-00021": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_hipped",
+							"expression": "",
+							"position": [
+								164.574279785156,
+								2.31689667701721
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_hipped_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_hipped.svg"
+						},
+						"building-00022": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_terrace",
+							"expression": "",
+							"position": [
+								231.774276733398,
+								35.5009384155273
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_terrace_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_terrace.svg"
+						},
+						"building-00023": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_gabled",
+							"expression": "",
+							"position": [
+								138.964645385742,
+								16.589672088623
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_gabled_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_gabled.svg"
+						},
+						"building-00024": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_hipped",
+							"expression": "",
+							"position": [
+								111.639457702637,
+								29.9157905578613
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_hipped_shadow.png",
+							"texture": "资源/街坊建筑变体/SVG/valley_house_hipped.svg"
+						},
+						"building-00025": {
+							"actual_type": "residential",
+							"entry_id": "valley_house_terrace:first_expression:deep",
+							"expression": "deep",
+							"position": [
+								-139.321258544922,
+								3.76801538467407
+							],
+							"shadow": "资源/街坊建筑变体/阴影/valley_house_terrace_shadow.png",
+							"texture": "资源/首作声音路线/SVG/deep_valley_house_terrace.svg"
+						},
+						"building-00026": {
+							"actual_type": "commercial",
+							"entry_id": "era1_commercial_01:first_expression:weave",
+							"expression": "weave",
+							"position": [
+								318.639892578125,
+								-15.0745000839233
+							],
+							"shadow": "资源/时代城市/阴影/era1_commercial_01_shadow.png",
+							"texture": "资源/首作声音路线/SVG/weave_era1_commercial_01.svg"
+						}
+					},
+					"civic": 1,
+					"eaves": {
+						"pairs": [
+							[
+								"building-00001",
+								"building-00003"
+							],
+							[
+								"building-00002",
+								"building-00004"
+							],
+							[
+								"building-00003",
+								"building-00005"
+							],
+							[
+								"building-00004",
+								"building-00006"
+							],
+							[
+								"building-00005",
+								"building-00007"
+							],
+							[
+								"building-00006",
+								"building-00008"
+							],
+							[
+								"building-00009",
+								"building-00011"
+							],
+							[
+								"building-00010",
+								"building-00012"
+							],
+							[
+								"building-00011",
+								"building-00013"
+							],
+							[
+								"building-00012",
+								"building-00014"
+							],
+							[
+								"building-00014",
+								"building-00016"
+							],
+							[
+								"building-00017",
+								"building-00019"
+							],
+							[
+								"building-00019",
+								"building-00021"
+							],
+							[
+								"building-00020",
+								"building-00022"
+							],
+							[
+								"building-00021",
+								"building-00023"
+							],
+							[
+								"building-00023",
+								"building-00024"
+							]
+						],
+						"rebuild_count": 1,
+						"visible_pairs": 16
+					},
+					"props": {
+						"grove-102": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								103.599967956543,
+								346.255615234375
+							],
+							"public_scale": 1.0
+						},
+						"grove-103": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								103.599990844727,
+								-388.001983642578
+							],
+							"public_scale": 1.0
+						},
+						"grove-107": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-187.600021362305,
+								308.552673339844
+							],
+							"public_scale": 1.0
+						},
+						"grove-108": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								655.200012207031,
+								18.7650947570801
+							],
+							"public_scale": 1.0
+						},
+						"grove-12": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								142.799957275391,
+								282.356994628906
+							],
+							"public_scale": 1.0
+						},
+						"grove-14": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								70.0,
+								-275.653411865234
+							],
+							"public_scale": 1.0
+						},
+						"grove-16": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-75.6000213623047,
+								75.4268341064453
+							],
+							"public_scale": 1.0
+						},
+						"grove-17": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-148.399978637695,
+								244.423294067383
+							],
+							"public_scale": 1.0
+						},
+						"grove-18": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								694.399963378906,
+								-45.5331993103027
+							],
+							"public_scale": 1.0
+						},
+						"grove-27": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								184.800018310547,
+								-308.952453613281
+							],
+							"public_scale": 1.0
+						},
+						"grove-30": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-33.599967956543,
+								212.040115356445
+							],
+							"public_scale": 1.0
+						},
+						"grove-31": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								809.200012207031,
+								-77.4499740600586
+							],
+							"public_scale": 1.0
+						},
+						"grove-32": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-106.400009155273,
+								-348.928985595703
+							],
+							"public_scale": 1.0
+						},
+						"grove-4": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-263.200042724609,
+								276.694244384766
+							],
+							"public_scale": 1.0
+						},
+						"grove-40": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								299.599975585938,
+								-336.61083984375
+							],
+							"public_scale": 1.0
+						},
+						"grove-43": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								81.1999893188477,
+								179.342651367188
+							],
+							"public_scale": 1.0
+						},
+						"grove-44": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								8.40003204345703,
+								346.196350097656
+							],
+							"public_scale": 1.0
+						},
+						"grove-45": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								8.40000534057617,
+								-388.036560058594
+							],
+							"public_scale": 1.0
+						},
+						"grove-46": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-64.4000091552734,
+								-202.096481323242
+							],
+							"public_scale": 1.0
+						},
+						"grove-48": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-210.0,
+								140.663177490234
+							],
+							"public_scale": 1.0
+						},
+						"grove-49": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								632.799987792969,
+								-149.231002807617
+							],
+							"public_scale": 1.0
+						},
+						"grove-5": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								579.599975585938,
+								-13.8172302246094
+							],
+							"public_scale": 1.0
+						},
+						"grove-50": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								560.0,
+								18.367151260376
+							],
+							"public_scale": 1.0
+						},
+						"grove-56": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								196.0,
+								146.491439819336
+							],
+							"public_scale": 1.0
+						},
+						"grove-57": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								123.199989318848,
+								314.443481445313
+							],
+							"public_scale": 1.0
+						},
+						"grove-58": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								123.200012207031,
+								-418.677032470703
+							],
+							"public_scale": 1.0
+						},
+						"grove-59": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								50.3999786376953,
+								-239.165374755859
+							],
+							"public_scale": 1.0
+						},
+						"grove-62": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-168.0,
+								276.538970947266
+							],
+							"public_scale": 1.0
+						},
+						"grove-63": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								674.799987792969,
+								-13.3673410415649
+							],
+							"public_scale": 1.0
+						},
+						"grove-70": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								238.0,
+								282.345825195313
+							],
+							"public_scale": 1.0
+						},
+						"grove-71": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-677.599975585938,
+								29.269193649292
+							],
+							"public_scale": 1.0
+						},
+						"grove-72": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								165.200012207031,
+								-273.85107421875
+							],
+							"public_scale": 1.0
+						},
+						"grove-75": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-53.1999893188477,
+								244.120697021484
+							],
+							"public_scale": 1.0
+						},
+						"grove-76": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								789.600036621094,
+								-45.3014106750488
+							],
+							"public_scale": 1.0
+						},
+						"grove-80": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-344.400024414063,
+								205.76106262207
+							],
+							"public_scale": 1.0
+						},
+						"grove-84": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-562.799987792969,
+								-2.79222106933594
+							],
+							"public_scale": 1.0
+						},
+						"grove-88": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								61.599967956543,
+								211.577560424805
+							],
+							"public_scale": 1.0
+						},
+						"grove-89": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-11.1999893188477,
+								378.225280761719
+							],
+							"public_scale": 1.0
+						},
+						"grove-90": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-11.1999893188477,
+								-354.069213867188
+							],
+							"public_scale": 1.0
+						},
+						"grove-92": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-156.800018310547,
+								4.19195508956909
+							],
+							"public_scale": 1.0
+						},
+						"grove-93": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-229.599975585938,
+								173.044311523438
+							],
+							"public_scale": 1.0
+						},
+						"grove-94": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								613.200012207031,
+								-116.860389709473
+							],
+							"public_scale": 1.0
+						},
+						"grove-97": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								-448.0,
+								-34.6376266479492
+							],
+							"public_scale": 1.0
+						},
+						"player-civic-00002": {
+							"entry_id": "baseline",
+							"kind": "civic",
+							"position": [
+								114.066696166992,
+								-115.528831481934
+							],
+							"public_scale": 0.88571412222726
+						},
+						"player-park-00003-tree-0": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								250.790832519531,
+								-60.7524681091309
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-1": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								275.094848632813,
+								-48.4842681884766
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-2": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								242.906036376953,
+								-56.7892799377441
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-3": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								267.210052490234,
+								-44.5364303588867
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-4": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								235.021209716797,
+								-52.811466217041
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-5": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								259.325225830078,
+								-40.5766639709473
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-6": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								227.136413574219,
+								-48.8239440917969
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-7": {
+							"entry_id": "baseline",
+							"kind": "tree",
+							"position": [
+								251.440414428711,
+								-36.6088256835938
+							],
+							"public_scale": 0.372001647949219
+						}
+					},
+					"shadow_members": 26,
+					"trees": 51
+				},
+				"clay": {
+					"buildings": {
+						"building-00001": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_terrace",
+							"expression": "",
+							"position": [
+								259.940185546875,
+								-282.245971679688
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_terrace.svg"
+						},
+						"building-00002": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_gabled",
+							"expression": "",
+							"position": [
+								327.140167236328,
+								-243.944366455078
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_gabled.svg"
+						},
+						"building-00003": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_hipped",
+							"expression": "",
+							"position": [
+								239.847351074219,
+								-264.796508789063
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_hipped.svg"
+						},
+						"building-00004": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_terrace",
+							"expression": "",
+							"position": [
+								307.04736328125,
+								-226.596710205078
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_terrace.svg"
+						},
+						"building-00005": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_gabled",
+							"expression": "",
+							"position": [
+								218.502334594727,
+								-247.858322143555
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_gabled.svg"
+						},
+						"building-00006": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_hipped",
+							"expression": "",
+							"position": [
+								285.702331542969,
+								-209.830795288086
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_hipped.svg"
+						},
+						"building-00007": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_terrace",
+							"expression": "",
+							"position": [
+								195.400924682617,
+								-231.741302490234
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_terrace.svg"
+						},
+						"building-00008": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_gabled",
+							"expression": "",
+							"position": [
+								262.600921630859,
+								-194.154739379883
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_gabled.svg"
+						},
+						"building-00009": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_hipped",
+							"expression": "",
+							"position": [
+								-79.0810623168945,
+								-76.1885070800781
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_hipped.svg"
+						},
+						"building-00010": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_terrace",
+							"expression": "",
+							"position": [
+								-11.881046295166,
+								-42.6979141235352
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_terrace.svg"
+						},
+						"building-00011": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_gabled",
+							"expression": "",
+							"position": [
+								-107.686813354492,
+								-63.3869934082031
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_gabled.svg"
+						},
+						"building-00012": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_hipped",
+							"expression": "",
+							"position": [
+								-40.4868011474609,
+								-30.0280647277832
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_hipped.svg"
+						},
+						"building-00013": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_terrace",
+							"expression": "",
+							"position": [
+								-138.486770629883,
+								-51.6841888427734
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_terrace.svg"
+						},
+						"building-00014": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_gabled",
+							"expression": "",
+							"position": [
+								-71.2867584228516,
+								-18.455114364624
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_gabled.svg"
+						},
+						"building-00015": {
+							"actual_type": "commercial",
+							"entry_id": "art_clay_commercial",
+							"expression": "",
+							"position": [
+								-171.209396362305,
+								-41.0804061889648
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_commercial_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_commercial.svg"
+						},
+						"building-00016": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_terrace",
+							"expression": "",
+							"position": [
+								-104.009376525879,
+								-7.77556180953979
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_terrace.svg"
+						},
+						"building-00017": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_gabled",
+							"expression": "",
+							"position": [
+								213.618667602539,
+								-27.2561817169189
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_gabled.svg"
+						},
+						"building-00018": {
+							"actual_type": "commercial",
+							"entry_id": "art_clay_commercial",
+							"expression": "",
+							"position": [
+								280.818664550781,
+								6.16952323913574
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_commercial_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_commercial.svg"
+						},
+						"building-00019": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_terrace",
+							"expression": "",
+							"position": [
+								189.18635559082,
+								-12.466215133667
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_terrace.svg"
+						},
+						"building-00020": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_gabled",
+							"expression": "",
+							"position": [
+								256.386352539063,
+								20.8661441802979
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_gabled.svg"
+						},
+						"building-00021": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_hipped",
+							"expression": "",
+							"position": [
+								164.574279785156,
+								2.31689667701721
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_hipped.svg"
+						},
+						"building-00022": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_terrace",
+							"expression": "",
+							"position": [
+								231.774276733398,
+								35.5009384155273
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_terrace.svg"
+						},
+						"building-00023": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_gabled",
+							"expression": "",
+							"position": [
+								138.964645385742,
+								16.589672088623
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_gabled.svg"
+						},
+						"building-00024": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_hipped",
+							"expression": "",
+							"position": [
+								111.639457702637,
+								29.9157905578613
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_hipped.svg"
+						},
+						"building-00025": {
+							"actual_type": "residential",
+							"entry_id": "art_clay_terrace:deep",
+							"expression": "deep",
+							"position": [
+								-139.321258544922,
+								3.76801538467407
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_terrace.svg:deep"
+						},
+						"building-00026": {
+							"actual_type": "commercial",
+							"entry_id": "art_clay_commercial:weave",
+							"expression": "weave",
+							"position": [
+								318.639892578125,
+								-15.0745000839233
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_clay_commercial_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_clay_commercial.svg:weave"
+						}
+					},
+					"civic": 1,
+					"eaves": {
+						"pairs": [
+							[
+								"building-00001",
+								"building-00003"
+							],
+							[
+								"building-00002",
+								"building-00004"
+							],
+							[
+								"building-00003",
+								"building-00005"
+							],
+							[
+								"building-00004",
+								"building-00006"
+							],
+							[
+								"building-00005",
+								"building-00007"
+							],
+							[
+								"building-00006",
+								"building-00008"
+							],
+							[
+								"building-00009",
+								"building-00011"
+							],
+							[
+								"building-00010",
+								"building-00012"
+							],
+							[
+								"building-00011",
+								"building-00013"
+							],
+							[
+								"building-00012",
+								"building-00014"
+							],
+							[
+								"building-00014",
+								"building-00016"
+							],
+							[
+								"building-00017",
+								"building-00019"
+							],
+							[
+								"building-00019",
+								"building-00021"
+							],
+							[
+								"building-00020",
+								"building-00022"
+							],
+							[
+								"building-00021",
+								"building-00023"
+							],
+							[
+								"building-00023",
+								"building-00024"
+							]
+						],
+						"rebuild_count": 2,
+						"visible_pairs": 16
+					},
+					"props": {
+						"grove-102": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								103.599967956543,
+								346.255615234375
+							],
+							"public_scale": 1.0
+						},
+						"grove-103": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								103.599990844727,
+								-388.001983642578
+							],
+							"public_scale": 1.0
+						},
+						"grove-107": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								-187.600021362305,
+								308.552673339844
+							],
+							"public_scale": 1.0
+						},
+						"grove-108": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								655.200012207031,
+								18.7650947570801
+							],
+							"public_scale": 1.0
+						},
+						"grove-12": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								142.799957275391,
+								282.356994628906
+							],
+							"public_scale": 1.0
+						},
+						"grove-14": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								70.0,
+								-275.653411865234
+							],
+							"public_scale": 1.0
+						},
+						"grove-16": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								-75.6000213623047,
+								75.4268341064453
+							],
+							"public_scale": 1.0
+						},
+						"grove-17": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								-148.399978637695,
+								244.423294067383
+							],
+							"public_scale": 1.0
+						},
+						"grove-18": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								694.399963378906,
+								-45.5331993103027
+							],
+							"public_scale": 1.0
+						},
+						"grove-27": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								184.800018310547,
+								-308.952453613281
+							],
+							"public_scale": 1.0
+						},
+						"grove-30": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								-33.599967956543,
+								212.040115356445
+							],
+							"public_scale": 1.0
+						},
+						"grove-31": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								809.200012207031,
+								-77.4499740600586
+							],
+							"public_scale": 1.0
+						},
+						"grove-32": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								-106.400009155273,
+								-348.928985595703
+							],
+							"public_scale": 1.0
+						},
+						"grove-4": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								-263.200042724609,
+								276.694244384766
+							],
+							"public_scale": 1.0
+						},
+						"grove-40": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								299.599975585938,
+								-336.61083984375
+							],
+							"public_scale": 1.0
+						},
+						"grove-43": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								81.1999893188477,
+								179.342651367188
+							],
+							"public_scale": 1.0
+						},
+						"grove-44": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								8.40003204345703,
+								346.196350097656
+							],
+							"public_scale": 1.0
+						},
+						"grove-45": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								8.40000534057617,
+								-388.036560058594
+							],
+							"public_scale": 1.0
+						},
+						"grove-46": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								-64.4000091552734,
+								-202.096481323242
+							],
+							"public_scale": 1.0
+						},
+						"grove-48": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								-210.0,
+								140.663177490234
+							],
+							"public_scale": 1.0
+						},
+						"grove-49": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								632.799987792969,
+								-149.231002807617
+							],
+							"public_scale": 1.0
+						},
+						"grove-5": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								579.599975585938,
+								-13.8172302246094
+							],
+							"public_scale": 1.0
+						},
+						"grove-50": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								560.0,
+								18.367151260376
+							],
+							"public_scale": 1.0
+						},
+						"grove-56": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								196.0,
+								146.491439819336
+							],
+							"public_scale": 1.0
+						},
+						"grove-57": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								123.199989318848,
+								314.443481445313
+							],
+							"public_scale": 1.0
+						},
+						"grove-58": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								123.200012207031,
+								-418.677032470703
+							],
+							"public_scale": 1.0
+						},
+						"grove-59": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								50.3999786376953,
+								-239.165374755859
+							],
+							"public_scale": 1.0
+						},
+						"grove-62": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								-168.0,
+								276.538970947266
+							],
+							"public_scale": 1.0
+						},
+						"grove-63": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								674.799987792969,
+								-13.3673410415649
+							],
+							"public_scale": 1.0
+						},
+						"grove-70": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								238.0,
+								282.345825195313
+							],
+							"public_scale": 1.0
+						},
+						"grove-71": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								-677.599975585938,
+								29.269193649292
+							],
+							"public_scale": 1.0
+						},
+						"grove-72": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								165.200012207031,
+								-273.85107421875
+							],
+							"public_scale": 1.0
+						},
+						"grove-75": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								-53.1999893188477,
+								244.120697021484
+							],
+							"public_scale": 1.0
+						},
+						"grove-76": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								789.600036621094,
+								-45.3014106750488
+							],
+							"public_scale": 1.0
+						},
+						"grove-80": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								-344.400024414063,
+								205.76106262207
+							],
+							"public_scale": 1.0
+						},
+						"grove-84": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								-562.799987792969,
+								-2.79222106933594
+							],
+							"public_scale": 1.0
+						},
+						"grove-88": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								61.599967956543,
+								211.577560424805
+							],
+							"public_scale": 1.0
+						},
+						"grove-89": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								-11.1999893188477,
+								378.225280761719
+							],
+							"public_scale": 1.0
+						},
+						"grove-90": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								-11.1999893188477,
+								-354.069213867188
+							],
+							"public_scale": 1.0
+						},
+						"grove-92": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								-156.800018310547,
+								4.19195508956909
+							],
+							"public_scale": 1.0
+						},
+						"grove-93": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								-229.599975585938,
+								173.044311523438
+							],
+							"public_scale": 1.0
+						},
+						"grove-94": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								613.200012207031,
+								-116.860389709473
+							],
+							"public_scale": 1.0
+						},
+						"grove-97": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								-448.0,
+								-34.6376266479492
+							],
+							"public_scale": 1.0
+						},
+						"player-civic-00002": {
+							"entry_id": "art_clay_civic",
+							"kind": "civic",
+							"position": [
+								114.066696166992,
+								-115.528831481934
+							],
+							"public_scale": 0.88571412222726
+						},
+						"player-park-00003-tree-0": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								250.790832519531,
+								-60.7524681091309
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-1": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								275.094848632813,
+								-48.4842681884766
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-2": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								242.906036376953,
+								-56.7892799377441
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-3": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								267.210052490234,
+								-44.5364303588867
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-4": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								235.021209716797,
+								-52.811466217041
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-5": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								259.325225830078,
+								-40.5766639709473
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-6": {
+							"entry_id": "art_tree_clay_cluster",
+							"kind": "tree",
+							"position": [
+								227.136413574219,
+								-48.8239440917969
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-7": {
+							"entry_id": "art_tree_clay_umbrella",
+							"kind": "tree",
+							"position": [
+								251.440414428711,
+								-36.6088256835938
+							],
+							"public_scale": 0.372001647949219
+						}
+					},
+					"shadow_members": 26,
+					"trees": 51
+				},
+				"garden": {
+					"buildings": {
+						"building-00001": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_terrace",
+							"expression": "",
+							"position": [
+								259.940185546875,
+								-282.245971679688
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_terrace.svg"
+						},
+						"building-00002": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_gabled",
+							"expression": "",
+							"position": [
+								327.140167236328,
+								-243.944366455078
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_gabled.svg"
+						},
+						"building-00003": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_hipped",
+							"expression": "",
+							"position": [
+								239.847351074219,
+								-264.796508789063
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_hipped.svg"
+						},
+						"building-00004": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_terrace",
+							"expression": "",
+							"position": [
+								307.04736328125,
+								-226.596710205078
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_terrace.svg"
+						},
+						"building-00005": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_gabled",
+							"expression": "",
+							"position": [
+								218.502334594727,
+								-247.858322143555
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_gabled.svg"
+						},
+						"building-00006": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_hipped",
+							"expression": "",
+							"position": [
+								285.702331542969,
+								-209.830795288086
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_hipped.svg"
+						},
+						"building-00007": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_terrace",
+							"expression": "",
+							"position": [
+								195.400924682617,
+								-231.741302490234
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_terrace.svg"
+						},
+						"building-00008": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_gabled",
+							"expression": "",
+							"position": [
+								262.600921630859,
+								-194.154739379883
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_gabled.svg"
+						},
+						"building-00009": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_hipped",
+							"expression": "",
+							"position": [
+								-79.0810623168945,
+								-76.1885070800781
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_hipped.svg"
+						},
+						"building-00010": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_terrace",
+							"expression": "",
+							"position": [
+								-11.881046295166,
+								-42.6979141235352
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_terrace.svg"
+						},
+						"building-00011": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_gabled",
+							"expression": "",
+							"position": [
+								-107.686813354492,
+								-63.3869934082031
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_gabled.svg"
+						},
+						"building-00012": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_hipped",
+							"expression": "",
+							"position": [
+								-40.4868011474609,
+								-30.0280647277832
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_hipped.svg"
+						},
+						"building-00013": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_terrace",
+							"expression": "",
+							"position": [
+								-138.486770629883,
+								-51.6841888427734
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_terrace.svg"
+						},
+						"building-00014": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_gabled",
+							"expression": "",
+							"position": [
+								-71.2867584228516,
+								-18.455114364624
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_gabled.svg"
+						},
+						"building-00015": {
+							"actual_type": "commercial",
+							"entry_id": "art_garden_commercial",
+							"expression": "",
+							"position": [
+								-171.209396362305,
+								-41.0804061889648
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_commercial_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_commercial.svg"
+						},
+						"building-00016": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_terrace",
+							"expression": "",
+							"position": [
+								-104.009376525879,
+								-7.77556180953979
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_terrace.svg"
+						},
+						"building-00017": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_gabled",
+							"expression": "",
+							"position": [
+								213.618667602539,
+								-27.2561817169189
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_gabled.svg"
+						},
+						"building-00018": {
+							"actual_type": "commercial",
+							"entry_id": "art_garden_commercial",
+							"expression": "",
+							"position": [
+								280.818664550781,
+								6.16952323913574
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_commercial_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_commercial.svg"
+						},
+						"building-00019": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_terrace",
+							"expression": "",
+							"position": [
+								189.18635559082,
+								-12.466215133667
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_terrace.svg"
+						},
+						"building-00020": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_gabled",
+							"expression": "",
+							"position": [
+								256.386352539063,
+								20.8661441802979
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_gabled.svg"
+						},
+						"building-00021": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_hipped",
+							"expression": "",
+							"position": [
+								164.574279785156,
+								2.31689667701721
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_hipped.svg"
+						},
+						"building-00022": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_terrace",
+							"expression": "",
+							"position": [
+								231.774276733398,
+								35.5009384155273
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_terrace.svg"
+						},
+						"building-00023": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_gabled",
+							"expression": "",
+							"position": [
+								138.964645385742,
+								16.589672088623
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_gabled.svg"
+						},
+						"building-00024": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_hipped",
+							"expression": "",
+							"position": [
+								111.639457702637,
+								29.9157905578613
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_hipped.svg"
+						},
+						"building-00025": {
+							"actual_type": "residential",
+							"entry_id": "art_garden_terrace:deep",
+							"expression": "deep",
+							"position": [
+								-139.321258544922,
+								3.76801538467407
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_terrace.svg:deep"
+						},
+						"building-00026": {
+							"actual_type": "commercial",
+							"entry_id": "art_garden_commercial:weave",
+							"expression": "weave",
+							"position": [
+								318.639892578125,
+								-15.0745000839233
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_garden_commercial_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_garden_commercial.svg:weave"
+						}
+					},
+					"civic": 1,
+					"eaves": {
+						"pairs": [
+							[
+								"building-00001",
+								"building-00003"
+							],
+							[
+								"building-00002",
+								"building-00004"
+							],
+							[
+								"building-00003",
+								"building-00005"
+							],
+							[
+								"building-00004",
+								"building-00006"
+							],
+							[
+								"building-00005",
+								"building-00007"
+							],
+							[
+								"building-00006",
+								"building-00008"
+							],
+							[
+								"building-00009",
+								"building-00011"
+							],
+							[
+								"building-00010",
+								"building-00012"
+							],
+							[
+								"building-00011",
+								"building-00013"
+							],
+							[
+								"building-00012",
+								"building-00014"
+							],
+							[
+								"building-00014",
+								"building-00016"
+							],
+							[
+								"building-00017",
+								"building-00019"
+							],
+							[
+								"building-00019",
+								"building-00021"
+							],
+							[
+								"building-00020",
+								"building-00022"
+							],
+							[
+								"building-00021",
+								"building-00023"
+							],
+							[
+								"building-00023",
+								"building-00024"
+							]
+						],
+						"rebuild_count": 3,
+						"visible_pairs": 16
+					},
+					"props": {
+						"grove-102": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								103.599967956543,
+								346.255615234375
+							],
+							"public_scale": 1.0
+						},
+						"grove-103": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								103.599990844727,
+								-388.001983642578
+							],
+							"public_scale": 1.0
+						},
+						"grove-107": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								-187.600021362305,
+								308.552673339844
+							],
+							"public_scale": 1.0
+						},
+						"grove-108": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								655.200012207031,
+								18.7650947570801
+							],
+							"public_scale": 1.0
+						},
+						"grove-12": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								142.799957275391,
+								282.356994628906
+							],
+							"public_scale": 1.0
+						},
+						"grove-14": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								70.0,
+								-275.653411865234
+							],
+							"public_scale": 1.0
+						},
+						"grove-16": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								-75.6000213623047,
+								75.4268341064453
+							],
+							"public_scale": 1.0
+						},
+						"grove-17": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								-148.399978637695,
+								244.423294067383
+							],
+							"public_scale": 1.0
+						},
+						"grove-18": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								694.399963378906,
+								-45.5331993103027
+							],
+							"public_scale": 1.0
+						},
+						"grove-27": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								184.800018310547,
+								-308.952453613281
+							],
+							"public_scale": 1.0
+						},
+						"grove-30": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								-33.599967956543,
+								212.040115356445
+							],
+							"public_scale": 1.0
+						},
+						"grove-31": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								809.200012207031,
+								-77.4499740600586
+							],
+							"public_scale": 1.0
+						},
+						"grove-32": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								-106.400009155273,
+								-348.928985595703
+							],
+							"public_scale": 1.0
+						},
+						"grove-4": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								-263.200042724609,
+								276.694244384766
+							],
+							"public_scale": 1.0
+						},
+						"grove-40": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								299.599975585938,
+								-336.61083984375
+							],
+							"public_scale": 1.0
+						},
+						"grove-43": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								81.1999893188477,
+								179.342651367188
+							],
+							"public_scale": 1.0
+						},
+						"grove-44": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								8.40003204345703,
+								346.196350097656
+							],
+							"public_scale": 1.0
+						},
+						"grove-45": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								8.40000534057617,
+								-388.036560058594
+							],
+							"public_scale": 1.0
+						},
+						"grove-46": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								-64.4000091552734,
+								-202.096481323242
+							],
+							"public_scale": 1.0
+						},
+						"grove-48": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								-210.0,
+								140.663177490234
+							],
+							"public_scale": 1.0
+						},
+						"grove-49": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								632.799987792969,
+								-149.231002807617
+							],
+							"public_scale": 1.0
+						},
+						"grove-5": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								579.599975585938,
+								-13.8172302246094
+							],
+							"public_scale": 1.0
+						},
+						"grove-50": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								560.0,
+								18.367151260376
+							],
+							"public_scale": 1.0
+						},
+						"grove-56": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								196.0,
+								146.491439819336
+							],
+							"public_scale": 1.0
+						},
+						"grove-57": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								123.199989318848,
+								314.443481445313
+							],
+							"public_scale": 1.0
+						},
+						"grove-58": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								123.200012207031,
+								-418.677032470703
+							],
+							"public_scale": 1.0
+						},
+						"grove-59": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								50.3999786376953,
+								-239.165374755859
+							],
+							"public_scale": 1.0
+						},
+						"grove-62": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								-168.0,
+								276.538970947266
+							],
+							"public_scale": 1.0
+						},
+						"grove-63": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								674.799987792969,
+								-13.3673410415649
+							],
+							"public_scale": 1.0
+						},
+						"grove-70": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								238.0,
+								282.345825195313
+							],
+							"public_scale": 1.0
+						},
+						"grove-71": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								-677.599975585938,
+								29.269193649292
+							],
+							"public_scale": 1.0
+						},
+						"grove-72": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								165.200012207031,
+								-273.85107421875
+							],
+							"public_scale": 1.0
+						},
+						"grove-75": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								-53.1999893188477,
+								244.120697021484
+							],
+							"public_scale": 1.0
+						},
+						"grove-76": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								789.600036621094,
+								-45.3014106750488
+							],
+							"public_scale": 1.0
+						},
+						"grove-80": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								-344.400024414063,
+								205.76106262207
+							],
+							"public_scale": 1.0
+						},
+						"grove-84": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								-562.799987792969,
+								-2.79222106933594
+							],
+							"public_scale": 1.0
+						},
+						"grove-88": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								61.599967956543,
+								211.577560424805
+							],
+							"public_scale": 1.0
+						},
+						"grove-89": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								-11.1999893188477,
+								378.225280761719
+							],
+							"public_scale": 1.0
+						},
+						"grove-90": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								-11.1999893188477,
+								-354.069213867188
+							],
+							"public_scale": 1.0
+						},
+						"grove-92": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								-156.800018310547,
+								4.19195508956909
+							],
+							"public_scale": 1.0
+						},
+						"grove-93": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								-229.599975585938,
+								173.044311523438
+							],
+							"public_scale": 1.0
+						},
+						"grove-94": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								613.200012207031,
+								-116.860389709473
+							],
+							"public_scale": 1.0
+						},
+						"grove-97": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								-448.0,
+								-34.6376266479492
+							],
+							"public_scale": 1.0
+						},
+						"player-civic-00002": {
+							"entry_id": "art_garden_civic",
+							"kind": "civic",
+							"position": [
+								114.066696166992,
+								-115.528831481934
+							],
+							"public_scale": 0.88571412222726
+						},
+						"player-park-00003-tree-0": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								250.790832519531,
+								-60.7524681091309
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-1": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								275.094848632813,
+								-48.4842681884766
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-2": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								242.906036376953,
+								-56.7892799377441
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-3": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								267.210052490234,
+								-44.5364303588867
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-4": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								235.021209716797,
+								-52.811466217041
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-5": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								259.325225830078,
+								-40.5766639709473
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-6": {
+							"entry_id": "art_tree_garden_spindle",
+							"kind": "tree",
+							"position": [
+								227.136413574219,
+								-48.8239440917969
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-7": {
+							"entry_id": "art_tree_garden_layers",
+							"kind": "tree",
+							"position": [
+								251.440414428711,
+								-36.6088256835938
+							],
+							"public_scale": 0.372001647949219
+						}
+					},
+					"shadow_members": 26,
+					"trees": 51
+				},
+				"paper": {
+					"buildings": {
+						"building-00001": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_terrace",
+							"expression": "",
+							"position": [
+								259.940185546875,
+								-282.245971679688
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_terrace.svg"
+						},
+						"building-00002": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_gabled",
+							"expression": "",
+							"position": [
+								327.140167236328,
+								-243.944366455078
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_gabled.svg"
+						},
+						"building-00003": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_hipped",
+							"expression": "",
+							"position": [
+								239.847351074219,
+								-264.796508789063
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_hipped.svg"
+						},
+						"building-00004": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_terrace",
+							"expression": "",
+							"position": [
+								307.04736328125,
+								-226.596710205078
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_terrace.svg"
+						},
+						"building-00005": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_gabled",
+							"expression": "",
+							"position": [
+								218.502334594727,
+								-247.858322143555
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_gabled.svg"
+						},
+						"building-00006": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_hipped",
+							"expression": "",
+							"position": [
+								285.702331542969,
+								-209.830795288086
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_hipped.svg"
+						},
+						"building-00007": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_terrace",
+							"expression": "",
+							"position": [
+								195.400924682617,
+								-231.741302490234
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_terrace.svg"
+						},
+						"building-00008": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_gabled",
+							"expression": "",
+							"position": [
+								262.600921630859,
+								-194.154739379883
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_gabled.svg"
+						},
+						"building-00009": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_hipped",
+							"expression": "",
+							"position": [
+								-79.0810623168945,
+								-76.1885070800781
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_hipped.svg"
+						},
+						"building-00010": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_terrace",
+							"expression": "",
+							"position": [
+								-11.881046295166,
+								-42.6979141235352
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_terrace.svg"
+						},
+						"building-00011": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_gabled",
+							"expression": "",
+							"position": [
+								-107.686813354492,
+								-63.3869934082031
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_gabled.svg"
+						},
+						"building-00012": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_hipped",
+							"expression": "",
+							"position": [
+								-40.4868011474609,
+								-30.0280647277832
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_hipped.svg"
+						},
+						"building-00013": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_terrace",
+							"expression": "",
+							"position": [
+								-138.486770629883,
+								-51.6841888427734
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_terrace.svg"
+						},
+						"building-00014": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_gabled",
+							"expression": "",
+							"position": [
+								-71.2867584228516,
+								-18.455114364624
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_gabled.svg"
+						},
+						"building-00015": {
+							"actual_type": "commercial",
+							"entry_id": "art_paper_commercial",
+							"expression": "",
+							"position": [
+								-171.209396362305,
+								-41.0804061889648
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_commercial_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_commercial.svg"
+						},
+						"building-00016": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_terrace",
+							"expression": "",
+							"position": [
+								-104.009376525879,
+								-7.77556180953979
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_terrace.svg"
+						},
+						"building-00017": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_gabled",
+							"expression": "",
+							"position": [
+								213.618667602539,
+								-27.2561817169189
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_gabled.svg"
+						},
+						"building-00018": {
+							"actual_type": "commercial",
+							"entry_id": "art_paper_commercial",
+							"expression": "",
+							"position": [
+								280.818664550781,
+								6.16952323913574
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_commercial_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_commercial.svg"
+						},
+						"building-00019": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_terrace",
+							"expression": "",
+							"position": [
+								189.18635559082,
+								-12.466215133667
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_terrace.svg"
+						},
+						"building-00020": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_gabled",
+							"expression": "",
+							"position": [
+								256.386352539063,
+								20.8661441802979
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_gabled.svg"
+						},
+						"building-00021": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_hipped",
+							"expression": "",
+							"position": [
+								164.574279785156,
+								2.31689667701721
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_hipped.svg"
+						},
+						"building-00022": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_terrace",
+							"expression": "",
+							"position": [
+								231.774276733398,
+								35.5009384155273
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_terrace.svg"
+						},
+						"building-00023": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_gabled",
+							"expression": "",
+							"position": [
+								138.964645385742,
+								16.589672088623
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_gabled_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_gabled.svg"
+						},
+						"building-00024": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_hipped",
+							"expression": "",
+							"position": [
+								111.639457702637,
+								29.9157905578613
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_hipped_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_hipped.svg"
+						},
+						"building-00025": {
+							"actual_type": "residential",
+							"entry_id": "art_paper_terrace:deep",
+							"expression": "deep",
+							"position": [
+								-139.321258544922,
+								3.76801538467407
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_terrace_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_terrace.svg:deep"
+						},
+						"building-00026": {
+							"actual_type": "commercial",
+							"entry_id": "art_paper_commercial:weave",
+							"expression": "weave",
+							"position": [
+								318.639892578125,
+								-15.0745000839233
+							],
+							"shadow": "资源/美术候选/建筑/阴影/art_paper_commercial_shadow.png",
+							"texture": "资源/美术候选/建筑/SVG/art_paper_commercial.svg:weave"
+						}
+					},
+					"civic": 1,
+					"eaves": {
+						"pairs": [
+							[
+								"building-00001",
+								"building-00003"
+							],
+							[
+								"building-00002",
+								"building-00004"
+							],
+							[
+								"building-00003",
+								"building-00005"
+							],
+							[
+								"building-00004",
+								"building-00006"
+							],
+							[
+								"building-00005",
+								"building-00007"
+							],
+							[
+								"building-00006",
+								"building-00008"
+							],
+							[
+								"building-00009",
+								"building-00011"
+							],
+							[
+								"building-00010",
+								"building-00012"
+							],
+							[
+								"building-00011",
+								"building-00013"
+							],
+							[
+								"building-00012",
+								"building-00014"
+							],
+							[
+								"building-00014",
+								"building-00016"
+							],
+							[
+								"building-00017",
+								"building-00019"
+							],
+							[
+								"building-00019",
+								"building-00021"
+							],
+							[
+								"building-00020",
+								"building-00022"
+							],
+							[
+								"building-00021",
+								"building-00023"
+							],
+							[
+								"building-00023",
+								"building-00024"
+							]
+						],
+						"rebuild_count": 4,
+						"visible_pairs": 16
+					},
+					"props": {
+						"grove-102": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								103.599967956543,
+								346.255615234375
+							],
+							"public_scale": 1.0
+						},
+						"grove-103": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								103.599990844727,
+								-388.001983642578
+							],
+							"public_scale": 1.0
+						},
+						"grove-107": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								-187.600021362305,
+								308.552673339844
+							],
+							"public_scale": 1.0
+						},
+						"grove-108": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								655.200012207031,
+								18.7650947570801
+							],
+							"public_scale": 1.0
+						},
+						"grove-12": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								142.799957275391,
+								282.356994628906
+							],
+							"public_scale": 1.0
+						},
+						"grove-14": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								70.0,
+								-275.653411865234
+							],
+							"public_scale": 1.0
+						},
+						"grove-16": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								-75.6000213623047,
+								75.4268341064453
+							],
+							"public_scale": 1.0
+						},
+						"grove-17": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								-148.399978637695,
+								244.423294067383
+							],
+							"public_scale": 1.0
+						},
+						"grove-18": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								694.399963378906,
+								-45.5331993103027
+							],
+							"public_scale": 1.0
+						},
+						"grove-27": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								184.800018310547,
+								-308.952453613281
+							],
+							"public_scale": 1.0
+						},
+						"grove-30": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								-33.599967956543,
+								212.040115356445
+							],
+							"public_scale": 1.0
+						},
+						"grove-31": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								809.200012207031,
+								-77.4499740600586
+							],
+							"public_scale": 1.0
+						},
+						"grove-32": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								-106.400009155273,
+								-348.928985595703
+							],
+							"public_scale": 1.0
+						},
+						"grove-4": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								-263.200042724609,
+								276.694244384766
+							],
+							"public_scale": 1.0
+						},
+						"grove-40": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								299.599975585938,
+								-336.61083984375
+							],
+							"public_scale": 1.0
+						},
+						"grove-43": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								81.1999893188477,
+								179.342651367188
+							],
+							"public_scale": 1.0
+						},
+						"grove-44": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								8.40003204345703,
+								346.196350097656
+							],
+							"public_scale": 1.0
+						},
+						"grove-45": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								8.40000534057617,
+								-388.036560058594
+							],
+							"public_scale": 1.0
+						},
+						"grove-46": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								-64.4000091552734,
+								-202.096481323242
+							],
+							"public_scale": 1.0
+						},
+						"grove-48": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								-210.0,
+								140.663177490234
+							],
+							"public_scale": 1.0
+						},
+						"grove-49": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								632.799987792969,
+								-149.231002807617
+							],
+							"public_scale": 1.0
+						},
+						"grove-5": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								579.599975585938,
+								-13.8172302246094
+							],
+							"public_scale": 1.0
+						},
+						"grove-50": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								560.0,
+								18.367151260376
+							],
+							"public_scale": 1.0
+						},
+						"grove-56": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								196.0,
+								146.491439819336
+							],
+							"public_scale": 1.0
+						},
+						"grove-57": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								123.199989318848,
+								314.443481445313
+							],
+							"public_scale": 1.0
+						},
+						"grove-58": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								123.200012207031,
+								-418.677032470703
+							],
+							"public_scale": 1.0
+						},
+						"grove-59": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								50.3999786376953,
+								-239.165374755859
+							],
+							"public_scale": 1.0
+						},
+						"grove-62": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								-168.0,
+								276.538970947266
+							],
+							"public_scale": 1.0
+						},
+						"grove-63": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								674.799987792969,
+								-13.3673410415649
+							],
+							"public_scale": 1.0
+						},
+						"grove-70": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								238.0,
+								282.345825195313
+							],
+							"public_scale": 1.0
+						},
+						"grove-71": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								-677.599975585938,
+								29.269193649292
+							],
+							"public_scale": 1.0
+						},
+						"grove-72": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								165.200012207031,
+								-273.85107421875
+							],
+							"public_scale": 1.0
+						},
+						"grove-75": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								-53.1999893188477,
+								244.120697021484
+							],
+							"public_scale": 1.0
+						},
+						"grove-76": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								789.600036621094,
+								-45.3014106750488
+							],
+							"public_scale": 1.0
+						},
+						"grove-80": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								-344.400024414063,
+								205.76106262207
+							],
+							"public_scale": 1.0
+						},
+						"grove-84": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								-562.799987792969,
+								-2.79222106933594
+							],
+							"public_scale": 1.0
+						},
+						"grove-88": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								61.599967956543,
+								211.577560424805
+							],
+							"public_scale": 1.0
+						},
+						"grove-89": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								-11.1999893188477,
+								378.225280761719
+							],
+							"public_scale": 1.0
+						},
+						"grove-90": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								-11.1999893188477,
+								-354.069213867188
+							],
+							"public_scale": 1.0
+						},
+						"grove-92": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								-156.800018310547,
+								4.19195508956909
+							],
+							"public_scale": 1.0
+						},
+						"grove-93": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								-229.599975585938,
+								173.044311523438
+							],
+							"public_scale": 1.0
+						},
+						"grove-94": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								613.200012207031,
+								-116.860389709473
+							],
+							"public_scale": 1.0
+						},
+						"grove-97": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								-448.0,
+								-34.6376266479492
+							],
+							"public_scale": 1.0
+						},
+						"player-civic-00002": {
+							"entry_id": "art_paper_civic",
+							"kind": "civic",
+							"position": [
+								114.066696166992,
+								-115.528831481934
+							],
+							"public_scale": 0.88571412222726
+						},
+						"player-park-00003-tree-0": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								250.790832519531,
+								-60.7524681091309
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-1": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								275.094848632813,
+								-48.4842681884766
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-2": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								242.906036376953,
+								-56.7892799377441
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-3": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								267.210052490234,
+								-44.5364303588867
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-4": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								235.021209716797,
+								-52.811466217041
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-5": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								259.325225830078,
+								-40.5766639709473
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-6": {
+							"entry_id": "art_tree_paper_fir",
+							"kind": "tree",
+							"position": [
+								227.136413574219,
+								-48.8239440917969
+							],
+							"public_scale": 0.372001647949219
+						},
+						"player-park-00003-tree-7": {
+							"entry_id": "art_tree_paper_lantern",
+							"kind": "tree",
+							"position": [
+								251.440414428711,
+								-36.6088256835938
+							],
+							"public_scale": 0.372001647949219
+						}
+					},
+					"shadow_members": 26,
+					"trees": 51
+				}
+			},
+			"wide_pan": [
+				-93.5584564208984,
+				136.047027587891
+			],
+			"wide_zoom": 1.2
+		},
+		"live_audio": {
+			"clipped_frames": 0,
+			"driver": "WASAPI",
+			"pcm_sha256": "f46c2435da5f42c6a3a3076d257b19dc9b9d0877cfefe8d6a44e134547ba2ee7",
+			"peak": 0.310087442398071,
+			"queue_retained": true,
+			"rate": 22050,
+			"renderer_retained": true,
+			"rms": 0.0930243399646454,
+			"samples": 176400,
+			"underruns": 0
+		},
+		"retune": {
+			"after": 40,
+			"before": 36,
+			"expected": 40,
+			"id": "building-00025",
+			"style": "paper"
+		}
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Actual Godot/OpenGL city with real World transactions. Four fixed-camera/daylight/cursor screenshots use a short paused device queue; the same renderer and queue resume for WASAPI input PCM and real building retune. No human fun or listening-quality judgment."
+}

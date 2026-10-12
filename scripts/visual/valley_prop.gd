@@ -8,12 +8,36 @@ var active := true
 var reveal := 1.0
 var passengers := 0
 var stop_id := ""
+var art_entry: Dictionary = {}
+var art_texture: Texture2D
+var art_shadow: Texture2D
+var art_contact: Texture2D
 
 func _project(p: Vector2) -> Vector2:
 	return Vector2((p.x-p.y)*28.0,(p.x+p.y)*14.0)
 
+func _draw_art_candidate() -> void:
+	var bounds: Array = art_entry["model_bounds"]["size"]
+	var world_scale := 28.0*sqrt(2.0)*float(art_entry["plot_span"])/maxf(float(bounds[0]),float(bounds[2]))
+	for mask: String in ["shadow","contact"]:
+		var texture := art_shadow if mask == "shadow" else art_contact
+		var factor := world_scale/float(art_entry[mask+"_pixels_per_world"])
+		var origin: Array = art_entry[mask+"_origin"]
+		draw_set_transform(Vector2.ZERO,0,Vector2.ONE*factor)
+		draw_texture(texture,-Vector2(origin[0],origin[1]),Color(1.0,1.0,1.0,0.16 if mask == "shadow" else 0.20))
+	var factor := world_scale/float(art_entry["pixels_per_world"])
+	var origin: Array = art_entry["origin"]
+	var sway := sin(motion+tone)*0.014 if kind == "tree" else 0.0
+	# A tiny lean rotates around the ground anchor, keeping the tree foot planted.
+	draw_set_transform(Vector2.ZERO,sway,Vector2.ONE*factor)
+	draw_texture(art_texture,-Vector2(origin[0],origin[1]))
+	draw_set_transform(Vector2.ZERO)
+
 func _draw() -> void:
 	modulate.a = reveal
+	if not art_entry.is_empty():
+		_draw_art_candidate()
+		return
 	if kind == "tree":
 		var lift := 15.0+tone%3*2.0
 		var wind := sin(motion+tone)*0.7
