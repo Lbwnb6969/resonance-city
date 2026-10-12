@@ -9,6 +9,8 @@
 ## 文档合并输出（2026-10-12）
 已生成 `文档/共鸣之城_文档合并精简版.md`。该文件合并现行文档的设计、规格、系统、验收、任务、Demo、待裁定与参考内容，删除重复导航、空白、表格分隔线、历史轮次记录和 Markdown 装饰符号；原文档未修改。
 
+附件评审意见已选择性吸收：加强即时预影、首分钟手感、有机聚落表现和音乐涌现候选，同时明确这些候选不能绕过现行提交边界、70 RenderVoice 上限、合法性过滤或真人验证。合并稿可由 `python tools/merge_docs_compact.py` 重新生成。
+
 ## 本机美术工具与待选风格
 
 用户已安装 Blender：`D:\SteamLibrary\steamapps\common\Blender\blender.exe`；2026-10-12 核对为5.2.2 LTS（d13f752e3b9c）。独立 factory-startup CLI/Python 探针已通过材质/物体修改、保存 .blend、GLB 导出与64×64 CPU渲染，证据 `验证记录/Blender直接调用_2026-10-12/`。可直接用于离线资产与风格小样。
