@@ -22,9 +22,9 @@
 | **Ghostscript** | **EPS 解析（Inkscape 的硬依赖）** | `winget install ArtifexSoftware.GhostScript` | `gswin64c --version` |
 | Inkscape | 矢量格式转换、拆件 | `winget install Inkscape.Inkscape` | `inkscape --version` |
 | ImageMagick | PNG 批处理、晕边检查 | `winget install ImageMagick.ImageMagick` | `magick -version` |
-| （若走 §1.3 离屏渲染）Blender | 低模 → 等距 PNG | `winget install BlenderFoundation.Blender` | `blender --version` |
+| Blender（可选离线工具，已安装） | 模型/材质/节点小样 → GLB 或等距 PNG | 本机 `D:\SteamLibrary\steamapps\common\Blender\blender.exe`，无需重复安装；版本与验证见 [17 §2.3](../17_美术规格.md#23-风格探索与本机-blender) | 用该绝对路径执行 `--version`；CLI/Python 探针已通过 |
 
-Ghostscript是EPS导入依赖，不是CC0低模生产线的前置依赖。已授权EPS选件需要加工时再使用该工具，不因目录存在而全量加工。上述安装命令来自评审，winget包ID须在安装时核实；本轮未安装。前三条工具bin加入PATH后分别验证，选用Blender则增加第四条输出。Godot离线工具与Blender二选一；不要求两个都装。
+Ghostscript是EPS导入依赖，不是CC0低模生产线的前置依赖；EPS只按需加工。其它安装命令保留为参考，实际使用前核对包ID与工具状态；可通过绝对路径调用，不强制加入PATH。本机 Blender 已验证，Godot离线工具仍可继续使用，选择符合资产任务的管线；MCP 不作为生产前置。
 
 ## 表 S3 · 离线到运行时
 
