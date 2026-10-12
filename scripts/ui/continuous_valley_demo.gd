@@ -81,6 +81,7 @@ var city_ground_layer: Node2D
 var water_flow: Node2D
 var community_label_layer: Node2D
 var expression_audition_layer: Node2D
+var authored_growth_trail: Node2D
 var music_activity_layer: Node2D
 var public_space_activity_layer: Node2D
 var authored_reservation_layer: Node2D
@@ -258,6 +259,10 @@ func _ready() -> void:
 	expression_audition_layer.name = "ExpressionAudition"
 	expression_audition_layer.z_index = 54
 	add_child(expression_audition_layer)
+	authored_growth_trail = preload("res://scripts/visual/authored_growth_trail.gd").new()
+	authored_growth_trail.name = "AuthoredGrowthTrail"
+	authored_growth_trail.z_index = 56
+	add_child(authored_growth_trail)
 	authored_voice_badges = preload("res://scripts/visual/authored_voice_badges.gd").new()
 	authored_voice_badges.name = "AuthoredVoiceBadges"
 	authored_voice_badges.z_index = 65
@@ -2991,6 +2996,7 @@ func _process(delta: float) -> void:
 	street_eaves_layer.sync(self)
 	_sync_daylight()
 	expression_audition_layer.sync(self)
+	authored_growth_trail.sync(self)
 	authored_voice_badges.sync(self)
 	core_slice_hud.sync()
 	if first_composition_mode: authored_reservation_layer.sync(self)

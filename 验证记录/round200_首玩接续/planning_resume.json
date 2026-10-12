@@ -1,0 +1,23 @@
+{
+	"checks": {
+		"Escape_close_preserves_unfinished_anchor": true,
+		"P_after_withdrawal_starts_new_unselected_planning": true,
+		"P_close_preserves_existing_chapter_and_public_choice": true,
+		"P_resumes_same_anchor_with_one_pending_chapter": true,
+		"completed_choice_exposes_sound_entry_instead_of_stale_public_entry": true,
+		"completed_public_choice_clears_draft_and_uses_real_sound_handoff": true,
+		"consumed_choice_never_reopens_finished_anchor": true,
+		"light_entry_resumes_same_anchor_without_chapter_resubmit": true,
+		"normalized_multi_community_scope_retains_same_draft": true,
+		"one_light_entry_returns_to_unfinished_public_step": true,
+		"ordinary_city_keeps_existing_transient_planning_behavior": true,
+		"render_ahead_retains_ui_choice_without_sound_unlock": true,
+		"resume_chain_reaches_unselected_actual_sound_choices": true,
+		"same_settled_chapter_still_resumes_anchor": true,
+		"unfinished_public_choice_does_not_unlock_sound": true,
+		"withdrawn_chapter_discards_public_resume_authority": true
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Dummy production UI plus real World pending and settled charters. Controlled presentation proves P, Escape and light-entry resume with no World resubmit; no physical audio or human-fun claim."
+}

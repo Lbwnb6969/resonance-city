@@ -19,6 +19,9 @@ var plan_id := ""
 var card_id := ""
 var committed_charter_id := ""
 var committed_charter_frame := -1
+## The chapter is already submitted, but its public-space choice is still UI.
+## Closing the tool must not strand the player's first composition here.
+var composition_anchor_draft := false
 var scope: Array = []
 ## A transit station can hand its real catchment into the normal planning flow.
 ## Keep this seed separate from the editable scope so choosing a charter/card
@@ -253,6 +256,7 @@ func transit_feedback_text(payload: Dictionary, settled := false) -> String:
 
 func reset_for_city() -> void:
 	composition_public_hint.clear()
+	composition_anchor_draft = false
 	committed_charter_id = ""
 	committed_charter_frame = -1
 	scope.clear()
@@ -277,6 +281,13 @@ func reset_for_city() -> void:
 	refresh()
 
 func open_tool() -> void:
+	if unfinished_public_choice():
+		demo.menu.hide()
+		opened = true
+		preview_key.clear()
+		refresh()
+		return
+	composition_anchor_draft = false
 	composition_public_hint.clear()
 	if not demo.transit_charter_context.is_empty() or not demo.transit_edit_context.is_empty(): demo._clear_transit_route()
 	committed_charter_id = ""
@@ -306,6 +317,17 @@ func ready_sound_community() -> String:
 
 func _first_composition_mode() -> bool:
 	return bool(demo.get("first_composition_mode"))
+
+func unfinished_public_choice() -> bool:
+	if not composition_anchor_draft or not _first_composition_mode() or stage != "anchor" or committed_charter_id.is_empty() or scope.is_empty(): return false
+	for pending: Dictionary in demo.model.world.pending_actions:
+		if str(pending.get("kind","")) == "charter" and "charter-%05d" % int(pending.get("event_id",-1)) == committed_charter_id and int(pending.get("frame",-1)) == committed_charter_frame and _draft_scope_matches(pending.get("community_ids",[])): return true
+	for charter: Dictionary in demo.model.world.development_charters:
+		if str(charter.get("charter_id","")) == committed_charter_id and int(charter.get("committed_phrase",-1))*int(demo.model.world.cfg["timing"]["phrase_frames"]) == committed_charter_frame and _draft_scope_matches(charter.get("community_ids",[])): return true
+	return false
+
+func _draft_scope_matches(source: Array) -> bool:
+	return source.size() == scope.size() and source.all(func(cid: Variant) -> bool: return scope.has(cid))
 
 ## Open the ordinary P planning guide from a real transit station.  The guide
 ## still goes through the existing charter and change-card steps; when it
@@ -348,8 +370,10 @@ func _scope_source_hint() -> String:
 
 func hide_tool() -> void:
 	if stage in ["transit_anchor","transit_edit"]: demo._clear_transit_route()
-	committed_charter_id = ""
-	committed_charter_frame = -1
+	if not unfinished_public_choice():
+		composition_anchor_draft = false
+		committed_charter_id = ""
+		committed_charter_frame = -1
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
 	comparison_key.clear()
@@ -870,6 +894,7 @@ func queue_transit_edit_action(preview: Dictionary,result: Dictionary,context: D
 	committed_charter_id = ""
 
 func _close_after_commit() -> void:
+	composition_anchor_draft = false
 	if demo.preview_public: demo._cancel_preview_playback()
 	comparison.clear()
 	comparison_key.clear()
@@ -1389,6 +1414,7 @@ func commit_scope() -> void:
 	committed_charter_id = "charter-%05d" % int(result["event_id"])
 	committed_charter_frame = int(result["frame"])
 	stage = "anchor"
+	composition_anchor_draft = _first_composition_mode()
 	composition_public_hint.clear()
 	if _first_composition_mode() and demo.shown_world.by_id.has(str(demo.composition_source_id)):
 		composition_public_hint = demo.AuthoredDuet.public_candidate(demo.model.world,demo.composition_source_id,str(scope[0]))

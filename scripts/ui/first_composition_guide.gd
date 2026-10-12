@@ -62,6 +62,15 @@ func sync() -> void:
 			visible = not _blocked()
 			_place_entry()
 			return
+	if demo.planning_guide.has_method("unfinished_public_choice") and demo.planning_guide.unfinished_public_choice():
+		entered = true
+		action = "public"
+		text = "继续塑造这一段 · 公共空间"
+		tooltip_text = "发展方向与社区已选好；继续安排公园、文化馆、留地，或选择暂不建设"
+		disabled = false
+		visible = not _blocked()
+		_place_entry()
+		return
 	authored_state = demo._first_authored_state()
 	var root_id := str(authored_state.get("root_id",""))
 	if not root_id.is_empty():

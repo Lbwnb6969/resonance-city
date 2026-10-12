@@ -1,0 +1,20 @@
+{
+	"checks": {
+		"actual_child_links_only_its_older_authored_family_house": true,
+		"audition_has_priority_over_real_growth_mark": true,
+		"expired_mark_is_not_replayed_after_panel_or_audition": true,
+		"future_birth_and_root_without_predecessor_have_no_trail": true,
+		"label_and_positions_come_from_real_family_birth": true,
+		"next_child_uses_nearest_previously_heard_member": true,
+		"planning_panel_has_priority_over_growth_mark": true,
+		"restored_history_has_no_one_frame_growth_flash": true,
+		"restoring_immediately_after_birth_does_not_replay_it": true,
+		"root_menu_has_priority_over_growth_mark": true,
+		"switching_city_clears_previous_visual_family": true,
+		"the_same_event_is_not_added_twice": true,
+		"trail_does_not_mutate_world": true
+	},
+	"failures": [],
+	"passed": true,
+	"scope": "Dummy read-only family growth trail over supplied heard World identities; no audio, screenshot, or human preference claim."
+}
