@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "文档"
 OUTPUT = DOCS / "共鸣之城_文档合并精简版.md"
 ORDER = [
+    "版本整合说明.md",
     "00_设计意图.md",
     *[f"01_执行规格/spec.{name}.md" for name in
       ("asset", "audio", "city", "fabric", "harmony", "proposal", "run", "space", "terrain", "ui")],
@@ -95,8 +96,9 @@ def build_text() -> str:
     parts = ["# 共鸣之城：文档合并精简版\n\n"
              "由现行文档生成，原稿由生成器只读。公式、阈值和合同仍以所属执行规格为准，"
              "进度见 [PROJECT](../PROJECT.md)。去除分隔装饰、粗体与多余空行；"
-             "保留代码、表格关系、引用和必要标点。历史原稿见 [归档说明]"
-             "(../废弃/文档/2026-10-12_文档结构整理前/README.md)。"]
+             "保留代码、表格关系、引用和必要标点。设计与兼容参数分别标明，"
+             "旧公式不恢复旧玩法限制。历史原稿见 [归档说明]"
+             "(../废弃/文档/2026-10-14_综合优化前/README.md)。"]
     for relative in ORDER:
         source = DOCS / relative
         parts.append(f"## {source.stem}\n\n来源：[{relative}]({relative})\n\n"

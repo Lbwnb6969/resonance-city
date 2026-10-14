@@ -1,0 +1,18 @@
+{
+  "links": {
+    "exit_code": 0,
+    "result": "checked 34 documents, 162 local links, 0 errors"
+  },
+  "merged": {
+    "exit_code": 0,
+    "result": "checked 30 sources"
+  },
+  "parameters": {
+    "exit_code": 0,
+    "result": "SPEC_DATA PASS: continuous schema 2 matches authoritative tables; legacy data preserved"
+  },
+  "whitespace": {
+    "exit_code": 0,
+    "result": "warning: in the working copy of 'tools/merge_docs_compact.py', CRLF will be replaced by LF the next time Git touches it"
+  }
+}
