@@ -349,7 +349,7 @@ func _render_bank() -> Dictionary:
 	var edits: Dictionary = {}
 	report["effect_peaks"] = {}
 	var effect_peak := 0.0
-	var edit_notes := {"room": [62, 69], "terrace": [74, 81], "road": [57, 62, 66], "erase": [66, 62], "history": [69, 64], "concert": [62, 66, 69]}
+	var edit_notes := {"room": [62, 69], "terrace": [74, 81], "road": [57, 62, 66], "erase": [66, 62], "history": [69, 64], "concert": [62, 66, 69], "bakery": [62, 69]}
 	for kind in edit_notes:
 		var samples := PackedFloat32Array()
 		samples.resize(int(RATE * 0.8))

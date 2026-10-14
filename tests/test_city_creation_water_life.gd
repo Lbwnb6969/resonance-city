@@ -46,9 +46,13 @@ func _run() -> void:
 	var crossed := false
 	var edited_under_resident := false
 	var height_matches := true
+	var worker_height_matches := true
 	var stayed_on_road := true
 	for ignored in range(1800):
 		life._process(0.05)
+		for worker: Dictionary in life.bakery.workers:
+			var at: Vector3 = worker.node.position
+			worker_height_matches = worker_height_matches and absf(at.y-loaded.street_height(Vector2(at.x,at.z))-0.10)<0.0001
 		var position: Vector3 = resident.node.position
 		var point := Vector2(position.x,position.z)
 		height_matches = height_matches and absf(position.y-loaded.street_height(point)-0.10) < 0.0001
@@ -71,6 +75,7 @@ func _run() -> void:
 		if str(resident.dwell_id) == str(bakery.house_id): break
 	_check(crossed, "actual resident walks over authored water")
 	_check(height_matches, "resident follows authoritative street and bridge height at every sampled step")
+	_check(worker_height_matches,"real baker shares bridge heights throughout the edited crossing")
 	_check(stayed_on_road, "resident follows the street rather than a water shortcut")
 	_check(str(resident.dwell_id) == str(bakery.house_id), "resident actually reaches bakery across the new bridge")
 	var position: Vector3 = resident.node.position
@@ -86,7 +91,11 @@ func _run() -> void:
 	_check(life.purchases == 0, "water rebuild never completes the pending purchase")
 	life._process(wait+0.01)
 	life._process(0.0)
-	_check(life.purchases == 1 and int(loaded.life_progress.purchases) == 1, "cross-bank arrival produces exactly one purchase after dwelling")
+	_check(life.purchases==0,"cross-bank customer cannot buy before the baker finishes the first real oven")
+	for ignored in range(400):
+		if life.purchases>0: break
+		life._process(0.1)
+	_check(life.purchases == 1 and int(loaded.life_progress.purchases) == 1, "cross-bank arrival produces exactly one purchase after supplied dwelling")
 	life._process(0.0)
 	_check(life.purchases == 1, "water rebuild does not duplicate the service event")
 	life.free()

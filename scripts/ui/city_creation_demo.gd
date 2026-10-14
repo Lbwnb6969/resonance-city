@@ -35,6 +35,9 @@ var place_description: Label
 var concert_button: Button
 var concert_info: Label
 var concert_progress: ProgressBar
+var bakery_info: Label
+var bakery_progress: ProgressBar
+var bakery_button: Button
 var selected_house := ""
 var life_ui_timer := 0.0
 var tool := 0
@@ -112,6 +115,7 @@ func _ready() -> void:
 	life.setup(state)
 	life.arrival_callback = func(_kind: String) -> void: music.play_edit("terrace")
 	life.concert_callback = _on_concert_event
+	life.production_callback = func(_house_id:String,_quantity:int)->void: music.play_edit("bakery")
 	music.set_concert_active(str(life.concert_status().phase) == "playing")
 	_setup_ui()
 	_refresh_ui()
@@ -245,6 +249,21 @@ func _setup_ui() -> void:
 	concert_progress.show_percentage = false
 	concert_progress.custom_minimum_size.y = 8
 	place_column.add_child(concert_progress)
+	bakery_info = _label("",14)
+	bakery_info.name = "BakeryInfo"
+	bakery_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	bakery_info.custom_minimum_size.x = 250
+	place_column.add_child(bakery_info)
+	bakery_progress = ProgressBar.new()
+	bakery_progress.name = "BakeryProgress"
+	bakery_progress.show_percentage = false
+	bakery_progress.custom_minimum_size.y = 8
+	place_column.add_child(bakery_progress)
+	bakery_button = _button("暂停烘焙",func()->void:
+		var status: Dictionary = life.bakery_status(selected_house)
+		_after_edit(state.set_bakery_open(selected_house,not bool(status.open)),"terrace"))
+	bakery_button.name = "BakeryOpen"
+	place_column.add_child(bakery_button)
 	place_panel.visible = false
 	vegetation_panel = PanelContainer.new()
 	vegetation_panel.name = "VegetationOptions"
@@ -569,6 +588,7 @@ func _process(delta: float) -> void:
 		life_info.text = life.summary()
 		_refresh_concert()
 		_refresh_district()
+		_refresh_bakeries()
 	life_save_timer -= delta
 	if life_save_timer < 0.0:
 		life_save_timer = 15.0
@@ -909,8 +929,31 @@ func _refresh_place() -> void:
 		place_description.text = {"residential":"一处居所，让街坊有居民。", "bakery":"面包出炉，居民循路来采购。", "venue":"一处演奏庭，招呼街坊来小聚。"}[role]
 		place_description.text += "\n门前小路已接通。" if life.house_connected(selected_house) else "\n拉一条小路到门前，让居民能走来。"
 		concert_button.visible = role == "venue"
+		_refresh_bakeries()
 		_refresh_concert()
 		return
+
+func _refresh_bakeries() -> void:
+	var statuses := {}
+	for house: Dictionary in state.houses:
+		if str(house.role)=="bakery": statuses[str(house.id)]=life.bakery_status(str(house.id))
+	town.update_bakery_supply(statuses)
+	if bakery_info == null: return
+	var selected: Dictionary = statuses.get(selected_house,{})
+	bakery_info.visible = not selected.is_empty()
+	bakery_progress.visible = not selected.is_empty()
+	bakery_button.visible = not selected.is_empty()
+	if selected.is_empty(): return
+	bakery_info.text = "柜台面包 %d / %d · 每炉 %d份\n累计出炉 %d份 · 街坊买走 %d份" % [int(selected.stock),int(selected.capacity),int(selected.batch_size),int(selected.produced),int(selected.served)]
+	var phase := str(selected.worker_phase)
+	var activity: String = {"walking":"正在沿路来开炉","baking":"正在揉面、烘焙","returning":"正在沿路回家","resting":"正在家里小歇","paused":"等小路重新接通","unassigned":"接通一处居所，让街坊来当面包师"}.get(phase,"等街坊来开炉")
+	if not bool(selected.open): activity = "炉火小歇，柜台面包仍能买走"
+	elif int(selected.stock)+int(selected.batch_size)>int(selected.capacity): activity = "面包已备好，等街坊来买"
+	bakery_info.text += "\n" + (str(selected.worker_name)+" · " if not str(selected.worker_name).is_empty() else "") + activity
+	bakery_info.text += "\n扩出房间能增加每炉份数与柜台容量。"
+	bakery_progress.max_value = float(selected.duration)
+	bakery_progress.value = float(selected.elapsed)
+	bakery_button.text = "暂停烘焙" if bool(selected.open) else "继续开炉"
 
 func _capture_journeys() -> void:
 	state.set_journey_checkpoint(life.checkpoint())

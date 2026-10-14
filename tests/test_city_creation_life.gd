@@ -45,7 +45,11 @@ func _run() -> void:
 	_check(life.purchases == 0, "repeated edits do not duplicate pending purchase")
 	life._process(wait + 0.01)
 	life._process(0.0)
-	_check(life.purchases == 1 and int(city.life_progress.purchases) == 1, "one completed dwell records one authoritative purchase")
+	_check(life.purchases == 0, "completed dwell cannot buy from an oven whose first batch is still baking")
+	for ignored in range(400):
+		if life.purchases > 0: break
+		life._process(0.1)
+	_check(life.purchases == 1 and int(city.life_progress.purchases) == 1 and city.bakery_supply.h2.served == 1, "one supplied completed dwell records one authoritative purchase")
 	life._process(0.0)
 	_check(life.purchases == 1, "completed visit cannot be recorded twice")
 	var traveling: Dictionary = _resident(life, home_id)

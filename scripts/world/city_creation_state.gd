@@ -22,6 +22,7 @@ var districts: Array[Dictionary] = []
 var revision := 0
 var dirty := false
 var life_progress := {"purchases":0,"gatherings":0,"concerts":0}
+var bakery_supply: Dictionary = {}
 var journey_checkpoint: Dictionary = {}
 var life_progress_dirty := false
 var _next_house_id := 1
@@ -37,6 +38,7 @@ var _redo: Array[Dictionary] = []
 
 func initialize() -> void:
 	life_progress = {"purchases":0,"gatherings":0,"concerts":0}
+	bakery_supply.clear()
 	journey_checkpoint.clear()
 	life_progress_dirty = false
 	houses.clear()
@@ -154,7 +156,7 @@ func add_house(position: Vector2) -> Dictionary:
 	var before := snapshot()
 	var house_number := maxi(_next_house_id, int(_high_watermark.house) + 1)
 	var cell_number := maxi(_next_cell_id, int(_high_watermark.cell) + 1)
-	var house := {"id": "h%d" % house_number, "name": "石榴巷%d号" % house_number, "role": "residential", "origin": [position.x, position.y], "cells": [{"id": "c%d" % cell_number, "x": 0, "z": 0, "level": 0, "kind": "room", "source": "new_house"}], "palette": (house_number - 1) % 6, "seed": 81000 + house_number * 977}
+	var house := {"id": "h%d" % house_number, "name": "石榴巷%d号" % house_number, "role": "residential", "bakery_open":true, "origin": [position.x, position.y], "cells": [{"id": "c%d" % cell_number, "x": 0, "z": 0, "level": 0, "kind": "room", "source": "new_house"}], "palette": (house_number - 1) % 6, "seed": 81000 + house_number * 977}
 	houses.append(house)
 	_next_house_id = house_number + 1
 	_next_cell_id = cell_number + 1
@@ -615,7 +617,7 @@ func redo() -> Dictionary:
 
 
 func snapshot() -> Dictionary:
-	return {"schema": SCHEMA, "revision": revision, "houses": houses.duplicate(true), "roads": roads.duplicate(true), "plants": plants.duplicate(true), "waters": waters.duplicate(true), "districts": districts.duplicate(true), "next_district_id": _next_district_id, "next_water_id": _next_water_id, "next_house_id": _next_house_id, "next_cell_id": _next_cell_id, "next_road_id": _next_road_id, "next_plant_id": _next_plant_id, "high_watermark": _high_watermark.duplicate(), "life_progress":life_progress.duplicate(),"journey_checkpoint":journey_checkpoint.duplicate(true)}
+	return {"schema": SCHEMA, "revision": revision, "houses": houses.duplicate(true), "roads": roads.duplicate(true), "plants": plants.duplicate(true), "waters": waters.duplicate(true), "districts": districts.duplicate(true), "next_district_id": _next_district_id, "next_water_id": _next_water_id, "next_house_id": _next_house_id, "next_cell_id": _next_cell_id, "next_road_id": _next_road_id, "next_plant_id": _next_plant_id, "high_watermark": _high_watermark.duplicate(), "life_progress":life_progress.duplicate(),"bakery_supply":bakery_supply.duplicate(true),"journey_checkpoint":journey_checkpoint.duplicate(true)}
 
 
 func restore(data: Dictionary) -> Dictionary:
@@ -671,6 +673,60 @@ func record_life_event(kind: String) -> void:
 	dirty = true
 
 
+func bakery_capacity(house_id: String) -> int:
+	return bakery_batch_size(house_id) * 6
+
+
+func bakery_batch_size(house_id: String) -> int:
+	var index := _house_index(house_id)
+	if index < 0 or houses[index].role != "bakery":
+		return 0
+	var rooms := 0
+	for cell in houses[index].cells:
+		if cell.kind == "room":
+			rooms += 1
+	return maxi(1, rooms)
+
+
+func bakery_status(house_id: String) -> Dictionary:
+	var row: Dictionary = bakery_supply.get(house_id, {})
+	var index := _house_index(house_id)
+	var opened: bool = index >= 0 and houses[index].role == "bakery" and houses[index].get("bakery_open", true)
+	return {"stock":int(row.get("stock", 0)), "produced":int(row.get("produced", 0)), "served":int(row.get("served", 0)), "capacity":bakery_capacity(house_id), "batch_size":bakery_batch_size(house_id), "open":opened}
+
+
+func set_bakery_open(house_id: String, opened: bool) -> Dictionary:
+	var index := _house_index(house_id)
+	if index < 0 or houses[index].role != "bakery":
+		return _fail("只有面包坊可以开关烘焙")
+	if houses[index].get("bakery_open", true) == opened:
+		return {"ok":true,"message":""}
+	var before := snapshot()
+	houses[index].bakery_open = opened
+	_commit(before, "继续开炉" if opened else "暂停烘焙")
+	return {"ok":true,"message":"已继续开炉" if opened else "已暂停烘焙，现有面包继续供应"}
+
+
+func produce_bread(house_id: String, quantity: int) -> bool:
+	var capacity := bakery_capacity(house_id)
+	var current := bakery_status(house_id)
+	if capacity == 0 or not current.open or quantity <= 0 or quantity > capacity - int(current.stock):
+		return false
+	bakery_supply[house_id] = {"stock":int(current.stock) + quantity, "produced":int(current.produced) + quantity, "served":int(current.served)}
+	life_progress_dirty = true
+	dirty = true
+	return true
+
+
+func serve_bread(house_id: String) -> bool:
+	var current := bakery_status(house_id)
+	if bakery_capacity(house_id) == 0 or int(current.stock) <= 0:
+		return false
+	bakery_supply[house_id] = {"stock":int(current.stock) - 1, "produced":int(current.produced), "served":int(current.served) + 1}
+	record_life_event("purchases")
+	return true
+
+
 func load_city(path: String = DEFAULT_PATH) -> Dictionary:
 	var result := _read_snapshot(path)
 	if not result.ok:
@@ -685,7 +741,7 @@ func set_journey_checkpoint(data: Dictionary) -> Dictionary:
 		dirty = true
 	return {"ok":true,"message":""}
 
-func _validate_journey_checkpoint(data: Variant) -> Dictionary:
+func _validate_journey_checkpoint(data: Variant, house_rows: Variant = null) -> Dictionary:
 	if not data is Dictionary: return _fail("居民行程结构无效")
 	if data.is_empty(): return {"ok":true}
 	if data.get("schema") != 1 or not data.get("residents") is Array or not data.get("concert") is Dictionary:
@@ -703,7 +759,7 @@ func _validate_journey_checkpoint(data: Variant) -> Dictionary:
 		if resident.has("daily_snapshot"):
 			var daily: Dictionary = resident.daily_snapshot
 			if daily.has("daily_snapshot"): return _fail("居民日常行程不能递归")
-			var daily_check := _validate_journey_checkpoint({"schema":1,"residents":[daily],"concert":{}})
+			var daily_check := _validate_journey_checkpoint({"schema":1,"residents":[daily],"concert":{}}, house_rows)
 			if not daily_check.ok or daily.get("home_id") != resident.home_id: return _fail("居民日常行程字段无效")
 		if resident.has("stops"):
 			if not resident.stops is Array: return _fail("居民日常目的地无效")
@@ -718,6 +774,40 @@ func _validate_journey_checkpoint(data: Variant) -> Dictionary:
 		for home in concert.participants:
 			if not home is String or participants.has(home) or not homes.has(home): return _fail("街坊演出成员身份无效")
 			participants[home] = true
+	if data.has("bakery_workers"):
+		if not data.bakery_workers is Array:
+			return _fail("面包坊工人行程结构无效")
+		var worker_homes := {}
+		var worker_bakeries := {}
+		var existing := {}
+		var rows: Variant = houses if house_rows == null else house_rows
+		if not rows is Array:
+			return _fail("面包坊工人房屋结构无效")
+		for house in rows:
+			if house is Dictionary and house.get("id") is String:
+				existing[house.id] = true
+		for worker in data.bakery_workers:
+			if not worker is Dictionary or worker.size() != 8:
+				return _fail("面包坊工人行程字段无效")
+			for key in ["home_id", "bakery_id"]:
+				if not worker.get(key) is String or not existing.has(worker[key]):
+					return _fail("面包坊工人房屋身份无效")
+			if worker_homes.has(worker.home_id) or worker_bakeries.has(worker.bakery_id):
+				return _fail("面包坊工人分配重复")
+			worker_homes[worker.home_id] = true
+			worker_bakeries[worker.bakery_id] = true
+			if not _valid_point(worker.get("position")) or not WORLD_RECT.grow(2).has_point(Vector2(worker.position[0], worker.position[1])) or not _is_number(worker.get("yaw")):
+				return _fail("面包坊工人位置无效")
+			if worker.get("phase") not in ["walking", "baking", "returning", "resting", "paused"] or worker.get("resume_phase") not in ["walking", "baking", "returning", "resting"]:
+				return _fail("面包坊工人阶段无效")
+			if worker.phase != "paused" and worker.resume_phase != worker.phase:
+				return _fail("面包坊工人恢复阶段无效")
+			if not _is_number(worker.get("elapsed")) or worker.elapsed < 0 or worker.elapsed > 6:
+				return _fail("面包坊工人工作时间无效")
+			if worker.resume_phase == "resting" and worker.elapsed > 4 or worker.resume_phase in ["walking", "returning"] and worker.elapsed != 0:
+				return _fail("面包坊工人阶段时间无效")
+			if not _is_integer(worker.get("batches")) or worker.batches < 0 or worker.batches > 3:
+				return _fail("面包坊工人批次无效")
 	return {"ok":true}
 
 
@@ -892,7 +982,7 @@ func _distance_to_segment(point: Vector2, a: Vector2, b: Vector2) -> float:
 func _make_house(position: Vector2, palette: int) -> Dictionary:
 	var id := "h%d" % _next_house_id
 	_next_house_id += 1
-	return {"id": id, "name": "石榴巷%d号" % (_next_house_id - 1), "role": "residential", "origin": [position.x, position.y], "cells": [_make_cell(0, 0, 0, "room")], "palette": palette, "seed": 81000 + palette * 977}
+	return {"id": id, "name": "石榴巷%d号" % (_next_house_id - 1), "role": "residential", "bakery_open":true, "origin": [position.x, position.y], "cells": [_make_cell(0, 0, 0, "room")], "palette": palette, "seed": 81000 + palette * 977}
 
 
 static func river_x(z: float) -> float:
@@ -988,7 +1078,15 @@ func _apply_snapshot(data: Dictionary, preserve_issued_ids: bool = false) -> voi
 	if not preserve_issued_ids:
 		var progress: Dictionary = data.get("life_progress", {"purchases":0,"gatherings":0})
 		life_progress = {"purchases":int(progress.get("purchases",0)),"gatherings":int(progress.get("gatherings",0)),"concerts":int(progress.get("concerts",0))}
+		bakery_supply = data.get("bakery_supply", {}).duplicate(true)
+		for row in bakery_supply.values():
+			for key in ["stock", "produced", "served"]:
+				row[key] = int(row[key])
 		journey_checkpoint = data.get("journey_checkpoint",{}).duplicate(true)
+		if not journey_checkpoint.is_empty():
+			journey_checkpoint.schema = 1
+			for worker in journey_checkpoint.get("bakery_workers", []):
+				worker.batches = int(worker.batches)
 	houses.assign(data.houses.duplicate(true))
 	roads.assign(data.roads.duplicate(true))
 	waters.assign(data.get("waters", []).duplicate(true))
@@ -1010,6 +1108,7 @@ func _apply_snapshot(data: Dictionary, preserve_issued_ids: bool = false) -> voi
 	for house in houses:
 		house.name = house.get("name", "石榴巷%s号" % house.id.substr(1))
 		house.role = house.get("role", "residential")
+		house.bakery_open = house.get("bakery_open", true)
 		house.palette = int(house.palette)
 		house.seed = int(house.seed)
 		var origin := Vector2(float(house.origin[0]), float(house.origin[1]))
@@ -1082,7 +1181,7 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 	for key in ["purchases", "gatherings", "concerts"]:
 		if not _is_integer(progress.get(key,0)) or progress.get(key,0) < 0:
 			return _fail("城市存档生活进展无效")
-	var journeys := _validate_journey_checkpoint(data.get("journey_checkpoint",{}))
+	var journeys := _validate_journey_checkpoint(data.get("journey_checkpoint",{}), data.get("houses"))
 	if not journeys.ok: return journeys
 	if data.get("schema") != SCHEMA:
 		return _fail("不支持的城市存档版本")
@@ -1152,6 +1251,8 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 			return _fail("城市存档房屋字段无效")
 		if not house.get("name", "默认名字") is String or house.get("name", "默认名字").strip_edges().is_empty() or house.get("role", "residential") not in HOUSE_ROLES:
 			return _fail("城市存档名字或用途无效")
+		if not house.get("bakery_open", true) is bool:
+			return _fail("城市存档烘焙开关无效")
 		for cell in house.cells:
 			if not cell is Dictionary or not _valid_id(cell.get("id"), "c", ids):
 				return _fail("城市存档模块身份无效")
@@ -1170,6 +1271,21 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 		for j in range(i):
 			if _pair_overlaps(data.houses[i], data.houses[j]):
 				return _fail("城市存档房屋重叠")
+	var supply: Variant = data.get("bakery_supply", {})
+	if not supply is Dictionary:
+		return _fail("城市存档面包供给结构无效")
+	for house_id in supply:
+		var supply_ids := {}
+		if not _valid_id(house_id, "h", supply_ids) or int(house_id.substr(1)) > int(issued.house):
+			return _fail("城市存档面包供给房屋无效")
+		var row: Variant = supply[house_id]
+		if not row is Dictionary or row.size() != 3:
+			return _fail("城市存档面包供给字段无效")
+		for key in ["stock", "produced", "served"]:
+			if not _is_integer(row.get(key)) or row[key] < 0:
+				return _fail("城市存档面包供给计数无效")
+		if row.served > row.produced or row.stock != row.produced - row.served:
+			return _fail("城市存档面包供给收支不一致")
 	for road in data.roads:
 		if not road is Dictionary or not _valid_id(road.get("id"), "r", ids):
 			return _fail("城市存档道路身份无效")

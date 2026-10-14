@@ -2,6 +2,8 @@ class_name CityCreationLife
 extends Node3D
 ## Small, purposeful daily trips on the real continuous street graph.
 const UNIT := 1.8
+const Bakery := preload("res://scripts/world/city_creation_bakery.gd")
+var bakery: RefCounted
 var state: RefCounted
 var residents: Array[Dictionary] = []
 var connected_houses: Dictionary = {}
@@ -14,6 +16,7 @@ var current_population := 0
 var time := 0.0
 var arrival_callback: Callable
 var concert_callback: Callable
+var production_callback: Callable
 const CONCERT_DURATION := 24.0
 var _concert: Dictionary = {}
 
@@ -23,12 +26,14 @@ var _roles: Dictionary = {}
 func setup(city: RefCounted) -> void:
 	var fresh := state != city
 	if state != city:
+		if bakery != null: bakery.clear()
 		for resident: Dictionary in residents: resident.node.queue_free()
 		residents.clear()
 		_network_signature.clear()
 		last_revision = -1
 		_concert.clear()
 	state = city
+	if fresh: bakery = Bakery.new(self)
 	_read_progress()
 	_sync()
 	if fresh:
@@ -42,6 +47,7 @@ func _read_progress() -> void:
 func _process(delta: float) -> void:
 	if state == null: return
 	if state.revision != last_revision: _sync()
+	bakery.tick(delta)
 	time += delta
 	var already_playing := str(_concert.get("phase", "idle")) == "playing"
 	for resident: Dictionary in residents:
@@ -56,10 +62,11 @@ func _process(delta: float) -> void:
 			# filling the need. An edit never counts as finishing that sequence.
 			var reached := str(resident.dwell_id)
 			var service := str(resident.service_pending)
+			# An empty shelf retains a completed visit until real bread arrives.
+			if service == "bakery" and not state.serve_bread(reached): continue
 			resident.dwell_id = ""
 			resident.service_pending = ""
-			if service == "bakery": state.record_life_event("purchases")
-			elif service == "venue":
+			if service == "venue":
 				state.record_life_event("gatherings")
 				if arrival_callback.is_valid(): arrival_callback.call("venue")
 			_read_progress()
@@ -163,6 +170,11 @@ func _sync() -> void:
 	residents = next_residents
 	if not _concert.is_empty() and (concert_invalid or str(_roles.get(str(_concert.venue_id), "")) != "venue"):
 		_end_concert(false)
+	bakery.sync()
+
+func bakery_status(id: String) -> Dictionary:
+	if state.revision != last_revision: _sync()
+	return bakery.status(id)
 
 func _append_reachable(stops: Array[String], home: String, candidates: Array[String], serial: int) -> void:
 	for offset in range(candidates.size()):
@@ -379,9 +391,11 @@ func _resident_checkpoint(resident: Dictionary) -> Dictionary:
 	return result
 
 func checkpoint() -> Dictionary:
+	# Manual save may follow an edit before the next process frame.
+	if state.revision != last_revision: _sync()
 	var people: Array[Dictionary] = []
 	for resident: Dictionary in residents: people.append(_resident_checkpoint(resident))
-	return {"schema":1,"residents":people,"concert":_concert.duplicate(true)}
+	return {"schema":1,"residents":people,"concert":_concert.duplicate(true),"bakery_workers":bakery.checkpoint()}
 
 func restore_checkpoint(data: Dictionary) -> void:
 	if int(data.get("schema", 0)) != 1 or not data.get("residents", null) is Array: return
@@ -430,6 +444,7 @@ func restore_checkpoint(data: Dictionary) -> void:
 					elif str(resident.dwell_id) == venue: _concert_formation(resident)
 		if phase == "playing" and int(concert_status().arrived) != int(concert_status().invited): valid = false
 		if not valid: _end_concert(false)
+	bakery.restore(data.get("bakery_workers", []))
 
 func _restore_paused_home(home: String, saved: Dictionary) -> bool:
 	if str(_roles.get(home, "")) != "residential" or str(saved.get("destination_id", "")) != home or not str(saved.get("dwell_id", "")).is_empty() or not str(saved.get("service_pending", "")).is_empty() or saved.has("daily_snapshot"): return false

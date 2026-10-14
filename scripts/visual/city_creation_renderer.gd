@@ -37,6 +37,9 @@ var house_music_material: ShaderMaterial
 var districts_layer: Node3D
 var districts_visible := false
 var districts_fingerprint := -1
+var bread_layer: Node3D
+var bread_roots: Dictionary = {}
+var bread_fingerprints: Dictionary = {}
 const DISTRICT_COLORS := {"warm":Color("c9ab72"),"deep":Color("73afb4"),"weave":Color("b79abd")}
 const DISTRICT_NAMES := {"warm":"暖庭","deep":"深流","weave":"织机"}
 var road_outlines: Dictionary = {}
@@ -104,6 +107,9 @@ func setup(city_state: RefCounted) -> void:
 	districts_layer.name = "MusicalDistricts"
 	add_child(districts_layer)
 	districts_layer.visible = false
+	bread_layer = Node3D.new()
+	bread_layer.name = "BakeryCounterSupply"
+	add_child(bread_layer)
 	_build_landscape()
 	rebuild()
 
@@ -217,6 +223,39 @@ func show_district_preview(points: Array[Vector2], width: float, style: String) 
 	clear_preview()
 	if points.is_empty(): return
 	_district_surface(preview,_stroke_contours(points,width*0.5),[],style,0.115)
+
+func update_bakery_supply(statuses: Dictionary) -> void:
+	var live := {}
+	for house: Dictionary in state.houses:
+		var id := str(house.id)
+		if not statuses.has(id): continue
+		live[id] = true
+		var count := mini(3,int(statuses[id].stock))
+		var fingerprint := hash([count,house.origin,house.cells,_frontage_signature(house)])
+		if bread_fingerprints.get(id,-1)==fingerprint:
+			bread_roots[id].set_meta("stock",int(statuses[id].stock))
+			continue
+		_remove_cached(id,bread_roots,bread_fingerprints)
+		var root := Node3D.new()
+		root.name = "Bread_"+id
+		bread_layer.add_child(root)
+		bread_roots[id] = root
+		bread_fingerprints[id] = fingerprint
+		root.set_meta("stock",int(statuses[id].stock))
+		root.set_meta("displayed_loaves",0)
+		for cell: Dictionary in house.cells:
+			if int(cell.level)!=0 or str(cell.kind)!="room": continue
+			var neighbor := _at(house.cells,int(cell.x),int(cell.z)+1,0)
+			if not neighbor.is_empty() and str(neighbor.kind)=="room": continue
+			var front := _cell_position(house,cell)+Vector3(0.82,0.65,UNIT*0.5+0.20)
+			if _clearance_at(Vector2(front.x,front.z),str(cell.id),0.29):
+				for bread in range(count):
+					_crown(root,front+Vector3(-0.16+bread*0.16,0,0),Vector3(0.07,0.045,0.15),Color("d6a35d"))
+				root.set_meta("displayed_loaves",count)
+			break
+		_merge_meshes(root)
+	for id: String in bread_roots.keys():
+		if not live.has(id): _remove_cached(id,bread_roots,bread_fingerprints)
 
 func _remove_cached(id: String, roots: Dictionary, fingerprints: Dictionary) -> void:
 	if not roots.has(id): return
@@ -887,8 +926,6 @@ func _role_frontage(wall: Node3D, role: String) -> void:
 		if _prop_clear(wall,counter,0.29):
 			_box(wall,Vector3(0.52,0.08,0.38),counter+Vector3(0,0.57,0),wood)
 			for x in [-0.20,0.20]: _box(wall,Vector3(0.045,0.55,0.27),counter+Vector3(x,0.28,0),wood)
-			for bread in range(3):
-				_crown(wall,counter+Vector3(-0.16+bread*0.16,0.65,0),Vector3(0.07,0.045,0.15),Color("d6a35d"))
 		# Bread emblem makes the service readable even when its counter is omitted.
 		_box(wall,Vector3(0.45,0.38,0.055),Vector3(0.59,0.93,0.10),wood)
 		_crown(wall,Vector3(0.59,0.94,0.15),Vector3(0.17,0.065,0.07),Color("d9af72"))
