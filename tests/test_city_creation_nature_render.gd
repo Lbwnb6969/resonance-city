@@ -36,14 +36,32 @@ func _run() -> void:
 	demo.town.rebuild()
 	var checks := 0
 	for block: Vector2i in demo.town.meadow.blocks:
-		var local: RefCounted = demo.town.meadow._make_local_query_state(block)
+		var local := preload("res://scripts/visual/city_creation_grass_mask.gd").new()
+		local.setup(demo.state,block)
 		for z in range(16):
 			for x in range(16):
 				var at := Vector2(block)*8+Vector2(x,z)*0.5+Vector2(0.17,0.23)
-				var candidate := {"position":[at.x,at.y],"kind":"shrub","scale":0.25}
-				_expect(local.vegetation_visible(candidate) == demo.state.vegetation_visible(candidate),"local grass mask differs at %s" % at)
+				var candidate := {"id":"pcomparison","position":[at.x,at.y],"kind":"shrub","scale":0.25,"seed":0,"source":"seed"}
+				_expect(local.visible(at,0.25) == demo.state.vegetation_visible(candidate),"local grass mask differs at %s" % at)
 				checks += 1
 	var meadow_ids := {}
+	for block: Vector2i in demo.town.meadow.blocks: meadow_ids[block] = demo.town.meadow.blocks[block].get_instance_id()
+	var base_ids := {}
+	for block: Vector2i in demo.town.meadow.blocks:
+		var lawn: Node = demo.town.meadow.blocks[block].get_node_or_null("Meadow_lawn")
+		if lawn != null: base_ids[block] = lawn.get_instance_id()
+	demo.zoom = 40
+	demo._update_camera()
+	_expect(demo.town.meadow.detail == 0.0,"city view collapses dense leaf detail")
+	demo.zoom = 10
+	demo._update_camera()
+	_expect(demo.town.meadow.detail == 1.0,"close view restores leaf detail")
+	var plant: Dictionary = demo.state.plants[0]
+	plant.scale = float(plant.scale)*0.95
+	demo.town.rebuild()
+	for block: Vector2i in base_ids:
+		_expect(demo.town.meadow.blocks[block].get_node("Meadow_lawn").get_instance_id() == base_ids[block],"plant edit and zoom retain grass-base GPU instances")
+	meadow_ids.clear()
 	for block: Vector2i in demo.town.meadow.blocks: meadow_ids[block] = demo.town.meadow.blocks[block].get_instance_id()
 	points = [Vector2(-15,-8)]
 	_expect(demo.state.add_water(points,2.4,"pond").ok,"remote pond masks grass")

@@ -400,6 +400,7 @@ func select_tool(index: int) -> void:
 	_refresh_ui()
 
 func _update_camera() -> void:
+	if town != null and town.meadow != null: town.meadow.set_view_scale(zoom)
 	camera.size = zoom
 	var direction := Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch))
 	camera.position = focus + direction * 42.0

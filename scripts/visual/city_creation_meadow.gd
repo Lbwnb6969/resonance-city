@@ -6,16 +6,20 @@ extends Node3D
 const BLOCK_SIZE := 8.0
 const WORLD_RECT := Rect2(-18.0, -15.0, 35.0, 30.0)
 const BASE_SPACING := 0.26
-const State := preload("res://scripts/world/city_creation_state.gd")
+const GrassMask := preload("res://scripts/visual/city_creation_grass_mask.gd")
+const LawnShader = preload("res://scripts/visual/shaders/creation_lawn.gdshader")
 var state: RefCounted
 var blocks: Dictionary = {}
 var block_counts: Dictionary = {}
 var base_counts: Dictionary = {}
+var base_records: Dictionary = {}
+var base_fingerprints: Dictionary = {}
 var fingerprints: Dictionary = {}
 var meshes: Dictionary = {}
 var materials: Dictionary = {}
 var last_changed := 0
 var elapsed_ms := 0.0
+var detail := 1.0
 
 func setup(city_state: RefCounted) -> void:
 	state = city_state
@@ -26,10 +30,15 @@ func rebuild(visible_by_block: Dictionary, dirty: Array[Vector2i]) -> void:
 	last_changed = 0
 	for block: Vector2i in dirty:
 		var members: Array = visible_by_block.get(block, [])
-		var fingerprint := hash([members, _local_obstacles(block)])
+		var obstacle_fingerprint := hash(_local_obstacles(block))
+		var fingerprint := hash([members, obstacle_fingerprint])
 		if fingerprints.get(block, -1) == fingerprint:
 			continue
 		fingerprints[block] = fingerprint
+		var retained_lawn: MultiMeshInstance3D
+		if base_fingerprints.get(block,-1) == obstacle_fingerprint and blocks.has(block):
+			retained_lawn = blocks[block].get_node_or_null("Meadow_lawn")
+			if retained_lawn != null: blocks[block].remove_child(retained_lawn)
 		if blocks.has(block):
 			var old: Node3D = blocks[block]
 			remove_child(old)
@@ -41,18 +50,25 @@ func rebuild(visible_by_block: Dictionary, dirty: Array[Vector2i]) -> void:
 		root.name = "Meadow_%d_%d" % [block.x, block.y]
 		root.position = Vector3(float(block.x) * BLOCK_SIZE, 0.0, float(block.y) * BLOCK_SIZE)
 		root.set_meta("meadow_block", block)
-		var batches := {"grass": [], "flower": [], "stone": []}
-		# The production visibility rule scans every road and water stroke. A
-		# dirty block gets a small authoritative mask once, so hundreds of grass
-		# candidates reuse the exact same rule without a world-wide query.
-		var query_state := _make_local_query_state(block)
-		base_counts[block] = _add_short_meadow(block, batches.grass, query_state)
+		if retained_lawn != null: root.add_child(retained_lawn)
+		var batches := {"lawn": [], "grass": [], "flower": [], "stone": []}
+		# Build a spatial index only on edits; grass samples inspect nearby
+		# footprints and segments instead of scanning the whole town.
+		var query_state := GrassMask.new()
+		query_state.setup(state,block)
+		if base_fingerprints.get(block,-1) != obstacle_fingerprint:
+			_add_short_meadow(block,batches.lawn,query_state)
+			base_records[block] = batches.lawn
+			base_fingerprints[block] = obstacle_fingerprint
+		else: batches.lawn = base_records[block]
+		base_counts[block] = batches.lawn.size()
 		for plant: Dictionary in members:
 			_add_plant_clumps(block, plant, batches, query_state)
 		var count := 0
 		for part: String in batches:
 			var records: Array = batches[part]
 			count += records.size()
+			if part == "lawn" and retained_lawn != null: continue
 			_make_batch(root, part, records)
 		if count > 0:
 			add_child(root)
@@ -74,6 +90,10 @@ func diagnostics() -> Dictionary:
 		"base_grass": short_grass, "clumps": count - short_grass,
 		"last_changed": last_changed, "elapsed_ms": elapsed_ms}
 
+func set_view_scale(zoom: float) -> void:
+	detail = 1.0-smoothstep(12.0,32.0,zoom)
+	if materials.has("lawn"): materials.lawn.set_shader_parameter("detail",detail)
+
 func _add_short_meadow(block: Vector2i, records: Array, query_state: RefCounted) -> int:
 	var first := records.size()
 	var origin := Vector2(block) * BLOCK_SIZE
@@ -93,14 +113,17 @@ func _add_short_meadow(block: Vector2i, records: Array, query_state: RefCounted)
 			var jitter_z := (float((bits >> 10) & 1023) / 1023.0 - 0.5) * 0.13
 			var at := Vector2((float(x) + 0.5) * BASE_SPACING + jitter_x,
 				(float(z) + 0.5) * BASE_SPACING + jitter_z)
+			var edge := minf(minf(at.x-WORLD_RECT.position.x,WORLD_RECT.end.x-at.x),minf(at.y-WORLD_RECT.position.y,WORLD_RECT.end.y-at.y))
+			var fade := smoothstep(0.0,3.6,edge+sin(at.x*0.6+at.y*0.31)*0.7)
+			if float((bits >> 17)&1023)/1023.0 > fade: continue
 			if not _candidate_visible(block, at, query_state, 0.18):
 				continue
 			# Broad, barely perceptible drifts connect the lawn rather than
 			# painting each cell a different noisy colour. Individual height
 			# jitter stays below a centimetre and introduces no bare holes.
 			var drift := 0.5 + 0.25 * sin(at.x * 0.31 + at.y * 0.17) + 0.25 * sin(at.y * 0.23 - at.x * 0.11)
-			var height := 0.40 + drift * 0.075 + float((bits >> 20) & 63) / 63.0 * 0.025
-			var width := 0.55 + float((bits >> 26) & 31) / 31.0 * 0.08
+			var height := 0.30 + drift * 0.10 + float((bits >> 20) & 63) / 63.0 * 0.04
+			var width := 0.85 + float((bits >> 26) & 31) / 31.0 * 0.12
 			var yaw := float(bits & 65535) / 65535.0 * TAU
 			_append(records, block, at, Vector3(width, height, width), yaw,
 				dark.lerp(light, drift), -0.003)
@@ -136,57 +159,6 @@ func _local_obstacles(block: Vector2i) -> Array:
 	for water: Dictionary in state.get("waters"):
 		_collect_segments(relevant, rect, "water", water.points, float(water.width) * 0.5 + 0.12)
 	return relevant
-
-func _make_local_query_state(block: Vector2i) -> RefCounted:
-	var mask := State.new()
-	var rect := Rect2(Vector2(block) * BLOCK_SIZE, Vector2.ONE * BLOCK_SIZE).grow(1.0)
-	# Keep complete house dictionaries so doorway exposure still sees a
-	# neighbour that happens to sit just outside this block.
-	mask.houses = []
-	for house: Dictionary in state.get("houses"):
-		var origin := Vector2(float(house.origin[0]), float(house.origin[1]))
-		var relevant := false
-		for cell: Dictionary in house.cells:
-			if int(cell.level) != 0:
-				continue
-			var at := origin + Vector2(float(cell.x), float(cell.z)) * 1.8
-			var footprint := Rect2(at - Vector2.ONE * 0.9, Vector2.ONE * 1.8).grow(0.12)
-			var doorway := Rect2(at + Vector2(0.0, 1.55) - Vector2.ONE * 1.06, Vector2.ONE * 2.12)
-			if rect.intersects(footprint) or rect.intersects(doorway):
-				relevant = true
-				break
-		if relevant:
-			mask.houses.append(house.duplicate(true))
-	mask.roads = []
-	for road: Dictionary in state.get("roads"):
-		var width := float(road.width)
-		for index in range(1, road.points.size()):
-			var a := Vector2(float(road.points[index - 1][0]), float(road.points[index - 1][1]))
-			var b := Vector2(float(road.points[index][0]), float(road.points[index][1]))
-			if _segment_hits(rect, a, b, width * 0.5 + 0.56):
-				mask.roads.append({"id": road.get("id", "local"), "points": [[a.x, a.y], [b.x, b.y]],
-					"width": width, "bridge": road.get("bridge", false), "source": road.get("source", "seed")})
-	mask.waters = []
-	for water: Dictionary in state.get("waters"):
-		var width := float(water.width)
-		var points: Array = water.points
-		if points.size() == 1:
-			var at := Vector2(float(points[0][0]), float(points[0][1]))
-			if rect.intersects(Rect2(at - Vector2.ONE * (width * 0.5 + 0.12), Vector2.ONE * (width + 0.24))):
-				mask.waters.append({"id": water.get("id", "local"), "points": [[at.x, at.y]], "width": width,
-					"kind": water.get("kind", "pond"), "seed": water.get("seed", 0), "source": water.get("source", "seed")})
-		else:
-			for index in range(1, points.size()):
-				var a := Vector2(float(points[index - 1][0]), float(points[index - 1][1]))
-				var b := Vector2(float(points[index][0]), float(points[index][1]))
-				if _segment_hits(rect, a, b, width * 0.5 + 0.12):
-					mask.waters.append({"id": water.get("id", "local"), "points": [[a.x, a.y], [b.x, b.y]], "width": width,
-						"kind": water.get("kind", "channel"), "seed": water.get("seed", 0), "source": water.get("source", "seed")})
-	return mask
-
-func _segment_hits(rect: Rect2, a: Vector2, b: Vector2, radius: float) -> bool:
-	var bounds := Rect2(Vector2(minf(a.x, b.x), minf(a.y, b.y)), Vector2(absf(a.x - b.x), absf(a.y - b.y))).grow(radius)
-	return rect.intersects(bounds)
 
 func _collect_segments(relevant: Array, rect: Rect2, kind: String, points: Array, radius: float) -> void:
 	if points.size() == 1:
@@ -244,8 +216,7 @@ func _candidate_visible(block: Vector2i, at: Vector2, query_state: RefCounted, c
 		return false
 	if Vector2i(floori(at.x / BLOCK_SIZE), floori(at.y / BLOCK_SIZE)) != block:
 		return false
-	return bool(query_state.call("vegetation_visible", {"id": "p_meadow", "position": [at.x, at.y],
-		"kind": "shrub", "scale": clearance_scale, "seed": 0, "source": "seed"}))
+	return bool(query_state.call("visible", at, clearance_scale))
 
 func _append(records: Array, block: Vector2i, at: Vector2, scale_value: Vector3,
 		yaw: float, tint: Color, y: float) -> void:
@@ -289,7 +260,7 @@ func _mesh(part: String) -> Mesh:
 	else:
 		var surface := SurfaceTool.new()
 		surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-		if part == "grass":
+		if part in ["grass","lawn"]:
 			# Six broad curved leaves. Three triangles per leaf keep the shared
 			# clump at 18 triangles while its silhouette reads as a low soft fan.
 			for blade in range(6):
@@ -337,7 +308,12 @@ func _material(part: String) -> Material:
 	if materials.has(part):
 		return materials[part]
 	var material: Material
-	if part == "stone":
+	if part == "lawn":
+		var lawn := ShaderMaterial.new()
+		lawn.shader = LawnShader
+		lawn.set_shader_parameter("detail",detail)
+		material = lawn
+	elif part == "stone":
 		var stone := StandardMaterial3D.new()
 		stone.vertex_color_use_as_albedo = true
 		stone.roughness = 1.0
