@@ -10,7 +10,9 @@ const UI = preload("res://scripts/ui/valley_ui_theme.gd")
 const SAVE_PATH := "user://city_creation_v1.json"
 const UNIT := 1.8
 const FLOOR := 1.7
-const TOOL_NAMES := ["房屋", "露台", "道路", "移除", "用途", "植被", "水岸"]
+const TOOL_NAMES := ["房屋", "露台", "道路", "移除", "用途", "植被", "水岸", "街坊"]
+const DISTRICT_STYLES := ["warm", "deep", "weave"]
+const DISTRICT_STYLE_NAMES := {"warm":"暖庭", "deep":"深流", "weave":"织机"}
 var state := State.new()
 var town: Node3D
 var music: Node
@@ -61,6 +63,18 @@ var water_drawing := false
 var water_points: Array[Vector2] = []
 var water_kind := "pond"
 var water_width := 3.2
+var district_panel: PanelContainer
+var district_name: LineEdit
+var district_style_picker: OptionButton
+var district_description: Label
+var district_music_status: Label
+var district_drawing := false
+var district_points: Array[Vector2] = []
+var district_distance := 0.0
+var district_start_id := ""
+var district_width := 5.6
+var district_style := "warm"
+var selected_district := ""
 var life_save_timer := 15.0
 var hovered: Dictionary = {}
 var candidate: Dictionary = {}
@@ -161,17 +175,17 @@ func _setup_ui() -> void:
 	toolbar.add_theme_stylebox_override("panel", UI.panel(10))
 	root.add_child(toolbar)
 	toolbar.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	toolbar.offset_left = -474
-	toolbar.offset_right = 474
+	toolbar.offset_left = -518
+	toolbar.offset_right = 518
 	toolbar.offset_top = -97
 	toolbar.offset_bottom = -24
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	toolbar.add_child(row)
-	for index in range(7):
+	for index in range(TOOL_NAMES.size()):
 		var button := _button("%d  %s" % [index + 1, TOOL_NAMES[index]], func() -> void: select_tool(index))
 		button.name = "Tool%d" % index
-		button.custom_minimum_size = Vector2(104, 48)
+		button.custom_minimum_size = Vector2(100, 48)
 		row.add_child(button)
 		tool_buttons.append(button)
 	undo_button = _button("↶", func() -> void: _history(false))
@@ -317,6 +331,7 @@ func _setup_ui() -> void:
 	water_status.custom_minimum_size.x = 260
 	water_column.add_child(water_status)
 	water_panel.visible = false
+	_setup_district_panel(root)
 	var help := _panel(root, Vector2(24, -168), Vector2(284, 0))
 	help.get_parent().set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	var help_panel := help.get_parent() as Control
@@ -339,6 +354,53 @@ func _setup_ui() -> void:
 	toast.offset_right = 260
 	toast.offset_top = 28
 	toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+func _setup_district_panel(root: Control) -> void:
+	district_panel = PanelContainer.new()
+	district_panel.name = "DistrictOptions"
+	district_panel.add_theme_stylebox_override("panel", UI.panel(16))
+	root.add_child(district_panel)
+	district_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	district_panel.offset_left = -330
+	district_panel.offset_right = -24
+	district_panel.offset_top = 84
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 8)
+	district_panel.add_child(column)
+	column.add_child(_label("画一片有自己声音的街坊", 18))
+	var size_picker := OptionButton.new()
+	size_picker.name = "DistrictWidth"
+	for text_value: String in ["小庭 · 3.2米", "街坊 · 5.6米", "宽园 · 8.8米"]: size_picker.add_item(text_value)
+	size_picker.select(1)
+	size_picker.item_selected.connect(func(index: int) -> void:
+		_cancel_draft()
+		district_width = [3.2, 5.6, 8.8][index])
+	column.add_child(size_picker)
+	district_name = LineEdit.new()
+	district_name.name = "DistrictName"
+	district_name.placeholder_text = "先画一片街坊，再为它命名"
+	district_name.text_submitted.connect(func(value: String) -> void:
+		_after_edit(state.set_district_name(selected_district, value), "terrace")
+		district_name.release_focus())
+	column.add_child(district_name)
+	district_style_picker = OptionButton.new()
+	district_style_picker.name = "DistrictStyle"
+	for key: String in DISTRICT_STYLES: district_style_picker.add_item(DISTRICT_STYLE_NAMES[key])
+	district_style_picker.item_selected.connect(func(index: int) -> void:
+		_cancel_draft()
+		district_style = DISTRICT_STYLES[index]
+		if not selected_district.is_empty():
+			_after_edit(state.set_district_style(selected_district, district_style), "terrace"))
+	column.add_child(district_style_picker)
+	district_description = _label("", 14)
+	district_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	district_description.custom_minimum_size.x = 270
+	column.add_child(district_description)
+	district_music_status = _label("", 14)
+	district_music_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(district_music_status)
+	column.add_child(_label("自由刷出街坊，松开落定。\n点击已有街坊选择；拖动仍可画新区。\nShift 点击移除整区；Esc 取消。", 13))
+	district_panel.visible = false
 
 func _panel(parent: Control, position_value: Vector2, minimum: Vector2) -> VBoxContainer:
 	var panel := PanelContainer.new()
@@ -383,9 +445,10 @@ func _refresh_ui() -> void:
 		for visual_state in ["normal", "hover", "pressed"]:
 			tool_buttons[i].add_theme_stylebox_override(visual_state, UI.button(visual_state, i == tool))
 		tool_buttons[i].add_theme_color_override("font_color", UI.PAPER if i == tool else UI.INK)
-	hint.text = ["点墙向外扩房，点顶向上加层。\n空地点击，建一座新房。", "点墙伸出露台，点顶留出屋顶花园。\n系统补齐栏杆和支撑。", "按住左键，沿空地拉出小路。\n横跨两岸自动搭桥；Esc 取消。", "点击房屋块移除。\n附属上层一并收回，撤销可恢复。", "点击房屋，起名并选择用途。\n居民沿小路采购、聚会，再回家。", "按住左键画树群；Shift+左键擦除。\n树会避开房屋、道路和水岸。\nEsc 取消预览。", "拖出池塘或从已有水边引水。\n红色预影说明与房屋、道路冲突。\nShift 点击移除；Esc 取消。"][tool]
+	hint.text = ["点墙向外扩房，点顶向上加层。\n空地点击，建一座新房。", "点墙伸出露台，点顶留出屋顶花园。\n系统补齐栏杆和支撑。", "按住左键，沿空地拉出小路。\n横跨两岸自动搭桥；Esc 取消。", "点击房屋块移除。\n附属上层一并收回，撤销可恢复。", "点击房屋，起名并选择用途。\n居民沿小路采购、聚会，再回家。", "按住左键画树群；Shift+左键擦除。\n树会避开房屋、道路和水岸。\nEsc 取消预览。", "拖出池塘或从已有水边引水。\n红色预影说明与房屋、道路冲突。\nShift 点击移除；Esc 取消。", "自由刷出街坊，给房屋共同的音乐风格。\n点击选区；Shift 点击移除；Esc 取消。\n平移视野，听街坊乐句自然交接。"][tool]
 	music.update_city(state)
 	_refresh_place()
+	_refresh_district()
 
 func _check(key: String) -> String:
 	return "●" if completed.has(key) else "○"
@@ -397,6 +460,8 @@ func select_tool(index: int) -> void:
 	vegetation_panel.visible = tool == 5
 	water_panel.visible = tool == 6
 	road_panel.visible = tool == 2
+	district_panel.visible = tool == 7
+	town.show_districts(tool == 7)
 	_refresh_ui()
 
 func _update_camera() -> void:
@@ -405,6 +470,7 @@ func _update_camera() -> void:
 	var direction := Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch))
 	camera.position = focus + direction * 42.0
 	camera.look_at(focus)
+	if music != null: music.set_listener_focus(Vector2(focus.x, focus.z))
 
 func home_camera() -> void:
 	focus = Vector3(-3, 0.7, 0)
@@ -434,6 +500,7 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and road_drawing: _finish_road()
 		if event.button_index == MOUSE_BUTTON_LEFT and vegetation_drawing: _finish_vegetation()
 		if event.button_index == MOUSE_BUTTON_LEFT and water_drawing: _finish_water()
+		if event.button_index == MOUSE_BUTTON_LEFT and district_drawing: _finish_district()
 	if event is InputEventKey and event.pressed and not event.echo:
 		if get_viewport().gui_get_focus_owner() is LineEdit: return
 		if event.ctrl_pressed:
@@ -441,7 +508,7 @@ func _input(event: InputEvent) -> void:
 			elif event.keycode == KEY_Y: _history(true)
 			elif event.keycode == KEY_S: save_city()
 			else: return
-		elif event.keycode >= KEY_1 and event.keycode <= KEY_7: select_tool(event.keycode - KEY_1)
+		elif event.keycode >= KEY_1 and event.keycode <= KEY_8: select_tool(event.keycode - KEY_1)
 		elif event.keycode == KEY_H: home_camera()
 		elif event.keycode == KEY_F: ui_layer.visible = not ui_layer.visible
 		elif event.keycode == KEY_ESCAPE: _cancel_draft()
@@ -478,6 +545,16 @@ func _unhandled_input(event: InputEvent) -> void:
 						water_drawing = true
 						water_points.clear()
 						_append_water_point()
+				elif tool == 7:
+					if event.shift_pressed:
+						_after_edit(state.remove_district_at(_ground_at(pointer)), "erase")
+					else:
+						district_drawing = true
+						district_points.clear()
+						district_distance = 0.0
+						var district: Dictionary = state.district_at(_ground_at(pointer))
+						district_start_id = str(district.get("id", ""))
+						_append_district_point()
 				else:
 					_update_hover()
 					_commit_click()
@@ -491,6 +568,7 @@ func _process(delta: float) -> void:
 		life_ui_timer = 0.5
 		life_info.text = life.summary()
 		_refresh_concert()
+		_refresh_district()
 	life_save_timer -= delta
 	if life_save_timer < 0.0:
 		life_save_timer = 15.0
@@ -511,6 +589,7 @@ func _process(delta: float) -> void:
 		if road_drawing: _append_road_point()
 		elif vegetation_drawing: _append_vegetation_point()
 		elif water_drawing: _append_water_point()
+		elif district_drawing: _append_district_point()
 		elif not ui_layer.visible:
 			town.clear_preview()
 			preview_key = ""
@@ -536,6 +615,15 @@ func _update_hover() -> void:
 	hovered = _ray_hit(pointer)
 	candidate.clear()
 	if tool == 2: return
+	if tool == 7:
+		var ground := _ground_at(pointer)
+		var district: Dictionary = state.district_at(ground)
+		var district_key := str([ground, district_width, district_style, district.get("id", "")])
+		if preview_key == district_key: return
+		preview_key = district_key
+		var single: Array[Vector2] = [ground]
+		town.show_district_preview(single, district_width, district_style)
+		return
 	if tool == 6:
 		var ground := _ground_at(pointer)
 		var water_key := str([ground,water_width,water_kind])
@@ -684,6 +772,84 @@ func _finish_water() -> void:
 	_after_edit(state.add_water(water_points, water_width, water_kind), "terrace")
 	water_points.clear()
 
+func _append_district_point() -> void:
+	var at := _ground_at(pointer)
+	if district_points.is_empty() or district_points[-1].distance_to(at) > 0.20:
+		if not district_points.is_empty(): district_distance += district_points[-1].distance_to(at)
+		district_points.append(at)
+		town.show_district_preview(district_points, district_width, district_style)
+
+func _finish_district() -> void:
+	_append_district_point()
+	district_drawing = false
+	if not district_start_id.is_empty() and district_distance < 0.6:
+		selected_district = district_start_id
+		_cancel_draft()
+		_refresh_district()
+		var selected := _selected_district_row()
+		if not selected.is_empty(): _show_selected_district(selected)
+		return
+	var result: Dictionary = state.add_district(district_points, district_width, district_style)
+	if result.ok:
+		var created: Dictionary = state.district_at(district_points[-1])
+		selected_district = str(created.get("id", ""))
+	_after_edit(result, "terrace")
+	district_points.clear()
+	district_start_id = ""
+	district_distance = 0.0
+
+func _selected_district_row() -> Dictionary:
+	for district: Dictionary in state.districts:
+		if str(district.id) == selected_district: return district
+	return {}
+
+func _show_selected_district(district: Dictionary) -> void:
+	var points: Array[Vector2] = []
+	for at: Array in district.points: points.append(Vector2(float(at[0]), float(at[1])))
+	town.show_district_preview(points, float(district.width), str(district.style))
+
+func _refresh_district() -> void:
+	if district_panel == null or tool != 7: return
+	var district := _selected_district_row()
+	if district.is_empty(): selected_district = ""
+	district_name.editable = not district.is_empty()
+	if district.is_empty():
+		if not district_name.has_focus(): district_name.text = ""
+		district_description.text = "沿房屋与庭院画一笔，把它们留在同一片街坊。\n三种声音共用晨曲节拍，留白与和声自然相融。"
+	else:
+		if not district_name.has_focus(): district_name.text = str(district.name)
+		district_style = str(district.style)
+		district_style_picker.select(DISTRICT_STYLES.find(district_style))
+		var members: Array = state.district_members(selected_district)
+		var counts := {"residential":0, "bakery":0, "venue":0}
+		var reachable := {"bakery":0, "venue":0}
+		for house: Dictionary in state.houses:
+			if str(house.id) not in members: continue
+			var role := str(house.role)
+			counts[role] = int(counts[role]) + 1
+			if role == "residential":
+				for service: String in ["bakery", "venue"]:
+					if _district_home_has_service(str(house.id), service): reachable[service] = int(reachable[service]) + 1
+		district_description.text = "%d 座房屋 · %d 居所 · %d 面包坊 · %d 演奏庭\n区内居所可沿路抵达：\n面包坊 %d / %d · 演奏庭 %d / %d\n服务包含街坊外的实际可达地点。" % [members.size(), int(counts.residential), int(counts.bakery), int(counts.venue), int(reachable.bakery), int(counts.residential), int(reachable.venue), int(counts.residential)]
+		if int(counts.residential) == 0: district_description.text += "\n先为这片庭园留下自己的声音。"
+	var report: Dictionary = music.district_music_report()
+	var audible_name: String = DISTRICT_STYLE_NAMES[str(report.style)]
+	district_music_status.text = "♫ 正在听见 · " + audible_name if bool(report.audible) else "♫ 晨曲静候 · " + audible_name
+	if bool(report.audible):
+		for source: Dictionary in state.houses:
+			if str(source.id) == str(report.source_id):
+				district_music_status.text += "\n" + str(source.name) + " 正在演奏"
+				break
+	if bool(report.pending): district_music_status.text += "\n" + str(DISTRICT_STYLE_NAMES[str(report.pending_style)]) + " · 等待下一乐句"
+
+func _district_home_has_service(home_id: String, role: String) -> bool:
+	if not life.house_connected(home_id): return false
+	var start: String = str(life.connected_houses[home_id])
+	for house: Dictionary in state.houses:
+		if str(house.role) != role or not life.house_connected(str(house.id)): continue
+		if not life._route(start, str(life.connected_houses[house.id])).is_empty(): return true
+	return false
+
 func _after_edit(result: Dictionary, kind: String) -> void:
 	_message(str(result.message))
 	if not result.ok: return
@@ -708,6 +874,10 @@ func _cancel_draft() -> void:
 	vegetation_points.clear()
 	water_drawing = false
 	water_points.clear()
+	district_drawing = false
+	district_points.clear()
+	district_start_id = ""
+	district_distance = 0.0
 	candidate.clear()
 	preview_key = ""
 	if town != null: town.clear_preview()

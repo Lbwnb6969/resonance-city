@@ -34,6 +34,11 @@ var house_music_layer: Node3D
 var house_music_source := ""
 var house_music_fingerprint := ""
 var house_music_material: ShaderMaterial
+var districts_layer: Node3D
+var districts_visible := false
+var districts_fingerprint := -1
+const DISTRICT_COLORS := {"warm":Color("c9ab72"),"deep":Color("73afb4"),"weave":Color("b79abd")}
+const DISTRICT_NAMES := {"warm":"暖庭","deep":"深流","weave":"织机"}
 var road_outlines: Dictionary = {}
 var buildings: Node3D
 var landscape: Node3D
@@ -95,6 +100,10 @@ func setup(city_state: RefCounted) -> void:
 	house_music_layer = Node3D.new()
 	house_music_layer.name = "HouseMusicalResponse"
 	add_child(house_music_layer)
+	districts_layer = Node3D.new()
+	districts_layer.name = "MusicalDistricts"
+	add_child(districts_layer)
+	districts_layer.visible = false
 	_build_landscape()
 	rebuild()
 
@@ -152,7 +161,62 @@ func rebuild() -> void:
 		road_water_signatures.erase(id)
 		rebuild_stats["roads_removed"] += 1
 	_rebuild_vegetation()
+	if districts_visible: _rebuild_districts()
 	rebuild_stats["elapsed_ms"] = float(Time.get_ticks_usec()-started)/1000.0
+
+func show_districts(visible: bool) -> void:
+	districts_visible = visible
+	districts_layer.visible = visible
+	if visible: _rebuild_districts()
+
+func _rebuild_districts() -> void:
+	var members: Array = []
+	for house: Dictionary in state.houses: members.append([house.id,house.origin])
+	var fingerprint := hash([state.districts,members])
+	if fingerprint == districts_fingerprint: return
+	districts_fingerprint = fingerprint
+	_clear(districts_layer)
+	var outlines: Array = []
+	for district: Dictionary in state.districts:
+		var points: Array[Vector2] = []
+		for point: Array in district.points: points.append(Vector2(float(point[0]),float(point[1])))
+		outlines.append(_stroke_contours(points,float(district.width)*0.5))
+	for index in range(state.districts.size()):
+		var district: Dictionary = state.districts[index]
+		var cuts: Array = []
+		for later in range(index+1,outlines.size()): cuts.append(outlines[later])
+		_district_surface(districts_layer,outlines[index],cuts,str(district.style),0.095)
+		# A district with no current members is a saved intention, not a town
+		# that fills itself. Labels explicitly show the real member count.
+		var label := Label3D.new()
+		label.text = "%s · %d处\n%s" % [district.name,state.district_members(str(district.id)).size(),DISTRICT_NAMES[district.style]]
+		label.font_size = 32
+		label.pixel_size = 0.014
+		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		label.no_depth_test = true
+		label.modulate = Color("fff3d7")
+		label.position = Vector3(float(district.points[0][0])-float(district.width)*0.5,0.50,float(district.points[0][1]))
+		districts_layer.add_child(label)
+
+func _district_surface(parent: Node3D, contours: Array, cuts: Array, style: String, height: float) -> void:
+	var vertices := _road_surface_vertices(contours,cuts)
+	if vertices.is_empty(): return
+	for index in range(vertices.size()): vertices[index].y = height
+	var instance := _triangles(parent,vertices,Color.WHITE)
+	var material := StandardMaterial3D.new()
+	var color: Color = DISTRICT_COLORS[style]
+	color.a = 0.27
+	material.albedo_color = color
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	instance.material_override = material
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
+func show_district_preview(points: Array[Vector2], width: float, style: String) -> void:
+	clear_preview()
+	if points.is_empty(): return
+	_district_surface(preview,_stroke_contours(points,width*0.5),[],style,0.115)
 
 func _remove_cached(id: String, roots: Dictionary, fingerprints: Dictionary) -> void:
 	if not roots.has(id): return

@@ -118,7 +118,7 @@ func _run() -> void:
 	var restored: Dictionary = music.music_report()
 	for key in Music.STEMS:
 		_check(absf(float(restored.gains_db[key]) - music.target_gain_db(key, false)) < 1.0, "daily gains restored: " + key)
-	_check(music._players.size() == 5, "five persistent synchronized players")
+	_check(music._players.size() == Music.STEMS.size(), "fixed shared synchronized players")
 	var min_position := Music.SECONDS
 	var max_position := 0.0
 	for position: float in restored.positions.values():

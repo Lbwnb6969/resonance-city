@@ -10,12 +10,15 @@ const WORLD_RECT := Rect2(-18.0, -15.0, 35.0, 30.0)
 const RIVER_HALF_WIDTH := 2.3
 const MAX_PLANTS_PER_STROKE := 160
 const HOUSE_ROLES := ["residential", "bakery", "venue"]
+const DISTRICT_STYLES := ["warm", "deep", "weave"]
+const DISTRICT_STYLE_NAMES := {"warm": "暖声街坊", "deep": "低吟街坊", "weave": "织音街坊"}
 const DIRECTIONS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 
 var houses: Array[Dictionary] = []
 var roads: Array[Dictionary] = []
 var plants: Array[Dictionary] = []
 var waters: Array[Dictionary] = []
+var districts: Array[Dictionary] = []
 var revision := 0
 var dirty := false
 var life_progress := {"purchases":0,"gatherings":0,"concerts":0}
@@ -26,7 +29,8 @@ var _next_cell_id := 1
 var _next_road_id := 1
 var _next_plant_id := 1
 var _next_water_id := 1
-var _high_watermark := {"house": 0, "cell": 0, "road": 0, "plant": 0, "water": 0}
+var _next_district_id := 1
+var _high_watermark := {"house": 0, "cell": 0, "road": 0, "plant": 0, "water": 0, "district": 0}
 var _undo: Array[Dictionary] = []
 var _redo: Array[Dictionary] = []
 
@@ -39,12 +43,14 @@ func initialize() -> void:
 	roads.clear()
 	plants.clear()
 	waters.clear()
+	districts.clear()
 	_next_house_id = 1
 	_next_cell_id = 1
 	_next_road_id = 1
 	_next_plant_id = 1
 	_next_water_id = 1
-	_high_watermark = {"house": 0, "cell": 0, "road": 0, "plant": 0, "water": 0}
+	_next_district_id = 1
+	_high_watermark = {"house": 0, "cell": 0, "road": 0, "plant": 0, "water": 0, "district": 0}
 	var positions := [Vector2(-8.0, -6.0), Vector2(-2.4, -5.0), Vector2(-8.0, 0.0), Vector2(-2.4, 1.0), Vector2(-7.0, 6.0), Vector2(9.0, 3.0)]
 	for i in range(positions.size()):
 		var house := _make_house(positions[i], i)
@@ -67,7 +73,7 @@ func initialize() -> void:
 		var door_z: float = Vector2(0.0, float(house.origin[1]) + 1.55).y
 		roads.append({"id": "r%d" % _next_road_id, "points": [[-11.0, door_z], [house.origin[0], door_z]], "width": 1.25, "bridge": false, "source": "seed"})
 		_next_road_id += 1
-	_high_watermark = {"house": _next_house_id - 1, "cell": _next_cell_id - 1, "road": _next_road_id - 1, "water": 0}
+	_high_watermark = {"house": _next_house_id - 1, "cell": _next_cell_id - 1, "road": _next_road_id - 1, "water": 0, "district": 0}
 	_generate_initial_plants()
 	revision = 0
 	dirty = false
@@ -194,6 +200,140 @@ func set_house_name(house_id: String, house_name: String) -> Dictionary:
 	houses[index].name = clean
 	_commit(before, "命名建筑")
 	return {"ok": true, "message": "建筑名字已保存"}
+
+
+## A painted community expresses musical intent, separate from construction
+## occupancy and road connectivity. Latest stroke owns overlapping origins.
+func add_district(points: Array[Vector2], width: float = 5.6, style: String = "warm") -> Dictionary:
+	if not is_finite(width) or width < 3.2 or width > 10.0:
+		return _fail("街坊宽度应为3.2至10米")
+	var number := maxi(_next_district_id, int(_high_watermark.get("district", 0)) + 1)
+	var rows: Array = []
+	for point in points:
+		rows.append([point.x, point.y])
+	var district := {"id": "d%d" % number, "name": "%s%d" % [DISTRICT_STYLE_NAMES.get(style, ""), number], "style": style, "points": rows, "width": Vector2(width, 0).x}
+	var valid := _validate_district_fields(district)
+	if not valid.ok:
+		return valid
+	var before := snapshot()
+	districts.append(district)
+	_next_district_id = number + 1
+	_high_watermark.district = number
+	_commit(before, "划定音乐街坊")
+	return {"ok": true, "message": "音乐街坊已划定", "district_id": district.id}
+
+
+func district_at(position: Vector2) -> Dictionary:
+	if not is_finite(position.x) or not is_finite(position.y):
+		return {}
+	for index in range(districts.size() - 1, -1, -1):
+		var district: Dictionary = districts[index]
+		if _water_stroke_distance(position, district.points) <= float(district.width) * 0.5:
+			return district.duplicate(true)
+	return {}
+
+
+func district_for_house(house_id: String) -> Dictionary:
+	var index := _house_index(house_id)
+	if index < 0:
+		return {}
+	return district_at(Vector2(float(houses[index].origin[0]), float(houses[index].origin[1])))
+
+
+func district_members(district_id: String) -> Array[String]:
+	var members: Array[String] = []
+	if _district_index(district_id) < 0:
+		return members
+	for house in houses:
+		if district_for_house(house.id).get("id", "") == district_id:
+			members.append(house.id)
+	return members
+
+
+func set_district_name(district_id: String, district_name: String) -> Dictionary:
+	var index := _district_index(district_id)
+	if index < 0:
+		return _fail("街坊不存在")
+	var clean := district_name.strip_edges()
+	if not _valid_district_name(clean):
+		return _fail("街坊名字应为1至48个字，不含换行或控制字符")
+	if districts[index].name == clean:
+		return {"ok": true, "message": "街坊名字未变"}
+	var before := snapshot()
+	districts[index].name = clean
+	_commit(before, "命名音乐街坊")
+	return {"ok": true, "message": "街坊名字已保存"}
+
+
+func set_district_style(district_id: String, style: String) -> Dictionary:
+	var index := _district_index(district_id)
+	if index < 0:
+		return _fail("街坊不存在")
+	if style not in DISTRICT_STYLES:
+		return _fail("未知的街坊音乐风格")
+	if districts[index].style == style:
+		return {"ok": true, "message": "街坊风格未变"}
+	var before := snapshot()
+	districts[index].style = style
+	_commit(before, "更改街坊音乐风格")
+	return {"ok": true, "message": "街坊音乐风格已更改"}
+
+
+func remove_district(district_id: String) -> Dictionary:
+	var index := _district_index(district_id)
+	if index < 0:
+		return _fail("街坊不存在")
+	var before := snapshot()
+	districts.remove_at(index)
+	_commit(before, "移除音乐街坊")
+	return {"ok": true, "message": "音乐街坊已移除", "district_id": district_id}
+
+
+func remove_district_at(position: Vector2) -> Dictionary:
+	var district := district_at(position)
+	if district.is_empty():
+		return _fail("这里没有音乐街坊")
+	return remove_district(district.id)
+
+
+func _district_index(district_id: String) -> int:
+	for index in range(districts.size()):
+		if districts[index].id == district_id:
+			return index
+	return -1
+
+
+func _valid_district_name(value: Variant) -> bool:
+	if not value is String or value.is_empty() or value.length() > 48 or value.strip_edges() != value:
+		return false
+	for index in range(value.length()):
+		if value.unicode_at(index) < 32 or value.unicode_at(index) == 127:
+			return false
+	return true
+
+
+func _validate_district_fields(district: Dictionary) -> Dictionary:
+	for field in district:
+		if field not in ["id", "name", "style", "points", "width"]:
+			return _fail("街坊存在未知字段")
+	if not _valid_district_name(district.get("name")) or district.get("style") not in DISTRICT_STYLES:
+		return _fail("街坊名字或音乐风格无效")
+	if not _is_number(district.get("width")) or float(district.width) < 3.2 or float(district.width) > 10.0:
+		return _fail("街坊宽度应为3.2至10米")
+	if not district.get("points") is Array or district.points.is_empty():
+		return _fail("街坊范围需要至少一个点")
+	var previous: Vector2
+	for index in range(district.points.size()):
+		var point: Variant = district.points[index]
+		if not _valid_point(point):
+			return _fail("街坊位置无效")
+		var position := Vector2(float(point[0]), float(point[1]))
+		if not WORLD_RECT.has_point(position):
+			return _fail("街坊笔画超出创作范围")
+		if index > 0 and position == previous:
+			return _fail("街坊笔画包含重复相邻点")
+		previous = position
+	return {"ok": true, "message": ""}
 
 
 ## Water is an editable continuous mask, inspired by Tiny Glade's separate
@@ -475,7 +615,7 @@ func redo() -> Dictionary:
 
 
 func snapshot() -> Dictionary:
-	return {"schema": SCHEMA, "revision": revision, "houses": houses.duplicate(true), "roads": roads.duplicate(true), "plants": plants.duplicate(true), "waters": waters.duplicate(true), "next_water_id": _next_water_id, "next_house_id": _next_house_id, "next_cell_id": _next_cell_id, "next_road_id": _next_road_id, "next_plant_id": _next_plant_id, "high_watermark": _high_watermark.duplicate(), "life_progress":life_progress.duplicate(),"journey_checkpoint":journey_checkpoint.duplicate(true)}
+	return {"schema": SCHEMA, "revision": revision, "houses": houses.duplicate(true), "roads": roads.duplicate(true), "plants": plants.duplicate(true), "waters": waters.duplicate(true), "districts": districts.duplicate(true), "next_district_id": _next_district_id, "next_water_id": _next_water_id, "next_house_id": _next_house_id, "next_cell_id": _next_cell_id, "next_road_id": _next_road_id, "next_plant_id": _next_plant_id, "high_watermark": _high_watermark.duplicate(), "life_progress":life_progress.duplicate(),"journey_checkpoint":journey_checkpoint.duplicate(true)}
 
 
 func restore(data: Dictionary) -> Dictionary:
@@ -859,6 +999,13 @@ func _apply_snapshot(data: Dictionary, preserve_issued_ids: bool = false) -> voi
 			var point := Vector2(float(water.points[index][0]), float(water.points[index][1]))
 			water.points[index] = [point.x, point.y]
 	_next_water_id = int(data.get("next_water_id", 1))
+	districts.assign(data.get("districts", []).duplicate(true))
+	for district in districts:
+		district.width = Vector2(float(district.width), 0).x
+		for index in range(district.points.size()):
+			var point := Vector2(float(district.points[index][0]), float(district.points[index][1]))
+			district.points[index] = [point.x, point.y]
+	_next_district_id = int(data.get("next_district_id", 1))
 	# JSON numbers enter as floats; restore the authoritative integer fields.
 	for house in houses:
 		house.name = house.get("name", "石榴巷%s号" % house.id.substr(1))
@@ -897,7 +1044,7 @@ func _apply_snapshot(data: Dictionary, preserve_issued_ids: bool = false) -> voi
 	for plant in plants:
 		max_plant = maxi(max_plant, int(str(plant.id).substr(1)))
 	var issued: Dictionary = data.get("high_watermark", {"house": _next_house_id - 1, "cell": _next_cell_id - 1, "road": _next_road_id - 1, "plant": max_plant})
-	for kind in ["house", "cell", "road", "plant", "water"]:
+	for kind in ["house", "cell", "road", "plant", "water", "district"]:
 		var default_issued := max_plant if kind == "plant" else (int(data.get("next_%s_id" % kind, 1)) - 1)
 		var issued_value := int(issued.get(kind, default_issued))
 		_high_watermark[kind] = maxi(int(_high_watermark.get(kind, 0)), issued_value) if preserve_issued_ids else issued_value
@@ -948,6 +1095,9 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 	if not _is_integer(data.get("next_water_id", 1)) or int(data.get("next_water_id", 1)) < 1:
 		return _fail("城市存档水域身份计数无效")
 	var next_water_id := int(data.get("next_water_id", 1))
+	if not _is_integer(data.get("next_district_id", 1)) or int(data.get("next_district_id", 1)) < 1:
+		return _fail("城市存档街坊身份计数无效")
+	var next_district_id := int(data.get("next_district_id", 1))
 	var issued: Variant = data.get("high_watermark", {"house": data.next_house_id - 1, "cell": data.next_cell_id - 1, "road": data.next_road_id - 1, "plant": next_plant_id - 1})
 	if not issued is Dictionary:
 		return _fail("城市存档身份高水位无效")
@@ -958,6 +1108,10 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 		return _fail("城市存档植被身份高水位无效")
 	if not _is_integer(issued.get("water", next_water_id - 1)) or int(issued.get("water", next_water_id - 1)) < next_water_id - 1:
 		return _fail("城市存档水域身份高水位无效")
+	if not _is_integer(issued.get("district", next_district_id - 1)) or int(issued.get("district", next_district_id - 1)) < next_district_id - 1:
+		return _fail("城市存档街坊身份高水位无效")
+	if not data.get("districts", []) is Array:
+		return _fail("城市存档街坊结构无效")
 	if not data.get("waters", []) is Array:
 		return _fail("城市存档水域结构无效")
 	if not data.get("houses") is Array or not data.get("roads") is Array:
@@ -968,6 +1122,16 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 	var max_road := 0
 	var max_plant := 0
 	var max_water := 0
+	var max_district := 0
+	for district in data.get("districts", []):
+		if not district is Dictionary or not _valid_id(district.get("id"), "d", ids):
+			return _fail("城市存档街坊身份无效")
+		var district_valid := _validate_district_fields(district)
+		if not district_valid.ok:
+			return district_valid
+		max_district = maxi(max_district, int(district.id.substr(1)))
+	if next_district_id <= max_district:
+		return _fail("城市存档街坊身份计数冲突")
 	var water_rows: Array = data.get("waters", [])
 	for water in water_rows:
 		if not water is Dictionary or not _valid_id(water.get("id"), "w", ids):

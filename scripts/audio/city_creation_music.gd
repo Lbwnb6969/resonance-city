@@ -1,11 +1,13 @@
 class_name CityCreationMusic
 extends Node
 ## Original D-major pentatonic morning miniature. PCM is rendered once on a
-## worker, then five synchronized loops respond to the town through gain only.
+## worker. Seven shared synchronized loops give districts distinct phrases
+## without adding a voice for every house or restarting the musical clock.
 const RATE := 22050
 const SECONDS := 24.0
 const FRAMES := 529200
-const STEMS := ["foundation", "wood", "air", "terrace", "concert"]
+const STEMS := ["foundation", "wood", "air", "terrace", "concert", "wood_deep", "wood_weave"]
+const STYLE_TRACKS := {"warm":"wood", "deep":"wood_deep", "weave":"wood_weave"}
 
 var muted := false
 var concert_active := false
@@ -21,6 +23,12 @@ var _concert_venue := ""
 var _concert_houses: Array[String] = []
 var _concert_loop := 0
 var _concert_previous_position := 0.0
+var _house_music: Dictionary = {}
+var _listener_focus := Vector2(-3,0)
+var _daily_source_id := ""
+var _daily_district_id := ""
+var _daily_style := "warm"
+var _daily_phrase := -1
 
 
 func setup(state: RefCounted) -> void:
@@ -49,8 +57,12 @@ func update_city(state: RefCounted) -> void:
 	var terraces := 0
 	var houses: Array = state.get("houses")
 	_daily_houses.clear()
+	_house_music.clear()
 	for house: Dictionary in houses:
 		_daily_houses.append(str(house.id))
+		var district: Dictionary = state.district_for_house(str(house.id))
+		_house_music[str(house.id)] = {"position":Vector2(float(house.origin[0]),float(house.origin[1])),
+			"district_id":str(district.get("id","")),"style":str(district.get("style","warm"))}
 		for cell: Dictionary in house.cells:
 			if cell.kind == "terrace":
 				terraces += 1
@@ -65,6 +77,43 @@ func update_city(state: RefCounted) -> void:
 	_targets.air = lerpf(-21.0, -13.0, clampf(float(upper) / 10.0, 0.0, 1.0))
 	_targets.terrace = lerpf(-26.0, -15.0, clampf(float(terraces) / 8.0, 0.0, 1.0))
 	_daily_houses.sort()
+	# Removing a source clears its attribution immediately; the audible tail
+	# still fades normally, and a real replacement enters at the next phrase.
+	if not _house_music.has(_daily_source_id):
+		_daily_source_id = ""
+		_daily_district_id = ""
+
+func set_listener_focus(at: Vector2) -> void:
+	_listener_focus = at
+
+func _focused_houses() -> Array[String]:
+	var near: Array[String] = []
+	var nearest := ""
+	var distance := INF
+	for id: String in _daily_houses:
+		var value: float = _listener_focus.distance_to(_house_music[id].position)
+		if value <= 14.0: near.append(id)
+		if value < distance:
+			distance = value
+			nearest = id
+	if near.is_empty() and not nearest.is_empty(): near.append(nearest)
+	return near
+
+func _advance_daily_phrase(phrase: int) -> void:
+	if phrase == _daily_phrase: return
+	_daily_phrase = phrase
+	var houses := _focused_houses()
+	_daily_source_id = "" if houses.is_empty() else houses[phrase % houses.size()]
+	var source: Dictionary = _house_music.get(_daily_source_id,{})
+	_daily_district_id = str(source.get("district_id",""))
+	_daily_style = str(source.get("style","warm"))
+
+func district_music_report() -> Dictionary:
+	var source := daily_source()
+	var planned := str(_house_music.get(_daily_source_id,{}).get("style","warm"))
+	return {"source_id":_daily_source_id,"district_id":_daily_district_id,"style":_daily_style,
+		"pending":planned != _daily_style,"pending_style":planned,"audible":source.audible,
+		"phrase":int(source.get("phrase",0)),"listener_focus":[_listener_focus.x,_listener_focus.y]}
 
 
 func set_muted(value: bool) -> void:
@@ -128,20 +177,22 @@ func active_source() -> Dictionary:
 func target_gain_db(key: String, during_concert: bool) -> float:
 	if key == "concert":
 		return -8.0 if during_concert else -60.0
-	var gain := float(_targets[key])
+	var style_track := key in STYLE_TRACKS.values()
+	if style_track and key != STYLE_TRACKS[_daily_style]: return -60.0
+	var gain := float(_targets.wood if style_track else _targets[key])
 	if during_concert:
-		if key == "wood":
+		if style_track:
 			gain -= 10.0
 		elif key == "air":
 			gain -= 7.0
 	return gain
 
 func daily_source() -> Dictionary:
-	var result := {"source_id":"","role":"daily","audible":false,"timbre":"wood"}
-	if _daily_houses.is_empty() or not _players.has("wood"): return result
-	var player: AudioStreamPlayer = _players.wood
+	var result := {"source_id":_daily_source_id,"district_id":_daily_district_id,"style":_daily_style,"role":"daily","audible":false,
+		"timbre":{"warm":"wood","deep":"air","weave":"pluck"}[_daily_style]}
+	if not _house_music.has(_daily_source_id) or not _players.has(STYLE_TRACKS[_daily_style]): return result
+	var player: AudioStreamPlayer = _players[STYLE_TRACKS[_daily_style]]
 	var phrase := clampi(int(player.get_playback_position()/3.0),0,7)
-	result.source_id = _daily_houses[(_concert_loop*8+phrase)%_daily_houses.size()]
 	result["phrase"] = phrase
 	result.audible = not concert_active and not muted and player.playing and player.volume_db > -30.0
 	return result
@@ -160,6 +211,7 @@ func music_report() -> Dictionary:
 	result["active_source"] = active_source()
 	result["daily_source"] = daily_source()
 	result["daily_houses"] = _daily_houses.duplicate()
+	result["district_music"] = district_music_report()
 	for key in _players:
 		result.gains_db[key] = _players[key].volume_db if not muted else -80.0
 		result.positions[key] = _players[key].get_playback_position()
@@ -194,6 +246,7 @@ func _process(delta: float) -> void:
 		if position + 0.1 < _concert_previous_position:
 			_concert_loop += 1
 		_concert_previous_position = position
+		_advance_daily_phrase(_concert_loop*8+clampi(int(position/3.0),0,7))
 	for key in _players:
 		if muted:
 			_players[key].volume_linear = 0.0
@@ -224,7 +277,7 @@ func _render_bank() -> Dictionary:
 	var concert_mix := PackedFloat32Array()
 	day_mix.resize(FRAMES)
 	concert_mix.resize(FRAMES)
-	var maximum_gains := {"foundation": -10.0, "wood": -10.0, "air": -13.0, "terrace": -15.0, "concert": -60.0}
+	var maximum_gains := {"foundation": -10.0, "wood": -10.0, "air": -13.0, "terrace": -15.0, "concert": -60.0,"wood_deep":-10.0,"wood_weave":-10.0}
 	var absolute_bound := 0.0
 	for key in STEMS:
 		var samples := PackedFloat32Array()
@@ -238,6 +291,15 @@ func _render_bank() -> Dictionary:
 			"wood":
 				for i in range(melody.size()):
 					_add_note(samples, i * 1.5 + 0.12, 1.4, melody[i] - 12, 0.105 if i % 2 == 0 else 0.073, "wood", true)
+			"wood_deep":
+				# Eight spacious low breaths, aligned with the same chord changes.
+				for bar in range(8):
+					_add_note(samples,bar*3.0+0.25,2.35,melody[bar*2]-12,0.089,"air",true)
+			"wood_weave":
+				# Light chord arpeggios leave a clear half-bar of silence.
+				for bar in range(8):
+					for n in range(3):
+						_add_note(samples,bar*3.0+0.12+n*0.5,0.68,chords[bar][n]+12,0.082 if n==0 else 0.063,"pluck",true)
 			"air":
 				for i in range(8):
 					_add_note(samples, i * 3.0 + 0.75, 2.05, melody[i * 2], 0.064, "air", true)
@@ -265,7 +327,7 @@ func _render_bank() -> Dictionary:
 		report.seam_steps[key] = absf(samples[0] - samples[FRAMES - 1])
 		var day_gain := db_to_linear(float(maximum_gains[key]))
 		var concert_db := float(maximum_gains[key])
-		if key == "wood":
+		if key in STYLE_TRACKS.values():
 			concert_db -= 10.0
 		elif key == "air":
 			concert_db -= 7.0
