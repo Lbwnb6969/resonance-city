@@ -15,6 +15,7 @@ const DIRECTIONS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0
 var houses: Array[Dictionary] = []
 var roads: Array[Dictionary] = []
 var plants: Array[Dictionary] = []
+var waters: Array[Dictionary] = []
 var revision := 0
 var dirty := false
 var life_progress := {"purchases":0,"gatherings":0}
@@ -23,7 +24,8 @@ var _next_house_id := 1
 var _next_cell_id := 1
 var _next_road_id := 1
 var _next_plant_id := 1
-var _high_watermark := {"house": 0, "cell": 0, "road": 0, "plant": 0}
+var _next_water_id := 1
+var _high_watermark := {"house": 0, "cell": 0, "road": 0, "plant": 0, "water": 0}
 var _undo: Array[Dictionary] = []
 var _redo: Array[Dictionary] = []
 
@@ -34,11 +36,13 @@ func initialize() -> void:
 	houses.clear()
 	roads.clear()
 	plants.clear()
+	waters.clear()
 	_next_house_id = 1
 	_next_cell_id = 1
 	_next_road_id = 1
 	_next_plant_id = 1
-	_high_watermark = {"house": 0, "cell": 0, "road": 0, "plant": 0}
+	_next_water_id = 1
+	_high_watermark = {"house": 0, "cell": 0, "road": 0, "plant": 0, "water": 0}
 	var positions := [Vector2(-8.0, -6.0), Vector2(-2.4, -5.0), Vector2(-8.0, 0.0), Vector2(-2.4, 1.0), Vector2(-7.0, 6.0), Vector2(9.0, 3.0)]
 	for i in range(positions.size()):
 		var house := _make_house(positions[i], i)
@@ -61,7 +65,7 @@ func initialize() -> void:
 		var door_z: float = Vector2(0.0, float(house.origin[1]) + 1.55).y
 		roads.append({"id": "r%d" % _next_road_id, "points": [[-11.0, door_z], [house.origin[0], door_z]], "width": 1.25, "bridge": false, "source": "seed"})
 		_next_road_id += 1
-	_high_watermark = {"house": _next_house_id - 1, "cell": _next_cell_id - 1, "road": _next_road_id - 1}
+	_high_watermark = {"house": _next_house_id - 1, "cell": _next_cell_id - 1, "road": _next_road_id - 1, "water": 0}
 	_generate_initial_plants()
 	revision = 0
 	dirty = false
@@ -190,6 +194,156 @@ func set_house_name(house_id: String, house_name: String) -> Dictionary:
 	return {"ok": true, "message": "建筑名字已保存"}
 
 
+## Water is an editable continuous mask, inspired by Tiny Glade's separate
+## WaterRas / Terrain fields. Author strokes; derive occupancy and shoreline.
+func water_clearance(position: Vector2) -> float:
+	return _water_clearance_in(position, waters)
+
+
+func street_height(position: Vector2) -> float:
+	return 0.055 + 0.185 * (1.0 - smoothstep(-0.05, 0.65, water_clearance(position)))
+
+
+func _water_clearance_in(position: Vector2, rows: Array) -> float:
+	var distance := absf(position.x - river_x(position.y)) - RIVER_HALF_WIDTH
+	for water in rows:
+		distance = minf(distance, _water_stroke_distance(position, water.points) - float(water.width) * 0.5)
+	return distance
+
+
+func _water_stroke_distance(position: Vector2, points: Array) -> float:
+	var distance := position.distance_to(Vector2(points[0][0], points[0][1]))
+	for index in range(1, points.size()):
+		distance = minf(distance, _distance_to_segment(position, Vector2(points[index - 1][0], points[index - 1][1]), Vector2(points[index][0], points[index][1])))
+	return distance
+
+
+func preview_water(points: Array[Vector2], width: float = 2.4, kind: String = "channel") -> Dictionary:
+	var encoded: Array = []
+	for point in points:
+		encoded.append([point.x, point.y])
+	var valid := _validate_water_fields({"points": encoded, "width": width, "kind": kind})
+	if not valid.ok:
+		valid.conflicts = []
+		return valid
+	if kind == "channel":
+		if water_clearance(points[0]) > 0.0:
+			return {"ok": false, "message": "引水需要从已有水域起笔", "conflicts": []}
+		if points.size() < 2 or water_clearance(points[-1]) <= 0.0:
+			return {"ok": false, "message": "请将水渠拖到干地", "conflicts": []}
+	var conflicts := _water_conflicts(encoded, width, houses, roads)
+	return {"ok": conflicts.is_empty(), "message": "水岸可建" if conflicts.is_empty() else "水岸与现有%s冲突" % ("房屋" if conflicts[0].kind == "house" else "道路"), "conflicts": conflicts}
+
+
+func add_water(points: Array[Vector2], width: float = 2.4, kind: String = "channel") -> Dictionary:
+	var valid := preview_water(points, width, kind)
+	if not valid.ok:
+		return valid
+	var before := snapshot()
+	var number := maxi(_next_water_id, int(_high_watermark.get("water", 0)) + 1)
+	var encoded: Array = []
+	for point in points:
+		encoded.append([point.x, point.y])
+	var water := {"id": "w%d" % number, "kind": kind, "points": encoded, "width": width, "seed": 261014 + number * 977, "source": "player"}
+	waters.append(water)
+	_next_water_id = number + 1
+	_high_watermark.water = number
+	_commit(before, "开挖池塘" if kind == "pond" else "引水")
+	return {"ok": true, "message": "池塘已挖好" if kind == "pond" else "水渠已引入", "water_id": water.id, "seed": water.seed, "conflicts": []}
+
+
+func remove_water_at(position: Vector2) -> Dictionary:
+	if not is_finite(position.x) or not is_finite(position.y):
+		return _fail("无效的水域位置")
+	for index in range(waters.size() - 1, -1, -1):
+		var water: Dictionary = waters[index]
+		if _water_stroke_distance(position, water.points) > float(water.width) * 0.5:
+			continue
+		var remaining_waters: Array = waters.duplicate(true)
+		remaining_waters.remove_at(index)
+		var bridge_flags: Array[bool] = []
+		for road in roads:
+			var valid := _validate_road_site(road.points, float(road.width), houses, remaining_waters)
+			if not valid.ok:
+				return _fail("填回后道路 %s 无法完整跨岸：%s" % [road.id, valid.message])
+			bridge_flags.append(valid.bridge)
+		var before := snapshot()
+		waters.remove_at(index)
+		# A crossing becomes a ground path after filling. Other crossings keep
+		# their bridge flag, and the original river remains immutable.
+		for road_index in range(roads.size()):
+			roads[road_index].bridge = bridge_flags[road_index]
+		_commit(before, "填回水域")
+		return {"ok": true, "message": "水域已填回", "water_id": water.id}
+	return _fail("这里没有可填回的自建水域")
+
+
+func _validate_water_fields(water: Dictionary) -> Dictionary:
+	if water.get("kind") not in ["channel", "pond"] or not _is_number(water.get("width")) or float(water.width) < 1.2 or float(water.width) > 6.0:
+		return _fail("水岸宽度需为 1.2—6 米")
+	if not water.get("points") is Array or water.points.is_empty() or (water.kind == "channel" and water.points.size() < 2):
+		return _fail("水域笔画无效")
+	var inset := WORLD_RECT.grow(-float(water.width) * 0.5)
+	var length := 0.0
+	for index in range(water.points.size()):
+		var point: Variant = water.points[index]
+		if not _valid_point(point):
+			return _fail("水域位置无效")
+		var position := Vector2(float(point[0]), float(point[1]))
+		if not inset.has_point(position):
+			return _fail("整条水岸需要留在河湾范围内")
+		if index > 0:
+			length += position.distance_to(Vector2(water.points[index - 1][0], water.points[index - 1][1]))
+	if water.kind == "channel" and length < 0.2:
+		return _fail("水渠太短")
+	return {"ok": true, "message": ""}
+
+
+func _water_conflicts(points: Array, width: float, house_rows: Array, road_rows: Array) -> Array[Dictionary]:
+	var conflicts: Array[Dictionary] = []
+	for house in house_rows:
+		for cell in house.cells:
+			var center := Vector2(float(house.origin[0]) + int(cell.x) * CELL_UNIT, float(house.origin[1]) + int(cell.z) * CELL_UNIT)
+			var rect := Rect2(center - Vector2.ONE * CELL_UNIT * 0.5, Vector2.ONE * CELL_UNIT)
+			if _stroke_hits_rect(points, width * 0.5, rect):
+				conflicts.append({"kind": "house", "id": house.id, "name": house.get("name", house.id), "position":[center.x,center.y], "source": cell.get("source", "seed")})
+				break
+	for road in road_rows:
+		var found := false
+		var conflict_at := Vector2.ZERO
+		for index in range(maxi(1, points.size() - 1)):
+			var a := Vector2(points[index][0], points[index][1])
+			var b := Vector2(points[mini(index + 1, points.size() - 1)][0], points[mini(index + 1, points.size() - 1)][1])
+			for road_index in range(1, road.points.size()):
+				var c := Vector2(road.points[road_index - 1][0], road.points[road_index - 1][1])
+				var d := Vector2(road.points[road_index][0], road.points[road_index][1])
+				if _segment_distance(a, b, c, d) <= (width + float(road.width)) * 0.5:
+					found = true
+					conflict_at = Geometry2D.get_closest_point_to_segment(a,c,d)
+		if found:
+			conflicts.append({"kind": "road", "id": road.id, "position":[conflict_at.x,conflict_at.y], "source": road.get("source", "seed")})
+	return conflicts
+
+
+func _stroke_hits_rect(points: Array, radius: float, rect: Rect2) -> bool:
+	for index in range(maxi(1, points.size() - 1)):
+		var a := Vector2(points[index][0], points[index][1])
+		var b := Vector2(points[mini(index + 1, points.size() - 1)][0], points[mini(index + 1, points.size() - 1)][1])
+		if _segment_hits_rect(a, b, rect):
+			return true
+		var corners := [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]
+		for corner_index in range(4):
+			if _segment_distance(a, b, corners[corner_index], corners[(corner_index + 1) % 4]) <= radius:
+				return true
+	return false
+
+
+func _segment_distance(a: Vector2, b: Vector2, c: Vector2, d: Vector2) -> float:
+	if Geometry2D.segment_intersects_segment(a, b, c, d) != null:
+		return 0.0
+	return minf(minf(_distance_to_segment(a, c, d), _distance_to_segment(b, c, d)), minf(_distance_to_segment(c, a, b), _distance_to_segment(d, a, b)))
+
+
 func add_road(points: Array[Vector2]) -> Dictionary:
 	if points.size() < 2:
 		return _fail("道路需要两个以上的点")
@@ -313,7 +467,7 @@ func redo() -> Dictionary:
 
 
 func snapshot() -> Dictionary:
-	return {"schema": SCHEMA, "revision": revision, "houses": houses.duplicate(true), "roads": roads.duplicate(true), "plants": plants.duplicate(true), "next_house_id": _next_house_id, "next_cell_id": _next_cell_id, "next_road_id": _next_road_id, "next_plant_id": _next_plant_id, "high_watermark": _high_watermark.duplicate(), "life_progress":life_progress.duplicate()}
+	return {"schema": SCHEMA, "revision": revision, "houses": houses.duplicate(true), "roads": roads.duplicate(true), "plants": plants.duplicate(true), "waters": waters.duplicate(true), "next_water_id": _next_water_id, "next_house_id": _next_house_id, "next_cell_id": _next_cell_id, "next_road_id": _next_road_id, "next_plant_id": _next_plant_id, "high_watermark": _high_watermark.duplicate(), "life_progress":life_progress.duplicate()}
 
 
 func restore(data: Dictionary) -> Dictionary:
@@ -384,7 +538,7 @@ func _generate_initial_plants() -> void:
 	for ignored in range(75):
 		var x := rng.randf_range(-27.0, 27.0)
 		var z := rng.randf_range(-25.0, 25.0)
-		if absf(x - river_x(z)) < 2.6:
+		if water_clearance(Vector2(x, z)) < 0.3:
 			continue
 		rng.randf_range(1.0, 3.4)
 		for contour in range(10):
@@ -487,7 +641,7 @@ func _plant_geometry_compatible(plant: Dictionary, extra: Array, include_existin
 	var clearance := 0.42 * scale_value if plant.kind == "shrub" else 0.72 * scale_value
 	if not WORLD_RECT.has_point(position):
 		return false
-	if absf(position.x - river_x(position.y)) <= RIVER_HALF_WIDTH + clearance:
+	if water_clearance(position) <= clearance:
 		return false
 	for house in houses:
 		for cell in house.cells:
@@ -645,6 +799,14 @@ func _apply_snapshot(data: Dictionary, preserve_issued_ids: bool = false) -> voi
 		life_progress = {"purchases":int(progress.get("purchases",0)),"gatherings":int(progress.get("gatherings",0))}
 	houses.assign(data.houses.duplicate(true))
 	roads.assign(data.roads.duplicate(true))
+	waters.assign(data.get("waters", []).duplicate(true))
+	for water in waters:
+		water.seed = int(water.seed)
+		water.width = float(water.width)
+		for index in range(water.points.size()):
+			var point := Vector2(float(water.points[index][0]), float(water.points[index][1]))
+			water.points[index] = [point.x, point.y]
+	_next_water_id = int(data.get("next_water_id", 1))
 	# JSON numbers enter as floats; restore the authoritative integer fields.
 	for house in houses:
 		house.name = house.get("name", "石榴巷%s号" % house.id.substr(1))
@@ -683,8 +845,8 @@ func _apply_snapshot(data: Dictionary, preserve_issued_ids: bool = false) -> voi
 	for plant in plants:
 		max_plant = maxi(max_plant, int(str(plant.id).substr(1)))
 	var issued: Dictionary = data.get("high_watermark", {"house": _next_house_id - 1, "cell": _next_cell_id - 1, "road": _next_road_id - 1, "plant": max_plant})
-	for kind in ["house", "cell", "road", "plant"]:
-		var default_issued := max_plant if kind == "plant" else (int(data["next_%s_id" % kind]) - 1)
+	for kind in ["house", "cell", "road", "plant", "water"]:
+		var default_issued := max_plant if kind == "plant" else (int(data.get("next_%s_id" % kind, 1)) - 1)
 		var issued_value := int(issued.get(kind, default_issued))
 		_high_watermark[kind] = maxi(int(_high_watermark.get(kind, 0)), issued_value) if preserve_issued_ids else issued_value
 	if data.has("next_plant_id"):
@@ -729,6 +891,9 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 	if not _is_integer(data.get("next_plant_id", 1)):
 		return _fail("城市存档植被身份计数无效")
 	var next_plant_id := int(data.get("next_plant_id", 1))
+	if not _is_integer(data.get("next_water_id", 1)) or int(data.get("next_water_id", 1)) < 1:
+		return _fail("城市存档水域身份计数无效")
+	var next_water_id := int(data.get("next_water_id", 1))
 	var issued: Variant = data.get("high_watermark", {"house": data.next_house_id - 1, "cell": data.next_cell_id - 1, "road": data.next_road_id - 1, "plant": next_plant_id - 1})
 	if not issued is Dictionary:
 		return _fail("城市存档身份高水位无效")
@@ -737,6 +902,10 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 			return _fail("城市存档身份高水位无效")
 	if next_plant_id < 1 or not _is_integer(issued.get("plant", 0)) or int(issued.get("plant", 0)) < next_plant_id - 1:
 		return _fail("城市存档植被身份高水位无效")
+	if not _is_integer(issued.get("water", next_water_id - 1)) or int(issued.get("water", next_water_id - 1)) < next_water_id - 1:
+		return _fail("城市存档水域身份高水位无效")
+	if not data.get("waters", []) is Array:
+		return _fail("城市存档水域结构无效")
 	if not data.get("houses") is Array or not data.get("roads") is Array:
 		return _fail("城市存档结构无效")
 	var ids: Dictionary = {}
@@ -744,6 +913,19 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 	var max_cell := 0
 	var max_road := 0
 	var max_plant := 0
+	var max_water := 0
+	var water_rows: Array = data.get("waters", [])
+	for water in water_rows:
+		if not water is Dictionary or not _valid_id(water.get("id"), "w", ids):
+			return _fail("城市存档水域身份无效")
+		if not _is_integer(water.get("seed")) or water.get("source") != "player":
+			return _fail("城市存档水域来源或种子无效")
+		var water_valid := _validate_water_fields(water)
+		if not water_valid.ok:
+			return water_valid
+		max_water = maxi(max_water, int(water.id.substr(1)))
+	if next_water_id <= max_water:
+		return _fail("城市存档水域身份计数冲突")
 	for house in data.houses:
 		if not house is Dictionary or not _valid_id(house.get("id"), "h", ids):
 			return _fail("城市存档房屋身份无效")
@@ -796,18 +978,21 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 				return _fail("城市存档植被字段无效")
 			if plant.get("source", "seed") not in ["seed", "player"]:
 				return _fail("城市存档植被来源无效")
-			if absf(float(plant.position[0]) - river_x(float(plant.position[1]))) <= RIVER_HALF_WIDTH:
+			# Authored plants may be submerged by a later player stroke and
+			# retained as hidden intent. The immutable original river has no
+			# such edit history, so an initial plant inside it is invalid.
+			if _water_clearance_in(Vector2(float(plant.position[0]), float(plant.position[1])), []) <= 0.0:
 				return _fail("城市存档植被不能位于河水中")
 	if data.next_house_id <= max_house or data.next_cell_id <= max_cell or data.next_road_id <= max_road or next_plant_id <= max_plant:
 		return _fail("城市存档身份计数冲突")
 	# Validate the candidate world, never the currently open city. Restoring
 	# may not bypass the same land, wall-clearance and bridge rules as edits.
 	for house in data.houses:
-		var site := _validate_house_site(house, [])
+		var site := _validate_house_site(house, [], water_rows)
 		if not site.ok:
 			return site
 	for road in data.roads:
-		var site := _validate_road_site(road.points, float(road.width), data.houses)
+		var site := _validate_road_site(road.points, float(road.width), data.houses, water_rows)
 		if not site.ok:
 			return site
 		if road.get("bridge", false) != site.bridge:
@@ -815,8 +1000,9 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 	return {"ok": true, "message": ""}
 
 
-func _validate_house_site(house: Dictionary, road_rows: Variant = null) -> Dictionary:
+func _validate_house_site(house: Dictionary, road_rows: Variant = null, water_rows: Variant = null) -> Dictionary:
 	var scene_roads: Array = roads if road_rows == null else road_rows
+	var scene_waters: Array = waters if water_rows == null else water_rows
 	for cell in house.cells:
 		var center := Vector2(float(house.origin[0]) + cell.x * CELL_UNIT, float(house.origin[1]) + cell.z * CELL_UNIT)
 		var footprint := Rect2(center - Vector2.ONE * CELL_UNIT * 0.5, Vector2.ONE * CELL_UNIT)
@@ -824,8 +1010,12 @@ func _validate_house_site(house: Dictionary, road_rows: Variant = null) -> Dicti
 			return _fail("这里超出了河湾范围")
 		for i in range(5):
 			var sample_z := lerpf(footprint.position.y, footprint.end.y, float(i) / 4.0)
-			if footprint.position.x < river_x(sample_z) + RIVER_HALF_WIDTH and footprint.end.x > river_x(sample_z) - RIVER_HALF_WIDTH:
+			var nearest_to_river := Vector2(clampf(river_x(sample_z), footprint.position.x, footprint.end.x), sample_z)
+			if _water_clearance_in(nearest_to_river, scene_waters) < 0.0:
 				return _fail("房屋不能建在河水中")
+		for water in scene_waters:
+			if _stroke_hits_rect(water.points, float(water.width) * 0.5, footprint):
+				return _fail("房屋不能建在水域中")
 		if cell.level == 0:
 			for road in scene_roads:
 				for i in range(1, road.points.size()):
@@ -834,9 +1024,13 @@ func _validate_house_site(house: Dictionary, road_rows: Variant = null) -> Dicti
 	return {"ok": true, "message": ""}
 
 
-func _validate_road_site(points: Array, width: float, house_rows: Variant = null) -> Dictionary:
+func _validate_road_site(points: Array, width: float, house_rows: Variant = null, water_rows: Variant = null) -> Dictionary:
 	var scene_houses: Array = houses if house_rows == null else house_rows
-	var bridge := false
+	var scene_waters: Array = waters if water_rows == null else water_rows
+	var bridge_valid := _road_water_crossings(points, width, scene_waters)
+	if not bridge_valid.ok:
+		return bridge_valid
+	var bridge: bool = bridge_valid.bridge
 	var length := 0.0
 	for point in points:
 		if not WORLD_RECT.has_point(Vector2(point[0], point[1])):
@@ -845,12 +1039,6 @@ func _validate_road_site(points: Array, width: float, house_rows: Variant = null
 		var a := Vector2(points[i - 1][0], points[i - 1][1])
 		var b := Vector2(points[i][0], points[i][1])
 		length += a.distance_to(b)
-		for sample in range(33):
-			var point := a.lerp(b, float(sample) / 32.0)
-			if absf(point.x - river_x(point.y)) < RIVER_HALF_WIDTH + width * 0.5:
-				bridge = true
-				if absf(b.x - a.x) < absf(b.y - a.y) * 1.5 or absf(b.x - a.x) < 0.001:
-					return _fail("桥梁需要横向跨河，不能沿水面铺路")
 		for house in scene_houses:
 			for cell in house.cells:
 				if cell.level != 0:
@@ -871,13 +1059,60 @@ func _validate_road_site(points: Array, width: float, house_rows: Variant = null
 					return _fail("道路需要避开房屋墙面")
 	if length < 0.2:
 		return _fail("道路太短")
-	if bridge:
-		var first := Vector2(points[0][0], points[0][1])
-		var last := Vector2(points[-1][0], points[-1][1])
-		var first_side := first.x - river_x(first.y)
-		var last_side := last.x - river_x(last.y)
-		if absf(first_side) < RIVER_HALF_WIDTH + width * 0.5 or absf(last_side) < RIVER_HALF_WIDTH + width * 0.5 or first_side * last_side >= 0:
-			return _fail("桥梁需要完整连接两岸")
+	return {"ok": true, "message": "", "bridge": bridge}
+
+
+## Sample contact over the whole stroke, rather than requiring the entire
+## road to start and finish on opposite sides of the immutable base river.
+## Each contact run must have dry abutments and cross actual water; a bank
+## skim or longitudinal canal path cannot masquerade as a bridge.
+func _road_water_crossings(points: Array, width: float, rows: Array) -> Dictionary:
+	var samples: Array[Dictionary] = []
+	for index in range(1, points.size()):
+		var a := Vector2(points[index - 1][0], points[index - 1][1])
+		var b := Vector2(points[index][0], points[index][1])
+		var count := maxi(1, int(ceil(a.distance_to(b) / 0.12)))
+		var direction := (b - a).normalized()
+		for step in range(count + 1):
+			if index > 1 and step == 0:
+				continue
+			var position := a.lerp(b, float(step) / float(count))
+			var clearance := _water_clearance_in(position, rows)
+			if clearance < width * 0.5:
+				var base_clearance := absf(position.x - river_x(position.y)) - RIVER_HALF_WIDTH
+				if base_clearance < width * 0.5 and (absf(direction.x) < absf(direction.y) * 1.5 or absf(direction.x) < 0.001):
+					return _fail("桥梁需要横向跨河，不能沿水面铺路")
+				for water in rows:
+					if water.points.size() < 2 or _water_stroke_distance(position, water.points) >= (float(water.width) + width) * 0.5:
+						continue
+					var nearest := INF
+					var tangent := Vector2.ZERO
+					for water_index in range(1, water.points.size()):
+						var c := Vector2(water.points[water_index - 1][0], water.points[water_index - 1][1])
+						var d := Vector2(water.points[water_index][0], water.points[water_index][1])
+						var distance := _distance_to_segment(position, c, d)
+						if distance < nearest and c.distance_squared_to(d) > 0.00001:
+							nearest = distance
+							tangent = (d - c).normalized()
+					if tangent != Vector2.ZERO and absf(direction.dot(tangent)) > 0.8:
+						return _fail("桥梁需要横跨水岸，不能沿水域铺路")
+			samples.append({"position": position, "clearance": clearance})
+	var bridge := false
+	var run_start := -1
+	var entered_water := false
+	for index in range(samples.size()):
+		if float(samples[index].clearance) < width * 0.5:
+			bridge = true
+			if run_start < 0:
+				run_start = index
+				entered_water = false
+			entered_water = entered_water or float(samples[index].clearance) < -0.05
+		elif run_start >= 0:
+			if run_start == 0 or not entered_water:
+				return _fail("桥梁需要完整连接两岸，不能停在水中或擦过岸边")
+			run_start = -1
+	if run_start >= 0:
+		return _fail("桥梁需要完整连接两岸")
 	return {"ok": true, "message": "", "bridge": bridge}
 
 

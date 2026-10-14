@@ -17,6 +17,9 @@ const PALETTES := [
 var state: RefCounted
 var buildings: Node3D
 var landscape: Node3D
+var water_layer: Node3D
+var water_fingerprint := -1
+var water_edit_stats := {"changed":false,"elapsed_ms":0.0,"contours":0,"triangles":0,"strokes":0}
 var roads_layer: Node3D
 var vegetation_layer: Node3D
 var preview: Node3D
@@ -39,6 +42,7 @@ var house_fingerprints: Dictionary = {}
 var house_roots: Dictionary = {}
 var road_fingerprints: Dictionary = {}
 var road_roots: Dictionary = {}
+var road_water_signatures: Dictionary = {}
 var rebuild_stats := {"houses_changed":0,"roads_changed":0,"houses_removed":0,"roads_removed":0,"vegetation_blocks_changed":0,"vegetation_instances":0,"elapsed_ms":0.0}
 
 func setup(city_state: RefCounted) -> void:
@@ -46,6 +50,9 @@ func setup(city_state: RefCounted) -> void:
 	landscape = Node3D.new()
 	landscape.name = "RiverGarden"
 	add_child(landscape)
+	water_layer = Node3D.new()
+	water_layer.name = "EditableWater"
+	add_child(water_layer)
 	buildings = Node3D.new()
 	buildings.name = "EditableHouses"
 	add_child(buildings)
@@ -71,6 +78,7 @@ func rebuild() -> void:
 	var started := Time.get_ticks_usec()
 	rebuild_stats = {"houses_changed":0,"roads_changed":0,"houses_removed":0,"roads_removed":0,"vegetation_blocks_changed":0,"vegetation_instances":0,"elapsed_ms":0.0}
 	clear_preview()
+	_rebuild_water()
 	var live_houses: Dictionary = {}
 	for house: Dictionary in state.houses:
 		var id := str(house["id"])
@@ -92,7 +100,7 @@ func rebuild() -> void:
 	for road: Dictionary in state.roads:
 		var id := str(road["id"])
 		live_roads[id] = true
-		var fingerprint := hash([road["points"],road.get("width",1.1)])
+		var fingerprint := hash([road["points"],road.get("width",1.1),_road_water_signature(road)])
 		if road_fingerprints.get(id,-1) == fingerprint: continue
 		_remove_cached(id,road_roots,road_fingerprints)
 		var root := _road(road)
@@ -103,6 +111,7 @@ func rebuild() -> void:
 	for id: String in road_roots.keys():
 		if live_roads.has(id): continue
 		_remove_cached(id,road_roots,road_fingerprints)
+		road_water_signatures.erase(id)
 		rebuild_stats["roads_removed"] += 1
 	_rebuild_vegetation()
 	rebuild_stats["elapsed_ms"] = float(Time.get_ticks_usec()-started)/1000.0
@@ -124,7 +133,7 @@ func _rebuild_vegetation() -> void:
 	if vegetation_layer == null or state == null:
 		return
 	var plants: Array = state.get("plants") if state.get("plants") is Array else []
-	var obstacles: Array = [state.roads]
+	var obstacles: Array = [state.roads, _water_records()]
 	for house: Dictionary in state.houses:
 		var ground: Array = []
 		for cell: Dictionary in house.cells:
@@ -438,6 +447,26 @@ func preview_road(points: Array[Vector2]) -> void:
 		if a.distance_to(b) < 0.01: continue
 		var normal := (b-a).normalized().orthogonal()*0.5
 		_quad(preview,Vector3(a.x-normal.x,0.10,a.y-normal.y),Vector3(b.x-normal.x,0.10,b.y-normal.y),Vector3(b.x+normal.x,0.10,b.y+normal.y),Vector3(a.x+normal.x,0.10,a.y+normal.y),Color("e6d6ad"))
+
+func preview_water(points: Array[Vector2], width: float, valid: bool, conflicts: Array = []) -> void:
+	clear_preview()
+	if preview == null or points.is_empty(): return
+	var groups: Array = []
+	_merge_water_group(groups, _stroke_contours(points, width * 0.5))
+	var color := Color(0.43, 0.81, 0.79, 0.47) if valid else Color(0.96, 0.44, 0.32, 0.50)
+	var node := _water_polygon_mesh(preview, groups, 0.095, color)
+	if node != null:
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = color
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		node.material_override = mat
+	for conflict: Variant in conflicts:
+		if not conflict is Dictionary: continue
+		var encoded: Variant = conflict.get("position", [])
+		if not encoded is Array or encoded.size() < 2: continue
+		_cylinder(preview, 0.28, 0.28, 0.025, Vector3(float(encoded[0]), 0.14, float(encoded[1])), _material(Color("ef7862")), 16)
 
 func set_preview(house_id: String, cell: Dictionary, valid: bool) -> void:
 	clear_preview()
@@ -801,8 +830,235 @@ func _terrace(node: Node3D, cell: Dictionary, cells: Array, y: float, palette: A
 func _river_x(z: float) -> float: return 3.0+sin(z*0.17)*0.52
 
 func _street_height(p: Vector2) -> float:
-	var bank_distance := absf(p.x-_river_x(p.y))
-	return 0.055+0.185*(1.0-smoothstep(2.25,2.95,bank_distance))
+	return float(state.call("street_height", p))
+
+func _water_clearance(p: Vector2) -> float:
+	return float(state.call("water_clearance", p))
+
+func _water_records() -> Array:
+	var records: Variant = state.get("waters")
+	return records if records is Array else []
+
+func _road_water_signature(road: Dictionary) -> Array:
+	# Sample exactly the same vertices and midpoints used by _road. Water edits
+	# only invalidate a street when its visible height/material actually changes.
+	var id := str(road.get("id", ""))
+	var input := hash([road.points, road.get("width", 1.1), water_fingerprint])
+	var cached: Dictionary = road_water_signatures.get(id, {})
+	if cached.get("input", -1) == input: return cached.signature
+	var signature: Array = []
+	var points: Array = road.points
+	for i in range(points.size() - 1):
+		var a := Vector2(float(points[i][0]), float(points[i][1]))
+		var b := Vector2(float(points[i + 1][0]), float(points[i + 1][1]))
+		if a.distance_to(b) < 0.01: continue
+		var steps := maxi(1, ceili(a.distance_to(b) / 0.42))
+		for step in range(steps):
+			var p := a.lerp(b, float(step) / steps)
+			var q := a.lerp(b, float(step + 1) / steps)
+			signature.append([_street_height(p), _street_height(q), _water_clearance((p + q) * 0.5) < -0.02])
+		for endpoint: Vector2 in [a, b]:
+			signature.append(_water_clearance(endpoint) > -0.02)
+	road_water_signatures[id] = {"input":input, "signature":signature}
+	return signature
+
+func _stroke_contours(points: Array[Vector2], radius: float) -> Array:
+	if points.is_empty() or radius <= 0.0: return []
+	if points.size() == 1:
+		var circle := PackedVector2Array()
+		for side in range(36):
+			var angle := TAU * float(side) / 36.0
+			circle.append(points[0] + Vector2(cos(angle), sin(angle)) * radius)
+		return [circle]
+	# Continuous world-space round-ended strokes, independent of house cells.
+	# A loop can produce an outer boundary plus an island boundary. Keep both.
+	# Clipper's arc tolerance is in input units. Scale this operation so its
+	# default tolerance becomes < 2 cm here instead of visibly faceted 25 cm caps.
+	var scaled := PackedVector2Array()
+	for point: Vector2 in points: scaled.append(point * 16.0)
+	var contours: Array = Geometry2D.offset_polyline(scaled, radius * 16.0, Geometry2D.JOIN_ROUND, Geometry2D.END_ROUND)
+	for contour_index in range(contours.size()):
+		var contour: PackedVector2Array = contours[contour_index]
+		for index in range(contour.size()): contour[index] /= 16.0
+		contours[contour_index] = contour
+	return contours
+
+func _merge_water_group(groups: Array, contours: Array) -> void:
+	if contours.is_empty(): return
+	var candidate: Array = contours
+	# Simple connected parts use Godot's exact polygon union. A part containing
+	# holes remains a contour group; the scanline union below combines that group
+	# with later strokes without filling islands or stacking coplanar surfaces.
+	var index := 0
+	while index < groups.size() and candidate.size() == 1:
+		var existing: Array = groups[index]
+		if existing.size() != 1:
+			index += 1
+			continue
+		var merged: Array = Geometry2D.merge_polygons(existing[0], candidate[0])
+		if merged.size() == 2 and Geometry2D.is_polygon_clockwise(merged[0]) == Geometry2D.is_polygon_clockwise(merged[1]):
+			index += 1
+			continue
+		candidate = merged
+		groups.remove_at(index)
+		index = 0
+	groups.append(candidate)
+
+func _water_groups(inset: float) -> Array:
+	var groups: Array = []
+	var river := PackedVector2Array()
+	var half_width := 2.3 - inset
+	for index in range(57):
+		var z := -28.0 + index
+		river.append(Vector2(_river_x(z) - half_width, z))
+	for index in range(56, -1, -1):
+		var z := -28.0 + index
+		river.append(Vector2(_river_x(z) + half_width, z))
+	_merge_water_group(groups, [river])
+	for water: Dictionary in _water_records():
+		var points: Array[Vector2] = []
+		for encoded: Array in water.points:
+			points.append(Vector2(float(encoded[0]), float(encoded[1])))
+		_merge_water_group(groups, _stroke_contours(points, maxf(0.05, float(water.width) * 0.5 - inset)))
+	return groups
+
+func _water_polygon_mesh(parent: Node3D, groups: Array, height: float, color: Color) -> MeshInstance3D:
+	var vertices: Array[Vector3] = []
+	var simple := true
+	for group: Array in groups:
+		if group.size() != 1:
+			simple = false
+			break
+	if simple:
+		# Disjoint merged contours have no overlaps or holes: normal triangulation
+		# is the inexpensive common path for a branch or a round pond.
+		for group: Array in groups:
+			var polygon: PackedVector2Array = group[0]
+			var indices := Geometry2D.triangulate_polygon(polygon)
+			for index in range(0, indices.size(), 3):
+				_append_water_triangle(vertices, polygon[indices[index]], polygon[indices[index + 1]], polygon[indices[index + 2]], height)
+	else:
+		vertices = _water_scanline_union(groups, height)
+	if vertices.is_empty(): return null
+	var node := _triangles(parent, vertices, color)
+	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return node
+
+func _append_water_triangle(vertices: Array[Vector3], a: Vector2, b: Vector2, c: Vector2, height: float) -> void:
+	if absf((b - a).cross(c - a)) < 0.0000001: return
+	if (b - a).cross(c - a) > 0.0:
+		vertices.append_array([Vector3(a.x, height, a.y), Vector3(c.x, height, c.y), Vector3(b.x, height, b.y)])
+	else:
+		vertices.append_array([Vector3(a.x, height, a.y), Vector3(b.x, height, b.y), Vector3(c.x, height, c.y)])
+
+func _water_scanline_union(groups: Array, height: float) -> Array[Vector3]:
+	# Exact trapezoids between contour vertices, not a terrain grid. Each contour
+	# group uses even/odd fill; union its intervals with all other stroke groups.
+	# Holes, self-returning channels and water inside an island remain truthful.
+	var edges_by_group: Array = []
+	var levels: Array[float] = []
+	for group: Array in groups:
+		var edges: Array = []
+		for contour: PackedVector2Array in group:
+			for index in range(contour.size()):
+				var a := contour[index]
+				var b := contour[(index + 1) % contour.size()]
+				levels.append(a.y)
+				if absf(a.y - b.y) > 0.000001: edges.append([a, b])
+		edges_by_group.append(edges)
+	# Crossing edges from different groups are additional events. Splitting at
+	# those heights makes the interval ordering exact across overlapping groups.
+	for left in range(edges_by_group.size()):
+		for right in range(left + 1, edges_by_group.size()):
+			for a: Array in edges_by_group[left]:
+				for b: Array in edges_by_group[right]:
+					if maxf(a[0].x, a[1].x) < minf(b[0].x, b[1].x) or maxf(b[0].x, b[1].x) < minf(a[0].x, a[1].x): continue
+					if maxf(a[0].y, a[1].y) < minf(b[0].y, b[1].y) or maxf(b[0].y, b[1].y) < minf(a[0].y, a[1].y): continue
+					var crossing: Variant = Geometry2D.segment_intersects_segment(a[0], a[1], b[0], b[1])
+					if crossing is Vector2: levels.append(crossing.y)
+	levels.sort()
+	var unique: Array[float] = []
+	for level: float in levels:
+		if unique.is_empty() or level - unique[-1] > 0.000001: unique.append(level)
+	var vertices: Array[Vector3] = []
+	for index in range(unique.size() - 1):
+		var y0 := unique[index]
+		var y1 := unique[index + 1]
+		var middle := (y0 + y1) * 0.5
+		var intervals: Array = []
+		for edges: Array in edges_by_group:
+			var crossings: Array = []
+			for edge: Array in edges:
+				if middle <= minf(edge[0].y, edge[1].y) or middle >= maxf(edge[0].y, edge[1].y): continue
+				crossings.append([_water_edge_x(edge, middle), _water_edge_x(edge, y0), _water_edge_x(edge, y1)])
+			crossings.sort_custom(func(a: Array, b: Array) -> bool: return float(a[0]) < float(b[0]))
+			for pair in range(0, crossings.size() - 1, 2):
+				intervals.append([crossings[pair], crossings[pair + 1]])
+		intervals.sort_custom(func(a: Array, b: Array) -> bool: return float(a[0][0]) < float(b[0][0]))
+		var joined: Array = []
+		for interval: Array in intervals:
+			if joined.is_empty() or float(interval[0][0]) > float(joined[-1][1][0]) + 0.000001:
+				joined.append(interval)
+			elif float(interval[1][0]) > float(joined[-1][1][0]):
+				joined[-1][1] = interval[1]
+		for interval: Array in joined:
+			var a := Vector2(float(interval[0][1]), y0)
+			var b := Vector2(float(interval[1][1]), y0)
+			var c := Vector2(float(interval[1][2]), y1)
+			var d := Vector2(float(interval[0][2]), y1)
+			_append_water_triangle(vertices, a, b, c, height)
+			_append_water_triangle(vertices, a, c, d, height)
+	return vertices
+
+func _water_edge_x(edge: Array, height: float) -> float:
+	var a: Vector2 = edge[0]
+	var b: Vector2 = edge[1]
+	return lerpf(a.x, b.x, (height - a.y) / (b.y - a.y))
+
+func _rebuild_water() -> void:
+	var records := _water_records()
+	var fingerprint := hash(records)
+	water_edit_stats = {"changed":false,"elapsed_ms":0.0,"contours":0,"triangles":0,"strokes":records.size()}
+	if water_layer == null or fingerprint == water_fingerprint: return
+	var started := Time.get_ticks_usec()
+	_clear(water_layer)
+	var banks := _water_groups(0.0)
+	var shallow := _water_groups(0.34)
+	var deep := _water_groups(0.53)
+	_water_polygon_mesh(water_layer, banks, 0.003, Color("bdbd9c"))
+	var shallow_mesh := _water_polygon_mesh(water_layer, shallow, 0.019, Color("a0bab0"))
+	if shallow_mesh != null: shallow_mesh.material_override = _water_surface_material(true)
+	var deep_mesh := _water_polygon_mesh(water_layer, deep, 0.022, Color("659f9a"))
+	if deep_mesh != null: deep_mesh.material_override = _water_surface_material(false)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 261014
+	# Stones belong to water, not landscape. Edges swallowed by a joining pond
+	# never leave an old stone bank running through the new water surface.
+	for group: Array in banks:
+		for contour: PackedVector2Array in group:
+			water_edit_stats["contours"] += 1
+			var accumulated := 0.0
+			for index in range(contour.size()):
+				var a := contour[index]
+				var b := contour[(index + 1) % contour.size()]
+				accumulated += a.distance_to(b)
+				if accumulated < 2.7: continue
+				accumulated = 0.0
+				var p := a.lerp(b, 0.5)
+				if absf(_water_clearance(p)) > 0.08: continue
+				if _near_house(p, 1.2): continue
+				var stone := _cylinder(water_layer, 0.20, 0.10, 0.19, Vector3(p.x, 0.065, p.y), _material(Color("c2bca6")), 7)
+				stone.rotation.y = rng.randf() * TAU
+				stone.scale = Vector3(rng.randf_range(0.8, 1.4), rng.randf_range(0.6, 1.0), rng.randf_range(0.7, 1.4))
+	_merge_meshes(water_layer)
+	for child: Node in water_layer.get_children():
+		if child is MeshInstance3D:
+			child.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			for surface in range(child.mesh.get_surface_count()):
+				water_edit_stats["triangles"] += child.mesh.surface_get_array_index_len(surface) / 3
+	water_fingerprint = fingerprint
+	water_edit_stats["changed"] = true
+	water_edit_stats["elapsed_ms"] = float(Time.get_ticks_usec() - started) / 1000.0
 
 func _build_landscape() -> void:
 	_box(landscape,Vector3(60,0.7,56),Vector3(0,-0.37,0),_material(Color("86a381")))
@@ -831,21 +1087,6 @@ func _build_landscape() -> void:
 			contour.append(Vector3(x+cos(angle)*uneven,-0.004,z+sin(angle)*uneven*0.78))
 		for corner in range(10): vertices.append_array([Vector3(x,-0.004,z),contour[(corner+1)%10],contour[corner]])
 		_triangles(landscape,vertices,Color("88a482") if i%2 == 0 else Color("84a180"))
-	for i in range(56):
-		var z0 := -28.0+i
-		var z1 := z0+1.0
-		var x0 := _river_x(z0)
-		var x1 := _river_x(z1)
-		_quad(landscape,Vector3(x0-2.3,0.002,z0),Vector3(x1-2.3,0.002,z1),Vector3(x1+2.3,0.002,z1),Vector3(x0+2.3,0.002,z0),Color("bdbd9c"))
-		var water := _quad(landscape,Vector3(x0-1.94,0.017,z0),Vector3(x1-1.94,0.017,z1),Vector3(x1+1.94,0.017,z1),Vector3(x0+1.94,0.017,z0),Color("659f9a"))
-		water.material_override = _water_surface_material(false)
-		for side in [-1,1]:
-			var shallow := _quad(landscape,Vector3(x0+side*1.90,0.022,z0),Vector3(x1+side*1.90,0.022,z1),Vector3(x1+side*1.75,0.022,z1),Vector3(x0+side*1.75,0.022,z0),Color("a0bab0"))
-			shallow.material_override = _water_surface_material(true)
-	for i in range(34):
-		var z := rng.randf_range(-26,26)
-		var x := _river_x(z)+rng.randf_range(-1.55,1.55)
-		_box(landscape,Vector3(rng.randf_range(0.15,0.65),0.006,0.025),Vector3(x,0.029,z),_material(Color("a3c9ba")))
 	var groves := [Vector2(-14,-9),Vector2(-16,7),Vector2(13,-9),Vector2(14,8),Vector2(-7,14),Vector2(8,17),Vector2(-19,-18),Vector2(18,-19)]
 	for grove: Vector2 in groves:
 		for i in range(7):
@@ -857,13 +1098,6 @@ func _build_landscape() -> void:
 			if _editable_world_rect().has_point(p):
 				continue
 			_tree(p,scale_value,i%3 == 0)
-	for i in range(28):
-		var z := rng.randf_range(-25,25)
-		var side := -1.0 if i%2 == 0 else 1.0
-		var p := Vector2(_river_x(z)+side*rng.randf_range(2.15,2.9),z)
-		var stone := _cylinder(landscape,0.25,0.10,0.25,Vector3(p.x,0.08,p.y),_material(Color("c2bca6")),5)
-		stone.rotation.y = rng.randf()*TAU
-		stone.scale = Vector3(rng.randf_range(0.8,1.5),rng.randf_range(0.6,1.0),rng.randf_range(0.7,1.5))
 	_merge_meshes(landscape)
 
 func _near_house(p: Vector2, radius: float) -> bool:
@@ -904,7 +1138,7 @@ func _road(road: Dictionary) -> Node3D:
 			var p := a.lerp(b,float(step)/steps)
 			var q := a.lerp(b,float(step+1)/steps)
 			var normal := (q-p).normalized().orthogonal()*width*0.5
-			var over_water := absf((p.x+q.x)*0.5-_river_x((p.y+q.y)*0.5)) < 2.28
+			var over_water := _water_clearance((p+q)*0.5) < -0.02
 			var y0 := _street_height(p)
 			var y1 := _street_height(q)
 			var y := (y0+y1)*0.5
@@ -926,5 +1160,5 @@ func _road(road: Dictionary) -> Node3D:
 					curb.rotation.x = -atan2(y1-y0,p.distance_to(q))
 		for point: Variant in [points[i],points[i+1]]:
 			var p := Vector2(float(point[0]),float(point[1]))
-			if absf(p.x-_river_x(p.y)) > 2.28: _cylinder(root,width*0.5,width*0.5,0.02,Vector3(p.x,_street_height(p),p.y),_material(Color("d3c5a5")),16)
+			if _water_clearance(p) > -0.02: _cylinder(root,width*0.5,width*0.5,0.02,Vector3(p.x,_street_height(p),p.y),_material(Color("d3c5a5")),16)
 	return root

@@ -69,7 +69,7 @@ func _process(delta: float) -> void:
 			var direction := (target - node.position).normalized()
 			node.position += direction * delta * 0.83
 			node.rotation.y = atan2(direction.x, direction.z)
-		node.position.y = _street_height(Vector2(node.position.x,node.position.z))+0.10
+		node.position.y = state.street_height(Vector2(node.position.x,node.position.z))+0.10
 		var body: Node3D = node.get_child(0)
 		body.position.y = sin(time * 9.0 + float(resident.phase)) * 0.025
 
@@ -77,6 +77,10 @@ func _signature() -> Array:
 	var result: Array = []
 	for road: Dictionary in state.roads:
 		result.append([road.points.duplicate(true), float(road.width)])
+	# Water geometry changes bridge elevations even when roads and entrances
+	# are untouched. Names, IDs and vegetation never invalidate a journey.
+	for water: Dictionary in state.waters:
+		result.append([str(water.kind), water.points.duplicate(true), float(water.width)])
 	for house: Dictionary in state.houses:
 		var entrances: Array = []
 		for cell: Dictionary in house.cells:
@@ -124,6 +128,8 @@ func _sync() -> void:
 			resident = {"node":node,"home_id":home,"destination_id":stops[1],"stops":stops,"stop":1,"index":0,"route":_route(connected_houses[home],connected_houses[stops[1]]),"wait":serial*2.4,"phase":serial*1.7,"paused":false,"dwell_id":"","service_pending":""}
 		else:
 			old_by_home.erase(home)
+			var node: Node3D = resident.node
+			node.position.y = state.street_height(Vector2(node.position.x,node.position.z))+0.10
 			resident.stops = stops
 			if stops.size() < 2:
 				_pause_at_home(resident)
@@ -155,7 +161,7 @@ func _pause_at_home(resident: Dictionary) -> void:
 		if connected_houses.has(house.id):
 			resident.node.position = positions[connected_houses[house.id]]+Vector3(0,0.10,0)
 		else:
-			resident.node.position = Vector3(entrance.x,_street_height(entrance)+0.10,entrance.y)
+			resident.node.position = Vector3(entrance.x,state.street_height(entrance)+0.10,entrance.y)
 
 func _resume(resident: Dictionary) -> void:
 	var stops: Array[String] = resident.stops
@@ -203,7 +209,7 @@ func _route_from_position(point: Vector3, finish: String) -> Array[Vector3]:
 	var best: Array[Vector3] = []
 	var best_length := INF
 	if best_distance > 0.81: return best
-	var projected := Vector3(nearest.x,_street_height(nearest)+0.10,nearest.y)
+	var projected := Vector3(nearest.x,state.street_height(nearest)+0.10,nearest.y)
 	for endpoint: String in edge:
 		var candidate := _route(endpoint,finish)
 		if candidate.is_empty(): continue
@@ -302,15 +308,12 @@ func _build_graph() -> void:
 			if a.distance_to(b) < 0.0005: continue
 			var ka := _key(a)
 			var kb := _key(b)
-			positions[ka] = Vector3(a.x,_street_height(a),a.y)
-			positions[kb] = Vector3(b.x,_street_height(b),b.y)
+			positions[ka] = Vector3(a.x,state.street_height(a),a.y)
+			positions[kb] = Vector3(b.x,state.street_height(b),b.y)
 			if not graph.has(ka): graph[ka] = {}
 			if not graph.has(kb): graph[kb] = {}
 			graph[ka][kb] = a.distance_to(b)
 			graph[kb][ka] = a.distance_to(b)
-
-func _street_height(p: Vector2) -> float:
-	return 0.055+0.185*(1.0-smoothstep(2.25,2.95,absf(p.x-(3.0+sin(p.y*0.17)*0.52))))
 
 func _route(start: String, finish: String) -> Array[Vector3]:
 	var result: Array[Vector3] = []

@@ -5,6 +5,7 @@ func _initialize() -> void:
 func _run() -> void:
 	root.size = Vector2i(1440,900)
 	var demo = Scene.instantiate()
+	demo.persistence = false
 	root.add_child(demo)
 	await process_frame
 	demo.persistence = false

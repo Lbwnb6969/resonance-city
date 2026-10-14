@@ -69,6 +69,7 @@ func _run() -> void:
 	root.content_scale_size = Vector2i(1440,900)
 	root.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
 	demo = Scene.instantiate()
+	demo.persistence = false
 	root.add_child(demo)
 	await physics_frame
 	await process_frame
@@ -163,12 +164,29 @@ func _run() -> void:
 	_expect(demo.state.plants.size() < planted.size(), "Shift brush must erase existing plants")
 	await _key(KEY_Z,true)
 	_expect(demo.state.plants == planted, "Vegetation erase undo must restore precise instances")
+	await _key(KEY_7)
+	_expect(demo.tool == 6 and demo.water_panel.visible, "Water shortcut must select the visible shoreline options")
+	var water_revision: int = demo.state.revision
+	await _drag_world([Vector3(-15,0,-9),Vector3(-15,0,-7)],true)
+	_expect(demo.state.waters.is_empty() and demo.state.revision == water_revision, "Esc cancels water before any identity or geometry is committed")
+	await _drag_world([Vector3(-15,0,-9),Vector3(-15,0,-7)])
+	var waters: Array = demo.state.waters.duplicate(true)
+	_expect(waters.size() == 1 and demo.state.revision == water_revision+1, "A real shoreline stroke is one immediate transaction")
+	_expect(demo.town.house_roots["h1"].get_instance_id() == unchanged_house_id and demo.town.road_roots["r1"].get_instance_id() == unchanged_road_id, "Remote water edit preserves unrelated buildings and road geometry")
+	await _key(KEY_Z,true)
+	_expect(demo.state.waters.is_empty(), "Water stroke undoes in one step")
+	await _key(KEY_Z,true,true)
+	_expect(demo.state.waters == waters, "Water redo preserves precise shoreline, seed and ID")
+	await _drag_world([Vector3(-15,0,-8)],false,true)
+	_expect(demo.state.waters.is_empty(), "Shift clicking water fills the authored stroke")
+	await _key(KEY_Z,true)
+	_expect(demo.state.waters == waters, "Undo fill restores water")
 	var save_path := "user://city_creation_play_contract.json"
 	var saved: Dictionary = demo.state.save_city(save_path)
 	_expect(saved.ok, "Integrated town must save successfully")
 	var copy = preload("res://scripts/world/city_creation_state.gd").new()
 	var restored: Dictionary = copy.load_city(save_path)
-	_expect(restored.ok and copy.snapshot().houses == demo.state.snapshot().houses and copy.snapshot().roads == demo.state.snapshot().roads and copy.snapshot().plants == demo.state.snapshot().plants, "Integrated geometry bridge and garden must restore exactly")
+	_expect(restored.ok and copy.snapshot().houses == demo.state.snapshot().houses and copy.snapshot().roads == demo.state.snapshot().roads and copy.snapshot().plants == demo.state.snapshot().plants and copy.snapshot().waters == waters, "Integrated geometry bridge, water and garden must restore exactly")
 	demo.life.set_process(false)
 	for i in range(900): demo.life._process(0.2)
 	_expect(demo.life.purchases > 0 and demo.life.gatherings > 0, "Residents must complete reachable bakery and venue visits")
