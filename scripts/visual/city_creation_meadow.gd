@@ -166,30 +166,30 @@ func _add_plant_clumps(block: Vector2i, plant: Dictionary, batches: Dictionary, 
 	var shrub := str(plant.kind) == "shrub"
 	var rng := RandomNumberGenerator.new()
 	rng.seed = int(plant.seed) ^ 0x3752a1
-	# Three irregular islands, rather than a radial lawn or a ring. The nearest
-	# island gives trunks a darker rooted transition without a painted disk.
+	# Three overlapping drifts leave uneven patches of short meadow leaves,
+	# rather than isolated tall stalks, a radial lawn or a dark painted disk.
 	var angle := rng.randf() * TAU
-	var spread := (0.62 if shrub else 1.05) * tree_scale
+	var spread := (0.70 if shrub else 1.15) * tree_scale
 	var islands: Array[Vector2] = [center + Vector2.from_angle(angle) * spread * 0.20,
 		center + Vector2.from_angle(angle + 1.9) * spread * rng.randf_range(0.65, 1.0),
 		center + Vector2.from_angle(angle + 4.0) * spread * rng.randf_range(0.72, 1.15)]
-	var attempts := rng.randi_range(7, 11) if shrub else rng.randi_range(14, 20)
+	var attempts := rng.randi_range(14, 20) if shrub else rng.randi_range(24, 32)
 	for index in range(attempts):
 		var island := islands[index % 3]
-		var at := island + Vector2(rng.randf_range(-0.36, 0.36), rng.randf_range(-0.28, 0.28)) * tree_scale
+		var at := island + Vector2(rng.randf_range(-0.46, 0.46), rng.randf_range(-0.38, 0.38)) * tree_scale
 		var yaw := rng.randf() * TAU
-		var height := rng.randf_range(0.72, 1.28)
-		var tint := Color("72945c").lerp(Color("98ad72"), rng.randf())
+		var height := rng.randf_range(0.78, 1.18)
+		var tint := Color("63855a").lerp(Color("7d9564"), rng.randf())
 		# Draw all random choices before the removal test: a new path removes
 		# affected clumps but never shifts the survivors' exemplar or transform.
-		var flower := rng.randf() < (0.10 if shrub else 0.055)
+		var flower := rng.randf() < (0.042 if shrub else 0.033)
 		var yellow := rng.randf() < 0.40
-		var stone := index == 2 and rng.randf() < 0.28
+		var stone := index == 2 and rng.randf() < 0.18
 		var flower_scale := rng.randf_range(0.84, 1.12)
 		var stone_tint := Color("aea995").lerp(Color("c5bea7"), rng.randf())
 		if not _candidate_visible(block, at, query_state):
 			continue
-		_append(batches.grass, block, at, Vector3(0.92, height, 0.92), yaw, tint, -0.008)
+		_append(batches.grass, block, at, Vector3(1.0, height, 1.0), yaw, tint, -0.004)
 		if flower:
 			_append(batches.flower, block, at, Vector3.ONE * flower_scale,
 				yaw, Color("efd080") if yellow else Color("f4eddb"), -0.006)
@@ -244,29 +244,34 @@ func _mesh(part: String) -> Mesh:
 		var surface := SurfaceTool.new()
 		surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 		if part == "grass":
-			for blade in range(5):
+			# Six broad curved leaves. Three triangles per leaf keep the shared
+			# clump at 18 triangles while its silhouette reads as a low soft fan.
+			for blade in range(6):
 				var angle := float(blade) * 2.39996
 				var outward := Vector3(cos(angle), 0.0, sin(angle))
-				var side := Vector3(-sin(angle), 0.0, cos(angle)) * 0.023
-				var base := outward * (0.025 + float(blade % 2) * 0.035)
-				var bend := base + outward * 0.038 + Vector3.UP * (0.12 + float(blade % 3) * 0.021)
-				var tip := base + outward * 0.093 + Vector3.UP * (0.22 + float(blade % 3) * 0.024)
-				_triangle(surface, base - side, base + side, bend + side * 0.65, Color.WHITE)
-				_triangle(surface, base - side, bend + side * 0.65, bend - side * 0.65, Color.WHITE)
-				_triangle(surface, bend - side * 0.65, bend + side * 0.65, tip, Color.WHITE)
+				var side := Vector3(-sin(angle), 0.0, cos(angle))
+				var base := outward * (0.021 + float(blade % 2) * 0.019)
+				var height := 0.155 + float(blade % 3) * 0.027
+				var bend := base + outward * 0.078 + Vector3.UP * height * 0.68
+				var tip := base + outward * (0.18 + float(blade % 2) * 0.023) + Vector3.UP * height
+				var base_side := side * 0.020
+				var mid_side := side * (0.043 + float(blade % 2) * 0.009)
+				_triangle(surface, base - base_side, base + base_side, bend + mid_side, Color.WHITE)
+				_triangle(surface, base - base_side, bend + mid_side, bend - mid_side, Color.WHITE)
+				_triangle(surface, bend - mid_side, bend + mid_side, tip, Color.WHITE)
 		else:
 			# One short green stem and five broad petals remain readable from the
 			# orthographic creation camera, using vertex color in the shared mesh.
-			_triangle(surface, Vector3(-0.008, 0.0, 0.0), Vector3(0.008, 0.0, 0.0), Vector3(0.005, 0.26, 0.0), Color("637c4d"))
-			_triangle(surface, Vector3(-0.008, 0.0, 0.0), Vector3(0.005, 0.26, 0.0), Vector3(-0.005, 0.26, 0.0), Color("637c4d"))
+			_triangle(surface, Vector3(-0.008, 0.0, 0.0), Vector3(0.008, 0.0, 0.0), Vector3(0.005, 0.235, 0.0), Color("92a777"))
+			_triangle(surface, Vector3(-0.008, 0.0, 0.0), Vector3(0.005, 0.235, 0.0), Vector3(-0.005, 0.235, 0.0), Color("92a777"))
 			for petal in range(5):
 				var angle := float(petal) * TAU / 5.0
 				var axis := Vector3(cos(angle), 0.0, sin(angle))
 				var across := Vector3(-sin(angle), 0.0, cos(angle))
-				var heart := Vector3(0.0, 0.255, 0.0)
-				var a := heart + axis * 0.043 + across * 0.029
-				var b := heart + axis * 0.080 + Vector3.UP * 0.006
-				var c := heart + axis * 0.043 - across * 0.029
+				var heart := Vector3(0.0, 0.23, 0.0)
+				var a := heart + axis * 0.047 + across * 0.032
+				var b := heart + axis * 0.085 + Vector3.UP * 0.006
+				var c := heart + axis * 0.047 - across * 0.032
 				_triangle(surface, heart, a, b, Color.WHITE)
 				_triangle(surface, heart, b, c, Color.WHITE)
 		surface.index()
@@ -305,12 +310,17 @@ void vertex() {
 	vec3 world = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	float breeze = sin(TIME * 0.85 + world.x * 0.37 + world.z * 0.29);
 	float small_wave = sin(TIME * 1.23 + world.x * 0.83 - world.z * 0.47);
-	VERTEX.x += (breeze * 0.025 + small_wave * 0.009) * tip_weight * tip_weight;
-	VERTEX.z += breeze * 0.012 * tip_weight * tip_weight;
+	VERTEX.x += (breeze * 0.014 + small_wave * 0.006) * tip_weight * tip_weight;
+	VERTEX.z += breeze * 0.009 * tip_weight * tip_weight;
 }
 void fragment() {
-	vec3 root = vec3(0.71, 0.78, 0.60);
-	ALBEDO = clump_tint.rgb * (is_grass ? mix(root, vec3(1.0), smoothstep(0.0, 0.8, tip_weight)) : vec3(1.0));
+	// Both faces of the short leaf fan share the lawn's upward light normal.
+	// This avoids black back-facing card silhouettes under grazing sunlight.
+	if (is_grass) {
+		NORMAL = normalize((VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
+	}
+	vec3 root = vec3(0.93, 0.97, 0.91);
+	ALBEDO = clump_tint.rgb * (is_grass ? mix(root, vec3(1.015), smoothstep(0.0, 0.8, tip_weight)) : vec3(1.0));
 	ROUGHNESS = 1.0;
 }
 """

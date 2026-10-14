@@ -30,6 +30,9 @@ var life_info: Label
 var place_panel: PanelContainer
 var place_name: LineEdit
 var place_description: Label
+var concert_button: Button
+var concert_info: Label
+var concert_progress: ProgressBar
 var selected_house := ""
 var life_ui_timer := 0.0
 var tool := 0
@@ -94,6 +97,8 @@ func _ready() -> void:
 	add_child(life)
 	life.setup(state)
 	life.arrival_callback = func(_kind: String) -> void: music.play_edit("terrace")
+	life.concert_callback = _on_concert_event
+	music.set_concert_active(str(life.concert_status().phase) == "playing")
 	_setup_ui()
 	_refresh_ui()
 	_message("从一面墙开始。点墙扩房，点屋顶加层。")
@@ -215,6 +220,17 @@ func _setup_ui() -> void:
 	place_column.add_child(roles)
 	for role: String in ["residential", "bakery", "venue"]:
 		roles.add_child(_button({"residential":"居所", "bakery":"面包坊", "venue":"演奏庭"}[role], func()->void: _after_edit(state.set_house_role(selected_house,role),"room")))
+	concert_button = _button("♫ 邀请街坊演出",_invite_concert)
+	concert_button.name = "InviteConcert"
+	place_column.add_child(concert_button)
+	concert_info = _label("",14)
+	concert_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	concert_info.custom_minimum_size.x = 250
+	place_column.add_child(concert_info)
+	concert_progress = ProgressBar.new()
+	concert_progress.show_percentage = false
+	concert_progress.custom_minimum_size.y = 8
+	place_column.add_child(concert_progress)
 	place_panel.visible = false
 	vegetation_panel = PanelContainer.new()
 	vegetation_panel.name = "VegetationOptions"
@@ -466,17 +482,20 @@ func _unhandled_input(event: InputEvent) -> void:
 					_commit_click()
 
 func _process(delta: float) -> void:
+	town.update_house_music(music.active_source() if music.concert_active else music.daily_source())
 	frame_samples.append(delta*1000.0)
 	if frame_samples.size() > 240: frame_samples.pop_front()
 	life_ui_timer -= delta
 	if life_ui_timer < 0.0:
 		life_ui_timer = 0.5
 		life_info.text = life.summary()
+		_refresh_concert()
 	life_save_timer -= delta
 	if life_save_timer < 0.0:
 		life_save_timer = 15.0
-		if state.life_progress_dirty and persistence and not save_blocked:
-			var saved: Dictionary = state.save_city(SAVE_PATH)
+		if persistence and not save_blocked:
+			_capture_journeys()
+			var saved: Dictionary = state.save_city(SAVE_PATH) if state.dirty else {"ok":true}
 			if not saved.ok: _message(saved.message)
 	if toast_time > 0.0:
 		toast_time -= delta
@@ -484,6 +503,7 @@ func _process(delta: float) -> void:
 	if save_delay >= 0.0:
 		save_delay -= delta
 		if save_delay < 0.0 and state.dirty and persistence and not save_blocked:
+			_capture_journeys()
 			var saved: Dictionary = state.save_city(SAVE_PATH)
 			if not saved.ok: _message(saved.message)
 	if not orbiting and not panning:
@@ -695,6 +715,7 @@ func save_city() -> void:
 	if save_blocked:
 		_message("原作品读取失败，已保留原文件；当前试玩可继续编辑。")
 		return
+	_capture_journeys()
 	var result: Dictionary = state.save_city(SAVE_PATH)
 	_message("河湾已保存，下次从这里继续。" if result.ok else str(result.message))
 
@@ -716,7 +737,55 @@ func _refresh_place() -> void:
 		var role := str(house.get("role", "residential"))
 		place_description.text = {"residential":"一处居所，让街坊有居民。", "bakery":"面包出炉，居民循路来采购。", "venue":"一处演奏庭，招呼街坊来小聚。"}[role]
 		place_description.text += "\n门前小路已接通。" if life.house_connected(selected_house) else "\n拉一条小路到门前，让居民能走来。"
+		concert_button.visible = role == "venue"
+		_refresh_concert()
 		return
+
+func _capture_journeys() -> void:
+	state.set_journey_checkpoint(life.checkpoint())
+
+func _invite_concert() -> void:
+	var active: Dictionary = life.concert_status()
+	var result: Dictionary = life.cancel_concert() if str(active.phase) != "idle" and str(active.venue_id) == selected_house else life.invite_concert(selected_house)
+	_message(str(result.message))
+	if result.ok:
+		_capture_journeys()
+		save_delay = 3.0
+	_refresh_concert()
+
+func _on_concert_event(event: String, venue_id: String) -> void:
+	music.set_concert_active(event == "started")
+	var name_value := "演奏庭"
+	for house: Dictionary in state.houses:
+		if house.id == venue_id: name_value = str(house.name)
+	_message({"started":"街坊到齐了，%s 的演出开始。","finished":"%s 的演出落幕，街坊继续自己的日常。","cancelled":"%s 的演出已结束，街坊继续自己的日常。"}[event] % name_value)
+	_capture_journeys()
+	save_delay = 3.0
+	_refresh_concert()
+
+func _refresh_concert() -> void:
+	if concert_info == null: return
+	var status: Dictionary = life.concert_status()
+	var homes: Array[String] = []
+	for resident: Dictionary in life.residents:
+		if resident.has("daily_snapshot"): homes.append(str(resident.home_id))
+	music.set_concert_sources(str(status.venue_id),homes)
+	music.set_concert_active(str(status.phase) == "playing")
+	concert_button.text = "结束这场演出" if str(status.phase) != "idle" and str(status.venue_id) == selected_house else "♫ 邀请街坊演出"
+	concert_button.disabled = (str(status.phase) != "idle" and str(status.venue_id) != selected_house) or not life.house_connected(selected_house)
+	concert_info.visible = concert_button.visible or str(status.phase) != "idle"
+	concert_progress.visible = str(status.phase) != "idle"
+	concert_progress.max_value = float(status.duration) if str(status.phase) == "playing" else maxi(1,int(status.invited))
+	concert_progress.value = float(status.elapsed) if str(status.phase) == "playing" else int(status.arrived)
+	concert_info.text = "邀请街坊沿路来听一场演出。\n演出结束后，街坊回到自己的日常。"
+	if str(status.phase) == "gathering": concert_info.text = "街坊正在沿路赶来 · %d / %d 已抵达" % [int(status.arrived),int(status.invited)]
+	elif str(status.phase) == "playing": concert_info.text = "♫ 街坊合奏 · %d 位听众\n还有 %d 秒落幕" % [int(status.invited),ceili(float(status.duration)-float(status.elapsed))]
+	if str(status.phase) == "playing":
+		var source: Dictionary = music.active_source()
+		if bool(source.get("audible",false)):
+			for house: Dictionary in state.houses:
+				if house.id == source.source_id: concert_info.text += "\n"+str(house.name)+(" 正在主奏" if str(source.role) == "lead" else " 正在应答")
+	town.show_concert(status)
 
 func _message(text_value: String) -> void:
 	if toast == null: return
@@ -726,7 +795,9 @@ func _message(text_value: String) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		if persistence and not save_blocked and state.dirty: state.save_city(SAVE_PATH)
+		if persistence and not save_blocked:
+			_capture_journeys()
+			if state.dirty: state.save_city(SAVE_PATH)
 
 func diagnostics() -> Dictionary:
 	var sorted := frame_samples.duplicate()
@@ -738,4 +809,5 @@ func diagnostics() -> Dictionary:
 		"meadow":town.meadow.diagnostics(),
 		"triangles":Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
 		"audio":music.audio_report,"life":{"residents":life.residents.size(),"purchases":life.purchases,"gatherings":life.gatherings},
+		"concert":life.concert_status(),"concert_music":music.music_report(),
 		"milestones":completed.duplicate(),"world":state.snapshot()}

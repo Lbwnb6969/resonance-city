@@ -1,0 +1,73 @@
+WorkerThreadPool: 32 threads, 9 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Accessibility: AccessKit driver loaded.
+Native OpenGL API detected: 3.3: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+NVAPI: Init OK!
+NVAPI: Application not found in profile, creating...
+NVAPI: Error creating application: NVAPI_EXECUTABLE_ALREADY_IN_USE(code -167)
+Accessibility: window 0 adapter created.
+SDL: Init OK!
+Using "winink" pen tablet driver...
+Shader 'CanvasSdfShaderGLES3' SHA256: 46bb98635ecd9131fa8ded421e7741c5440f6b3dbc732686c5c153de7d3efd82
+Shader 'SkeletonShaderGLES3' SHA256: 166dccba0f83c5a30ad94a4f1a43b7ce55dd59b9b14b1540c4c1c19f514b6f6b
+Shader 'ParticlesShaderGLES3' SHA256: 0e31394100795c688379311f34f4004f6e95a4b814a63e3c4b84db0b38d6a671
+Shader 'ParticlesCopyShaderGLES3' SHA256: 50fec05910490cceeec7914a37ad1b36a7014f0bc1bd154975c66d42f1100e72
+Shader 'CopyShaderGLES3' SHA256: 914bf6dfa9ac7b26cee4ed0baea1762193f5e28c1626ba04261460af96c3733e
+Shader 'CubemapFilterShaderGLES3' SHA256: 859e2350ffb96bc7b0977be022a29a457629101e57a39ea7386e7fce223d87bb
+Shader 'GlowShaderGLES3' SHA256: babdc82df7e26044583b323364d4cfd9ea815783a326a53f2fa768d85e7b95d0
+Shader 'PostShaderGLES3' SHA256: 8356a1808f18c07d2f1232061e0acb25bed2ebabe0e7fa6f0eb8f99168b9a2a2
+Shader 'FeedShaderGLES3' SHA256: fe1a7f4f8569ffea6a8daff8c0b0cb9e8932fa0344001f9acc231d0dc60711ed
+Shader 'CanvasShaderGLES3' SHA256: 40dc4eee940f9716dc20cc0aa2d0cf8739ead9dae90e10013767e6dd253a37a6
+Shader 'CanvasOcclusionShaderGLES3' SHA256: da7cd9e5ac73369d0d23318717b579a9acfd53f76571c9281d359c308aaa89fc
+Shader 'SceneShaderGLES3' SHA256: 9e9dc7be7894c5b3297ae1ebc64fc0796cd94f1b566c52c3b4f780523e4fb54f
+Shader 'SkyShaderGLES3' SHA256: b5d54eccbfd0e372fe0acd6f84819399d9c8cca6b429ffd38f331470ab8cf85a
+Shader 'TexBlitShaderGLES3' SHA256: d3a7b4a5aa05e41baec30eb818317d32f5e29b23d80514c39e6277eeea0f4041
+OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
+WASAPI: Activated output_device using IAudioClient3 interface
+WASAPI: wFormatTag = 65534
+WASAPI: nChannels = 2
+WASAPI: nSamplesPerSec = 44100
+WASAPI: nAvgBytesPerSec = 352800
+WASAPI: nBlockAlign = 8
+WASAPI: wBitsPerSample = 32
+WASAPI: cbSize = 22
+WASAPI: mix_rate = 44100
+WASAPI: fundamental_period_frames = 441
+WASAPI: min_period_frames = 441
+WASAPI: max_period_frames = 441
+WASAPI: selected a period frame size of 441
+WASAPI: detected 2 channels
+WASAPI: audio buffer frames: 441 calculated latency: 10ms
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: res://tools/check_public_concert.gd remapped: res://tools/check_public_concert.gd
+Loading resource: res://scenes/city_creation.tscn remapped: res://scenes/city_creation.tscn
+Loading resource: res://scripts/ui/city_creation_demo.gd remapped: res://scripts/ui/city_creation_demo.gd
+Loading resource: res://scripts/visual/shaders/creation_ground.gdshader remapped: res://scripts/visual/shaders/creation_ground.gdshader
+Completed load for: 'res://scripts/visual/shaders/creation_ground.gdshader' remapped 'res://scripts/visual/shaders/creation_ground.gdshader' at thread -1
+Loading resource: res://scripts/visual/shaders/creation_contact.gdshader remapped: res://scripts/visual/shaders/creation_contact.gdshader
+Completed load for: 'res://scripts/visual/shaders/creation_contact.gdshader' remapped 'res://scripts/visual/shaders/creation_contact.gdshader' at thread -1
+Loading resource: res://scripts/visual/shaders/creation_road.gdshader remapped: res://scripts/visual/shaders/creation_road.gdshader
+Completed load for: 'res://scripts/visual/shaders/creation_road.gdshader' remapped 'res://scripts/visual/shaders/creation_road.gdshader' at thread -1
+Completed load for: 'res://scripts/ui/city_creation_demo.gd' remapped 'res://scripts/ui/city_creation_demo.gd' at thread -1
+Completed load for: 'res://scenes/city_creation.tscn' remapped 'res://scenes/city_creation.tscn' at thread -1
+Completed load for: 'res://tools/check_public_concert.gd' remapped 'res://tools/check_public_concert.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loading resource: res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd remapped: res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd
+Completed load for: 'res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd' remapped 'res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd' at thread -1
+Loading resource: res://scripts/audio/audio_clock.gd remapped: res://scripts/audio/audio_clock.gd
+Completed load for: 'res://scripts/audio/audio_clock.gd' remapped 'res://scripts/audio/audio_clock.gd' at thread -1
+Loaded system CA certificates
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+Failed to bind socket. Error: 3.
+[MCPRuntimeServer] listening on 127.0.0.1:6571
+[MCPRegistry] runtime port 6571 registered for d:/godot/godotpro/共鸣之城
+PUBLIC_CONCERT {"audible_sources":["h4","h1","h3","h5"],"completed":{"concerts":1,"gatherings":0,"purchases":0},"failures":[],"ok":true,"performance":{"audio":{"effect_peaks":{"concert":0.203156054019928,"erase":0.144974574446678,"history":0.144740775227547,"road":0.169404551386833,"room":0.14421084523201,"terrace":0.142475202679634},"frames":529200,"mix_peaks":{"absolute_transition_bound":0.173915329938847,"absolute_with_four_edit_voices":0.430889670400919,"concert_max_city":0.096735306084156,"daily_max_city":0.0809287130832672},"mix_seam_steps":{"concert_max_city":0.000293211662210524,"daily_max_city":0.000346784247085452},"pcm_bytes":5292000,"peaks":{"air":0.064826674759388,"concert":0.171579569578171,"foundation":0.152312815189362,"terrace":0.0458564013242722,"wood":0.109969146549702},"rate":22050,"seam_steps":{"air":0.0,"concert":0.000138170784339309,"foundation":0.00110305985435843,"terrace":0.0,"wood":0.00000599477789364755},"seconds":24.0,"stem_count":5,"synthesis":"original_procedural_miniature"},"concert":{"arrived":3,"duration":24.0,"elapsed":1.7523106060606,"invited":3,"phase":"playing","venue_id":"h4"},"concert_music":{"active_source":{"audible":true,"duration":3.0,"phrase":0,"role":"lead","source_id":"h4","start":0.0,"timbre":"piano"},"concert_active":true,"daily_houses":["h1","h2","h3","h4","h5","h6"],"daily_source":{"audible":false,"phrase":0,"role":"daily","source_id":"h1","timbre":"wood"},"effect_peaks":{"concert":0.203156054019928,"erase":0.144974574446678,"history":0.144740775227547,"road":0.169404551386833,"room":0.14421084523201,"terrace":0.142475202679634},"frames":529200,"gains_db":{"air":-26.3603992462158,"concert":-8.29725360870361,"foundation":-10.0005130767822,"terrace":-24.6253662109375,"wood":-22.6099872589111},"loading":false,"mix_peaks":{"absolute_transition_bound":0.173915329938847,"absolute_with_four_edit_voices":0.430889670400919,"concert_max_city":0.096735306084156,"daily_max_city":0.0809287130832672},"mix_seam_steps":{"concert_max_city":0.000293211662210524,"daily_max_city":0.000346784247085452},"muted":false,"pcm_bytes":5292000,"peaks":{"air":0.064826674759388,"concert":0.171579569578171,"foundation":0.152312815189362,"terrace":0.0458564013242722,"wood":0.109969146549702},"players":5,"positions":{"air":1.86340141296387,"concert":1.86340141296387,"foundation":1.86340141296387,"terrace":1.86340141296387,"wood":1.86340141296387},"rate":22050,"seam_steps":{"air":0.0,"concert":0.000138170784339309,"foundation":0.00110305985435843,"terrace":0.0,"wood":0.00000599477789364755},"seconds":24.0,"source_loop":0,"source_schedule":[{"duration":3.0,"phrase":0,"role":"lead","source_id":"h4","start":0.0,"timbre":"piano"},{"duration":3.0,"phrase":1,"role":"answer","source_id":"h1","start":3.0,"timbre":"wood"},{"duration":3.0,"phrase":2,"role":"lead","source_id":"h4","start":6.0,"timbre":"piano"},{"duration":3.0,"phrase":3,"role":"answer","source_id":"h3","start":9.0,"timbre":"wood"},{"duration":3.0,"phrase":4,"role":"lead","source_id":"h4","start":12.0,"timbre":"piano"},{"duration":3.0,"phrase":5,"role":"answer","source_id":"h5","start":15.0,"timbre":"wood"},{"duration":3.0,"phrase":6,"role":"lead","source_id":"h4","start":18.0,"timbre":"piano"},{"duration":3.0,"phrase":7,"role":"answer","source_id":"h1","start":21.0,"timbre":"wood"}],"stem_count":5,"synthesis":"original_procedural_miniature"},"draw_calls":560.0,"edit_rebuild_ms":[],"engine":"4.7.2-stable (official)","fps":151.0,"frame_p95_ms":5.55555555555555,"life":{"gatherings":0,"purchases":0,"residents":3},"meadow":{"blocks":10,"elapsed_ms":5.347,"instances":399,"last_changed":10},"milestones":{},"plants":16,"render_updates":{"elapsed_ms":53.392,"houses_changed":6,"houses_removed":0,"roads_changed":6,"roads_removed":0,"vegetation_blocks_changed":10,"vegetation_instances":16},"triangles":250071.0,"water_updates":{"changed":true,"contours":1,"elapsed_ms":3.09,"strokes":0,"triangles":3360}},"playing_checkpoint":{"concert":{"duration":24.0,"elapsed":0.0,"participants":["h1","h3","h5"],"phase":"playing","venue_id":"h4"},"residents":[{"daily_snapshot":{"destination_id":"h2","dwell_id":"","home_id":"h1","paused":false,"phase":0.0,"position":[-8.0,-4.44999980926514],"service_pending":"","stops":["h1","h2","h4"],"wait":0.0,"yaw":0.0},"destination_id":"h4","dwell_id":"h4","home_id":"h1","paused":false,"phase":0.0,"position":[-2.40000009536743,2.54999995231628],"service_pending":"concert","stops":["h1","h2","h4"],"wait":0.0,"yaw":1.57079637050629},{"daily_snapshot":{"destination_id":"h2","dwell_id":"","home_id":"h3","paused":false,"phase":1.7,"position":[-8.0,1.54999995231628],"service_pending":"","stops":["h3","h2","h4"],"wait":2.4,"yaw":0.0},"destination_id":"h4","dwell_id":"h4","home_id":"h3","paused":false,"phase":1.7,"position":[-2.40000009536743,2.54999995231628],"service_pending":"concert","stops":["h3","h2","h4"],"wait":0.0,"yaw":1.57079637050629},{"daily_snapshot":{"destination_id":"h2","dwell_id":"","home_id":"h5","paused":false,"phase":3.4,"position":[-7.0,7.55000019073486],"service_pending":"","stops":["h5","h2","h4"],"wait":4.8,"yaw":0.0},"destination_id":"h4","dwell_id":"h4","home_id":"h5","paused":false,"phase":3.4,"position":[-2.40000009536743,2.54999995231628],"service_pending":"concert","stops":["h5","h2","h4"],"wait":0.0,"yaw":1.57079637050629}],"schema":1},"review_save":{"message":"城市已保存","ok":true,"path":"user://city_creation_public_concert_review.json"}}
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Accessibility: window 0 adapter destroyed.

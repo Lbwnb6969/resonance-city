@@ -1,0 +1,221 @@
+{
+	"audio": {
+		"effect_peaks": {
+			"concert": 0.20315605401992798,
+			"erase": 0.14497457444667816,
+			"history": 0.1447407752275467,
+			"road": 0.1694045513868332,
+			"room": 0.1442108452320099,
+			"terrace": 0.1424752026796341
+		},
+		"frames": 529200,
+		"mix_peaks": {
+			"absolute_transition_bound": 0.17391532993884734,
+			"absolute_with_four_edit_voices": 0.43088967040091886,
+			"concert_max_city": 0.09673530608415604,
+			"daily_max_city": 0.08092871308326721
+		},
+		"mix_seam_steps": {
+			"concert_max_city": 0.0002932116622105241,
+			"daily_max_city": 0.0003467842470854521
+		},
+		"pcm_bytes": 5292000,
+		"peaks": {
+			"air": 0.06482667475938797,
+			"concert": 0.17157956957817078,
+			"foundation": 0.15231281518936157,
+			"terrace": 0.045856401324272156,
+			"wood": 0.10996914654970169
+		},
+		"rate": 22050,
+		"seam_steps": {
+			"air": 0.0,
+			"concert": 0.00013817078433930874,
+			"foundation": 0.0011030598543584347,
+			"terrace": 0.0,
+			"wood": 5.9947778936475515e-06
+		},
+		"seconds": 24.0,
+		"stem_count": 5,
+		"synthesis": "original_procedural_miniature"
+	},
+	"concert": {
+		"arrived": 0,
+		"duration": 24.0,
+		"elapsed": 0.0,
+		"invited": 0,
+		"phase": "idle",
+		"venue_id": ""
+	},
+	"concert_music": {
+		"active_source": {
+			"audible": false,
+			"duration": 3.0,
+			"phrase": 0,
+			"role": "lead",
+			"source_id": "",
+			"start": 0.0,
+			"timbre": "piano"
+		},
+		"concert_active": false,
+		"effect_peaks": {
+			"concert": 0.20315605401992798,
+			"erase": 0.14497457444667816,
+			"history": 0.1447407752275467,
+			"road": 0.1694045513868332,
+			"room": 0.1442108452320099,
+			"terrace": 0.1424752026796341
+		},
+		"frames": 529200,
+		"gains_db": {
+			"air": -19.400829315185547,
+			"concert": -60.0,
+			"foundation": -10.001020431518555,
+			"terrace": -24.625722885131836,
+			"wood": -12.667633056640625
+		},
+		"loading": false,
+		"mix_peaks": {
+			"absolute_transition_bound": 0.17391532993884734,
+			"absolute_with_four_edit_voices": 0.43088967040091886,
+			"concert_max_city": 0.09673530608415604,
+			"daily_max_city": 0.08092871308326721
+		},
+		"mix_seam_steps": {
+			"concert_max_city": 0.0002932116622105241,
+			"daily_max_city": 0.0003467842470854521
+		},
+		"muted": false,
+		"pcm_bytes": 5292000,
+		"peaks": {
+			"air": 0.06482667475938797,
+			"concert": 0.17157956957817078,
+			"foundation": 0.15231281518936157,
+			"terrace": 0.045856401324272156,
+			"wood": 0.10996914654970169
+		},
+		"players": 5,
+		"positions": {
+			"air": 1.6892516613006592,
+			"concert": 1.6892516613006592,
+			"foundation": 1.6892516613006592,
+			"terrace": 1.6892516613006592,
+			"wood": 1.6892516613006592
+		},
+		"rate": 22050,
+		"seam_steps": {
+			"air": 0.0,
+			"concert": 0.00013817078433930874,
+			"foundation": 0.0011030598543584347,
+			"terrace": 0.0,
+			"wood": 5.9947778936475515e-06
+		},
+		"seconds": 24.0,
+		"source_loop": 0,
+		"source_schedule": [
+			{
+				"duration": 3.0,
+				"phrase": 0,
+				"role": "lead",
+				"source_id": "",
+				"start": 0.0,
+				"timbre": "piano"
+			},
+			{
+				"duration": 3.0,
+				"phrase": 1,
+				"role": "lead",
+				"source_id": "",
+				"start": 3.0,
+				"timbre": "wood"
+			},
+			{
+				"duration": 3.0,
+				"phrase": 2,
+				"role": "lead",
+				"source_id": "",
+				"start": 6.0,
+				"timbre": "piano"
+			},
+			{
+				"duration": 3.0,
+				"phrase": 3,
+				"role": "lead",
+				"source_id": "",
+				"start": 9.0,
+				"timbre": "wood"
+			},
+			{
+				"duration": 3.0,
+				"phrase": 4,
+				"role": "lead",
+				"source_id": "",
+				"start": 12.0,
+				"timbre": "piano"
+			},
+			{
+				"duration": 3.0,
+				"phrase": 5,
+				"role": "lead",
+				"source_id": "",
+				"start": 15.0,
+				"timbre": "wood"
+			},
+			{
+				"duration": 3.0,
+				"phrase": 6,
+				"role": "lead",
+				"source_id": "",
+				"start": 18.0,
+				"timbre": "piano"
+			},
+			{
+				"duration": 3.0,
+				"phrase": 7,
+				"role": "lead",
+				"source_id": "",
+				"start": 21.0,
+				"timbre": "wood"
+			}
+		],
+		"stem_count": 5,
+		"synthesis": "original_procedural_miniature"
+	},
+	"draw_calls": 467.0,
+	"edit_rebuild_ms": [],
+	"engine": "4.7.2-stable (official)",
+	"fps": 180.0,
+	"frame_p95_ms": 5.5555555555555545,
+	"life": {
+		"gatherings": 0,
+		"purchases": 0,
+		"residents": 3
+	},
+	"life_paused": false,
+	"meadow": {
+		"blocks": 9,
+		"elapsed_ms": 1.887,
+		"instances": 304,
+		"last_changed": 3
+	},
+	"milestones": {},
+	"plants": 16,
+	"render_updates": {
+		"elapsed_ms": 15.551,
+		"houses_changed": 0,
+		"houses_removed": 0,
+		"roads_changed": 2,
+		"roads_removed": 0,
+		"vegetation_blocks_changed": 1,
+		"vegetation_instances": 13
+	},
+	"triangles": 255159.0,
+	"viewport": "1440x900",
+	"water_updates": {
+		"changed": false,
+		"contours": 0,
+		"elapsed_ms": 0.0,
+		"strokes": 2,
+		"triangles": 0
+	}
+}

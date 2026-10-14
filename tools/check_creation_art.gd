@@ -31,6 +31,7 @@ func _run() -> void:
 		return
 	demo.town.rebuild()
 	var output := "res://验证记录/TinyGlade美术_2026-10-14"
+	if "--concert-nature" in OS.get_cmdline_user_args(): output = "res://验证记录/街坊演出_2026-10-14/grass"
 	if "--art-stress" in OS.get_cmdline_user_args():
 		output += "/stress"
 		demo.state.plants.clear()

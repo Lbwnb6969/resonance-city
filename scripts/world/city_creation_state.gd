@@ -18,7 +18,8 @@ var plants: Array[Dictionary] = []
 var waters: Array[Dictionary] = []
 var revision := 0
 var dirty := false
-var life_progress := {"purchases":0,"gatherings":0}
+var life_progress := {"purchases":0,"gatherings":0,"concerts":0}
+var journey_checkpoint: Dictionary = {}
 var life_progress_dirty := false
 var _next_house_id := 1
 var _next_cell_id := 1
@@ -31,7 +32,8 @@ var _redo: Array[Dictionary] = []
 
 
 func initialize() -> void:
-	life_progress = {"purchases":0,"gatherings":0}
+	life_progress = {"purchases":0,"gatherings":0,"concerts":0}
+	journey_checkpoint.clear()
 	life_progress_dirty = false
 	houses.clear()
 	roads.clear()
@@ -473,7 +475,7 @@ func redo() -> Dictionary:
 
 
 func snapshot() -> Dictionary:
-	return {"schema": SCHEMA, "revision": revision, "houses": houses.duplicate(true), "roads": roads.duplicate(true), "plants": plants.duplicate(true), "waters": waters.duplicate(true), "next_water_id": _next_water_id, "next_house_id": _next_house_id, "next_cell_id": _next_cell_id, "next_road_id": _next_road_id, "next_plant_id": _next_plant_id, "high_watermark": _high_watermark.duplicate(), "life_progress":life_progress.duplicate()}
+	return {"schema": SCHEMA, "revision": revision, "houses": houses.duplicate(true), "roads": roads.duplicate(true), "plants": plants.duplicate(true), "waters": waters.duplicate(true), "next_water_id": _next_water_id, "next_house_id": _next_house_id, "next_cell_id": _next_cell_id, "next_road_id": _next_road_id, "next_plant_id": _next_plant_id, "high_watermark": _high_watermark.duplicate(), "life_progress":life_progress.duplicate(),"journey_checkpoint":journey_checkpoint.duplicate(true)}
 
 
 func restore(data: Dictionary) -> Dictionary:
@@ -523,7 +525,7 @@ func save_city(path: String = DEFAULT_PATH) -> Dictionary:
 	return {"ok": true, "message": "城市已保存", "path": path}
 
 func record_life_event(kind: String) -> void:
-	if kind not in ["purchases", "gatherings"]: return
+	if kind not in ["purchases", "gatherings", "concerts"]: return
 	life_progress[kind] = int(life_progress[kind])+1
 	life_progress_dirty = true
 	dirty = true
@@ -534,6 +536,49 @@ func load_city(path: String = DEFAULT_PATH) -> Dictionary:
 	if not result.ok:
 		return result
 	return restore(result.data)
+
+func set_journey_checkpoint(data: Dictionary) -> Dictionary:
+	var check := _validate_journey_checkpoint(data)
+	if not check.ok: return check
+	if journey_checkpoint != data:
+		journey_checkpoint = data.duplicate(true)
+		dirty = true
+	return {"ok":true,"message":""}
+
+func _validate_journey_checkpoint(data: Variant) -> Dictionary:
+	if not data is Dictionary: return _fail("居民行程结构无效")
+	if data.is_empty(): return {"ok":true}
+	if data.get("schema") != 1 or not data.get("residents") is Array or not data.get("concert") is Dictionary:
+		return _fail("居民行程版本或结构无效")
+	var homes := {}
+	for resident in data.residents:
+		if not resident is Dictionary or not resident.get("home_id") is String or homes.has(resident.home_id): return _fail("居民行程身份无效")
+		homes[resident.home_id] = true
+		if not _valid_point(resident.get("position")) or not WORLD_RECT.grow(2).has_point(Vector2(resident.position[0],resident.position[1])): return _fail("居民行程位置无效")
+		if not _is_number(resident.get("yaw")) or not _is_number(resident.get("wait")) or resident.wait < 0 or not resident.get("paused") is bool: return _fail("居民行程时间无效")
+		if not _is_number(resident.get("phase")): return _fail("居民行程相位无效")
+		for key in ["destination_id","dwell_id","service_pending"]:
+			if not resident.get(key) is String: return _fail("居民行程目标无效")
+		if resident.has("daily_snapshot") and not resident.daily_snapshot is Dictionary: return _fail("居民日常行程无效")
+		if resident.has("daily_snapshot"):
+			var daily: Dictionary = resident.daily_snapshot
+			if daily.has("daily_snapshot"): return _fail("居民日常行程不能递归")
+			var daily_check := _validate_journey_checkpoint({"schema":1,"residents":[daily],"concert":{}})
+			if not daily_check.ok or daily.get("home_id") != resident.home_id: return _fail("居民日常行程字段无效")
+		if resident.has("stops"):
+			if not resident.stops is Array: return _fail("居民日常目的地无效")
+			for stop in resident.stops:
+				if not stop is String: return _fail("居民日常目的地身份无效")
+	var concert: Dictionary = data.concert
+	if concert.get("phase","idle") not in ["idle","gathering","playing"]: return _fail("街坊演出状态无效")
+	if concert.get("phase","idle") != "idle":
+		if not concert.get("venue_id") is String or not concert.get("participants") is Array or concert.participants.is_empty(): return _fail("街坊演出成员无效")
+		if not _is_number(concert.get("elapsed")) or concert.elapsed < 0 or not _is_number(concert.get("duration")) or concert.duration <= 0 or concert.elapsed > concert.duration: return _fail("街坊演出时间无效")
+		var participants := {}
+		for home in concert.participants:
+			if not home is String or participants.has(home) or not homes.has(home): return _fail("街坊演出成员身份无效")
+			participants[home] = true
+	return {"ok":true}
 
 
 func _generate_initial_plants() -> void:
@@ -802,7 +847,8 @@ func _apply_snapshot(data: Dictionary, preserve_issued_ids: bool = false) -> voi
 	# Editing history restores geometry; completed daily visits remain history.
 	if not preserve_issued_ids:
 		var progress: Dictionary = data.get("life_progress", {"purchases":0,"gatherings":0})
-		life_progress = {"purchases":int(progress.get("purchases",0)),"gatherings":int(progress.get("gatherings",0))}
+		life_progress = {"purchases":int(progress.get("purchases",0)),"gatherings":int(progress.get("gatherings",0)),"concerts":int(progress.get("concerts",0))}
+		journey_checkpoint = data.get("journey_checkpoint",{}).duplicate(true)
 	houses.assign(data.houses.duplicate(true))
 	roads.assign(data.roads.duplicate(true))
 	waters.assign(data.get("waters", []).duplicate(true))
@@ -886,9 +932,11 @@ func _read_snapshot(path: String) -> Dictionary:
 func _validate_snapshot(data: Dictionary) -> Dictionary:
 	var progress: Variant = data.get("life_progress", {"purchases":0,"gatherings":0})
 	if not progress is Dictionary: return _fail("城市存档生活进展无效")
-	for key in ["purchases", "gatherings"]:
+	for key in ["purchases", "gatherings", "concerts"]:
 		if not _is_integer(progress.get(key,0)) or progress.get(key,0) < 0:
 			return _fail("城市存档生活进展无效")
+	var journeys := _validate_journey_checkpoint(data.get("journey_checkpoint",{}))
+	if not journeys.ok: return journeys
 	if data.get("schema") != SCHEMA:
 		return _fail("不支持的城市存档版本")
 	for key in ["revision", "next_house_id", "next_cell_id", "next_road_id"]:

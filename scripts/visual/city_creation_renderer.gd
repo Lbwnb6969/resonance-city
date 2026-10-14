@@ -27,6 +27,13 @@ var contact_material: ShaderMaterial
 var road_material: ShaderMaterial
 var road_join_signatures: Dictionary = {}
 var road_layout_signature := -1
+var concert_layer: Node3D
+var concert_fingerprint := ""
+var concert_pulse_material: ShaderMaterial
+var house_music_layer: Node3D
+var house_music_source := ""
+var house_music_fingerprint := ""
+var house_music_material: ShaderMaterial
 var road_outlines: Dictionary = {}
 var buildings: Node3D
 var landscape: Node3D
@@ -82,6 +89,12 @@ func setup(city_state: RefCounted) -> void:
 	preview = Node3D.new()
 	preview.name = "EditPreview"
 	add_child(preview)
+	concert_layer = Node3D.new()
+	concert_layer.name = "StreetConcert"
+	add_child(concert_layer)
+	house_music_layer = Node3D.new()
+	house_music_layer.name = "HouseMusicalResponse"
+	add_child(house_music_layer)
 	_build_landscape()
 	rebuild()
 
@@ -355,6 +368,98 @@ func _merge_meshes(parent: Node3D) -> void:
 
 func clear_preview() -> void:
 	if preview != null: _clear(preview)
+
+func show_concert(status: Dictionary) -> void:
+	var phase := str(status.get("phase","idle"))
+	var house := _house_record(str(status.get("venue_id","")))
+	var fingerprint := str([phase,house.get("origin",[]),house.get("cells",[]),house.get("role","")])
+	if fingerprint == concert_fingerprint: return
+	concert_fingerprint = fingerprint
+	_clear(concert_layer)
+	if phase == "idle" or house.is_empty(): return
+	var stage: Vector3 = _cell_position(house,house.cells[0])+Vector3(0,1.9,0)
+	for cell: Dictionary in house.cells:
+		stage.y = maxf(stage.y,float(cell.level)*FLOOR+2.0)
+	if concert_pulse_material == null:
+		concert_pulse_material = ShaderMaterial.new()
+		var shader := Shader.new()
+		shader.code = """shader_type spatial;
+render_mode unshaded, cull_disabled;
+uniform bool playing = false;
+void vertex() { VERTEX.y += sin(TIME*1.5+VERTEX.x*4.0)*0.035; }
+void fragment() { ALBEDO = mix(vec3(0.48,0.66,0.57),vec3(0.90,0.72,0.40),playing ? 0.70+0.12*sin(TIME*3.0) : 0.0); }
+"""
+		concert_pulse_material.shader = shader
+	concert_pulse_material.set_shader_parameter("playing",phase == "playing")
+	var line_vertices: Array[Vector3] = []
+	for index in range(9):
+		var x := -1.25+float(index)*0.31
+		var sag := (1.0-pow(x/1.25,2))*0.13
+		var p := stage+Vector3(x,-sag,1.0)
+		line_vertices.append_array([p+Vector3(-0.11,0.07,0),p+Vector3(0.11,0.07,0),p+Vector3(0,-0.20,0)])
+	var flags := _triangles(concert_layer,line_vertices,Color.WHITE)
+	flags.material_override = concert_pulse_material
+	flags.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var sign := Label3D.new()
+	sign.text = "♫ 街坊合奏" if phase == "playing" else "街坊正在赶来"
+	sign.font = preload("res://scripts/ui/valley_ui_theme.gd").make_theme().default_font
+	sign.font_size = 40
+	sign.pixel_size = 0.007
+	sign.modulate = Color("f4edda")
+	sign.outline_modulate = Color("3e594b")
+	sign.outline_size = 8
+	sign.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	sign.position = stage+Vector3(0,0.60,0)
+	concert_layer.add_child(sign)
+
+func update_house_music(source: Dictionary) -> void:
+	var source_id := str(source.get("source_id","")) if bool(source.get("audible",false)) else ""
+	var house := _house_record(source_id)
+	var fingerprint := str([source_id,house.get("cells",[]),house.get("origin",[])])
+	if fingerprint == house_music_fingerprint: return
+	house_music_fingerprint = fingerprint
+	house_music_source = source_id
+	_clear(house_music_layer)
+	if house.is_empty(): return
+	if house_music_material == null:
+		house_music_material = ShaderMaterial.new()
+		var shader := Shader.new()
+		shader.code = """shader_type spatial;
+render_mode unshaded, blend_add, cull_disabled, depth_draw_never;
+void fragment() { ALBEDO = vec3(0.70,0.42,0.13); ALPHA = 0.30+0.09*sin(TIME*2.094395); }
+"""
+		house_music_material.shader = shader
+	var top := 0.0
+	for cell: Dictionary in house.cells:
+		var at := _cell_position(house,cell)
+		var level := int(cell.level)
+		top = maxf(top,(level+1)*FLOOR+0.70)
+		if cell.kind != "room": continue
+		for direction: Vector2i in [Vector2i.LEFT,Vector2i.RIGHT,Vector2i.UP,Vector2i.DOWN]:
+			if not _at(house.cells,int(cell.x)+direction.x,int(cell.z)+direction.y,level).is_empty(): continue
+			if level == 0 and direction == Vector2i.DOWN: continue
+			var rotation := atan2(float(direction.x),float(direction.y))
+			for x in [-0.46,0.46]:
+				var glow := MeshInstance3D.new()
+				var panel := QuadMesh.new()
+				panel.size = Vector2(0.33,0.53)
+				glow.mesh = panel
+				glow.material_override = house_music_material
+				glow.position = at+Basis(Vector3.UP,rotation)*Vector3(x,level*FLOOR+1.0,UNIT*0.5+0.163)
+				glow.rotation.y = rotation
+				glow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+				house_music_layer.add_child(glow)
+
+	var note := Label3D.new()
+	note.text = "♫" if str(source.get("role","lead")) == "lead" else "♪"
+	note.font_size = 76
+	note.pixel_size = 0.006
+	note.modulate = Color("f3db9c")
+	note.outline_modulate = Color("3d584a")
+	note.outline_size = 10
+	note.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	note.position = _cell_position(house,house.cells[0])+Vector3(0,top+0.18,0)
+	house_music_layer.add_child(note)
 
 
 ## A lightweight brush guide only.  It deliberately creates MeshInstance3D
