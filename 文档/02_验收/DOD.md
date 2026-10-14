@@ -21,6 +21,8 @@
 
 在项目根执行文档检查：
 
+新 3D 创作切片已有可运行的 [状态合约](../../tests/test_city_creation_state.gd) 和 [完整输入合约](../../tests/test_city_creation_play.gd)。实际命令、画面、局部更新性能和剩余范围见 [新城验证](../../验证记录/新共鸣之城_2026-10-14/README.md)。它们覆盖当前房屋/道路/生活切片，不代表水体、植被编辑、时代或大城验收完成。
+
 ```powershell
 python tools/check_doc_links.py
 python tools/merge_docs_compact.py --check

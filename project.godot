@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="共鸣之城"
-config/version="p0-2"
-run/main_scene="res://scenes/continuous_valley.tscn"
+config/version="creation-p0-1"
+run/main_scene="res://scenes/city_creation.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
