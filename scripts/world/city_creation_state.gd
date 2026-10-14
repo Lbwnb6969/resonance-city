@@ -8,28 +8,37 @@ const FLOOR_HEIGHT := 1.7
 const DEFAULT_PATH := "user://city_creation_v1.json"
 const WORLD_RECT := Rect2(-18.0, -15.0, 35.0, 30.0)
 const RIVER_HALF_WIDTH := 2.3
+const MAX_PLANTS_PER_STROKE := 160
 const HOUSE_ROLES := ["residential", "bakery", "venue"]
 const DIRECTIONS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 
 var houses: Array[Dictionary] = []
 var roads: Array[Dictionary] = []
+var plants: Array[Dictionary] = []
 var revision := 0
 var dirty := false
+var life_progress := {"purchases":0,"gatherings":0}
+var life_progress_dirty := false
 var _next_house_id := 1
 var _next_cell_id := 1
 var _next_road_id := 1
-var _high_watermark := {"house": 0, "cell": 0, "road": 0}
+var _next_plant_id := 1
+var _high_watermark := {"house": 0, "cell": 0, "road": 0, "plant": 0}
 var _undo: Array[Dictionary] = []
 var _redo: Array[Dictionary] = []
 
 
 func initialize() -> void:
+	life_progress = {"purchases":0,"gatherings":0}
+	life_progress_dirty = false
 	houses.clear()
 	roads.clear()
+	plants.clear()
 	_next_house_id = 1
 	_next_cell_id = 1
 	_next_road_id = 1
-	_high_watermark = {"house": 0, "cell": 0, "road": 0}
+	_next_plant_id = 1
+	_high_watermark = {"house": 0, "cell": 0, "road": 0, "plant": 0}
 	var positions := [Vector2(-8.0, -6.0), Vector2(-2.4, -5.0), Vector2(-8.0, 0.0), Vector2(-2.4, 1.0), Vector2(-7.0, 6.0), Vector2(9.0, 3.0)]
 	for i in range(positions.size()):
 		var house := _make_house(positions[i], i)
@@ -53,6 +62,7 @@ func initialize() -> void:
 		roads.append({"id": "r%d" % _next_road_id, "points": [[-11.0, door_z], [house.origin[0], door_z]], "width": 1.25, "bridge": false, "source": "seed"})
 		_next_road_id += 1
 	_high_watermark = {"house": _next_house_id - 1, "cell": _next_cell_id - 1, "road": _next_road_id - 1}
+	_generate_initial_plants()
 	revision = 0
 	dirty = false
 	_undo.clear()
@@ -206,6 +216,80 @@ func add_road(points: Array[Vector2]) -> Dictionary:
 	return {"ok": true, "message": "道路已铺好", "road_id": road.id}
 
 
+## Plants are authored in continuous world coordinates. A complete brush
+## stroke is one history entry, so deterministic seeds survive undo/redo and
+## save/load without re-sampling the scene.
+func add_vegetation_stroke(points: Array[Vector2], kind: String, radius: float = 1.4) -> Dictionary:
+	var check := _validate_vegetation_stroke(points, kind, radius)
+	if not check.ok:
+		return check
+	var stroke_seed := _vegetation_stroke_seed(points, kind, radius)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = stroke_seed
+	var candidates: Array[Vector2] = _stroke_samples(points, radius)
+	var before := snapshot()
+	var accepted: Array[Dictionary] = []
+	var plant_number := maxi(_next_plant_id, int(_high_watermark.get("plant", 0)) + 1)
+	for center in candidates:
+		if accepted.size() >= MAX_PLANTS_PER_STROKE:
+			break
+		# Three nearby samples create a small Tiny Glade-like clump while the
+		# spacing gate keeps a stroke bounded and avoids visual overlap.
+		var cluster_count := 1 + int(rng.randf() * 3.0)
+		for cluster_index in range(cluster_count):
+			var angle := rng.randf_range(0.0, TAU)
+			var spread := radius * (0.20 + rng.randf() * 0.48)
+			var position := center + Vector2(cos(angle), sin(angle)) * spread
+			if not WORLD_RECT.has_point(position):
+				continue
+			var scale_value := _plant_scale(kind, rng)
+			var plant_seed := int(rng.randi())
+			var candidate := _make_plant("p%d" % plant_number, position, kind, scale_value, plant_seed, "player")
+			if not _plant_geometry_compatible(candidate, accepted, true):
+				continue
+			accepted.append(candidate)
+			plant_number += 1
+	if accepted.is_empty():
+		return _fail("这里没有可种植的空间")
+	for plant in accepted:
+		plants.append(plant)
+	_next_plant_id = plant_number
+	_high_watermark["plant"] = maxi(int(_high_watermark.get("plant", 0)), plant_number - 1)
+	_commit(before, "种植植被")
+	var ids: Array[String] = []
+	for plant in accepted:
+		ids.append(plant.id)
+	return {"ok": true, "message": "已种下 %d 株植被" % accepted.size(), "plant_ids": ids, "added_count": accepted.size(), "seed": stroke_seed}
+
+
+func erase_vegetation_stroke(points: Array[Vector2], radius: float) -> Dictionary:
+	var check := _validate_erase_stroke(points, radius)
+	if not check.ok:
+		return check
+	var before := snapshot()
+	var removed: Array[String] = []
+	var kept: Array[Dictionary] = []
+	for plant in plants:
+		if _distance_to_polyline(Vector2(float(plant.position[0]), float(plant.position[1])), points) <= radius:
+			removed.append(plant.id)
+		else:
+			kept.append(plant)
+	if removed.is_empty():
+		return {"ok": true, "message": "笔画范围内没有植被", "removed_count": 0, "plant_ids": []}
+	plants.assign(kept)
+	_commit(before, "移除植被")
+	return {"ok": true, "message": "已移除 %d 株植被" % removed.size(), "removed_count": removed.size(), "plant_ids": removed}
+
+
+## Visibility is intentionally derived. A house or road built after planting
+## can hide an instance, while the plant record remains available to undo and
+## deterministic replay.
+func vegetation_visible(plant: Dictionary) -> bool:
+	if not _valid_plant_fields(plant):
+		return false
+	return _plant_geometry_compatible(plant, [])
+
+
 func undo() -> Dictionary:
 	if _undo.is_empty():
 		return _fail("没有可撤销的操作")
@@ -229,7 +313,7 @@ func redo() -> Dictionary:
 
 
 func snapshot() -> Dictionary:
-	return {"schema": SCHEMA, "revision": revision, "houses": houses.duplicate(true), "roads": roads.duplicate(true), "next_house_id": _next_house_id, "next_cell_id": _next_cell_id, "next_road_id": _next_road_id, "high_watermark": _high_watermark.duplicate()}
+	return {"schema": SCHEMA, "revision": revision, "houses": houses.duplicate(true), "roads": roads.duplicate(true), "plants": plants.duplicate(true), "next_house_id": _next_house_id, "next_cell_id": _next_cell_id, "next_road_id": _next_road_id, "next_plant_id": _next_plant_id, "high_watermark": _high_watermark.duplicate(), "life_progress":life_progress.duplicate()}
 
 
 func restore(data: Dictionary) -> Dictionary:
@@ -239,6 +323,7 @@ func restore(data: Dictionary) -> Dictionary:
 	_apply_snapshot(data)
 	revision = int(data.revision)
 	dirty = false
+	life_progress_dirty = false
 	_undo.clear()
 	_redo.clear()
 	return {"ok": true, "message": "城市已恢复"}
@@ -274,7 +359,14 @@ func save_city(path: String = DEFAULT_PATH) -> Dictionary:
 			DirAccess.rename_absolute(backup, absolute)
 		return _fail("无法发布城市存档")
 	dirty = false
+	life_progress_dirty = false
 	return {"ok": true, "message": "城市已保存", "path": path}
+
+func record_life_event(kind: String) -> void:
+	if kind not in ["purchases", "gatherings"]: return
+	life_progress[kind] = int(life_progress[kind])+1
+	life_progress_dirty = true
+	dirty = true
 
 
 func load_city(path: String = DEFAULT_PATH) -> Dictionary:
@@ -282,6 +374,174 @@ func load_city(path: String = DEFAULT_PATH) -> Dictionary:
 	if not result.ok:
 		return result
 	return restore(result.data)
+
+
+func _generate_initial_plants() -> void:
+	# Keep the renderer's authored grove layout deterministic. Consume the same
+	# random streams used by _build_landscape before reaching its eight groves.
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 261014
+	for ignored in range(75):
+		var x := rng.randf_range(-27.0, 27.0)
+		var z := rng.randf_range(-25.0, 25.0)
+		if absf(x - river_x(z)) < 2.6:
+			continue
+		rng.randf_range(1.0, 3.4)
+		for contour in range(10):
+			rng.randf_range(0.78, 1.20)
+	for ignored in range(34):
+		rng.randf_range(-26.0, 26.0)
+		rng.randf_range(-1.55, 1.55)
+		rng.randf_range(0.15, 0.65)
+	var groves := [Vector2(-14, -9), Vector2(-16, 7), Vector2(13, -9), Vector2(14, 8), Vector2(-7, 14), Vector2(8, 17), Vector2(-19, -18), Vector2(18, -19)]
+	var number := 1
+	for grove: Vector2 in groves:
+		for index in range(7):
+			var position := grove + Vector2(rng.randf_range(-3.0, 3.0), rng.randf_range(-2.7, 2.7))
+			var scale_value := rng.randf_range(0.75, 1.3)
+			if not WORLD_RECT.has_point(position):
+				continue
+			var kind := "cypress" if index % 3 == 0 else "olive"
+			var plant := _make_plant("p%d" % number, position, kind, scale_value, 261014 + number * 977, "seed")
+			if not _plant_geometry_compatible(plant, plants):
+				continue
+			plants.append(plant)
+			number += 1
+	_next_plant_id = number
+	_high_watermark["plant"] = number - 1
+
+
+func _make_plant(id: String, position: Vector2, kind: String, scale_value: float, plant_seed: int, source: String) -> Dictionary:
+	return {"id": id, "position": [position.x, position.y], "kind": kind, "scale": scale_value, "seed": plant_seed, "source": source}
+
+
+func _validate_vegetation_stroke(points: Array[Vector2], kind: String, radius: float) -> Dictionary:
+	if points.is_empty() or kind not in ["olive", "cypress", "shrub"] or not is_finite(radius) or radius <= 0.0 or radius > 8.0:
+		return _fail("无效的植被笔画")
+	for point in points:
+		if not is_finite(point.x) or not is_finite(point.y) or not WORLD_RECT.has_point(point):
+			return _fail("植被笔画超出了河湾范围")
+	return {"ok": true, "message": ""}
+
+
+func _validate_erase_stroke(points: Array[Vector2], radius: float) -> Dictionary:
+	if points.is_empty() or not is_finite(radius) or radius <= 0.0 or radius > 12.0:
+		return _fail("无效的植被擦除笔画")
+	for point in points:
+		if not is_finite(point.x) or not is_finite(point.y) or not WORLD_RECT.has_point(point):
+			return _fail("植被擦除笔画超出了河湾范围")
+	return {"ok": true, "message": ""}
+
+
+func _stroke_samples(points: Array[Vector2], radius: float) -> Array[Vector2]:
+	var samples: Array[Vector2] = []
+	samples.append(points[0])
+	var spacing := maxf(0.65, radius * 0.78)
+	var remaining := spacing
+	for index in range(1, points.size()):
+		var start: Vector2 = points[index - 1]
+		var finish: Vector2 = points[index]
+		var length := start.distance_to(finish)
+		while length >= remaining:
+			start = start.move_toward(finish, remaining)
+			samples.append(start)
+			length = start.distance_to(finish)
+			remaining = spacing
+			if samples.size() >= MAX_PLANTS_PER_STROKE * 2:
+				return samples
+		remaining -= length
+	if samples[-1].distance_to(points[-1]) >= spacing * 0.5:
+		samples.append(points[-1])
+	return samples
+
+
+func _vegetation_stroke_seed(points: Array[Vector2], kind: String, radius: float) -> int:
+	var seed_value := 261014 + int(_high_watermark.get("plant", 0)) * 977 + kind.hash() % 997
+	seed_value += int(round(radius * 100.0)) * 37
+	for point in _stroke_samples(points, radius):
+		seed_value = posmod(seed_value * 131 + int(round(point.x * 100.0)) * 17 + int(round(point.y * 100.0)) * 31, 2147483647)
+	return maxi(1, seed_value)
+
+
+func _plant_scale(kind: String, rng: RandomNumberGenerator) -> float:
+	if kind == "shrub":
+		return rng.randf_range(0.65, 1.05)
+	return rng.randf_range(0.78, 1.22)
+
+
+func _valid_plant_fields(plant: Dictionary) -> bool:
+	if not plant.get("id", "") is String or not plant.get("id", "").begins_with("p"):
+		return false
+	if not _valid_point(plant.get("position")) or plant.get("kind") not in ["olive", "cypress", "shrub"]:
+		return false
+	if not _is_number(plant.get("scale")) or float(plant.scale) <= 0.0 or not _is_integer(plant.get("seed")):
+		return false
+	return plant.get("source", "seed") in ["seed", "player"]
+
+
+func _plant_geometry_compatible(plant: Dictionary, extra: Array, include_existing: bool = false) -> bool:
+	if not _valid_plant_fields(plant):
+		return false
+	var position := Vector2(float(plant.position[0]), float(plant.position[1]))
+	var scale_value := float(plant.scale)
+	var clearance := 0.42 * scale_value if plant.kind == "shrub" else 0.72 * scale_value
+	if not WORLD_RECT.has_point(position):
+		return false
+	if absf(position.x - river_x(position.y)) <= RIVER_HALF_WIDTH + clearance:
+		return false
+	for house in houses:
+		for cell in house.cells:
+			if cell.level != 0:
+				continue
+			var center := Vector2(float(house.origin[0]) + int(cell.x) * CELL_UNIT, float(house.origin[1]) + int(cell.z) * CELL_UNIT)
+			var footprint := Rect2(center - Vector2.ONE * CELL_UNIT * 0.5, Vector2.ONE * CELL_UNIT).grow(clearance)
+			if footprint.has_point(position):
+				return false
+			if cell.kind == "room":
+				var front_occupied := false
+				for neighbor in house.cells:
+					if neighbor.level == 0 and neighbor.x == cell.x and neighbor.z == cell.z + 1:
+						front_occupied = true
+						break
+				if not front_occupied and position.distance_to(center + Vector2(0, 1.55)) <= 0.95 + clearance:
+					return false
+	for road in roads:
+		for index in range(1, road.points.size()):
+			var a := Vector2(float(road.points[index - 1][0]), float(road.points[index - 1][1]))
+			var b := Vector2(float(road.points[index][0]), float(road.points[index][1]))
+			if _distance_to_segment(position, a, b) <= float(road.width) * 0.5 + 0.45 + clearance:
+				return false
+	var all_plants: Array = []
+	if include_existing:
+		all_plants.append_array(plants)
+	all_plants.append_array(extra)
+	for other in all_plants:
+		if other.get("id", "") == plant.get("id", ""):
+			continue
+		if not _valid_point(other.get("position")):
+			continue
+		var other_position := Vector2(float(other.position[0]), float(other.position[1]))
+		var other_clearance := 0.42 * float(other.get("scale", 1.0)) if other.get("kind", "olive") == "shrub" else 0.72 * float(other.get("scale", 1.0))
+		if position.distance_to(other_position) < clearance + other_clearance + 0.18:
+			return false
+	return true
+
+
+func _distance_to_polyline(point: Vector2, points: Array[Vector2]) -> float:
+	if points.size() == 1:
+		return point.distance_to(points[0])
+	var nearest := INF
+	for index in range(1, points.size()):
+		nearest = minf(nearest, _distance_to_segment(point, points[index - 1], points[index]))
+	return nearest
+
+
+func _distance_to_segment(point: Vector2, a: Vector2, b: Vector2) -> float:
+	var length_squared := a.distance_squared_to(b)
+	if length_squared <= 0.000001:
+		return point.distance_to(a)
+	var t := clampf((point - a).dot(b - a) / length_squared, 0.0, 1.0)
+	return point.distance_to(a.lerp(b, t))
 
 
 func _make_house(position: Vector2, palette: int) -> Dictionary:
@@ -379,6 +639,10 @@ func _pair_overlaps(first: Dictionary, second: Dictionary) -> bool:
 
 
 func _apply_snapshot(data: Dictionary, preserve_issued_ids: bool = false) -> void:
+	# Editing history restores geometry; completed daily visits remain history.
+	if not preserve_issued_ids:
+		var progress: Dictionary = data.get("life_progress", {"purchases":0,"gatherings":0})
+		life_progress = {"purchases":int(progress.get("purchases",0)),"gatherings":int(progress.get("gatherings",0))}
 	houses.assign(data.houses.duplicate(true))
 	roads.assign(data.roads.duplicate(true))
 	# JSON numbers enter as floats; restore the authoritative integer fields.
@@ -401,12 +665,37 @@ func _apply_snapshot(data: Dictionary, preserve_issued_ids: bool = false) -> voi
 		for i in range(road.points.size()):
 			var point := Vector2(float(road.points[i][0]), float(road.points[i][1]))
 			road.points[i] = [point.x, point.y]
+	var had_plants := data.get("plants") is Array
+	plants.clear()
+	if had_plants:
+		plants.assign(data.plants.duplicate(true))
+		for plant in plants:
+			var position := Vector2(float(plant.position[0]), float(plant.position[1]))
+			plant.position = [position.x,position.y]
+			plant.kind = str(plant.kind)
+			plant.scale = Vector2(float(plant.scale),0).x
+			plant.seed = int(plant.seed)
+			plant.source = plant.get("source", "seed")
 	_next_house_id = int(data.next_house_id)
 	_next_cell_id = int(data.next_cell_id)
 	_next_road_id = int(data.next_road_id)
-	var issued: Dictionary = data.get("high_watermark", {"house": _next_house_id - 1, "cell": _next_cell_id - 1, "road": _next_road_id - 1})
-	for kind in ["house", "cell", "road"]:
-		_high_watermark[kind] = maxi(int(_high_watermark[kind]), int(issued[kind])) if preserve_issued_ids else int(issued[kind])
+	var max_plant := 0
+	for plant in plants:
+		max_plant = maxi(max_plant, int(str(plant.id).substr(1)))
+	var issued: Dictionary = data.get("high_watermark", {"house": _next_house_id - 1, "cell": _next_cell_id - 1, "road": _next_road_id - 1, "plant": max_plant})
+	for kind in ["house", "cell", "road", "plant"]:
+		var default_issued := max_plant if kind == "plant" else (int(data["next_%s_id" % kind]) - 1)
+		var issued_value := int(issued.get(kind, default_issued))
+		_high_watermark[kind] = maxi(int(_high_watermark.get(kind, 0)), issued_value) if preserve_issued_ids else issued_value
+	if data.has("next_plant_id"):
+		_next_plant_id = int(data.next_plant_id)
+	else:
+		_next_plant_id = max_plant + 1
+	if not had_plants:
+		var preserved_plant_watermark := int(_high_watermark.get("plant", 0))
+		_generate_initial_plants()
+		_high_watermark["plant"] = maxi(int(_high_watermark.get("plant", 0)), preserved_plant_watermark)
+		_next_plant_id = maxi(_next_plant_id, int(_high_watermark["plant"]) + 1)
 
 
 func _read_snapshot(path: String) -> Dictionary:
@@ -427,23 +716,34 @@ func _read_snapshot(path: String) -> Dictionary:
 
 
 func _validate_snapshot(data: Dictionary) -> Dictionary:
+	var progress: Variant = data.get("life_progress", {"purchases":0,"gatherings":0})
+	if not progress is Dictionary: return _fail("城市存档生活进展无效")
+	for key in ["purchases", "gatherings"]:
+		if not _is_integer(progress.get(key,0)) or progress.get(key,0) < 0:
+			return _fail("城市存档生活进展无效")
 	if data.get("schema") != SCHEMA:
 		return _fail("不支持的城市存档版本")
 	for key in ["revision", "next_house_id", "next_cell_id", "next_road_id"]:
 		if not _is_integer(data.get(key)) or data[key] < (0 if key == "revision" else 1):
 			return _fail("城市存档计数无效")
-	var issued: Variant = data.get("high_watermark", {"house": data.next_house_id - 1, "cell": data.next_cell_id - 1, "road": data.next_road_id - 1})
+	if not _is_integer(data.get("next_plant_id", 1)):
+		return _fail("城市存档植被身份计数无效")
+	var next_plant_id := int(data.get("next_plant_id", 1))
+	var issued: Variant = data.get("high_watermark", {"house": data.next_house_id - 1, "cell": data.next_cell_id - 1, "road": data.next_road_id - 1, "plant": next_plant_id - 1})
 	if not issued is Dictionary:
 		return _fail("城市存档身份高水位无效")
 	for kind in ["house", "cell", "road"]:
 		if not _is_integer(issued.get(kind)) or issued[kind] < data["next_%s_id" % kind] - 1:
 			return _fail("城市存档身份高水位无效")
+	if next_plant_id < 1 or not _is_integer(issued.get("plant", 0)) or int(issued.get("plant", 0)) < next_plant_id - 1:
+		return _fail("城市存档植被身份高水位无效")
 	if not data.get("houses") is Array or not data.get("roads") is Array:
 		return _fail("城市存档结构无效")
 	var ids: Dictionary = {}
 	var max_house := 0
 	var max_cell := 0
 	var max_road := 0
+	var max_plant := 0
 	for house in data.houses:
 		if not house is Dictionary or not _valid_id(house.get("id"), "h", ids):
 			return _fail("城市存档房屋身份无效")
@@ -483,7 +783,22 @@ func _validate_snapshot(data: Dictionary) -> Dictionary:
 		for point in road.points:
 			if not _valid_point(point):
 				return _fail("城市存档道路位置无效")
-	if data.next_house_id <= max_house or data.next_cell_id <= max_cell or data.next_road_id <= max_road:
+	if data.has("plants"):
+		if not data.plants is Array:
+			return _fail("城市存档植被结构无效")
+		for plant in data.plants:
+			if not plant is Dictionary or not _valid_id(plant.get("id"), "p", ids):
+				return _fail("城市存档植被身份无效")
+			max_plant = maxi(max_plant, int(str(plant.id).substr(1)))
+			if not _valid_point(plant.get("position")) or not WORLD_RECT.has_point(Vector2(float(plant.position[0]), float(plant.position[1]))):
+				return _fail("城市存档植被位置无效")
+			if plant.get("kind") not in ["olive", "cypress", "shrub"] or not _is_number(plant.get("scale")) or float(plant.scale) <= 0.0 or float(plant.scale) > 8.0 or not _is_integer(plant.get("seed")):
+				return _fail("城市存档植被字段无效")
+			if plant.get("source", "seed") not in ["seed", "player"]:
+				return _fail("城市存档植被来源无效")
+			if absf(float(plant.position[0]) - river_x(float(plant.position[1]))) <= RIVER_HALF_WIDTH:
+				return _fail("城市存档植被不能位于河水中")
+	if data.next_house_id <= max_house or data.next_cell_id <= max_cell or data.next_road_id <= max_road or next_plant_id <= max_plant:
 		return _fail("城市存档身份计数冲突")
 	# Validate the candidate world, never the currently open city. Restoring
 	# may not bypass the same land, wall-clearance and bridge rules as edits.

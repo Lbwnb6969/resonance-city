@@ -9,9 +9,16 @@ func _initialize() -> void:
 	city.initialize()
 	var initial := city.snapshot()
 	_check(city.houses.size() == 6, "six initial houses")
+	_check(city.plants.size() > 0 and city.plants[0].source == "seed", "initial deterministic grove plants")
 	_check(city.houses[0].cells[0].source == "seed" and city.roads[0].source == "seed", "initial content carries seed origin")
 	var initial_load := State.new()
 	_check(initial_load.restore(initial).ok and initial_load.roads.size() == 6, "initial six houses and five branches satisfy geometry rules")
+	_check(initial_load.plants.size() == city.plants.size(), "snapshot carries vegetation")
+	var visible_plants := 0
+	for plant in city.plants:
+		if city.vegetation_visible(plant):
+			visible_plants += 1
+	_check(visible_plants == city.plants.size(), "initial plants are geometry compatible")
 	_check(city.validate_add_cell("h1", 2, 0, 0, "room").ok and city.validate_add_cell("h3", 2, 0, 0, "room").ok, "initial shared houses leave expansion space")
 	for ignored in range(100):
 		city.snapshot()
@@ -56,6 +63,40 @@ func _initialize() -> void:
 	_check(not city.add_road([Vector2(-1.0, -10.0), Vector2(3.0, -10.0)]).ok, "partial bridge rejected")
 	_check(city.add_road([Vector2(-1.0, -10.0), Vector2(8.0, -10.0)]).ok and city.roads[-1].bridge, "complete crossing becomes bridge")
 	_check(city.add_road([Vector2(-8.0, -10.0), Vector2(-8.0, -6.9)]).ok, "road terminal may reach exterior doorway")
+	var plant_before := city.snapshot()
+	var planted := city.add_vegetation_stroke([Vector2(-14.0, 12.0), Vector2(-13.0, 12.8)], "shrub", 1.2)
+	_check(planted.ok and planted.added_count > 0, "continuous vegetation stroke commits")
+	var planted_snapshot := city.snapshot()
+	_check(city.undo().ok and city.snapshot().plants.size() == plant_before.plants.size(), "vegetation stroke is one undo transaction")
+	_check(city.redo().ok and city.snapshot().plants == planted_snapshot.plants, "vegetation redo preserves IDs and seeds")
+	var erased := city.erase_vegetation_stroke([Vector2(-14.0, 12.0), Vector2(-13.0, 12.8)], 2.5)
+	_check(erased.ok and erased.removed_count >= planted.added_count, "vegetation erase removes stroke cluster")
+	_check(city.undo().ok and city.snapshot().plants == planted_snapshot.plants, "vegetation erase undo restores plants")
+	var sparse_vegetation := State.new()
+	sparse_vegetation.initialize()
+	var dense_vegetation := State.new()
+	dense_vegetation.initialize()
+	var dense_points: Array[Vector2] = []
+	for step in range(31):
+		dense_points.append(Vector2(-14.0 + float(step) / 10.0, 12.5))
+	var sparse_result := sparse_vegetation.add_vegetation_stroke([Vector2(-14.0, 12.5), Vector2(-11.0, 12.5)], "shrub", 1.0)
+	var dense_result := dense_vegetation.add_vegetation_stroke(dense_points, "shrub", 1.0)
+	_check(sparse_result.ok and dense_result.ok and sparse_result.seed == dense_result.seed and sparse_result.added_count == dense_result.added_count, "stroke event density does not affect vegetation density or deterministic seed")
+	for index in range(sparse_vegetation.plants.size()):
+		var a: Dictionary = sparse_vegetation.plants[index]
+		var b: Dictionary = dense_vegetation.plants[index]
+		_check(a.id == b.id and a.seed == b.seed and Vector2(a.position[0], a.position[1]).distance_to(Vector2(b.position[0], b.position[1])) < 0.001, "dense and sparse strokes produce the same plants")
+	var obscured := State.new()
+	obscured.initialize()
+	var obscured_record: Dictionary = {}
+	for plant in obscured.plants:
+		var position := Vector2(plant.position[0], plant.position[1])
+		if obscured.validate_add_house(position).ok:
+			obscured_record = plant.duplicate(true)
+			_check(obscured.add_house(position).ok and not obscured.vegetation_visible(plant), "construction derives plant visibility without deleting intent")
+			break
+	_check(not obscured_record.is_empty(), "grove includes buildable vegetation site")
+	_check(obscured.undo().ok and obscured.vegetation_visible(obscured_record), "construction undo reveals original vegetation seed and ID")
 	var path := "user://city_creation_contract_%d.json" % Time.get_ticks_usec()
 	var saved := city.snapshot()
 	_check(city.save_city(path).ok and not city.dirty, "atomic save verified")
@@ -72,9 +113,12 @@ func _initialize() -> void:
 			cell.erase("source")
 	for road in legacy.roads:
 		road.erase("source")
+	legacy.erase("plants")
+	legacy.erase("next_plant_id")
 	var legacy_city := State.new()
 	_check(legacy_city.restore(legacy).ok and legacy_city.houses[0].role == "residential" and not legacy_city.houses[0].name.is_empty(), "early schema defaults names and roles")
 	_check(legacy_city.houses[-1].cells[0].source == "seed" and legacy_city.roads[-1].source == "seed", "early schema defaults missing origins to seed")
+	_check(legacy_city.plants.size() > 0 and legacy_city.plants[0].source == "seed", "early schema migrates deterministic groves")
 	_check(loaded.add_house(Vector2(-15.0, -6.0)).ok and loaded.houses[-1].id != new_id, "load preserves identity counter")
 	var before_bad := loaded.snapshot()
 	var corrupted := before_bad.duplicate(true)
@@ -86,6 +130,15 @@ func _initialize() -> void:
 	corrupted = before_bad.duplicate(true)
 	corrupted.houses[0].cells[0].source = "invented"
 	_check(not loaded.restore(corrupted).ok and loaded.snapshot() == before_bad, "unknown origin rejects without mutation")
+	corrupted = before_bad.duplicate(true)
+	corrupted.plants[0].scale = -1.0
+	_check(not loaded.restore(corrupted).ok and loaded.snapshot() == before_bad, "invalid vegetation scale rejects without mutation")
+	corrupted = before_bad.duplicate(true)
+	corrupted.plants[0].position = [3.0, 0.0]
+	_check(not loaded.restore(corrupted).ok and loaded.snapshot() == before_bad, "restored vegetation rejects water position")
+	corrupted = before_bad.duplicate(true)
+	corrupted.plants[0].kind = "invented"
+	_check(not loaded.restore(corrupted).ok and loaded.snapshot() == before_bad, "restored vegetation rejects unknown kind")
 	for illegal_position in [[100.0, 0.0], [3.0, 0.0]]:
 		corrupted = before_bad.duplicate(true)
 		corrupted.houses[-1].origin = illegal_position
@@ -118,6 +171,10 @@ func _initialize() -> void:
 	branch.undo()
 	branch.redo()
 	_check(first_cell.ok and branch.houses[0].cells[-1].id == first_cell.cell_id, "redo retains original published cell ID")
+	var planted_branch := branch.add_vegetation_stroke([Vector2(-14.0, 12.0)], "shrub", 0.7)
+	branch.undo()
+	var new_plant_branch := branch.add_vegetation_stroke([Vector2(-13.0, 13.0)], "shrub", 0.7)
+	_check(planted_branch.ok and new_plant_branch.ok and planted_branch.plant_ids[0] != new_plant_branch.plant_ids[0], "new history branch cannot reuse published plant ID")
 	_check(restored_branch.save_city(path + ".branch").ok, "persist allocator watermark")
 	var persisted_branch := State.new()
 	_check(persisted_branch.load_city(path + ".branch").ok and persisted_branch.snapshot().high_watermark == restored_branch.snapshot().high_watermark, "save load preserves issued identity high watermark")

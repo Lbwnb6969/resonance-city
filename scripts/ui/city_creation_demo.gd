@@ -9,7 +9,7 @@ const UI = preload("res://scripts/ui/valley_ui_theme.gd")
 const SAVE_PATH := "user://city_creation_v1.json"
 const UNIT := 1.8
 const FLOOR := 1.7
-const TOOL_NAMES := ["房屋", "露台", "道路", "移除", "用途"]
+const TOOL_NAMES := ["房屋", "露台", "道路", "移除", "用途", "植被"]
 var state := State.new()
 var town: Node3D
 var music: Node
@@ -41,6 +41,13 @@ var orbiting := false
 var panning := false
 var road_drawing := false
 var road_points: Array[Vector2] = []
+var vegetation_drawing := false
+var vegetation_erasing := false
+var vegetation_points: Array[Vector2] = []
+var vegetation_radius := 1.4
+var vegetation_kind := "olive"
+var vegetation_panel: PanelContainer
+var life_save_timer := 15.0
 var hovered: Dictionary = {}
 var candidate: Dictionary = {}
 var preview_key := ""
@@ -137,17 +144,17 @@ func _setup_ui() -> void:
 	toolbar.add_theme_stylebox_override("panel", UI.panel(10))
 	root.add_child(toolbar)
 	toolbar.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	toolbar.offset_left = -378
-	toolbar.offset_right = 378
+	toolbar.offset_left = -422
+	toolbar.offset_right = 422
 	toolbar.offset_top = -97
 	toolbar.offset_bottom = -24
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	toolbar.add_child(row)
-	for index in range(5):
+	for index in range(6):
 		var button := _button("%d  %s" % [index + 1, TOOL_NAMES[index]], func() -> void: select_tool(index))
 		button.name = "Tool%d" % index
-		button.custom_minimum_size = Vector2(114, 48)
+		button.custom_minimum_size = Vector2(104, 48)
 		row.add_child(button)
 		tool_buttons.append(button)
 	undo_button = _button("↶", func() -> void: _history(false))
@@ -197,13 +204,42 @@ func _setup_ui() -> void:
 	for role: String in ["residential", "bakery", "venue"]:
 		roles.add_child(_button({"residential":"居所", "bakery":"面包坊", "venue":"演奏庭"}[role], func()->void: _after_edit(state.set_house_role(selected_house,role),"room")))
 	place_panel.visible = false
+	vegetation_panel = PanelContainer.new()
+	vegetation_panel.name = "VegetationOptions"
+	vegetation_panel.add_theme_stylebox_override("panel", UI.panel(16))
+	root.add_child(vegetation_panel)
+	vegetation_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	vegetation_panel.offset_left = -310
+	vegetation_panel.offset_right = -24
+	vegetation_panel.offset_top = 84
+	var garden := VBoxContainer.new()
+	garden.add_theme_constant_override("separation",8)
+	vegetation_panel.add_child(garden)
+	garden.add_child(_label("种一片自己的花园",18))
+	var species := OptionButton.new()
+	species.name = "Species"
+	for label: String in ["橄榄树群", "地中海柏", "低矮灌木"]: species.add_item(label)
+	species.item_selected.connect(func(index:int)->void:
+		_cancel_draft()
+		vegetation_kind = ["olive","cypress","shrub"][index])
+	garden.add_child(species)
+	var radius := OptionButton.new()
+	radius.name = "BrushSize"
+	for label: String in ["小笔刷 · 近庭", "中笔刷 · 树群", "大笔刷 · 林带"]: radius.add_item(label)
+	radius.select(1)
+	radius.item_selected.connect(func(index:int)->void:
+		_cancel_draft()
+		vegetation_radius = [0.8,1.4,2.4][index])
+	garden.add_child(radius)
+	garden.add_child(_label("一笔落成树群，松开后可撤销。\nShift 按住擦除，Esc 取消。",14))
+	vegetation_panel.visible = false
 	var help := _panel(root, Vector2(24, -168), Vector2(284, 0))
 	help.get_parent().set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	var help_panel := help.get_parent() as Control
 	help_panel.offset_left = 24
 	help_panel.offset_right = 308
-	help_panel.offset_top = -195
-	help_panel.offset_bottom = -24
+	help_panel.offset_top = -260
+	help_panel.offset_bottom = -112
 	hint = _label("", 14)
 	help.add_child(hint)
 	help.add_child(_label("滚轮缩放 · 右键转动 · 中键平移\nH 全景 · F 隐藏界面 · Ctrl+S 保存", 12))
@@ -263,7 +299,7 @@ func _refresh_ui() -> void:
 		for visual_state in ["normal", "hover", "pressed"]:
 			tool_buttons[i].add_theme_stylebox_override(visual_state, UI.button(visual_state, i == tool))
 		tool_buttons[i].add_theme_color_override("font_color", UI.PAPER if i == tool else UI.INK)
-	hint.text = ["点墙向外扩房，点顶向上加层。\n空地点击，建一座新房。", "点墙伸出露台，点顶留出屋顶花园。\n系统补齐栏杆和支撑。", "按住左键，沿空地拉出小路。\n横跨两岸自动搭桥；Esc 取消。", "点击房屋块移除。\n附属上层一并收回，撤销可恢复。", "点击房屋，起名并选择用途。\n居民沿小路采购、聚会，再回家。"][tool]
+	hint.text = ["点墙向外扩房，点顶向上加层。\n空地点击，建一座新房。", "点墙伸出露台，点顶留出屋顶花园。\n系统补齐栏杆和支撑。", "按住左键，沿空地拉出小路。\n横跨两岸自动搭桥；Esc 取消。", "点击房屋块移除。\n附属上层一并收回，撤销可恢复。", "点击房屋，起名并选择用途。\n居民沿小路采购、聚会，再回家。", "按住左键画树群；Shift+左键擦除。\n树会避开房屋、道路和水岸。\nEsc 取消预览。"][tool]
 	music.update_city(state)
 	_refresh_place()
 
@@ -274,6 +310,7 @@ func select_tool(index: int) -> void:
 	tool = index
 	_cancel_draft()
 	place_panel.visible = tool == 4 and not selected_house.is_empty()
+	vegetation_panel.visible = tool == 5
 	_refresh_ui()
 
 func _update_camera() -> void:
@@ -307,6 +344,7 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_RIGHT: orbiting = false
 		if event.button_index == MOUSE_BUTTON_MIDDLE: panning = false
 		if event.button_index == MOUSE_BUTTON_LEFT and road_drawing: _finish_road()
+		if event.button_index == MOUSE_BUTTON_LEFT and vegetation_drawing: _finish_vegetation()
 	if event is InputEventKey and event.pressed and not event.echo:
 		if get_viewport().gui_get_focus_owner() is LineEdit: return
 		if event.ctrl_pressed:
@@ -314,7 +352,7 @@ func _input(event: InputEvent) -> void:
 			elif event.keycode == KEY_Y: _history(true)
 			elif event.keycode == KEY_S: save_city()
 			else: return
-		elif event.keycode >= KEY_1 and event.keycode <= KEY_5: select_tool(event.keycode - KEY_1)
+		elif event.keycode >= KEY_1 and event.keycode <= KEY_6: select_tool(event.keycode - KEY_1)
 		elif event.keycode == KEY_H: home_camera()
 		elif event.keycode == KEY_F: ui_layer.visible = not ui_layer.visible
 		elif event.keycode == KEY_ESCAPE: _cancel_draft()
@@ -339,6 +377,11 @@ func _unhandled_input(event: InputEvent) -> void:
 					road_drawing = true
 					road_points.clear()
 					_append_road_point()
+				elif tool == 5:
+					vegetation_drawing = true
+					vegetation_erasing = event.shift_pressed or Input.is_key_pressed(KEY_SHIFT)
+					vegetation_points.clear()
+					_append_vegetation_point()
 				else:
 					_update_hover()
 					_commit_click()
@@ -350,6 +393,12 @@ func _process(delta: float) -> void:
 	if life_ui_timer < 0.0:
 		life_ui_timer = 0.5
 		life_info.text = life.summary()
+	life_save_timer -= delta
+	if life_save_timer < 0.0:
+		life_save_timer = 15.0
+		if state.life_progress_dirty and persistence and not save_blocked:
+			var saved: Dictionary = state.save_city(SAVE_PATH)
+			if not saved.ok: _message(saved.message)
 	if toast_time > 0.0:
 		toast_time -= delta
 		toast.visible = toast_time > 0.0
@@ -360,6 +409,7 @@ func _process(delta: float) -> void:
 			if not saved.ok: _message(saved.message)
 	if not orbiting and not panning:
 		if road_drawing: _append_road_point()
+		elif vegetation_drawing: _append_vegetation_point()
 		elif not ui_layer.visible:
 			town.clear_preview()
 			preview_key = ""
@@ -385,6 +435,14 @@ func _update_hover() -> void:
 	hovered = _ray_hit(pointer)
 	candidate.clear()
 	if tool == 2: return
+	if tool == 5:
+		var ground := _ground_at(pointer)
+		var brush_key := str([ground,vegetation_radius,Input.is_key_pressed(KEY_SHIFT)])
+		if preview_key == brush_key: return
+		preview_key = brush_key
+		if town.has_method("show_vegetation_brush"):
+			town.show_vegetation_brush(ground, vegetation_radius, Input.is_key_pressed(KEY_SHIFT))
+		return
 	var body: Object = hovered.get("collider")
 	if body != null and body.has_meta("house_id"):
 		var house_id := str(body.get_meta("house_id"))
@@ -466,6 +524,26 @@ func _finish_road() -> void:
 	_after_edit(result, "road")
 	road_points.clear()
 
+func _append_vegetation_point() -> void:
+	var p := _ground_at(pointer)
+	if vegetation_points.is_empty() or vegetation_points[-1].distance_to(p) > 0.22:
+		vegetation_points.append(p)
+		if town.has_method("show_vegetation_brush"):
+			town.show_vegetation_brush(p, vegetation_radius, vegetation_erasing, vegetation_points)
+
+func _finish_vegetation() -> void:
+	vegetation_drawing = false
+	if vegetation_points.is_empty():
+		_cancel_draft()
+		return
+	var result: Dictionary
+	if vegetation_erasing:
+		result = state.erase_vegetation_stroke(vegetation_points, vegetation_radius)
+	else:
+		result = state.add_vegetation_stroke(vegetation_points, vegetation_kind, vegetation_radius)
+	_after_edit(result, "erase" if vegetation_erasing else "terrace")
+	vegetation_points.clear()
+
 func _after_edit(result: Dictionary, kind: String) -> void:
 	_message(str(result.message))
 	if not result.ok: return
@@ -485,6 +563,8 @@ func _history(forward: bool) -> void:
 func _cancel_draft() -> void:
 	road_drawing = false
 	road_points.clear()
+	vegetation_drawing = false
+	vegetation_points.clear()
 	candidate.clear()
 	preview_key = ""
 	if town != null: town.clear_preview()
@@ -532,6 +612,7 @@ func diagnostics() -> Dictionary:
 	return {"engine":Engine.get_version_info().string,"fps":Engine.get_frames_per_second(),
 		"frame_p95_ms":sorted[int((sorted.size()-1)*0.95)] if not sorted.is_empty() else 0.0,
 		"edit_rebuild_ms":edit_samples.duplicate(),"draw_calls":Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+		"render_updates":town.rebuild_stats.duplicate(),"plants":state.plants.size(),
 		"triangles":Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
 		"audio":music.audio_report,"life":{"residents":life.residents.size(),"purchases":life.purchases,"gatherings":life.gatherings},
 		"milestones":completed.duplicate(),"world":state.snapshot()}

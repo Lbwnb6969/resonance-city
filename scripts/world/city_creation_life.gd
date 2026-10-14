@@ -14,25 +14,46 @@ var current_population := 0
 var time := 0.0
 var arrival_callback: Callable
 
+var _network_signature: Array = []
+var _roles: Dictionary = {}
+
 func setup(city: RefCounted) -> void:
+	if state != city:
+		for resident: Dictionary in residents: resident.node.queue_free()
+		residents.clear()
+		_network_signature.clear()
+		last_revision = -1
 	state = city
+	_read_progress()
 	_sync()
+
+func _read_progress() -> void:
+	purchases = int(state.life_progress.purchases)
+	gatherings = int(state.life_progress.gatherings)
 
 func _process(delta: float) -> void:
 	if state == null: return
 	if state.revision != last_revision: _sync()
 	time += delta
 	for resident: Dictionary in residents:
+		if resident.paused: continue
 		if resident.wait > 0.0:
-			resident.wait -= delta
+			resident.wait = maxf(0.0, float(resident.wait) - delta)
 			continue
-		if not str(resident.get("service_pending", "")).is_empty():
+		if not str(resident.get("dwell_id", "")).is_empty():
+			# Foundation's Visit Building graph separates reaching, waiting and
+			# filling the need. An edit never counts as finishing that sequence.
+			var reached := str(resident.dwell_id)
 			var service := str(resident.service_pending)
-			if service == "bakery": purchases += 1
-			elif service == "venue":
-				gatherings += 1
-				if arrival_callback.is_valid(): arrival_callback.call("venue")
+			resident.dwell_id = ""
 			resident.service_pending = ""
+			if service == "bakery": state.record_life_event("purchases")
+			elif service == "venue":
+				state.record_life_event("gatherings")
+				if arrival_callback.is_valid(): arrival_callback.call("venue")
+			_read_progress()
+			_depart(resident, reached)
+			if resident.paused: continue
 		var route: Array[Vector3] = resident.route
 		var index := int(resident.index)
 		if index >= route.size():
@@ -52,49 +73,170 @@ func _process(delta: float) -> void:
 		var body: Node3D = node.get_child(0)
 		body.position.y = sin(time * 9.0 + float(resident.phase)) * 0.025
 
+func _signature() -> Array:
+	var result: Array = []
+	for road: Dictionary in state.roads:
+		result.append([road.points.duplicate(true), float(road.width)])
+	for house: Dictionary in state.houses:
+		var entrances: Array = []
+		for cell: Dictionary in house.cells:
+			if int(cell.level) == 0 and str(cell.kind) == "room":
+				entrances.append([int(cell.x), int(cell.z)])
+		result.append([str(house.id), house.origin.duplicate(), str(house.get("role", "residential")), entrances])
+	return result
+
 func _sync() -> void:
 	last_revision = state.revision
-	for resident: Dictionary in residents: resident.node.queue_free()
-	residents.clear()
+	_read_progress()
+	var signature := _signature()
+	if signature == _network_signature: return
+	_network_signature = signature
 	_build_graph()
-	var homes: Array[String] = []
+	_roles.clear()
+	var old_by_home: Dictionary = {}
+	for resident: Dictionary in residents: old_by_home[resident.home_id] = resident
+	var next_residents: Array[Dictionary] = []
 	var shops: Array[String] = []
 	var venues: Array[String] = []
+	var homes: Array[String] = []
 	current_population = 0
 	for house: Dictionary in state.houses:
 		var role := str(house.get("role", "residential"))
+		_roles[str(house.id)] = role
 		if role == "residential":
 			current_population += 2
-			if connected_houses.has(house.id): homes.append(str(house.id))
+			homes.append(str(house.id))
 		elif connected_houses.has(house.id):
 			if role == "bakery": shops.append(str(house.id))
 			elif role == "venue": venues.append(str(house.id))
-	var serial := 0
 	for home: String in homes:
+		var serial := next_residents.size()
 		var stops: Array[String] = [home]
-		if not shops.is_empty(): stops.append(shops[serial % shops.size()])
-		if not venues.is_empty(): stops.append(venues[serial % venues.size()])
-		if stops.size() < 2: continue
-		var first_route := _route(connected_houses[home], connected_houses[stops[1]])
-		if first_route.is_empty(): continue
-		var node := _person(serial)
-		node.position = positions[connected_houses[home]] + Vector3(0,0.10,0)
-		add_child(node)
-		residents.append({"node":node,"stops":stops,"stop":1,"index":0,"route":first_route,"wait":serial*2.4,"phase":serial*1.7})
-		serial += 1
+		if connected_houses.has(home):
+			_append_reachable(stops, home, shops, serial)
+			_append_reachable(stops, home, venues, serial)
+		var resident: Dictionary = old_by_home.get(home, {})
+		if resident.is_empty():
+			if stops.size() < 2: continue
+			var node := _person(serial)
+			node.position = positions[connected_houses[home]] + Vector3(0,0.10,0)
+			add_child(node)
+			resident = {"node":node,"home_id":home,"destination_id":stops[1],"stops":stops,"stop":1,"index":0,"route":_route(connected_houses[home],connected_houses[stops[1]]),"wait":serial*2.4,"phase":serial*1.7,"paused":false,"dwell_id":"","service_pending":""}
+		else:
+			old_by_home.erase(home)
+			resident.stops = stops
+			if stops.size() < 2:
+				_pause_at_home(resident)
+			else:
+				_resume(resident)
+		next_residents.append(resident)
+	for resident: Dictionary in old_by_home.values(): resident.node.queue_free()
+	residents = next_residents
+
+func _append_reachable(stops: Array[String], home: String, candidates: Array[String], serial: int) -> void:
+	for offset in range(candidates.size()):
+		var candidate := candidates[(serial + offset) % candidates.size()]
+		if not _route(connected_houses[home], connected_houses[candidate]).is_empty():
+			stops.append(candidate)
+			return
+
+func _pause_at_home(resident: Dictionary) -> void:
+	resident.paused = true
+	resident.wait = 0.0
+	resident.dwell_id = ""
+	resident.service_pending = ""
+	var empty_route: Array[Vector3] = []
+	resident.route = empty_route
+	resident.index = 0
+	resident.destination_id = resident.home_id
+	for house: Dictionary in state.houses:
+		if str(house.id) != str(resident.home_id): continue
+		var entrance := Vector2(float(house.origin[0]),float(house.origin[1])+1.52)
+		if connected_houses.has(house.id):
+			resident.node.position = positions[connected_houses[house.id]]+Vector3(0,0.10,0)
+		else:
+			resident.node.position = Vector3(entrance.x,_street_height(entrance)+0.10,entrance.y)
+
+func _resume(resident: Dictionary) -> void:
+	var stops: Array[String] = resident.stops
+	var destination := str(resident.destination_id)
+	if resident.paused or not stops.has(destination):
+		destination = stops[1]
+		resident.dwell_id = ""
+		resident.service_pending = ""
+		resident.wait = 0.0
+	resident.destination_id = destination
+	resident.stop = stops.find(destination)
+	# A resident already dwelling may keep that exact visit only while the
+	# same entrance and use survive. Otherwise the pending event is cancelled.
+	if not str(resident.dwell_id).is_empty():
+		var target: Vector3 = positions[connected_houses[destination]]+Vector3(0,0.10,0)
+		if str(_roles[destination]) == str(resident.service_pending) and resident.node.position.distance_to(target) < 0.15:
+			resident.paused = false
+			return
+		resident.dwell_id = ""
+		resident.service_pending = ""
+		resident.wait = 0.0
+	var route := _route_from_position(resident.node.position, connected_houses[destination])
+	if route.is_empty():
+		_pause_at_home(resident)
+		return
+	resident.route = route
+	resident.index = 0
+	resident.paused = false
+
+func _route_from_position(point: Vector3, finish: String) -> Array[Vector3]:
+	var planar := Vector2(point.x,point.z)
+	var nearest := Vector2.ZERO
+	var best_distance := INF
+	var edge: Array[String] = []
+	for start: String in graph:
+		for end: String in graph[start]:
+			var a: Vector3 = positions[start]
+			var b: Vector3 = positions[end]
+			var projected := Geometry2D.get_closest_point_to_segment(planar,Vector2(a.x,a.z),Vector2(b.x,b.z))
+			var distance := planar.distance_squared_to(projected)
+			if distance < best_distance:
+				best_distance = distance
+				nearest = projected
+				edge.assign([start,end])
+	var best: Array[Vector3] = []
+	var best_length := INF
+	if best_distance > 0.81: return best
+	var projected := Vector3(nearest.x,_street_height(nearest)+0.10,nearest.y)
+	for endpoint: String in edge:
+		var candidate := _route(endpoint,finish)
+		if candidate.is_empty(): continue
+		var length := projected.distance_to(candidate[0])
+		for i in range(1,candidate.size()): length += candidate[i-1].distance_to(candidate[i])
+		if length < best_length:
+			best_length = length
+			best = candidate
+	if not best.is_empty(): best.push_front(projected)
+	return best
 
 func _arrive(resident: Dictionary) -> void:
-	var stops: Array[String] = resident.stops
-	var reached: String = stops[int(resident.stop)]
-	var role := "residential"
-	for house: Dictionary in state.houses:
-		if house.id == reached: role = str(house.get("role", "residential"))
+	var reached := str(resident.destination_id)
+	if not connected_houses.has(reached):
+		_pause_at_home(resident)
+		return
+	var target: Vector3 = positions[connected_houses[reached]]+Vector3(0,0.10,0)
+	if resident.node.position.distance_to(target) > 0.15:
+		_pause_at_home(resident)
+		return
+	var role := str(_roles[reached])
+	resident.dwell_id = reached
 	resident.service_pending = role
-	var next := (int(resident.stop) + 1) % stops.size()
-	resident.route = _route(connected_houses[reached], connected_houses[stops[next]])
-	resident.index = 0
-	resident.stop = next
 	resident.wait = 5.0 if role == "venue" else 3.0
+
+func _depart(resident: Dictionary, reached: String) -> void:
+	var stops: Array[String] = resident.stops
+	var next := (stops.find(reached)+1) % stops.size()
+	resident.destination_id = stops[next]
+	resident.stop = next
+	resident.route = _route(connected_houses[reached],connected_houses[stops[next]])
+	resident.index = 0
+	if resident.route.is_empty(): _pause_at_home(resident)
 
 func summary() -> String:
 	return "%d 位居民 · %d 趟采购 · %d 次小聚" % [current_population, purchases, gatherings]

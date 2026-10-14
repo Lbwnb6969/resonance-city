@@ -41,13 +41,14 @@ func _key(code: int, control: bool = false, shift: bool = false) -> void:
 	await physics_frame
 	await process_frame
 
-func _drag_world(points: Array[Vector3], cancel: bool = false) -> void:
+func _drag_world(points: Array[Vector3], cancel: bool = false, erase_plants: bool = false) -> void:
 	var position: Vector2 = demo.camera.unproject_position(points[0])
 	var down := InputEventMouseButton.new()
 	down.position = position
 	down.global_position = position
 	down.button_index = MOUSE_BUTTON_LEFT
 	down.pressed = true
+	down.shift_pressed = erase_plants
 	root.push_input(down)
 	for point in points:
 		var motion := InputEventMouseMotion.new()
@@ -139,12 +140,35 @@ func _run() -> void:
 	await _key(KEY_Z,true)
 	_expect(demo.tool == 4 and demo.state.revision == revision, "Name entry must isolate gameplay hotkeys")
 	demo.place_name.release_focus()
+	await _key(KEY_6)
+	demo.focus = Vector3(-5,0,0)
+	demo.zoom = 40.0
+	demo._update_camera()
+	demo.vegetation_kind = "shrub"
+	var plants_before: Array = demo.state.plants.duplicate(true)
+	var resident_id: int = demo.life.residents[0].node.get_instance_id()
+	var plant_revision: int = demo.state.revision
+	await _drag_world([Vector3(-14,0,12),Vector3(-11,0,12)],true)
+	_expect(demo.state.revision == plant_revision and demo.state.plants == plants_before, "Esc must cancel vegetation without changing IDs or seed stream")
+	await _drag_world([Vector3(-14,0,12),Vector3(-11,0,12)])
+	var planted: Array = demo.state.plants.duplicate(true)
+	_expect(planted.size()>plants_before.size() and demo.state.revision == plant_revision+1, "A real vegetation stroke must be one immediate transaction")
+	_expect(demo.town.rebuild_stats.houses_changed == 0 and demo.town.rebuild_stats.roads_changed == 0 and demo.town.rebuild_stats.vegetation_blocks_changed <= 4, "A garden stroke must only dirty its vegetation blocks")
+	_expect(demo.life.residents[0].node.get_instance_id() == resident_id, "Planting must preserve an in-flight resident")
+	await _key(KEY_Z,true)
+	_expect(demo.state.plants == plants_before, "One undo must remove the whole tree stroke")
+	await _key(KEY_Z,true,true)
+	_expect(demo.state.plants == planted, "Vegetation redo must recover identical plants and seeds")
+	await _drag_world([Vector3(-14,0,12),Vector3(-11,0,12)],false,true)
+	_expect(demo.state.plants.size() < planted.size(), "Shift brush must erase existing plants")
+	await _key(KEY_Z,true)
+	_expect(demo.state.plants == planted, "Vegetation erase undo must restore precise instances")
 	var save_path := "user://city_creation_play_contract.json"
 	var saved: Dictionary = demo.state.save_city(save_path)
 	_expect(saved.ok, "Integrated town must save successfully")
 	var copy = preload("res://scripts/world/city_creation_state.gd").new()
 	var restored: Dictionary = copy.load_city(save_path)
-	_expect(restored.ok and copy.snapshot().houses == demo.state.snapshot().houses and copy.snapshot().roads == demo.state.snapshot().roads, "Integrated geometry and bridge must restore exactly")
+	_expect(restored.ok and copy.snapshot().houses == demo.state.snapshot().houses and copy.snapshot().roads == demo.state.snapshot().roads and copy.snapshot().plants == demo.state.snapshot().plants, "Integrated geometry bridge and garden must restore exactly")
 	demo.life.set_process(false)
 	for i in range(900): demo.life._process(0.2)
 	_expect(demo.life.purchases > 0 and demo.life.gatherings > 0, "Residents must complete reachable bakery and venue visits")
