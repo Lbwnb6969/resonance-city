@@ -5,10 +5,12 @@ extends Node3D
 ## wind; no recovered mesh, texture or packed record is used here.
 const BLOCK_SIZE := 8.0
 const WORLD_RECT := Rect2(-18.0, -15.0, 35.0, 30.0)
+const BASE_SPACING := 0.26
 const State := preload("res://scripts/world/city_creation_state.gd")
 var state: RefCounted
 var blocks: Dictionary = {}
 var block_counts: Dictionary = {}
+var base_counts: Dictionary = {}
 var fingerprints: Dictionary = {}
 var meshes: Dictionary = {}
 var materials: Dictionary = {}
@@ -34,9 +36,7 @@ func rebuild(visible_by_block: Dictionary, dirty: Array[Vector2i]) -> void:
 			old.queue_free()
 			blocks.erase(block)
 		block_counts.erase(block)
-		if members.is_empty():
-			last_changed += 1
-			continue
+		base_counts.erase(block)
 		var root := Node3D.new()
 		root.name = "Meadow_%d_%d" % [block.x, block.y]
 		root.position = Vector3(float(block.x) * BLOCK_SIZE, 0.0, float(block.y) * BLOCK_SIZE)
@@ -46,6 +46,7 @@ func rebuild(visible_by_block: Dictionary, dirty: Array[Vector2i]) -> void:
 		# dirty block gets a small authoritative mask once, so hundreds of grass
 		# candidates reuse the exact same rule without a world-wide query.
 		var query_state := _make_local_query_state(block)
+		base_counts[block] = _add_short_meadow(block, batches.grass, query_state)
 		for plant: Dictionary in members:
 			_add_plant_clumps(block, plant, batches, query_state)
 		var count := 0
@@ -64,10 +65,51 @@ func rebuild(visible_by_block: Dictionary, dirty: Array[Vector2i]) -> void:
 
 func diagnostics() -> Dictionary:
 	var count := 0
+	var short_grass := 0
 	for amount: int in block_counts.values():
 		count += amount
+	for amount: int in base_counts.values():
+		short_grass += amount
 	return {"blocks": blocks.size(), "instances": count,
+		"base_grass": short_grass, "clumps": count - short_grass,
 		"last_changed": last_changed, "elapsed_ms": elapsed_ms}
+
+func _add_short_meadow(block: Vector2i, records: Array, query_state: RefCounted) -> int:
+	var first := records.size()
+	var origin := Vector2(block) * BLOCK_SIZE
+	# The lattice belongs to world coordinates. Jittered samples crossing an
+	# eight-metre boundary are owned by their final block, avoiding seams or
+	# duplicate tufts when a neighbouring block alone is rebuilt.
+	var start_x := floori(origin.x / BASE_SPACING) - 1
+	var start_z := floori(origin.y / BASE_SPACING) - 1
+	var end_x := ceili((origin.x + BLOCK_SIZE) / BASE_SPACING) + 1
+	var end_z := ceili((origin.y + BLOCK_SIZE) / BASE_SPACING) + 1
+	var dark := Color("63855a")
+	var light := Color("6d8c60")
+	for z in range(start_z, end_z):
+		for x in range(start_x, end_x):
+			var bits := _lattice_hash(x, z)
+			var jitter_x := (float(bits & 1023) / 1023.0 - 0.5) * 0.13
+			var jitter_z := (float((bits >> 10) & 1023) / 1023.0 - 0.5) * 0.13
+			var at := Vector2((float(x) + 0.5) * BASE_SPACING + jitter_x,
+				(float(z) + 0.5) * BASE_SPACING + jitter_z)
+			if not _candidate_visible(block, at, query_state, 0.18):
+				continue
+			# Broad, barely perceptible drifts connect the lawn rather than
+			# painting each cell a different noisy colour. Individual height
+			# jitter stays below a centimetre and introduces no bare holes.
+			var drift := 0.5 + 0.25 * sin(at.x * 0.31 + at.y * 0.17) + 0.25 * sin(at.y * 0.23 - at.x * 0.11)
+			var height := 0.40 + drift * 0.075 + float((bits >> 20) & 63) / 63.0 * 0.025
+			var width := 0.55 + float((bits >> 26) & 31) / 31.0 * 0.08
+			var yaw := float(bits & 65535) / 65535.0 * TAU
+			_append(records, block, at, Vector3(width, height, width), yaw,
+				dark.lerp(light, drift), -0.003)
+	return records.size() - first
+
+func _lattice_hash(x: int, z: int) -> int:
+	var value := ((x + 8192) * 73856093) ^ ((z + 8192) * 19349663) ^ 261014
+	value = ((value ^ (value >> 13)) & 0x7fffffff) * 1274126177
+	return (value ^ (value >> 16)) & 0x7fffffff
 
 func _local_obstacles(block: Vector2i) -> Array:
 	var rect := Rect2(Vector2(block) * BLOCK_SIZE, Vector2.ONE * BLOCK_SIZE).grow(1.0)
@@ -197,13 +239,13 @@ func _add_plant_clumps(block: Vector2i, plant: Dictionary, batches: Dictionary, 
 			_append(batches.stone, block, at, Vector3(0.12, 0.058, 0.085), yaw,
 				stone_tint, 0.018)
 
-func _candidate_visible(block: Vector2i, at: Vector2, query_state: RefCounted) -> bool:
+func _candidate_visible(block: Vector2i, at: Vector2, query_state: RefCounted, clearance_scale: float = 0.25) -> bool:
 	if not WORLD_RECT.has_point(at):
 		return false
 	if Vector2i(floori(at.x / BLOCK_SIZE), floori(at.y / BLOCK_SIZE)) != block:
 		return false
 	return bool(query_state.call("vegetation_visible", {"id": "p_meadow", "position": [at.x, at.y],
-		"kind": "shrub", "scale": 0.25, "seed": 0, "source": "seed"}))
+		"kind": "shrub", "scale": clearance_scale, "seed": 0, "source": "seed"}))
 
 func _append(records: Array, block: Vector2i, at: Vector2, scale_value: Vector3,
 		yaw: float, tint: Color, y: float) -> void:
@@ -219,6 +261,10 @@ func _make_batch(root: Node3D, part: String, records: Array) -> void:
 	multi.use_colors = true
 	multi.mesh = _mesh(part)
 	multi.instance_count = records.size()
+	# GPU wind moves vertices after the engine's static mesh bounds are
+	# computed. Include leaf reach, breeze and the tallest flower in the
+	# block-local bound so edge tufts never vanish during camera orbit.
+	multi.custom_aabb = AABB(Vector3(-0.35, -0.10, -0.35), Vector3(BLOCK_SIZE + 0.70, 0.60, BLOCK_SIZE + 0.70))
 	for index in range(records.size()):
 		multi.set_instance_transform(index, records[index][0])
 		multi.set_instance_color(index, records[index][1])

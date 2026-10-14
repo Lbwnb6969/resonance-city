@@ -222,6 +222,14 @@ func _rebuild_vegetation() -> void:
 		_rebuild_vegetation_block(block, members)
 	var meadow_candidates: Array[Vector2i] = []
 	for block: Vector2i in dirty_blocks: meadow_candidates.append(block)
+	# The short lawn covers the entire editable parcel, including clear land
+	# without planted trees. Obstacle changes recheck local masks, not every
+	# grass batch; each block's signature decides whether it needs replacement.
+	for x in range(floori(EDITABLE_WORLD_RECT.position.x/8.0),ceili(EDITABLE_WORLD_RECT.end.x/8.0)):
+		for z in range(floori(EDITABLE_WORLD_RECT.position.y/8.0),ceili(EDITABLE_WORLD_RECT.end.y/8.0)):
+			var block := Vector2i(x,z)
+			if not next_by_block.has(block): next_by_block[block] = []
+			if (obstacles_changed or not meadow.fingerprints.has(block)) and not meadow_candidates.has(block): meadow_candidates.append(block)
 	if obstacles_changed:
 		for block: Vector2i in next_by_block:
 			if not meadow_candidates.has(block): meadow_candidates.append(block)
