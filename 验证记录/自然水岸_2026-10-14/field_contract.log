@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+CITY_CREATION_WATER_FIELD PASS: 458752 exact centre samples; bilinear max 0.046460 m / bound 0.160925 m; initial 37.215 ms; local edit ms [1.222, 6.457, 3.975, 1.528]; no-change uploads held; RF bytes/texture ID preserved
+[MCPRuntimeServer] port: scanning 6570-6585 (default)
+[MCPRuntimeServer] listening on 127.0.0.1:6572
+[MCPRegistry] runtime port 6572 registered for d:/godot/godotpro/共鸣之城

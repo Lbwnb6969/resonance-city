@@ -20,6 +20,7 @@ var materials: Dictionary = {}
 var last_changed := 0
 var elapsed_ms := 0.0
 var detail := 1.0
+var water_field: Texture2D
 
 func setup(city_state: RefCounted) -> void:
 	state = city_state
@@ -93,6 +94,10 @@ func diagnostics() -> Dictionary:
 func set_view_scale(zoom: float) -> void:
 	detail = 1.0-smoothstep(12.0,32.0,zoom)
 	if materials.has("lawn"): materials.lawn.set_shader_parameter("detail",detail)
+
+func set_water_field(texture: Texture2D) -> void:
+	water_field = texture
+	if materials.has("lawn"): materials.lawn.set_shader_parameter("water_field",texture)
 
 func _add_short_meadow(block: Vector2i, records: Array, query_state: RefCounted) -> int:
 	var first := records.size()
@@ -312,6 +317,7 @@ func _material(part: String) -> Material:
 		var lawn := ShaderMaterial.new()
 		lawn.shader = LawnShader
 		lawn.set_shader_parameter("detail",detail)
+		lawn.set_shader_parameter("water_field",water_field)
 		material = lawn
 	elif part == "stone":
 		var stone := StandardMaterial3D.new()

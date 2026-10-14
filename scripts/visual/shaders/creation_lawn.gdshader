@@ -6,6 +6,7 @@ uniform float detail = 1.0;
 varying vec3 world_at;
 varying float tip;
 #include "res://scripts/visual/shaders/creation_meadow_palette.gdshaderinc"
+#include "res://scripts/visual/shaders/creation_shore_palette.gdshaderinc"
 void vertex() {
 	world_at = (MODEL_MATRIX*vec4(VERTEX,1.0)).xyz;
 	tip = UV.y;
@@ -14,6 +15,6 @@ void vertex() {
 }
 void fragment() {
 	NORMAL = normalize((VIEW_MATRIX*vec4(0.0,1.0,0.0,0.0)).xyz);
-	ALBEDO = meadow_color(world_at.xz,grass_low.rgb,grass_high.rgb)*(1.0+tip*0.035*detail);
+	ALBEDO = shore_ground(world_at.xz,meadow_color(world_at.xz,grass_low.rgb,grass_high.rgb))*(1.0+tip*0.035*detail);
 	ROUGHNESS = 1.0;
 }

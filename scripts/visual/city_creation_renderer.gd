@@ -13,6 +13,9 @@ const Meadow = preload("res://scripts/visual/city_creation_meadow.gd")
 const GroundShader = preload("res://scripts/visual/shaders/creation_ground.gdshader")
 const ContactShader = preload("res://scripts/visual/shaders/creation_contact.gdshader")
 const RoadShader = preload("res://scripts/visual/shaders/creation_road.gdshader")
+const WaterShader = preload("res://scripts/visual/shaders/creation_water.gdshader")
+const WaterField = preload("res://scripts/visual/city_creation_water_field.gd")
+const Shore = preload("res://scripts/visual/city_creation_shore.gd")
 const PALETTES := [
 	[Color("ead9b4"),Color("bb7054"),Color("647a70")],
 	[Color("e9dfc8"),Color("66948b"),Color("557466")],
@@ -20,6 +23,8 @@ const PALETTES := [
 	[Color("f0deb8"),Color("bda179"),Color("537b73")]
 ]
 var state: RefCounted
+var water_field := WaterField.new()
+var shore := Shore.new()
 var foliage := Foliage.new()
 var meadow: Node3D
 var ground_material: ShaderMaterial
@@ -47,6 +52,7 @@ var buildings: Node3D
 var landscape: Node3D
 var water_layer: Node3D
 var water_fingerprint := -1
+var water_components: Dictionary = {}
 var water_edit_stats := {"changed":false,"elapsed_ms":0.0,"contours":0,"triangles":0,"strokes":0}
 var roads_layer: Node3D
 var vegetation_layer: Node3D
@@ -63,9 +69,7 @@ var tree_meshes: Dictionary = {}
 var tree_materials: Dictionary = {}
 var vegetation_brush_mesh: ArrayMesh
 var vegetation_brush_materials: Dictionary = {}
-var water_shader: Shader
 var water_material: ShaderMaterial
-var shallow_water_material: ShaderMaterial
 var house_fingerprints: Dictionary = {}
 var house_roots: Dictionary = {}
 var road_fingerprints: Dictionary = {}
@@ -75,6 +79,7 @@ var rebuild_stats := {"houses_changed":0,"roads_changed":0,"houses_removed":0,"r
 
 func setup(city_state: RefCounted) -> void:
 	state = city_state
+	water_field.setup(state)
 	landscape = Node3D.new()
 	landscape.name = "RiverGarden"
 	add_child(landscape)
@@ -94,6 +99,9 @@ func setup(city_state: RefCounted) -> void:
 	meadow.name = "NaturalMeadow"
 	add_child(meadow)
 	meadow.setup(state)
+	meadow.set_water_field(water_field.texture)
+	add_child(shore)
+	shore.setup(state)
 	preview = Node3D.new()
 	preview.name = "EditPreview"
 	add_child(preview)
@@ -167,6 +175,7 @@ func rebuild() -> void:
 		road_water_signatures.erase(id)
 		rebuild_stats["roads_removed"] += 1
 	_rebuild_vegetation()
+	shore.rebuild()
 	if districts_visible: _rebuild_districts()
 	rebuild_stats["elapsed_ms"] = float(Time.get_ticks_usec()-started)/1000.0
 
@@ -692,45 +701,12 @@ func _material(color: Color, roughness: float = 0.88) -> StandardMaterial3D:
 	return mat
 
 
-func _water_surface_material(shallow: bool) -> ShaderMaterial:
-	if shallow and shallow_water_material != null:
-		return shallow_water_material
-	if not shallow and water_material != null:
-		return water_material
-	# One shared, low-frequency shader gives the river a quiet living surface.
-	# Meshes stay static; TIME is the only animation input and is independent of
-	# the audio system.  world_pos avoids requiring generated UVs on hand-built
-	# SurfaceTool quads.
-	if water_shader == null:
-		water_shader = Shader.new()
-		water_shader.code = """
-shader_type spatial;
-render_mode cull_disabled, diffuse_burley;
-varying vec3 world_pos;
-uniform bool shoreline = false;
-void vertex() {
-	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-}
-void fragment() {
-	float ripple = sin(world_pos.z * 1.25 + TIME * 0.20) * 0.5
-		+ sin(world_pos.x * 2.10 - TIME * 0.13) * 0.5;
-	float band = smoothstep(-0.8, 0.8, ripple);
-	vec3 deep = vec3(0.22, 0.48, 0.47);
-	vec3 light = vec3(0.42, 0.65, 0.61);
-	vec3 shore = vec3(0.59, 0.72, 0.66);
-	ALBEDO = shoreline ? mix(shore, light, band) : mix(deep, light, band * 0.55);
-	ROUGHNESS = 0.62;
-	METALLIC = 0.0;
-}
-"""
-	var material := ShaderMaterial.new()
-	material.shader = water_shader
-	material.set_shader_parameter("shoreline", shallow)
-	if shallow:
-		shallow_water_material = material
-	else:
-		water_material = material
-	return material
+func _water_surface_material(_shallow: bool = false) -> ShaderMaterial:
+	if water_material == null:
+		water_material = ShaderMaterial.new()
+		water_material.shader = WaterShader
+		water_material.set_shader_parameter("water_field",water_field.texture)
+	return water_material
 
 func _box(parent: Node3D, size: Vector3, at: Vector3, material: Material) -> MeshInstance3D:
 	var node := MeshInstance3D.new()
@@ -1221,53 +1197,67 @@ func _water_edge_x(edge: Array, height: float) -> float:
 	return lerpf(a.x, b.x, (height - a.y) / (b.y - a.y))
 
 func _rebuild_water() -> void:
+	water_field.update()
 	var records := _water_records()
 	var fingerprint := hash(records)
 	water_edit_stats = {"changed":false,"elapsed_ms":0.0,"contours":0,"triangles":0,"strokes":records.size()}
 	if water_layer == null or fingerprint == water_fingerprint: return
 	var started := Time.get_ticks_usec()
-	_clear(water_layer)
 	var banks := _water_groups(0.0)
-	var shallow := _water_groups(0.34)
-	var deep := _water_groups(0.53)
-	_water_polygon_mesh(water_layer, banks, 0.003, Color("bdbd9c"))
-	var shallow_mesh := _water_polygon_mesh(water_layer, shallow, 0.019, Color("a0bab0"))
-	if shallow_mesh != null: shallow_mesh.material_override = _water_surface_material(true)
-	var deep_mesh := _water_polygon_mesh(water_layer, deep, 0.022, Color("659f9a"))
-	if deep_mesh != null: deep_mesh.material_override = _water_surface_material(false)
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 261014
-	# Stones belong to water, not landscape. Edges swallowed by a joining pond
-	# never leave an old stone bank running through the new water surface.
-	for group: Array in banks:
-		for contour: PackedVector2Array in group:
-			water_edit_stats["contours"] += 1
-			var accumulated := 0.0
-			for index in range(contour.size()):
-				var a := contour[index]
-				var b := contour[(index + 1) % contour.size()]
-				accumulated += a.distance_to(b)
-				if accumulated < 2.7: continue
-				accumulated = 0.0
-				var p := a.lerp(b, 0.5)
-				if absf(_water_clearance(p)) > 0.08: continue
-				if _near_house(p, 1.2): continue
-				var stone := _cylinder(water_layer, 0.20, 0.10, 0.19, Vector3(p.x, 0.065, p.y), _material(Color("c2bca6")), 7)
-				stone.rotation.y = rng.randf() * TAU
-				stone.scale = Vector3(rng.randf_range(0.8, 1.4), rng.randf_range(0.6, 1.0), rng.randf_range(0.7, 1.4))
-	_merge_meshes(water_layer)
+	# One exact water footprint, with depth and soil blended by the shared field.
+	# No stacked deep/shallow planes or periodic stone border.
+	var live := {}
+	for component: Array in _water_components(banks):
+		var key := str(hash(component))
+		live[key]=true
+		if water_components.has(key): continue
+		var surface := _water_polygon_mesh(water_layer,component,0.024,Color.WHITE)
+		if surface != null:
+			surface.material_override = _water_surface_material()
+			water_components[key]=surface
+	for key: String in water_components.keys():
+		if live.has(key): continue
+		var old: MeshInstance3D = water_components[key]
+		water_layer.remove_child(old)
+		old.queue_free()
+		water_components.erase(key)
+	for group: Array in banks: water_edit_stats.contours += group.size()
 	for child: Node in water_layer.get_children():
 		if child is MeshInstance3D:
-			child.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			for surface in range(child.mesh.get_surface_count()):
-				water_edit_stats["triangles"] += child.mesh.surface_get_array_index_len(surface) / 3
+			for part in range(child.mesh.get_surface_count()):
+				water_edit_stats.triangles += child.mesh.surface_get_array_index_len(part)/3
 	water_fingerprint = fingerprint
-	water_edit_stats["changed"] = true
-	water_edit_stats["elapsed_ms"] = float(Time.get_ticks_usec() - started) / 1000.0
+	water_edit_stats.changed = true
+	water_edit_stats.elapsed_ms = float(Time.get_ticks_usec()-started)/1000.0
+
+func _water_components(groups: Array) -> Array:
+	# Disjoint pond geometry can remain untouched when another pond changes.
+	# Bounding-box overlap is conservative: intersecting groups always stay
+	# together for the exact union, including strokes inside a loop's island.
+	var components: Array = []
+	var bounds: Array[Rect2] = []
+	for group: Array in groups:
+		var box := Rect2(group[0][0],Vector2.ZERO)
+		for contour: PackedVector2Array in group:
+			for point: Vector2 in contour: box=box.expand(point)
+		var combined: Array = [group]
+		var index := 0
+		while index<components.size():
+			if bounds[index].intersects(box,true):
+				combined.append_array(components[index])
+				box=box.merge(bounds[index])
+				components.remove_at(index)
+				bounds.remove_at(index)
+				index=0
+			else: index+=1
+		components.append(combined)
+		bounds.append(box)
+	return components
 
 func _build_landscape() -> void:
 	ground_material = ShaderMaterial.new()
 	ground_material.shader = GroundShader
+	ground_material.set_shader_parameter("water_field",water_field.texture)
 	_box(landscape,Vector3(60,0.7,56),Vector3(0,-0.37,0),ground_material)
 	var ground_body := StaticBody3D.new()
 	ground_body.name = "GroundPick"

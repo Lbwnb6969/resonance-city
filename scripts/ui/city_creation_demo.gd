@@ -485,6 +485,7 @@ func select_tool(index: int) -> void:
 
 func _update_camera() -> void:
 	if town != null and town.meadow != null: town.meadow.set_view_scale(zoom)
+	if town != null and town.shore != null: town.shore.set_view_scale(zoom)
 	camera.size = zoom
 	var direction := Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch))
 	camera.position = focus + direction * 42.0
@@ -1021,6 +1022,7 @@ func diagnostics() -> Dictionary:
 		"edit_rebuild_ms":edit_samples.duplicate(),"draw_calls":Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 		"render_updates":town.rebuild_stats.duplicate(),"plants":state.plants.size(),"water_updates":town.water_edit_stats.duplicate(),
 		"meadow":town.meadow.diagnostics(),
+		"shore":town.shore.diagnostics(),"water_field":town.water_field.diagnostics(),
 		"triangles":Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
 		"audio":music.audio_report,"life":{"residents":life.residents.size(),"purchases":life.purchases,"gatherings":life.gatherings},
 		"concert":life.concert_status(),"concert_music":music.music_report(),
