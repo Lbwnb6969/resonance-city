@@ -8,13 +8,13 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "文档"
 OUTPUT = DOCS / "共鸣之城_文档合并精简版.md"
 ORDER = [
-    "版本整合说明.md",
+    "版本整合说明.md", "需求与旧稿覆盖.md",
     "00_设计意图.md",
     *[f"01_执行规格/spec.{name}.md" for name in
       ("asset", "audio", "city", "fabric", "harmony", "proposal", "run", "space", "terrain", "ui")],
     "10_世界模型.md", "11_核心循环.md", "12_声音架构.md", "13_地形与自然.md",
     "14_城市生长.md", "15_时代与地标.md", "16_界面与反馈.md", "17_美术规格.md",
-    "18_城市规模.md", "19_城市生成管线.md", "02_验收/DOD.md",
+    "18_城市规模.md", "19_城市生成管线.md", "20_开发接口与迁移.md", "02_验收/DOD.md",
     "03_任务/P0.md", "03_任务/P1.md", "03_任务/P2.md", "Demo快速开始.md",
     "待裁定与依赖.md", "参考索引.md", "施工文档规则.md",
 ]

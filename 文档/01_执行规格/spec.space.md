@@ -10,31 +10,14 @@
 
 完整旧参数、公式和合约 ID 见 [迁移前 spec.space](../../废弃/文档/2026-10-14_综合优化前/文档/01_执行规格/spec.space.md)。
 
-## 现有实现兼容参数
+旧运行数值独立保留在 [兼容数据](../../数据/兼容规格/README.md)，由参数生成器读取；不作为本规格的建造条件。
 
-以下表仅用于复现当前代码/生成配置。保留数值不恢复旧玩法语义；新建造不受这些音乐/额度/自动生长参数限制。
+## SPACE-DUAL · 查询合同
 
-## 表 SP8 · 运行配置键
-
-| 键 | 值 | 说明 |
+| 查询 | 输入 | 输出 |
 |---|---|---|
-| schema_version | 2 | |
-| world_min / world_max | -8 / 40 | |
-| residential_radius | 0.45 | |
-| base_coupling | 2.0 | A 的封顶 |
-| distance_sigma | 1.8 | |
-| gap_cutoff | 4.0 | |
-| near_neighbour_count | 12 | 表 SP5 的 `N₁₂` |
-| industrial_factor | 1.3 | |
-| partial_occlusion | 0.7 | |
-| forest_factor | 0.85 | |
-| water_factor | 1.15 | |
-| homogeneity_threshold | 0.40 | 表 SP4 的 occ 阈值 |
-| homogeneity_M | 0.7 | 表 SP4 的 M 值 |
-| homogeneity_dv_scale | 0.5 | ΔV 减半 |
-| comparison_tolerance | 1e-6 | |
-| community_min | 4 | |
-| community_max | 40 | |
-| projection_x / projection_y | 28 / 14 | |
-| pan_divisor / pan_limit | 12 / 0.8 | |
-| terrain_height_screen_scale | 14 | |
+| 墙面命中 | 视图射线/逆投影、可见房屋、当前编辑模式 | building/face/cell ID、局部坐标、候选方向 |
+| 完整占地 | 目标轮廓/体积、高度、地形/道路/保留地 | 合法性、实际冲突对象与范围 |
+| 连接 | 相邻边/屋顶/道路入口及接口标签 | 接头、净空、支撑依赖、dirty 范围 |
+
+选择优先已显示可编辑面，透明角落/未揭示部分不抢命中。空间索引只是 broad phase，最终求交使用实际轮廓/高度；不能只检查中心点或几处样点就承诺完整占地合法。失败不分配新实体、不修改旧拓扑。对齐容差是统一模块尺度参数，不在渲染与规则各写一份。

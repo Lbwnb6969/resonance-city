@@ -10,9 +10,9 @@
 | [terrain](spec.terrain.md) | 高程、水体、地形编辑与植被 |
 | [proposal](spec.proposal.md) | Intent、预览、提交与撤销 |
 | [audio](spec.audio.md) | 视野声音、区域连接、混音和 PCM |
-| [harmony](spec.harmony.md) | 音乐协调与旧声学参数兼容 |
+| [harmony](spec.harmony.md) | 风格协调、调性/节拍适配与素材角色 |
 | [run](spec.run.md) | 作品、存档、时代、能力与模式 |
 | [ui](spec.ui.md) | 输入、镜头、反馈与可访问性 |
 | [asset](spec.asset.md) | 模块、风格、资产生产与优化 |
 
-各 spec 的兼容参数只是 `tools/build_spec_data.py` 当前读取的数值源，不代表新玩法恢复旧 R/V、额度或音程门槛。迁移代码时可显式更新参数与测试；单纯整理文字不得悄悄改运行数据。完整旧合同见 [原稿说明](../../废弃/文档/2026-10-14_综合优化前/README.md)。
+详细对象字段、时钟/来源、公共空间和存档合同见 [开发接口与迁移](../20_开发接口与迁移.md)。旧数值解析输入独立在 [数据/兼容规格](../../数据/兼容规格/README.md)，保留当前运行值，不参与新玩法判定。每个 spec 的目标行为还需对应代码实现，完成状态只取 PROJECT。

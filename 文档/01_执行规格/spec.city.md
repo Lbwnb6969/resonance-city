@@ -10,26 +10,12 @@
 
 完整旧参数、公式和合约 ID 见 [迁移前 spec.city](../../废弃/文档/2026-10-14_综合优化前/文档/01_执行规格/spec.city.md)。
 
-## 现有实现兼容参数
+旧运行数值独立保留在 [兼容数据](../../数据/兼容规格/README.md)，由参数生成器读取；不作为本规格的建造条件。
 
-以下表仅用于复现当前代码/生成配置。保留数值不恢复旧玩法语义；新建造不受这些音乐/额度/自动生长参数限制。
+## CITY-TOOLS · 工具提交
 
-## 表 E7 · 可玩河谷的街坊、公共空间与公交
+道路笔画保存曲线控制、宽度、端点/共享交点和高度；松开提交一次操作。路穿特殊建筑时输出门洞/梁柱方案，高差通过台阶/坡道/桥连接。无法实现的几何保留明确预览，不偷偷把路吸成世界格或移动房屋。
 
-| 参数 | 值 |
-|---|---|
-| neighborhood_depth | 5.6 |
-| garden_street_depth | 5.6 |
-| garden_lot_rows | 7 |
-| branch_road_half_width | 0.18 |
-| park_half_width / park_half_length | 1.7 / 2.0 |
-| civic_half_width / civic_half_length | 0.8 / 0.9 |
-| service_walk_radius | 18 |
-| carriage_speed | 0.95 |
-| tram_speed | 2.2 |
-| bus_speed | 1.8 |
-| car_speed | 2.8 |
-| bus_dwell_beats | 2 |
-| starter_buildings_per_region | 6 |
-| starter_region_count | 3 |
-| growth_compact_neighbor_weight | 10000 |
+区域画笔保存轮廓与用途/形态标签，允许用途和地形标签叠加；只影响未来点击。改造既有区域另建批量 Intent。公共空间支持多组件、孔洞、部分兑现和残余留地；原地同用途、扩容、搬迁分别处理。设施与公交稳定 ID 沿旧合同保留，完整几何和改线逻辑见 [开发接口](../20_开发接口与迁移.md)。
+
+完整 [14类功能区](../18_城市规模.md) 与 [27座地标](../15_时代与地标.md) 是内容语法，不要求每项独立算法。失败原范围/对象不变，历史来源保留，可撤销成功提交。

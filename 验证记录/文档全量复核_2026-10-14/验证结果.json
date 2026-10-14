@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "checks": {
+    "original_integrity": {
+      "files": 31,
+      "headings": 580,
+      "result": "PASS"
+    },
+    "pre_edit_backup": {
+      "files": 34,
+      "result": "PASS"
+    },
+    "active_specs_and_legacy_isolation": {
+      "active": 10,
+      "legacy_inputs": 5,
+      "result": "PASS"
+    },
+    "runtime_data_unchanged": {
+      "world_v2_except_sources": "PASS",
+      "spec_values_sha256": "1c4968251b745260ddd91f5b9d00a3fb14ad4f0e530b66cfd2b5199629b647e7"
+    },
+    "recovered_content": {
+      "landmarks": 27,
+      "districts": 14,
+      "forms": 7,
+      "source_rows": 31,
+      "era_and_performance_targets": "PASS"
+    },
+    "git_archive_bytes": {
+      "files": 65,
+      "result": "PASS",
+      "staged_scope": "PASS"
+    },
+    "check_doc_links.py": "checked 36 documents, 324 local links, 0 errors",
+    "merge_docs_compact.py": "checked 32 sources",
+    "build_spec_data.py": "SPEC_DATA PASS: continuous schema 2 matches compatibility tables; legacy data preserved"
+  },
+  "scope": "Documentation and compatibility-input maintenance only; gameplay, art, and human experience not tested."
+}

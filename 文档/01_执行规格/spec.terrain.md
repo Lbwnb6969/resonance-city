@@ -10,32 +10,12 @@
 
 完整旧参数、公式和合约 ID 见 [迁移前 spec.terrain](../../废弃/文档/2026-10-14_综合优化前/文档/01_执行规格/spec.terrain.md)。
 
-## 现有实现兼容参数
+旧运行数值独立保留在 [兼容数据](../../数据/兼容规格/README.md)，由参数生成器读取；不作为本规格的建造条件。
 
-以下表仅用于复现当前代码/生成配置。保留数值不恢复旧玩法语义；新建造不受这些音乐/额度/自动生长参数限制。
+## TERRAIN-EDIT · 地面与自然
 
-## 表 T6 · 首片河谷与采样配置
+查询统一提供原始高度、坡度、水体/岸线、基础与真实占用。引水修改连续水路，平整记录前后高度差；植被只保存意图与显式改动，实例从同种子生成。临时空间缓存不成为持久作品真值。
 
-| 键 | 值 |
-|---|---|
-| noise_octaves | 4 |
-| noise_gain | 0.5 |
-| noise_lacunarity | 2.0 |
-| noise_frequency | 0.065 |
-| minimum_buildable_ratio | 0.45 |
-| attempt_limit | 8 |
-| template_land_min | -4 |
-| template_land_max | 36 |
-| template_river_center | 16 |
-| template_river_base_half_width | 1.05 |
-| template_river_widening | 0.025 |
-| template_road_bank_offset | 3.6 |
-| template_road_half_width | 0.25 |
-| template_lot_road_offset | 1.2 |
-| template_lot_half_width | 0.62 |
-| template_lot_half_length | 0.64 |
-| template_lot_spacing | 1.6 |
-| template_bridge_y | 14 |
-| template_slice_building_budget | 24 |
-| template_building_max_grade | 0.577350269 |
-| template_shore_buffer_ratio | 0.12 |
+几何冲突在预览中明确，覆盖作品使用独立可撤销替换，失败不改高度或删房。通用水文保留原地貌/排水面分开、平地父图无环和稳定回退；旧模板预算不定义地图或建筑总量上限。
+
+检查坡路、桥头、树根贴地、门前净空、同种子重做及含孔洞留地避让；关闭音频自然时间照常，季节不改道路/建筑拓扑。

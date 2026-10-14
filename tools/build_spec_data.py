@@ -7,7 +7,8 @@ import math
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = ROOT / '文档/01_执行规格'
+# Legacy runtime tables are isolated from the current gameplay specification.
+SPEC = ROOT / '数据/兼容规格'
 OUTPUT = ROOT / '数据/world_v2.json'
 
 
@@ -115,7 +116,7 @@ if __name__ == '__main__':
     if args.check:
         if not OUTPUT.is_file() or OUTPUT.read_text(encoding='utf-8') != expected:
             raise SystemExit('Stale world_v2.json: run python tools/build_spec_data.py')
-        print('SPEC_DATA PASS: continuous schema 2 matches authoritative tables; legacy data preserved')
+        print('SPEC_DATA PASS: continuous schema 2 matches compatibility tables; legacy data preserved')
     else:
         OUTPUT.parent.mkdir(parents=True, exist_ok=True)
         OUTPUT.write_text(expected, encoding='utf-8', newline='\n')
