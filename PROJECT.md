@@ -29,6 +29,8 @@ Townscaper 负责房屋局部点击/邻接与撤销参考；Tiny Glade 负责连
 
 ## 接口与持久数据
 
+GitHub协作仓库：`https://github.com/Lbwnb6969/resonance-city`（私有）。默认发布入口 `main`，持续开发分支 `codex/city-creation-p0`；根 `AI_START_HERE.md` 为设计/实现AI入口。三库资料按原路径发布报告、语义表、行为图、重建代码和文本证据，详细范围与SHA256在 `AI资料/参考资料发布清单.json`；大型原模型/纹理/音频/数据库/独立备份保留本地，不是新游戏运行依赖。
+
 | 职责 | 文件 |
 |---|---|
 | 输入/相机/界面/整合 | `scripts/ui/city_creation_demo.gd` |

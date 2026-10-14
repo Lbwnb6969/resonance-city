@@ -1,5 +1,7 @@
 # Normalize EOL for all files that Git considers text files.
 * text=auto eol=lf
+# Research evidence hashes refer to original bytes, including line endings.
+/参考资料/** -text
 资产/许可记录/CityKits/*/License.txt -text -diff
 资产/许可记录/CityKits/*/official-page.html -text -diff
 
