@@ -344,6 +344,12 @@ func _segment_distance(a: Vector2, b: Vector2, c: Vector2, d: Vector2) -> float:
 	return minf(minf(_distance_to_segment(a, c, d), _distance_to_segment(b, c, d)), minf(_distance_to_segment(c, a, b), _distance_to_segment(d, a, b)))
 
 
+func preview_road(points: Array[Vector2]) -> Dictionary:
+	var encoded: Array = []
+	for point in points: encoded.append([point.x,point.y])
+	if encoded.size() < 2: return _fail("拖出一条路，松开铺好")
+	return _validate_road_site(encoded,1.25)
+
 func add_road(points: Array[Vector2]) -> Dictionary:
 	if points.size() < 2:
 		return _fail("道路需要两个以上的点")

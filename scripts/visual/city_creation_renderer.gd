@@ -8,6 +8,11 @@ const FLOOR := 1.7
 ## scene.
 const EDITABLE_WORLD_RECT := Rect2(-18.0, -15.0, 35.0, 30.0)
 const VEGETATION_BLOCK_SIZE := 8.0
+const Foliage = preload("res://scripts/visual/city_creation_foliage.gd")
+const Meadow = preload("res://scripts/visual/city_creation_meadow.gd")
+const GroundShader = preload("res://scripts/visual/shaders/creation_ground.gdshader")
+const ContactShader = preload("res://scripts/visual/shaders/creation_contact.gdshader")
+const RoadShader = preload("res://scripts/visual/shaders/creation_road.gdshader")
 const PALETTES := [
 	[Color("ead9b4"),Color("bb7054"),Color("647a70")],
 	[Color("e9dfc8"),Color("66948b"),Color("557466")],
@@ -15,6 +20,14 @@ const PALETTES := [
 	[Color("f0deb8"),Color("bda179"),Color("537b73")]
 ]
 var state: RefCounted
+var foliage := Foliage.new()
+var meadow: Node3D
+var ground_material: ShaderMaterial
+var contact_material: ShaderMaterial
+var road_material: ShaderMaterial
+var road_join_signatures: Dictionary = {}
+var road_layout_signature := -1
+var road_outlines: Dictionary = {}
 var buildings: Node3D
 var landscape: Node3D
 var water_layer: Node3D
@@ -62,6 +75,10 @@ func setup(city_state: RefCounted) -> void:
 	vegetation_layer = Node3D.new()
 	vegetation_layer.name = "VegetationBlocks"
 	add_child(vegetation_layer)
+	meadow = Meadow.new()
+	meadow.name = "NaturalMeadow"
+	add_child(meadow)
+	meadow.setup(state)
 	preview = Node3D.new()
 	preview.name = "EditPreview"
 	add_child(preview)
@@ -97,10 +114,18 @@ func rebuild() -> void:
 		_remove_cached(id,house_roots,house_fingerprints)
 		rebuild_stats["houses_removed"] += 1
 	var live_roads: Dictionary = {}
+	var road_layout: Array = []
+	for road: Dictionary in state.roads: road_layout.append([road.id,road.points,road.width])
+	var layout_signature := hash(road_layout)
+	if layout_signature != road_layout_signature:
+		road_layout_signature = layout_signature
+		road_join_signatures.clear()
+		road_outlines.clear()
+		for road: Dictionary in state.roads: road_outlines[road.id] = _stroke_contours(_road_samples(road.points),float(road.width)*0.5)
 	for road: Dictionary in state.roads:
 		var id := str(road["id"])
 		live_roads[id] = true
-		var fingerprint := hash([road["points"],road.get("width",1.1),_road_water_signature(road)])
+		var fingerprint := hash([road["points"],road.get("width",1.1),_road_water_signature(road),_road_join_signature(road)])
 		if road_fingerprints.get(id,-1) == fingerprint: continue
 		_remove_cached(id,road_roots,road_fingerprints)
 		var root := _road(road)
@@ -182,6 +207,14 @@ func _rebuild_vegetation() -> void:
 	for block: Vector2i in dirty_blocks.keys():
 		var members: Array = next_by_block.get(block, [])
 		_rebuild_vegetation_block(block, members)
+	var meadow_candidates: Array[Vector2i] = []
+	for block: Vector2i in dirty_blocks: meadow_candidates.append(block)
+	if obstacles_changed:
+		for block: Vector2i in next_by_block:
+			if not meadow_candidates.has(block): meadow_candidates.append(block)
+		for block: Vector2i in meadow.blocks:
+			if not meadow_candidates.has(block): meadow_candidates.append(block)
+	meadow.rebuild(next_by_block,meadow_candidates)
 	vegetation_fingerprints = next_fingerprints
 	vegetation_data_fingerprints = next_data
 	vegetation_visibility = next_visibility
@@ -239,26 +272,12 @@ func _rebuild_vegetation_block(block: Vector2i, members: Array) -> void:
 		var scale_value := clampf(float(plant.get("scale", 1.0)), 0.25, 2.5)
 		var seed_value := int(plant.get("seed", 0))
 		var yaw := fmod(absf(float(seed_value % 6283)) / 1000.0, TAU)
-		if kind != "shrub":
-			_add_tree_part(transforms, "trunk", Vector3(position.x, 0.72 * scale_value, position.y),
-				Vector3.ONE * scale_value, yaw)
-		if kind == "cypress":
-			_add_tree_part(transforms, "cypress_lower", Vector3(position.x, 2.0 * scale_value, position.y),
-				Vector3.ONE * scale_value, yaw)
-			_add_tree_part(transforms, "cypress_upper", Vector3(position.x, 2.77 * scale_value, position.y),
-				Vector3.ONE * scale_value, yaw)
-		elif kind == "shrub":
-			# Tiny Glade-like low clumps use the same shared canopy mesh, with no
-			# collision body and a single compact draw instance per clump.
-			_add_tree_part(transforms, "shrub_crown", Vector3(position.x, 0.49 * scale_value, position.y),
-				Vector3(0.78, 0.52, 0.78) * scale_value, yaw)
-		else:
-			for part in range(4):
-				var angle := float(part) * 2.4 + yaw
-				_add_tree_part(transforms, "olive_crown_light" if part % 2 == 0 else "olive_crown", Vector3(position.x + sin(angle) * 0.43 * scale_value,
-					1.77 * scale_value + float(part) * 0.19 * scale_value,
-					position.y + cos(angle) * 0.43 * scale_value),
-					Vector3(0.84, 0.64, 0.79) * scale_value, angle)
+		var variant := posmod(seed_value,3)
+		for piece: String in foliage.parts(kind,variant):
+			var part_key := "%s:%d:%s" % [kind,variant,piece]
+			tree_meshes[part_key] = foliage.parts(kind,variant)[piece]
+			_add_tree_part(transforms,part_key,Vector3(position.x,0,position.y),Vector3.ONE*scale_value,yaw)
+
 	var block_fingerprint := hash([block, members])
 	vegetation_block_fingerprints[block] = block_fingerprint
 	for part: String in transforms.keys():
@@ -284,6 +303,7 @@ func _make_tree_multimesh(parent: Node3D, part: String, transforms: Array) -> vo
 	multi.instance_count = transforms.size()
 	for index in range(transforms.size()):
 		multi.set_instance_transform(index, transforms[index])
+	multi.custom_aabb = multi.get_aabb().grow(0.12)
 	var instance := MultiMeshInstance3D.new()
 	instance.name = "Multi_%s" % part
 	instance.multimesh = multi
@@ -292,56 +312,10 @@ func _make_tree_multimesh(parent: Node3D, part: String, transforms: Array) -> vo
 
 
 func _shared_tree_mesh(part: String) -> Mesh:
-	var mesh_key := "crown" if part in ["olive_crown", "olive_crown_light", "shrub_crown"] else part
-	if tree_meshes.has(mesh_key):
-		return tree_meshes[mesh_key]
-	var mesh: Mesh
-	match part:
-		"trunk":
-			var trunk := CylinderMesh.new()
-			trunk.bottom_radius = 0.12
-			trunk.top_radius = 0.06
-			trunk.height = 1.45
-			trunk.radial_segments = 8
-			mesh = trunk
-		"cypress_lower":
-			var lower := CylinderMesh.new()
-			lower.bottom_radius = 0.62
-			lower.top_radius = 0.10
-			lower.height = 2.75
-			lower.radial_segments = 9
-			mesh = lower
-		"cypress_upper":
-			var upper := CylinderMesh.new()
-			upper.bottom_radius = 0.49
-			upper.top_radius = 0.02
-			upper.height = 1.8
-			upper.radial_segments = 9
-			mesh = upper
-		_:
-			var crown := SphereMesh.new()
-			crown.radius = 1.0
-			crown.height = 2.0
-			crown.radial_segments = 10
-			crown.rings = 5
-			mesh = crown
-	tree_meshes[mesh_key] = mesh
-	return mesh
+	return tree_meshes[part]
 
-
-func _shared_tree_material(part: String) -> StandardMaterial3D:
-	if tree_materials.has(part):
-		return tree_materials[part]
-	var color := Color("887351")
-	match part:
-		"olive_crown": color = Color("78936e")
-		"olive_crown_light": color = Color("839c77")
-		"cypress_lower": color = Color("526f57")
-		"cypress_upper": color = Color("638366")
-		"shrub_crown": color = Color("78936e")
-	var material := _material(color)
-	tree_materials[part] = material
-	return material
+func _shared_tree_material(part: String) -> Material:
+	return foliage.material("trunk" if part.ends_with(":trunk") else "canopy")
 
 func _frontage_signature(house: Dictionary) -> Array:
 	var role := str(house.get("role","residential"))
@@ -435,18 +409,14 @@ func show_vegetation_brush(at: Vector2, radius: float, erase: bool = false, poin
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	preview.add_child(instance)
 
-func preview_road(points: Array[Vector2]) -> void:
+func preview_road(points: Array[Vector2], valid: bool = true) -> void:
 	clear_preview()
-	if preview == null: return
-	var mat := _material(Color("edd9a4"))
-	for point: Vector2 in points:
-		_cylinder(preview,0.17,0.17,0.035,Vector3(point.x,0.12,point.y),mat,12)
-	for i in range(points.size()-1):
-		var a := points[i]
-		var b := points[i+1]
-		if a.distance_to(b) < 0.01: continue
-		var normal := (b-a).normalized().orthogonal()*0.5
-		_quad(preview,Vector3(a.x-normal.x,0.10,a.y-normal.y),Vector3(b.x-normal.x,0.10,b.y-normal.y),Vector3(b.x+normal.x,0.10,b.y+normal.y),Vector3(a.x+normal.x,0.10,a.y+normal.y),Color("e6d6ad"))
+	if preview == null or points.is_empty(): return
+	var color := Color("dfd5a8") if valid else Color("ef7862")
+	var samples := _road_samples(points)
+	if samples.size() > 1: _road_ribbon(preview,samples,1.25,color,0.04)
+	for point: Vector2 in [points[0],points[-1]]:
+		_cylinder(preview,0.625,0.625,0.02,Vector3(point.x,_street_height(point)+0.045,point.y),_material(color),24)
 
 func preview_water(points: Array[Vector2], width: float, valid: bool, conflicts: Array = []) -> void:
 	clear_preview()
@@ -616,6 +586,19 @@ func _at(cells: Array, x: int, z: int, level: int) -> Dictionary:
 		if int(cell["x"]) == x and int(cell["z"]) == z and int(cell["level"]) == level: return cell
 	return {}
 
+func _foundation_contact(parent: Node3D) -> void:
+	if contact_material == null:
+		contact_material = ShaderMaterial.new()
+		contact_material.shader = ContactShader
+	var contact := MeshInstance3D.new()
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(UNIT+0.7,UNIT+0.7)
+	contact.mesh = plane
+	contact.material_override = contact_material
+	contact.position.y = 0.006
+	contact.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(contact)
+
 func _house(house: Dictionary) -> Node3D:
 	var root := Node3D.new()
 	root.name = str(house["id"])
@@ -636,6 +619,7 @@ func _house(house: Dictionary) -> Node3D:
 		node.name = str(cell["id"])
 		node.position = p
 		root.add_child(node)
+		if level == 0: _foundation_contact(node)
 		var body := StaticBody3D.new()
 		body.set_meta("house_id",str(house["id"]))
 		body.set_meta("cell_id",str(cell["id"]))
@@ -847,18 +831,13 @@ func _road_water_signature(road: Dictionary) -> Array:
 	var cached: Dictionary = road_water_signatures.get(id, {})
 	if cached.get("input", -1) == input: return cached.signature
 	var signature: Array = []
-	var points: Array = road.points
-	for i in range(points.size() - 1):
-		var a := Vector2(float(points[i][0]), float(points[i][1]))
-		var b := Vector2(float(points[i + 1][0]), float(points[i + 1][1]))
-		if a.distance_to(b) < 0.01: continue
-		var steps := maxi(1, ceili(a.distance_to(b) / 0.42))
-		for step in range(steps):
-			var p := a.lerp(b, float(step) / steps)
-			var q := a.lerp(b, float(step + 1) / steps)
-			signature.append([_street_height(p), _street_height(q), _water_clearance((p + q) * 0.5) < -0.02])
-		for endpoint: Vector2 in [a, b]:
-			signature.append(_water_clearance(endpoint) > -0.02)
+	var samples := _road_samples(road.points)
+	for index in range(samples.size()-1):
+		var p := samples[index]
+		var q := samples[index+1]
+		signature.append([_street_height(p),_street_height(q),_water_clearance((p+q)*0.5) < -0.02])
+	for endpoint: Vector2 in [samples[0],samples[-1]]: signature.append(_water_clearance(endpoint) > -0.02)
+
 	road_water_signatures[id] = {"input":input, "signature":signature}
 	return signature
 
@@ -951,13 +930,13 @@ func _append_water_triangle(vertices: Array[Vector3], a: Vector2, b: Vector2, c:
 	else:
 		vertices.append_array([Vector3(a.x, height, a.y), Vector3(b.x, height, b.y), Vector3(c.x, height, c.y)])
 
-func _water_scanline_union(groups: Array, height: float) -> Array[Vector3]:
+func _water_scanline_union(groups: Array, height: float, subtract: Array = []) -> Array[Vector3]:
 	# Exact trapezoids between contour vertices, not a terrain grid. Each contour
 	# group uses even/odd fill; union its intervals with all other stroke groups.
 	# Holes, self-returning channels and water inside an island remain truthful.
 	var edges_by_group: Array = []
 	var levels: Array[float] = []
-	for group: Array in groups:
+	for group: Array in groups+subtract:
 		var edges: Array = []
 		for contour: PackedVector2Array in group:
 			for index in range(contour.size()):
@@ -986,14 +965,17 @@ func _water_scanline_union(groups: Array, height: float) -> Array[Vector3]:
 		var y1 := unique[index + 1]
 		var middle := (y0 + y1) * 0.5
 		var intervals: Array = []
-		for edges: Array in edges_by_group:
+		var excluded: Array = []
+		for group_index in range(edges_by_group.size()):
+			var edges: Array = edges_by_group[group_index]
 			var crossings: Array = []
 			for edge: Array in edges:
 				if middle <= minf(edge[0].y, edge[1].y) or middle >= maxf(edge[0].y, edge[1].y): continue
 				crossings.append([_water_edge_x(edge, middle), _water_edge_x(edge, y0), _water_edge_x(edge, y1)])
 			crossings.sort_custom(func(a: Array, b: Array) -> bool: return float(a[0]) < float(b[0]))
 			for pair in range(0, crossings.size() - 1, 2):
-				intervals.append([crossings[pair], crossings[pair + 1]])
+				if group_index < groups.size(): intervals.append([crossings[pair], crossings[pair + 1]])
+				else: excluded.append([crossings[pair], crossings[pair + 1]])
 		intervals.sort_custom(func(a: Array, b: Array) -> bool: return float(a[0][0]) < float(b[0][0]))
 		var joined: Array = []
 		for interval: Array in intervals:
@@ -1001,6 +983,15 @@ func _water_scanline_union(groups: Array, height: float) -> Array[Vector3]:
 				joined.append(interval)
 			elif float(interval[1][0]) > float(joined[-1][1][0]):
 				joined[-1][1] = interval[1]
+		for cut: Array in excluded:
+			var remaining: Array = []
+			for interval: Array in joined:
+				if float(cut[1][0]) <= float(interval[0][0]) or float(cut[0][0]) >= float(interval[1][0]):
+					remaining.append(interval)
+					continue
+				if float(cut[0][0]) > float(interval[0][0]): remaining.append([interval[0],cut[0]])
+				if float(cut[1][0]) < float(interval[1][0]): remaining.append([cut[1],interval[1]])
+			joined = remaining
 		for interval: Array in joined:
 			var a := Vector2(float(interval[0][1]), y0)
 			var b := Vector2(float(interval[1][1]), y0)
@@ -1061,7 +1052,9 @@ func _rebuild_water() -> void:
 	water_edit_stats["elapsed_ms"] = float(Time.get_ticks_usec() - started) / 1000.0
 
 func _build_landscape() -> void:
-	_box(landscape,Vector3(60,0.7,56),Vector3(0,-0.37,0),_material(Color("86a381")))
+	ground_material = ShaderMaterial.new()
+	ground_material.shader = GroundShader
+	_box(landscape,Vector3(60,0.7,56),Vector3(0,-0.37,0),ground_material)
 	var ground_body := StaticBody3D.new()
 	ground_body.name = "GroundPick"
 	ground_body.set_meta("ground",true)
@@ -1086,7 +1079,8 @@ func _build_landscape() -> void:
 			var uneven := rng.randf_range(0.78,1.20)*radius
 			contour.append(Vector3(x+cos(angle)*uneven,-0.004,z+sin(angle)*uneven*0.78))
 		for corner in range(10): vertices.append_array([Vector3(x,-0.004,z),contour[(corner+1)%10],contour[corner]])
-		_triangles(landscape,vertices,Color("88a482") if i%2 == 0 else Color("84a180"))
+		var patch := _triangles(landscape,vertices,Color.WHITE)
+		patch.material_override = ground_material
 	var groves := [Vector2(-14,-9),Vector2(-16,7),Vector2(13,-9),Vector2(14,8),Vector2(-7,14),Vector2(8,17),Vector2(-19,-18),Vector2(18,-19)]
 	for grove: Vector2 in groves:
 		for i in range(7):
@@ -1108,57 +1102,190 @@ func _near_house(p: Vector2, radius: float) -> bool:
 	return false
 
 func _tree(p: Vector2, scale_value: float, cypress: bool) -> void:
-	var root := Node3D.new()
-	root.position = Vector3(p.x,0,p.y)
-	root.scale = Vector3.ONE*scale_value
-	landscape.add_child(root)
-	_cylinder(root,0.12,0.06,1.45,Vector3(0,0.72,0),_material(Color("887351")))
-	if cypress:
-		_cylinder(root,0.62,0.10,2.75,Vector3(0,2.0,0),_material(Color("526f57")),9)
-		_cylinder(root,0.49,0.02,1.8,Vector3(0,2.77,0),_material(Color("638366")),9)
-	else:
-		for part in range(4):
-			var angle := part*2.4
-			var canopy := _crown(root,Vector3(sin(angle)*0.43,1.77+part*0.19,cos(angle)*0.43),Vector3(0.84,0.64,0.79),Color("78936e") if part%2 else Color("839c77"))
-			canopy.rotation.y = angle
+	var kind := "cypress" if cypress else "olive"
+	var seed_value := hash(p)
+	var variant := posmod(seed_value,3)
+	for part: String in foliage.parts(kind,variant):
+		var instance := MeshInstance3D.new()
+		instance.mesh = foliage.parts(kind,variant)[part]
+		instance.material_override = foliage.material(part)
+		instance.position = Vector3(p.x,0,p.y)
+		instance.scale = Vector3.ONE*scale_value
+		instance.rotation.y = float(posmod(seed_value,6283))/1000.0
+		landscape.add_child(instance)
+
+func _road_samples(points: Array) -> Array[Vector2]:
+	var samples: Array[Vector2] = []
+	for point in points:
+		var at: Vector2 = point if point is Vector2 else Vector2(float(point[0]),float(point[1]))
+		if samples.is_empty(): samples.append(at)
+		else:
+			var from := samples[-1]
+			var steps := maxi(1,ceili(from.distance_to(at)/0.35))
+			for step in range(1,steps+1):
+				var position := from.lerp(at,float(step)/steps)
+				if samples[-1].distance_to(position) > 0.001: samples.append(position)
+	return samples
+
+func _road_offsets(samples: Array[Vector2], width: float) -> Array[Vector2]:
+	var result: Array[Vector2] = []
+	for index in range(samples.size()):
+		var incoming := (samples[index]-samples[maxi(0,index-1)]).normalized()
+		var outgoing := (samples[mini(samples.size()-1,index+1)]-samples[index]).normalized()
+		if incoming == Vector2.ZERO: incoming = outgoing
+		if outgoing == Vector2.ZERO: outgoing = incoming
+		var normal := (incoming+outgoing).normalized().orthogonal()
+		if normal == Vector2.ZERO: normal = outgoing.orthogonal()
+		var factor := minf(1.5,1.0/maxf(0.1,absf(normal.dot(outgoing.orthogonal()))))
+		result.append(normal*width*0.5*factor)
+	return result
+
+func _road_ribbon(parent: Node3D, samples: Array[Vector2], width: float, color: Color, lift: float = 0.0) -> void:
+	var offsets := _road_offsets(samples,width)
+	var vertices: Array[Vector3] = []
+	for index in range(samples.size()-1):
+		var p := samples[index]
+		var q := samples[index+1]
+		var y0 := _street_height(p)+lift
+		var y1 := _street_height(q)+lift
+		var n0 := offsets[index]
+		var n1 := offsets[index+1]
+		var a := Vector3(p.x-n0.x,y0,p.y-n0.y)
+		var b := Vector3(q.x-n1.x,y1,q.y-n1.y)
+		var c := Vector3(q.x+n1.x,y1,q.y+n1.y)
+		var d := Vector3(p.x+n0.x,y0,p.y+n0.y)
+		vertices.append_array([a,b,c,a,c,d])
+	var ribbon := _triangles(parent,vertices,color)
+	if lift == 0.0: ribbon.material_override = _shared_road_material()
+
+func _shared_road_material() -> ShaderMaterial:
+	if road_material == null:
+		road_material = ShaderMaterial.new()
+		road_material.shader = RoadShader
+	return road_material
+
+func _road_join_signature(road: Dictionary) -> Array:
+	if road_join_signatures.has(road.id): return road_join_signatures[road.id]
+	var signature: Array = []
+	for other: Dictionary in state.roads:
+		if other.id == road.id: continue
+		var radius := (float(road.width)+float(other.width))*0.5+0.08
+		for index in range(other.points.size()-1):
+			var a := Vector2(other.points[index][0],other.points[index][1])
+			var b := Vector2(other.points[index+1][0],other.points[index+1][1])
+			for segment in range(road.points.size()-1):
+				var c := Vector2(road.points[segment][0],road.points[segment][1])
+				var d := Vector2(road.points[segment+1][0],road.points[segment+1][1])
+				if float(state.call("_segment_distance",a,b,c,d)) <= radius:
+					signature.append([a,b,other.width])
+					break
+	road_join_signatures[road.id] = signature
+	return signature
+
+func _inside_other_road(position: Vector2, own_id: String) -> bool:
+	for road: Dictionary in state.roads:
+		if road.id == own_id: continue
+		for index in range(road.points.size()-1):
+			var a := Vector2(road.points[index][0],road.points[index][1])
+			var b := Vector2(road.points[index+1][0],road.points[index+1][1])
+			if position.distance_to(Geometry2D.get_closest_point_to_segment(position,a,b)) <= float(road.width)*0.5+0.07: return true
+	return false
+
+func _road_surface_vertices(contours: Array, cuts: Array) -> Array[Vector3]:
+	if contours.size() != 1: return _water_scanline_union([contours],0,cuts)
+	var polygons: Array = contours.duplicate()
+	for cut: Array in cuts:
+		if cut.size() != 1: return _water_scanline_union([contours],0,cuts)
+		var next: Array = []
+		for polygon: PackedVector2Array in polygons:
+			var clipped := Geometry2D.clip_polygons(polygon,cut[0])
+			for part: PackedVector2Array in clipped:
+				if Geometry2D.is_polygon_clockwise(part): return _water_scanline_union([contours],0,cuts)
+				next.append(part)
+		polygons = next
+	var vertices: Array[Vector3] = []
+	for polygon: PackedVector2Array in polygons:
+		var indices := Geometry2D.triangulate_polygon(polygon)
+		for index in range(0,indices.size(),3): _append_water_triangle(vertices,polygon[indices[index]],polygon[indices[index+1]],polygon[indices[index+2]],0)
+	return vertices
+
+func _subdivide_road(vertices: Array[Vector3]) -> Array[Vector3]:
+	var output: Array[Vector3] = []
+	var triangles: Array = []
+	for index in range(0,vertices.size(),3): triangles.append([vertices[index],vertices[index+1],vertices[index+2]])
+	while not triangles.is_empty():
+		var triangle: Array = triangles.pop_back()
+		var longest := 0
+		for edge in range(1,3):
+			if triangle[edge].distance_squared_to(triangle[(edge+1)%3]) > triangle[longest].distance_squared_to(triangle[(longest+1)%3]): longest = edge
+		if triangle[longest].distance_squared_to(triangle[(longest+1)%3]) <= 0.36:
+			var a := Vector2(triangle[0].x,triangle[0].z)
+			var b := Vector2(triangle[1].x,triangle[1].z)
+			var c := Vector2(triangle[2].x,triangle[2].z)
+			if absf((b-a).cross(c-a)) > 0.000001: output.append_array(triangle)
+			continue
+		var a: Vector3 = triangle[longest]
+		var b: Vector3 = triangle[(longest+1)%3]
+		var c: Vector3 = triangle[(longest+2)%3]
+		var middle := (a+b)*0.5
+		triangles.append([a,middle,c])
+		triangles.append([middle,b,c])
+	return output
 
 func _road(road: Dictionary) -> Node3D:
-	var points: Array = road["points"]
-	var width := float(road.get("width",1.1))
+	var samples := _road_samples(road.points)
+	var width := float(road.width)
+	var offsets := _road_offsets(samples,width)
 	var root := Node3D.new()
-	root.name = str(road.get("id","street"))
+	root.name = str(road.id)
 	roads_layer.add_child(root)
-	for i in range(points.size()-1):
-		var a := Vector2(float(points[i][0]),float(points[i][1]))
-		var b := Vector2(float(points[i+1][0]),float(points[i+1][1]))
-		var length := a.distance_to(b)
-		if length < 0.01: continue
-		var steps := maxi(1,ceili(length/0.42))
-		for step in range(steps):
-			var p := a.lerp(b,float(step)/steps)
-			var q := a.lerp(b,float(step+1)/steps)
-			var normal := (q-p).normalized().orthogonal()*width*0.5
-			var over_water := _water_clearance((p+q)*0.5) < -0.02
-			var y0 := _street_height(p)
-			var y1 := _street_height(q)
-			var y := (y0+y1)*0.5
-			var color := Color("bca98a") if over_water else (Color("d3c5a5") if step%4 else Color("cbbd9e"))
-			_quad(root,Vector3(p.x-normal.x,y0,p.y-normal.y),Vector3(q.x-normal.x,y1,q.y-normal.y),Vector3(q.x+normal.x,y1,q.y+normal.y),Vector3(p.x+normal.x,y0,p.y+normal.y),color)
-			if over_water:
-				for side in [-1,1]:
-					var center: Vector2 = (p+q)*0.5+normal*side
-					var rail := _box(root,Vector3(0.055,0.065,p.distance_to(q)+0.025),Vector3(center.x,y+0.48,center.y),_material(Color("d5ccb0")))
-					rail.rotation.y = atan2(q.x-p.x,q.y-p.y)
-					if step%2 == 0: _box(root,Vector3(0.08,0.52,0.08),Vector3(center.x,y+0.25,center.y),_material(Color("c8ba99")))
-				var plank := _box(root,Vector3(width+0.06,0.08,p.distance_to(q)*0.92),Vector3((p.x+q.x)*0.5,y-0.025,(p.y+q.y)*0.5),_material(Color("b5a17e")))
-				plank.rotation.y = atan2(q.x-p.x,q.y-p.y)
-			else:
-				for side in [-1,1]:
-					var center: Vector2 = (p+q)*0.5+normal*side
-					var curb := _box(root,Vector3(0.085,0.055,p.distance_to(q)+0.018),Vector3(center.x,y+0.01,center.y),_material(Color("c1b598")))
-					curb.rotation.y = atan2(q.x-p.x,q.y-p.y)
-					curb.rotation.x = -atan2(y1-y0,p.distance_to(q))
-		for point: Variant in [points[i],points[i+1]]:
-			var p := Vector2(float(point[0]),float(point[1]))
-			if _water_clearance(p) > -0.02: _cylinder(root,width*0.5,width*0.5,0.02,Vector3(p.x,_street_height(p),p.y),_material(Color("d3c5a5")),16)
+	var cuts: Array = []
+	for other: Dictionary in state.roads:
+		if int(str(other.id).substr(1)) < int(str(road.id).substr(1)) and _roads_touch(road,other): cuts.append(road_outlines[other.id])
+	var vertices: Array[Vector3] = _road_surface_vertices(road_outlines[road.id],cuts)
+	if bool(road.get("bridge",false)): vertices = _subdivide_road(vertices)
+	var heights: Dictionary = {}
+	for index in range(vertices.size()):
+		var at := Vector2(vertices[index].x,vertices[index].z)
+		if heights.has(at):
+			vertices[index].y = heights[at]
+			continue
+		var nearest := samples[0]
+		var distance := INF
+		for segment in range(samples.size()-1):
+			var candidate := Geometry2D.get_closest_point_to_segment(at,samples[segment],samples[segment+1])
+			if at.distance_squared_to(candidate) < distance:
+				distance = at.distance_squared_to(candidate)
+				nearest = candidate
+		vertices[index].y = _street_height(nearest)
+		heights[at] = vertices[index].y
+	if not vertices.is_empty():
+		var surface := _triangles(root,vertices,Color.WHITE)
+		surface.material_override = _shared_road_material()
+	for index in range(samples.size()-1):
+		var p := samples[index]
+		var q := samples[index+1]
+		var y0 := _street_height(p)
+		var y1 := _street_height(q)
+		var y := (y0+y1)*0.5
+		var over_water := _water_clearance((p+q)*0.5) < -0.02
+		for side in [-1,1]:
+			var a: Vector2 = p+offsets[index]*side
+			var b: Vector2 = q+offsets[index+1]*side
+			var center := (a+b)*0.5
+			if _inside_other_road(center,str(road.id)): continue
+			var curb := _box(root,Vector3(0.065,0.065 if over_water else 0.045,a.distance_to(b)+0.003),Vector3(center.x,y+(0.48 if over_water else 0.005),center.y),_material(Color("d5ccb0") if over_water else Color("bcb295")))
+			curb.rotation.y = atan2(b.x-a.x,b.y-a.y)
+			curb.rotation.x = -atan2(y1-y0,a.distance_to(b))
+			if over_water and index%3 == 0: _box(root,Vector3(0.08,0.52,0.08),Vector3(center.x,y+0.25,center.y),_material(Color("c8ba99")))
+		if over_water:
+			var plank := _box(root,Vector3(width+0.06,0.08,p.distance_to(q)*0.96),Vector3((p.x+q.x)*0.5,y-0.025,(p.y+q.y)*0.5),_material(Color("b5a17e")))
+			plank.rotation.y = atan2(q.x-p.x,q.y-p.y)
 	return root
+
+func _roads_touch(road: Dictionary, other: Dictionary) -> bool:
+	var radius := (float(road.width)+float(other.width))*0.5+0.08
+	for a in range(road.points.size()-1):
+		for b in range(other.points.size()-1):
+			if float(state.call("_segment_distance",Vector2(road.points[a][0],road.points[a][1]),Vector2(road.points[a+1][0],road.points[a+1][1]),Vector2(other.points[b][0],other.points[b][1]),Vector2(other.points[b+1][0],other.points[b+1][1]))) <= radius: return true
+	return false

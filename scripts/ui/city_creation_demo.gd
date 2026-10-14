@@ -5,6 +5,7 @@ const State = preload("res://scripts/world/city_creation_state.gd")
 const TownRenderer = preload("res://scripts/visual/city_creation_renderer.gd")
 const Music = preload("res://scripts/audio/city_creation_music.gd")
 const Life = preload("res://scripts/world/city_creation_life.gd")
+const Stroke = preload("res://scripts/world/city_creation_stroke.gd")
 const UI = preload("res://scripts/ui/valley_ui_theme.gd")
 const SAVE_PATH := "user://city_creation_v1.json"
 const UNIT := 1.8
@@ -41,6 +42,10 @@ var orbiting := false
 var panning := false
 var road_drawing := false
 var road_points: Array[Vector2] = []
+var road_preview: Array[Vector2] = []
+var road_straight := false
+var road_panel: PanelContainer
+var road_status: Label
 var vegetation_drawing := false
 var vegetation_erasing := false
 var vegetation_points: Array[Vector2] = []
@@ -101,15 +106,16 @@ func _setup_world() -> void:
 	env.background_mode = Environment.BG_COLOR
 	env.background_color = Color("cbd9d4")
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("e7eee3")
-	env.ambient_light_energy = 0.35
+	env.ambient_light_color = Color("d4e2df")
+	env.ambient_light_energy = 0.48
 	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
 	environment.environment = env
 	add_child(environment)
 	sun = DirectionalLight3D.new()
 	sun.rotation_degrees = Vector3(-48, -32, 0)
-	sun.light_color = Color("fff0cd")
-	sun.light_energy = 0.65
+	sun.light_color = Color("fff1d7")
+	sun.light_energy = 0.58
+	sun.shadow_opacity = 0.70
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 70.0
 	sun.shadow_bias = 0.03
@@ -239,6 +245,30 @@ func _setup_ui() -> void:
 	garden.add_child(radius)
 	garden.add_child(_label("一笔落成树群，松开后可撤销。\nShift 按住擦除，Esc 取消。",14))
 	vegetation_panel.visible = false
+	road_panel = PanelContainer.new()
+	road_panel.name = "RoadOptions"
+	road_panel.add_theme_stylebox_override("panel",UI.panel(16))
+	root.add_child(road_panel)
+	road_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	road_panel.offset_left = -310
+	road_panel.offset_right = -24
+	road_panel.offset_top = 84
+	var road_column := VBoxContainer.new()
+	road_column.add_theme_constant_override("separation",8)
+	road_panel.add_child(road_column)
+	road_column.add_child(_label("顺着河湾画一条路",18))
+	var road_mode := OptionButton.new()
+	road_mode.name = "RoadMode"
+	for label: String in ["自由曲线", "两点直拉"]: road_mode.add_item(label)
+	road_mode.item_selected.connect(func(index:int)->void:
+		_cancel_draft()
+		road_straight = index == 1)
+	road_column.add_child(road_mode)
+	road_status = _label("自由拖动，松开铺好。\n接到已有路面，路口自动融合。",14)
+	road_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	road_status.custom_minimum_size.x = 260
+	road_column.add_child(road_status)
+	road_panel.visible = false
 	water_panel = PanelContainer.new()
 	water_panel.name = "WaterOptions"
 	water_panel.add_theme_stylebox_override("panel", UI.panel(16))
@@ -350,6 +380,7 @@ func select_tool(index: int) -> void:
 	place_panel.visible = tool == 4 and not selected_house.is_empty()
 	vegetation_panel.visible = tool == 5
 	water_panel.visible = tool == 6
+	road_panel.visible = tool == 2
 	_refresh_ui()
 
 func _update_camera() -> void:
@@ -380,6 +411,7 @@ func _input(event: InputEvent) -> void:
 			_update_camera()
 			get_viewport().set_input_as_handled()
 	if event is InputEventMouseButton and not event.pressed:
+		pointer = event.position
 		if event.button_index == MOUSE_BUTTON_RIGHT: orbiting = false
 		if event.button_index == MOUSE_BUTTON_MIDDLE: panning = false
 		if event.button_index == MOUSE_BUTTON_LEFT and road_drawing: _finish_road()
@@ -567,18 +599,24 @@ func _commit_click() -> void:
 func _append_road_point() -> void:
 	var p := _ground_at(pointer)
 	if road_points.is_empty() or road_points[-1].distance_to(p) > 0.25:
-		road_points.append(p)
-		town.preview_road(road_points)
+		if road_straight and road_points.size() == 2: road_points[1] = p
+		else: road_points.append(p)
+		road_preview = Stroke.road_points(road_points,road_straight)
+		var check: Dictionary = state.preview_road(road_preview)
+		road_status.text = "松开铺好这条路。" if check.ok else str(check.message)
+		town.preview_road(road_preview,bool(check.ok))
 
 func _finish_road() -> void:
+	_append_road_point()
 	road_drawing = false
 	if road_points.size() < 2:
 		_cancel_draft()
 		return
-	var result: Dictionary = state.add_road(road_points)
+	var result: Dictionary = state.add_road(road_preview)
 	if result.ok: completed["road"] = true
 	_after_edit(result, "road")
 	road_points.clear()
+	road_preview.clear()
 
 func _append_vegetation_point() -> void:
 	var p := _ground_at(pointer)
@@ -644,6 +682,7 @@ func _history(forward: bool) -> void:
 func _cancel_draft() -> void:
 	road_drawing = false
 	road_points.clear()
+	road_preview.clear()
 	vegetation_drawing = false
 	vegetation_points.clear()
 	water_drawing = false
@@ -665,8 +704,8 @@ func _toggle_music() -> void:
 
 func _toggle_light() -> void:
 	evening = not evening
-	sun.light_color = Color("ffc390") if evening else Color("fff0cd")
-	sun.light_energy = 0.55 if evening else 0.65
+	sun.light_color = Color("ffcf9f") if evening else Color("fff1d7")
+	sun.light_energy = 0.50 if evening else 0.58
 	sun.rotation_degrees.x = -24.0 if evening else -48.0
 
 func _refresh_place() -> void:
@@ -696,6 +735,7 @@ func diagnostics() -> Dictionary:
 		"frame_p95_ms":sorted[int((sorted.size()-1)*0.95)] if not sorted.is_empty() else 0.0,
 		"edit_rebuild_ms":edit_samples.duplicate(),"draw_calls":Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 		"render_updates":town.rebuild_stats.duplicate(),"plants":state.plants.size(),"water_updates":town.water_edit_stats.duplicate(),
+		"meadow":town.meadow.diagnostics(),
 		"triangles":Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
 		"audio":music.audio_report,"life":{"residents":life.residents.size(),"purchases":life.purchases,"gatherings":life.gatherings},
 		"milestones":completed.duplicate(),"world":state.snapshot()}
