@@ -1,0 +1,788 @@
+{
+  "relative_path": "swscale-8.dll",
+  "artifact": "D:\\steamtest\\steamapps\\common\\Foundation\\swscale-8.dll",
+  "sha256": "10b174b1203e28cd7912719155cf7c3ad72cf8f09073310d2630db4c85fb8635",
+  "bytes": 666112,
+  "machine": "0x8664",
+  "format": "PE32+",
+  "role": "dll",
+  "image_base": "0x180000000",
+  "entry_va": "0x180001320",
+  "timestamp": 1732027093,
+  "sections": [
+    {
+      "name": ".text",
+      "rva": 4096,
+      "virtual_size": 604744,
+      "file_offset": 1024,
+      "file_bytes": 605184,
+      "characteristics": "0x60000060"
+    },
+    {
+      "name": ".data",
+      "rva": 610304,
+      "virtual_size": 112,
+      "file_offset": 606208,
+      "file_bytes": 512,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".rdata",
+      "rva": 614400,
+      "virtual_size": 27760,
+      "file_offset": 606720,
+      "file_bytes": 28160,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".pdata",
+      "rva": 643072,
+      "virtual_size": 9876,
+      "file_offset": 634880,
+      "file_bytes": 10240,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".xdata",
+      "rva": 655360,
+      "virtual_size": 13080,
+      "file_offset": 645120,
+      "file_bytes": 13312,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".bss",
+      "rva": 671744,
+      "virtual_size": 33392,
+      "file_offset": 0,
+      "file_bytes": 0,
+      "characteristics": "0xc0000080"
+    },
+    {
+      "name": ".edata",
+      "rva": 708608,
+      "virtual_size": 955,
+      "file_offset": 658432,
+      "file_bytes": 1024,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".idata",
+      "rva": 712704,
+      "virtual_size": 2908,
+      "file_offset": 659456,
+      "file_bytes": 3072,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".CRT",
+      "rva": 716800,
+      "virtual_size": 88,
+      "file_offset": 662528,
+      "file_bytes": 512,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".tls",
+      "rva": 720896,
+      "virtual_size": 16,
+      "file_offset": 663040,
+      "file_bytes": 512,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".rsrc",
+      "rva": 724992,
+      "virtual_size": 856,
+      "file_offset": 663552,
+      "file_bytes": 1024,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".reloc",
+      "rva": 729088,
+      "virtual_size": 1292,
+      "file_offset": 664576,
+      "file_bytes": 1536,
+      "characteristics": "0x42000040"
+    }
+  ],
+  "data_directories": [
+    {
+      "rva": 708608,
+      "size": 955
+    },
+    {
+      "rva": 712704,
+      "size": 2908
+    },
+    {
+      "rva": 724992,
+      "size": 856
+    },
+    {
+      "rva": 643072,
+      "size": 9876
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 729088,
+      "size": 1292
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 632448,
+      "size": 40
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 713456,
+      "size": 568
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    }
+  ],
+  "managed_cli_present": false,
+  "imports": [
+    {
+      "dll": "KERNEL32.dll",
+      "symbols": [
+        {
+          "iat_va": "0x1800ae2f0",
+          "name": "DeleteCriticalSection",
+          "hint": 294
+        },
+        {
+          "iat_va": "0x1800ae2f8",
+          "name": "EnterCriticalSection",
+          "hint": 332
+        },
+        {
+          "iat_va": "0x1800ae300",
+          "name": "GetLastError",
+          "hint": 645
+        },
+        {
+          "iat_va": "0x1800ae308",
+          "name": "InitOnceBeginInitialize",
+          "hint": 908
+        },
+        {
+          "iat_va": "0x1800ae310",
+          "name": "InitOnceComplete",
+          "hint": 909
+        },
+        {
+          "iat_va": "0x1800ae318",
+          "name": "InitializeCriticalSection",
+          "hint": 915
+        },
+        {
+          "iat_va": "0x1800ae320",
+          "name": "LeaveCriticalSection",
+          "hint": 1009
+        },
+        {
+          "iat_va": "0x1800ae328",
+          "name": "Sleep",
+          "hint": 1445
+        },
+        {
+          "iat_va": "0x1800ae330",
+          "name": "TlsGetValue",
+          "hint": 1481
+        },
+        {
+          "iat_va": "0x1800ae338",
+          "name": "VirtualAlloc",
+          "hint": 1522
+        },
+        {
+          "iat_va": "0x1800ae340",
+          "name": "VirtualFree",
+          "hint": 1525
+        },
+        {
+          "iat_va": "0x1800ae348",
+          "name": "VirtualProtect",
+          "hint": 1528
+        },
+        {
+          "iat_va": "0x1800ae350",
+          "name": "VirtualQuery",
+          "hint": 1530
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-heap-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x1800ae360",
+          "name": "calloc",
+          "hint": 24
+        },
+        {
+          "iat_va": "0x1800ae368",
+          "name": "free",
+          "hint": 25
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-math-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x1800ae378",
+          "name": "ceil",
+          "hint": 120
+        },
+        {
+          "iat_va": "0x1800ae380",
+          "name": "cos",
+          "hint": 134
+        },
+        {
+          "iat_va": "0x1800ae388",
+          "name": "exp",
+          "hint": 158
+        },
+        {
+          "iat_va": "0x1800ae390",
+          "name": "exp2",
+          "hint": 159
+        },
+        {
+          "iat_va": "0x1800ae398",
+          "name": "pow",
+          "hint": 213
+        },
+        {
+          "iat_va": "0x1800ae3a0",
+          "name": "sin",
+          "hint": 227
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-private-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x1800ae3b0",
+          "name": "memcpy",
+          "hint": 1143
+        },
+        {
+          "iat_va": "0x1800ae3b8",
+          "name": "memmove",
+          "hint": 1144
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-runtime-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x1800ae3c8",
+          "name": "_execute_onexit_table",
+          "hint": 35
+        },
+        {
+          "iat_va": "0x1800ae3d0",
+          "name": "_exit",
+          "hint": 36
+        },
+        {
+          "iat_va": "0x1800ae3d8",
+          "name": "_initialize_onexit_table",
+          "hint": 54
+        },
+        {
+          "iat_va": "0x1800ae3e0",
+          "name": "_initterm",
+          "hint": 56
+        },
+        {
+          "iat_va": "0x1800ae3e8",
+          "name": "_register_onexit_function",
+          "hint": 62
+        },
+        {
+          "iat_va": "0x1800ae3f0",
+          "name": "abort",
+          "hint": 87
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-stdio-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x1800ae400",
+          "name": "__acrt_iob_func",
+          "hint": 0
+        },
+        {
+          "iat_va": "0x1800ae408",
+          "name": "__stdio_common_vfprintf",
+          "hint": 3
+        },
+        {
+          "iat_va": "0x1800ae410",
+          "name": "fwrite",
+          "hint": 171
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-string-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x1800ae420",
+          "name": "memset",
+          "hint": 159
+        },
+        {
+          "iat_va": "0x1800ae428",
+          "name": "strlen",
+          "hint": 167
+        },
+        {
+          "iat_va": "0x1800ae430",
+          "name": "strncmp",
+          "hint": 170
+        }
+      ]
+    },
+    {
+      "dll": "avutil-59.dll",
+      "symbols": [
+        {
+          "iat_va": "0x1800ae440",
+          "name": "av_calloc",
+          "hint": 69
+        },
+        {
+          "iat_va": "0x1800ae448",
+          "name": "av_fast_malloc",
+          "hint": 186
+        },
+        {
+          "iat_va": "0x1800ae450",
+          "name": "av_fast_realloc",
+          "hint": 188
+        },
+        {
+          "iat_va": "0x1800ae458",
+          "name": "av_frame_alloc",
+          "hint": 214
+        },
+        {
+          "iat_va": "0x1800ae460",
+          "name": "av_frame_free",
+          "hint": 219
+        },
+        {
+          "iat_va": "0x1800ae468",
+          "name": "av_frame_get_buffer",
+          "hint": 220
+        },
+        {
+          "iat_va": "0x1800ae470",
+          "name": "av_frame_ref",
+          "hint": 228
+        },
+        {
+          "iat_va": "0x1800ae478",
+          "name": "av_frame_unref",
+          "hint": 239
+        },
+        {
+          "iat_va": "0x1800ae480",
+          "name": "av_free",
+          "hint": 240
+        },
+        {
+          "iat_va": "0x1800ae488",
+          "name": "av_freep",
+          "hint": 241
+        },
+        {
+          "iat_va": "0x1800ae490",
+          "name": "av_get_bits_per_pixel",
+          "hint": 245
+        },
+        {
+          "iat_va": "0x1800ae498",
+          "name": "av_get_cpu_flags",
+          "hint": 247
+        },
+        {
+          "iat_va": "0x1800ae4a0",
+          "name": "av_get_pix_fmt_name",
+          "hint": 255
+        },
+        {
+          "iat_va": "0x1800ae4a8",
+          "name": "av_image_alloc",
+          "hint": 315
+        },
+        {
+          "iat_va": "0x1800ae4b0",
+          "name": "av_log",
+          "hint": 337
+        },
+        {
+          "iat_va": "0x1800ae4b8",
+          "name": "av_malloc",
+          "hint": 351
+        },
+        {
+          "iat_va": "0x1800ae4c0",
+          "name": "av_malloc_array",
+          "hint": 352
+        },
+        {
+          "iat_va": "0x1800ae4c8",
+          "name": "av_mallocz",
+          "hint": 353
+        },
+        {
+          "iat_va": "0x1800ae4d0",
+          "name": "av_opt_copy",
+          "hint": 379
+        },
+        {
+          "iat_va": "0x1800ae4d8",
+          "name": "av_opt_get_int",
+          "hint": 399
+        },
+        {
+          "iat_va": "0x1800ae4e0",
+          "name": "av_opt_set_defaults",
+          "hint": 416
+        },
+        {
+          "iat_va": "0x1800ae4e8",
+          "name": "av_opt_set_int",
+          "hint": 424
+        },
+        {
+          "iat_va": "0x1800ae4f0",
+          "name": "av_pix_fmt_desc_get",
+          "hint": 437
+        },
+        {
+          "iat_va": "0x1800ae4f8",
+          "name": "av_pix_fmt_get_chroma_sub_sample",
+          "hint": 440
+        },
+        {
+          "iat_va": "0x1800ae500",
+          "name": "av_pix_fmt_swap_endianness",
+          "hint": 441
+        },
+        {
+          "iat_va": "0x1800ae508",
+          "name": "avpriv_slicethread_create",
+          "hint": 590
+        },
+        {
+          "iat_va": "0x1800ae510",
+          "name": "avpriv_slicethread_execute",
+          "hint": 591
+        },
+        {
+          "iat_va": "0x1800ae518",
+          "name": "avpriv_slicethread_free",
+          "hint": 592
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "ordinal": 1,
+      "rva": "0x4c9c0",
+      "va": "0x18004c9c0",
+      "names": [
+        "sws_allocVec"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "rva": "0x4c040",
+      "va": "0x18004c040",
+      "names": [
+        "sws_alloc_context"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "rva": "0x40a60",
+      "va": "0x180040a60",
+      "names": [
+        "sws_convertPalette8ToPacked24"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "rva": "0x40a20",
+      "va": "0x180040a20",
+      "names": [
+        "sws_convertPalette8ToPacked32"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "rva": "0x34490",
+      "va": "0x180034490",
+      "names": [
+        "sws_frame_end"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "rva": "0x344c0",
+      "va": "0x1800344c0",
+      "names": [
+        "sws_frame_start"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "rva": "0x4d910",
+      "va": "0x18004d910",
+      "names": [
+        "sws_freeContext"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "rva": "0x4cd00",
+      "va": "0x18004cd00",
+      "names": [
+        "sws_freeFilter"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "rva": "0x4ccc0",
+      "va": "0x18004ccc0",
+      "names": [
+        "sws_freeVec"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "rva": "0x4d930",
+      "va": "0x18004d930",
+      "names": [
+        "sws_getCachedContext"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "rva": "0x88100",
+      "va": "0x180088100",
+      "names": [
+        "sws_getCoefficients"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "rva": "0x4bf70",
+      "va": "0x18004bf70",
+      "names": [
+        "sws_getColorspaceDetails"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "rva": "0x4c090",
+      "va": "0x18004c090",
+      "names": [
+        "sws_getContext"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "rva": "0x4cdb0",
+      "va": "0x18004cdb0",
+      "names": [
+        "sws_getDefaultFilter"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "rva": "0x4ca40",
+      "va": "0x18004ca40",
+      "names": [
+        "sws_getGaussianVec"
+      ]
+    },
+    {
+      "ordinal": 16,
+      "rva": "0xab90",
+      "va": "0x18000ab90",
+      "names": [
+        "sws_get_class"
+      ]
+    },
+    {
+      "ordinal": 17,
+      "rva": "0x8ece8",
+      "va": "0x18008ece8",
+      "names": [
+        "sws_init_context"
+      ]
+    },
+    {
+      "ordinal": 18,
+      "rva": "0x4bf50",
+      "va": "0x18004bf50",
+      "names": [
+        "sws_isSupportedEndiannessConversion"
+      ]
+    },
+    {
+      "ordinal": 19,
+      "rva": "0x4bf10",
+      "va": "0x18004bf10",
+      "names": [
+        "sws_isSupportedInput"
+      ]
+    },
+    {
+      "ordinal": 20,
+      "rva": "0x4bf30",
+      "va": "0x18004bf30",
+      "names": [
+        "sws_isSupportedOutput"
+      ]
+    },
+    {
+      "ordinal": 21,
+      "rva": "0x4cc40",
+      "va": "0x18004cc40",
+      "names": [
+        "sws_normalizeVec"
+      ]
+    },
+    {
+      "ordinal": 22,
+      "rva": "0x345b0",
+      "va": "0x1800345b0",
+      "names": [
+        "sws_receive_slice"
+      ]
+    },
+    {
+      "ordinal": 23,
+      "rva": "0x34590",
+      "va": "0x180034590",
+      "names": [
+        "sws_receive_slice_alignment"
+      ]
+    },
+    {
+      "ordinal": 24,
+      "rva": "0x348d0",
+      "va": "0x1800348d0",
+      "names": [
+        "sws_scale"
+      ]
+    },
+    {
+      "ordinal": 25,
+      "rva": "0x4cc00",
+      "va": "0x18004cc00",
+      "names": [
+        "sws_scaleVec"
+      ]
+    },
+    {
+      "ordinal": 26,
+      "rva": "0x347e0",
+      "va": "0x1800347e0",
+      "names": [
+        "sws_scale_frame"
+      ]
+    },
+    {
+      "ordinal": 27,
+      "rva": "0x34570",
+      "va": "0x180034570",
+      "names": [
+        "sws_send_slice"
+      ]
+    },
+    {
+      "ordinal": 28,
+      "rva": "0x4c0d0",
+      "va": "0x18004c0d0",
+      "names": [
+        "sws_setColorspaceDetails"
+      ]
+    },
+    {
+      "ordinal": 29,
+      "rva": "0x4ddd0",
+      "va": "0x18004ddd0",
+      "names": [
+        "swscale_configuration"
+      ]
+    },
+    {
+      "ordinal": 30,
+      "rva": "0x4dde0",
+      "va": "0x18004dde0",
+      "names": [
+        "swscale_license"
+      ]
+    },
+    {
+      "ordinal": 31,
+      "rva": "0x4ddc0",
+      "va": "0x18004ddc0",
+      "names": [
+        "swscale_version"
+      ]
+    }
+  ],
+  "debug_records": [],
+  "certificate_records": [],
+  "static_identity_strings": [],
+  "scope": "Execution-free PE header/regular imports/export/debug/security-directory parse; regular import list excludes delay imports. No claim of signature trust or runtime DLL loading."
+}

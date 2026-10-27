@@ -1,0 +1,30 @@
+; SPIR-V 1.3
+; SHA256 dffa24231a79fe46c6fcca30a9690b624a6a43e975e4e2d61b803b110c1996e6
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability Shader ; byte 0x14
+OpCapability StorageImageExtendedFormats ; byte 0x1c
+%192 = OpExtInstImport "GLSL.std.450" ; byte 0x24
+OpMemoryModel Logical GLSL450 ; byte 0x3c
+OpEntryPoint Fragment %2 "main" ; byte 0x48
+OpExecutionMode %2 OriginUpperLeft ; byte 0x5c
+OpSource Slang 1 ; byte 0x68
+OpName %80 "window_colors.window_colors" ; byte 0x74
+OpName %84 "samplers.llr" ; byte 0x98
+OpName %2 "ps_main" ; byte 0xb0
+OpDecorate %80 Binding 0 ; byte 0xc0
+OpDecorate %80 DescriptorSet 18 ; byte 0xd0
+OpDecorate %84 Binding 1 ; byte 0xe0
+OpDecorate %84 DescriptorSet 2 ; byte 0xf0
+%1 = OpTypeVoid ; byte 0x100
+%3 = OpTypeFunction %1 ; byte 0x108
+%6 = OpTypeFloat 32 ; byte 0x114
+%77 = OpTypeImage %6 2D 2 1 0 1 Unknown ; byte 0x120
+%79 = OpTypePointer UniformConstant %77 ; byte 0x144
+%81 = OpTypeSampler ; byte 0x154
+%83 = OpTypePointer UniformConstant %81 ; byte 0x15c
+%80 = OpVariable %79 UniformConstant ; byte 0x16c
+%84 = OpVariable %83 UniformConstant ; byte 0x17c
+%2 = OpFunction %1 None %3 ; byte 0x18c
+%4 = OpLabel ; byte 0x1a0
+OpReturn ; byte 0x1a8
+OpFunctionEnd ; byte 0x1ac

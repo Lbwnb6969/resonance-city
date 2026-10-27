@@ -1,0 +1,30 @@
+﻿{
+	"BUILDINGS": {
+		"COMMON_CROFT": "Громадське обійстя",
+		"APPLE_ORCHARD": "Яблуневий сад",
+		"HAZELNUT_ORCHARD": "Ліщиновий сад",
+		"PLUM_ORCHARD": "Сливовий сад",
+		"DRYING_KILN": "Сушильня",
+		"CIDER_HOUSE": "Сидрівня",
+		"CABBAGE_FARM": "Капустяна ферма",
+		"TURNIP_FARM": "Ріпна ферма"
+	},
+	"BUILDING_PART": {
+		"CROFT_DRINKINGPIT_01A": "Напувалка",
+		"CROFT_FODDER_DEPOT_01A": "Кормові діжки",
+		"CROFT_CHICKEN_COOP": "Курник",
+		"CROFT_GOOSERY": "Гусятник",
+		"CROFT_PIGSTY": "Свинарник",
+		"CROFT_MANURE_DEPOT_01A": "Гноярка",
+		"CIDER_HOUSE_STORAGE_01A": "Бочки для сидру",
+		"CIDER_HOUSE_STORAGE_02A": "Склад для бочок сидру",
+		"CIDER_HOUSE_WORKSTATION_01A": "Повітка із сидропресом",
+		"DRYING_KILN_SMOKER_01A": "Мала сушарка",
+		"DRYING_KILN_STORAGE_01A": "Сушильна повітка",
+		"AGRI_CROFT_FENCE_END_01A": "Край огорожі обійстя, лівий",
+		"AGRI_CROFT_FENCE_END_02A": "Край огорожі обійстя, правий",
+		"AGRI_CROFT_FENCE_GATE": "Ворота обійстя",
+		"AGRI_CROFT_FENCE_WALL": "Огорожа обійстя"
+	},
+	"BUILDING_DESCRIPTION": {}
+}

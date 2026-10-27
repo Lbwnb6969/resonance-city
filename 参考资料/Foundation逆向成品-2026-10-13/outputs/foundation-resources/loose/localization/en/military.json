@@ -1,0 +1,16 @@
+﻿{
+	"MILITARY_GENERAL": {
+		"NOT_ENOUGH_GUARD_DESC": "Not enough Guards! Assign more Guardsman or Combatants to Companies on Patrol Duty.",
+		"CURRENT_GUARD_RATIO_X_PERCENT": "Current Guard Coverage: {1}",
+		"TOTAL_NUMBER_PATROLLERS": "Total number of Patrollers and Combatants on Patrol Duty: {1}",
+		"TOTAL_NUMBER_GUARD_LOCATIONS": "Total number of Active Fortification: {1}",
+		"ACTIVE_FORTIFICATION": "Active {1} Fortification",
+		"ACTIVE_FORTIFICATION_DESC": "Covers an area with {1} Fortification. Combatants on Guard Duty and Watchmen will spend time overseeing this location.",
+		"LIGHT_X_FORTIFICATION": "Light",
+		"HEAVY_X_FORTIFICATION": "Heavy",
+		"PASSIVE_FORTIFICATION": "Passive {1} Fortification",
+		"PASSIVE_FORTIFICATION_DESC": "Covers an area with {1} Fortification without taking any Watchmen's or Combatants' time.",
+		"NEW_COMPANY_X_FORMED": "A new Company {1} has been formed!",
+		"GUARD_DUTY_COMPANY": "Guard Duty Company"
+	}
+}

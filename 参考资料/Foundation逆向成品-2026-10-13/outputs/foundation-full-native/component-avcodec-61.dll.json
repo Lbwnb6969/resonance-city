@@ -1,0 +1,3461 @@
+{
+  "relative_path": "avcodec-61.dll",
+  "artifact": "D:\\steamtest\\steamapps\\common\\Foundation\\avcodec-61.dll",
+  "sha256": "198c8ccfe69580b9b3f05b8129515d35aa3b802a3f4b62b072a2d0524a39c7bf",
+  "bytes": 13615616,
+  "machine": "0x8664",
+  "format": "PE32+",
+  "role": "dll",
+  "image_base": "0x180000000",
+  "entry_va": "0x180001320",
+  "timestamp": 1732027092,
+  "sections": [
+    {
+      "name": ".text",
+      "rva": 4096,
+      "virtual_size": 10425224,
+      "file_offset": 1024,
+      "file_bytes": 10425344,
+      "characteristics": "0x60000060"
+    },
+    {
+      "name": ".data",
+      "rva": 10432512,
+      "virtual_size": 4912,
+      "file_offset": 10426368,
+      "file_bytes": 5120,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".rdata",
+      "rva": 10440704,
+      "virtual_size": 2832448,
+      "file_offset": 10431488,
+      "file_bytes": 2832896,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".pdata",
+      "rva": 13275136,
+      "virtual_size": 129264,
+      "file_offset": 13264384,
+      "file_bytes": 129536,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".xdata",
+      "rva": 13406208,
+      "virtual_size": 168168,
+      "file_offset": 13393920,
+      "file_bytes": 168448,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".bss",
+      "rva": 13578240,
+      "virtual_size": 4614816,
+      "file_offset": 0,
+      "file_bytes": 0,
+      "characteristics": "0xc0000080"
+    },
+    {
+      "name": ".edata",
+      "rva": 18194432,
+      "virtual_size": 5371,
+      "file_offset": 13562368,
+      "file_bytes": 5632,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".idata",
+      "rva": 18202624,
+      "virtual_size": 14920,
+      "file_offset": 13568000,
+      "file_bytes": 15360,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".CRT",
+      "rva": 18219008,
+      "virtual_size": 88,
+      "file_offset": 13583360,
+      "file_bytes": 512,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".tls",
+      "rva": 18223104,
+      "virtual_size": 16,
+      "file_offset": 13583872,
+      "file_bytes": 512,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".rsrc",
+      "rva": 18227200,
+      "virtual_size": 848,
+      "file_offset": 13584384,
+      "file_bytes": 1024,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".reloc",
+      "rva": 18231296,
+      "virtual_size": 29840,
+      "file_offset": 13585408,
+      "file_bytes": 30208,
+      "characteristics": "0x42000040"
+    }
+  ],
+  "data_directories": [
+    {
+      "rva": 18194432,
+      "size": 5371
+    },
+    {
+      "rva": 18202624,
+      "size": 14920
+    },
+    {
+      "rva": 18227200,
+      "size": 848
+    },
+    {
+      "rva": 13275136,
+      "size": 129264
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 18231296,
+      "size": 29840
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 13173696,
+      "size": 40
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 18205880,
+      "size": 2936
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    }
+  ],
+  "managed_cli_present": false,
+  "imports": [
+    {
+      "dll": "KERNEL32.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115ccb8",
+          "name": "AcquireSRWLockExclusive",
+          "hint": 0
+        },
+        {
+          "iat_va": "0x18115ccc0",
+          "name": "CloseHandle",
+          "hint": 150
+        },
+        {
+          "iat_va": "0x18115ccc8",
+          "name": "CreateEventA",
+          "hint": 207
+        },
+        {
+          "iat_va": "0x18115ccd0",
+          "name": "DeleteCriticalSection",
+          "hint": 294
+        },
+        {
+          "iat_va": "0x18115ccd8",
+          "name": "EnterCriticalSection",
+          "hint": 332
+        },
+        {
+          "iat_va": "0x18115cce0",
+          "name": "GetLastError",
+          "hint": 645
+        },
+        {
+          "iat_va": "0x18115cce8",
+          "name": "InitOnceBeginInitialize",
+          "hint": 908
+        },
+        {
+          "iat_va": "0x18115ccf0",
+          "name": "InitOnceComplete",
+          "hint": 909
+        },
+        {
+          "iat_va": "0x18115ccf8",
+          "name": "InitializeConditionVariable",
+          "hint": 912
+        },
+        {
+          "iat_va": "0x18115cd00",
+          "name": "InitializeCriticalSection",
+          "hint": 915
+        },
+        {
+          "iat_va": "0x18115cd08",
+          "name": "InitializeSRWLock",
+          "hint": 922
+        },
+        {
+          "iat_va": "0x18115cd10",
+          "name": "LeaveCriticalSection",
+          "hint": 1009
+        },
+        {
+          "iat_va": "0x18115cd18",
+          "name": "ReleaseMutex",
+          "hint": 1220
+        },
+        {
+          "iat_va": "0x18115cd20",
+          "name": "ReleaseSRWLockExclusive",
+          "hint": 1223
+        },
+        {
+          "iat_va": "0x18115cd28",
+          "name": "Sleep",
+          "hint": 1445
+        },
+        {
+          "iat_va": "0x18115cd30",
+          "name": "SleepConditionVariableSRW",
+          "hint": 1447
+        },
+        {
+          "iat_va": "0x18115cd38",
+          "name": "TlsGetValue",
+          "hint": 1481
+        },
+        {
+          "iat_va": "0x18115cd40",
+          "name": "VirtualProtect",
+          "hint": 1528
+        },
+        {
+          "iat_va": "0x18115cd48",
+          "name": "VirtualQuery",
+          "hint": 1530
+        },
+        {
+          "iat_va": "0x18115cd50",
+          "name": "WaitForSingleObjectEx",
+          "hint": 1540
+        },
+        {
+          "iat_va": "0x18115cd58",
+          "name": "WakeAllConditionVariable",
+          "hint": 1547
+        },
+        {
+          "iat_va": "0x18115cd60",
+          "name": "WakeConditionVariable",
+          "hint": 1548
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-convert-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115cd70",
+          "name": "atoi",
+          "hint": 84
+        },
+        {
+          "iat_va": "0x18115cd78",
+          "name": "mbrtowc",
+          "hint": 92
+        },
+        {
+          "iat_va": "0x18115cd80",
+          "name": "strtol",
+          "hint": 101
+        },
+        {
+          "iat_va": "0x18115cd88",
+          "name": "strtoll",
+          "hint": 102
+        },
+        {
+          "iat_va": "0x18115cd90",
+          "name": "strtoul",
+          "hint": 103
+        },
+        {
+          "iat_va": "0x18115cd98",
+          "name": "strtoull",
+          "hint": 104
+        },
+        {
+          "iat_va": "0x18115cda0",
+          "name": "wcrtomb",
+          "hint": 106
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-heap-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115cdb0",
+          "name": "calloc",
+          "hint": 24
+        },
+        {
+          "iat_va": "0x18115cdb8",
+          "name": "free",
+          "hint": 25
+        },
+        {
+          "iat_va": "0x18115cdc0",
+          "name": "malloc",
+          "hint": 26
+        },
+        {
+          "iat_va": "0x18115cdc8",
+          "name": "realloc",
+          "hint": 27
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-locale-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115cdd8",
+          "name": "localeconv",
+          "hint": 19
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-math-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115cde8",
+          "name": "atan",
+          "hint": 92
+        },
+        {
+          "iat_va": "0x18115cdf0",
+          "name": "atan2",
+          "hint": 93
+        },
+        {
+          "iat_va": "0x18115cdf8",
+          "name": "atan2f",
+          "hint": 94
+        },
+        {
+          "iat_va": "0x18115ce00",
+          "name": "atanf",
+          "hint": 95
+        },
+        {
+          "iat_va": "0x18115ce08",
+          "name": "cbrt",
+          "hint": 114
+        },
+        {
+          "iat_va": "0x18115ce10",
+          "name": "cbrtf",
+          "hint": 115
+        },
+        {
+          "iat_va": "0x18115ce18",
+          "name": "ceil",
+          "hint": 120
+        },
+        {
+          "iat_va": "0x18115ce20",
+          "name": "cos",
+          "hint": 134
+        },
+        {
+          "iat_va": "0x18115ce28",
+          "name": "cosf",
+          "hint": 135
+        },
+        {
+          "iat_va": "0x18115ce30",
+          "name": "exp",
+          "hint": 158
+        },
+        {
+          "iat_va": "0x18115ce38",
+          "name": "exp2",
+          "hint": 159
+        },
+        {
+          "iat_va": "0x18115ce40",
+          "name": "exp2f",
+          "hint": 160
+        },
+        {
+          "iat_va": "0x18115ce48",
+          "name": "expf",
+          "hint": 161
+        },
+        {
+          "iat_va": "0x18115ce50",
+          "name": "floor",
+          "hint": 167
+        },
+        {
+          "iat_va": "0x18115ce58",
+          "name": "fmaxf",
+          "hint": 172
+        },
+        {
+          "iat_va": "0x18115ce60",
+          "name": "fminf",
+          "hint": 174
+        },
+        {
+          "iat_va": "0x18115ce68",
+          "name": "frexp",
+          "hint": 177
+        },
+        {
+          "iat_va": "0x18115ce70",
+          "name": "hypot",
+          "hint": 178
+        },
+        {
+          "iat_va": "0x18115ce78",
+          "name": "log",
+          "hint": 188
+        },
+        {
+          "iat_va": "0x18115ce80",
+          "name": "log10",
+          "hint": 189
+        },
+        {
+          "iat_va": "0x18115ce88",
+          "name": "log10f",
+          "hint": 190
+        },
+        {
+          "iat_va": "0x18115ce90",
+          "name": "log2",
+          "hint": 193
+        },
+        {
+          "iat_va": "0x18115ce98",
+          "name": "log2f",
+          "hint": 194
+        },
+        {
+          "iat_va": "0x18115cea0",
+          "name": "pow",
+          "hint": 213
+        },
+        {
+          "iat_va": "0x18115cea8",
+          "name": "powf",
+          "hint": 214
+        },
+        {
+          "iat_va": "0x18115ceb0",
+          "name": "sin",
+          "hint": 227
+        },
+        {
+          "iat_va": "0x18115ceb8",
+          "name": "sinf",
+          "hint": 228
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-private-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115cec8",
+          "name": "memchr",
+          "hint": 1141
+        },
+        {
+          "iat_va": "0x18115ced0",
+          "name": "memcmp",
+          "hint": 1142
+        },
+        {
+          "iat_va": "0x18115ced8",
+          "name": "memcpy",
+          "hint": 1143
+        },
+        {
+          "iat_va": "0x18115cee0",
+          "name": "memmove",
+          "hint": 1144
+        },
+        {
+          "iat_va": "0x18115cee8",
+          "name": "strchr",
+          "hint": 1147
+        },
+        {
+          "iat_va": "0x18115cef0",
+          "name": "strstr",
+          "hint": 1149
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-runtime-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115cf00",
+          "name": "_beginthreadex",
+          "hint": 20
+        },
+        {
+          "iat_va": "0x18115cf08",
+          "name": "_errno",
+          "hint": 34
+        },
+        {
+          "iat_va": "0x18115cf10",
+          "name": "_execute_onexit_table",
+          "hint": 35
+        },
+        {
+          "iat_va": "0x18115cf18",
+          "name": "_exit",
+          "hint": 36
+        },
+        {
+          "iat_va": "0x18115cf20",
+          "name": "_initialize_onexit_table",
+          "hint": 54
+        },
+        {
+          "iat_va": "0x18115cf28",
+          "name": "_initterm",
+          "hint": 56
+        },
+        {
+          "iat_va": "0x18115cf30",
+          "name": "_register_onexit_function",
+          "hint": 62
+        },
+        {
+          "iat_va": "0x18115cf38",
+          "name": "abort",
+          "hint": 87
+        },
+        {
+          "iat_va": "0x18115cf40",
+          "name": "strerror",
+          "hint": 103
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-stdio-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115cf50",
+          "name": "__acrt_iob_func",
+          "hint": 0
+        },
+        {
+          "iat_va": "0x18115cf58",
+          "name": "__stdio_common_vfprintf",
+          "hint": 3
+        },
+        {
+          "iat_va": "0x18115cf60",
+          "name": "fclose",
+          "hint": 147
+        },
+        {
+          "iat_va": "0x18115cf68",
+          "name": "fputc",
+          "hint": 159
+        },
+        {
+          "iat_va": "0x18115cf70",
+          "name": "fread",
+          "hint": 163
+        },
+        {
+          "iat_va": "0x18115cf78",
+          "name": "fseek",
+          "hint": 167
+        },
+        {
+          "iat_va": "0x18115cf80",
+          "name": "fwrite",
+          "hint": 171
+        },
+        {
+          "iat_va": "0x18115cf88",
+          "name": "getc",
+          "hint": 172
+        },
+        {
+          "iat_va": "0x18115cf90",
+          "name": "ungetc",
+          "hint": 190
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-string-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115cfa0",
+          "name": "isspace",
+          "hint": 138
+        },
+        {
+          "iat_va": "0x18115cfa8",
+          "name": "isxdigit",
+          "hint": 154
+        },
+        {
+          "iat_va": "0x18115cfb0",
+          "name": "mbrlen",
+          "hint": 156
+        },
+        {
+          "iat_va": "0x18115cfb8",
+          "name": "memset",
+          "hint": 159
+        },
+        {
+          "iat_va": "0x18115cfc0",
+          "name": "strcmp",
+          "hint": 162
+        },
+        {
+          "iat_va": "0x18115cfc8",
+          "name": "strcspn",
+          "hint": 166
+        },
+        {
+          "iat_va": "0x18115cfd0",
+          "name": "strlen",
+          "hint": 167
+        },
+        {
+          "iat_va": "0x18115cfd8",
+          "name": "strncmp",
+          "hint": 170
+        },
+        {
+          "iat_va": "0x18115cfe0",
+          "name": "strncpy",
+          "hint": 171
+        },
+        {
+          "iat_va": "0x18115cfe8",
+          "name": "strnlen",
+          "hint": 173
+        },
+        {
+          "iat_va": "0x18115cff0",
+          "name": "strspn",
+          "hint": 175
+        },
+        {
+          "iat_va": "0x18115cff8",
+          "name": "tolower",
+          "hint": 179
+        },
+        {
+          "iat_va": "0x18115d000",
+          "name": "wcslen",
+          "hint": 191
+        },
+        {
+          "iat_va": "0x18115d008",
+          "name": "wcsnlen",
+          "hint": 197
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-time-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115d018",
+          "name": "_localtime64_s",
+          "hint": 42
+        },
+        {
+          "iat_va": "0x18115d020",
+          "name": "_time64",
+          "hint": 57
+        },
+        {
+          "iat_va": "0x18115d028",
+          "name": "strftime",
+          "hint": 84
+        }
+      ]
+    },
+    {
+      "dll": "api-ms-win-crt-utility-l1-1-0.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115d038",
+          "name": "bsearch",
+          "hint": 19
+        },
+        {
+          "iat_va": "0x18115d040",
+          "name": "qsort",
+          "hint": 28
+        }
+      ]
+    },
+    {
+      "dll": "ole32.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115d050",
+          "name": "CoTaskMemFree",
+          "hint": 128
+        }
+      ]
+    },
+    {
+      "dll": "zlib1.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115d060",
+          "name": "inflate",
+          "hint": 75
+        },
+        {
+          "iat_va": "0x18115d068",
+          "name": "inflateEnd",
+          "hint": 81
+        },
+        {
+          "iat_va": "0x18115d070",
+          "name": "inflateInit_",
+          "hint": 85
+        },
+        {
+          "iat_va": "0x18115d078",
+          "name": "inflateReset",
+          "hint": 88
+        },
+        {
+          "iat_va": "0x18115d080",
+          "name": "inflateSync",
+          "hint": 92
+        },
+        {
+          "iat_va": "0x18115d088",
+          "name": "uncompress",
+          "hint": 99
+        }
+      ]
+    },
+    {
+      "dll": "avutil-59.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115d098",
+          "name": "av_adler32_update",
+          "hint": 3
+        },
+        {
+          "iat_va": "0x18115d0a0",
+          "name": "av_ambient_viewing_environment_alloc",
+          "hint": 17
+        },
+        {
+          "iat_va": "0x18115d0a8",
+          "name": "av_asprintf",
+          "hint": 20
+        },
+        {
+          "iat_va": "0x18115d0b0",
+          "name": "av_audio_fifo_alloc",
+          "hint": 22
+        },
+        {
+          "iat_va": "0x18115d0b8",
+          "name": "av_audio_fifo_drain",
+          "hint": 23
+        },
+        {
+          "iat_va": "0x18115d0c0",
+          "name": "av_audio_fifo_free",
+          "hint": 24
+        },
+        {
+          "iat_va": "0x18115d0c8",
+          "name": "av_audio_fifo_read",
+          "hint": 27
+        },
+        {
+          "iat_va": "0x18115d0d0",
+          "name": "av_audio_fifo_reset",
+          "hint": 29
+        },
+        {
+          "iat_va": "0x18115d0d8",
+          "name": "av_audio_fifo_size",
+          "hint": 30
+        },
+        {
+          "iat_va": "0x18115d0e0",
+          "name": "av_audio_fifo_write",
+          "hint": 32
+        },
+        {
+          "iat_va": "0x18115d0e8",
+          "name": "av_bessel_i0",
+          "hint": 36
+        },
+        {
+          "iat_va": "0x18115d0f0",
+          "name": "av_bmg_get",
+          "hint": 41
+        },
+        {
+          "iat_va": "0x18115d0f8",
+          "name": "av_bprint_append_data",
+          "hint": 42
+        },
+        {
+          "iat_va": "0x18115d100",
+          "name": "av_bprint_chars",
+          "hint": 43
+        },
+        {
+          "iat_va": "0x18115d108",
+          "name": "av_bprint_clear",
+          "hint": 44
+        },
+        {
+          "iat_va": "0x18115d110",
+          "name": "av_bprint_finalize",
+          "hint": 46
+        },
+        {
+          "iat_va": "0x18115d118",
+          "name": "av_bprint_get_buffer",
+          "hint": 47
+        },
+        {
+          "iat_va": "0x18115d120",
+          "name": "av_bprint_init",
+          "hint": 48
+        },
+        {
+          "iat_va": "0x18115d128",
+          "name": "av_bprint_init_for_buffer",
+          "hint": 49
+        },
+        {
+          "iat_va": "0x18115d130",
+          "name": "av_bprintf",
+          "hint": 51
+        },
+        {
+          "iat_va": "0x18115d138",
+          "name": "av_buffer_alloc",
+          "hint": 52
+        },
+        {
+          "iat_va": "0x18115d140",
+          "name": "av_buffer_allocz",
+          "hint": 53
+        },
+        {
+          "iat_va": "0x18115d148",
+          "name": "av_buffer_create",
+          "hint": 54
+        },
+        {
+          "iat_va": "0x18115d150",
+          "name": "av_buffer_default_free",
+          "hint": 55
+        },
+        {
+          "iat_va": "0x18115d158",
+          "name": "av_buffer_get_ref_count",
+          "hint": 57
+        },
+        {
+          "iat_va": "0x18115d160",
+          "name": "av_buffer_is_writable",
+          "hint": 58
+        },
+        {
+          "iat_va": "0x18115d168",
+          "name": "av_buffer_make_writable",
+          "hint": 59
+        },
+        {
+          "iat_va": "0x18115d170",
+          "name": "av_buffer_pool_get",
+          "hint": 61
+        },
+        {
+          "iat_va": "0x18115d178",
+          "name": "av_buffer_pool_init",
+          "hint": 62
+        },
+        {
+          "iat_va": "0x18115d180",
+          "name": "av_buffer_pool_uninit",
+          "hint": 64
+        },
+        {
+          "iat_va": "0x18115d188",
+          "name": "av_buffer_realloc",
+          "hint": 65
+        },
+        {
+          "iat_va": "0x18115d190",
+          "name": "av_buffer_ref",
+          "hint": 66
+        },
+        {
+          "iat_va": "0x18115d198",
+          "name": "av_buffer_replace",
+          "hint": 67
+        },
+        {
+          "iat_va": "0x18115d1a0",
+          "name": "av_buffer_unref",
+          "hint": 68
+        },
+        {
+          "iat_va": "0x18115d1a8",
+          "name": "av_calloc",
+          "hint": 69
+        },
+        {
+          "iat_va": "0x18115d1b0",
+          "name": "av_channel_layout_check",
+          "hint": 85
+        },
+        {
+          "iat_va": "0x18115d1b8",
+          "name": "av_channel_layout_compare",
+          "hint": 86
+        },
+        {
+          "iat_va": "0x18115d1c0",
+          "name": "av_channel_layout_copy",
+          "hint": 87
+        },
+        {
+          "iat_va": "0x18115d1c8",
+          "name": "av_channel_layout_custom_init",
+          "hint": 88
+        },
+        {
+          "iat_va": "0x18115d1d0",
+          "name": "av_channel_layout_default",
+          "hint": 89
+        },
+        {
+          "iat_va": "0x18115d1d8",
+          "name": "av_channel_layout_describe",
+          "hint": 90
+        },
+        {
+          "iat_va": "0x18115d1e0",
+          "name": "av_channel_layout_describe_bprint",
+          "hint": 91
+        },
+        {
+          "iat_va": "0x18115d1e8",
+          "name": "av_channel_layout_from_mask",
+          "hint": 92
+        },
+        {
+          "iat_va": "0x18115d1f0",
+          "name": "av_channel_layout_index_from_channel",
+          "hint": 94
+        },
+        {
+          "iat_va": "0x18115d1f8",
+          "name": "av_channel_layout_retype",
+          "hint": 96
+        },
+        {
+          "iat_va": "0x18115d200",
+          "name": "av_channel_layout_subset",
+          "hint": 98
+        },
+        {
+          "iat_va": "0x18115d208",
+          "name": "av_channel_layout_uninit",
+          "hint": 99
+        },
+        {
+          "iat_va": "0x18115d210",
+          "name": "av_chroma_location_name",
+          "hint": 104
+        },
+        {
+          "iat_va": "0x18115d218",
+          "name": "av_color_primaries_name",
+          "hint": 108
+        },
+        {
+          "iat_va": "0x18115d220",
+          "name": "av_color_range_name",
+          "hint": 110
+        },
+        {
+          "iat_va": "0x18115d228",
+          "name": "av_color_space_name",
+          "hint": 112
+        },
+        {
+          "iat_va": "0x18115d230",
+          "name": "av_color_transfer_name",
+          "hint": 114
+        },
+        {
+          "iat_va": "0x18115d238",
+          "name": "av_content_light_metadata_alloc",
+          "hint": 117
+        },
+        {
+          "iat_va": "0x18115d240",
+          "name": "av_content_light_metadata_create_side_data",
+          "hint": 118
+        },
+        {
+          "iat_va": "0x18115d248",
+          "name": "av_cpu_count",
+          "hint": 119
+        },
+        {
+          "iat_va": "0x18115d250",
+          "name": "av_crc",
+          "hint": 122
+        },
+        {
+          "iat_va": "0x18115d258",
+          "name": "av_crc_get_table",
+          "hint": 123
+        },
+        {
+          "iat_va": "0x18115d260",
+          "name": "av_crc_init",
+          "hint": 124
+        },
+        {
+          "iat_va": "0x18115d268",
+          "name": "av_csp_primaries_id_from_desc",
+          "hint": 128
+        },
+        {
+          "iat_va": "0x18115d270",
+          "name": "av_csp_trc_func_from_id",
+          "hint": 129
+        },
+        {
+          "iat_va": "0x18115d278",
+          "name": "av_d2q",
+          "hint": 130
+        },
+        {
+          "iat_va": "0x18115d280",
+          "name": "av_default_item_name",
+          "hint": 132
+        },
+        {
+          "iat_va": "0x18115d288",
+          "name": "av_dict_copy",
+          "hint": 139
+        },
+        {
+          "iat_va": "0x18115d290",
+          "name": "av_dict_free",
+          "hint": 141
+        },
+        {
+          "iat_va": "0x18115d298",
+          "name": "av_dict_get",
+          "hint": 142
+        },
+        {
+          "iat_va": "0x18115d2a0",
+          "name": "av_dict_iterate",
+          "hint": 144
+        },
+        {
+          "iat_va": "0x18115d2a8",
+          "name": "av_dict_set",
+          "hint": 146
+        },
+        {
+          "iat_va": "0x18115d2b0",
+          "name": "av_display_matrix_flip",
+          "hint": 149
+        },
+        {
+          "iat_va": "0x18115d2b8",
+          "name": "av_display_rotation_set",
+          "hint": 151
+        },
+        {
+          "iat_va": "0x18115d2c0",
+          "name": "av_div_q",
+          "hint": 153
+        },
+        {
+          "iat_va": "0x18115d2c8",
+          "name": "av_dovi_alloc",
+          "hint": 154
+        },
+        {
+          "iat_va": "0x18115d2d0",
+          "name": "av_dovi_metadata_alloc",
+          "hint": 156
+        },
+        {
+          "iat_va": "0x18115d2d8",
+          "name": "av_downmix_info_update_side_data",
+          "hint": 157
+        },
+        {
+          "iat_va": "0x18115d2e0",
+          "name": "av_dynamic_hdr_plus_alloc",
+          "hint": 158
+        },
+        {
+          "iat_va": "0x18115d2e8",
+          "name": "av_dynamic_hdr_plus_create_side_data",
+          "hint": 159
+        },
+        {
+          "iat_va": "0x18115d2f0",
+          "name": "av_dynamic_hdr_plus_from_t35",
+          "hint": 160
+        },
+        {
+          "iat_va": "0x18115d2f8",
+          "name": "av_dynamic_hdr_vivid_alloc",
+          "hint": 162
+        },
+        {
+          "iat_va": "0x18115d300",
+          "name": "av_dynarray_add_nofree",
+          "hint": 166
+        },
+        {
+          "iat_va": "0x18115d308",
+          "name": "av_executor_alloc",
+          "hint": 177
+        },
+        {
+          "iat_va": "0x18115d310",
+          "name": "av_executor_execute",
+          "hint": 178
+        },
+        {
+          "iat_va": "0x18115d318",
+          "name": "av_executor_free",
+          "hint": 179
+        },
+        {
+          "iat_va": "0x18115d320",
+          "name": "av_expr_eval",
+          "hint": 182
+        },
+        {
+          "iat_va": "0x18115d328",
+          "name": "av_expr_free",
+          "hint": 183
+        },
+        {
+          "iat_va": "0x18115d330",
+          "name": "av_expr_parse",
+          "hint": 184
+        },
+        {
+          "iat_va": "0x18115d338",
+          "name": "av_fast_malloc",
+          "hint": 186
+        },
+        {
+          "iat_va": "0x18115d340",
+          "name": "av_fast_mallocz",
+          "hint": 187
+        },
+        {
+          "iat_va": "0x18115d348",
+          "name": "av_fast_realloc",
+          "hint": 188
+        },
+        {
+          "iat_va": "0x18115d350",
+          "name": "av_fifo_alloc2",
+          "hint": 189
+        },
+        {
+          "iat_va": "0x18115d358",
+          "name": "av_fifo_can_read",
+          "hint": 191
+        },
+        {
+          "iat_va": "0x18115d360",
+          "name": "av_fifo_can_write",
+          "hint": 192
+        },
+        {
+          "iat_va": "0x18115d368",
+          "name": "av_fifo_freep2",
+          "hint": 195
+        },
+        {
+          "iat_va": "0x18115d370",
+          "name": "av_fifo_peek",
+          "hint": 197
+        },
+        {
+          "iat_va": "0x18115d378",
+          "name": "av_fifo_read",
+          "hint": 199
+        },
+        {
+          "iat_va": "0x18115d380",
+          "name": "av_fifo_write",
+          "hint": 202
+        },
+        {
+          "iat_va": "0x18115d388",
+          "name": "av_film_grain_params_alloc",
+          "hint": 206
+        },
+        {
+          "iat_va": "0x18115d390",
+          "name": "av_film_grain_params_create_side_data",
+          "hint": 207
+        },
+        {
+          "iat_va": "0x18115d398",
+          "name": "av_film_grain_params_select",
+          "hint": 208
+        },
+        {
+          "iat_va": "0x18115d3a0",
+          "name": "av_find_best_pix_fmt_of_2",
+          "hint": 209
+        },
+        {
+          "iat_va": "0x18115d3a8",
+          "name": "av_fourcc_make_string",
+          "hint": 213
+        },
+        {
+          "iat_va": "0x18115d3b0",
+          "name": "av_frame_alloc",
+          "hint": 214
+        },
+        {
+          "iat_va": "0x18115d3b8",
+          "name": "av_frame_apply_cropping",
+          "hint": 215
+        },
+        {
+          "iat_va": "0x18115d3c0",
+          "name": "av_frame_clone",
+          "hint": 216
+        },
+        {
+          "iat_va": "0x18115d3c8",
+          "name": "av_frame_copy",
+          "hint": 217
+        },
+        {
+          "iat_va": "0x18115d3d0",
+          "name": "av_frame_copy_props",
+          "hint": 218
+        },
+        {
+          "iat_va": "0x18115d3d8",
+          "name": "av_frame_free",
+          "hint": 219
+        },
+        {
+          "iat_va": "0x18115d3e0",
+          "name": "av_frame_get_buffer",
+          "hint": 220
+        },
+        {
+          "iat_va": "0x18115d3e8",
+          "name": "av_frame_get_side_data",
+          "hint": 222
+        },
+        {
+          "iat_va": "0x18115d3f0",
+          "name": "av_frame_is_writable",
+          "hint": 223
+        },
+        {
+          "iat_va": "0x18115d3f8",
+          "name": "av_frame_move_ref",
+          "hint": 225
+        },
+        {
+          "iat_va": "0x18115d400",
+          "name": "av_frame_new_side_data",
+          "hint": 226
+        },
+        {
+          "iat_va": "0x18115d408",
+          "name": "av_frame_new_side_data_from_buf",
+          "hint": 227
+        },
+        {
+          "iat_va": "0x18115d410",
+          "name": "av_frame_ref",
+          "hint": 228
+        },
+        {
+          "iat_va": "0x18115d418",
+          "name": "av_frame_remove_side_data",
+          "hint": 229
+        },
+        {
+          "iat_va": "0x18115d420",
+          "name": "av_frame_replace",
+          "hint": 230
+        },
+        {
+          "iat_va": "0x18115d428",
+          "name": "av_frame_side_data_add",
+          "hint": 231
+        },
+        {
+          "iat_va": "0x18115d430",
+          "name": "av_frame_side_data_clone",
+          "hint": 232
+        },
+        {
+          "iat_va": "0x18115d438",
+          "name": "av_frame_side_data_free",
+          "hint": 234
+        },
+        {
+          "iat_va": "0x18115d440",
+          "name": "av_frame_side_data_get_c",
+          "hint": 235
+        },
+        {
+          "iat_va": "0x18115d448",
+          "name": "av_frame_side_data_new",
+          "hint": 237
+        },
+        {
+          "iat_va": "0x18115d450",
+          "name": "av_frame_side_data_remove",
+          "hint": 238
+        },
+        {
+          "iat_va": "0x18115d458",
+          "name": "av_frame_unref",
+          "hint": 239
+        },
+        {
+          "iat_va": "0x18115d460",
+          "name": "av_free",
+          "hint": 240
+        },
+        {
+          "iat_va": "0x18115d468",
+          "name": "av_freep",
+          "hint": 241
+        },
+        {
+          "iat_va": "0x18115d470",
+          "name": "av_gcd",
+          "hint": 242
+        },
+        {
+          "iat_va": "0x18115d478",
+          "name": "av_get_bits_per_pixel",
+          "hint": 245
+        },
+        {
+          "iat_va": "0x18115d480",
+          "name": "av_get_bytes_per_sample",
+          "hint": 246
+        },
+        {
+          "iat_va": "0x18115d488",
+          "name": "av_get_cpu_flags",
+          "hint": 247
+        },
+        {
+          "iat_va": "0x18115d490",
+          "name": "av_get_media_type_string",
+          "hint": 249
+        },
+        {
+          "iat_va": "0x18115d498",
+          "name": "av_get_picture_type_char",
+          "hint": 252
+        },
+        {
+          "iat_va": "0x18115d4a0",
+          "name": "av_get_pix_fmt_name",
+          "hint": 255
+        },
+        {
+          "iat_va": "0x18115d4a8",
+          "name": "av_get_planar_sample_fmt",
+          "hint": 257
+        },
+        {
+          "iat_va": "0x18115d4b0",
+          "name": "av_get_sample_fmt_name",
+          "hint": 260
+        },
+        {
+          "iat_va": "0x18115d4b8",
+          "name": "av_get_token",
+          "hint": 263
+        },
+        {
+          "iat_va": "0x18115d4c0",
+          "name": "av_hwdevice_get_type_name",
+          "hint": 291
+        },
+        {
+          "iat_va": "0x18115d4c8",
+          "name": "av_hwframe_ctx_alloc",
+          "hint": 295
+        },
+        {
+          "iat_va": "0x18115d4d0",
+          "name": "av_hwframe_ctx_init",
+          "hint": 297
+        },
+        {
+          "iat_va": "0x18115d4d8",
+          "name": "av_hwframe_get_buffer",
+          "hint": 298
+        },
+        {
+          "iat_va": "0x18115d4e0",
+          "name": "av_image_alloc",
+          "hint": 315
+        },
+        {
+          "iat_va": "0x18115d4e8",
+          "name": "av_image_check_sar",
+          "hint": 316
+        },
+        {
+          "iat_va": "0x18115d4f0",
+          "name": "av_image_check_size",
+          "hint": 317
+        },
+        {
+          "iat_va": "0x18115d4f8",
+          "name": "av_image_check_size2",
+          "hint": 318
+        },
+        {
+          "iat_va": "0x18115d500",
+          "name": "av_image_copy",
+          "hint": 319
+        },
+        {
+          "iat_va": "0x18115d508",
+          "name": "av_image_copy_plane",
+          "hint": 320
+        },
+        {
+          "iat_va": "0x18115d510",
+          "name": "av_image_fill_arrays",
+          "hint": 324
+        },
+        {
+          "iat_va": "0x18115d518",
+          "name": "av_image_fill_black",
+          "hint": 325
+        },
+        {
+          "iat_va": "0x18115d520",
+          "name": "av_image_fill_linesizes",
+          "hint": 327
+        },
+        {
+          "iat_va": "0x18115d528",
+          "name": "av_image_fill_plane_sizes",
+          "hint": 329
+        },
+        {
+          "iat_va": "0x18115d530",
+          "name": "av_image_get_buffer_size",
+          "hint": 331
+        },
+        {
+          "iat_va": "0x18115d538",
+          "name": "av_image_get_linesize",
+          "hint": 332
+        },
+        {
+          "iat_va": "0x18115d540",
+          "name": "av_lfg_init",
+          "hint": 335
+        },
+        {
+          "iat_va": "0x18115d548",
+          "name": "av_lfg_init_from_data",
+          "hint": 336
+        },
+        {
+          "iat_va": "0x18115d550",
+          "name": "av_log",
+          "hint": 337
+        },
+        {
+          "iat_va": "0x18115d558",
+          "name": "av_log_get_level",
+          "hint": 345
+        },
+        {
+          "iat_va": "0x18115d560",
+          "name": "av_log_once",
+          "hint": 346
+        },
+        {
+          "iat_va": "0x18115d568",
+          "name": "av_lzo1x_decode",
+          "hint": 350
+        },
+        {
+          "iat_va": "0x18115d570",
+          "name": "av_malloc",
+          "hint": 351
+        },
+        {
+          "iat_va": "0x18115d578",
+          "name": "av_malloc_array",
+          "hint": 352
+        },
+        {
+          "iat_va": "0x18115d580",
+          "name": "av_mallocz",
+          "hint": 353
+        },
+        {
+          "iat_va": "0x18115d588",
+          "name": "av_mastering_display_metadata_alloc_size",
+          "hint": 355
+        },
+        {
+          "iat_va": "0x18115d590",
+          "name": "av_mastering_display_metadata_create_side_data",
+          "hint": 356
+        },
+        {
+          "iat_va": "0x18115d598",
+          "name": "av_match_list",
+          "hint": 357
+        },
+        {
+          "iat_va": "0x18115d5a0",
+          "name": "av_md5_alloc",
+          "hint": 360
+        },
+        {
+          "iat_va": "0x18115d5a8",
+          "name": "av_md5_final",
+          "hint": 361
+        },
+        {
+          "iat_va": "0x18115d5b0",
+          "name": "av_md5_init",
+          "hint": 362
+        },
+        {
+          "iat_va": "0x18115d5b8",
+          "name": "av_md5_update",
+          "hint": 365
+        },
+        {
+          "iat_va": "0x18115d5c0",
+          "name": "av_memcpy_backptr",
+          "hint": 366
+        },
+        {
+          "iat_va": "0x18115d5c8",
+          "name": "av_memdup",
+          "hint": 367
+        },
+        {
+          "iat_va": "0x18115d5d0",
+          "name": "av_mul_q",
+          "hint": 370
+        },
+        {
+          "iat_va": "0x18115d5d8",
+          "name": "av_opt_copy",
+          "hint": 379
+        },
+        {
+          "iat_va": "0x18115d5e0",
+          "name": "av_opt_free",
+          "hint": 390
+        },
+        {
+          "iat_va": "0x18115d5e8",
+          "name": "av_opt_get_int",
+          "hint": 399
+        },
+        {
+          "iat_va": "0x18115d5f0",
+          "name": "av_opt_next",
+          "hint": 407
+        },
+        {
+          "iat_va": "0x18115d5f8",
+          "name": "av_opt_set",
+          "hint": 412
+        },
+        {
+          "iat_va": "0x18115d600",
+          "name": "av_opt_set_chlayout",
+          "hint": 415
+        },
+        {
+          "iat_va": "0x18115d608",
+          "name": "av_opt_set_defaults",
+          "hint": 416
+        },
+        {
+          "iat_va": "0x18115d610",
+          "name": "av_opt_set_defaults2",
+          "hint": 417
+        },
+        {
+          "iat_va": "0x18115d618",
+          "name": "av_opt_set_dict2",
+          "hint": 419
+        },
+        {
+          "iat_va": "0x18115d620",
+          "name": "av_opt_set_from_string",
+          "hint": 422
+        },
+        {
+          "iat_va": "0x18115d628",
+          "name": "av_opt_set_int",
+          "hint": 424
+        },
+        {
+          "iat_va": "0x18115d630",
+          "name": "av_parse_color",
+          "hint": 430
+        },
+        {
+          "iat_va": "0x18115d638",
+          "name": "av_pix_fmt_count_planes",
+          "hint": 436
+        },
+        {
+          "iat_va": "0x18115d640",
+          "name": "av_pix_fmt_desc_get",
+          "hint": 437
+        },
+        {
+          "iat_va": "0x18115d648",
+          "name": "av_pix_fmt_get_chroma_sub_sample",
+          "hint": 440
+        },
+        {
+          "iat_va": "0x18115d650",
+          "name": "av_realloc",
+          "hint": 450
+        },
+        {
+          "iat_va": "0x18115d658",
+          "name": "av_realloc_array",
+          "hint": 451
+        },
+        {
+          "iat_va": "0x18115d660",
+          "name": "av_realloc_f",
+          "hint": 452
+        },
+        {
+          "iat_va": "0x18115d668",
+          "name": "av_reallocp",
+          "hint": 453
+        },
+        {
+          "iat_va": "0x18115d670",
+          "name": "av_reallocp_array",
+          "hint": 454
+        },
+        {
+          "iat_va": "0x18115d678",
+          "name": "av_reduce",
+          "hint": 455
+        },
+        {
+          "iat_va": "0x18115d680",
+          "name": "av_rescale",
+          "hint": 456
+        },
+        {
+          "iat_va": "0x18115d688",
+          "name": "av_rescale_q",
+          "hint": 458
+        },
+        {
+          "iat_va": "0x18115d690",
+          "name": "av_rescale_q_rnd",
+          "hint": 459
+        },
+        {
+          "iat_va": "0x18115d698",
+          "name": "av_sample_fmt_is_planar",
+          "hint": 466
+        },
+        {
+          "iat_va": "0x18115d6a0",
+          "name": "av_samples_copy",
+          "hint": 469
+        },
+        {
+          "iat_va": "0x18115d6a8",
+          "name": "av_samples_fill_arrays",
+          "hint": 470
+        },
+        {
+          "iat_va": "0x18115d6b0",
+          "name": "av_samples_get_buffer_size",
+          "hint": 471
+        },
+        {
+          "iat_va": "0x18115d6b8",
+          "name": "av_samples_set_silence",
+          "hint": 472
+        },
+        {
+          "iat_va": "0x18115d6c0",
+          "name": "av_size_mult",
+          "hint": 485
+        },
+        {
+          "iat_va": "0x18115d6c8",
+          "name": "av_sscanf",
+          "hint": 491
+        },
+        {
+          "iat_va": "0x18115d6d0",
+          "name": "av_stereo3d_alloc",
+          "hint": 492
+        },
+        {
+          "iat_va": "0x18115d6d8",
+          "name": "av_stereo3d_create_side_data",
+          "hint": 494
+        },
+        {
+          "iat_va": "0x18115d6e0",
+          "name": "av_strcasecmp",
+          "hint": 501
+        },
+        {
+          "iat_va": "0x18115d6e8",
+          "name": "av_strdup",
+          "hint": 502
+        },
+        {
+          "iat_va": "0x18115d6f0",
+          "name": "av_strerror",
+          "hint": 503
+        },
+        {
+          "iat_va": "0x18115d6f8",
+          "name": "av_stristr",
+          "hint": 506
+        },
+        {
+          "iat_va": "0x18115d700",
+          "name": "av_strlcat",
+          "hint": 507
+        },
+        {
+          "iat_va": "0x18115d708",
+          "name": "av_strlcatf",
+          "hint": 508
+        },
+        {
+          "iat_va": "0x18115d710",
+          "name": "av_strlcpy",
+          "hint": 509
+        },
+        {
+          "iat_va": "0x18115d718",
+          "name": "av_strncasecmp",
+          "hint": 510
+        },
+        {
+          "iat_va": "0x18115d720",
+          "name": "av_strnstr",
+          "hint": 512
+        },
+        {
+          "iat_va": "0x18115d728",
+          "name": "av_strtok",
+          "hint": 515
+        },
+        {
+          "iat_va": "0x18115d730",
+          "name": "av_timecode_get_smpte",
+          "hint": 533
+        },
+        {
+          "iat_va": "0x18115d738",
+          "name": "av_timecode_make_mpeg_tc_string",
+          "hint": 538
+        },
+        {
+          "iat_va": "0x18115d740",
+          "name": "av_timecode_make_smpte_tc_string2",
+          "hint": 540
+        },
+        {
+          "iat_va": "0x18115d748",
+          "name": "av_tree_destroy",
+          "hint": 543
+        },
+        {
+          "iat_va": "0x18115d750",
+          "name": "av_tree_enumerate",
+          "hint": 544
+        },
+        {
+          "iat_va": "0x18115d758",
+          "name": "av_tree_find",
+          "hint": 545
+        },
+        {
+          "iat_va": "0x18115d760",
+          "name": "av_tree_insert",
+          "hint": 546
+        },
+        {
+          "iat_va": "0x18115d768",
+          "name": "av_tree_node_alloc",
+          "hint": 547
+        },
+        {
+          "iat_va": "0x18115d770",
+          "name": "av_ts_make_time_string2",
+          "hint": 549
+        },
+        {
+          "iat_va": "0x18115d778",
+          "name": "av_tx_init",
+          "hint": 554
+        },
+        {
+          "iat_va": "0x18115d780",
+          "name": "av_tx_uninit",
+          "hint": 555
+        },
+        {
+          "iat_va": "0x18115d788",
+          "name": "av_usleep",
+          "hint": 556
+        },
+        {
+          "iat_va": "0x18115d790",
+          "name": "av_video_enc_params_create_side_data",
+          "hint": 566
+        },
+        {
+          "iat_va": "0x18115d798",
+          "name": "avpriv_alloc_fixed_dsp",
+          "hint": 579
+        },
+        {
+          "iat_va": "0x18115d7a0",
+          "name": "avpriv_cga_font",
+          "hint": 580
+        },
+        {
+          "iat_va": "0x18115d7a8",
+          "name": "avpriv_float_dsp_alloc",
+          "hint": 582
+        },
+        {
+          "iat_va": "0x18115d7b0",
+          "name": "avpriv_fopen_utf8",
+          "hint": 583
+        },
+        {
+          "iat_va": "0x18115d7b8",
+          "name": "avpriv_report_missing_feature",
+          "hint": 586
+        },
+        {
+          "iat_va": "0x18115d7c0",
+          "name": "avpriv_request_sample",
+          "hint": 587
+        },
+        {
+          "iat_va": "0x18115d7c8",
+          "name": "avpriv_scalarproduct_float_c",
+          "hint": 588
+        },
+        {
+          "iat_va": "0x18115d7d0",
+          "name": "avpriv_slicethread_create",
+          "hint": 590
+        },
+        {
+          "iat_va": "0x18115d7d8",
+          "name": "avpriv_slicethread_execute",
+          "hint": 591
+        },
+        {
+          "iat_va": "0x18115d7e0",
+          "name": "avpriv_slicethread_free",
+          "hint": 592
+        },
+        {
+          "iat_va": "0x18115d7e8",
+          "name": "avpriv_vga16_font",
+          "hint": 595
+        }
+      ]
+    },
+    {
+      "dll": "swresample-5.dll",
+      "symbols": [
+        {
+          "iat_va": "0x18115d7f8",
+          "name": "swr_alloc",
+          "hint": 0
+        },
+        {
+          "iat_va": "0x18115d800",
+          "name": "swr_close",
+          "hint": 3
+        },
+        {
+          "iat_va": "0x18115d808",
+          "name": "swr_convert",
+          "hint": 5
+        },
+        {
+          "iat_va": "0x18115d810",
+          "name": "swr_free",
+          "hint": 9
+        },
+        {
+          "iat_va": "0x18115d818",
+          "name": "swr_init",
+          "hint": 13
+        },
+        {
+          "iat_va": "0x18115d820",
+          "name": "swr_is_initialized",
+          "hint": 15
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "ordinal": 1,
+      "rva": "0x459d0",
+      "va": "0x1800459d0",
+      "names": [
+        "av_ac3_parse_header"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "rva": "0x69500",
+      "va": "0x180069500",
+      "names": [
+        "av_adts_header_parse"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "rva": "0xc2fd0",
+      "va": "0x1800c2fd0",
+      "names": [
+        "av_bsf_alloc"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "rva": "0xc32e0",
+      "va": "0x1800c32e0",
+      "names": [
+        "av_bsf_flush"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "rva": "0xc2f40",
+      "va": "0x1800c2f40",
+      "names": [
+        "av_bsf_free"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "rva": "0xbf6e0",
+      "va": "0x1800bf6e0",
+      "names": [
+        "av_bsf_get_by_name"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "rva": "0xc2fc0",
+      "va": "0x1800c2fc0",
+      "names": [
+        "av_bsf_get_class"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "rva": "0xc3a30",
+      "va": "0x1800c3a30",
+      "names": [
+        "av_bsf_get_null_filter"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "rva": "0xc3100",
+      "va": "0x1800c3100",
+      "names": [
+        "av_bsf_init"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "rva": "0xbf6c0",
+      "va": "0x1800bf6c0",
+      "names": [
+        "av_bsf_iterate"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "rva": "0xc3480",
+      "va": "0x1800c3480",
+      "names": [
+        "av_bsf_list_alloc"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "rva": "0xc3560",
+      "va": "0x1800c3560",
+      "names": [
+        "av_bsf_list_append"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "rva": "0xc3570",
+      "va": "0x1800c3570",
+      "names": [
+        "av_bsf_list_append2"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "rva": "0xc3670",
+      "va": "0x1800c3670",
+      "names": [
+        "av_bsf_list_finalize"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "rva": "0xc3490",
+      "va": "0x1800c3490",
+      "names": [
+        "av_bsf_list_free"
+      ]
+    },
+    {
+      "ordinal": 16,
+      "rva": "0xc36f0",
+      "va": "0x1800c36f0",
+      "names": [
+        "av_bsf_list_parse_str"
+      ]
+    },
+    {
+      "ordinal": 17,
+      "rva": "0xc33c0",
+      "va": "0x1800c33c0",
+      "names": [
+        "av_bsf_receive_packet"
+      ]
+    },
+    {
+      "ordinal": 18,
+      "rva": "0xc3320",
+      "va": "0x1800c3320",
+      "names": [
+        "av_bsf_send_packet"
+      ]
+    },
+    {
+      "ordinal": 19,
+      "rva": "0xc39150",
+      "va": "0x180c39150",
+      "names": [
+        "av_codec_ffversion"
+      ]
+    },
+    {
+      "ordinal": 20,
+      "rva": "0x6032b0",
+      "va": "0x1806032b0",
+      "names": [
+        "av_codec_is_decoder"
+      ]
+    },
+    {
+      "ordinal": 21,
+      "rva": "0x603280",
+      "va": "0x180603280",
+      "names": [
+        "av_codec_is_encoder"
+      ]
+    },
+    {
+      "ordinal": 22,
+      "rva": "0x71820",
+      "va": "0x180071820",
+      "names": [
+        "av_codec_iterate"
+      ]
+    },
+    {
+      "ordinal": 23,
+      "rva": "0x604430",
+      "va": "0x180604430",
+      "names": [
+        "av_cpb_properties_alloc"
+      ]
+    },
+    {
+      "ordinal": 24,
+      "rva": "0x16b940",
+      "va": "0x18016b940",
+      "names": [
+        "av_d3d11va_alloc_context"
+      ]
+    },
+    {
+      "ordinal": 25,
+      "rva": "0xb6690",
+      "va": "0x1800b6690",
+      "names": [
+        "av_dct_calc"
+      ]
+    },
+    {
+      "ordinal": 26,
+      "rva": "0x9b519d",
+      "va": "0x1809b519d",
+      "names": [
+        "av_dct_end"
+      ]
+    },
+    {
+      "ordinal": 27,
+      "rva": "0xb6570",
+      "va": "0x1800b6570",
+      "names": [
+        "av_dct_init"
+      ]
+    },
+    {
+      "ordinal": 28,
+      "rva": "0x19d470",
+      "va": "0x18019d470",
+      "names": [
+        "av_dirac_parse_sequence_header"
+      ]
+    },
+    {
+      "ordinal": 29,
+      "rva": "0x1ccc70",
+      "va": "0x1801ccc70",
+      "names": [
+        "av_dv_codec_profile"
+      ]
+    },
+    {
+      "ordinal": 30,
+      "rva": "0x1ccd90",
+      "va": "0x1801ccd90",
+      "names": [
+        "av_dv_codec_profile2"
+      ]
+    },
+    {
+      "ordinal": 31,
+      "rva": "0x1ccaf0",
+      "va": "0x1801ccaf0",
+      "names": [
+        "av_dv_frame_profile"
+      ]
+    },
+    {
+      "ordinal": 32,
+      "rva": "0x6031c0",
+      "va": "0x1806031c0",
+      "names": [
+        "av_fast_padded_malloc"
+      ]
+    },
+    {
+      "ordinal": 33,
+      "rva": "0x603220",
+      "va": "0x180603220",
+      "names": [
+        "av_fast_padded_mallocz"
+      ]
+    },
+    {
+      "ordinal": 34,
+      "rva": "0xb62a0",
+      "va": "0x1800b62a0",
+      "names": [
+        "av_fft_calc"
+      ]
+    },
+    {
+      "ordinal": 35,
+      "rva": "0x9b5110",
+      "va": "0x1809b5110",
+      "names": [
+        "av_fft_end"
+      ]
+    },
+    {
+      "ordinal": 36,
+      "rva": "0xb6210",
+      "va": "0x1800b6210",
+      "names": [
+        "av_fft_init"
+      ]
+    },
+    {
+      "ordinal": 37,
+      "rva": "0xb6290",
+      "va": "0x1800b6290",
+      "names": [
+        "av_fft_permute"
+      ]
+    },
+    {
+      "ordinal": 38,
+      "rva": "0x604040",
+      "va": "0x180604040",
+      "names": [
+        "av_get_audio_frame_duration"
+      ]
+    },
+    {
+      "ordinal": 39,
+      "rva": "0x6040b0",
+      "va": "0x1806040b0",
+      "names": [
+        "av_get_audio_frame_duration2"
+      ]
+    },
+    {
+      "ordinal": 40,
+      "rva": "0x603ec0",
+      "va": "0x180603ec0",
+      "names": [
+        "av_get_bits_per_sample"
+      ]
+    },
+    {
+      "ordinal": 41,
+      "rva": "0x603d50",
+      "va": "0x180603d50",
+      "names": [
+        "av_get_exact_bits_per_sample"
+      ]
+    },
+    {
+      "ordinal": 42,
+      "rva": "0x603e90",
+      "va": "0x180603e90",
+      "names": [
+        "av_get_pcm_codec"
+      ]
+    },
+    {
+      "ordinal": 43,
+      "rva": "0x603cc0",
+      "va": "0x180603cc0",
+      "names": [
+        "av_get_profile_name"
+      ]
+    },
+    {
+      "ordinal": 44,
+      "rva": "0x4ff710",
+      "va": "0x1804ff710",
+      "names": [
+        "av_grow_packet"
+      ]
+    },
+    {
+      "ordinal": 45,
+      "rva": "0xb6390",
+      "va": "0x1800b6390",
+      "names": [
+        "av_imdct_calc"
+      ]
+    },
+    {
+      "ordinal": 46,
+      "rva": "0xb63b0",
+      "va": "0x1800b63b0",
+      "names": [
+        "av_imdct_half"
+      ]
+    },
+    {
+      "ordinal": 47,
+      "rva": "0x4ff480",
+      "va": "0x1804ff480",
+      "names": [
+        "av_init_packet"
+      ]
+    },
+    {
+      "ordinal": 48,
+      "rva": "0x404f90",
+      "va": "0x180404f90",
+      "names": [
+        "av_jni_get_java_vm"
+      ]
+    },
+    {
+      "ordinal": 49,
+      "rva": "0x404f80",
+      "va": "0x180404f80",
+      "names": [
+        "av_jni_set_java_vm"
+      ]
+    },
+    {
+      "ordinal": 50,
+      "rva": "0xb63d0",
+      "va": "0x1800b63d0",
+      "names": [
+        "av_mdct_calc"
+      ]
+    },
+    {
+      "ordinal": 51,
+      "rva": "0x9b513e",
+      "va": "0x1809b513e",
+      "names": [
+        "av_mdct_end"
+      ]
+    },
+    {
+      "ordinal": 52,
+      "rva": "0xb62c0",
+      "va": "0x1800b62c0",
+      "names": [
+        "av_mdct_init"
+      ]
+    },
+    {
+      "ordinal": 53,
+      "rva": "0x43a800",
+      "va": "0x18043a800",
+      "names": [
+        "av_mediacodec_alloc_context"
+      ]
+    },
+    {
+      "ordinal": 54,
+      "rva": "0x43a820",
+      "va": "0x18043a820",
+      "names": [
+        "av_mediacodec_default_free"
+      ]
+    },
+    {
+      "ordinal": 55,
+      "rva": "0x43a810",
+      "va": "0x18043a810",
+      "names": [
+        "av_mediacodec_default_init"
+      ]
+    },
+    {
+      "ordinal": 56,
+      "rva": "0x43a830",
+      "va": "0x18043a830",
+      "names": [
+        "av_mediacodec_release_buffer"
+      ]
+    },
+    {
+      "ordinal": 57,
+      "rva": "0x43a840",
+      "va": "0x18043a840",
+      "names": [
+        "av_mediacodec_render_buffer_at_time"
+      ]
+    },
+    {
+      "ordinal": 58,
+      "rva": "0x4ff630",
+      "va": "0x1804ff630",
+      "names": [
+        "av_new_packet"
+      ]
+    },
+    {
+      "ordinal": 59,
+      "rva": "0x4ff980",
+      "va": "0x1804ff980",
+      "names": [
+        "av_packet_add_side_data"
+      ]
+    },
+    {
+      "ordinal": 60,
+      "rva": "0x4ff4e0",
+      "va": "0x1804ff4e0",
+      "names": [
+        "av_packet_alloc"
+      ]
+    },
+    {
+      "ordinal": 61,
+      "rva": "0x500410",
+      "va": "0x180500410",
+      "names": [
+        "av_packet_clone"
+      ]
+    },
+    {
+      "ordinal": 62,
+      "rva": "0x4fffd0",
+      "va": "0x1804fffd0",
+      "names": [
+        "av_packet_copy_props"
+      ]
+    },
+    {
+      "ordinal": 63,
+      "rva": "0x4ff550",
+      "va": "0x1804ff550",
+      "names": [
+        "av_packet_free"
+      ]
+    },
+    {
+      "ordinal": 64,
+      "rva": "0x4ff930",
+      "va": "0x1804ff930",
+      "names": [
+        "av_packet_free_side_data"
+      ]
+    },
+    {
+      "ordinal": 65,
+      "rva": "0x4ff8c0",
+      "va": "0x1804ff8c0",
+      "names": [
+        "av_packet_from_data"
+      ]
+    },
+    {
+      "ordinal": 66,
+      "rva": "0x4ffb10",
+      "va": "0x1804ffb10",
+      "names": [
+        "av_packet_get_side_data"
+      ]
+    },
+    {
+      "ordinal": 67,
+      "rva": "0x5005e0",
+      "va": "0x1805005e0",
+      "names": [
+        "av_packet_make_refcounted"
+      ]
+    },
+    {
+      "ordinal": 68,
+      "rva": "0x500670",
+      "va": "0x180500670",
+      "names": [
+        "av_packet_make_writable"
+      ]
+    },
+    {
+      "ordinal": 69,
+      "rva": "0x500550",
+      "va": "0x180500550",
+      "names": [
+        "av_packet_move_ref"
+      ]
+    },
+    {
+      "ordinal": 70,
+      "rva": "0x4ffa30",
+      "va": "0x1804ffa30",
+      "names": [
+        "av_packet_new_side_data"
+      ]
+    },
+    {
+      "ordinal": 71,
+      "rva": "0x4ffde0",
+      "va": "0x1804ffde0",
+      "names": [
+        "av_packet_pack_dictionary"
+      ]
+    },
+    {
+      "ordinal": 72,
+      "rva": "0x500290",
+      "va": "0x180500290",
+      "names": [
+        "av_packet_ref"
+      ]
+    },
+    {
+      "ordinal": 73,
+      "rva": "0x500720",
+      "va": "0x180500720",
+      "names": [
+        "av_packet_rescale_ts"
+      ]
+    },
+    {
+      "ordinal": 74,
+      "rva": "0x4fff80",
+      "va": "0x1804fff80",
+      "names": [
+        "av_packet_shrink_side_data"
+      ]
+    },
+    {
+      "ordinal": 75,
+      "rva": "0x500cf0",
+      "va": "0x180500cf0",
+      "names": [
+        "av_packet_side_data_add"
+      ]
+    },
+    {
+      "ordinal": 76,
+      "rva": "0x500f50",
+      "va": "0x180500f50",
+      "names": [
+        "av_packet_side_data_free"
+      ]
+    },
+    {
+      "ordinal": 77,
+      "rva": "0x500cb0",
+      "va": "0x180500cb0",
+      "names": [
+        "av_packet_side_data_get"
+      ]
+    },
+    {
+      "ordinal": 78,
+      "rva": "0x4ffb60",
+      "va": "0x1804ffb60",
+      "names": [
+        "av_packet_side_data_name"
+      ]
+    },
+    {
+      "ordinal": 79,
+      "rva": "0x500dc0",
+      "va": "0x180500dc0",
+      "names": [
+        "av_packet_side_data_new"
+      ]
+    },
+    {
+      "ordinal": 80,
+      "rva": "0x500ec0",
+      "va": "0x180500ec0",
+      "names": [
+        "av_packet_side_data_remove"
+      ]
+    },
+    {
+      "ordinal": 81,
+      "rva": "0x4ffef0",
+      "va": "0x1804ffef0",
+      "names": [
+        "av_packet_unpack_dictionary"
+      ]
+    },
+    {
+      "ordinal": 82,
+      "rva": "0x5001e0",
+      "va": "0x1805001e0",
+      "names": [
+        "av_packet_unref"
+      ]
+    },
+    {
+      "ordinal": 83,
+      "rva": "0x5029b0",
+      "va": "0x1805029b0",
+      "names": [
+        "av_parser_close"
+      ]
+    },
+    {
+      "ordinal": 84,
+      "rva": "0x501dc0",
+      "va": "0x180501dc0",
+      "names": [
+        "av_parser_init"
+      ]
+    },
+    {
+      "ordinal": 85,
+      "rva": "0x502e80",
+      "va": "0x180502e80",
+      "names": [
+        "av_parser_iterate"
+      ]
+    },
+    {
+      "ordinal": 86,
+      "rva": "0x502540",
+      "va": "0x180502540",
+      "names": [
+        "av_parser_parse2"
+      ]
+    },
+    {
+      "ordinal": 87,
+      "rva": "0x546e60",
+      "va": "0x180546e60",
+      "names": [
+        "av_qsv_alloc_context"
+      ]
+    },
+    {
+      "ordinal": 88,
+      "rva": "0xb64e0",
+      "va": "0x1800b64e0",
+      "names": [
+        "av_rdft_calc"
+      ]
+    },
+    {
+      "ordinal": 89,
+      "rva": "0x9b516f",
+      "va": "0x1809b516f",
+      "names": [
+        "av_rdft_end"
+      ]
+    },
+    {
+      "ordinal": 90,
+      "rva": "0xb63f0",
+      "va": "0x1800b63f0",
+      "names": [
+        "av_rdft_init"
+      ]
+    },
+    {
+      "ordinal": 91,
+      "rva": "0x4ff6e0",
+      "va": "0x1804ff6e0",
+      "names": [
+        "av_shrink_packet"
+      ]
+    },
+    {
+      "ordinal": 92,
+      "rva": "0x657750",
+      "va": "0x180657750",
+      "names": [
+        "av_vorbis_parse_frame"
+      ]
+    },
+    {
+      "ordinal": 93,
+      "rva": "0x657630",
+      "va": "0x180657630",
+      "names": [
+        "av_vorbis_parse_frame_flags"
+      ]
+    },
+    {
+      "ordinal": 94,
+      "rva": "0x657830",
+      "va": "0x180657830",
+      "names": [
+        "av_vorbis_parse_free"
+      ]
+    },
+    {
+      "ordinal": 95,
+      "rva": "0x657840",
+      "va": "0x180657840",
+      "names": [
+        "av_vorbis_parse_init"
+      ]
+    },
+    {
+      "ordinal": 96,
+      "rva": "0x657820",
+      "va": "0x180657820",
+      "names": [
+        "av_vorbis_parse_reset"
+      ]
+    },
+    {
+      "ordinal": 97,
+      "rva": "0x604120",
+      "va": "0x180604120",
+      "names": [
+        "av_xiphlacing"
+      ]
+    },
+    {
+      "ordinal": 98,
+      "rva": "0x603780",
+      "va": "0x180603780",
+      "names": [
+        "avcodec_align_dimensions"
+      ]
+    },
+    {
+      "ordinal": 99,
+      "rva": "0x603430",
+      "va": "0x180603430",
+      "names": [
+        "avcodec_align_dimensions2"
+      ]
+    },
+    {
+      "ordinal": 100,
+      "rva": "0x4ed7b0",
+      "va": "0x1804ed7b0",
+      "names": [
+        "avcodec_alloc_context3"
+      ]
+    },
+    {
+      "ordinal": 101,
+      "rva": "0x9b50f5",
+      "va": "0x1809b50f5",
+      "names": [
+        "avcodec_close"
+      ]
+    },
+    {
+      "ordinal": 102,
+      "rva": "0x64e250",
+      "va": "0x18064e250",
+      "names": [
+        "avcodec_configuration"
+      ]
+    },
+    {
+      "ordinal": 103,
+      "rva": "0xb60e0",
+      "va": "0x1800b60e0",
+      "names": [
+        "avcodec_dct_alloc"
+      ]
+    },
+    {
+      "ordinal": 104,
+      "rva": "0xb60d0",
+      "va": "0x1800b60d0",
+      "names": [
+        "avcodec_dct_get_class"
+      ]
+    },
+    {
+      "ordinal": 105,
+      "rva": "0xb6120",
+      "va": "0x1800b6120",
+      "names": [
+        "avcodec_dct_init"
+      ]
+    },
+    {
+      "ordinal": 106,
+      "rva": "0x199930",
+      "va": "0x180199930",
+      "names": [
+        "avcodec_decode_subtitle2"
+      ]
+    },
+    {
+      "ordinal": 107,
+      "rva": "0xb4940",
+      "va": "0x1800b4940",
+      "names": [
+        "avcodec_default_execute"
+      ]
+    },
+    {
+      "ordinal": 108,
+      "rva": "0xb49e0",
+      "va": "0x1800b49e0",
+      "names": [
+        "avcodec_default_execute2"
+      ]
+    },
+    {
+      "ordinal": 109,
+      "rva": "0x243d70",
+      "va": "0x180243d70",
+      "names": [
+        "avcodec_default_get_buffer2"
+      ]
+    },
+    {
+      "ordinal": 110,
+      "rva": "0x1f8e80",
+      "va": "0x1801f8e80",
+      "names": [
+        "avcodec_default_get_encode_buffer"
+      ]
+    },
+    {
+      "ordinal": 111,
+      "rva": "0x199d30",
+      "va": "0x180199d30",
+      "names": [
+        "avcodec_default_get_format"
+      ]
+    },
+    {
+      "ordinal": 112,
+      "rva": "0x1670d0",
+      "va": "0x1801670d0",
+      "names": [
+        "avcodec_descriptor_get"
+      ]
+    },
+    {
+      "ordinal": 113,
+      "rva": "0x167140",
+      "va": "0x180167140",
+      "names": [
+        "avcodec_descriptor_get_by_name"
+      ]
+    },
+    {
+      "ordinal": 114,
+      "rva": "0x167110",
+      "va": "0x180167110",
+      "names": [
+        "avcodec_descriptor_next"
+      ]
+    },
+    {
+      "ordinal": 115,
+      "rva": "0x1f9680",
+      "va": "0x1801f9680",
+      "names": [
+        "avcodec_encode_subtitle"
+      ]
+    },
+    {
+      "ordinal": 116,
+      "rva": "0x603b00",
+      "va": "0x180603b00",
+      "names": [
+        "avcodec_fill_audio_frame"
+      ]
+    },
+    {
+      "ordinal": 117,
+      "rva": "0x3dfe40",
+      "va": "0x1803dfe40",
+      "names": [
+        "avcodec_find_best_pix_fmt_of_list"
+      ]
+    },
+    {
+      "ordinal": 118,
+      "rva": "0x71950",
+      "va": "0x180071950",
+      "names": [
+        "avcodec_find_decoder"
+      ]
+    },
+    {
+      "ordinal": 119,
+      "rva": "0x71ad0",
+      "va": "0x180071ad0",
+      "names": [
+        "avcodec_find_decoder_by_name"
+      ]
+    },
+    {
+      "ordinal": 120,
+      "rva": "0x71890",
+      "va": "0x180071890",
+      "names": [
+        "avcodec_find_encoder"
+      ]
+    },
+    {
+      "ordinal": 121,
+      "rva": "0x71a10",
+      "va": "0x180071a10",
+      "names": [
+        "avcodec_find_encoder_by_name"
+      ]
+    },
+    {
+      "ordinal": 122,
+      "rva": "0xb4a70",
+      "va": "0x1800b4a70",
+      "names": [
+        "avcodec_flush_buffers"
+      ]
+    },
+    {
+      "ordinal": 123,
+      "rva": "0x4ed9b0",
+      "va": "0x1804ed9b0",
+      "names": [
+        "avcodec_free_context"
+      ]
+    },
+    {
+      "ordinal": 124,
+      "rva": "0x4eda40",
+      "va": "0x1804eda40",
+      "names": [
+        "avcodec_get_class"
+      ]
+    },
+    {
+      "ordinal": 125,
+      "rva": "0x6041b0",
+      "va": "0x1806041b0",
+      "names": [
+        "avcodec_get_hw_config"
+      ]
+    },
+    {
+      "ordinal": 126,
+      "rva": "0x199e50",
+      "va": "0x180199e50",
+      "names": [
+        "avcodec_get_hw_frames_parameters"
+      ]
+    },
+    {
+      "ordinal": 127,
+      "rva": "0x603c30",
+      "va": "0x180603c30",
+      "names": [
+        "avcodec_get_name"
+      ]
+    },
+    {
+      "ordinal": 128,
+      "rva": "0x4eda50",
+      "va": "0x1804eda50",
+      "names": [
+        "avcodec_get_subtitle_rect_class"
+      ]
+    },
+    {
+      "ordinal": 129,
+      "rva": "0xb6070",
+      "va": "0x1800b6070",
+      "names": [
+        "avcodec_get_supported_config"
+      ]
+    },
+    {
+      "ordinal": 130,
+      "rva": "0x1671b0",
+      "va": "0x1801671b0",
+      "names": [
+        "avcodec_get_type"
+      ]
+    },
+    {
+      "ordinal": 131,
+      "rva": "0xb5dc0",
+      "va": "0x1800b5dc0",
+      "names": [
+        "avcodec_is_open"
+      ]
+    },
+    {
+      "ordinal": 132,
+      "rva": "0x64e260",
+      "va": "0x18064e260",
+      "names": [
+        "avcodec_license"
+      ]
+    },
+    {
+      "ordinal": 133,
+      "rva": "0xb4bf0",
+      "va": "0x1800b4bf0",
+      "names": [
+        "avcodec_open2"
+      ]
+    },
+    {
+      "ordinal": 134,
+      "rva": "0x167200",
+      "va": "0x180167200",
+      "names": [
+        "avcodec_parameters_alloc"
+      ]
+    },
+    {
+      "ordinal": 135,
+      "rva": "0x167380",
+      "va": "0x180167380",
+      "names": [
+        "avcodec_parameters_copy"
+      ]
+    },
+    {
+      "ordinal": 136,
+      "rva": "0x1672c0",
+      "va": "0x1801672c0",
+      "names": [
+        "avcodec_parameters_free"
+      ]
+    },
+    {
+      "ordinal": 137,
+      "rva": "0x1675e0",
+      "va": "0x1801675e0",
+      "names": [
+        "avcodec_parameters_from_context"
+      ]
+    },
+    {
+      "ordinal": 138,
+      "rva": "0x167880",
+      "va": "0x180167880",
+      "names": [
+        "avcodec_parameters_to_context"
+      ]
+    },
+    {
+      "ordinal": 139,
+      "rva": "0x5513b0",
+      "va": "0x1805513b0",
+      "names": [
+        "avcodec_pix_fmt_to_codec_tag"
+      ]
+    },
+    {
+      "ordinal": 140,
+      "rva": "0x603cf0",
+      "va": "0x180603cf0",
+      "names": [
+        "avcodec_profile_name"
+      ]
+    },
+    {
+      "ordinal": 141,
+      "rva": "0xb5dd0",
+      "va": "0x1800b5dd0",
+      "names": [
+        "avcodec_receive_frame"
+      ]
+    },
+    {
+      "ordinal": 142,
+      "rva": "0x1f9d00",
+      "va": "0x1801f9d00",
+      "names": [
+        "avcodec_receive_packet"
+      ]
+    },
+    {
+      "ordinal": 143,
+      "rva": "0x1f9a20",
+      "va": "0x1801f9a20",
+      "names": [
+        "avcodec_send_frame"
+      ]
+    },
+    {
+      "ordinal": 144,
+      "rva": "0x199400",
+      "va": "0x180199400",
+      "names": [
+        "avcodec_send_packet"
+      ]
+    },
+    {
+      "ordinal": 145,
+      "rva": "0xb5490",
+      "va": "0x1800b5490",
+      "names": [
+        "avcodec_string"
+      ]
+    },
+    {
+      "ordinal": 146,
+      "rva": "0x64e240",
+      "va": "0x18064e240",
+      "names": [
+        "avcodec_version"
+      ]
+    },
+    {
+      "ordinal": 147,
+      "rva": "0x45920",
+      "va": "0x180045920",
+      "names": [
+        "avpriv_ac3_parse_header"
+      ]
+    },
+    {
+      "ordinal": 148,
+      "rva": "0x69560",
+      "va": "0x180069560",
+      "names": [
+        "avpriv_adts_header_parse"
+      ]
+    },
+    {
+      "ordinal": 149,
+      "rva": "0x603c20",
+      "va": "0x180603c20",
+      "names": [
+        "avpriv_codec_get_cap_skip_frame_fill_param"
+      ]
+    },
+    {
+      "ordinal": 150,
+      "rva": "0x16dd80",
+      "va": "0x18016dd80",
+      "names": [
+        "avpriv_dca_convert_bitstream"
+      ]
+    },
+    {
+      "ordinal": 151,
+      "rva": "0x16e700",
+      "va": "0x18016e700",
+      "names": [
+        "avpriv_dca_parse_core_frame_header"
+      ]
+    },
+    {
+      "ordinal": 152,
+      "rva": "0x1f7c80",
+      "va": "0x1801f7c80",
+      "names": [
+        "avpriv_elbg_do"
+      ]
+    },
+    {
+      "ordinal": 153,
+      "rva": "0x9bc410",
+      "va": "0x1809bc410",
+      "names": [
+        "avpriv_elbg_free"
+      ]
+    },
+    {
+      "ordinal": 154,
+      "rva": "0x20a4d0",
+      "va": "0x18020a4d0",
+      "names": [
+        "avpriv_exif_decode_ifd"
+      ]
+    },
+    {
+      "ordinal": 155,
+      "rva": "0x6042e0",
+      "va": "0x1806042e0",
+      "names": [
+        "avpriv_find_start_code"
+      ]
+    },
+    {
+      "ordinal": 156,
+      "rva": "0x220180",
+      "va": "0x180220180",
+      "names": [
+        "avpriv_fits_header_init"
+      ]
+    },
+    {
+      "ordinal": 157,
+      "rva": "0x2201e0",
+      "va": "0x1802201e0",
+      "names": [
+        "avpriv_fits_header_parse_line"
+      ]
+    },
+    {
+      "ordinal": 158,
+      "rva": "0x5513a0",
+      "va": "0x1805513a0",
+      "names": [
+        "avpriv_get_raw_pix_fmt_tags"
+      ]
+    },
+    {
+      "ordinal": 159,
+      "rva": "0x2a3ca0",
+      "va": "0x1802a3ca0",
+      "names": [
+        "avpriv_h264_has_num_reorder_frames"
+      ]
+    },
+    {
+      "ordinal": 160,
+      "rva": "0x47f1d0",
+      "va": "0x18047f1d0",
+      "names": [
+        "avpriv_mpeg4audio_get_config2"
+      ]
+    },
+    {
+      "ordinal": 161,
+      "rva": "0x49d800",
+      "va": "0x18049d800",
+      "names": [
+        "avpriv_mpegaudio_decode_header"
+      ]
+    },
+    {
+      "ordinal": 162,
+      "rva": "0x500a30",
+      "va": "0x180500a30",
+      "names": [
+        "avpriv_packet_list_free"
+      ]
+    },
+    {
+      "ordinal": 163,
+      "rva": "0x5009a0",
+      "va": "0x1805009a0",
+      "names": [
+        "avpriv_packet_list_get"
+      ]
+    },
+    {
+      "ordinal": 164,
+      "rva": "0x500790",
+      "va": "0x180500790",
+      "names": [
+        "avpriv_packet_list_put"
+      ]
+    },
+    {
+      "ordinal": 165,
+      "rva": "0x5513e0",
+      "va": "0x1805513e0",
+      "names": [
+        "avpriv_pix_fmt_find"
+      ]
+    },
+    {
+      "ordinal": 166,
+      "rva": "0x996dc0",
+      "va": "0x180996dc0",
+      "names": [
+        "avpriv_split_xiph_headers"
+      ]
+    },
+    {
+      "ordinal": 167,
+      "rva": "0x5d6e00",
+      "va": "0x1805d6e00",
+      "names": [
+        "avpriv_tak_parse_streaminfo"
+      ]
+    },
+    {
+      "ordinal": 168,
+      "rva": "0xb4b50",
+      "va": "0x1800b4b50",
+      "names": [
+        "avsubtitle_free"
+      ]
+    }
+  ],
+  "debug_records": [],
+  "certificate_records": [],
+  "static_identity_strings": [
+    {
+      "file_offset": 10623166,
+      "value": "; Script generated by FFmpeg/Lavc%s"
+    },
+    {
+      "file_offset": 10832808,
+      "value": "FFmpeg video codec #1"
+    },
+    {
+      "file_offset": 10833424,
+      "value": "LCL (LossLess Codec Library) ZLIB"
+    },
+    {
+      "file_offset": 10833836,
+      "value": "Huffyuv FFmpeg variant"
+    },
+    {
+      "file_offset": 10881328,
+      "value": "error during zlib decompression"
+    },
+    {
+      "file_offset": 11119640,
+      "value": "Copyright"
+    },
+    {
+      "file_offset": 11128977,
+      "value": "FFmpeg video codec #1"
+    },
+    {
+      "file_offset": 11135327,
+      "value": "%dx%d zlibprime_prev"
+    },
+    {
+      "file_offset": 11135349,
+      "value": "%dx%d zlibprime_curr %dx%d"
+    },
+    {
+      "file_offset": 11135384,
+      "value": "size too small for zlibprime_curr"
+    },
+    {
+      "file_offset": 11135419,
+      "value": "zlibprime_curr"
+    },
+    {
+      "file_offset": 11135440,
+      "value": "no data available for zlib priming"
+    },
+    {
+      "file_offset": 11135501,
+      "value": "Zlib resync occurred"
+    },
+    {
+      "file_offset": 11486664,
+      "value": "Huffyuv FFmpeg variant"
+    },
+    {
+      "file_offset": 11580808,
+      "value": "Unsupported compression level for ZLIB: (%d)."
+    },
+    {
+      "file_offset": 11580856,
+      "value": "Compression level for ZLIB: (%d)."
+    },
+    {
+      "file_offset": 11581128,
+      "value": "LCL (LossLess Codec Library) ZLIB"
+    },
+    {
+      "file_offset": 11856048,
+      "value": "FFmpeg v%d.%d.%d / libavcodec build: %d"
+    },
+    {
+      "file_offset": 11856195,
+      "value": "ffmpeg"
+    },
+    {
+      "file_offset": 12161648,
+      "value": "libavcodec/pthread_frame.c"
+    },
+    {
+      "file_offset": 12474596,
+      "value": "copyright"
+    },
+    {
+      "file_offset": 12807504,
+      "value": "FFmpeg version 7.1"
+    },
+    {
+      "file_offset": 13056344,
+      "value": "Disabling use_variable_block_len, if this fails contact the ffmpeg developers and send us the file"
+    },
+    {
+      "file_offset": 13581908,
+      "value": "zlib1.dll"
+    }
+  ],
+  "scope": "Execution-free PE header/regular imports/export/debug/security-directory parse; regular import list excludes delay imports. No claim of signature trust or runtime DLL loading."
+}

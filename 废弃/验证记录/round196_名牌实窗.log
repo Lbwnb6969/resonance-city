@@ -1,7 +1,0 @@
-Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
-OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
-
-[MCPRuntimeServer] port: scanning 6570-6585 (default)
-[MCPRuntimeServer] listening on 127.0.0.1:6571
-[MCPRegistry] runtime port 6571 registered for d:/godot/godotpro/共鸣之城
-ROUND196_LABEL_PROBE { "first_composition": true, "zoom": 1.2, "overlay": 3, "visible": true, "labels": [{ "id": "east-2", "name": "钟庭", "position": (848.486, 643.7971), "bounds": [P: (844.486, 626.7971), S: (32.0, 25.0)] }, { "id": "west-1", "name": "松丘", "position": (924.8688, 348.083), "bounds": [P: (920.8688, 331.083), S: (32.0, 25.0)] }, { "id": "west-2", "name": "石桥", "position": (501.8223, 583.3912), "bounds": [P: (497.8223, 566.3912), S: (32.0, 25.0)] }], "size": (1440.0, 900.0) }

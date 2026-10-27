@@ -1,0 +1,27 @@
+﻿{
+	"COMPENDIUM": {
+		"COMPENDIUM": "Özet",
+		"COMPENDIUM_X_ITEM_UNLOCKED": "{1} Kilidi Açılmış Girişler",
+		"COMPENDIUM_UNKNOWN_MAIN_TITLE": "Keşfedilmemiş",
+		"COMPENDIUM_UNKNOWN_SECONDARY_TITLE": "Keşfedilmemiş",
+		"COMPENDIUM_UNKNOWN_ITEM": "???",
+		"COMPENDIUM_WORKPLACE_RECIPES": "Yapılabilecek Tarifler",
+		"COMPENDIUM_WORKPLACE_RECIPE": "Tarif",
+		"COMPENDIUM_RECIPE_PLUR": "Tarifler",
+		"COMPENDIUM_WORKPLACE_RECIPE_PRODUCTION": "Üretim",
+		"COMPENDIUM_WORKPLACE_RECIPE_LOCK_DESC": "Kilitli\nBu tarifin kilidini açmak için kilit açma koşullarını yerine getirin.",
+		"COMPENDIUM_WORKPLACE_RECIPE_UNLOCK_DESC": "Kilidi açıldı\nBu tarif, köyünüzde üretilebilir.",
+		"COMPENDIUM_VILLAGE_TITLES": "Köy ve Hükümdar Unvanları",
+		"COMPENDIUM_ITEM_UNLOCKER_STEPS_TITLE": "Tüm gereklilikleri yerine getirin:",
+		"COMPENDIUM_ITEM_UNLOCKER_LIST_TITLE": "Kilidi nasıl açılır",
+		"COMPENDIUM_UNLOCKER_DEFAULT_TEXT": "Oyun başlangıcında otomatik olarak açılır.",
+		"COMPENDIUM_UNLOCKER_MINERAL_TEXT": "“Yakındaki bir maden yatağını araştır” görevlerinden birini tamamlayın",
+		"COMPENDIUM_X_UNLOCKED": "{1} Kilidi açıldı",
+		"COMPENDIUM_COMPLETE_ANY_REQUIREMENTS": "Aşağıdaki koşullardan herhangi birini yerine getirin:",
+		"COMPENDIUM_VILLAGE_TITLE_LOCK_DESC": "Kilitli\nBu unvanı kazanmak için kilit açma koşullarını yerine getirin.",
+		"COMPENDIUM_VILLAGE_TITLE_UNLOCK_DESC": "Kilidi Açıldı\nBu unvan kazanıldı ve köyünüzde kullanılabilir.",
+		"COMPENDIUM_UNLOCKER_QUEST_TITLE": "\"{1}\" görevini tamamla",
+		"COMPENDIUM_UNLOCK_CONDITION_RESOURCE_UNLOCKED_DESC": "Keşfedilmemiş {1} kaynağını keşfet",
+		"COMPENDIUM_QUEST_BUY_UNLOCKABLE_FESTIVAL": "Hasat Festivali seviyelerini tamamlayarak '{1}'in kilidini açın"
+	}
+}

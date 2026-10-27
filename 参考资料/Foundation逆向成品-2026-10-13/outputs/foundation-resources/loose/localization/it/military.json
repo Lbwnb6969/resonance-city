@@ -1,0 +1,16 @@
+﻿{
+	"MILITARY_GENERAL": {
+		"NOT_ENOUGH_GUARD_DESC": "Guardie insufficienti! Assegna altre guardie o altri combattenti alle compagnie di pattuglia.",
+		"CURRENT_GUARD_RATIO_X_PERCENT": "Copertura attuale Guardia: {1}",
+		"TOTAL_NUMBER_PATROLLERS": "Numero totale di Pattuglie e combattenti di pattuglia: {1}",
+		"TOTAL_NUMBER_GUARD_LOCATIONS": "Numero totale di Fortificazioni attive: {1}",
+		"ACTIVE_FORTIFICATION": "Fortificazione {1} attiva",
+		"ACTIVE_FORTIFICATION_DESC": "Copre un'area con Fortificazione {1}. I combattenti in servizio di guardia e le sentinelle sorveglieranno spesso questo luogo.",
+		"LIGHT_X_FORTIFICATION": "Leggera",
+		"HEAVY_X_FORTIFICATION": "Pesante",
+		"PASSIVE_FORTIFICATION": "Fortificazione {1} passiva",
+		"PASSIVE_FORTIFICATION_DESC": "Copre un'area di Fortificazione {1} senza sottrarre tempo a sentinelle e combattenti.",
+		"NEW_COMPANY_X_FORMED": "Una nuova compagnia di {1} è stata formata!",
+		"GUARD_DUTY_COMPANY": "Compagnia del servizio di guardia"
+	}
+}

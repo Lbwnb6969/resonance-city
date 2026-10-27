@@ -1,0 +1,33 @@
+﻿{
+	"CONTROLS_ACTION": {
+		"LEFT_CLICK": "左键单击",
+		"LEFT_CLICK_DRAG": "左键拖动",
+		"RIGHT_CLICK": "右键单击",
+		"HOLD_KEY": "按住{1}",
+		"HORIZONTAL_MOUSE_MOVEMENT": "鼠标水平移动",
+		"MOUSE_WHEEL": "鼠标滚轮"
+	},
+	"CONTROLS": {
+		"X_TO_SELECT_PLACE_BUILDING_PART": "{1}选择/放置部件",
+		"X_ON_VERTICAL_ARROWS_TO_RESCALE_PART": "在箭头上按{1}即可修改部件",
+		"X_TO_DELETE_PART": "{1}删除部件",
+		"X_AND_Y_TO_ROTATE_PART": "{1}，同时{2}旋转部件",
+		"X_AND_Y_TO_MOVE_BRIDGE": "{1}，同时{2}移动桥梁",
+		"X_AND_Y_TO_KEEP_PART_SELECTION": "{1}，同时{2}，即可放置建筑部件并保持当前选择",
+		"X_ON_WALL_NODE_TO_SELECT_PLACE_NEW_NODE": "在墙壁节点上{1}即可选择/放置新的节点",
+		"X_ON_WALL_SECTION_TO_TOGGLE_WALL_CURVING": "在墙壁段落上{1}即可开启/关闭墙壁弧度",
+		"X_AND_Y_TO_EXTEND_EXISTING_WALL": "{1}，同时{2}延长已有的墙壁",
+		"X_AND_Y_TO_REMOVE_WALL_NODE_SECTION": "{1}，同时{2}移除墙壁节点/段落",
+		"X_TO_CANCEL_SELECTION": "{1}取消选择",
+		"X_TO_PAINT": "{1}即可涂画区域",
+		"X_TO_ERASE": "{1}即可取消涂画",
+		"X_AND_Y_TO_RESIZE_BRUSH_SIZE": "{1}，同时{2}调整笔刷粗细",
+		"X_TO_INCREASE_BRUSH_SIZE": "{1}加粗笔刷",
+		"X_TO_DECREASE_BRUSH_SIZE": "{1}收细笔刷",
+		"X_TO_ROTATE_PART": "移动部件时使用{1}可以旋转部件",
+		"X_TO_KEEP_PART_SELECTION": "放置部件时使用{1}可以放置多个",
+		"X_TO_SELECT_CONNECTED": "{1}即可选中所有相连部件",
+		"X_TO_SELECT_ALL": "{1}即可选中一座丰碑的所有部件",
+		"X_TO_SELECT_MULTIPLE": "选中部件时使用{1}可以选中多个"
+	}
+}

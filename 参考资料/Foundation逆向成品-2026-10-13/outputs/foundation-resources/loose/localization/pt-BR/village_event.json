@@ -1,0 +1,37 @@
+﻿{
+	"VILLAGE_EVENT": {
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_TOOLTIP": "{1} em preparação",
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_COUNTDOWN_TOOLTIP": "Contagem regressiva até o início de {1}:",
+		"VILLAGE_EVENT_PROGRESSION_INPROGRESS_TOOLTIP": "Dias restantes até o fim de {1}:",
+		"VILLAGE_EVENT_PROGRESSION_COMPLETED_TOOLTIP": "{1} terminou",
+		"VILLAGE_EVENT_PROGRESSION_SHOWRESULT_TOOLTIP": "Mostrar resultados e recompensas de {1}",
+		"VILLAGE_EVENT_CANT_PREPARE_X_TOOLTIP": "Requisitos faltantes para acessar a preparação de {1}",
+		"VILLAGE_EVENT_X_NOT_BUILT": "A Choupana do Festival de Colheita precisa ser construída, e todos os recursos necessários para construir {1} devem ser colocados dentro dela.",
+		"VILLAGE_EVENT_QUEST_COUNTDOWN": "Em preparação para",
+		"VILLAGE_EVENT_QUEST_SCORE": "Pontuação em andamento",
+		"VILLAGE_EVENT_SHOW_RESULT": "Mostrar resultados",
+		"ADD_X_GUEST_INVITATION": "{1} Convite(s) de Estamento conquistado(s)",
+		"GUEST_REWARD_HEADER": "Grau {1} (Pontuação {2})",
+		"INVITATION_EXTRA_REWARDS": "Recompensas extras de Estamento",
+		"SELECT_X_ENTERTAINER": "Contratar {1}",
+		"SELECT_X_GUEST_INVITATION": "Enviar um Convite de Estamento para {1}",
+		"SELECT_ANY_GUEST_CONDITION": "Enviar qualquer Convite",
+		"RECURRENT_REWARDS": "Recompensas recorrentes",
+		"VILLAGE_EVENT_INVITATION_REQUIRED_X": "(Convite Necessário {1})",
+		"VILLAGE_EVENT_DEFAULT_NAME": "{2} de {1}"
+	},
+	"GAME_CONDITIONS": {
+		"START_X_VILLAGE_EVENT": "Sedie {1}",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING": "Sedie {1} via {2}",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING_WITH_THE_FOLLOWING": "Sedie {1} via {2} com o seguinte:",
+		"START_X_VILLAGE_EVENT_WITH_THE_FOLLOWING": "Sedie {1} com o seguinte:",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_Y_Z_VALUE": "Conclua {1} com uma Pontuação de {2} {3}",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_OF_Y_Z_VALUE": "Conclua {1} com uma Pontuação de {2} {3}",
+		"REACH_TIER_X_OF_VILLAGE_EVENT_Y": "Alcance {2} de Grau {1}",
+		"BUILD_X_INSIDE_Y": "Construa {1} dentro da Camada {2}",
+		"ACQUIRE_X_RECIPE": "Adquira a Receita de {1}",
+		"DISCOVER_X_VILLAGE_EVENT_ENTERTAINER": "Conheça {1}",
+		"SELECT_ANY_ENTERTAINER_CONDITION": "Qualquer Artista Convidado",
+		"ATTRACTS_X_VILLAGERS": "{1} Moradores Presentes"
+	}
+}

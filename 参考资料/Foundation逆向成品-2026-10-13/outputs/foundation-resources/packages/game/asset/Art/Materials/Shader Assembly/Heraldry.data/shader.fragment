@@ -1,0 +1,92 @@
+uniform vec2 uniTexelSize;
+uniform float uniShaderColorWeight;
+uniform vec4 uniformAlbedoColor[MAX_MATERIAL_COUNT];
+uniform sampler2D instTextureAlbedo[MAX_MATERIAL_COUNT];
+uniform sampler2D uniTextureSymbols;
+uniform sampler2D uniTexturePattern;
+uniform sampler2D uniTexturePatternBottom;
+uniform float uniSubRepeatRatio;
+uniform vec3 uniBackgroundColor;
+uniform vec3 uniPatternColor;
+uniform float uniVerticalScale;
+uniform float uniVerticalOffset;
+uniform float uniClothMult;
+uniform int uniMode;
+flat in uint MATERIAL_ID;
+in vec4 INSTANCE_COLOR;
+in vec4 VERTEX_COLOR;
+in vec3 NORMAL;
+in vec2 UV;
+in vec4 PREV_SCREEN_COORD;
+in vec4 UNJITERRED_SCREEN_POSITION;
+layout(location = 0) out vec4 outAlbedoColor;
+layout(location = 1) out vec4 outNormal;
+layout(location = 2) out vec4 outMotionVector;
+
+void main()
+{
+	vec3 cpy_NORMAL = normalize(NORMAL);
+	vec4 MATERIAL_ALBEDO = uniformAlbedoColor[MATERIAL_ID];
+	MATERIAL_ALBEDO *= texture(instTextureAlbedo[MATERIAL_ID], UV);
+	vec4 ALBEDO = MATERIAL_ALBEDO * VERTEX_COLOR;
+	ALBEDO *= INSTANCE_COLOR;
+	if(mix(1.0, ALBEDO.a, uniShaderColorWeight) < 0.5) {
+		{
+			discard;
+		}
+	}
+	vec2 previousFrameScreenCoord = PREV_SCREEN_COORD.xy / PREV_SCREEN_COORD.w;
+	vec2 currentFrameScreenCoord = UNJITERRED_SCREEN_POSITION.xy / UNJITERRED_SCREEN_POSITION.w;
+	vec2 MOTION_VECTOR = (currentFrameScreenCoord - previousFrameScreenCoord) * 0.5 / uniTexelSize;
+	vec3 cloth = ALBEDO.rgb;
+	vec3 composition = uniBackgroundColor;
+	if(uniMode == 1) {
+		{
+			vec2 heraldryUV = UV;
+			heraldryUV.y *= uniVerticalScale;
+			heraldryUV.y -= uniVerticalOffset;
+			vec2 maskUV = heraldryUV;
+			float patternMask = 0.0;
+			vec2 textureMip = textureQueryLod(uniTexturePattern, maskUV);
+			if(maskUV.y > 1.0 && uniSubRepeatRatio > 1.0) {
+				{
+					maskUV.y -= 1.0;
+					patternMask = textureLod(uniTexturePatternBottom, maskUV, textureMip.y).r;
+				}
+			} else {
+				{
+					if(maskUV.y > 1.0 && uniSubRepeatRatio > 0.0) {
+						{
+							maskUV.y = mod(maskUV.y - 1 + uniSubRepeatRatio, uniSubRepeatRatio) + 1 - uniSubRepeatRatio;
+						}
+					}
+					patternMask = textureLod(uniTexturePattern, maskUV, textureMip.y).r;
+				}
+			}			if(maskUV.y > 1.0) {
+				{
+					if(uniSubRepeatRatio == 0.0) {
+						{
+							patternMask = 1.0;
+						}
+					} else {
+						if(uniSubRepeatRatio < 0.0) {
+							{
+								patternMask = 0.0;
+							}
+						}
+					}				}
+			}
+			vec3 heraldry = mix(uniBackgroundColor, uniPatternColor, patternMask);
+			composition = heraldry;
+			vec4 symbols = texture(uniTextureSymbols, heraldryUV);
+			composition = composition * (1 - symbols.a) + symbols.rgb;
+		}
+	}
+	vec3 composition_1 = composition;
+	composition_1 += (cloth - 0.5) * uniClothMult;
+	composition = composition_1;
+	ALBEDO = vec4(composition, ALBEDO.a);
+	outAlbedoColor = mix(uniformAlbedoColor[MATERIAL_ID], ALBEDO, uniShaderColorWeight);
+	outNormal = vec4(cpy_NORMAL * 0.5 + 0.5, 1.0);
+	outMotionVector = vec4(MOTION_VECTOR, 0.0, 1.0);
+}

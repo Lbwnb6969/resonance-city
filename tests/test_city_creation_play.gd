@@ -10,6 +10,13 @@ func _initialize() -> void:
 func _expect(value: bool, message: String) -> void:
 	if not value: failures.append(message)
 
+func _wait_edit() -> void:
+	# Geometry is versioned: next interactions need the published picking/world,
+	# not an assumed two-frame delay. Superseding input is tested separately.
+	var until := Time.get_ticks_msec()+20000
+	while demo.edit_pending() and Time.get_ticks_msec()<until: await process_frame
+	_expect(not demo.edit_pending(),"Latest edit must publish before the next complete interaction")
+
 func _click_world(point: Vector3) -> void:
 	var position: Vector2 = demo.camera.unproject_position(point)
 	var motion := InputEventMouseMotion.new()
@@ -30,6 +37,7 @@ func _click_world(point: Vector3) -> void:
 	root.push_input(up)
 	await physics_frame
 	await process_frame
+	await _wait_edit()
 
 func _key(code: int, control: bool = false, shift: bool = false) -> void:
 	var event := InputEventKey.new()
@@ -40,6 +48,7 @@ func _key(code: int, control: bool = false, shift: bool = false) -> void:
 	root.push_input(event)
 	await physics_frame
 	await process_frame
+	await _wait_edit()
 
 func _drag_world(points: Array[Vector3], cancel: bool = false, erase_plants: bool = false) -> void:
 	var position: Vector2 = demo.camera.unproject_position(points[0])
@@ -63,6 +72,7 @@ func _drag_world(points: Array[Vector3], cancel: bool = false, erase_plants: boo
 	up.button_index = MOUSE_BUTTON_LEFT
 	root.push_input(up)
 	await process_frame
+	await _wait_edit()
 
 func _run() -> void:
 	root.size = Vector2i(1440,900)
@@ -120,12 +130,18 @@ func _run() -> void:
 	await _key(KEY_3)
 	var road_count: int = demo.state.roads.size()
 	var road_revision: int = demo.state.revision
+	var old_road_fingerprints: Dictionary = demo.town.road_fingerprints.duplicate()
 	await _drag_world([Vector3(-11,0,9),Vector3(-11,0,11),Vector3(9,0,11),Vector3(9,0,4.55)],true)
 	_expect(demo.state.roads.size() == road_count and demo.state.revision == road_revision, "Cancelling a street preview must write nothing")
 	await _drag_world([Vector3(-11,0,8.993),Vector3(-11,0,11),Vector3(9,0,11),Vector3(9,0,4.55)])
 	_expect(demo.state.roads.size() == road_count+1 and demo.state.revision == road_revision+1, "One continuous road stroke must publish exactly one operation")
 	_expect(bool(demo.state.roads[-1].get("bridge",false)), "A transverse road must create a real bridge")
-	_expect(int(demo.town.rebuild_stats.roads_changed) == 2, "One stroke rebuilds its new road and the connected road junction")
+	var changed_roads: Array = []
+	for id: String in demo.town.road_fingerprints:
+		if old_road_fingerprints.get(id) != demo.town.road_fingerprints[id]: changed_roads.append(id)
+	# The 1.4 m mouth at the main-road end also meets r6's existing mouth.
+	# r2-r5 are remote branches of the same main road and must stay cached.
+	_expect(changed_roads == ["r1","r6",str(demo.state.roads[-1].id)] and int(demo.town.rebuild_stats.roads_changed) == 3, "Rebuild only the new road, main junction and overlapping nearby mouth; preserve all remote branch caches")
 	await _key(KEY_Z,true)
 	_expect(demo.state.roads.size() == road_count, "A whole road stroke must undo in one step")
 	await _key(KEY_Z,true,true)
@@ -206,7 +222,7 @@ func _run() -> void:
 	life.setup(copy)
 	life.set_process(false)
 	for i in range(80): life._process(0.5)
-	_expect(life.residents.is_empty() and life.purchases == 0 and life.gatherings == 0, "Disconnected houses must not produce phantom activity")
+	_expect(not life.residents.is_empty() and life.residents.all(func(person:Dictionary)->bool:return person.paused and person.route.is_empty()) and life.purchases == 0 and life.gatherings == 0, "Disconnected neighbors stay at home without phantom trips or completed services")
 	var report := {"ok":failures.is_empty(),"failures":failures,"real_input":true,"houses":demo.state.houses.size(),"cells":demo.state.houses[2].cells.size(),"purchases":demo.life.purchases,"gatherings":demo.life.gatherings,"revision":demo.state.revision}
 	print("CITY_CREATION_PLAY ",JSON.stringify(report))
 	life.queue_free()

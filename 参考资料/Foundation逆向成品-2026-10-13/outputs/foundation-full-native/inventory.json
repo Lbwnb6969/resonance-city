@@ -1,0 +1,22 @@
+{
+  "artifact": "D:\\steamtest\\steamapps\\common\\Foundation\\foundation.exe",
+  "sha256": "2c0a048bc1fa2791f58ea432b85cbd9b816af0efec6d6d1c0be6c12195da31af",
+  "image_base": "0x140000000",
+  "pdata_records": 160598,
+  "classification_counts": {
+    "chained_unwind_fragment": 31060,
+    "exception_handler_range": 56645,
+    "runtime_function_range": 72893
+  },
+  "pdata_code_bytes_sum": 43395480,
+  "text_virtual_bytes": 46543712,
+  "rtti_type_descriptors": 33202,
+  "verified_complete_object_locators": 25415,
+  "vtable_candidates": 25415,
+  "ascii_strings": 237100,
+  "limits": [
+    "MSVC RTTI parsing is static and uses exact self-image-relative COL checks.",
+    "Contiguous pointer vtable boundary is a candidate, not recovered original class definition.",
+    "Runtime function and chained EH ranges are not guaranteed one original C++ function each."
+  ]
+}

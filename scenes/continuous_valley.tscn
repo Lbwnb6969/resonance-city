@@ -1,8 +1,0 @@
-[gd_scene format=3 uid="uid://ccmhpsubuvthg"]
-
-[ext_resource type="Script" uid="uid://bxm01w412hrys" path="res://scripts/ui/continuous_valley_demo.gd" id="1_snj1c"]
-
-[node name="ContinuousValley" type="Control" unique_id=967116228]
-layout_mode = 3
-anchors_preset = 0
-script = ExtResource("1_snj1c")

@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bygrxbu002bks"
+path="res://.godot/imported/skyboxFragmentShader.glsl-6603f3a8d387724d9d9288abeba32abf.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/engine/shaders/glsl/natives/skyboxFragmentShader.glsl"
+dest_files=["res://.godot/imported/skyboxFragmentShader.glsl-6603f3a8d387724d9d9288abeba32abf.res"]
+
+[params]
+

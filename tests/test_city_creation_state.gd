@@ -43,7 +43,8 @@ func _initialize() -> void:
 	_check(result.ok and result.removed_count == 2, "support removal cascades in one transaction")
 	city.undo()
 	_check(_geometry(city.snapshot()) == _geometry(tower), "one undo restores entire cascade")
-	_check(not city.remove_cell("h6", city.houses[5].cells[0].id).ok, "last module retained")
+	_check(city.remove_cell("h6", city.houses[5].cells[0].id).ok and city.houses.size() == 5, "last module removes whole house")
+	_check(city.undo().ok and city.houses[5].id == "h6", "last module undo restores house")
 	_check(not city.add_cell("h6", 3, 0, 0, "room").ok, "disconnected foundation rejected")
 	_check(city.add_house(Vector2(-15.0, 6.0)).ok, "independent new house")
 	var new_id: String = city.houses[-1].id
@@ -58,7 +59,7 @@ func _initialize() -> void:
 	_check(not city.set_house_role(new_id, "unknown").ok, "unknown function rejected")
 	_check(city.add_road([Vector2(-15.0, 4.0), Vector2(-12.1, 4.5), Vector2(-11.0, 5.0)]).ok, "continuous road transaction")
 	_check(city.roads[-1].source == "player", "roads carry player origin")
-	_check(not city.add_road([Vector2(-8.0, -10.0), Vector2(-8.0, -4.0)]).ok, "road through walls rejected")
+	_check(not city.add_road([Vector2(-8.0, -10.0), Vector2(-8.0, -6.0)]).ok, "road ending inside room rejected")
 	_check(not city.add_road([Vector2(3.0, -10.0), Vector2(3.0, -8.0)]).ok, "road along river rejected")
 	_check(not city.add_road([Vector2(-1.0, -10.0), Vector2(3.0, -10.0)]).ok, "partial bridge rejected")
 	_check(city.add_road([Vector2(-1.0, -10.0), Vector2(8.0, -10.0)]).ok and city.roads[-1].bridge, "complete crossing becomes bridge")
@@ -97,7 +98,9 @@ func _initialize() -> void:
 			break
 	_check(not obscured_record.is_empty(), "grove includes buildable vegetation site")
 	_check(obscured.undo().ok and obscured.vegetation_visible(obscured_record), "construction undo reveals original vegetation seed and ID")
-	var path := "user://city_creation_contract_%d.json" % Time.get_ticks_usec()
+	var folder := "res://验证记录/旧作品兼容_2026-10-22/state_%d" % Time.get_ticks_usec()
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(folder))
+	var path := folder + "/city.json"
 	var saved := city.snapshot()
 	_check(city.save_city(path).ok and not city.dirty, "atomic save verified")
 	var loaded := State.new()
@@ -144,8 +147,8 @@ func _initialize() -> void:
 		corrupted.houses[-1].origin = illegal_position
 		_check(not loaded.restore(corrupted).ok and loaded.snapshot() == before_bad, "restored house rejects out-of-bounds or water atomically")
 	corrupted = before_bad.duplicate(true)
-	corrupted.roads[0].points = [[-8.0, -10.0], [-8.0, -4.0]]
-	_check(not loaded.restore(corrupted).ok and loaded.snapshot() == before_bad, "restored road may not cross house walls")
+	corrupted.roads[0].points = [[-8.0, -10.0], [-8.0, -6.0]]
+	_check(not loaded.restore(corrupted).ok and loaded.snapshot() == before_bad, "restored road may not end inside room")
 	corrupted = before_bad.duplicate(true)
 	for road in corrupted.roads:
 		if road.bridge:

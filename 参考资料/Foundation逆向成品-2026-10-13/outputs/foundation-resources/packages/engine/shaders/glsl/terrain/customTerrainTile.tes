@@ -1,0 +1,55 @@
+uniform mat4 uniMatViewProjection;
+uniform mat4 uniPrevMatViewProjection;
+uniform sampler2D uniTextureHeightMap;
+uniform sampler2D uniTextureNormalMap;
+uniform vec2 uniTerrainSize;
+uniform float uniMinHeight;
+uniform float uniMaxHeight;
+uniform vec2 uniCameraJitter;
+in vec3 tess_WORLD_POSITION[];
+in vec3 tess_LOCAL_POSITION[];
+out vec3 LOCAL_POSITION;
+in vec4 tess_VERTEX_COLOR[];
+out vec4 VERTEX_COLOR;
+in vec3 tess_NORMAL[];
+out vec3 NORMAL;
+in vec4 tess_SCREEN_COORD[];
+in vec4 tess_PREV_SCREEN_COORD[];
+out vec4 PREV_SCREEN_COORD;
+out vec4 UNJITERRED_SCREEN_POSITION;
+flat in ivec3 tess_TILE_DATA[];
+flat out ivec3 TILE_DATA;
+in float tess_HEIGHT_MAP_FACTOR[];
+
+layout (triangles, fractional_odd_spacing, ccw) in;
+
+void main()
+{
+	vec3 cpy_WORLD_POSITION = tess_WORLD_POSITION[0] * gl_TessCoord.x + tess_WORLD_POSITION[1] * gl_TessCoord.y + tess_WORLD_POSITION[2] * gl_TessCoord.z;
+	LOCAL_POSITION = tess_LOCAL_POSITION[0] * gl_TessCoord.x + tess_LOCAL_POSITION[1] * gl_TessCoord.y + tess_LOCAL_POSITION[2] * gl_TessCoord.z;
+	VERTEX_COLOR = tess_VERTEX_COLOR[0] * gl_TessCoord.x + tess_VERTEX_COLOR[1] * gl_TessCoord.y + tess_VERTEX_COLOR[2] * gl_TessCoord.z;
+	NORMAL = tess_NORMAL[0] * gl_TessCoord.x + tess_NORMAL[1] * gl_TessCoord.y + tess_NORMAL[2] * gl_TessCoord.z;
+	vec4 cpy_SCREEN_COORD = tess_SCREEN_COORD[0] * gl_TessCoord.x + tess_SCREEN_COORD[1] * gl_TessCoord.y + tess_SCREEN_COORD[2] * gl_TessCoord.z;
+	PREV_SCREEN_COORD = tess_PREV_SCREEN_COORD[0] * gl_TessCoord.x + tess_PREV_SCREEN_COORD[1] * gl_TessCoord.y + tess_PREV_SCREEN_COORD[2] * gl_TessCoord.z;
+	TILE_DATA = tess_TILE_DATA[0];
+	float cpy_HEIGHT_MAP_FACTOR = tess_HEIGHT_MAP_FACTOR[0] * gl_TessCoord.x + tess_HEIGHT_MAP_FACTOR[1] * gl_TessCoord.y + tess_HEIGHT_MAP_FACTOR[2] * gl_TessCoord.z;
+
+	vec2 uvHeighmap = LOCAL_POSITION.xz / uniTerrainSize;
+	vec2 uvNormalMap = LOCAL_POSITION.xz / uniTerrainSize;
+	float height = uniMinHeight + texture(uniTextureHeightMap, uvHeighmap).x * (uniMaxHeight - uniMinHeight);
+	LOCAL_POSITION.y = height;
+	cpy_WORLD_POSITION.y = height;
+	NORMAL = normalize(texture(uniTextureNormalMap, uvNormalMap).rgb * 2 - 1);
+	cpy_SCREEN_COORD = uniMatViewProjection * vec4(cpy_WORLD_POSITION, 1.0);
+	PREV_SCREEN_COORD = uniPrevMatViewProjection * vec4(cpy_WORLD_POSITION, 1.0);
+	float factor = cpy_HEIGHT_MAP_FACTOR;
+	float originalHeight = cpy_WORLD_POSITION.y;
+	cpy_WORLD_POSITION.y = (factor * cpy_WORLD_POSITION.y + (1.0 - factor) * originalHeight);
+	vec3 interpolatedNormal = normalize(vec3(gl_TessCoord.x) * tess_NORMAL[0] + vec3(gl_TessCoord.y) * tess_NORMAL[1] + vec3(gl_TessCoord.z) * tess_NORMAL[2]);
+	NORMAL = normalize(mix(interpolatedNormal, NORMAL, factor));
+	cpy_SCREEN_COORD = uniMatViewProjection * vec4(cpy_WORLD_POSITION, 1.0);
+	PREV_SCREEN_COORD = uniPrevMatViewProjection * vec4(cpy_WORLD_POSITION, 1.0);
+	UNJITERRED_SCREEN_POSITION = cpy_SCREEN_COORD;
+	cpy_SCREEN_COORD.xy += uniCameraJitter * cpy_SCREEN_COORD.w;
+	gl_Position = cpy_SCREEN_COORD;
+}

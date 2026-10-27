@@ -3,17 +3,18 @@ extends RefCounted
 ## Edit-only visual distance field. Construction continues to use State's exact
 ## analytic mask. Texels sample world-space centres; shaders use the same bounds.
 const State := preload("res://scripts/world/city_creation_state.gd")
-const FIELD_RECT := Rect2(-30.0, -28.0, 60.0, 56.0)
-const WIDTH := 256
-const HEIGHT := 256
+const Bounds := preload("res://scripts/world/city_creation_bounds.gd")
+const FIELD_RECT := Bounds.LAND_RECT
+const WIDTH := Bounds.FIELD_SIZE
+const HEIGHT := Bounds.FIELD_SIZE
 const DISTANCE_LIMIT := 1.6
 const BIN_SIZE := 4.0
-const BIN_COLUMNS := 15
-const BIN_ROWS := 14
-const PIXEL_SIZE := Vector2(60.0 / WIDTH, 56.0 / HEIGHT)
+const BIN_COLUMNS := ceili(FIELD_RECT.size.x/BIN_SIZE)
+const BIN_ROWS := ceili(FIELD_RECT.size.y/BIN_SIZE)
+const PIXEL_SIZE := Vector2(FIELD_RECT.size.x/WIDTH,FIELD_RECT.size.y/HEIGHT)
 ## The river's horizontal clearance has gradient norm <= sqrt(1 + .0884^2).
 ## Bilinear weighted sample distances are bounded by half the pixel diagonal.
-const INTERPOLATION_ERROR := 0.160925
+const INTERPOLATION_ERROR := 0.5*sqrt(PIXEL_SIZE.x*PIXEL_SIZE.x+PIXEL_SIZE.y*PIXEL_SIZE.y)*sqrt(1.0+0.0884*0.0884)
 
 class Capsule extends RefCounted:
 	var a: Vector2
@@ -24,7 +25,10 @@ class Capsule extends RefCounted:
 class Bin extends RefCounted:
 	var capsules: Array[Capsule] = []
 
-var texture: ImageTexture
+var tiled=preload("res://scripts/visual/city_creation_tiled_field.gd").new()
+var texture:Texture2DArray:
+	get:return tiled.texture
+	set(value):tiled.texture=value
 var image: Image
 var _state: RefCounted
 var _previous: Dictionary = {}
@@ -33,10 +37,29 @@ var _bins: Array[Bin] = []
 var _uploads := 0
 var _initial_ms := 0.0
 var _diagnostics: Dictionary = {}
+var changed := false
+
+func copy_cpu_from(source: RefCounted, state: RefCounted) -> void:
+	_state=state
+	# A worker owns independent writable Image bytes, never the live texture.
+	image=source.image.duplicate() if source.image!=null else null
+	_previous=source._previous.duplicate(true)
+	_previous_hashes=source._previous_hashes.duplicate()
+	_uploads=source._uploads
+	_initial_ms=source._initial_ms
+	_diagnostics=source._diagnostics.duplicate()
+	tiled.copy_cpu_from(source.tiled)
+	changed=false
 
 func setup(state: RefCounted) -> void:
 	var started := Time.get_ticks_usec()
 	_state = state
+	_prepare_initial()
+	upload()
+	_initial_ms = float(Time.get_ticks_usec() - started) / 1000.0
+	_diagnostics.elapsed_ms=_initial_ms
+
+func _prepare_initial() -> void:
 	_previous = _records()
 	_previous_hashes = _record_hashes(_previous)
 	_rebuild_bins()
@@ -44,13 +67,20 @@ func setup(state: RefCounted) -> void:
 	for y in range(HEIGHT):
 		for x in range(WIDTH):
 			image.set_pixel(x, y, Color(_distance(pixel_world(Vector2i(x, y))), 0.0, 0.0, 1.0))
-	texture = ImageTexture.create_from_image(image)
-	_uploads = 1
-	_initial_ms = float(Time.get_ticks_usec() - started) / 1000.0
-	_diagnostics = {"changed": true, "texels_changed": WIDTH * HEIGHT, "texels_recomputed": WIDTH * HEIGHT, "elapsed_ms": _initial_ms}
+	var regions:Array[Rect2i]=[];tiled.prepare(image,regions)
+	changed=true
+	_diagnostics = {"changed": true, "texels_changed": WIDTH * HEIGHT, "texels_recomputed": WIDTH * HEIGHT, "elapsed_ms": 0.0}
 
 func update() -> void:
+	prepare_update()
+	upload()
+
+func prepare_update() -> void:
 	var started := Time.get_ticks_usec()
+	if image==null:
+		_prepare_initial()
+		_diagnostics.elapsed_ms=float(Time.get_ticks_usec()-started)/1000.0
+		return
 	var current := _records()
 	var current_hashes := _record_hashes(current)
 	var regions: Array[Rect2i] = []
@@ -61,6 +91,7 @@ func update() -> void:
 		if not _previous.has(key) or _previous_hashes[key] != current_hashes[key] or _previous[key] != current[key]:
 			regions.append(_pixel_bounds(current[key]))
 	if regions.is_empty():
+		tiled.prepare(image,regions)
 		_diagnostics = {"changed": false, "texels_changed": 0, "texels_recomputed": 0, "elapsed_ms": float(Time.get_ticks_usec() - started) / 1000.0}
 		return
 	_previous = current
@@ -68,7 +99,7 @@ func update() -> void:
 	_rebuild_bins()
 	var visited := PackedByteArray()
 	visited.resize(WIDTH * HEIGHT)
-	var changed := 0
+	var texels_changed := 0
 	var recomputed := 0
 	for region: Rect2i in regions:
 		for y in range(region.position.y, region.end.y):
@@ -83,15 +114,22 @@ func update() -> void:
 				var color := Color(value, 0.0, 0.0, 1.0)
 				if image.get_pixel(x, y).r != color.r:
 					image.set_pixel(x, y, color)
-					changed += 1
-	if changed > 0:
-		texture.update(image)
-		_uploads += 1
-	_diagnostics = {"changed": true, "texels_changed": changed, "texels_recomputed": recomputed, "elapsed_ms": float(Time.get_ticks_usec() - started) / 1000.0}
+					texels_changed += 1
+	tiled.prepare(image,regions)
+	changed=changed or texels_changed>0
+	_diagnostics = {"changed": true, "texels_changed": texels_changed, "texels_recomputed": recomputed, "elapsed_ms": float(Time.get_ticks_usec() - started) / 1000.0}
+
+func upload(create_new: bool = false) -> void:
+	if not changed and texture!=null: return
+	tiled.upload(create_new)
+	_uploads+=1
+	changed=false
 
 func diagnostics() -> Dictionary:
 	var result := _diagnostics.duplicate()
-	result.merge({"initial_ms": _initial_ms, "width": WIDTH, "height": HEIGHT, "uploads": _uploads})
+	result.merge(tiled.stats,true)
+	result.merge({"initial_ms": _initial_ms, "width": WIDTH, "height": HEIGHT, "uploads": _uploads,
+		"field_rect":FIELD_RECT,"pixel_size":PIXEL_SIZE,"interpolation_error":INTERPOLATION_ERROR,"bin_columns":BIN_COLUMNS,"bin_rows":BIN_ROWS})
 	return result
 
 func pixel_world(pixel: Vector2i) -> Vector2:

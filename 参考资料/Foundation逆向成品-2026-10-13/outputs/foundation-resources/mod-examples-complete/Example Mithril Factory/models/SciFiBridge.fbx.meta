@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<meta id="dd4431e1-85ca-4e9b-a038-e7158054902e">
+	<meta id="1f21178d-a8c2-491a-bc5a-8feb9e89958b" type="group" folder="true" name="Materials">
+		<meta id="fc4200ea-f21d-404e-bc04-eabc9f15770e" name="MithrilFactory_Diffuse"/>
+	</meta>
+	<meta id="386f60df-91d6-4faf-b9a1-b21137c11824" type="group" folder="true" name="Meshes">
+		<meta id="4c444163-97cd-4274-bfc4-7aa09b7c41c3" name="StartSlopePart_COLLIDER"/>
+		<meta id="a6283a67-001d-4d1a-a443-83613a23aff4" name="StartSlopePart_MithrilFactory_Diffuse"/>
+		<meta id="a08b3eb8-1ea1-45e2-b9dd-f5b4285fe33f" name="StartPart_COLLIDER"/>
+		<meta id="c88362c9-1684-42a1-b2fd-be8572c0862e" name="StartPart_MithrilFactory_Diffuse"/>
+		<meta id="50829b15-cec5-4c26-adc5-b79927672efe" name="CenterPart_COLLIDER"/>
+		<meta id="530f3186-d733-44b7-8e0f-3204a96e364b" name="CenterPart_MithrilFactory_Diffuse"/>
+		<meta id="0e5b706c-0674-4f19-8d8c-0e0c9e17ec34" name="EndPart_COLLIDER"/>
+		<meta id="783e81f3-2a58-46d6-a76a-3530c9d9d853" name="EndPart_MithrilFactory_Diffuse"/>
+		<meta id="a6f68dcf-2b9f-40b8-b7b7-ef71a9ca8891" name="EndSlopePart_COLLIDER"/>
+		<meta id="45133613-1462-4175-a288-7e2a3a04ba7f" name="EndSlopePart_MithrilFactory_Diffuse"/>
+		<meta id="da84d413-3bb5-48a3-b309-c058daf45eb4" name="TilingPart_MithrilFactory_Diffuse"/>
+	</meta>
+	<meta id="4997c179-8aaa-4086-bb36-2334cdccf917" name="Prefab">
+		<meta id="3045983a-ddec-403f-85d0-895402d79b1e" name="SciFiBridge">
+			<meta id="237a8381-53e4-4095-ac70-16f3dcc66e32" scriptingId="SCI_FI_BRIDGE_SLOPE_START_PREFAB" name="StartSlopePart">
+				<meta id="df011614-139a-4a96-ab32-5542d9e852c2" name="Attach_StartSlope_Right"/>
+				<meta id="6675c533-8a98-4e17-afef-1b9e61c61d77" name="Attach_StartSlope_Left"/>
+				<meta id="2f61bd1d-412d-43e8-9cf7-151e818d7f8a" name="Attach_StartSlope_Bottom"/>
+			</meta>
+			<meta id="8ed7aca7-98a3-47a4-87c9-c8f0f2e75e1d" scriptingId="SCI_FI_BRIDGE_START_PREFAB" name="StartPart">
+				<meta id="6f884406-bf92-4fc9-90bc-1e5cf27f4ac9" name="Attach_Start_Left_BridgeEnd"/>
+				<meta id="16ac9105-b232-43ca-a5dc-01327472ede7" name="Attach_Start_Right"/>
+				<meta id="78e5a9bc-bb7b-4372-960d-1276b3a8282e" name="Attach_Start_Bottom"/>
+			</meta>
+			<meta id="38a14164-fabd-49af-bf7f-e9fea8c0dc6c" scriptingId="SCI_FI_BRIDGE_CENTER_PREFAB" name="CenterPart">
+				<meta id="a36c86fd-98e2-41a9-8f1f-8dc8a5bb0988" name="Attach_Center_Right"/>
+				<meta id="aa14f2c3-bd91-4a92-a38d-31871aff9b95" name="Attach_Center_Left"/>
+				<meta id="f56708b8-7d04-4710-b06b-0b897ca3bb7a" name="Attach_Center_Bottom"/>
+			</meta>
+			<meta id="10653dc8-8e39-4c42-8601-d867bc02d560" scriptingId="SCI_FI_BRIDGE_END_PREFAB" name="EndPart">
+				<meta id="be2eba44-63c0-4bf2-b8e4-ec29a6130d6d" name="Attach_End_Right_BridgeEnd"/>
+				<meta id="258d2a32-483f-4a28-92ce-241c10149ba7" name="Attach_End_Bottom"/>
+				<meta id="7102ab6e-6412-41d7-87ae-a5e7bc49538e" name="Attach_End_Left"/>
+			</meta>
+			<meta id="3121355f-8b2f-4434-8f1d-3feab7d95203" scriptingId="SCI_FI_BRIDGE_SLOPE_END_PREFAB" name="EndSlopePart">
+				<meta id="0a836a59-c4b8-4b71-b787-343248627ac3" name="Attach_EndSlope_Bottom"/>
+				<meta id="b2afa70a-cae3-4a4b-b7d5-c91dca887d26" name="Attach_EndSlope_Left"/>
+				<meta id="b48839f4-d185-4e17-b093-1ef54a31560a" name="Attach_EndSlope_Right"/>
+			</meta>
+			<meta id="74b812d5-a043-4f22-92fa-239641b26200" scriptingId="SCI_FI_BRIDGE_CENTER_ROOT_PREFAB" name="RootPart">
+				<meta id="08a3dc3c-2000-44e0-902b-2cd46841b5d8" name="Attach_Root_Bottom"/>
+				<meta id="c8cdf649-e7dd-4bf8-afe4-cf5a2b1d0520" name="Attach_Root_Top"/>
+			</meta>
+			<meta id="25b2cc2a-f53b-4dca-9261-e33fce597228" scriptingId="SCI_FI_BRIDGE_TILING_PREFAB" name="TilingPart">
+				<meta id="4c013f6b-1f2c-416d-8f8a-b5578ad0e8ef" name="Attach_Tiling_Bottom"/>
+				<meta id="bfa4b28c-091b-457e-a5c9-d1373c379239" name="Attach_Tiling_Top"/>
+			</meta>
+		</meta>
+	</meta>
+</meta>
+<importer type="GamCFbxImporterConfiguration">
+	<WorkFilePath value="utf8:"/>
+	<Md5Checksum value="1ba036da4394a28c1b7a2fae85032215"/>
+	<ModelVersion value="36"/>
+	<Scale value="0.01"/>
+	<PatchMeshOffset value="true"/>
+	<UniqueNodeName value="false"/>
+	<ImportAnimation value="false"/>
+	<IgnoreRootAnimation value="false"/>
+	<FlipXAxis value="true"/>
+	<ZUpSource value="false"/>
+	<MergeDuplicateMeshes value="true"/>
+	<GenerateLod value="false"/>
+	<OverrideExistingLod value="false"/>
+	<NodeConfig type="GenCFbxNodeConfig">
+		<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+		<ChildList>
+			<Item type="GenCFbxNodeConfig">
+				<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+				<ChildList>
+					<Item type="GenCFbxNodeConfig">
+						<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+						<ChildList>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_StartSlope_Right"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_StartSlope_Left"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_StartSlope_Bottom"/>
+							</Item>
+						</ChildList>
+						<NodeName value="StartSlopePart"/>
+					</Item>
+					<Item type="GenCFbxNodeConfig">
+						<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+						<ChildList>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_Start_Right"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_Start_Bottom"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_Start_Left_BridgeEnd"/>
+							</Item>
+						</ChildList>
+						<NodeName value="StartPart"/>
+					</Item>
+					<Item type="GenCFbxNodeConfig">
+						<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+						<ChildList>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_Center_Right"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_Center_Left"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_Center_Bottom"/>
+							</Item>
+						</ChildList>
+						<NodeName value="CenterPart"/>
+					</Item>
+					<Item type="GenCFbxNodeConfig">
+						<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+						<ChildList>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_End_Bottom"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_End_Left"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_End_Right_BridgeEnd"/>
+							</Item>
+						</ChildList>
+						<NodeName value="EndPart"/>
+					</Item>
+					<Item type="GenCFbxNodeConfig">
+						<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+						<ChildList>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_EndSlope_Bottom"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_EndSlope_Left"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_EndSlope_Right"/>
+							</Item>
+						</ChildList>
+						<NodeName value="EndSlopePart"/>
+					</Item>
+					<Item type="GenCFbxNodeConfig">
+						<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+						<ChildList>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_Root_Bottom"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_Root_Top"/>
+							</Item>
+						</ChildList>
+						<NodeName value="RootPart"/>
+					</Item>
+					<Item type="GenCFbxNodeConfig">
+						<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+						<ChildList>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_Tiling_Bottom"/>
+							</Item>
+							<Item type="GenCFbxNodeConfig">
+								<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+								<ChildList/>
+								<NodeName value="Attach_Tiling_Top"/>
+							</Item>
+						</ChildList>
+						<NodeName value="TilingPart"/>
+					</Item>
+				</ChildList>
+				<NodeName value="SciFiBridge"/>
+			</Item>
+		</ChildList>
+		<NodeName value="Prefab"/>
+	</NodeConfig>
+	<MaterialList>
+		<Item type="GamCDataMaterialPair">
+			<MaterialGuid value="fc4200ea-f21d-404e-bc04-eabc9f15770e"/>
+			<MaterialName value="MithrilFactory_Diffuse"/>
+		</Item>
+	</MaterialList>
+</importer>
+<assetProcessor type="PlaCModdingBuildingAssetProcessor"/>
+

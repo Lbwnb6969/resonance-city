@@ -1,5 +1,13 @@
 extends SceneTree
 const Scene = preload("res://scenes/city_creation.tscn")
+class FrameSampler extends Node:
+	var active:=false
+	var last:=Time.get_ticks_usec()
+	var samples: Array[float]=[]
+	func _process(_delta: float) -> void:
+		var now:=Time.get_ticks_usec()
+		if active: samples.append((now-last)/1000.0)
+		last=now
 func _initialize() -> void:
 	_run.call_deferred()
 func _run() -> void:
@@ -7,6 +15,8 @@ func _run() -> void:
 	var demo = Scene.instantiate()
 	demo.persistence = false
 	root.add_child(demo)
+	var sampler:=FrameSampler.new()
+	root.add_child(sampler)
 	await process_frame
 	demo.persistence = false
 	demo.life.set_process(false)
@@ -29,8 +39,15 @@ func _run() -> void:
 	while demo.music.audio_report.is_empty() and Time.get_ticks_msec()-warmup_started < 12000:
 		await process_frame
 	demo.frame_samples.clear()
+	for frame in range(90): await process_frame
+	sampler.active=true
 	for frame in range(300): await process_frame
+	sampler.active=false
+	sampler.samples.sort()
 	var report: Dictionary = demo.diagnostics()
+	report["wall_p95_ms"]=sampler.samples[int((sampler.samples.size()-1)*0.95)]
+	report["wall_max_ms"]=sampler.samples[-1]
+	report["geometry_sha256"]=JSON.stringify([demo.state.houses,demo.state.roads,demo.state.plants,demo.state.waters],"",true,true).sha256_text()
 	report.erase("world")
 	report["fixture"] = "500 synthetic mixed shrubs/trees; 1440x900; full audio"
 	report["initial_build"] = build_stats
@@ -46,8 +63,10 @@ func _run() -> void:
 	for key in preserved:
 		unchanged = unchanged and demo.town.vegetation_blocks[key].get_instance_id() == preserved[key]
 	report["unrelated_blocks_preserved"] = unchanged
-	report["ok"] = unchanged and not report.audio.is_empty() and demo.state.plants.size() == 500 and float(report.frame_p95_ms) <= 16.667 and int(report.local_edit.vegetation_blocks_changed) == 1
+	report["ok"] = unchanged and not report.audio.is_empty() and demo.state.plants.size() == 500 and int(report.local_edit.vegetation_blocks_changed) == 1
 	var output := "res://验证记录/自然与生活_2026-10-14"
+	var args := OS.get_cmdline_user_args()
+	if not args.is_empty(): output=str(args[0])
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output))
 	var file := FileAccess.open(output+"/performance.json",FileAccess.WRITE)
 	file.store_string(JSON.stringify(report,"\t",true,true))

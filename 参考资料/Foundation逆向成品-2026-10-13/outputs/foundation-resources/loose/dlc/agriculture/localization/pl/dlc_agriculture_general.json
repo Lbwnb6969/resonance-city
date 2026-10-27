@@ -1,0 +1,25 @@
+﻿{
+	"FESTIVAL": {
+		"FESTIVAL_REWARDS": "Nagrody",
+		"FESTIVAL_NAME_EDITION": "{1} - {2}",
+		"FESTIVAL_TIER_REWARDS": "Nagrody",
+		"FESTIVAL_DASHBOARD_PROGRESSION": "Postęp",
+		"FESTIVAL_DASHBOARD_REWARDS": "Nagrody"
+	},
+	"FESTIVAL_EDITIONS": {},
+	"RESOURCES": {},
+	"RESOURCE_TYPE": {},
+	"JOBS": {},
+	"PART_TYPE": {},
+	"ENTERTAINERS": {
+		"FESTIVAL_MINSTREL_SING": "Rybałt"
+	},
+	"MENU": {},
+	"GAME_CONDITIONS": {},
+	"COMMON CROFT": {},
+	"TITLES": {},
+	"VILLAGE_TITLES": {},
+	"FESTIVAL_SUMMARY": {},
+	"NOTIFICATIONS": {},
+	"BUDGET": {}
+}

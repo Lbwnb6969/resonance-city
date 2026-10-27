@@ -1,1 +1,0 @@
-首次新213 Dummy无法进入合同：Root集成的Guide动态Control返回值用 := 声明，header_height/natural/projected 类型不能推断，产生依赖编译与初始化nil后续错误。此原始日志保留，挂起的本次Dummy PID 48152 已终止。子Agent先前覆盖方法 `_finish_partial_component` return签名错误已按Root首次check-only输出修为bool；该首次check-only只有工具返回，没有独立原始文件，不声称此日志包含它。

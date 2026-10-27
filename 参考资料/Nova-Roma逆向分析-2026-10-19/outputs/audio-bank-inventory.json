@@ -1,0 +1,117 @@
+[
+  {
+    "file": "Ambience.bank",
+    "size": 6262336,
+    "header_hex": "52494646388e5f0046455620464d54200800000092000000920000004c495354",
+    "chunks": [
+      {
+        "offset": 12,
+        "tag": "FMT ",
+        "size": 8
+      },
+      {
+        "offset": 28,
+        "tag": "LIST",
+        "size": 23594
+      },
+      {
+        "offset": 23630,
+        "tag": "SND ",
+        "size": 6238698
+      }
+    ],
+    "riff_size": 6262328,
+    "riff_type": "FEV "
+  },
+  {
+    "file": "Master.bank",
+    "size": 87612800,
+    "header_hex": "5249464678dd380546455620464d54200800000092000000920000004c495354",
+    "chunks": [
+      {
+        "offset": 12,
+        "tag": "FMT ",
+        "size": 8
+      },
+      {
+        "offset": 28,
+        "tag": "LIST",
+        "size": 2457854
+      },
+      {
+        "offset": 2457890,
+        "tag": "SND ",
+        "size": 85154902
+      }
+    ],
+    "riff_size": 87612792,
+    "riff_type": "FEV "
+  },
+  {
+    "file": "Master.strings.bank",
+    "size": 29048,
+    "header_hex": "524946467071000046455620464d54200800000092000000920000004c495354",
+    "chunks": [
+      {
+        "offset": 12,
+        "tag": "FMT ",
+        "size": 8
+      },
+      {
+        "offset": 28,
+        "tag": "LIST",
+        "size": 29012
+      }
+    ],
+    "riff_size": 29040,
+    "riff_type": "FEV "
+  },
+  {
+    "file": "Music.bank",
+    "size": 52093920,
+    "header_hex": "52494646d8e31a0346455620464d54200800000092000000920000004c495354",
+    "chunks": [
+      {
+        "offset": 12,
+        "tag": "FMT ",
+        "size": 8
+      },
+      {
+        "offset": 28,
+        "tag": "LIST",
+        "size": 46328
+      },
+      {
+        "offset": 46364,
+        "tag": "SND ",
+        "size": 52047548
+      }
+    ],
+    "riff_size": 52093912,
+    "riff_type": "FEV "
+  },
+  {
+    "file": "SFX.bank",
+    "size": 3910592,
+    "header_hex": "52494646b8ab3b0046455620464d54200800000092000000920000004c495354",
+    "chunks": [
+      {
+        "offset": 12,
+        "tag": "FMT ",
+        "size": 8
+      },
+      {
+        "offset": 28,
+        "tag": "LIST",
+        "size": 34554
+      },
+      {
+        "offset": 34590,
+        "tag": "SND ",
+        "size": 3875994
+      }
+    ],
+    "riff_size": 3910584,
+    "riff_type": "FEV "
+  }
+]

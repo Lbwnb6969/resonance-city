@@ -1,0 +1,22 @@
+﻿{
+	"VICTORY_CONDITIONS": {
+		"VICTORY_CONDITIONS_LIST": "Liste des aspirations du village",
+		"EDIT_VICTORY_CONDITIONS": "Modifier les aspirations du village",
+		"REACH_TOP_CLERGY": "Atteindre la dernière étape de la voie du clergé",
+		"REACH_TOP_KINGDOM": "Atteindre la dernière étape de la voie de la noblesse",
+		"REACH_TOP_LABOUR": "Atteindre la dernière étape de la voie du tiers état"
+	},
+	"VICTORY_CONDITIONS_CELEBRATIONS": {
+		"VC_COMPLETED": "Aspiration du village accomplie",
+		"VC_FAILED": "Échec de l'aspiration du village",
+		"VC_COMPLETED_DESC": "Nous pouvons être fiers d'avoir accompli les exploits suivants :",
+		"VC_FAILED_DESC": "Malheureusement, nous n'avons pas été en mesure de réaliser l'aspiration suivante :",
+		"VC_KINGDOM_FORTRESS_SUCCESS": "Grâce à votre effort de guerre et à votre maîtrise stratégique, vous avez fait de votre château une forteresse imprenable qui fait honneur à votre roi et contribue à sa gloire. Tout le royaume vous porte en héros !",
+		"VC_CLERGY_PROSPEROUS_PRIORY_SUCCESS": "Alors que le clergé inaugure votre église abbatiale, vous repensez à tout le travail accompli au nom de la Foi ; vous avez érigé une abbaye et fondé une communauté monastique pieuse, faisant de vos terres un endroit meilleur que jamais.",
+		"VC_LABOR_COMMUNE_SUCCESS": "En passant devant votre clocher citadin, vous ne pouvez réprimer un sentiment de fierté pour tout ce que vous avez accompli. Au fil du temps, vous avez transformé cette petite communauté de serfs en un village libre et débordant d'activité !"
+	},
+	"CONDITIONS": {
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_TITLE": "Population maximale",
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_DESC": "Votre village a atteint la population maximale pour votre aspiration actuelle. Accueillir un habitant supplémentaire entraînera l'échec de cette dernière.\n\nVoulez-vous continuer ?"
+	}
+}

@@ -1,0 +1,162 @@
+; SPIR-V 1.3
+; SHA256 d28a1ab47b325b027e74caa5c512ca8a0114e0ad81b742d7d82d47eb444df252
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability Shader ; byte 0x14
+OpCapability StorageImageExtendedFormats ; byte 0x1c
+%36 = OpExtInstImport "GLSL.std.450" ; byte 0x24
+OpMemoryModel Logical GLSL450 ; byte 0x3c
+OpEntryPoint GLCompute %2 "main" %28 ; byte 0x48
+OpExecutionMode %2 LocalSize 8 8 1 ; byte 0x60
+OpSource Slang 1 ; byte 0x78
+OpName %8 "Tex2D_natural" ; byte 0x84
+OpMemberName %8 0 "bindless_handle" ; byte 0x9c
+OpName %5 "TerrainHeightmap_natural" ; byte 0xb8
+OpMemberName %5 0 "terrain_heightmap_dims" ; byte 0xdc
+OpMemberName %5 1 "bg_terrain_heightmap" ; byte 0x100
+OpMemberName %5 2 "bg_terrain_fog_height" ; byte 0x124
+OpMemberName %5 3 "bg_terrain_height_bounds_ws" ; byte 0x148
+OpMemberName %5 4 "bg_water_footprint_ws" ; byte 0x170
+OpName %13 "terrain_heightmap" ; byte 0x194
+OpName %23 "pixel_dims" ; byte 0x1b0
+OpName %46 "x2" ; byte 0x1c4
+OpName %57 "GlobalParams_natural" ; byte 0x1d0
+OpMemberName %57 0 "rocky_terrain_dims" ; byte 0x1f0
+OpName %59 "globalParams" ; byte 0x210
+OpName %71 "terrain_heightmap.terrain_heightmap" ; byte 0x228
+OpName %86 "pd_x" ; byte 0x254
+OpName %102 "y2" ; byte 0x264
+OpName %117 "pd_y" ; byte 0x270
+OpName %118 "terrain_d" ; byte 0x280
+OpName %131 "rocky_terrain" ; byte 0x294
+OpName %2 "main" ; byte 0x2ac
+OpMemberDecorate %8 0 Offset 0 ; byte 0x2bc
+OpDecorate %5 Block ; byte 0x2d0
+OpMemberDecorate %5 0 Offset 0 ; byte 0x2dc
+OpMemberDecorate %5 1 Offset 8 ; byte 0x2f0
+OpMemberDecorate %5 2 Offset 12 ; byte 0x304
+OpMemberDecorate %5 3 Offset 16 ; byte 0x318
+OpMemberDecorate %5 4 Offset 24 ; byte 0x32c
+OpDecorate %13 DescriptorSet 5 ; byte 0x340
+OpDecorate %13 Binding 0 ; byte 0x350
+OpDecorate %28 BuiltIn GlobalInvocationId ; byte 0x360
+OpDecorate %57 Block ; byte 0x370
+OpMemberDecorate %57 0 Offset 0 ; byte 0x37c
+OpDecorate %59 Binding 0 ; byte 0x390
+OpDecorate %59 DescriptorSet 0 ; byte 0x3a0
+OpDecorate %71 Binding 1 ; byte 0x3b0
+OpDecorate %71 DescriptorSet 5 ; byte 0x3c0
+OpDecorate %131 Binding 1 ; byte 0x3d0
+OpDecorate %131 DescriptorSet 0 ; byte 0x3e0
+%1 = OpTypeVoid ; byte 0x3f0
+%3 = OpTypeFunction %1 ; byte 0x3f8
+%6 = OpTypeInt 32 0 ; byte 0x404
+%7 = OpTypeVector %6 2 ; byte 0x414
+%8 = OpTypeStruct %6 ; byte 0x424
+%9 = OpTypeFloat 32 ; byte 0x430
+%10 = OpTypeVector %9 2 ; byte 0x43c
+%11 = OpTypeVector %9 4 ; byte 0x44c
+%5 = OpTypeStruct %7 %8 %8 %10 %11 ; byte 0x45c
+%12 = OpTypePointer Uniform %5 ; byte 0x478
+%14 = OpTypeInt 32 1 ; byte 0x488
+%15 = OpConstant %14 0x0 ; byte 0x498
+%16 = OpTypePointer Uniform %7 ; byte 0x4a8
+%22 = OpConstant %9 0x43020000 ; byte 0x4b8
+%21 = OpConstantComposite %10 %22 %22 ; byte 0x4c8
+%24 = OpConstant %9 0x40000000 ; byte 0x4dc
+%25 = OpTypeVector %6 3 ; byte 0x4ec
+%27 = OpTypePointer Input %25 ; byte 0x4fc
+%30 = OpTypeVector %14 2 ; byte 0x50c
+%34 = OpConstant %14 0x1 ; byte 0x51c
+%57 = OpTypeStruct %7 ; byte 0x52c
+%58 = OpTypePointer Uniform %57 ; byte 0x538
+%66 = OpConstantComposite %30 %15 %15 ; byte 0x548
+%68 = OpTypeImage %9 2D 2 0 0 1 Unknown ; byte 0x55c
+%70 = OpTypePointer UniformConstant %68 ; byte 0x580
+%75 = OpConstant %9 0xc0200000 ; byte 0x590
+%76 = OpConstant %9 0x41c00000 ; byte 0x5a0
+%125 = OpConstant %9 0x3f400000 ; byte 0x5b0
+%126 = OpConstant %9 0x3fa00000 ; byte 0x5c0
+%128 = OpTypeImage %9 2D 2 0 0 2 Rgba16f ; byte 0x5d0
+%130 = OpTypePointer UniformConstant %128 ; byte 0x5f4
+%13 = OpVariable %12 Uniform ; byte 0x604
+%28 = OpVariable %27 Input ; byte 0x614
+%59 = OpVariable %58 Uniform ; byte 0x624
+%71 = OpVariable %70 UniformConstant ; byte 0x634
+%131 = OpVariable %130 UniformConstant ; byte 0x644
+%190 = OpConstantComposite %30 %34 %34 ; byte 0x654
+%2 = OpFunction %1 None %3 ; byte 0x668
+%4 = OpLabel ; byte 0x67c
+%17 = OpAccessChain %16 %13 %15 ; byte 0x684
+%18 = OpLoad %7 %17 ; byte 0x698
+%19 = OpConvertUToF %10 %18 ; byte 0x6a8
+%20 = OpFDiv %10 %21 %19 ; byte 0x6b8
+%23 = OpVectorTimesScalar %10 %20 %24 ; byte 0x6cc
+%26 = OpLoad %25 %28 ; byte 0x6e0
+%29 = OpVectorShuffle %7 %26 %26 0 1 ; byte 0x6f0
+%31 = OpBitcast %30 %29 ; byte 0x70c
+%32 = OpCompositeExtract %14 %31 0 ; byte 0x71c
+%33 = OpISub %14 %32 %34 ; byte 0x730
+%35 = OpExtInst %14 %36 42 %33 %15 ; byte 0x744
+%41 = OpIAdd %14 %32 %34 ; byte 0x760
+%42 = OpBitcast %6 %41 ; byte 0x774
+%44 = OpCompositeExtract %6 %18 0 ; byte 0x784
+%45 = OpExtInst %6 %36 38 %42 %44 ; byte 0x798
+%46 = OpBitcast %14 %45 ; byte 0x7b4
+%50 = OpCompositeExtract %14 %31 1 ; byte 0x7c4
+%51 = OpCompositeConstruct %30 %46 %50 ; byte 0x7d8
+%140 = OpAccessChain %16 %59 %15 ; byte 0x7ec
+%141 = OpLoad %7 %140 ; byte 0x800
+%142 = OpBitcast %30 %141 ; byte 0x810
+%144 = OpISub %30 %142 %190 ; byte 0x820
+%145 = OpExtInst %30 %36 45 %51 %66 %144 ; byte 0x834
+%146 = OpBitcast %7 %145 ; byte 0x854
+%147 = OpLoad %68 %71 ; byte 0x864
+%148 = OpImageFetch %11 %147 %146 ; byte 0x874
+%149 = OpCompositeExtract %9 %148 0 ; byte 0x888
+%150 = OpExtInst %9 %36 46 %75 %76 %149 ; byte 0x89c
+%82 = OpCompositeConstruct %30 %35 %50 ; byte 0x8bc
+%158 = OpExtInst %30 %36 45 %82 %66 %144 ; byte 0x8d0
+%159 = OpBitcast %7 %158 ; byte 0x8f0
+%160 = OpLoad %68 %71 ; byte 0x900
+%161 = OpImageFetch %11 %160 %159 ; byte 0x910
+%162 = OpCompositeExtract %9 %161 0 ; byte 0x924
+%163 = OpExtInst %9 %36 46 %75 %76 %162 ; byte 0x938
+%84 = OpFSub %9 %150 %163 ; byte 0x958
+%85 = OpCompositeExtract %9 %23 0 ; byte 0x96c
+%86 = OpFDiv %9 %84 %85 ; byte 0x980
+%91 = OpISub %14 %50 %34 ; byte 0x994
+%92 = OpExtInst %14 %36 42 %91 %15 ; byte 0x9a8
+%97 = OpIAdd %14 %50 %34 ; byte 0x9c4
+%98 = OpBitcast %6 %97 ; byte 0x9d8
+%100 = OpCompositeExtract %6 %18 1 ; byte 0x9e8
+%101 = OpExtInst %6 %36 38 %98 %100 ; byte 0x9fc
+%102 = OpBitcast %14 %101 ; byte 0xa18
+%107 = OpCompositeConstruct %30 %32 %102 ; byte 0xa28
+%171 = OpExtInst %30 %36 45 %107 %66 %144 ; byte 0xa3c
+%172 = OpBitcast %7 %171 ; byte 0xa5c
+%173 = OpLoad %68 %71 ; byte 0xa6c
+%174 = OpImageFetch %11 %173 %172 ; byte 0xa7c
+%175 = OpCompositeExtract %9 %174 0 ; byte 0xa90
+%176 = OpExtInst %9 %36 46 %75 %76 %175 ; byte 0xaa4
+%113 = OpCompositeConstruct %30 %32 %92 ; byte 0xac4
+%184 = OpExtInst %30 %36 45 %113 %66 %144 ; byte 0xad8
+%185 = OpBitcast %7 %184 ; byte 0xaf8
+%186 = OpLoad %68 %71 ; byte 0xb08
+%187 = OpImageFetch %11 %186 %185 ; byte 0xb18
+%188 = OpCompositeExtract %9 %187 0 ; byte 0xb2c
+%189 = OpExtInst %9 %36 46 %75 %76 %188 ; byte 0xb40
+%115 = OpFSub %9 %176 %189 ; byte 0xb60
+%116 = OpCompositeExtract %9 %23 1 ; byte 0xb74
+%117 = OpFDiv %9 %115 %116 ; byte 0xb88
+%118 = OpCompositeConstruct %10 %86 %117 ; byte 0xb9c
+%119 = OpExtInst %9 %36 66 %118 ; byte 0xbb0
+%123 = OpBitcast %7 %31 ; byte 0xbc8
+%124 = OpExtInst %9 %36 49 %125 %126 %119 ; byte 0xbd8
+%127 = OpBitcast %30 %123 ; byte 0xbf8
+%129 = OpLoad %128 %131 ; byte 0xc08
+%132 = OpImageRead %11 %129 %127 ; byte 0xc18
+%133 = OpCompositeInsert %11 %124 %132 0 ; byte 0xc2c
+%134 = OpLoad %128 %131 ; byte 0xc44
+OpImageWrite %134 %127 %133 ; byte 0xc54
+OpReturn ; byte 0xc64
+OpFunctionEnd ; byte 0xc68

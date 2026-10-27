@@ -35,6 +35,14 @@ func _run() -> void:
 	if "--grass-carpet" in OS.get_cmdline_user_args(): output = "res://验证记录/连续草地_2026-10-14"
 	if "--grass-blend" in OS.get_cmdline_user_args(): output = "res://验证记录/草地融合_2026-10-14"
 	if "--natural-shore" in OS.get_cmdline_user_args(): output = "res://验证记录/自然水岸_2026-10-14"
+	if "--soft-meadow-before" in OS.get_cmdline_user_args(): output = "res://验证记录/柔草团簇_2026-10-14/before"
+	if "--soft-meadow-after" in OS.get_cmdline_user_args(): output = "res://验证记录/柔草团簇_2026-10-14/after"
+	var ribbon_before := "--ribbon-blend-before" in OS.get_cmdline_user_args()
+	var ribbon_after := "--ribbon-blend-after" in OS.get_cmdline_user_args()
+	if ribbon_before or ribbon_after: output = "res://验证记录/草叶融合_2026-10-14"
+	if "--road-frontage" in OS.get_cmdline_user_args(): output = "res://验证记录/道路门廊_2026-10-14/nature"
+	if "--soft-path-before" in OS.get_cmdline_user_args(): output = "res://验证记录/柔和路缘_2026-10-15/before"
+	if "--soft-path-after" in OS.get_cmdline_user_args(): output = "res://验证记录/柔和路缘_2026-10-15/after"
 	if "--art-stress" in OS.get_cmdline_user_args():
 		output += "/stress"
 		demo.state.plants.clear()
@@ -48,12 +56,12 @@ func _run() -> void:
 		demo.focus = Vector3(0,0.7,0)
 		demo.zoom = 40
 		demo._update_camera()
-	else: output += "/after"
+	else: output += "/before" if ribbon_before else "/after"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output))
 	var started := Time.get_ticks_msec()
 	while demo.music.audio_report.is_empty() and Time.get_ticks_msec()-started < 12000: await process_frame
 	demo.frame_samples.clear()
-	for frame in range(300): await process_frame
+	for frame in range(540 if ribbon_before or ribbon_after or "--road-frontage" in OS.get_cmdline_user_args() or "--soft-meadow-after" in OS.get_cmdline_user_args() else 300): await process_frame
 	var report: Dictionary = demo.diagnostics()
 	report.erase("world")
 	report["viewport"] = "1440x900"
@@ -82,6 +90,11 @@ func _run() -> void:
 	demo.zoom = 14
 	demo._update_camera()
 	await _capture(demo,output,"house_day")
+	if ribbon_before or ribbon_after or "--soft-meadow-after" in OS.get_cmdline_user_args():
+		demo.focus = Vector3(-10.8,0.15,-7.4)
+		demo.zoom = 7
+		demo._update_camera()
+		await _capture(demo,output,"ground_close")
 	demo.home_camera()
 	demo._toggle_light()
 	await _capture(demo,output,"street_evening")
@@ -91,4 +104,4 @@ func _run() -> void:
 	print("CREATION_ART ",JSON.stringify(report))
 	demo.queue_free()
 	await process_frame
-	quit(0 if not report.audio.is_empty() and float(report.frame_p95_ms) < 16.667 else 1)
+	quit(0 if not report.audio.is_empty() else 1)

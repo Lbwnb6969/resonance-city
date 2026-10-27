@@ -1,0 +1,16 @@
+﻿{
+	"MILITARY_GENERAL": {
+		"NOT_ENOUGH_GUARD_DESC": "Не вистачає Вартових! Необхідно найняти більше Вартових або Воїнів у Підрозділи, що здійснюють Патрулювання.",
+		"CURRENT_GUARD_RATIO_X_PERCENT": "Поточний рівень охорони: {1}",
+		"TOTAL_NUMBER_PATROLLERS": "Загальна кількість Патрульних та Воїнів на Патрулюванні: {1}",
+		"TOTAL_NUMBER_GUARD_LOCATIONS": "Загальна кількість Активних Укріплень: {1}",
+		"ACTIVE_FORTIFICATION": "Активне {1} Укріплення",
+		"ACTIVE_FORTIFICATION_DESC": "Покриває територію {1} Укріпленнями. Воїни на охоронній службі та Сторожі наглядатимуть за цим місцем.",
+		"LIGHT_X_FORTIFICATION": "Легке",
+		"HEAVY_X_FORTIFICATION": "Важке",
+		"PASSIVE_FORTIFICATION": "Пасивне {1} Укріплення",
+		"PASSIVE_FORTIFICATION_DESC": "{1} Укріплення покриває область не витрачаючи час у Сторожових чи Воїнів.",
+		"NEW_COMPANY_X_FORMED": "Створено новий Підрозділ {1}!",
+		"GUARD_DUTY_COMPANY": "Підрозділ Охорони"
+	}
+}

@@ -1,2 +1,0 @@
-tests/round116_land_use_quotas.gd
-tests/round116_land_use_quotas.gd.uid

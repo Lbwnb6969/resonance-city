@@ -1,0 +1,1103 @@
+; SPIR-V 1.3
+; SHA256 9884f6fe04c7a9dca2946c4f0ddc624c0e49b6a084f375be8136507ffea85f39
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability GroupNonUniform ; byte 0x14
+OpCapability GroupNonUniformShuffle ; byte 0x1c
+OpCapability Shader ; byte 0x24
+OpCapability StorageImageExtendedFormats ; byte 0x2c
+%390 = OpExtInstImport "GLSL.std.450" ; byte 0x34
+OpMemoryModel Logical GLSL450 ; byte 0x4c
+OpEntryPoint GLCompute %2 "main" %1019 %14 %40 %210 ; byte 0x58
+OpExecutionMode %2 LocalSize 8 8 1 ; byte 0x7c
+OpSource Slang 1 ; byte 0x94
+OpName %23 "_Array_natural_uint8" ; byte 0xa0
+OpMemberName %23 0 "data" ; byte 0xc0
+OpName %22 "DofTileOffsets_natural" ; byte 0xd4
+OpMemberName %22 0 "offsets" ; byte 0xf4
+OpName %28 "StructuredBuffer" ; byte 0x108
+OpMemberName %28 0 "__member0" ; byte 0x124
+OpName %31 "tile_offsets_buffer" ; byte 0x13c
+OpName %45 "StructuredBuffer" ; byte 0x158
+OpMemberName %45 0 "__member0" ; byte 0x174
+OpName %48 "tile_coords_buffer" ; byte 0x18c
+OpName %56 "GlobalParams_natural" ; byte 0x1a8
+OpMemberName %56 0 "color_tex_dims" ; byte 0x1c8
+OpMemberName %56 1 "coc_tiles_dilated_tex_dims" ; byte 0x1e4
+OpMemberName %56 2 "depth_tex_dims" ; byte 0x20c
+OpMemberName %56 3 "coc_tex_dims" ; byte 0x228
+OpMemberName %56 4 "img_output_dims" ; byte 0x244
+OpMemberName %56 5 "halfres_tex_dims" ; byte 0x260
+OpName %58 "globalParams" ; byte 0x280
+OpName %163 "_Array_natural_vector<int,4>512" ; byte 0x298
+OpMemberName %163 0 "data" ; byte 0x2c0
+OpName %162 "SpatialResolveOffsets_natural" ; byte 0x2d4
+OpMemberName %162 0 "values" ; byte 0x2fc
+OpName %167 "spatial_resolve_offsets" ; byte 0x310
+OpName %187 "halfres_tex" ; byte 0x330
+OpName %380 "samplers.nnc" ; byte 0x344
+OpName %382 "coc_tiles_dilated_tex" ; byte 0x35c
+OpName %391 "FrameCounter_natural" ; byte 0x37c
+OpMemberName %391 0 "index" ; byte 0x39c
+OpName %393 "frame_counter" ; byte 0x3b0
+OpName %412 "blue_noise_textures.uniform01" ; byte 0x3c8
+OpName %478 "coc_tex" ; byte 0x3f0
+OpName %529 "gs_ring_samples" ; byte 0x400
+OpName %1154 "color_tex" ; byte 0x418
+OpName %1268 "samplers.llc" ; byte 0x42c
+OpName %1309 "color" ; byte 0x444
+OpName %1314 "color" ; byte 0x454
+OpName %1321 "img_output" ; byte 0x464
+OpName %2 "main" ; byte 0x478
+OpDecorate %14 BuiltIn GlobalInvocationId ; byte 0x488
+OpDecorate %24 ArrayStride 4 ; byte 0x498
+OpMemberDecorate %23 0 Offset 0 ; byte 0x4a8
+OpMemberDecorate %22 0 Offset 0 ; byte 0x4bc
+OpDecorate %29 ArrayStride 32 ; byte 0x4d0
+OpDecorate %28 BufferBlock ; byte 0x4e0
+OpMemberDecorate %28 0 Offset 0 ; byte 0x4ec
+OpDecorate %31 Binding 8 ; byte 0x500
+OpDecorate %31 DescriptorSet 0 ; byte 0x510
+OpDecorate %31 NonWritable ; byte 0x520
+OpDecorate %40 BuiltIn WorkgroupId ; byte 0x52c
+OpDecorate %46 ArrayStride 8 ; byte 0x53c
+OpDecorate %45 BufferBlock ; byte 0x54c
+OpMemberDecorate %45 0 Offset 0 ; byte 0x558
+OpDecorate %48 Binding 9 ; byte 0x56c
+OpDecorate %48 DescriptorSet 0 ; byte 0x57c
+OpDecorate %48 NonWritable ; byte 0x58c
+OpDecorate %56 Block ; byte 0x598
+OpMemberDecorate %56 0 Offset 0 ; byte 0x5a4
+OpMemberDecorate %56 1 Offset 8 ; byte 0x5b8
+OpMemberDecorate %56 2 Offset 16 ; byte 0x5cc
+OpMemberDecorate %56 3 Offset 24 ; byte 0x5e0
+OpMemberDecorate %56 4 Offset 32 ; byte 0x5f4
+OpMemberDecorate %56 5 Offset 40 ; byte 0x608
+OpDecorate %58 Binding 0 ; byte 0x61c
+OpDecorate %58 DescriptorSet 0 ; byte 0x62c
+OpDecorate %164 ArrayStride 16 ; byte 0x63c
+OpMemberDecorate %163 0 Offset 0 ; byte 0x64c
+OpDecorate %162 Block ; byte 0x660
+OpMemberDecorate %162 0 Offset 0 ; byte 0x66c
+OpDecorate %167 Binding 7 ; byte 0x680
+OpDecorate %167 DescriptorSet 0 ; byte 0x690
+OpDecorate %187 Binding 6 ; byte 0x6a0
+OpDecorate %187 DescriptorSet 0 ; byte 0x6b0
+OpDecorate %210 BuiltIn LocalInvocationIndex ; byte 0x6c0
+OpDecorate %380 Binding 2 ; byte 0x6d0
+OpDecorate %380 DescriptorSet 2 ; byte 0x6e0
+OpDecorate %382 Binding 2 ; byte 0x6f0
+OpDecorate %382 DescriptorSet 0 ; byte 0x700
+OpDecorate %391 Block ; byte 0x710
+OpMemberDecorate %391 0 Offset 0 ; byte 0x71c
+OpDecorate %393 Binding 0 ; byte 0x730
+OpDecorate %393 DescriptorSet 3 ; byte 0x740
+OpDecorate %412 Binding 0 ; byte 0x750
+OpDecorate %412 DescriptorSet 4 ; byte 0x760
+OpDecorate %478 Binding 4 ; byte 0x770
+OpDecorate %478 DescriptorSet 0 ; byte 0x780
+OpDecorate %1019 BuiltIn SubgroupLocalInvocationId ; byte 0x790
+OpDecorate %1154 Binding 1 ; byte 0x7a0
+OpDecorate %1154 DescriptorSet 0 ; byte 0x7b0
+OpDecorate %1268 Binding 3 ; byte 0x7c0
+OpDecorate %1268 DescriptorSet 2 ; byte 0x7d0
+OpDecorate %1321 Binding 5 ; byte 0x7e0
+OpDecorate %1321 DescriptorSet 0 ; byte 0x7f0
+%1 = OpTypeVoid ; byte 0x800
+%3 = OpTypeFunction %1 ; byte 0x808
+%5 = OpTypeBool ; byte 0x814
+%10 = OpTypeInt 32 0 ; byte 0x81c
+%11 = OpTypeVector %10 3 ; byte 0x82c
+%13 = OpTypePointer Input %11 ; byte 0x83c
+%15 = OpTypeVector %10 2 ; byte 0x84c
+%18 = OpConstant %10 0x7 ; byte 0x85c
+%20 = OpTypeInt 32 1 ; byte 0x86c
+%21 = OpConstant %20 0x0 ; byte 0x87c
+%25 = OpConstant %20 0x8 ; byte 0x88c
+%24 = OpTypeArray %10 %25 ; byte 0x89c
+%23 = OpTypeStruct %24 ; byte 0x8ac
+%22 = OpTypeStruct %23 ; byte 0x8b8
+%29 = OpTypeRuntimeArray %22 ; byte 0x8c4
+%28 = OpTypeStruct %29 ; byte 0x8d0
+%30 = OpTypePointer Uniform %28 ; byte 0x8dc
+%36 = OpTypePointer Uniform %10 ; byte 0x8ec
+%43 = OpTypePointer Uniform %15 ; byte 0x8fc
+%46 = OpTypeRuntimeArray %15 ; byte 0x90c
+%45 = OpTypeStruct %46 ; byte 0x918
+%47 = OpTypePointer Uniform %45 ; byte 0x924
+%51 = OpConstant %10 0x8 ; byte 0x934
+%54 = OpTypeVector %20 2 ; byte 0x944
+%56 = OpTypeStruct %15 %15 %15 %15 %15 %15 ; byte 0x954
+%57 = OpTypePointer Uniform %56 ; byte 0x974
+%59 = OpConstant %20 0x4 ; byte 0x984
+%62 = OpTypeFloat 32 ; byte 0x994
+%63 = OpTypeVector %62 2 ; byte 0x9a0
+%73 = OpConstant %62 0x3f000000 ; byte 0x9b0
+%77 = OpTypeVector %62 4 ; byte 0x9c0
+%84 = OpTypePointer Function %10 ; byte 0x9d0
+%99 = OpTypeVector %20 4 ; byte 0x9e0
+%102 = OpConstant %10 0x1 ; byte 0x9f0
+%110 = OpTypePointer Function %15 ; byte 0xa00
+%129 = OpConstant %10 0x0 ; byte 0xa10
+%133 = OpConstant %20 0x2 ; byte 0xa20
+%148 = OpConstant %20 0x1 ; byte 0xa30
+%156 = OpConstant %10 0x2 ; byte 0xa40
+%155 = OpConstantComposite %15 %102 %156 ; byte 0xa50
+%165 = OpConstant %20 0x200 ; byte 0xa64
+%164 = OpTypeArray %99 %165 ; byte 0xa74
+%163 = OpTypeStruct %164 ; byte 0xa84
+%162 = OpTypeStruct %163 ; byte 0xa90
+%166 = OpTypePointer Uniform %162 ; byte 0xa9c
+%171 = OpConstant %10 0x10 ; byte 0xaac
+%176 = OpTypePointer Uniform %99 ; byte 0xabc
+%184 = OpTypeImage %62 2D 2 0 0 1 Unknown ; byte 0xacc
+%186 = OpTypePointer UniformConstant %184 ; byte 0xaf0
+%202 = OpConstant %62 0x41000000 ; byte 0xb00
+%209 = OpTypePointer Input %10 ; byte 0xb10
+%219 = OpTypePointer Function %62 ; byte 0xb20
+%235 = OpConstant %20 0xc ; byte 0xb30
+%234 = OpTypeArray %10 %235 ; byte 0xb40
+%236 = OpTypePointer Function %234 ; byte 0xb50
+%240 = OpTypePointer Function %63 ; byte 0xb60
+%376 = OpConstant %62 0x41f00000 ; byte 0xb70
+%377 = OpTypeSampler ; byte 0xb80
+%379 = OpTypePointer UniformConstant %377 ; byte 0xb88
+%384 = OpTypeSampledImage %184 ; byte 0xb98
+%387 = OpConstant %62 0x0 ; byte 0xba4
+%391 = OpTypeStruct %10 ; byte 0xbb4
+%392 = OpTypePointer Uniform %391 ; byte 0xbc0
+%397 = OpConstant %10 0xd ; byte 0xbd0
+%400 = OpConstant %10 0x3b ; byte 0xbe0
+%403 = OpConstant %10 0x25 ; byte 0xbf0
+%409 = OpConstant %10 0xff ; byte 0xc00
+%416 = OpConstant %62 0x437f0000 ; byte 0xc10
+%421 = OpConstant %62 0x3b000000 ; byte 0xc20
+%432 = OpConstant %62 0x3f800000 ; byte 0xc30
+%433 = OpConstant %62 0xbf800000 ; byte 0xc40
+%442 = OpConstant %62 0x501502f9 ; byte 0xc50
+%444 = OpConstant %62 0xd01502f9 ; byte 0xc60
+%452 = OpConstant %10 0x4 ; byte 0xc70
+%460 = OpConstant %62 0x40800000 ; byte 0xc80
+%472 = OpConstant %62 0xc1000000 ; byte 0xc90
+%489 = OpConstant %62 0x3e4ccccd ; byte 0xca0
+%504 = OpConstant %10 0xffff ; byte 0xcb0
+%507 = OpConstant %62 0xc0e00000 ; byte 0xcc0
+%526 = OpConstant %20 0x9 ; byte 0xcd0
+%525 = OpTypeArray %10 %526 ; byte 0xce0
+%527 = OpConstant %20 0x40 ; byte 0xcf0
+%524 = OpTypeArray %525 %527 ; byte 0xd00
+%528 = OpTypePointer Workgroup %524 ; byte 0xd10
+%532 = OpTypePointer Workgroup %10 ; byte 0xd20
+%536 = OpConstant %62 0xc0c00000 ; byte 0xd30
+%554 = OpConstant %62 0xc0a00000 ; byte 0xd40
+%574 = OpConstant %62 0xc0800000 ; byte 0xd50
+%592 = OpConstant %62 0xc0400000 ; byte 0xd60
+%612 = OpConstant %62 0xc0000000 ; byte 0xd70
+%647 = OpConstant %10 0x3 ; byte 0xd80
+%685 = OpConstant %62 0x40000000 ; byte 0xd90
+%703 = OpConstant %62 0x40400000 ; byte 0xda0
+%721 = OpConstant %10 0x5 ; byte 0xdb0
+%741 = OpConstant %62 0x40a00000 ; byte 0xdc0
+%759 = OpConstant %10 0x6 ; byte 0xdd0
+%762 = OpConstant %62 0x40c00000 ; byte 0xde0
+%780 = OpConstant %62 0x40e00000 ; byte 0xdf0
+%822 = OpConstant %10 0xc ; byte 0xe00
+%837 = OpConstant %10 0x11 ; byte 0xe10
+%1012 = OpConstant %62 0x3e000000 ; byte 0xe20
+%1047 = OpConstant %62 0x41200000 ; byte 0xe30
+%1056 = OpConstantFalse %5 ; byte 0xe40
+%1070 = OpConstant %62 0x41300000 ; byte 0xe4c
+%1199 = OpConstant %62 0x3c23d70a ; byte 0xe5c
+%1202 = OpConstant %62 0x3727c5ac ; byte 0xe6c
+%1226 = OpConstant %62 0x3f413faa ; byte 0xe7c
+%1227 = OpConstant %62 0x3f11e10e ; byte 0xe8c
+%1225 = OpConstantComposite %63 %1226 %1227 ; byte 0xe9c
+%1244 = OpConstant %62 0x40c90fdb ; byte 0xeb0
+%1312 = OpConstant %62 0x2edbe6ff ; byte 0xec0
+%1315 = OpTypeVector %62 3 ; byte 0xed0
+%1318 = OpTypeImage %62 2D 2 0 0 2 R11fG11fB10f ; byte 0xee0
+%1320 = OpTypePointer UniformConstant %1318 ; byte 0xf04
+%14 = OpVariable %13 Input ; byte 0xf14
+%31 = OpVariable %30 Uniform ; byte 0xf24
+%40 = OpVariable %13 Input ; byte 0xf34
+%48 = OpVariable %47 Uniform ; byte 0xf44
+%58 = OpVariable %57 Uniform ; byte 0xf54
+%167 = OpVariable %166 Uniform ; byte 0xf64
+%187 = OpVariable %186 UniformConstant ; byte 0xf74
+%210 = OpVariable %209 Input ; byte 0xf84
+%380 = OpVariable %379 UniformConstant ; byte 0xf94
+%382 = OpVariable %186 UniformConstant ; byte 0xfa4
+%393 = OpVariable %392 Uniform ; byte 0xfb4
+%412 = OpVariable %186 UniformConstant ; byte 0xfc4
+%478 = OpVariable %186 UniformConstant ; byte 0xfd4
+%529 = OpVariable %528 Workgroup ; byte 0xfe4
+%1019 = OpVariable %209 Input ; byte 0xff4
+%1154 = OpVariable %186 UniformConstant ; byte 0x1004
+%1268 = OpVariable %379 UniformConstant ; byte 0x1014
+%1321 = OpVariable %1320 UniformConstant ; byte 0x1024
+%2484 = OpConstantComposite %15 %18 %18 ; byte 0x1034
+%2485 = OpConstantComposite %15 %51 %51 ; byte 0x1048
+%2486 = OpConstantComposite %77 %387 %387 %387 %387 ; byte 0x105c
+%2487 = OpConstantComposite %15 %102 %102 ; byte 0x1078
+%2488 = OpConstantComposite %15 %156 %156 ; byte 0x108c
+%2490 = OpConstantComposite %63 %73 %73 ; byte 0x10a0
+%2491 = OpConstantComposite %15 %397 %397 ; byte 0x10b4
+%2492 = OpConstantComposite %15 %409 %409 ; byte 0x10c8
+%2494 = OpConstantComposite %77 %421 %421 %421 %421 ; byte 0x10dc
+%2497 = OpConstantComposite %77 %1012 %1012 %1012 %1012 ; byte 0x10f8
+%2499 = OpConstant %62 0x3d2aaaab ; byte 0x1114
+%2500 = OpConstant %62 0x3b800000 ; byte 0x1124
+%2501 = OpConstantComposite %77 %2500 %2500 %2500 %2500 ; byte 0x1134
+%2503 = OpConstant %62 0x3f490fdb ; byte 0x1150
+%2505 = OpConstant %62 0x3e2aaaab ; byte 0x1160
+%2506 = OpConstant %62 0x3dcccccd ; byte 0x1170
+%2 = OpFunction %1 None %3 ; byte 0x1180
+%4 = OpLabel ; byte 0x1194
+%1422 = OpVariable %236 Function ; byte 0x119c
+%1425 = OpVariable %240 Function ; byte 0x11ac
+%1431 = OpVariable %240 Function ; byte 0x11bc
+%1432 = OpVariable %240 Function ; byte 0x11cc
+%1433 = OpVariable %240 Function ; byte 0x11dc
+%1434 = OpVariable %240 Function ; byte 0x11ec
+%1372 = OpVariable %110 Function ; byte 0x11fc
+%1373 = OpVariable %110 Function ; byte 0x120c
+%12 = OpLoad %11 %14 ; byte 0x121c
+%16 = OpVectorShuffle %15 %12 %12 0 1 ; byte 0x122c
+%19 = OpBitwiseAnd %15 %16 %2484 ; byte 0x1248
+%37 = OpAccessChain %36 %31 %21 %21 %21 %21 %21 ; byte 0x125c
+%38 = OpLoad %10 %37 ; byte 0x1280
+%39 = OpLoad %11 %40 ; byte 0x1290
+%41 = OpCompositeExtract %10 %39 0 ; byte 0x12a0
+%42 = OpIAdd %10 %38 %41 ; byte 0x12b4
+%44 = OpAccessChain %43 %48 %21 %42 ; byte 0x12c8
+%49 = OpLoad %15 %44 ; byte 0x12e0
+%52 = OpIMul %15 %2485 %49 ; byte 0x12f0
+%53 = OpIAdd %15 %19 %52 ; byte 0x1304
+%55 = OpBitcast %54 %53 ; byte 0x1318
+%60 = OpAccessChain %43 %58 %59 ; byte 0x1328
+%1336 = OpBitwiseAnd %15 %53 %2487 ; byte 0x133c
+OpStore %1372 %155 ; byte 0x1350
+OpStore %1373 %1336 ; byte 0x135c
+OpBranch %1378 ; byte 0x1368
+%1378 = OpLabel ; byte 0x1370
+%2322 = OpPhi %10 %129 %4 %1394 %1399 ; byte 0x1378
+%2321 = OpPhi %20 %21 %4 %1398 %1399 ; byte 0x1394
+OpLoopMerge %1384 %1399 None ; byte 0x13b0
+OpBranch %1381 ; byte 0x13c0
+%1381 = OpLabel ; byte 0x13c8
+%1383 = OpSLessThan %5 %2321 %133 ; byte 0x13d0
+OpSelectionMerge %1385 None ; byte 0x13e4
+OpBranchConditional %1383 %1385 %1384 ; byte 0x13f0
+%1384 = OpLabel ; byte 0x1400
+OpBranch %1338 ; byte 0x1408
+%1385 = OpLabel ; byte 0x1410
+%1387 = OpAccessChain %84 %1373 %2321 ; byte 0x1418
+%1388 = OpLoad %10 %1387 ; byte 0x142c
+%1390 = OpAccessChain %84 %1372 %2321 ; byte 0x143c
+%1391 = OpLoad %10 %1390 ; byte 0x1450
+%1392 = OpIMul %10 %1388 %1391 ; byte 0x1460
+%1394 = OpIAdd %10 %2322 %1392 ; byte 0x1474
+%1398 = OpIAdd %20 %2321 %148 ; byte 0x1488
+OpBranch %1399 ; byte 0x149c
+%1399 = OpLabel ; byte 0x14a4
+OpBranch %1378 ; byte 0x14ac
+%1338 = OpLabel ; byte 0x14b4
+%2324 = OpPhi %77 %2486 %1384 %1362 %1367 ; byte 0x14bc
+%2323 = OpPhi %10 %129 %1384 %1366 %1367 ; byte 0x14d8
+OpLoopMerge %1344 %1367 None ; byte 0x14f4
+OpBranch %1341 ; byte 0x1504
+%1341 = OpLabel ; byte 0x150c
+%1343 = OpULessThan %5 %2323 %51 ; byte 0x1514
+OpSelectionMerge %1345 None ; byte 0x1528
+OpBranchConditional %1343 %1345 %1344 ; byte 0x1534
+%1344 = OpLabel ; byte 0x1544
+%1371 = OpFMul %77 %2324 %2497 ; byte 0x154c
+%205 = OpLoad %15 %60 ; byte 0x1560
+%206 = OpConvertUToF %63 %205 ; byte 0x1570
+%1404 = OpConvertSToF %63 %55 ; byte 0x1580
+%1406 = OpFAdd %63 %1404 %2490 ; byte 0x1590
+%1407 = OpFDiv %63 %1406 %206 ; byte 0x15a4
+%208 = OpLoad %10 %210 ; byte 0x15b8
+%1440 = OpAccessChain %43 %58 %21 ; byte 0x15c8
+%1441 = OpLoad %15 %1440 ; byte 0x15dc
+%1442 = OpCompositeExtract %10 %1441 1 ; byte 0x15ec
+%1443 = OpConvertUToF %62 %1442 ; byte 0x1600
+%1445 = OpFMul %62 %1443 %2499 ; byte 0x1610
+%1446 = OpLoad %377 %380 ; byte 0x1624
+%1447 = OpLoad %184 %382 ; byte 0x1634
+%1449 = OpSampledImage %384 %1447 %1446 ; byte 0x1644
+%1450 = OpImageSampleExplicitLod %77 %1449 %1407 Lod %387 ; byte 0x1658
+%1451 = OpCompositeExtract %62 %1450 0 ; byte 0x1674
+%1452 = OpExtInst %62 %390 37 %1445 %1451 ; byte 0x1688
+%1453 = OpAccessChain %36 %393 %21 ; byte 0x16a4
+%1454 = OpLoad %10 %1453 ; byte 0x16b8
+%1456 = OpIAdd %15 %53 %2491 ; byte 0x16c8
+%1457 = OpIMul %10 %1454 %400 ; byte 0x16dc
+%1458 = OpBitcast %20 %1457 ; byte 0x16f0
+%1459 = OpIMul %10 %1454 %403 ; byte 0x1700
+%1460 = OpBitcast %20 %1459 ; byte 0x1714
+%1461 = OpCompositeConstruct %54 %1458 %1460 ; byte 0x1724
+%1462 = OpBitcast %15 %1461 ; byte 0x1738
+%1463 = OpIAdd %15 %1456 %1462 ; byte 0x1748
+%1465 = OpBitwiseAnd %15 %1463 %2492 ; byte 0x175c
+%1466 = OpLoad %184 %412 ; byte 0x1770
+%1467 = OpImageFetch %77 %1466 %1465 ; byte 0x1780
+%1469 = OpVectorTimesScalar %77 %1467 %416 ; byte 0x1794
+%1471 = OpFMul %77 %1469 %2501 ; byte 0x17a8
+%1473 = OpFAdd %77 %1471 %2494 ; byte 0x17bc
+%1474 = OpCompositeExtract %62 %1473 2 ; byte 0x17d0
+%1475 = OpCompositeExtract %62 %1473 1 ; byte 0x17e4
+%1477 = OpFMul %62 %1452 %1012 ; byte 0x17f8
+%1478 = OpCompositeExtract %62 %1473 0 ; byte 0x180c
+%1479 = OpFOrdLessThan %5 %1474 %73 ; byte 0x1820
+OpSelectionMerge %1483 None ; byte 0x1834
+OpBranchConditional %1479 %1481 %1480 ; byte 0x1840
+%1345 = OpLabel ; byte 0x1850
+%1347 = OpIMul %10 %2322 %171 ; byte 0x1858
+%1349 = OpIAdd %10 %1347 %2323 ; byte 0x186c
+%1351 = OpAccessChain %176 %167 %21 %21 %1349 ; byte 0x1880
+%1352 = OpLoad %99 %1351 ; byte 0x189c
+%1353 = OpVectorShuffle %54 %1352 %1352 0 1 ; byte 0x18ac
+%1355 = OpUDiv %15 %53 %2488 ; byte 0x18c8
+%1356 = OpBitcast %15 %1353 ; byte 0x18dc
+%1357 = OpIAdd %15 %1355 %1356 ; byte 0x18ec
+%1358 = OpLoad %184 %187 ; byte 0x1900
+%1359 = OpImageFetch %77 %1358 %1357 ; byte 0x1910
+%1362 = OpFAdd %77 %2324 %1359 ; byte 0x1924
+%1366 = OpIAdd %10 %2323 %102 ; byte 0x1938
+OpBranch %1367 ; byte 0x194c
+%1367 = OpLabel ; byte 0x1954
+OpBranch %1338 ; byte 0x195c
+%1480 = OpLabel ; byte 0x1964
+OpBranch %1483 ; byte 0x196c
+%1481 = OpLabel ; byte 0x1974
+%1482 = OpFSub %62 %432 %1474 ; byte 0x197c
+OpBranch %1483 ; byte 0x1990
+%1483 = OpLabel ; byte 0x1998
+%2365 = OpPhi %62 %1474 %1480 %1482 %1481 ; byte 0x19a0
+%2507 = OpSelect %62 %1479 %433 %432 ; byte 0x19bc
+OpBranch %1484 ; byte 0x19d4
+%1484 = OpLabel ; byte 0x19dc
+%2343 = OpPhi %62 %444 %1483 %1808 %2131 ; byte 0x19e4
+%2342 = OpPhi %62 %442 %1483 %1807 %2131 ; byte 0x1a00
+%2336 = OpPhi %62 %387 %1483 %1806 %2131 ; byte 0x1a1c
+%2332 = OpPhi %62 %387 %1483 %2366 %2131 ; byte 0x1a38
+%2327 = OpPhi %62 %387 %1483 %2359 %2131 ; byte 0x1a54
+%2326 = OpPhi %77 %2486 %1483 %2124 %2131 ; byte 0x1a70
+%2325 = OpPhi %10 %129 %1483 %2128 %2131 ; byte 0x1a8c
+OpLoopMerge %1490 %2131 DontUnroll ; byte 0x1aa8
+OpBranch %1487 ; byte 0x1ab8
+%1487 = OpLabel ; byte 0x1ac0
+%1489 = OpULessThan %5 %2325 %452 ; byte 0x1ac8
+OpSelectionMerge %1491 None ; byte 0x1adc
+OpBranchConditional %1489 %1491 %1490 ; byte 0x1ae8
+%1490 = OpLabel ; byte 0x1af8
+%2134 = OpCompositeExtract %62 %2326 3 ; byte 0x1b00
+%2135 = OpFMul %62 %1199 %2134 ; byte 0x1b14
+%2136 = OpFMul %62 %489 %2134 ; byte 0x1b28
+%2137 = OpExtInst %62 %390 40 %1202 %2136 ; byte 0x1b3c
+%2139 = OpExtInst %62 %390 49 %2135 %2137 %2327 ; byte 0x1b58
+%2141 = OpFMul %62 %2327 %2139 ; byte 0x1b78
+%2142 = OpFOrdGreaterThan %5 %2141 %387 ; byte 0x1b8c
+OpSelectionMerge %2205 DontFlatten ; byte 0x1ba0
+OpBranchConditional %2142 %2143 %2205 ; byte 0x1bac
+%1491 = OpLabel ; byte 0x1bbc
+%1493 = OpConvertUToF %62 %2325 ; byte 0x1bc4
+%1494 = OpFAdd %62 %1493 %1478 ; byte 0x1bd4
+%1496 = OpFMul %62 %1494 %2503 ; byte 0x1be8
+%1497 = OpExtInst %62 %390 14 %1496 ; byte 0x1bfc
+%1498 = OpExtInst %62 %390 13 %1496 ; byte 0x1c14
+%1499 = OpCompositeConstruct %63 %1497 %1498 ; byte 0x1c2c
+%1501 = OpConvertUToF %63 %1441 ; byte 0x1c40
+%1503 = OpCompositeConstruct %63 %2507 %2507 ; byte 0x1c50
+%1504 = OpFDiv %63 %1503 %1501 ; byte 0x1c64
+%1505 = OpFMul %63 %1499 %1504 ; byte 0x1c78
+%1507 = OpFAdd %62 %472 %1475 ; byte 0x1c8c
+%1508 = OpFMul %62 %1507 %1477 ; byte 0x1ca0
+%1509 = OpVectorTimesScalar %63 %1505 %1508 ; byte 0x1cb4
+%1510 = OpFAdd %63 %1407 %1509 ; byte 0x1cc8
+%1511 = OpLoad %377 %380 ; byte 0x1cdc
+%1512 = OpLoad %184 %478 ; byte 0x1cec
+%1514 = OpSampledImage %384 %1512 %1511 ; byte 0x1cfc
+%1515 = OpImageSampleExplicitLod %77 %1514 %1510 Lod %387 ; byte 0x1d10
+%1516 = OpCompositeExtract %62 %1515 0 ; byte 0x1d2c
+%1517 = OpFNegate %62 %1452 ; byte 0x1d40
+%1518 = OpExtInst %62 %390 43 %1516 %1517 %1452 ; byte 0x1d50
+%1519 = OpExtInst %62 %390 4 %1518 ; byte 0x1d70
+%1521 = OpExtInst %62 %390 40 %2336 %1519 ; byte 0x1d88
+%1522 = OpFMul %62 %1478 %489 ; byte 0x1da4
+%1524 = OpExtInst %62 %390 46 %2336 %1521 %1522 ; byte 0x1db8
+%1526 = OpExtInst %62 %390 37 %2342 %1519 ; byte 0x1dd8
+%1528 = OpExtInst %62 %390 40 %2343 %1519 ; byte 0x1df4
+%2212 = OpCompositeConstruct %63 %1518 %1518 ; byte 0x1e10
+%2213 = OpExtInst %10 %390 58 %2212 ; byte 0x1e24
+%2214 = OpBitwiseAnd %10 %2213 %504 ; byte 0x1e3c
+%1530 = OpFAdd %62 %507 %1475 ; byte 0x1e50
+%1531 = OpFMul %62 %1530 %1477 ; byte 0x1e64
+%1532 = OpVectorTimesScalar %63 %1505 %1531 ; byte 0x1e78
+%1533 = OpFAdd %63 %1407 %1532 ; byte 0x1e8c
+%1534 = OpLoad %377 %380 ; byte 0x1ea0
+%1535 = OpLoad %184 %478 ; byte 0x1eb0
+%1537 = OpSampledImage %384 %1535 %1534 ; byte 0x1ec0
+%1538 = OpImageSampleExplicitLod %77 %1537 %1533 Lod %387 ; byte 0x1ed4
+%1539 = OpCompositeExtract %62 %1538 0 ; byte 0x1ef0
+%1540 = OpExtInst %62 %390 43 %1539 %1517 %1452 ; byte 0x1f04
+%1541 = OpExtInst %62 %390 4 %1540 ; byte 0x1f24
+%1542 = OpExtInst %62 %390 40 %1524 %1541 ; byte 0x1f3c
+%1543 = OpExtInst %62 %390 46 %1524 %1542 %1522 ; byte 0x1f58
+%2217 = OpCompositeConstruct %63 %1540 %1540 ; byte 0x1f78
+%2218 = OpExtInst %10 %390 58 %2217 ; byte 0x1f8c
+%2219 = OpBitwiseAnd %10 %2218 %504 ; byte 0x1fa4
+%1545 = OpShiftLeftLogical %10 %2219 %171 ; byte 0x1fb8
+%1546 = OpBitwiseOr %10 %2214 %1545 ; byte 0x1fcc
+%1548 = OpAccessChain %532 %529 %208 %129 ; byte 0x1fe0
+OpStore %1548 %1546 ; byte 0x1ff8
+%1549 = OpFAdd %62 %536 %1475 ; byte 0x2004
+%1550 = OpFMul %62 %1549 %1477 ; byte 0x2018
+%1551 = OpVectorTimesScalar %63 %1505 %1550 ; byte 0x202c
+%1552 = OpFAdd %63 %1407 %1551 ; byte 0x2040
+%1553 = OpLoad %377 %380 ; byte 0x2054
+%1554 = OpLoad %184 %478 ; byte 0x2064
+%1556 = OpSampledImage %384 %1554 %1553 ; byte 0x2074
+%1557 = OpImageSampleExplicitLod %77 %1556 %1552 Lod %387 ; byte 0x2088
+%1558 = OpCompositeExtract %62 %1557 0 ; byte 0x20a4
+%1559 = OpExtInst %62 %390 43 %1558 %1517 %1452 ; byte 0x20b8
+%1560 = OpExtInst %62 %390 4 %1559 ; byte 0x20d8
+%1561 = OpExtInst %62 %390 40 %1543 %1560 ; byte 0x20f0
+%1562 = OpExtInst %62 %390 46 %1543 %1561 %1522 ; byte 0x210c
+%1563 = OpExtInst %62 %390 37 %1526 %1560 ; byte 0x212c
+%1564 = OpExtInst %62 %390 40 %1528 %1560 ; byte 0x2148
+%2222 = OpCompositeConstruct %63 %1559 %1559 ; byte 0x2164
+%2223 = OpExtInst %10 %390 58 %2222 ; byte 0x2178
+%2224 = OpBitwiseAnd %10 %2223 %504 ; byte 0x2190
+%1566 = OpFAdd %62 %554 %1475 ; byte 0x21a4
+%1567 = OpFMul %62 %1566 %1477 ; byte 0x21b8
+%1568 = OpVectorTimesScalar %63 %1505 %1567 ; byte 0x21cc
+%1569 = OpFAdd %63 %1407 %1568 ; byte 0x21e0
+%1570 = OpLoad %377 %380 ; byte 0x21f4
+%1571 = OpLoad %184 %478 ; byte 0x2204
+%1573 = OpSampledImage %384 %1571 %1570 ; byte 0x2214
+%1574 = OpImageSampleExplicitLod %77 %1573 %1569 Lod %387 ; byte 0x2228
+%1575 = OpCompositeExtract %62 %1574 0 ; byte 0x2244
+%1576 = OpExtInst %62 %390 43 %1575 %1517 %1452 ; byte 0x2258
+%1577 = OpExtInst %62 %390 4 %1576 ; byte 0x2278
+%1578 = OpExtInst %62 %390 40 %1562 %1577 ; byte 0x2290
+%1579 = OpExtInst %62 %390 46 %1562 %1578 %1522 ; byte 0x22ac
+%2227 = OpCompositeConstruct %63 %1576 %1576 ; byte 0x22cc
+%2228 = OpExtInst %10 %390 58 %2227 ; byte 0x22e0
+%2229 = OpBitwiseAnd %10 %2228 %504 ; byte 0x22f8
+%1581 = OpShiftLeftLogical %10 %2229 %171 ; byte 0x230c
+%1582 = OpBitwiseOr %10 %2224 %1581 ; byte 0x2320
+%1583 = OpAccessChain %532 %529 %208 %102 ; byte 0x2334
+OpStore %1583 %1582 ; byte 0x234c
+%1584 = OpFAdd %62 %574 %1475 ; byte 0x2358
+%1585 = OpFMul %62 %1584 %1477 ; byte 0x236c
+%1586 = OpVectorTimesScalar %63 %1505 %1585 ; byte 0x2380
+%1587 = OpFAdd %63 %1407 %1586 ; byte 0x2394
+%1588 = OpLoad %377 %380 ; byte 0x23a8
+%1589 = OpLoad %184 %478 ; byte 0x23b8
+%1591 = OpSampledImage %384 %1589 %1588 ; byte 0x23c8
+%1592 = OpImageSampleExplicitLod %77 %1591 %1587 Lod %387 ; byte 0x23dc
+%1593 = OpCompositeExtract %62 %1592 0 ; byte 0x23f8
+%1594 = OpExtInst %62 %390 43 %1593 %1517 %1452 ; byte 0x240c
+%1595 = OpExtInst %62 %390 4 %1594 ; byte 0x242c
+%1596 = OpExtInst %62 %390 40 %1579 %1595 ; byte 0x2444
+%1597 = OpExtInst %62 %390 46 %1579 %1596 %1522 ; byte 0x2460
+%1598 = OpExtInst %62 %390 37 %1563 %1595 ; byte 0x2480
+%1599 = OpExtInst %62 %390 40 %1564 %1595 ; byte 0x249c
+%2232 = OpCompositeConstruct %63 %1594 %1594 ; byte 0x24b8
+%2233 = OpExtInst %10 %390 58 %2232 ; byte 0x24cc
+%2234 = OpBitwiseAnd %10 %2233 %504 ; byte 0x24e4
+%1601 = OpFAdd %62 %592 %1475 ; byte 0x24f8
+%1602 = OpFMul %62 %1601 %1477 ; byte 0x250c
+%1603 = OpVectorTimesScalar %63 %1505 %1602 ; byte 0x2520
+%1604 = OpFAdd %63 %1407 %1603 ; byte 0x2534
+%1605 = OpLoad %377 %380 ; byte 0x2548
+%1606 = OpLoad %184 %478 ; byte 0x2558
+%1608 = OpSampledImage %384 %1606 %1605 ; byte 0x2568
+%1609 = OpImageSampleExplicitLod %77 %1608 %1604 Lod %387 ; byte 0x257c
+%1610 = OpCompositeExtract %62 %1609 0 ; byte 0x2598
+%1611 = OpExtInst %62 %390 43 %1610 %1517 %1452 ; byte 0x25ac
+%1612 = OpExtInst %62 %390 4 %1611 ; byte 0x25cc
+%1613 = OpExtInst %62 %390 40 %1597 %1612 ; byte 0x25e4
+%1614 = OpExtInst %62 %390 46 %1597 %1613 %1522 ; byte 0x2600
+%2237 = OpCompositeConstruct %63 %1611 %1611 ; byte 0x2620
+%2238 = OpExtInst %10 %390 58 %2237 ; byte 0x2634
+%2239 = OpBitwiseAnd %10 %2238 %504 ; byte 0x264c
+%1616 = OpShiftLeftLogical %10 %2239 %171 ; byte 0x2660
+%1617 = OpBitwiseOr %10 %2234 %1616 ; byte 0x2674
+%1618 = OpAccessChain %532 %529 %208 %156 ; byte 0x2688
+OpStore %1618 %1617 ; byte 0x26a0
+%1619 = OpFAdd %62 %612 %1475 ; byte 0x26ac
+%1620 = OpFMul %62 %1619 %1477 ; byte 0x26c0
+%1621 = OpVectorTimesScalar %63 %1505 %1620 ; byte 0x26d4
+%1622 = OpFAdd %63 %1407 %1621 ; byte 0x26e8
+%1623 = OpLoad %377 %380 ; byte 0x26fc
+%1624 = OpLoad %184 %478 ; byte 0x270c
+%1626 = OpSampledImage %384 %1624 %1623 ; byte 0x271c
+%1627 = OpImageSampleExplicitLod %77 %1626 %1622 Lod %387 ; byte 0x2730
+%1628 = OpCompositeExtract %62 %1627 0 ; byte 0x274c
+%1629 = OpExtInst %62 %390 43 %1628 %1517 %1452 ; byte 0x2760
+%1630 = OpExtInst %62 %390 4 %1629 ; byte 0x2780
+%1631 = OpExtInst %62 %390 40 %1614 %1630 ; byte 0x2798
+%1632 = OpExtInst %62 %390 46 %1614 %1631 %1522 ; byte 0x27b4
+%1633 = OpExtInst %62 %390 37 %1598 %1630 ; byte 0x27d4
+%1634 = OpExtInst %62 %390 40 %1599 %1630 ; byte 0x27f0
+%2242 = OpCompositeConstruct %63 %1629 %1629 ; byte 0x280c
+%2243 = OpExtInst %10 %390 58 %2242 ; byte 0x2820
+%2244 = OpBitwiseAnd %10 %2243 %504 ; byte 0x2838
+%1636 = OpFAdd %62 %433 %1475 ; byte 0x284c
+%1637 = OpFMul %62 %1636 %1477 ; byte 0x2860
+%1638 = OpVectorTimesScalar %63 %1505 %1637 ; byte 0x2874
+%1639 = OpFAdd %63 %1407 %1638 ; byte 0x2888
+%1640 = OpLoad %377 %380 ; byte 0x289c
+%1641 = OpLoad %184 %478 ; byte 0x28ac
+%1643 = OpSampledImage %384 %1641 %1640 ; byte 0x28bc
+%1644 = OpImageSampleExplicitLod %77 %1643 %1639 Lod %387 ; byte 0x28d0
+%1645 = OpCompositeExtract %62 %1644 0 ; byte 0x28ec
+%1646 = OpExtInst %62 %390 43 %1645 %1517 %1452 ; byte 0x2900
+%1647 = OpExtInst %62 %390 4 %1646 ; byte 0x2920
+%1648 = OpExtInst %62 %390 40 %1632 %1647 ; byte 0x2938
+%1649 = OpExtInst %62 %390 46 %1632 %1648 %1522 ; byte 0x2954
+%2247 = OpCompositeConstruct %63 %1646 %1646 ; byte 0x2974
+%2248 = OpExtInst %10 %390 58 %2247 ; byte 0x2988
+%2249 = OpBitwiseAnd %10 %2248 %504 ; byte 0x29a0
+%1651 = OpShiftLeftLogical %10 %2249 %171 ; byte 0x29b4
+%1652 = OpBitwiseOr %10 %2244 %1651 ; byte 0x29c8
+%1653 = OpAccessChain %532 %529 %208 %647 ; byte 0x29dc
+OpStore %1653 %1652 ; byte 0x29f4
+%1654 = OpFMul %62 %1475 %1477 ; byte 0x2a00
+%1655 = OpVectorTimesScalar %63 %1505 %1654 ; byte 0x2a14
+%1656 = OpFAdd %63 %1407 %1655 ; byte 0x2a28
+%1657 = OpLoad %377 %380 ; byte 0x2a3c
+%1658 = OpLoad %184 %478 ; byte 0x2a4c
+%1660 = OpSampledImage %384 %1658 %1657 ; byte 0x2a5c
+%1661 = OpImageSampleExplicitLod %77 %1660 %1656 Lod %387 ; byte 0x2a70
+%1662 = OpCompositeExtract %62 %1661 0 ; byte 0x2a8c
+%1663 = OpExtInst %62 %390 43 %1662 %1517 %1452 ; byte 0x2aa0
+%1664 = OpExtInst %62 %390 4 %1663 ; byte 0x2ac0
+%1665 = OpExtInst %62 %390 40 %1649 %1664 ; byte 0x2ad8
+%1666 = OpExtInst %62 %390 46 %1649 %1665 %1522 ; byte 0x2af4
+%1667 = OpExtInst %62 %390 37 %1633 %1664 ; byte 0x2b14
+%1668 = OpExtInst %62 %390 40 %1634 %1664 ; byte 0x2b30
+%2252 = OpCompositeConstruct %63 %1663 %1663 ; byte 0x2b4c
+%2253 = OpExtInst %10 %390 58 %2252 ; byte 0x2b60
+%2254 = OpBitwiseAnd %10 %2253 %504 ; byte 0x2b78
+%1670 = OpFAdd %62 %432 %1475 ; byte 0x2b8c
+%1671 = OpFMul %62 %1670 %1477 ; byte 0x2ba0
+%1672 = OpVectorTimesScalar %63 %1505 %1671 ; byte 0x2bb4
+%1673 = OpFAdd %63 %1407 %1672 ; byte 0x2bc8
+%1674 = OpLoad %377 %380 ; byte 0x2bdc
+%1675 = OpLoad %184 %478 ; byte 0x2bec
+%1677 = OpSampledImage %384 %1675 %1674 ; byte 0x2bfc
+%1678 = OpImageSampleExplicitLod %77 %1677 %1673 Lod %387 ; byte 0x2c10
+%1679 = OpCompositeExtract %62 %1678 0 ; byte 0x2c2c
+%1680 = OpExtInst %62 %390 43 %1679 %1517 %1452 ; byte 0x2c40
+%1681 = OpExtInst %62 %390 4 %1680 ; byte 0x2c60
+%1682 = OpExtInst %62 %390 40 %1666 %1681 ; byte 0x2c78
+%1683 = OpExtInst %62 %390 46 %1666 %1682 %1522 ; byte 0x2c94
+%2257 = OpCompositeConstruct %63 %1680 %1680 ; byte 0x2cb4
+%2258 = OpExtInst %10 %390 58 %2257 ; byte 0x2cc8
+%2259 = OpBitwiseAnd %10 %2258 %504 ; byte 0x2ce0
+%1685 = OpShiftLeftLogical %10 %2259 %171 ; byte 0x2cf4
+%1686 = OpBitwiseOr %10 %2254 %1685 ; byte 0x2d08
+%1687 = OpAccessChain %532 %529 %208 %452 ; byte 0x2d1c
+OpStore %1687 %1686 ; byte 0x2d34
+%1688 = OpFAdd %62 %685 %1475 ; byte 0x2d40
+%1689 = OpFMul %62 %1688 %1477 ; byte 0x2d54
+%1690 = OpVectorTimesScalar %63 %1505 %1689 ; byte 0x2d68
+%1691 = OpFAdd %63 %1407 %1690 ; byte 0x2d7c
+%1692 = OpLoad %377 %380 ; byte 0x2d90
+%1693 = OpLoad %184 %478 ; byte 0x2da0
+%1695 = OpSampledImage %384 %1693 %1692 ; byte 0x2db0
+%1696 = OpImageSampleExplicitLod %77 %1695 %1691 Lod %387 ; byte 0x2dc4
+%1697 = OpCompositeExtract %62 %1696 0 ; byte 0x2de0
+%1698 = OpExtInst %62 %390 43 %1697 %1517 %1452 ; byte 0x2df4
+%1699 = OpExtInst %62 %390 4 %1698 ; byte 0x2e14
+%1700 = OpExtInst %62 %390 40 %1683 %1699 ; byte 0x2e2c
+%1701 = OpExtInst %62 %390 46 %1683 %1700 %1522 ; byte 0x2e48
+%1702 = OpExtInst %62 %390 37 %1667 %1699 ; byte 0x2e68
+%1703 = OpExtInst %62 %390 40 %1668 %1699 ; byte 0x2e84
+%2262 = OpCompositeConstruct %63 %1698 %1698 ; byte 0x2ea0
+%2263 = OpExtInst %10 %390 58 %2262 ; byte 0x2eb4
+%2264 = OpBitwiseAnd %10 %2263 %504 ; byte 0x2ecc
+%1705 = OpFAdd %62 %703 %1475 ; byte 0x2ee0
+%1706 = OpFMul %62 %1705 %1477 ; byte 0x2ef4
+%1707 = OpVectorTimesScalar %63 %1505 %1706 ; byte 0x2f08
+%1708 = OpFAdd %63 %1407 %1707 ; byte 0x2f1c
+%1709 = OpLoad %377 %380 ; byte 0x2f30
+%1710 = OpLoad %184 %478 ; byte 0x2f40
+%1712 = OpSampledImage %384 %1710 %1709 ; byte 0x2f50
+%1713 = OpImageSampleExplicitLod %77 %1712 %1708 Lod %387 ; byte 0x2f64
+%1714 = OpCompositeExtract %62 %1713 0 ; byte 0x2f80
+%1715 = OpExtInst %62 %390 43 %1714 %1517 %1452 ; byte 0x2f94
+%1716 = OpExtInst %62 %390 4 %1715 ; byte 0x2fb4
+%1717 = OpExtInst %62 %390 40 %1701 %1716 ; byte 0x2fcc
+%1718 = OpExtInst %62 %390 46 %1701 %1717 %1522 ; byte 0x2fe8
+%2267 = OpCompositeConstruct %63 %1715 %1715 ; byte 0x3008
+%2268 = OpExtInst %10 %390 58 %2267 ; byte 0x301c
+%2269 = OpBitwiseAnd %10 %2268 %504 ; byte 0x3034
+%1720 = OpShiftLeftLogical %10 %2269 %171 ; byte 0x3048
+%1721 = OpBitwiseOr %10 %2264 %1720 ; byte 0x305c
+%1722 = OpAccessChain %532 %529 %208 %721 ; byte 0x3070
+OpStore %1722 %1721 ; byte 0x3088
+%1723 = OpFAdd %62 %460 %1475 ; byte 0x3094
+%1724 = OpFMul %62 %1723 %1477 ; byte 0x30a8
+%1725 = OpVectorTimesScalar %63 %1505 %1724 ; byte 0x30bc
+%1726 = OpFAdd %63 %1407 %1725 ; byte 0x30d0
+%1727 = OpLoad %377 %380 ; byte 0x30e4
+%1728 = OpLoad %184 %478 ; byte 0x30f4
+%1730 = OpSampledImage %384 %1728 %1727 ; byte 0x3104
+%1731 = OpImageSampleExplicitLod %77 %1730 %1726 Lod %387 ; byte 0x3118
+%1732 = OpCompositeExtract %62 %1731 0 ; byte 0x3134
+%1733 = OpExtInst %62 %390 43 %1732 %1517 %1452 ; byte 0x3148
+%1734 = OpExtInst %62 %390 4 %1733 ; byte 0x3168
+%1735 = OpExtInst %62 %390 40 %1718 %1734 ; byte 0x3180
+%1736 = OpExtInst %62 %390 46 %1718 %1735 %1522 ; byte 0x319c
+%1737 = OpExtInst %62 %390 37 %1702 %1734 ; byte 0x31bc
+%1738 = OpExtInst %62 %390 40 %1703 %1734 ; byte 0x31d8
+%2272 = OpCompositeConstruct %63 %1733 %1733 ; byte 0x31f4
+%2273 = OpExtInst %10 %390 58 %2272 ; byte 0x3208
+%2274 = OpBitwiseAnd %10 %2273 %504 ; byte 0x3220
+%1740 = OpFAdd %62 %741 %1475 ; byte 0x3234
+%1741 = OpFMul %62 %1740 %1477 ; byte 0x3248
+%1742 = OpVectorTimesScalar %63 %1505 %1741 ; byte 0x325c
+%1743 = OpFAdd %63 %1407 %1742 ; byte 0x3270
+%1744 = OpLoad %377 %380 ; byte 0x3284
+%1745 = OpLoad %184 %478 ; byte 0x3294
+%1747 = OpSampledImage %384 %1745 %1744 ; byte 0x32a4
+%1748 = OpImageSampleExplicitLod %77 %1747 %1743 Lod %387 ; byte 0x32b8
+%1749 = OpCompositeExtract %62 %1748 0 ; byte 0x32d4
+%1750 = OpExtInst %62 %390 43 %1749 %1517 %1452 ; byte 0x32e8
+%1751 = OpExtInst %62 %390 4 %1750 ; byte 0x3308
+%1752 = OpExtInst %62 %390 40 %1736 %1751 ; byte 0x3320
+%1753 = OpExtInst %62 %390 46 %1736 %1752 %1522 ; byte 0x333c
+%2277 = OpCompositeConstruct %63 %1750 %1750 ; byte 0x335c
+%2278 = OpExtInst %10 %390 58 %2277 ; byte 0x3370
+%2279 = OpBitwiseAnd %10 %2278 %504 ; byte 0x3388
+%1755 = OpShiftLeftLogical %10 %2279 %171 ; byte 0x339c
+%1756 = OpBitwiseOr %10 %2274 %1755 ; byte 0x33b0
+%1757 = OpAccessChain %532 %529 %208 %759 ; byte 0x33c4
+OpStore %1757 %1756 ; byte 0x33dc
+%1758 = OpFAdd %62 %762 %1475 ; byte 0x33e8
+%1759 = OpFMul %62 %1758 %1477 ; byte 0x33fc
+%1760 = OpVectorTimesScalar %63 %1505 %1759 ; byte 0x3410
+%1761 = OpFAdd %63 %1407 %1760 ; byte 0x3424
+%1762 = OpLoad %377 %380 ; byte 0x3438
+%1763 = OpLoad %184 %478 ; byte 0x3448
+%1765 = OpSampledImage %384 %1763 %1762 ; byte 0x3458
+%1766 = OpImageSampleExplicitLod %77 %1765 %1761 Lod %387 ; byte 0x346c
+%1767 = OpCompositeExtract %62 %1766 0 ; byte 0x3488
+%1768 = OpExtInst %62 %390 43 %1767 %1517 %1452 ; byte 0x349c
+%1769 = OpExtInst %62 %390 4 %1768 ; byte 0x34bc
+%1770 = OpExtInst %62 %390 40 %1753 %1769 ; byte 0x34d4
+%1771 = OpExtInst %62 %390 46 %1753 %1770 %1522 ; byte 0x34f0
+%1772 = OpExtInst %62 %390 37 %1737 %1769 ; byte 0x3510
+%1773 = OpExtInst %62 %390 40 %1738 %1769 ; byte 0x352c
+%2282 = OpCompositeConstruct %63 %1768 %1768 ; byte 0x3548
+%2283 = OpExtInst %10 %390 58 %2282 ; byte 0x355c
+%2284 = OpBitwiseAnd %10 %2283 %504 ; byte 0x3574
+%1775 = OpFAdd %62 %780 %1475 ; byte 0x3588
+%1776 = OpFMul %62 %1775 %1477 ; byte 0x359c
+%1777 = OpVectorTimesScalar %63 %1505 %1776 ; byte 0x35b0
+%1778 = OpFAdd %63 %1407 %1777 ; byte 0x35c4
+%1779 = OpLoad %377 %380 ; byte 0x35d8
+%1780 = OpLoad %184 %478 ; byte 0x35e8
+%1782 = OpSampledImage %384 %1780 %1779 ; byte 0x35f8
+%1783 = OpImageSampleExplicitLod %77 %1782 %1778 Lod %387 ; byte 0x360c
+%1784 = OpCompositeExtract %62 %1783 0 ; byte 0x3628
+%1785 = OpExtInst %62 %390 43 %1784 %1517 %1452 ; byte 0x363c
+%1786 = OpExtInst %62 %390 4 %1785 ; byte 0x365c
+%1787 = OpExtInst %62 %390 40 %1771 %1786 ; byte 0x3674
+%1788 = OpExtInst %62 %390 46 %1771 %1787 %1522 ; byte 0x3690
+%2287 = OpCompositeConstruct %63 %1785 %1785 ; byte 0x36b0
+%2288 = OpExtInst %10 %390 58 %2287 ; byte 0x36c4
+%2289 = OpBitwiseAnd %10 %2288 %504 ; byte 0x36dc
+%1790 = OpShiftLeftLogical %10 %2289 %171 ; byte 0x36f0
+%1791 = OpBitwiseOr %10 %2284 %1790 ; byte 0x3704
+%1792 = OpAccessChain %532 %529 %208 %18 ; byte 0x3718
+OpStore %1792 %1791 ; byte 0x3730
+%1793 = OpFAdd %62 %202 %1475 ; byte 0x373c
+%1794 = OpFMul %62 %1793 %1477 ; byte 0x3750
+%1795 = OpVectorTimesScalar %63 %1505 %1794 ; byte 0x3764
+%1796 = OpFAdd %63 %1407 %1795 ; byte 0x3778
+%1797 = OpLoad %377 %380 ; byte 0x378c
+%1798 = OpLoad %184 %478 ; byte 0x379c
+%1800 = OpSampledImage %384 %1798 %1797 ; byte 0x37ac
+%1801 = OpImageSampleExplicitLod %77 %1800 %1796 Lod %387 ; byte 0x37c0
+%1802 = OpCompositeExtract %62 %1801 0 ; byte 0x37dc
+%1803 = OpExtInst %62 %390 43 %1802 %1517 %1452 ; byte 0x37f0
+%1804 = OpExtInst %62 %390 4 %1803 ; byte 0x3810
+%1805 = OpExtInst %62 %390 40 %1788 %1804 ; byte 0x3828
+%1806 = OpExtInst %62 %390 46 %1788 %1805 %1522 ; byte 0x3844
+%1807 = OpExtInst %62 %390 37 %1772 %1804 ; byte 0x3864
+%1808 = OpExtInst %62 %390 40 %1773 %1804 ; byte 0x3880
+%2292 = OpCompositeConstruct %63 %1803 %1803 ; byte 0x389c
+%2293 = OpExtInst %10 %390 58 %2292 ; byte 0x38b0
+%2294 = OpBitwiseAnd %10 %2293 %504 ; byte 0x38c8
+%1810 = OpAccessChain %532 %529 %208 %51 ; byte 0x38dc
+OpStore %1810 %2294 ; byte 0x38f4
+OpBranch %1811 ; byte 0x3900
+%1811 = OpLabel ; byte 0x3908
+%2344 = OpPhi %10 %129 %1491 %1825 %1826 ; byte 0x3910
+OpLoopMerge %1818 %1826 None ; byte 0x392c
+OpBranch %1815 ; byte 0x393c
+%1815 = OpLabel ; byte 0x3944
+%1817 = OpULessThan %5 %2344 %822 ; byte 0x394c
+OpSelectionMerge %1819 None ; byte 0x3960
+OpBranchConditional %1817 %1819 %1818 ; byte 0x396c
+%1818 = OpLabel ; byte 0x397c
+OpBranch %1828 ; byte 0x3984
+%1819 = OpLabel ; byte 0x398c
+%1821 = OpAccessChain %84 %1422 %2344 ; byte 0x3994
+OpStore %1821 %129 ; byte 0x39a8
+%1825 = OpIAdd %10 %2344 %102 ; byte 0x39b4
+OpBranch %1826 ; byte 0x39c8
+%1826 = OpLabel ; byte 0x39d0
+OpBranch %1811 ; byte 0x39d8
+%1828 = OpLabel ; byte 0x39e0
+%2345 = OpPhi %10 %129 %1818 %1887 %1888 ; byte 0x39e8
+OpLoopMerge %1834 %1888 None ; byte 0x3a04
+OpBranch %1831 ; byte 0x3a14
+%1831 = OpLabel ; byte 0x3a1c
+%1833 = OpULessThan %5 %2345 %837 ; byte 0x3a24
+OpSelectionMerge %1835 None ; byte 0x3a38
+OpBranchConditional %1833 %1835 %1834 ; byte 0x3a44
+%1834 = OpLabel ; byte 0x3a54
+OpBranch %1892 ; byte 0x3a5c
+%1835 = OpLabel ; byte 0x3a64
+%1837 = OpISub %10 %2345 %51 ; byte 0x3a6c
+%1838 = OpBitcast %20 %1837 ; byte 0x3a80
+%1840 = OpShiftRightLogical %10 %2345 %102 ; byte 0x3a90
+%1841 = OpAccessChain %532 %529 %208 %1840 ; byte 0x3aa4
+%1842 = OpLoad %10 %1841 ; byte 0x3abc
+%1843 = OpExtInst %63 %390 62 %1842 ; byte 0x3acc
+OpStore %1425 %1843 ; byte 0x3ae4
+%1845 = OpBitwiseAnd %10 %2345 %102 ; byte 0x3af0
+%1846 = OpAccessChain %219 %1425 %1845 ; byte 0x3b04
+%1847 = OpLoad %62 %1846 ; byte 0x3b18
+%1848 = OpConvertSToF %62 %1838 ; byte 0x3b28
+%1849 = OpFAdd %62 %1848 %1475 ; byte 0x3b38
+%1850 = OpFMul %62 %1849 %1477 ; byte 0x3b4c
+OpBranch %1851 ; byte 0x3b60
+%1851 = OpLabel ; byte 0x3b68
+%2421 = OpPhi %20 %21 %1835 %1881 %1882 ; byte 0x3b70
+OpLoopMerge %1858 %1882 None ; byte 0x3b8c
+OpBranch %1855 ; byte 0x3b9c
+%1855 = OpLabel ; byte 0x3ba4
+%1857 = OpSLessThan %5 %2421 %235 ; byte 0x3bac
+OpSelectionMerge %1859 None ; byte 0x3bc0
+OpBranchConditional %1857 %1859 %1858 ; byte 0x3bcc
+%1858 = OpLabel ; byte 0x3bdc
+%1887 = OpIAdd %10 %2345 %102 ; byte 0x3be4
+OpBranch %1888 ; byte 0x3bf8
+%1859 = OpLabel ; byte 0x3c00
+%1861 = OpConvertSToF %62 %2421 ; byte 0x3c08
+%1863 = OpFAdd %62 %1861 %2365 ; byte 0x3c18
+%1866 = OpFMul %62 %1863 %2505 ; byte 0x3c2c
+%1867 = OpFSub %62 %1866 %432 ; byte 0x3c40
+%1868 = OpFDiv %62 %1850 %1867 ; byte 0x3c54
+%1869 = OpFOrdGreaterThanEqual %5 %1868 %1847 ; byte 0x3c68
+OpSelectionMerge %1877 None ; byte 0x3c7c
+OpBranchConditional %1869 %1870 %1877 ; byte 0x3c88
+%1870 = OpLabel ; byte 0x3c98
+%1872 = OpAccessChain %84 %1422 %2421 ; byte 0x3ca0
+%1874 = OpShiftLeftLogical %10 %102 %2345 ; byte 0x3cb4
+%1875 = OpLoad %10 %1872 ; byte 0x3cc8
+%1876 = OpBitwiseOr %10 %1875 %1874 ; byte 0x3cd8
+OpStore %1872 %1876 ; byte 0x3cec
+OpBranch %1877 ; byte 0x3cf8
+%1877 = OpLabel ; byte 0x3d00
+%1881 = OpIAdd %20 %2421 %148 ; byte 0x3d08
+OpBranch %1882 ; byte 0x3d1c
+%1882 = OpLabel ; byte 0x3d24
+OpBranch %1851 ; byte 0x3d2c
+%1888 = OpLabel ; byte 0x3d34
+OpBranch %1828 ; byte 0x3d3c
+%1892 = OpLabel ; byte 0x3d44
+%2366 = OpPhi %62 %2332 %1834 %1911 %2120 ; byte 0x3d4c
+%2359 = OpPhi %62 %2327 %1834 %2418 %2120 ; byte 0x3d68
+%2355 = OpPhi %77 %2486 %1834 %2458 %2120 ; byte 0x3d84
+%2351 = OpPhi %20 %21 %1834 %2118 %2120 ; byte 0x3da0
+OpLoopMerge %1899 %2120 None ; byte 0x3dbc
+OpBranch %1894 ; byte 0x3dcc
+%1894 = OpLabel ; byte 0x3dd4
+OpSelectionMerge %2115 None ; byte 0x3ddc
+OpSwitch %21 %1895 ; byte 0x3de8
+%1895 = OpLabel ; byte 0x3df4
+%1898 = OpSLessThan %5 %2351 %235 ; byte 0x3dfc
+OpSelectionMerge %1900 None ; byte 0x3e10
+OpBranchConditional %1898 %1900 %1899 ; byte 0x3e1c
+%1899 = OpLabel ; byte 0x3e2c
+%2124 = OpFAdd %77 %2326 %2355 ; byte 0x3e34
+%2128 = OpIAdd %10 %2325 %102 ; byte 0x3e48
+OpBranch %2131 ; byte 0x3e5c
+%1900 = OpLabel ; byte 0x3e64
+%1902 = OpConvertSToF %62 %2351 ; byte 0x3e6c
+%1904 = OpFAdd %62 %1902 %2365 ; byte 0x3e7c
+%1907 = OpFMul %62 %1904 %2505 ; byte 0x3e90
+%1908 = OpFSub %62 %1907 %432 ; byte 0x3ea4
+%1909 = OpExtInst %62 %390 4 %1908 ; byte 0x3eb8
+%1911 = OpFAdd %62 %2366 %1909 ; byte 0x3ed0
+%1913 = OpAccessChain %84 %1422 %2351 ; byte 0x3ee4
+%1914 = OpLoad %10 %1913 ; byte 0x3ef8
+%1915 = OpIEqual %5 %1914 %129 ; byte 0x3f08
+OpSelectionMerge %1918 None ; byte 0x3f1c
+OpBranchConditional %1915 %1916 %1918 ; byte 0x3f28
+%1916 = OpLabel ; byte 0x3f38
+OpBranch %2115 ; byte 0x3f40
+%1918 = OpLabel ; byte 0x3f48
+%1919 = OpFOrdGreaterThanEqual %5 %1908 %387 ; byte 0x3f50
+OpSelectionMerge %1958 None ; byte 0x3f64
+OpBranchConditional %1919 %1938 %1920 ; byte 0x3f70
+%1920 = OpLabel ; byte 0x3f80
+%1921 = OpExtInst %10 %390 75 %1914 ; byte 0x3f88
+%1922 = OpIAdd %10 %1921 %102 ; byte 0x3fa0
+%1923 = OpExtInst %10 %390 38 %171 %1922 ; byte 0x3fb4
+%1924 = OpShiftRightLogical %10 %1921 %102 ; byte 0x3fd0
+%1925 = OpAccessChain %532 %529 %208 %1924 ; byte 0x3fe4
+%1926 = OpLoad %10 %1925 ; byte 0x3ffc
+%1927 = OpExtInst %63 %390 62 %1926 ; byte 0x400c
+OpStore %1433 %1927 ; byte 0x4024
+%1928 = OpBitwiseAnd %10 %1921 %102 ; byte 0x4030
+%1929 = OpAccessChain %219 %1433 %1928 ; byte 0x4044
+%1930 = OpLoad %62 %1929 ; byte 0x4058
+%1931 = OpShiftRightLogical %10 %1923 %102 ; byte 0x4068
+%1932 = OpAccessChain %532 %529 %208 %1931 ; byte 0x407c
+%1933 = OpLoad %10 %1932 ; byte 0x4094
+%1934 = OpExtInst %63 %390 62 %1933 ; byte 0x40a4
+OpStore %1434 %1934 ; byte 0x40bc
+%1935 = OpBitwiseAnd %10 %1923 %102 ; byte 0x40c8
+%1936 = OpAccessChain %219 %1434 %1935 ; byte 0x40dc
+%1937 = OpLoad %62 %1936 ; byte 0x40f0
+OpBranch %1958 ; byte 0x4100
+%1938 = OpLabel ; byte 0x4108
+%1939 = OpExtInst %10 %390 73 %1914 ; byte 0x4110
+%1940 = OpBitcast %20 %1939 ; byte 0x4128
+%1941 = OpISub %20 %1940 %148 ; byte 0x4138
+%1942 = OpExtInst %20 %390 42 %21 %1941 ; byte 0x414c
+%1943 = OpBitcast %10 %1942 ; byte 0x4168
+%1944 = OpShiftRightLogical %10 %1939 %102 ; byte 0x4178
+%1945 = OpAccessChain %532 %529 %208 %1944 ; byte 0x418c
+%1946 = OpLoad %10 %1945 ; byte 0x41a4
+%1947 = OpExtInst %63 %390 62 %1946 ; byte 0x41b4
+OpStore %1431 %1947 ; byte 0x41cc
+%1948 = OpBitwiseAnd %10 %1939 %102 ; byte 0x41d8
+%1949 = OpAccessChain %219 %1431 %1948 ; byte 0x41ec
+%1950 = OpLoad %62 %1949 ; byte 0x4200
+%1951 = OpShiftRightLogical %10 %1943 %102 ; byte 0x4210
+%1952 = OpAccessChain %532 %529 %208 %1951 ; byte 0x4224
+%1953 = OpLoad %10 %1952 ; byte 0x423c
+%1954 = OpExtInst %63 %390 62 %1953 ; byte 0x424c
+OpStore %1432 %1954 ; byte 0x4264
+%1955 = OpBitwiseAnd %10 %1943 %102 ; byte 0x4270
+%1956 = OpAccessChain %219 %1432 %1955 ; byte 0x4284
+%1957 = OpLoad %62 %1956 ; byte 0x4298
+OpBranch %1958 ; byte 0x42a8
+%1958 = OpLabel ; byte 0x42b0
+%2372 = OpPhi %62 %1930 %1920 %1950 %1938 ; byte 0x42b8
+%2371 = OpPhi %62 %1937 %1920 %1957 %1938 ; byte 0x42d4
+%2369 = OpPhi %10 %1921 %1920 %1939 %1938 ; byte 0x42f0
+%2508 = OpSelect %62 %1919 %432 %433 ; byte 0x430c
+%1960 = OpISub %10 %2369 %51 ; byte 0x4324
+%1961 = OpBitcast %20 %1960 ; byte 0x4338
+%1962 = OpConvertSToF %62 %1961 ; byte 0x4348
+%1963 = OpFAdd %62 %1962 %1475 ; byte 0x4358
+%1964 = OpFMul %62 %1963 %1477 ; byte 0x436c
+%1965 = OpFDiv %62 %1964 %1908 ; byte 0x4380
+%1967 = OpFMul %62 %1477 %2508 ; byte 0x4394
+%1968 = OpFDiv %62 %1967 %1908 ; byte 0x43a8
+%1969 = OpFSub %62 %1965 %1968 ; byte 0x43bc
+%1970 = OpFSub %62 %1964 %1967 ; byte 0x43d0
+%1972 = OpFSub %62 %2371 %1969 ; byte 0x43e4
+%1974 = OpFSub %62 %2372 %1965 ; byte 0x43f8
+%1975 = OpINotEqual %5 %1914 %129 ; byte 0x440c
+%1976 = OpSelect %62 %1975 %432 %387 ; byte 0x4420
+%1977 = OpFMul %62 %1909 %1976 ; byte 0x4438
+%1978 = OpFNegate %62 %1974 ; byte 0x444c
+%1979 = OpFAdd %62 %1972 %1978 ; byte 0x445c
+%1980 = OpFDiv %62 %1972 %1979 ; byte 0x4470
+%1981 = OpExtInst %62 %390 43 %1980 %387 %432 ; byte 0x4484
+%1982 = OpExtInst %62 %390 46 %1970 %1964 %1981 ; byte 0x44a4
+%1983 = OpVectorTimesScalar %63 %1505 %1982 ; byte 0x44c4
+%1984 = OpFAdd %63 %1407 %1983 ; byte 0x44d8
+%1985 = OpLoad %377 %380 ; byte 0x44ec
+%1986 = OpLoad %184 %478 ; byte 0x44fc
+%1988 = OpSampledImage %384 %1986 %1985 ; byte 0x450c
+%1989 = OpImageSampleExplicitLod %77 %1988 %1984 Lod %387 ; byte 0x4520
+%1990 = OpCompositeExtract %62 %1989 0 ; byte 0x453c
+%1991 = OpExtInst %62 %390 43 %1990 %1517 %1452 ; byte 0x4550
+%1992 = OpFDiv %62 %1982 %1908 ; byte 0x4570
+%1994 = OpExtInst %62 %390 4 %2372 ; byte 0x4584
+%1995 = OpFMul %62 %1994 %1012 ; byte 0x459c
+%1996 = OpExtInst %62 %390 40 %387 %1995 ; byte 0x45b0
+%1997 = OpExtInst %62 %390 30 %1996 ; byte 0x45cc
+%1998 = OpFSub %62 %1808 %1807 ; byte 0x45e4
+%1999 = OpExtInst %62 %390 49 %460 %387 %1998 ; byte 0x45f8
+%2000 = OpFMul %62 %1997 %1999 ; byte 0x4618
+%2001 = OpLoad %10 %1019 ; byte 0x462c
+%2002 = OpBitwiseXor %10 %2001 %102 ; byte 0x463c
+%2003 = OpBitcast %20 %2002 ; byte 0x4650
+%2297 = OpBitcast %10 %2003 ; byte 0x4660
+%2298 = OpGroupNonUniformShuffle %62 %647 %2000 %2297 ; byte 0x4670
+%2005 = OpExtInst %62 %390 37 %2000 %2298 ; byte 0x4688
+%2007 = OpBitwiseXor %10 %2001 %51 ; byte 0x46a4
+%2008 = OpBitcast %20 %2007 ; byte 0x46b8
+%2301 = OpBitcast %10 %2008 ; byte 0x46c8
+%2302 = OpGroupNonUniformShuffle %62 %647 %2005 %2301 ; byte 0x46d8
+%2010 = OpExtInst %62 %390 37 %2005 %2302 ; byte 0x46f0
+%2013 = OpFOrdGreaterThan %5 %2372 %1452 ; byte 0x470c
+OpSelectionMerge %2016 None ; byte 0x4720
+OpBranchConditional %2013 %2014 %2016 ; byte 0x472c
+%2014 = OpLabel ; byte 0x473c
+OpBranch %2115 ; byte 0x4744
+%2016 = OpLabel ; byte 0x474c
+%2018 = OpFSub %62 %1992 %1991 ; byte 0x4754
+%2019 = OpFMul %62 %1972 %2506 ; byte 0x4768
+%2020 = OpFOrdLessThan %5 %2018 %2019 ; byte 0x477c
+OpSelectionMerge %2027 None ; byte 0x4790
+OpBranchConditional %2020 %2022 %2021 ; byte 0x479c
+%2021 = OpLabel ; byte 0x47ac
+OpBranch %2027 ; byte 0x47b4
+%2022 = OpLabel ; byte 0x47bc
+%2024 = OpFSub %62 %1991 %2372 ; byte 0x47c4
+%2026 = OpFOrdLessThan %5 %2024 %2019 ; byte 0x47d8
+OpBranch %2027 ; byte 0x47ec
+%2027 = OpLabel ; byte 0x47f4
+%2373 = OpPhi %5 %1056 %2021 %2026 %2022 ; byte 0x47fc
+OpSelectionMerge %2098 None ; byte 0x4818
+OpBranchConditional %2373 %2073 %2029 ; byte 0x4824
+%2029 = OpLabel ; byte 0x4834
+%2036 = OpExtInst %62 %390 4 %2371 ; byte 0x483c
+%2037 = OpFOrdGreaterThanEqual %5 %2036 %1070 ; byte 0x4854
+OpSelectionMerge %2040 None ; byte 0x4868
+OpBranchConditional %2037 %2038 %2040 ; byte 0x4874
+%2038 = OpLabel ; byte 0x4884
+OpBranch %2115 ; byte 0x488c
+%2040 = OpLabel ; byte 0x4894
+%2041 = OpExtInst %62 %390 49 %1070 %202 %2036 ; byte 0x489c
+%2042 = OpFMul %62 %1977 %2041 ; byte 0x48bc
+%2060 = OpExtInst %62 %390 49 %387 %376 %2371 ; byte 0x48d0
+%2061 = OpFMul %62 %489 %1452 ; byte 0x48f0
+%2063 = OpExtInst %62 %390 49 %2061 %387 %2372 ; byte 0x4904
+%2064 = OpFMul %62 %2060 %2063 ; byte 0x4924
+%2066 = OpFMul %62 %2042 %2064 ; byte 0x4938
+%2068 = OpFAdd %62 %2359 %2066 ; byte 0x494c
+%2069 = OpFSub %62 %432 %2064 ; byte 0x4960
+%2071 = OpFMul %62 %2042 %2069 ; byte 0x4974
+OpBranch %2098 ; byte 0x4988
+%2073 = OpLabel ; byte 0x4990
+%2079 = OpExtInst %62 %390 4 %1991 ; byte 0x4998
+%2080 = OpFOrdGreaterThanEqual %5 %2079 %1070 ; byte 0x49b0
+OpSelectionMerge %2083 None ; byte 0x49c4
+OpBranchConditional %2080 %2081 %2083 ; byte 0x49d0
+%2081 = OpLabel ; byte 0x49e0
+OpBranch %2115 ; byte 0x49e8
+%2083 = OpLabel ; byte 0x49f0
+%2084 = OpExtInst %62 %390 49 %1070 %202 %2079 ; byte 0x49f8
+%2085 = OpFMul %62 %1977 %2084 ; byte 0x4a18
+OpBranch %2098 ; byte 0x4a2c
+%2098 = OpLabel ; byte 0x4a34
+%2419 = OpPhi %62 %2068 %2040 %2359 %2083 ; byte 0x4a3c
+%2399 = OpPhi %62 %2071 %2040 %2085 %2083 ; byte 0x4a58
+%2509 = OpSelect %62 %2373 %1982 %1970 ; byte 0x4a74
+%2100 = OpVectorTimesScalar %63 %1505 %2509 ; byte 0x4a8c
+%2101 = OpFAdd %63 %1407 %2100 ; byte 0x4aa0
+%2102 = OpLoad %377 %380 ; byte 0x4ab4
+%2103 = OpLoad %184 %1154 ; byte 0x4ac4
+%2105 = OpSampledImage %384 %2103 %2102 ; byte 0x4ad4
+%2106 = OpImageSampleExplicitLod %77 %2105 %2101 Lod %2010 ; byte 0x4ae8
+%2112 = OpVectorTimesScalar %77 %2106 %2399 ; byte 0x4b04
+%2114 = OpFAdd %77 %2355 %2112 ; byte 0x4b18
+OpBranch %2115 ; byte 0x4b2c
+%2115 = OpLabel ; byte 0x4b34
+%2458 = OpPhi %77 %2355 %1916 %2355 %2014 %2355 %2038 %2355 %2081 %2114 %2098 ; byte 0x4b3c
+%2418 = OpPhi %62 %2359 %1916 %2359 %2014 %2359 %2038 %2359 %2081 %2419 %2098 ; byte 0x4b70
+%2118 = OpIAdd %20 %2351 %148 ; byte 0x4ba4
+OpBranch %2120 ; byte 0x4bb8
+%2120 = OpLabel ; byte 0x4bc0
+OpBranch %1892 ; byte 0x4bc8
+%2131 = OpLabel ; byte 0x4bd0
+OpBranch %1484 ; byte 0x4bd8
+%2143 = OpLabel ; byte 0x4be0
+%2144 = OpFNegate %62 %1452 ; byte 0x4be8
+OpBranch %2145 ; byte 0x4bf8
+%2145 = OpLabel ; byte 0x4c00
+%2337 = OpPhi %62 %2144 %2143 %2339 %2194 ; byte 0x4c08
+%2329 = OpPhi %77 %2486 %2143 %2425 %2194 ; byte 0x4c24
+%2328 = OpPhi %10 %129 %2143 %2192 %2194 ; byte 0x4c40
+OpLoopMerge %2152 %2194 None ; byte 0x4c5c
+OpBranch %2148 ; byte 0x4c6c
+%2148 = OpLabel ; byte 0x4c74
+%2151 = OpULessThan %5 %2328 %171 ; byte 0x4c7c
+OpSelectionMerge %2153 None ; byte 0x4c90
+OpBranchConditional %2151 %2153 %2152 ; byte 0x4c9c
+%2152 = OpLabel ; byte 0x4cac
+%2197 = OpCompositeExtract %62 %2329 3 ; byte 0x4cb4
+%2198 = OpExtInst %62 %390 40 %432 %2197 ; byte 0x4cc8
+%2200 = OpCompositeConstruct %77 %2198 %2198 %2198 %2198 ; byte 0x4ce4
+%2201 = OpFDiv %77 %2329 %2200 ; byte 0x4d00
+%2202 = OpVectorTimesScalar %77 %2201 %2141 ; byte 0x4d14
+%2204 = OpFAdd %77 %2326 %2202 ; byte 0x4d28
+OpBranch %2205 ; byte 0x4d3c
+%2153 = OpLabel ; byte 0x4d44
+%2305 = OpConvertUToF %62 %2328 ; byte 0x4d4c
+%2306 = OpVectorTimesScalar %63 %1225 %2305 ; byte 0x4d5c
+%2308 = OpFAdd %63 %2306 %2490 ; byte 0x4d70
+%2309 = OpExtInst %63 %390 10 %2308 ; byte 0x4d84
+%2156 = OpVectorShuffle %63 %1473 %1473 0 1 ; byte 0x4d9c
+%2157 = OpFAdd %63 %2309 %2156 ; byte 0x4db8
+%2158 = OpExtInst %63 %390 10 %2157 ; byte 0x4dcc
+%2312 = OpCompositeExtract %62 %2158 0 ; byte 0x4de4
+%2313 = OpExtInst %62 %390 31 %2312 ; byte 0x4df8
+%2314 = OpCompositeExtract %62 %2158 1 ; byte 0x4e10
+%2315 = OpFMul %62 %2314 %1244 ; byte 0x4e24
+%2316 = OpExtInst %62 %390 14 %2315 ; byte 0x4e38
+%2317 = OpFMul %62 %2316 %2313 ; byte 0x4e50
+%2318 = OpExtInst %62 %390 13 %2315 ; byte 0x4e64
+%2319 = OpFMul %62 %2318 %2313 ; byte 0x4e7c
+%2320 = OpCompositeConstruct %63 %2317 %2319 ; byte 0x4e90
+%2161 = OpConvertUToF %63 %1441 ; byte 0x4ea4
+%2162 = OpFDiv %63 %2320 %2161 ; byte 0x4eb4
+%2164 = OpVectorTimesScalar %63 %2162 %2336 ; byte 0x4ec8
+%2165 = OpFAdd %63 %1407 %2164 ; byte 0x4edc
+%2166 = OpLoad %377 %380 ; byte 0x4ef0
+%2167 = OpLoad %184 %478 ; byte 0x4f00
+%2169 = OpSampledImage %384 %2167 %2166 ; byte 0x4f10
+%2170 = OpImageSampleExplicitLod %77 %2169 %2165 Lod %387 ; byte 0x4f24
+%2171 = OpCompositeExtract %62 %2170 0 ; byte 0x4f40
+%2173 = OpFSub %62 %2337 %1047 ; byte 0x4f54
+%2174 = OpFOrdGreaterThan %5 %2171 %2173 ; byte 0x4f68
+OpSelectionMerge %2188 None ; byte 0x4f7c
+OpBranchConditional %2174 %2177 %2175 ; byte 0x4f88
+%2175 = OpLabel ; byte 0x4f98
+OpBranch %2188 ; byte 0x4fa0
+%2177 = OpLabel ; byte 0x4fa8
+%2178 = OpLoad %377 %1268 ; byte 0x4fb0
+%2179 = OpLoad %184 %1154 ; byte 0x4fc0
+%2181 = OpSampledImage %384 %2179 %2178 ; byte 0x4fd0
+%2182 = OpImageSampleExplicitLod %77 %2181 %2165 Lod %387 ; byte 0x4fe4
+%2185 = OpFAdd %77 %2329 %2182 ; byte 0x5000
+%2187 = OpExtInst %62 %390 40 %2337 %2171 ; byte 0x5014
+OpBranch %2188 ; byte 0x5030
+%2188 = OpLabel ; byte 0x5038
+%2425 = OpPhi %77 %2329 %2175 %2185 %2177 ; byte 0x5040
+%2339 = OpPhi %62 %2337 %2175 %2187 %2177 ; byte 0x505c
+%2192 = OpIAdd %10 %2328 %102 ; byte 0x5078
+OpBranch %2194 ; byte 0x508c
+%2194 = OpLabel ; byte 0x5094
+OpBranch %2145 ; byte 0x509c
+%2205 = OpLabel ; byte 0x50a4
+%2334 = OpPhi %77 %2326 %1490 %2204 %2152 ; byte 0x50ac
+%2208 = OpCompositeConstruct %77 %2332 %2332 %2332 %2332 ; byte 0x50c8
+%2209 = OpFDiv %77 %2334 %2208 ; byte 0x50e4
+%1309 = OpFAdd %77 %1371 %2209 ; byte 0x50f8
+%1310 = OpCompositeExtract %62 %1309 3 ; byte 0x510c
+%1311 = OpExtInst %62 %390 40 %1312 %1310 ; byte 0x5120
+%1313 = OpCompositeConstruct %77 %1311 %1311 %1311 %1311 ; byte 0x513c
+%1314 = OpFDiv %77 %1309 %1313 ; byte 0x5158
+%1316 = OpVectorShuffle %1315 %1314 %1314 0 1 2 ; byte 0x516c
+%1317 = OpCompositeConstruct %77 %1316 %432 ; byte 0x518c
+%1319 = OpLoad %1318 %1321 ; byte 0x51a0
+OpImageWrite %1319 %53 %1317 ; byte 0x51b0
+OpReturn ; byte 0x51c0
+OpFunctionEnd ; byte 0x51c4

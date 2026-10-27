@@ -1,0 +1,11 @@
+﻿{
+	"EVENTS": {
+		"AGRI_TRADEEVENT_CHOICE_NO": "Наразі ми не можемо нічого віддати."
+	},
+	"DESCRIPTOR": {
+		"AGRI_FESTIVAL_HAPPINESSFACTOR_BONUS_TITLE": "Свято Врожаю"
+	},
+	"ASPIRATION": {},
+	"UNLOCKABLE": {},
+	"NEEDS": {}
+}

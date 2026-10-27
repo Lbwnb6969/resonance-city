@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dcxwdlfp6j6pl"
+
+[deps]
+
+files=["res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.resource.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.absolute.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.length.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.sha256.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.rid.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.uuid.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.scripting.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.importance.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.needs.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.remove.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.compatible.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.additional.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.all.translation"]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.csv"
+dest_files=["res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.resource.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.absolute.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.length.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.sha256.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.rid.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.uuid.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.scripting.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.importance.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.needs.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.remove.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.compatible.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.additional.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/status-needs-jobs.all.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

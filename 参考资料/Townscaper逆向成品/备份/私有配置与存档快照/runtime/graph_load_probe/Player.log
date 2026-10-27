@@ -1,0 +1,203 @@
+Initialize engine version: 2020.3.4f1 (0abb6314276a)
+[Subsystems] Discovering subsystems at path D:/SteamLibrary/steamapps/common/Townscaper/Townscaper_Data/UnitySubsystems
+Forcing GfxDevice: Null
+GfxDevice: creating device client; threaded=0
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+
+ERROR: Shader Sprites/Default shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+Microsoft Media Foundation video decoding to texture disabled: graphics device is Null, only Direct3D 11 and Direct3D 12 (only on desktop) are supported.
+Registered PlatformPlayerPrefs: FuryStudios.FurySDK.Internal.PlatformPlayerPrefs
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+FuryStudios.FurySDK.Platform:RegisterPlayerPrefsType(Type)
+FuryStudios.FurySDK.Internal.PlatformPlayerPrefs:RegisterSelf()
+
+Registered fallback PlatformSDK: FuryStudios.FurySDK.Noop.NoopPlatformSDK
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+FuryStudios.FurySDK.Platform:RegisterFallbackPlatformSDK(Type)
+FuryStudios.FurySDK.Noop.NoopPlatformSDK:RegisterSelf()
+
+Registered PlatformSDK: FuryStudios.FurySDK.StandalonePC.StandalonePCPlatformSDK
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+FuryStudios.FurySDK.Platform:RegisterPlatformSDK(Type)
+FuryStudios.FurySDK.StandalonePC.StandalonePCPlatformSDK:RegisterSelf()
+
+ERROR: Shader Sprites/Mask shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader TextMeshPro/Mobile/Distance Field shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader GUI/Text Shader shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader PlacemakerUi/MultiFieldUi shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+WARNING: Shader Unsupported: 'TextMeshPro/Distance Field' - All subshaders removed
+WARNING: Shader Did you use #pragma only_renderers and omit this platform?
+WARNING: Shader If subshaders removal was intentional, you may have forgotten turning Fallback off?
+ERROR: Shader TextMeshPro/Distance Field shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+WARNING: Shader Unsupported: 'TextMeshPro/Distance Field' - All subshaders removed
+WARNING: Shader Did you use #pragma only_renderers and omit this platform?
+WARNING: Shader If subshaders removal was intentional, you may have forgotten turning Fallback off?
+ERROR: Shader PlacemakerUi/DistanceFieldUi shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+UnloadTime: 0.286900 ms
+Platform 'FuryStudios.FurySDK.StandalonePC.StandalonePCPlatformSDK' is initialized
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+FuryStudios.FurySDK.Platform:Init(PlatformSettings, Boolean)
+FuryStudios.FurySDK.Platform:Init(PlatformSettings)
+PlatformManager:Start()
+
+ERROR: Shader UI/Default shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Debris shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/AoStack shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Hidden/ShadowBaker shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Water shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Fence shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Hole0 shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Border shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Dust shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Carnival shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/House shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/HoverHightlight shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Window shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/FlipVertically shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Splash shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/ColorPick shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Hidden/AoBaker shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Plants shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Ground shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Door shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Hidden/AoSpreader shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader PlacemakerUi/VignetteOverlay shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/WaterShadow shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Mirror shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Voxel shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Sandbank shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/NoAlphaBlit shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Bird shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Grid shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Placemaker/Shade shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader Hidden/MarchingSquaresColorBlit shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader PlacemakerUi/TownPreviewUi shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader TextMeshPro/Mobile/Bitmap shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader TextMeshPro/Sprite shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+Can not play a disabled audio source
+UnityEngine.AudioSource:Play()
+Placemaker.Ui.<>c__DisplayClass17_0:<Placemaker.Ui.UiMaster.IUiSetup.OnSetup>b__7(Single)
+UnityEngine.Events.UnityAction`1:Invoke(T0)
+Placemaker.Ui.UiMaster:AddState(UpdateState)
+Placemaker.Ui.SideMenu:Placemaker.Ui.UiMaster.IUiSetup.OnSetup(UiMaster)
+Placemaker.Ui.UiMaster:MaybeSetup()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+[ line 16511612]
+
+Can not play a disabled audio source
+UnityEngine.AudioSource:Play()
+Placemaker.UiAudio:Play(AudioClip, Boolean)
+Placemaker.Ui.<>c__DisplayClass7_0:<Placemaker.Ui.UiMaster.IUiSetup.OnSetup>b__1(Single)
+UnityEngine.Events.UnityAction`1:Invoke(T0)
+Placemaker.Ui.UpdateState:SubscribeToTarget(Action`1)
+Placemaker.Ui.SunButtonGamepad:Placemaker.Ui.UiMaster.IUiSetup.OnSetup(UiMaster)
+Placemaker.Ui.UiMaster:MaybeSetup()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+[ line 16511580]
+
+Can not play a disabled audio source
+UnityEngine.AudioSource:Play()
+Placemaker.UiAudio:Play(AudioClip, Boolean)
+Placemaker.Ui.<>c__DisplayClass7_0:<Placemaker.Ui.UiMaster.IUiSetup.OnSetup>b__1(Single)
+UnityEngine.Events.UnityAction`1:Invoke(T0)
+Placemaker.Ui.UiMaster:AddState(UpdateState)
+Placemaker.Ui.SunButtonGamepad:Placemaker.Ui.UiMaster.IUiSetup.OnSetup(UiMaster)
+Placemaker.Ui.UiMaster:MaybeSetup()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+[ line 16511584]
+
+Loading: no path
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.SaveSystem:LoadSave(MetaSave)
+Placemaker.SaveSystem:IterateBoot(Func`1)
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+Creating texture C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\runtime\graph_load_probe\profile\Oskar Stalberg\Townscaper\Textures\TownColor.png
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.TexturePngMaster:ReadOrWriteTexture(PngTexture)
+Placemaker.TexturePngMaster:Placemaker.WorldMaster.IOnOnEnable.OnOnEnable(WorldMaster)
+Placemaker.WorldMaster:OnOnEnable()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+Creating texture C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\runtime\graph_load_probe\profile\Oskar Stalberg\Townscaper\Textures\TownMaterial.png
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.TexturePngMaster:ReadOrWriteTexture(PngTexture)
+Placemaker.TexturePngMaster:Placemaker.WorldMaster.IOnOnEnable.OnOnEnable(WorldMaster)
+Placemaker.WorldMaster:OnOnEnable()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+Creating texture C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\runtime\graph_load_probe\profile\Oskar Stalberg\Townscaper\Textures\TownPalette.png
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.TexturePngMaster:ReadOrWriteTexture(PngTexture)
+Placemaker.TexturePngMaster:Placemaker.WorldMaster.IOnOnEnable.OnOnEnable(WorldMaster)
+Placemaker.WorldMaster:OnOnEnable()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+Removing invalid corner at int2(9, 2)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.Graphs.Graph:IntegrateCorner(Corner)
+Placemaker.Graphs.Graph:Iterate()
+Placemaker.WorldMaster:Iterate()
+
+Removing invalid corner at int2(-3, -7)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.Graphs.Graph:IntegrateCorner(Corner)
+Placemaker.Graphs.Graph:Iterate()
+Placemaker.WorldMaster:Iterate()
+
+Save int3(3, -2, 0)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.Graphs.Graph:Save(SaveData)
+Placemaker.WorldMaster:GetSaveString()
+
+Removing invalid corner at int2(9, 2)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.Graphs.Graph:IntegrateCorner(Corner)
+Placemaker.Graphs.Graph:Iterate()
+Placemaker.WorldMaster:Iterate()
+

@@ -1,0 +1,65 @@
+{
+  "method": "Managed DLL schema with canonical UnityPy MonoBehaviour header alignment; strict complete-byte read; scalar asset configuration, not runtime observation.",
+  "seasons": [
+    {
+      "source": "resources.assets:52638:SeasonDefinition",
+      "m_Name": "AutumnSeason",
+      "name": "Autumn",
+      "id": 1,
+      "duration": 100.0,
+      "transitionTime": 40,
+      "nights": 1,
+      "nightRatio": 0.15000000596046448,
+      "markNewYear": 0
+    },
+    {
+      "source": "resources.assets:52639:SeasonDefinition",
+      "m_Name": "SpringSeason",
+      "name": "Spring",
+      "id": 3,
+      "duration": 100.0,
+      "transitionTime": 10,
+      "nights": 1,
+      "nightRatio": 0.15000000596046448,
+      "markNewYear": 1
+    },
+    {
+      "source": "resources.assets:52640:SeasonDefinition",
+      "m_Name": "SummerSeason",
+      "name": "Summer",
+      "id": 0,
+      "duration": 125.0,
+      "transitionTime": 10,
+      "nights": 1,
+      "nightRatio": 0.15000000596046448,
+      "markNewYear": 0
+    },
+    {
+      "source": "resources.assets:52641:SeasonDefinition",
+      "m_Name": "WinterSeason",
+      "name": "Winter",
+      "id": 2,
+      "duration": 125.0,
+      "transitionTime": 30,
+      "nights": 1,
+      "nightRatio": 0.15000000596046448,
+      "markNewYear": 0
+    }
+  ],
+  "time_manager": {
+    "source": "level1:35793",
+    "playSpeeds": [
+      0.0,
+      0.8500000238418579,
+      1.2000000476837158,
+      2.0,
+      10.0
+    ]
+  },
+  "localization": {
+    "source": "resources.assets:52605",
+    "resource_name": "i2languages",
+    "class": "I2.Loc.LanguageSourceAsset",
+    "parse_error": "read_u8_array out of bounds"
+  }
+}

@@ -1,0 +1,32 @@
+﻿{
+	"GENERAL": {
+		"SUPPACK_GUIVRE_BUILDING": "Jardin de la guivre"
+	},
+	"BUILDING_PART": {
+		"SUPPACK_GUIVRE_ARCHWAY_01A": "Arche du jardin de la guivre",
+		"SUPPACK_GUIVRE_BRAZIER_01A": "Brasero du jardin de la guivre (sol)",
+		"SUPPACK_GUIVRE_FLOWER_01A": "Fleurs du jardin de la guivre (treillage en corde)",
+		"SUPPACK_GUIVRE_FLOWER_02A": "Fleurs du jardin de la guivre (délicates)",
+		"SUPPACK_GUIVRE_FLOWER_03A": "Fleurs du jardin de la guivre (parfumées)",
+		"SUPPACK_GUIVRE_HALFWALL_01A": "Barrière du jardin de la guivre (droite)",
+		"SUPPACK_GUIVRE_HALFWALL_02A": "Fleur du jardin de la guivre (treillage en bois)",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_01A": "Clôture du jardin de la guivre (angle)",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_02A": "Fleur du jardin de la guivre (angle)",
+		"SUPPACK_GUIVRE_FOUNTAIN_LARGE_01A": "Mare du jardin de la guivre",
+		"SUPPACK_GUIVRE_TORCH_MEDIUM_01A": "Brasero du jardin de la guivre (suspendu)",
+		"SUPPACK_GUIVRE_BASSIN_RECTANGLE_01A": "Bassin du jardin de la guivre",
+		"SUPPACK_GUIVRE_TORCH_SMALL_01A": "Brasero du jardin de la guivre (mural)",
+		"SUPPACK_GUIVRE_STATUE_BASILISK_01A": "Le basilic pétrifié (marbre)",
+		"SUPPACK_GUIVRE_STATUE_FISH_01A": "Le poisson volant (marbre)",
+		"SUPPACK_GUIVRE_STATUE_GUIVRE_01A": "La grande guivre (marbre)",
+		"SUPPACK_GUIVRE_STATUE_PEDESTAL_01A": "Piédestal du jardin de la guivre",
+		"SUPPACK_GUIVRE_STATUE_PINECONE_01A": "Le gland sacré (marbre)",
+		"SUPPACK_GUIVRE_BENCH_STONE_01A": "Banc du jardin de la guivre",
+		"SUPPACK_GUIVRE_PILLAR_01A": "Colonne du jardin de la guivre"
+	},
+	"DESCRIPTION": {
+		"SUPPACK_GUIVRE_BUILDING_DESC": "Bien avant que notre royaume ne voie le jour, les légendes parlaient déjà de la guivre, une majestueuse créature serpentine sertie de mille joyaux. Ses ailes étaient si puissantes et ses griffes, si acérées qu'elle était capable d'emporter un troupeau de moutons tout entier avant même que son pauvre berger ne s'en rende compte !\n\nAujourd'hui encore, les villageois érigent de splendides monuments en l'honneur de ce redoutable serpent ailé, tant par respect que par crainte.",
+		"SUPPACK_GUIVRE_DECORATIVE_DESC": "D'autres décorations destinées au jardin de la guivre, pour offrir à vos statues leur propre petit monde.",
+		"SUPPACK_GUIVRE_STATUE_DESC": "Certains trouvent ces statues majestueuses, tandis que d'autres n'y voient que des visions d'horreur. Une chose est sûre : nul n'en reste de marbre."
+	}
+}

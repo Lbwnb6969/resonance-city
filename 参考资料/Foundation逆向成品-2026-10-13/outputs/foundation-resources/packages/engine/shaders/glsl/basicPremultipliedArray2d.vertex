@@ -1,0 +1,20 @@
+in vec2 attribPosition;
+in vec3 attribUv3d;
+in vec4 attribColor;
+in float attribSdfWidthThreshold;
+in float attribSdfSoftnessWidth;
+uniform mat4 uniMatMVP;
+out vec3 var_attribUv3d;
+out vec4 var_attribColor;
+out float var_attribSdfWidthThreshold;
+flat out float var_attribSdfSoftnessWidth;
+
+void main()
+{
+	vec4 POSITION = uniMatMVP * vec4(attribPosition, 0.0, 1.0);
+	gl_Position = POSITION;
+	var_attribUv3d = attribUv3d;
+	var_attribColor = attribColor;
+	var_attribSdfWidthThreshold = attribSdfWidthThreshold;
+	var_attribSdfSoftnessWidth = attribSdfSoftnessWidth;
+}

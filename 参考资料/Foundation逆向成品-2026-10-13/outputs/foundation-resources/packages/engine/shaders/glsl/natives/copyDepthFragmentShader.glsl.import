@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cgqhgk4reb4pi"
+path="res://.godot/imported/copyDepthFragmentShader.glsl-931e24cfb6d8d81219488d45c31bb635.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/engine/shaders/glsl/natives/copyDepthFragmentShader.glsl"
+dest_files=["res://.godot/imported/copyDepthFragmentShader.glsl-931e24cfb6d8d81219488d45c31bb635.res"]
+
+[params]
+

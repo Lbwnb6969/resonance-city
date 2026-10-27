@@ -1,0 +1,37 @@
+﻿{
+	"VILLAGE_EVENT": {
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_TOOLTIP": "A {1} is in preparation",
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_COUNTDOWN_TOOLTIP": "Countdown until {1} begins:",
+		"VILLAGE_EVENT_PROGRESSION_INPROGRESS_TOOLTIP": "Days left before the end of {1}:",
+		"VILLAGE_EVENT_PROGRESSION_COMPLETED_TOOLTIP": "The {1} has ended",
+		"VILLAGE_EVENT_PROGRESSION_SHOWRESULT_TOOLTIP": "Show {1} results and rewards",
+		"VILLAGE_EVENT_CANT_PREPARE_X_TOOLTIP": "Missing requirements to access {1} preparation",
+		"VILLAGE_EVENT_X_NOT_BUILT": "The Harvest Festival Shed needs to be built, and all resources required to build the {1} must be placed inside it.",
+		"VILLAGE_EVENT_QUEST_COUNTDOWN": "In preparation for",
+		"VILLAGE_EVENT_QUEST_SCORE": "Ongoing Score",
+		"VILLAGE_EVENT_SHOW_RESULT": "Show Results",
+		"ADD_X_GUEST_INVITATION": "{1} Estate Invitation(s) Earned",
+		"GUEST_REWARD_HEADER": "Tier {1} (Score {2})",
+		"INVITATION_EXTRA_REWARDS": "Extra Estate Rewards",
+		"SELECT_X_ENTERTAINER": "Hire {1}",
+		"SELECT_X_GUEST_INVITATION": "Send an Estate Invitation to {1}",
+		"SELECT_ANY_GUEST_CONDITION": "Send any Invitation",
+		"RECURRENT_REWARDS": "Recurrent Rewards",
+		"VILLAGE_EVENT_INVITATION_REQUIRED_X": "(Invitation Required {1})",
+		"VILLAGE_EVENT_DEFAULT_NAME": "{1}'s {2}"
+	},
+	"GAME_CONDITIONS": {
+		"START_X_VILLAGE_EVENT": "Host a {1}",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING": "Host a {1} from the {2}",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING_WITH_THE_FOLLOWING": "Host a {1} from the {2} with the following:",
+		"START_X_VILLAGE_EVENT_WITH_THE_FOLLOWING": "Host a {1} with the following:",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_Y_Z_VALUE": "Complete a {1} with a Score of {2} {3}",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_OF_Y_Z_VALUE": "Complete a {1} with a Score of {2} {3}",
+		"REACH_TIER_X_OF_VILLAGE_EVENT_Y": "Reach {2} Tier {1}",
+		"BUILD_X_INSIDE_Y": "Build a {1} inside the {2} Layer",
+		"ACQUIRE_X_RECIPE": "Acquire the Recipe for {1}",
+		"DISCOVER_X_VILLAGE_EVENT_ENTERTAINER": "Meet {1}",
+		"SELECT_ANY_ENTERTAINER_CONDITION": "Any Entertainer Invited",
+		"ATTRACTS_X_VILLAGERS": "{1} Villagers Attending"
+	}
+}

@@ -1,0 +1,11 @@
+wwiser v20260808 (python 3.14.3)
+parser: parsing D:\steamtest\steamapps\common\Foundation\audio\Init.bnk
+parser: parsing D:\steamtest\steamapps\common\Foundation\audio\core.bnk
+parser: parsing D:\steamtest\steamapps\common\Foundation\dlc\agriculture\audio.bnk
+parser: done
+names: loading names
+names: couldn't find work\full-audio\vendor\wwiser\wwiser-08e937b649bc7007c234bbd59e34a41d5eef3b38\wwnames.db3 name file
+names: done
+dumper: writting outputs/foundation-audio-recovered/banks-full.xml
+dumper: done
+(done)

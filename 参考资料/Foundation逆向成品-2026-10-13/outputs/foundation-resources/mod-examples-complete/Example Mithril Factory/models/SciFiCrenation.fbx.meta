@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<meta id="3d38bff8-7c19-49e1-87ab-15690ca63e07">
+	<meta id="0575d3f1-6606-47ce-b44c-b3dbb992a7ab" type="group" folder="true" name="Materials">
+		<meta id="2d0a6e78-0b6c-4a02-b4da-51e5f1e3f88e" name="MithrilFactory_Diffuse"/>
+	</meta>
+	<meta id="79e7526f-2b11-49f8-9de7-b6f4e68b4faf" type="group" folder="true" name="Meshes">
+		<meta id="ecdf0e5e-9997-42f3-8531-d4464f517905" name="SciFi_Crenation_MithrilFactory_Diffuse"/>
+	</meta>
+	<meta id="96059908-1c23-4f62-abe7-dfa9df066903" name="Prefab">
+		<meta id="702c9b5f-1db0-476b-a1eb-4facc40c62fc" name="SciFi_Crenation"/>
+	</meta>
+</meta>
+<importer type="GamCFbxImporterConfiguration">
+	<WorkFilePath value="utf8:"/>
+	<Md5Checksum value="6e48f395b118ed1d2998110e0f84c8d1"/>
+	<ModelVersion value="36"/>
+	<Scale value="0.01"/>
+	<PatchMeshOffset value="true"/>
+	<UniqueNodeName value="false"/>
+	<ImportAnimation value="false"/>
+	<IgnoreRootAnimation value="false"/>
+	<FlipXAxis value="true"/>
+	<ZUpSource value="false"/>
+	<MergeDuplicateMeshes value="true"/>
+	<GenerateLod value="false"/>
+	<OverrideExistingLod value="false"/>
+	<NodeConfig type="GenCFbxNodeConfig">
+		<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+		<ChildList>
+			<Item type="GenCFbxNodeConfig">
+				<LodConfig value="00000000-0000-0000-0000-000000000000"/>
+				<ChildList/>
+				<NodeName value="SciFi_Crenation"/>
+			</Item>
+		</ChildList>
+		<NodeName value="Prefab"/>
+	</NodeConfig>
+	<MaterialList>
+		<Item type="GamCDataMaterialPair">
+			<MaterialGuid value="2d0a6e78-0b6c-4a02-b4da-51e5f1e3f88e"/>
+			<MaterialName value="MithrilFactory_Diffuse"/>
+		</Item>
+	</MaterialList>
+</importer>
+

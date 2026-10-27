@@ -1,0 +1,179 @@
+Initialize engine version: 2020.3.4f1 (0abb6314276a)
+[Subsystems] Discovering subsystems at path D:/SteamLibrary/steamapps/common/Townscaper/Townscaper_Data/UnitySubsystems
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 5070 Ti Laptop GPU (ID=0x2f18)
+    Vendor:   (null)
+    VRAM:     3072 MB
+    Driver:   32.0.16.1714
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+
+D3D11 device created for Microsoft Media Foundation video decoding.
+Registered PlatformPlayerPrefs: FuryStudios.FurySDK.Internal.PlatformPlayerPrefs
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+FuryStudios.FurySDK.Platform:RegisterPlayerPrefsType(Type)
+FuryStudios.FurySDK.Internal.PlatformPlayerPrefs:RegisterSelf()
+
+Registered fallback PlatformSDK: FuryStudios.FurySDK.Noop.NoopPlatformSDK
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+FuryStudios.FurySDK.Platform:RegisterFallbackPlatformSDK(Type)
+FuryStudios.FurySDK.Noop.NoopPlatformSDK:RegisterSelf()
+
+Registered PlatformSDK: FuryStudios.FurySDK.StandalonePC.StandalonePCPlatformSDK
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+FuryStudios.FurySDK.Platform:RegisterPlatformSDK(Type)
+FuryStudios.FurySDK.StandalonePC.StandalonePCPlatformSDK:RegisterSelf()
+
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.634900 ms
+Platform 'FuryStudios.FurySDK.StandalonePC.StandalonePCPlatformSDK' is initialized
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+FuryStudios.FurySDK.Platform:Init(PlatformSettings, Boolean)
+FuryStudios.FurySDK.Platform:Init(PlatformSettings)
+PlatformManager:Start()
+
+Can not play a disabled audio source
+UnityEngine.AudioSource:Play()
+Placemaker.Ui.<>c__DisplayClass17_0:<Placemaker.Ui.UiMaster.IUiSetup.OnSetup>b__7(Single)
+UnityEngine.Events.UnityAction`1:Invoke(T0)
+Placemaker.Ui.UiMaster:AddState(UpdateState)
+Placemaker.Ui.SideMenu:Placemaker.Ui.UiMaster.IUiSetup.OnSetup(UiMaster)
+Placemaker.Ui.UiMaster:MaybeSetup()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+[ line 15659900]
+
+Can not play a disabled audio source
+UnityEngine.AudioSource:Play()
+Placemaker.UiAudio:Play(AudioClip, Boolean)
+Placemaker.Ui.<>c__DisplayClass7_0:<Placemaker.Ui.UiMaster.IUiSetup.OnSetup>b__1(Single)
+UnityEngine.Events.UnityAction`1:Invoke(T0)
+Placemaker.Ui.UpdateState:SubscribeToTarget(Action`1)
+Placemaker.Ui.SunButtonGamepad:Placemaker.Ui.UiMaster.IUiSetup.OnSetup(UiMaster)
+Placemaker.Ui.UiMaster:MaybeSetup()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+[ line 15659868]
+
+Can not play a disabled audio source
+UnityEngine.AudioSource:Play()
+Placemaker.UiAudio:Play(AudioClip, Boolean)
+Placemaker.Ui.<>c__DisplayClass7_0:<Placemaker.Ui.UiMaster.IUiSetup.OnSetup>b__1(Single)
+UnityEngine.Events.UnityAction`1:Invoke(T0)
+Placemaker.Ui.UiMaster:AddState(UpdateState)
+Placemaker.Ui.SunButtonGamepad:Placemaker.Ui.UiMaster.IUiSetup.OnSetup(UiMaster)
+Placemaker.Ui.UiMaster:MaybeSetup()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+[ line 15659872]
+
+Loading: no path
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.SaveSystem:LoadSave(MetaSave)
+Placemaker.SaveSystem:IterateBoot(Func`1)
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+Creating texture C:\Users\Administrator\AppData\LocalLow\Oskar Stalberg\Townscaper\Textures\TownColor.png
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.TexturePngMaster:ReadOrWriteTexture(PngTexture)
+Placemaker.TexturePngMaster:Placemaker.WorldMaster.IOnOnEnable.OnOnEnable(WorldMaster)
+Placemaker.WorldMaster:OnOnEnable()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+Creating texture C:\Users\Administrator\AppData\LocalLow\Oskar Stalberg\Townscaper\Textures\TownMaterial.png
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.TexturePngMaster:ReadOrWriteTexture(PngTexture)
+Placemaker.TexturePngMaster:Placemaker.WorldMaster.IOnOnEnable.OnOnEnable(WorldMaster)
+Placemaker.WorldMaster:OnOnEnable()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+Creating texture C:\Users\Administrator\AppData\LocalLow\Oskar Stalberg\Townscaper\Textures\TownPalette.png
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.TexturePngMaster:ReadOrWriteTexture(PngTexture)
+Placemaker.TexturePngMaster:Placemaker.WorldMaster.IOnOnEnable.OnOnEnable(WorldMaster)
+Placemaker.WorldMaster:OnOnEnable()
+Placemaker.<BootRoutine>d__11:MoveNext()
+Placemaker.<FastCoroutine>d__9:MoveNext()
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
+Saved Settings
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.SaveSystem:<SaveSettings>b__54_0()
+System.Windows.Forms.CollectionChangedHandler:Invoke()
+FuryStudios.FurySDK.Internal.DotNetStorageRequest:OnUpdate()
+FuryStudios.FurySDK.Internal.AsyncRequest:MoveNext()
+FuryStudios.FurySDK.Internal.AsyncRequestScheduler:Update()
+FuryStudios.FurySDK.StandalonePC.StandalonePCPlatformSDK:Update()
+
+Saved: Saves\TowngCXPu799cF6yiT6o.scape
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.<>c__DisplayClass53_1:<SaveMetaSaveToDisk>b__2()
+System.Windows.Forms.CollectionChangedHandler:Invoke()
+FuryStudios.FurySDK.Internal.DotNetStorageRequest:OnUpdate()
+FuryStudios.FurySDK.Internal.AsyncRequest:MoveNext()
+FuryStudios.FurySDK.Internal.AsyncRequestScheduler:Update()
+FuryStudios.FurySDK.StandalonePC.StandalonePCPlatformSDK:Update()
+
+Saved Settings
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Placemaker.SaveSystem:<SaveSettings>b__54_0()
+System.Windows.Forms.CollectionChangedHandler:Invoke()
+FuryStudios.FurySDK.Internal.DotNetStorageRequest:OnUpdate()
+FuryStudios.FurySDK.Internal.AsyncRequest:MoveNext()
+FuryStudios.FurySDK.Internal.AsyncRequestScheduler:Update()
+FuryStudios.FurySDK.StandalonePC.StandalonePCPlatformSDK:Update()
+
+Setting up 16 worker threads for Enlighten.
+  Thread -> id: af98 -> priority: 1 
+  Thread -> id: 354c -> priority: 1 
+  Thread -> id: b044 -> priority: 1 
+  Thread -> id: e7c -> priority: 1 
+  Thread -> id: bc20 -> priority: 1 
+  Thread -> id: 868c -> priority: 1 
+  Thread -> id: 9538 -> priority: 1 
+  Thread -> id: 9258 -> priority: 1 
+  Thread -> id: c298 -> priority: 1 
+  Thread -> id: bfc -> priority: 1 
+  Thread -> id: 526c -> priority: 1 
+  Thread -> id: c96c -> priority: 1 
+  Thread -> id: c680 -> priority: 1 
+  Thread -> id: 8070 -> priority: 1 
+  Thread -> id: 56f8 -> priority: 1 
+  Thread -> id: a1b4 -> priority: 1 

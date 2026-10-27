@@ -1,0 +1,105 @@
+uniform sampler2D uniTextureLut;
+uniform sampler2DArray uniTextureArrayDiffuse;
+uniform int uniToneMappingType;
+uniform float uniToneMappingExposure;
+uniform float uniToneMappingMaxWhite;
+uniform float uniContrast;
+uniform float uniBrightness;
+uniform float uniLutWeight;
+in vec3 var_attribUv3d;
+in vec4 var_attribColor;
+layout(location = 0) out vec4 outColor;
+
+void main()
+{
+	vec4 ATTRIB_COLOR = var_attribColor;
+	vec4 TEXTURE_COLOR = vec4(1);
+	vec4 COLOR = vec4(1);
+	TEXTURE_COLOR = texture(uniTextureArrayDiffuse, var_attribUv3d);
+	COLOR = ATTRIB_COLOR * TEXTURE_COLOR;
+	outColor = COLOR;
+	vec3 hdrColor = COLOR.rgb;
+	if(uniToneMappingType == 1) {
+		{
+			outColor.rgb = hdrColor / (hdrColor + vec3(1));
+		}
+	} else {
+		if(uniToneMappingType == 2) {
+			{
+				vec3 numerator = hdrColor * (vec3(1) + (hdrColor / vec3(uniToneMappingMaxWhite * uniToneMappingMaxWhite)));
+				outColor.rgb = numerator / (hdrColor + vec3(1));
+			}
+		} else {
+			if(uniToneMappingType == 3) {
+				{
+					float luminance = dot(hdrColor, vec3(0.2126, 0.7152, 0.0722));
+					float l_in = luminance;
+					float numerator_1 = luminance * (1 + (luminance / (uniToneMappingMaxWhite * uniToneMappingMaxWhite)));
+					float l_out = numerator_1 / (luminance + 1);
+					outColor.rgb = hdrColor * (l_out / l_in);
+				}
+			} else {
+				if(uniToneMappingType == 4) {
+					{
+						float luminance_1 = dot(hdrColor, vec3(0.2126, 0.7152, 0.0722));
+						float l = luminance_1;
+						vec3 tv = hdrColor / (hdrColor + vec3(1));
+						outColor.rgb = mix(hdrColor / (l + 1), tv, tv);
+					}
+				} else {
+					if(uniToneMappingType == 5) {
+						{
+							float A = 0.15;
+							float B = 0.50;
+							float C = 0.10;
+							float D = 0.20;
+							float E = 0.02;
+							float F = 0.30;
+							vec3 x = hdrColor * uniToneMappingExposure;
+							vec3 curr = ((x * (A * x + C * B) + D * E) / (x * (A * x + B) + D * F)) - E / F;
+							x = vec3(uniToneMappingMaxWhite);
+							vec3 white_scale = vec3(1) / ((x * (A * x + C * B) + D * E) / (x * (A * x + B) + D * F)) - E / F;
+							outColor.rgb = curr * white_scale;
+						}
+					} else {
+						if(uniToneMappingType == 6) {
+							{
+								mat3 aces_input_matrix = mat3(0.59719, 0.07600, 0.02840, 0.35458, 0.90834, 0.13383, 0.04823, 0.01566, 0.83777);
+								mat3 aces_output_matrix = mat3(1.60475, - 0.10208, - 0.00327, - 0.53108, 1.10813, - 0.07276, - 0.07367, - 0.00605, 1.07602);
+								hdrColor = aces_input_matrix * hdrColor;
+								vec3 a = hdrColor * (hdrColor + 0.0245786) - 0.000090537;
+								vec3 b = hdrColor * (0.983729 * hdrColor + 0.4329510) + 0.238081;
+								hdrColor = a / b;
+								outColor.rgb = aces_output_matrix * hdrColor;
+							}
+						} else {
+							if(uniToneMappingType == 7) {
+								{
+									hdrColor *= 0.6;
+									float a_1 = 2.51;
+									float b_1 = 0.03;
+									float c = 2.43;
+									float d = 0.59;
+									float e = 0.14;
+									outColor.rgb = clamp((hdrColor * (a_1 * hdrColor + b_1)) / (hdrColor * (c * hdrColor + d) + e), 0, 1);
+								}
+							} else {
+								if(uniToneMappingType == 8) {
+									{
+										outColor.rgb = vec3(1) - exp(- COLOR.rgb * uniToneMappingExposure);
+									}
+								}
+							}						}					}				}			}		}	}	float invGamma = 1 / 2.2;
+	outColor = pow(outColor, vec4(invGamma, invGamma, invGamma, 1));
+	outColor.rgb = ((outColor.rgb - 0.5) * max(uniContrast, 0)) + 0.5;
+	outColor += vec4(uniBrightness, uniBrightness, uniBrightness, 0);
+	outColor.rgb = clamp(outColor.rgb, vec3(0), vec3(1));
+	vec2 uvLut = (outColor.rg * 15.0 + 0.5) / 16.0;
+	uvLut.x /= 16.0;
+	float blueOffset = floor(outColor.b * 15.0);
+	float w = outColor.b * 15.0 - blueOffset;
+	vec4 resultColor = vec4(textureLod(uniTextureLut, vec2(uvLut.x + blueOffset / 16.0, uvLut.y), 0).rgb * (1 - w), outColor.a);
+	resultColor.rgb += textureLod(uniTextureLut, vec2(uvLut.x + min(blueOffset + 1.0, 15.0) / 16.0, uvLut.y), 0).rgb * w;
+	vec4 colorWithLut = resultColor;
+	outColor = mix(outColor, colorWithLut, uniLutWeight);
+}

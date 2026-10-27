@@ -1,0 +1,63 @@
+{
+  "scope": "Analysis deliverables and original-file integrity",
+  "checks": [
+    {
+      "name": "original_game_files_unchanged",
+      "pass": true,
+      "details": {
+        "hashed_files": 313,
+        "changed": [],
+        "added": [],
+        "missing": []
+      }
+    },
+    {
+      "name": "json_deliverables_parse",
+      "pass": true,
+      "details": {
+        "count": 16,
+        "invalid": []
+      }
+    },
+    {
+      "name": "compressed_asset_catalog_parse",
+      "pass": true,
+      "details": {
+        "records": 137422
+      }
+    },
+    {
+      "name": "shipped_solver_controlled_replay",
+      "pass": true,
+      "details": {
+        "cases": 4,
+        "passed": 4,
+        "boundary": "Pure Roma.Aqueduct DLL under .NET 10; no Unity game execution"
+      }
+    },
+    {
+      "name": "decompiled_source_index_matches",
+      "pass": true,
+      "details": {
+        "files": 2272,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "markdown_file_links_exist",
+      "pass": true,
+      "details": {
+        "missing": []
+      }
+    },
+    {
+      "name": "rea_evidence_bundle_retained",
+      "pass": true,
+      "details": {
+        "records": 5,
+        "note": "Includes main-member resource-limit failure; unknowns array is not a completeness claim"
+      }
+    }
+  ],
+  "all_pass": true
+}

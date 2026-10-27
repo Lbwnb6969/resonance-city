@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://c5k8ttveruahr"
+
+[deps]
+
+files=["res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.package.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.resource.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.absolute.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.length.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.sha256.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.type.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.uuid.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.scripting.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.name.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.scalar.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.references.translation"]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.csv"
+dest_files=["res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.package.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.resource.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.absolute.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.length.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.sha256.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.type.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.uuid.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.scripting.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.name.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.scalar.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/military.references.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

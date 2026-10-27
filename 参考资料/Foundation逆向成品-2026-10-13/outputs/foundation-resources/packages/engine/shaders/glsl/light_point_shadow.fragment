@@ -1,0 +1,125 @@
+uniform mat4 uniViewProjectionInverse;
+uniform vec2 uniCameraJitter;
+uniform sampler2D uniTextureDiffuse;
+uniform sampler2D uniTextureNormal;
+uniform sampler2D uniTextureDepth;
+uniform vec3 uniLightColor;
+uniform vec3 uniCameraPosition;
+uniform float instConstantAttenuation;
+uniform float instLinearAttenuation;
+uniform float instQuadraticAttenuation;
+uniform vec3 instLightPosition;
+uniform vec2 uniLightAttenuationRadius;
+uniform float uniShadowIntensity;
+uniform int uniShadowMapBlurWindowHalfSize[1];
+uniform float uniShadowTexelSize[1];
+uniform vec2 uniZOffset[1];
+uniform mat4 uniSpace2texture[1];
+uniform sampler2D uniTextureShadowMap[1];
+in vec4 SCREEN_COORD;
+layout(location = 0) out vec4 outColor;
+
+void main()
+{
+	vec2 mUv = SCREEN_COORD.xy * 0.5 / SCREEN_COORD.w + 0.5;
+	vec4 COLOR = texture(uniTextureDiffuse, mUv);
+	vec3 NORMAL = texture(uniTextureNormal, mUv).rgb * 2.0 - 1.0;
+	float DEPTH = texture(uniTextureDepth, mUv).r;
+	vec3 ALBEDO = COLOR.rgb;
+	vec4 screenPosition = vec4(mUv * 2.0 - 1.0, DEPTH * 2.0 - 1.0, 1.0);
+	screenPosition.xy -= uniCameraJitter;
+	vec4 worldPosition = uniViewProjectionInverse * screenPosition;
+	vec3 POSITION = worldPosition.xyz / worldPosition.w;
+	float SHADOW = 1.0;
+	vec3 LIGHT_DIRECTION = POSITION - instLightPosition;
+	float distance = length(LIGHT_DIRECTION);
+	LIGHT_DIRECTION /= distance;
+	vec3 L = - LIGHT_DIRECTION;
+	float constantAttenuation = instConstantAttenuation;
+	float linearAttenuation = instLinearAttenuation * distance;
+	float quadraticAttenuation = instQuadraticAttenuation * distance * distance;
+	float totalAttenuation = constantAttenuation + linearAttenuation + quadraticAttenuation;
+	float attenuation = clamp(1.0 / totalAttenuation, 0.0, 1.0) * (1.0 - smoothstep(uniLightAttenuationRadius.x, uniLightAttenuationRadius.y, distance));
+	float PI = 3.14159265359;
+	vec3 V = normalize(uniCameraPosition - POSITION);
+	vec3 H = normalize(V + L);
+	vec3 N = normalize(NORMAL);
+	vec3 radiance = uniLightColor * attenuation;
+	vec3 F0 = vec3(0.04);
+	float cosTheta = clamp(dot(H, V), 0.0, 1.0);
+	vec3 F = F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+	float a2 = 1;
+	float NdotH = max(dot(N, H), 0.0);
+	float NdotH2 = NdotH * NdotH;
+	float nom = a2;
+	float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+	denom = PI * denom * denom;
+	float NDF = nom / denom;
+	float NdotV = max(dot(N, V), 0.0);
+	float NdotL = max(dot(N, L), 0.0);
+	float nom_1 = NdotV;
+	float denom_1 = 0;
+	denom_1 = NdotV * 0.5 + 0.5;
+	float ggx2 = nom_1 / denom_1;
+	float nom_2 = NdotL;
+	float denom_2 = 0;
+	denom_2 = NdotL * 0.5 + 0.5;
+	float ggx1 = nom_2 / denom_2;
+	float G = ggx1 * ggx2;
+	vec3 nominator = NDF * G * F;
+	float denominator = 4 * NdotV * NdotL + 0.001;
+	vec3 specular = nominator / denominator;
+	vec3 kS = F;
+	vec3 kD = vec3(1.0) - kS;
+	COLOR.rgb = (kD / PI + specular) * radiance * ALBEDO * NdotL;
+	float shadow[2];
+	shadow[0] = 1;
+	shadow[1] = 1;
+	float w = 0;
+	int firstShadowId = 0;
+	int lastShadowId = 0;
+	float surfaceFrontLighting = max(dot(NORMAL, - LIGHT_DIRECTION), 0);
+	float surfaceParallelToLight = 1.0 - surfaceFrontLighting;
+	for(int i = firstShadowId; i <= lastShadowId; ++ i)
+	{
+		vec4 shadowTexCoordAdjust = uniSpace2texture[i] * vec4(POSITION, 1);
+		shadowTexCoordAdjust /= shadowTexCoordAdjust.w;
+		float textX = shadowTexCoordAdjust.x / uniShadowTexelSize[i];
+		float textY = shadowTexCoordAdjust.y / uniShadowTexelSize[i];
+		vec2 uv = shadowTexCoordAdjust.xy;
+		if(uv.x > 0 && uv.x < 1 && uv.y > 0 && uv.y < 1 && shadowTexCoordAdjust.z < 1) {
+			{
+				float wx = (textX - floor(textX)) * 2.0 - 1.0;
+				float wy = (textY - floor(textY)) * 2.0 - 1.0;
+				float dx;
+				float dy;
+				float d;
+				float weight = 0.0;
+				float s = 0;
+				int blurHalf = uniShadowMapBlurWindowHalfSize[i];
+				int blurSize = blurHalf * 2 + 1;
+				for(int x = 0; x < blurSize; ++ x)
+				{
+					for(int y = 0; y < blurSize; ++ y)
+					{
+						dx = float(x - blurHalf);
+						dy = float(y - blurHalf);
+						d = 1.0 / (abs(dx - wx) + abs(dy - wy) + 1.0);
+						uv = vec2(shadowTexCoordAdjust.x + dx * uniShadowTexelSize[i], shadowTexCoordAdjust.y + dy * uniShadowTexelSize[i]);
+						float z = shadowTexCoordAdjust.z;
+						z -= uniZOffset[i].x * (1 + max(abs(dx), abs(dy)));
+						z -= uniZOffset[i].y * surfaceParallelToLight;
+						s += (texture(uniTextureShadowMap[i], uv).r < z) ? (0.0) : (d);
+						weight += d;
+					}
+				}
+				shadow[(i - firstShadowId)] = s / weight;
+			}
+		}
+	}
+	float shadow_1 = mix(shadow[0], shadow[1], w);
+	shadow_1 = mix(uniShadowIntensity, 1, shadow_1);
+	SHADOW = min(SHADOW, shadow_1);
+	COLOR.rgb *= SHADOW;
+	outColor = COLOR;
+}

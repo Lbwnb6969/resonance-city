@@ -1,0 +1,27 @@
+﻿{
+	"COMPENDIUM": {
+		"COMPENDIUM": "Compendio",
+		"COMPENDIUM_X_ITEM_UNLOCKED": "Hai sbloccato {1} voci",
+		"COMPENDIUM_UNKNOWN_MAIN_TITLE": "Non scoperta",
+		"COMPENDIUM_UNKNOWN_SECONDARY_TITLE": "Non scoperta",
+		"COMPENDIUM_UNKNOWN_ITEM": "???",
+		"COMPENDIUM_WORKPLACE_RECIPES": "Formule per luoghi di lavoro",
+		"COMPENDIUM_WORKPLACE_RECIPE": "Formula",
+		"COMPENDIUM_RECIPE_PLUR": "Formule",
+		"COMPENDIUM_WORKPLACE_RECIPE_PRODUCTION": "Produzione",
+		"COMPENDIUM_WORKPLACE_RECIPE_LOCK_DESC": "Bloccata\nSoddisfa i requisiti di sblocco per sbloccare questa formula per la produzione.",
+		"COMPENDIUM_WORKPLACE_RECIPE_UNLOCK_DESC": "Sbloccata\nQuesta formula può essere prodotta nel tuo villaggio.",
+		"COMPENDIUM_VILLAGE_TITLES": "Titoli del villaggio e governante",
+		"COMPENDIUM_ITEM_UNLOCKER_STEPS_TITLE": "Completa tutti requisiti:",
+		"COMPENDIUM_ITEM_UNLOCKER_LIST_TITLE": "Come sbloccare",
+		"COMPENDIUM_UNLOCKER_DEFAULT_TEXT": "Si sblocca automaticamente all'inizio di una partita.",
+		"COMPENDIUM_UNLOCKER_MINERAL_TEXT": "Completa uno degli incarichi \"Esplora un giacimento minerario nelle vicinanze\"",
+		"COMPENDIUM_X_UNLOCKED": "Hai sbloccato: {1}",
+		"COMPENDIUM_COMPLETE_ANY_REQUIREMENTS": "Soddisfa uno qualsiasi dei seguenti requisiti:",
+		"COMPENDIUM_VILLAGE_TITLE_LOCK_DESC": "Bloccato\nSoddisfa i requisiti di sblocco per ottenere questo titolo.",
+		"COMPENDIUM_VILLAGE_TITLE_UNLOCK_DESC": "Sbloccato\nQuesto titolo è stato ottenuto e può essere usato per il tuo villaggio.",
+		"COMPENDIUM_UNLOCKER_QUEST_TITLE": "Completa la ricerca \"{1}\"",
+		"COMPENDIUM_UNLOCK_CONDITION_RESOURCE_UNLOCKED_DESC": "Ottieni risorsa non scoperta {1}",
+		"COMPENDIUM_QUEST_BUY_UNLOCKABLE_FESTIVAL": "Sblocca \"{1}\" avanzando nei livelli della Festa del raccolto"
+	}
+}

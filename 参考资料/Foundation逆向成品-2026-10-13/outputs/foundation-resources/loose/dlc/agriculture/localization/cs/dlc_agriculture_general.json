@@ -1,0 +1,25 @@
+﻿{
+	"FESTIVAL": {
+		"FESTIVAL_REWARDS": "Odměny",
+		"FESTIVAL_NAME_EDITION": "{1} - {2}",
+		"FESTIVAL_TIER_REWARDS": "Odměny",
+		"FESTIVAL_DASHBOARD_PROGRESSION": "Pokrok",
+		"FESTIVAL_DASHBOARD_REWARDS": "Odměny"
+	},
+	"FESTIVAL_EDITIONS": {},
+	"RESOURCES": {},
+	"RESOURCE_TYPE": {},
+	"JOBS": {},
+	"PART_TYPE": {},
+	"ENTERTAINERS": {
+		"FESTIVAL_MINSTREL_SING": "Potulný zpěvák"
+	},
+	"MENU": {},
+	"GAME_CONDITIONS": {},
+	"COMMON CROFT": {},
+	"TITLES": {},
+	"VILLAGE_TITLES": {},
+	"FESTIVAL_SUMMARY": {},
+	"NOTIFICATIONS": {},
+	"BUDGET": {}
+}

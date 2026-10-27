@@ -1,0 +1,26 @@
+uniform float uniShaderColorWeight;
+uniform vec4 uniformAlbedoColor[MAX_MATERIAL_COUNT];
+uniform sampler2D instTextureAlbedo[MAX_MATERIAL_COUNT];
+flat in uint MATERIAL_ID;
+in vec4 INSTANCE_COLOR;
+in vec4 VERTEX_COLOR;
+in vec3 NORMAL;
+in vec2 UV;
+layout(location = 0) out vec4 outAlbedoColor;
+layout(location = 1) out vec4 outNormal;
+
+void main()
+{
+	vec3 cpy_NORMAL = normalize(NORMAL);
+	vec4 MATERIAL_ALBEDO = uniformAlbedoColor[MATERIAL_ID];
+	MATERIAL_ALBEDO *= texture(instTextureAlbedo[MATERIAL_ID], UV);
+	vec4 ALBEDO = MATERIAL_ALBEDO * VERTEX_COLOR;
+	ALBEDO *= INSTANCE_COLOR;
+	if(mix(1.0, ALBEDO.a, uniShaderColorWeight) < 0.5) {
+		{
+			discard;
+		}
+	}
+	outAlbedoColor = mix(uniformAlbedoColor[MATERIAL_ID], ALBEDO, uniShaderColorWeight);
+	outNormal = vec4(cpy_NORMAL * 0.5 + 0.5, 1.0);
+}

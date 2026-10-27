@@ -1,2 +1,0 @@
-protocol,tester_id,stage,trial_id,seed,layout_id,device,device_notes,assist_state,device_mode,truth_direction,truth_type,answer_direction,answer_type,correct,skips,origin,pcm_sha256,notes
-human-p0-v1,AUTOMATION_CONTRACT,practice,1.0,d0ef9db24c11ed75,human-p0-v1:practice:3,headphones_standard,"tool validation, not a human",false,standard,left,tritone,left,minor,0,0,automation,daad8d30fe521a7e48bba49dea16413e8fc59453c48d2e6705ebc095cd57c101,

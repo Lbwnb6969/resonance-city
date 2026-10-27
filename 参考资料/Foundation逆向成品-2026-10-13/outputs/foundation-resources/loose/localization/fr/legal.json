@@ -1,0 +1,7 @@
+﻿{
+	"ANALYTICS_POPUP": {
+		"ANALYTICS_POPUP_TITLE": "Données et confidentialité",
+		"ANALYTICS_POPUP_MESSAGE": "Pour nous aider à faire de Foundation une expérience de gestion et de construction de ville exceptionnelle, nous aimerions avoir votre accord pour recueillir quelques informations sur le matériel que vous utilisez et votre façon de jouer.\n\nSi vous acceptez, les données seront uniquement collectées à des fins d'analyse par Polymorph Games. Elles ne seront en aucun cas vendues ou cédées à une entreprise ou un tiers. Nous ne recueillerons PAS de données personnelles, telles que votre nom, e-mail, adresse, etc.\n\nLes données recueillies comprennent la configuration de l'ordinateur (comme la version du système d'exploitation, le fabricant du processeur et de la carte graphique, la quantité de RAM, etc.) et le comportement en jeu (comme la durée d'une session, les bâtiments construits et dans quel ordre, l'étendue du village, l'utilisation de l'embellissement, etc.).",
+		"ANALYTICS_POPUP_INFO_SENT_ONCE_MESSAGE": "Acceptez-vous de nous envoyer les informations suivantes, une fois seulement ?"
+	}
+}

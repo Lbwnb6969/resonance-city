@@ -1,0 +1,1 @@
+Check the modding wiki here: https://www.polymorph.games/foundation/modding

@@ -1,0 +1,50 @@
+; SPIR-V 1.3
+; SHA256 f32c657b210c65576b69daa3f9ec08b229266237a21092c4310e6efe6f04a213
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability DemoteToHelperInvocation ; byte 0x14
+OpCapability Shader ; byte 0x1c
+OpCapability StorageImageExtendedFormats ; byte 0x24
+OpExtension "SPV_EXT_demote_to_helper_invocation" ; byte 0x2c
+%15 = OpExtInstImport "GLSL.std.450" ; byte 0x54
+OpMemoryModel Logical GLSL450 ; byte 0x6c
+OpEntryPoint Fragment %2 "main" %11 ; byte 0x78
+OpExecutionMode %2 OriginUpperLeft ; byte 0x90
+OpSource Slang 1 ; byte 0x9c
+OpName %11 "vs_out.frag_pos_ws" ; byte 0xa8
+OpName %32 "material_data.demo_overlay_texture" ; byte 0xc4
+OpName %36 "samplers.llr" ; byte 0xf0
+OpName %2 "ps_main" ; byte 0x108
+OpDecorate %11 Location 1 ; byte 0x118
+OpDecorate %32 Binding 0 ; byte 0x128
+OpDecorate %32 DescriptorSet 0 ; byte 0x138
+OpDecorate %36 Binding 1 ; byte 0x148
+OpDecorate %36 DescriptorSet 2 ; byte 0x158
+%1 = OpTypeVoid ; byte 0x168
+%3 = OpTypeFunction %1 ; byte 0x170
+%7 = OpTypeFloat 32 ; byte 0x17c
+%8 = OpTypeVector %7 3 ; byte 0x188
+%10 = OpTypePointer Input %8 ; byte 0x198
+%12 = OpTypeVector %7 2 ; byte 0x1a8
+%16 = OpTypeBool ; byte 0x1b8
+%18 = OpConstant %7 0x41700000 ; byte 0x1c0
+%29 = OpTypeImage %7 2D 2 0 0 1 Unknown ; byte 0x1d0
+%31 = OpTypePointer UniformConstant %29 ; byte 0x1f4
+%33 = OpTypeSampler ; byte 0x204
+%35 = OpTypePointer UniformConstant %33 ; byte 0x20c
+%11 = OpVariable %10 Input ; byte 0x21c
+%32 = OpVariable %31 UniformConstant ; byte 0x22c
+%36 = OpVariable %35 UniformConstant ; byte 0x23c
+%2 = OpFunction %1 None %3 ; byte 0x24c
+%4 = OpLabel ; byte 0x260
+%9 = OpLoad %8 %11 ; byte 0x268
+%13 = OpVectorShuffle %12 %9 %9 0 2 ; byte 0x278
+%14 = OpExtInst %7 %15 66 %13 ; byte 0x294
+%17 = OpFOrdLessThan %16 %14 %18 ; byte 0x2ac
+OpSelectionMerge %6 None ; byte 0x2c0
+OpBranchConditional %17 %5 %6 ; byte 0x2cc
+%5 = OpLabel ; byte 0x2dc
+OpDemoteToHelperInvocation ; byte 0x2e4
+OpBranch %6 ; byte 0x2e8
+%6 = OpLabel ; byte 0x2f0
+OpReturn ; byte 0x2f8
+OpFunctionEnd ; byte 0x2fc

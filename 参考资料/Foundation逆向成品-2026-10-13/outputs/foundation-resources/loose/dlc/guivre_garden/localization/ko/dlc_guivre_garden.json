@@ -1,0 +1,32 @@
+﻿{
+	"GENERAL": {
+		"SUPPACK_GUIVRE_BUILDING": "귀브르 정원"
+	},
+	"BUILDING_PART": {
+		"SUPPACK_GUIVRE_ARCHWAY_01A": "귀브르 정원 아치",
+		"SUPPACK_GUIVRE_BRAZIER_01A": "귀브르 정원의 화로, 지면용",
+		"SUPPACK_GUIVRE_FLOWER_01A": "귀브르 정원의 꽃, 로프 덩굴 지지대",
+		"SUPPACK_GUIVRE_FLOWER_02A": "귀브르 정원의 꽃, 은은한 향이 나는",
+		"SUPPACK_GUIVRE_FLOWER_03A": "귀브르 정원의 꽃, 향기로운",
+		"SUPPACK_GUIVRE_HALFWALL_01A": "귀브르 정원 칸막이, 직선형",
+		"SUPPACK_GUIVRE_HALFWALL_02A": "귀브르 정원의 꽃, 나무 덩굴 지지대",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_01A": "귀브르 정원 울타리, 모퉁이",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_02A": "귀브르 정원의 꽃, 모퉁이",
+		"SUPPACK_GUIVRE_FOUNTAIN_LARGE_01A": "귀브르 정원 연못",
+		"SUPPACK_GUIVRE_TORCH_MEDIUM_01A": "귀브르 정원의 화로, 걸이식",
+		"SUPPACK_GUIVRE_BASSIN_RECTANGLE_01A": "귀브르 정원 수반",
+		"SUPPACK_GUIVRE_TORCH_SMALL_01A": "귀브르 정원의 화로, 기둥형",
+		"SUPPACK_GUIVRE_STATUE_BASILISK_01A": "바실리스크 석상, 대리석",
+		"SUPPACK_GUIVRE_STATUE_FISH_01A": "날아다니는 생선, 대리석",
+		"SUPPACK_GUIVRE_STATUE_GUIVRE_01A": "위대한 귀브르, 대리석",
+		"SUPPACK_GUIVRE_STATUE_PEDESTAL_01A": "귀브르 정원 받침대",
+		"SUPPACK_GUIVRE_STATUE_PINECONE_01A": "성스러운 도토리, 대리석",
+		"SUPPACK_GUIVRE_BENCH_STONE_01A": "귀브르 정원 벤치",
+		"SUPPACK_GUIVRE_PILLAR_01A": "귀브르 정원 기둥"
+	},
+	"DESCRIPTION": {
+		"SUPPACK_GUIVRE_BUILDING_DESC": "우리의 영역이 존재하기 훨씬 이전, 귀브르에 관한 이야기들이 전해졌습니다. 귀브르는 장엄한 보석처럼 화려한 뱀 모양의 괴물로 그 거대한 날개와 날카로운 발톱을 자랑하며, 부주의한 양치기들의 눈 앞에서 양들을 낚아채 갔다고 합니다!\n\n오늘날, 마을 주민들은 경외심이나 두려움으로 인해 이 강력한 뱀을 기리고자 이런 인상적인 조각상들을 세웁니다.",
+		"SUPPACK_GUIVRE_DECORATIVE_DESC": "귀브르 가든을 위한 더 많은 장식들이 있습니다. 그래서 조각상들이 그들만의 작은 세상을 가질 수 있게 됩니다.",
+		"SUPPACK_GUIVRE_STATUE_DESC": "어떤 이들은 이 조각상들이 장엄하다고 말하고 또 다른 이들은 그것들을 무섭다고 느끼지만 한 가지는 분명합니다. 그것들은 누구에게든 강한 인상을 남긴다는 것이죠."
+	}
+}

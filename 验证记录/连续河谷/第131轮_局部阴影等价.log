@@ -1,7 +1,0 @@
-Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
-OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
-
-[MCPRuntimeServer] port: scanning 6570-6585 (default)
-[MCPRuntimeServer] listening on 127.0.0.1:6571
-[MCPRegistry] runtime port 6571 registered for d:/godot/godotpro/共鸣之城
-LOCAL_SHADOW {"checks":82,"failures":[],"gpu_samples":[{"changed_channels":220,"label":"reveal 0.125","max_byte_delta":1},{"changed_channels":242,"label":"reveal 0.5","max_byte_delta":1},{"changed_channels":289,"label":"reveal 1.0","max_byte_delta":1},{"changed_channels":193,"label":"camera 0.45","max_byte_delta":1},{"changed_channels":0,"label":"camera 1.0","max_byte_delta":0},{"changed_channels":626,"label":"camera 1.33","max_byte_delta":1}],"halo_texels":1,"passed":true,"tile_size":512}

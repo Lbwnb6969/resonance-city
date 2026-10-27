@@ -1,0 +1,13 @@
+uniform sampler2D instTextureAlbedo[MAX_MATERIAL_COUNT];
+flat in uint MATERIAL_ID;
+in vec2 UV;
+
+void main()
+{
+	float alpha = texture(instTextureAlbedo[MATERIAL_ID], UV).a;
+	if(alpha < 0.5) {
+		{
+			discard;
+		}
+	}
+}

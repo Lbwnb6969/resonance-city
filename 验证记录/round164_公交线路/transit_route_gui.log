@@ -1,7 +1,0 @@
-Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
-OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
-
-[MCPRuntimeServer] port: scanning 6570-6585 (default)
-[MCPRuntimeServer] listening on 127.0.0.1:6570
-[MCPRegistry] runtime port 6570 registered for d:/godot/godotpro/共鸣之城
-ROUND164_TRANSIT_DEMO_LIVE {"checks":{"route_has_real_coverage":true,"route_pending":true,"route_preview_started":true,"route_settled":true,"three_real_stops_placed":true,"transit_mode_opens":true},"failures":[],"passed":true,"route_preview":{},"stops":0,"underruns":0}

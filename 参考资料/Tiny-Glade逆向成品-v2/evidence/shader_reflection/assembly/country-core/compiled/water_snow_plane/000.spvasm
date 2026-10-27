@@ -1,0 +1,137 @@
+; SPIR-V 1.3
+; SHA256 2796b32e94e5bc5f57cb0ae517b2bc0c7b78d3f3522a208c3539804592be3b9c
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability Shader ; byte 0x14
+OpCapability StorageImageExtendedFormats ; byte 0x1c
+OpMemoryModel Logical GLSL450 ; byte 0x24
+OpEntryPoint Vertex %2 "main" %58 %62 %15 ; byte 0x30
+OpSource Slang 1 ; byte 0x50
+OpName %15 "Vertex_Position" ; byte 0x5c
+OpName %38 "ViewConstants_natural" ; byte 0x74
+OpMemberName %38 0 "view_to_clip" ; byte 0x94
+OpMemberName %38 1 "clip_to_view" ; byte 0xb0
+OpMemberName %38 2 "view_to_sample" ; byte 0xcc
+OpMemberName %38 3 "sample_to_view" ; byte 0xe8
+OpMemberName %38 4 "world_to_view" ; byte 0x104
+OpMemberName %38 5 "view_to_world" ; byte 0x120
+OpMemberName %38 6 "world_to_sample" ; byte 0x13c
+OpMemberName %38 7 "clip_to_prev_clip" ; byte 0x158
+OpMemberName %38 8 "prev_clip_to_clip" ; byte 0x178
+OpMemberName %38 9 "prev_view_to_prev_clip" ; byte 0x198
+OpMemberName %38 10 "prev_clip_to_prev_view" ; byte 0x1bc
+OpMemberName %38 11 "prev_world_to_prev_view" ; byte 0x1e0
+OpMemberName %38 12 "prev_view_to_prev_world" ; byte 0x204
+OpMemberName %38 13 "sample_offset_pixels" ; byte 0x228
+OpMemberName %38 14 "sample_offset_clip" ; byte 0x24c
+OpMemberName %38 15 "prev_sample_offset_pixels" ; byte 0x26c
+OpMemberName %38 16 "prev_sample_offset_clip" ; byte 0x294
+OpMemberName %38 17 "pad0" ; byte 0x2b8
+OpMemberName %38 18 "pad1" ; byte 0x2cc
+OpMemberName %38 19 "pad2" ; byte 0x2e0
+OpMemberName %38 20 "pad3" ; byte 0x2f4
+OpMemberName %38 21 "pad4" ; byte 0x308
+OpMemberName %38 22 "pad5" ; byte 0x31c
+OpMemberName %38 23 "mip_bias" ; byte 0x330
+OpName %41 "current_view" ; byte 0x348
+OpName %62 "entryPointParam_vs_main.frag_position_ws" ; byte 0x360
+OpName %2 "vs_main" ; byte 0x394
+OpDecorate %15 Location 0 ; byte 0x3a4
+OpDecorate %38 Block ; byte 0x3b4
+OpMemberDecorate %38 0 Offset 0 ; byte 0x3c0
+OpMemberDecorate %38 0 RowMajor ; byte 0x3d4
+OpMemberDecorate %38 0 MatrixStride 16 ; byte 0x3e4
+OpMemberDecorate %38 1 Offset 64 ; byte 0x3f8
+OpMemberDecorate %38 1 RowMajor ; byte 0x40c
+OpMemberDecorate %38 1 MatrixStride 16 ; byte 0x41c
+OpMemberDecorate %38 2 Offset 128 ; byte 0x430
+OpMemberDecorate %38 2 RowMajor ; byte 0x444
+OpMemberDecorate %38 2 MatrixStride 16 ; byte 0x454
+OpMemberDecorate %38 3 Offset 192 ; byte 0x468
+OpMemberDecorate %38 3 RowMajor ; byte 0x47c
+OpMemberDecorate %38 3 MatrixStride 16 ; byte 0x48c
+OpMemberDecorate %38 4 Offset 256 ; byte 0x4a0
+OpMemberDecorate %38 4 RowMajor ; byte 0x4b4
+OpMemberDecorate %38 4 MatrixStride 16 ; byte 0x4c4
+OpMemberDecorate %38 5 Offset 320 ; byte 0x4d8
+OpMemberDecorate %38 5 RowMajor ; byte 0x4ec
+OpMemberDecorate %38 5 MatrixStride 16 ; byte 0x4fc
+OpMemberDecorate %38 6 Offset 384 ; byte 0x510
+OpMemberDecorate %38 6 RowMajor ; byte 0x524
+OpMemberDecorate %38 6 MatrixStride 16 ; byte 0x534
+OpMemberDecorate %38 7 Offset 448 ; byte 0x548
+OpMemberDecorate %38 7 RowMajor ; byte 0x55c
+OpMemberDecorate %38 7 MatrixStride 16 ; byte 0x56c
+OpMemberDecorate %38 8 Offset 512 ; byte 0x580
+OpMemberDecorate %38 8 RowMajor ; byte 0x594
+OpMemberDecorate %38 8 MatrixStride 16 ; byte 0x5a4
+OpMemberDecorate %38 9 Offset 576 ; byte 0x5b8
+OpMemberDecorate %38 9 RowMajor ; byte 0x5cc
+OpMemberDecorate %38 9 MatrixStride 16 ; byte 0x5dc
+OpMemberDecorate %38 10 Offset 640 ; byte 0x5f0
+OpMemberDecorate %38 10 RowMajor ; byte 0x604
+OpMemberDecorate %38 10 MatrixStride 16 ; byte 0x614
+OpMemberDecorate %38 11 Offset 704 ; byte 0x628
+OpMemberDecorate %38 11 RowMajor ; byte 0x63c
+OpMemberDecorate %38 11 MatrixStride 16 ; byte 0x64c
+OpMemberDecorate %38 12 Offset 768 ; byte 0x660
+OpMemberDecorate %38 12 RowMajor ; byte 0x674
+OpMemberDecorate %38 12 MatrixStride 16 ; byte 0x684
+OpMemberDecorate %38 13 Offset 832 ; byte 0x698
+OpMemberDecorate %38 14 Offset 840 ; byte 0x6ac
+OpMemberDecorate %38 15 Offset 848 ; byte 0x6c0
+OpMemberDecorate %38 16 Offset 856 ; byte 0x6d4
+OpMemberDecorate %38 17 Offset 864 ; byte 0x6e8
+OpMemberDecorate %38 17 RowMajor ; byte 0x6fc
+OpMemberDecorate %38 17 MatrixStride 16 ; byte 0x70c
+OpMemberDecorate %38 18 Offset 928 ; byte 0x720
+OpMemberDecorate %38 18 RowMajor ; byte 0x734
+OpMemberDecorate %38 18 MatrixStride 16 ; byte 0x744
+OpMemberDecorate %38 19 Offset 992 ; byte 0x758
+OpMemberDecorate %38 20 Offset 1008 ; byte 0x76c
+OpMemberDecorate %38 21 Offset 1012 ; byte 0x780
+OpMemberDecorate %38 22 Offset 1016 ; byte 0x794
+OpMemberDecorate %38 23 Offset 1020 ; byte 0x7a8
+OpDecorate %41 Binding 0 ; byte 0x7bc
+OpDecorate %41 DescriptorSet 16 ; byte 0x7cc
+OpDecorate %58 BuiltIn Position ; byte 0x7dc
+OpDecorate %62 Location 0 ; byte 0x7ec
+%1 = OpTypeVoid ; byte 0x7fc
+%3 = OpTypeFunction %1 ; byte 0x804
+%6 = OpTypeFloat 32 ; byte 0x810
+%7 = OpTypeVector %6 4 ; byte 0x81c
+%8 = OpTypeVector %6 3 ; byte 0x82c
+%14 = OpTypePointer Input %8 ; byte 0x83c
+%17 = OpTypeVector %6 2 ; byte 0x84c
+%21 = OpConstant %6 0x43020000 ; byte 0x85c
+%20 = OpConstantComposite %17 %21 %21 ; byte 0x86c
+%25 = OpTypeInt 32 1 ; byte 0x880
+%34 = OpConstant %6 0xbc23d70a ; byte 0x890
+%39 = OpTypeMatrix %7 4 ; byte 0x8a0
+%38 = OpTypeStruct %39 %39 %39 %39 %39 %39 %39 %39 %39 %39 %39 %39 %39 %17 %17 %17 %17 %39 %39 %7 %6 %6 %6 %6 ; byte 0x8b0
+%40 = OpTypePointer Uniform %38 ; byte 0x918
+%42 = OpConstant %25 0x6 ; byte 0x928
+%43 = OpTypePointer Uniform %39 ; byte 0x938
+%48 = OpConstant %6 0x3f800000 ; byte 0x948
+%57 = OpTypePointer Output %7 ; byte 0x958
+%61 = OpTypePointer Output %8 ; byte 0x968
+%15 = OpVariable %14 Input ; byte 0x978
+%41 = OpVariable %40 Uniform ; byte 0x988
+%58 = OpVariable %57 Output ; byte 0x998
+%62 = OpVariable %61 Output ; byte 0x9a8
+%2 = OpFunction %1 None %3 ; byte 0x9b8
+%4 = OpLabel ; byte 0x9cc
+%13 = OpLoad %8 %15 ; byte 0x9d4
+%18 = OpVectorShuffle %17 %13 %13 0 2 ; byte 0x9e4
+%22 = OpFMul %17 %18 %20 ; byte 0xa00
+%27 = OpCompositeExtract %6 %22 0 ; byte 0xa14
+%30 = OpCompositeExtract %6 %22 1 ; byte 0xa28
+%76 = OpCompositeConstruct %8 %27 %34 %30 ; byte 0xa3c
+%44 = OpAccessChain %43 %41 %42 ; byte 0xa54
+%45 = OpLoad %39 %44 ; byte 0xa68
+%47 = OpCompositeConstruct %7 %76 %48 ; byte 0xa78
+%49 = OpVectorTimesMatrix %7 %47 %45 ; byte 0xa8c
+%53 = OpVectorShuffle %8 %76 %76 0 1 2 ; byte 0xaa0
+OpStore %58 %49 ; byte 0xac0
+OpStore %62 %53 ; byte 0xacc
+OpReturn ; byte 0xad8
+OpFunctionEnd ; byte 0xadc

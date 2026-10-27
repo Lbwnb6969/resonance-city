@@ -1,0 +1,37 @@
+﻿{
+	"VILLAGE_EVENT": {
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_TOOLTIP": "{1} в процессе подготовки",
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_COUNTDOWN_TOOLTIP": "{1} – начат обратный отсчет:",
+		"VILLAGE_EVENT_PROGRESSION_INPROGRESS_TOOLTIP": "{1} – количество дней до завершения:",
+		"VILLAGE_EVENT_PROGRESSION_COMPLETED_TOOLTIP": "{1} завершен",
+		"VILLAGE_EVENT_PROGRESSION_SHOWRESULT_TOOLTIP": "{1} – результаты и награды",
+		"VILLAGE_EVENT_CANT_PREPARE_X_TOOLTIP": "Невозможно провести {1}, пока не выполнены все требования",
+		"VILLAGE_EVENT_X_NOT_BUILT": "Постройте сарай с праздничными принадлежностями и поместите туда ресурсы, необходимые для строительства. Иначе {1} не появится.",
+		"VILLAGE_EVENT_QUEST_COUNTDOWN": "Подготовка",
+		"VILLAGE_EVENT_QUEST_SCORE": "Текущий результат",
+		"VILLAGE_EVENT_SHOW_RESULT": "Показ результатов",
+		"ADD_X_GUEST_INVITATION": "Получено сословных приглашений: {1}",
+		"GUEST_REWARD_HEADER": "Ступень {1} (результат {2})",
+		"INVITATION_EXTRA_REWARDS": "Дополнительные сословные награды",
+		"SELECT_X_ENTERTAINER": "Нанять артиста – {1}",
+		"SELECT_X_GUEST_INVITATION": "Послать сословное приглашение гостю – {1}",
+		"SELECT_ANY_GUEST_CONDITION": "Послать любое приглашение",
+		"RECURRENT_REWARDS": "Повторяющиеся награды",
+		"VILLAGE_EVENT_INVITATION_REQUIRED_X": "(Требуется приглашение: {1})",
+		"VILLAGE_EVENT_DEFAULT_NAME": "{2} в поселении {1}"
+	},
+	"GAME_CONDITIONS": {
+		"START_X_VILLAGE_EVENT": "Провести {1}",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING": "Провести {1} в локации «{2}»",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING_WITH_THE_FOLLOWING": "Провести {1} в локации «{2}» со следующим:",
+		"START_X_VILLAGE_EVENT_WITH_THE_FOLLOWING": "Провести {1} со следующим:",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_Y_Z_VALUE": "Завершить {1} с результатом: {2} {3}",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_OF_Y_Z_VALUE": "Завершить {1} с результатом: {2} {3}",
+		"REACH_TIER_X_OF_VILLAGE_EVENT_Y": "{2}: получить ступень {1}",
+		"BUILD_X_INSIDE_Y": "Построить: {1} в слое «{2}»",
+		"ACQUIRE_X_RECIPE": "Получить рецепт блюда «{1}»",
+		"DISCOVER_X_VILLAGE_EVENT_ENTERTAINER": "Принять: {1}",
+		"SELECT_ANY_ENTERTAINER_CONDITION": "Приглашен любой артист",
+		"ATTRACTS_X_VILLAGERS": "Всего посетителей: {1}"
+	}
+}

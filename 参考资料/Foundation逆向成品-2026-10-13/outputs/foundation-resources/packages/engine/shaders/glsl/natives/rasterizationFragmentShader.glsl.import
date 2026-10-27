@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://45b5n3lt7yw3"
+path="res://.godot/imported/rasterizationFragmentShader.glsl-f8d945e5466f90f2f66429645acfaadf.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/engine/shaders/glsl/natives/rasterizationFragmentShader.glsl"
+dest_files=["res://.godot/imported/rasterizationFragmentShader.glsl-f8d945e5466f90f2f66429645acfaadf.res"]
+
+[params]
+

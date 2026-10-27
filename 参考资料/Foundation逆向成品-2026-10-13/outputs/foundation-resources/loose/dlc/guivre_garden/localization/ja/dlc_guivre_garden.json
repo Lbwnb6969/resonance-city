@@ -1,0 +1,32 @@
+﻿{
+	"GENERAL": {
+		"SUPPACK_GUIVRE_BUILDING": "ヴィーヴル庭園"
+	},
+	"BUILDING_PART": {
+		"SUPPACK_GUIVRE_ARCHWAY_01A": "ヴィーヴル庭園のアーチ",
+		"SUPPACK_GUIVRE_BRAZIER_01A": "ヴィーヴル庭園の床置き火鉢",
+		"SUPPACK_GUIVRE_FLOWER_01A": "ヴィーヴル庭園の花(縄製のトレリス)",
+		"SUPPACK_GUIVRE_FLOWER_02A": "ヴィーヴル庭園の花(繊細)",
+		"SUPPACK_GUIVRE_FLOWER_03A": "ヴィーヴル庭園の花(いい香り)",
+		"SUPPACK_GUIVRE_HALFWALL_01A": "ヴィーヴル庭園の柵(直線)",
+		"SUPPACK_GUIVRE_HALFWALL_02A": "ヴィーヴル庭園の花(木製のトレリス)",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_01A": "ヴィーヴル庭園の柵(角)",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_02A": "ヴィーヴル庭園の花(角)",
+		"SUPPACK_GUIVRE_FOUNTAIN_LARGE_01A": "ヴィーヴル庭園の池",
+		"SUPPACK_GUIVRE_TORCH_MEDIUM_01A": "ヴィーヴル庭園の吊り下げ火鉢",
+		"SUPPACK_GUIVRE_BASSIN_RECTANGLE_01A": "ヴィーヴル庭園の水場",
+		"SUPPACK_GUIVRE_TORCH_SMALL_01A": "ヴィーヴル庭園の壁掛け火鉢",
+		"SUPPACK_GUIVRE_STATUE_BASILISK_01A": "石化したバシリスク(大理石)",
+		"SUPPACK_GUIVRE_STATUE_FISH_01A": "トビウオ(大理石)",
+		"SUPPACK_GUIVRE_STATUE_GUIVRE_01A": "巨大ヴィーヴル(大理石)",
+		"SUPPACK_GUIVRE_STATUE_PEDESTAL_01A": "ヴィーヴル庭園の台座",
+		"SUPPACK_GUIVRE_STATUE_PINECONE_01A": "聖なるどんぐり(大理石)",
+		"SUPPACK_GUIVRE_BENCH_STONE_01A": "ヴィーヴル庭園のベンチ",
+		"SUPPACK_GUIVRE_PILLAR_01A": "ヴィーヴル庭園の柱"
+	},
+	"DESCRIPTION": {
+		"SUPPACK_GUIVRE_BUILDING_DESC": "私たちの領土が作られる遠い昔、のほほんとした羊飼いと、いっしょにいる羊たちをあっという間に払い除けてしまうほどの大きな翼と鋭い爪を持つ、宝石でできた巨大蛇のヴィーヴルがいたと言い伝えられています。\n\n現在ではヴィーヴルに対する畏敬の念からか、または恐れからか、村人が偉大な蛇を称えるために立派な記念碑を建てるようになりました。",
+		"SUPPACK_GUIVRE_DECORATIVE_DESC": "ヴィーヴル庭園に景観用建物をもっと置いて、像のために小さな世界を作りましょう。",
+		"SUPPACK_GUIVRE_STATUE_DESC": "ある人は立派だと言い、ある人は恐ろしいと言う像。それでも、見ていると感動すると誰もが口を揃えます。"
+	}
+}

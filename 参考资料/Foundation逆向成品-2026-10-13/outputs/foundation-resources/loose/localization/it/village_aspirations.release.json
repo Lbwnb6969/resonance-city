@@ -1,0 +1,22 @@
+﻿{
+	"VICTORY_CONDITIONS": {
+		"VICTORY_CONDITIONS_LIST": "Elenco Aspirazioni del villaggio",
+		"EDIT_VICTORY_CONDITIONS": "Modifica Aspirazioni del villaggio",
+		"REACH_TOP_CLERGY": "Raggiungi il massimo nel percorso Ordine clericale",
+		"REACH_TOP_KINGDOM": "Raggiungi il massimo nel percorso Ordine nobile",
+		"REACH_TOP_LABOUR": "Raggiungi il massimo nel percorso Ordine lavoratore"
+	},
+	"VICTORY_CONDITIONS_CELEBRATIONS": {
+		"VC_COMPLETED": "Aspirazione del villaggio completata",
+		"VC_FAILED": "Aspirazione del villaggio fallita",
+		"VC_COMPLETED_DESC": "Che orgoglio aver completato le seguenti imprese:",
+		"VC_FAILED_DESC": "Sfortunatamente non è stato possibile raggiungere la seguente Aspirazione:",
+		"VC_KINGDOM_FORTRESS_SUCCESS": "Grazie ai tuoi sforzi bellici e alle tue intuizioni strategiche, hai trasformato il tuo Castello in un'inespugnabile fortezza del regno, garantendo onore e gloria al tuo Re. Tra gli eroi del regno c'è anche il tuo nome!",
+		"VC_CLERGY_PROSPEROUS_PRIORY_SUCCESS": "Mentre l'Ordine clericale inaugura la tua Abbazia, mediti su ciò che hai ottenuto. Hai eretto un'Abbazia della Fede e riunito una comunità monastica osservante. Hai reso questa terra un posto migliore, su questo non c'è dubbio.",
+		"VC_LABOR_COMMUNE_SUCCESS": "Mentre passi davanti al campanile della città, non puoi far altro che provare orgoglio. Con il tempo, hai trasformato la tua piccola comunità di servi in un vivace villaggio di persone libere!"
+	},
+	"CONDITIONS": {
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_TITLE": "Massimizza popolazione",
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_DESC": "Hai raggiunto il limite massimo di popolazione per l'Aspirazione attuale. Se accogli un nuovo abitante l'aspirazione fallirà.\n\nVuoi davvero procedere?"
+	}
+}

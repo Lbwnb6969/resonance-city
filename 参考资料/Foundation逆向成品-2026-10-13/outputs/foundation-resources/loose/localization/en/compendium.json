@@ -1,0 +1,27 @@
+﻿{
+	"COMPENDIUM": {
+		"COMPENDIUM": "Compendium",
+		"COMPENDIUM_X_ITEM_UNLOCKED": "{1} Unlocked Entries",
+		"COMPENDIUM_UNKNOWN_MAIN_TITLE": "Undiscovered",
+		"COMPENDIUM_UNKNOWN_SECONDARY_TITLE": "Undiscovered",
+		"COMPENDIUM_UNKNOWN_ITEM": "???",
+		"COMPENDIUM_WORKPLACE_RECIPES": "Workplace Recipes",
+		"COMPENDIUM_WORKPLACE_RECIPE": "Recipe",
+		"COMPENDIUM_RECIPE_PLUR": "Recipes",
+		"COMPENDIUM_WORKPLACE_RECIPE_PRODUCTION": "Production",
+		"COMPENDIUM_WORKPLACE_RECIPE_LOCK_DESC": "Locked\nFulfil the unlock conditions to unlock this recipe for production.",
+		"COMPENDIUM_WORKPLACE_RECIPE_UNLOCK_DESC": "Unlocked\nThis recipe can be produced in your village.",
+		"COMPENDIUM_VILLAGE_TITLES": "Village & Ruler Titles",
+		"COMPENDIUM_ITEM_UNLOCKER_STEPS_TITLE": "Complete all requirements:",
+		"COMPENDIUM_ITEM_UNLOCKER_LIST_TITLE": "How to unlock",
+		"COMPENDIUM_UNLOCKER_DEFAULT_TEXT": "Unlocked automatically at the beginning of a playthrough.",
+		"COMPENDIUM_UNLOCKER_MINERAL_TEXT": "Complete one of the 'Prospect a Mineral Deposit in proximity' mandates",
+		"COMPENDIUM_X_UNLOCKED": "{1} Unlocked",
+		"COMPENDIUM_COMPLETE_ANY_REQUIREMENTS": "Fulfil any of the following requirements:",
+		"COMPENDIUM_VILLAGE_TITLE_LOCK_DESC": "Locked\nFulfil the unlock conditions to earn this title.",
+		"COMPENDIUM_VILLAGE_TITLE_UNLOCK_DESC": "Unlocked\nThis title has been earned and can be used for your village.",
+		"COMPENDIUM_UNLOCKER_QUEST_TITLE": "Complete the Quest \"{1}\"",
+		"COMPENDIUM_UNLOCK_CONDITION_RESOURCE_UNLOCKED_DESC": "Acquire {1} undiscovered resource",
+		"COMPENDIUM_QUEST_BUY_UNLOCKABLE_FESTIVAL": "Unlock '{1}' by progressing through the Harvest Festival tiers"
+	}
+}

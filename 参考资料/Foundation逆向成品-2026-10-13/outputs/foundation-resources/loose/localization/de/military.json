@@ -1,0 +1,16 @@
+﻿{
+	"MILITARY_GENERAL": {
+		"NOT_ENOUGH_GUARD_DESC": "Nicht genügend Wachmänner! Weise mehr Wachmänner oder Kämpfer den Kompanien auf Patrouille zu.",
+		"CURRENT_GUARD_RATIO_X_PERCENT": "Aktuelle Wachstärke: {1}",
+		"TOTAL_NUMBER_PATROLLERS": "Gesamtzahl an Patrouillen und Kämpfern auf Patrouille: {1}",
+		"TOTAL_NUMBER_GUARD_LOCATIONS": "Gesamtzahl aktive Befestigung: {1}",
+		"ACTIVE_FORTIFICATION": "Aktive {1} Befestigung",
+		"ACTIVE_FORTIFICATION_DESC": "Verleiht einem Bereich {1} Befestigung. Kämpfer im Wachdienst und Wachmänner werden diesen Ort bewachen.",
+		"LIGHT_X_FORTIFICATION": "Leichte",
+		"HEAVY_X_FORTIFICATION": "Schwere",
+		"PASSIVE_FORTIFICATION": "Passive {1} Befestigung",
+		"PASSIVE_FORTIFICATION_DESC": "Verleiht einem Bereich {1} Befestigung, ohne Wachmänner oder Kämpfer in Anspruch zu nehmen.",
+		"NEW_COMPANY_X_FORMED": "Eine neue Kompanie wurde aufgestellt: {1}!",
+		"GUARD_DUTY_COMPANY": "Wachdienstkompanie"
+	}
+}

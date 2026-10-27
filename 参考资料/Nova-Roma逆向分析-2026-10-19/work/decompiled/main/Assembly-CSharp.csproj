@@ -1,0 +1,142 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="FMODUnity">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\FMODUnity.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="ALINE">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\ALINE.dll</HintPath>
+    </Reference>
+    <Reference Include="Roma.Aqueduct">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Roma.Aqueduct.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Unity.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Sirenix.OdinInspector.Attributes">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Sirenix.OdinInspector.Attributes.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClothModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
+    </Reference>
+    <Reference Include="com.rlabrecque.steamworks.net">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Unity.Burst.dll</HintPath>
+    </Reference>
+    <Reference Include="Rewired_Core">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Rewired_Core.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="LeTai.TranslucentImage">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\LeTai.TranslucentImage.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Entities">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Unity.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Splines">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Unity.Splines.dll</HintPath>
+    </Reference>
+    <Reference Include="NativeCurve">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\NativeCurve.dll</HintPath>
+    </Reference>
+    <Reference Include="RoslynCSharp">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\RoslynCSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="RoslynCSharp.Compiler">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\RoslynCSharp.Compiler.dll</HintPath>
+    </Reference>
+    <Reference Include="Trivial.CodeSecurity">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Trivial.CodeSecurity.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Sirenix.Serialization">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Sirenix.Serialization.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Collections">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Unity.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="crosstales">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\crosstales.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextCoreFontEngineModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Trivial.Mono.Cecil">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Trivial.Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Sirenix.Serialization.Config">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Sirenix.Serialization.Config.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="com.playeveryware.eos.core">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\com.playeveryware.eos.core.dll</HintPath>
+    </Reference>
+    <Reference Include="Rewired_Windows">
+      <HintPath>D:\SteamLibrary\steamapps\common\Nova Roma\NovaRoma_Data\Managed\Rewired_Windows.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

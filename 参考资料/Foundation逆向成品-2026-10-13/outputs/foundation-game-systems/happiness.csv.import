@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://t3ud6wwihcwd"
+
+[deps]
+
+files=["res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.package.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.resource.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.absolute.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.length.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.sha256.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.type.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.uuid.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.scripting.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.name.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.scalar.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.references.translation"]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.csv"
+dest_files=["res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.package.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.resource.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.absolute.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.length.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.sha256.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.type.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.uuid.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.scripting.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.name.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.scalar.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/happiness.references.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

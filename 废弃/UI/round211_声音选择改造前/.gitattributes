@@ -1,2 +1,0 @@
-*.gd -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
-*.gd.uid -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

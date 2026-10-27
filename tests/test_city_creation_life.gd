@@ -100,7 +100,7 @@ func _run() -> void:
 	root.add_child(new_life)
 	new_life.set_process(false)
 	new_life.setup(isolated)
-	_check(new_life.residents.is_empty(), "initial isolated homes spawn no phantom trips")
+	_check(not new_life.residents.is_empty() and new_life.residents.all(func(person:Dictionary)->bool:return person.paused and person.route.is_empty() and person.destination_id==person.home_id), "initial isolated neighbors wait at their own homes without phantom trips")
 	isolated.roads.assign(isolated_roads)
 	isolated.revision += 1
 	new_life._sync()

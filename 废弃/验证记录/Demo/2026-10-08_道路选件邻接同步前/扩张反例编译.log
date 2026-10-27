@@ -1,7 +1,0 @@
-Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
-OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
-
-SCRIPT ERROR: Parse Error: Cannot infer the type of "b" variable because the value doesn't have a set type.
-   at: GDScript::reload (res://tests/growth_demo_smoke.gd:373)
-ERROR: Failed to load script "res://tests/growth_demo_smoke.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

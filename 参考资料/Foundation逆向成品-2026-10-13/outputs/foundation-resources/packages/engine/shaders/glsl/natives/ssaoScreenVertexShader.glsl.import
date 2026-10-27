@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bhlkcsljupws"
+path="res://.godot/imported/ssaoScreenVertexShader.glsl-ca2f6c8a6451baf8c715b1e6aa61e858.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/engine/shaders/glsl/natives/ssaoScreenVertexShader.glsl"
+dest_files=["res://.godot/imported/ssaoScreenVertexShader.glsl-ca2f6c8a6451baf8c715b1e6aa61e858.res"]
+
+[params]
+

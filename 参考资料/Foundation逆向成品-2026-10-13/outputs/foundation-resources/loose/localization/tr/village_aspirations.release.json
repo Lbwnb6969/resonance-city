@@ -1,0 +1,22 @@
+﻿{
+	"VICTORY_CONDITIONS": {
+		"VICTORY_CONDITIONS_LIST": "Köy İstekleri Listesi",
+		"EDIT_VICTORY_CONDITIONS": "Köy İsteklerini Düzenle",
+		"REACH_TOP_CLERGY": "Din Adamları İlerlemesinin Zirvesine Ulaş",
+		"REACH_TOP_KINGDOM": "Krallık İlerlemesinde Zirveye Ulaş",
+		"REACH_TOP_LABOUR": "İşçi İlerlemesinde Zirveye Ulaş"
+	},
+	"VICTORY_CONDITIONS_CELEBRATIONS": {
+		"VC_COMPLETED": "Köy Hedefi Tamamlandı",
+		"VC_FAILED": "Köy Hedefi Başarısız Oldu",
+		"VC_COMPLETED_DESC": "Aşağıdaki işler tamamlandığı için gurur duymalıyız:",
+		"VC_FAILED_DESC": "**Maalesef, aşağıdaki hedefe ulaşamadık:",
+		"VC_KINGDOM_FORTRESS_SUCCESS": "Savaş çabalarınız ve stratejik görüşleriniz sayesinde, kalenizi krallık için geçilmez bir kale haline getirdiniz, kralınıza onur ve şan getirdiniz. Gerçekten de krallığın kahramanısınız!",
+		"VC_CLERGY_PROSPEROUS_PRIORY_SUCCESS": "Ruhban sınıfı, Abbatial Kilisesi'ni açılışını yaparken, başardıklarınıza dair derin düşüncelere dalıyorsunuz. İnanç adına bir manastır inşa ettiniz ve saygıdeğer bir keşiş topluluğu oluşturdunuz. Bu toprakları kesinlikle daha iyi bir yer haline getirdiğinizden şüphe yok.",
+		"VC_LABOR_COMMUNE_SUCCESS": "Şehir Çan Kulesinden geçerken, gururlanmadan edemiyorsunuz. Zamanla kölelikten, özgür insanların gelişen köyüne dönüştürdünüz!"
+	},
+	"CONDITIONS": {
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_TITLE": "Maksimum Köylü Nüfusu",
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_DESC": "Mevcut hedefiniz için maksimum köylü nüfusuna ulaştınız. Yeni köylü kabul etmek, hedefinizi başarısız kılacaktır.\n\nDevam edilsin mi?"
+	}
+}

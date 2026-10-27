@@ -1,0 +1,33 @@
+﻿{
+	"CONTROLS_ACTION": {
+		"LEFT_CLICK": "Sol Tık",
+		"LEFT_CLICK_DRAG": "Sol Tık sürükle",
+		"RIGHT_CLICK": "Sağ Tık",
+		"HOLD_KEY": "{1} tuşuna basılı tut",
+		"HORIZONTAL_MOUSE_MOVEMENT": "Yatay fare hareketi",
+		"MOUSE_WHEEL": "Fare Tekerleği"
+	},
+	"CONTROLS": {
+		"X_TO_SELECT_PLACE_BUILDING_PART": "Bir parçayı seçmek/yerleştirmek için {1} tuşuna bas",
+		"X_ON_VERTICAL_ARROWS_TO_RESCALE_PART": "Ok işaretine {1} parçayı düzenle",
+		"X_TO_DELETE_PART": "Parçayı silmek için {1} tuşuna bas",
+		"X_AND_Y_TO_ROTATE_PART": "Parçayı döndürmek için {1} ve {2} yap",
+		"X_AND_Y_TO_MOVE_BRIDGE": "Köprüyü hareket ettirmek için {1} ve {2} tuşlarına bas",
+		"X_AND_Y_TO_KEEP_PART_SELECTION": "{1} ve {2} kullanarak bir Bina Parçası yerleştirin ve seçimi koruyun",
+		"X_ON_WALL_NODE_TO_SELECT_PLACE_NEW_NODE": "Yeni bir duvar bağlantısı seçmek/yerleştirmek için {1} tuşuna bas",
+		"X_ON_WALL_SECTION_TO_TOGGLE_WALL_CURVING": "Duvar eğimini değiştirmek için {1} tuşuna bas",
+		"X_AND_Y_TO_EXTEND_EXISTING_WALL": "Mevcut duvarı genişletmek için {1} ve {2} tuşlarına bas",
+		"X_AND_Y_TO_REMOVE_WALL_NODE_SECTION": "Duvar bağlantısını/bölümünü kaldırmak için {1} ve {2} tuşuna basın",
+		"X_TO_CANCEL_SELECTION": "Seçimi iptal etmek için {1} tuşuna basın",
+		"X_TO_PAINT": "{1} alanını boya",
+		"X_TO_ERASE": "{1} boyanmış alanını sil",
+		"X_AND_Y_TO_RESIZE_BRUSH_SIZE": "{1} ve {2} ile fırçanın boyutunu değiştirin",
+		"X_TO_INCREASE_BRUSH_SIZE": "Fırça boyutunu büyütmek için {1} tuşuna bas",
+		"X_TO_DECREASE_BRUSH_SIZE": "Fırça boyutunu küçültmek için {1} tuşuna bas",
+		"X_TO_ROTATE_PART": "Bir parçayı döndürmek için {1}",
+		"X_TO_KEEP_PART_SELECTION": "Bir parçayı birden fazla yerleştirmek için {1}",
+		"X_TO_SELECT_CONNECTED": "Tüm bağlı parçaları seçmek için {1} tıkla",
+		"X_TO_SELECT_ALL": "Bir anıtın tüm parçalarını seçmek için {1} tuşuna basın",
+		"X_TO_SELECT_MULTIPLE": "Birden fazla parça seçmek için parça seçerken {1}"
+	}
+}

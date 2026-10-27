@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://lbn4c7ueow83"
+path="res://.godot/imported/unity_default_resources__10209__Plane.obj-13ded3c3449cf9f6cbf8e4b0da794cee.mesh"
+
+[deps]
+
+files=["res://.godot/imported/unity_default_resources__10209__Plane.obj-13ded3c3449cf9f6cbf8e4b0da794cee.mesh"]
+
+source_file="res://参考资料/Townscaper逆向成品/outputs/townscaper_extracted_assets/Mesh/unity_default_resources__10209__Plane.obj"
+dest_files=["res://.godot/imported/unity_default_resources__10209__Plane.obj-13ded3c3449cf9f6cbf8e4b0da794cee.mesh", "res://.godot/imported/unity_default_resources__10209__Plane.obj-13ded3c3449cf9f6cbf8e4b0da794cee.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

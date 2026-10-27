@@ -1,0 +1,19 @@
+﻿{
+	"NOTES": {
+		"PLAY_NOTE_A": "La",
+		"PLAY_NOTE_ASHARP": "La#",
+		"PLAY_NOTE_B": "Si",
+		"PLAY_NOTE_BSHARP": "Si#",
+		"PLAY_NOTE_C": "Do",
+		"PLAY_NOTE_C2": "Do2",
+		"PLAY_NOTE_CSHARP": "Do#",
+		"PLAY_NOTE_D": "Re",
+		"PLAY_NOTE_DSHARP": "Re#",
+		"PLAY_NOTE_E": "Mi",
+		"PLAY_NOTE_ESHARP": "Mi#",
+		"PLAY_NOTE_F": "Fa",
+		"PLAY_NOTE_FSHARP": "Fa#",
+		"PLAY_NOTE_G": "Sol",
+		"PLAY_NOTE_GSHARP": "Sol#"
+	}
+}

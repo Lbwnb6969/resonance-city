@@ -1,0 +1,291 @@
+; SPIR-V 1.3
+; SHA256 f7077a64801d500258661b16d8b87de7ca700327d87367aae2e521fffd613854
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability ImageQuery ; byte 0x14
+OpCapability Shader ; byte 0x1c
+OpCapability StorageImageExtendedFormats ; byte 0x24
+%194 = OpExtInstImport "GLSL.std.450" ; byte 0x2c
+OpMemoryModel Logical GLSL450 ; byte 0x44
+OpEntryPoint Fragment %2 "main" ; byte 0x50
+OpExecutionMode %2 OriginUpperLeft ; byte 0x64
+OpSource Slang 1 ; byte 0x70
+OpName %453 "FrameCounter_natural" ; byte 0x7c
+OpMemberName %453 0 "index" ; byte 0x9c
+OpName %455 "frame_counter" ; byte 0xb0
+OpName %489 "StoneFloorTextures_natural" ; byte 0xc8
+OpMemberName %489 0 "stone_floor_height_dims" ; byte 0xec
+OpName %491 "stone_floor_textures" ; byte 0x110
+OpName %516 "stone_floor_textures.stone_floor_height" ; byte 0x130
+OpName %520 "samplers.llr" ; byte 0x160
+OpName %526 "ViewConstants_natural" ; byte 0x178
+OpMemberName %526 0 "view_to_clip" ; byte 0x198
+OpMemberName %526 1 "clip_to_view" ; byte 0x1b4
+OpMemberName %526 2 "view_to_sample" ; byte 0x1d0
+OpMemberName %526 3 "sample_to_view" ; byte 0x1ec
+OpMemberName %526 4 "world_to_view" ; byte 0x208
+OpMemberName %526 5 "view_to_world" ; byte 0x224
+OpMemberName %526 6 "world_to_sample" ; byte 0x240
+OpMemberName %526 7 "clip_to_prev_clip" ; byte 0x25c
+OpMemberName %526 8 "prev_clip_to_clip" ; byte 0x27c
+OpMemberName %526 9 "prev_view_to_prev_clip" ; byte 0x29c
+OpMemberName %526 10 "prev_clip_to_prev_view" ; byte 0x2c0
+OpMemberName %526 11 "prev_world_to_prev_view" ; byte 0x2e4
+OpMemberName %526 12 "prev_view_to_prev_world" ; byte 0x308
+OpMemberName %526 13 "sample_offset_pixels" ; byte 0x32c
+OpMemberName %526 14 "sample_offset_clip" ; byte 0x350
+OpMemberName %526 15 "prev_sample_offset_pixels" ; byte 0x370
+OpMemberName %526 16 "prev_sample_offset_clip" ; byte 0x398
+OpMemberName %526 17 "pad0" ; byte 0x3bc
+OpMemberName %526 18 "pad1" ; byte 0x3d0
+OpMemberName %526 19 "pad2" ; byte 0x3e4
+OpMemberName %526 20 "pad3" ; byte 0x3f8
+OpMemberName %526 21 "pad4" ; byte 0x40c
+OpMemberName %526 22 "pad5" ; byte 0x420
+OpMemberName %526 23 "mip_bias" ; byte 0x434
+OpName %529 "current_view" ; byte 0x44c
+OpName %1184 "stone_floor_textures.stone_floor_normal" ; byte 0x464
+OpName %1332 "stone_floor_textures.stone_floor_seed" ; byte 0x494
+OpName %1434 "stone_floor_textures.stone_floor_roughness" ; byte 0x4c4
+OpName %1483 "wall_color_data.brick_colors" ; byte 0x4f8
+OpName %1743 "WoodenFloorTextures_natural" ; byte 0x520
+OpMemberName %1743 0 "wooden_floor_height_dims" ; byte 0x544
+OpName %1745 "wooden_floor_textures" ; byte 0x56c
+OpName %1766 "wooden_floor_textures.wooden_floor_height" ; byte 0x58c
+OpName %2249 "wooden_floor_textures.wooden_floor_normal" ; byte 0x5c0
+OpName %2369 "wooden_floor_textures.wooden_floor_seed" ; byte 0x5f4
+OpName %2471 "halftimber_colors.tex" ; byte 0x624
+OpName %2573 "wooden_floor_textures.wooden_floor_roughness" ; byte 0x644
+OpName %2616 "FrameConstants_natural" ; byte 0x67c
+OpMemberName %2616 0 "sun_color" ; byte 0x69c
+OpMemberName %2616 1 "sky_low_color" ; byte 0x6b4
+OpMemberName %2616 2 "sky_high_color" ; byte 0x6d0
+OpMemberName %2616 3 "fog_tint_thickness" ; byte 0x6ec
+OpMemberName %2616 4 "fake_light_color" ; byte 0x70c
+OpMemberName %2616 5 "fake_light_dir" ; byte 0x72c
+OpMemberName %2616 6 "fake_light2_color" ; byte 0x748
+OpMemberName %2616 7 "fake_light2_dir" ; byte 0x768
+OpMemberName %2616 8 "time_since_startup_secs" ; byte 0x784
+OpMemberName %2616 9 "delta_time_seconds" ; byte 0x7a8
+OpMemberName %2616 10 "ev_mult" ; byte 0x7c8
+OpMemberName %2616 11 "glade_theme_id" ; byte 0x7dc
+OpMemberName %2616 12 "world_render_resolution" ; byte 0x7f8
+OpMemberName %2616 13 "game_time_sec" ; byte 0x81c
+OpMemberName %2616 14 "game_time_frac" ; byte 0x838
+OpMemberName %2616 15 "editing_highlight_color" ; byte 0x854
+OpMemberName %2616 16 "time_of_day" ; byte 0x878
+OpMemberName %2616 17 "dir_to_sun" ; byte 0x890
+OpMemberName %2616 18 "camera_idx" ; byte 0x8a8
+OpMemberName %2616 19 "dir_to_moon" ; byte 0x8c0
+OpMemberName %2616 20 "render_overrides" ; byte 0x8d8
+OpMemberName %2616 21 "dir_to_primary_directional_light" ; byte 0x8f8
+OpMemberName %2616 22 "main_view_lod_scale" ; byte 0x928
+OpMemberName %2616 23 "main_view_eye_position" ; byte 0x948
+OpMemberName %2616 24 "fog_relative_extinction" ; byte 0x96c
+OpMemberName %2616 25 "highlighted_transient_stair_edge_id" ; byte 0x990
+OpMemberName %2616 26 "swapchain_dims" ; byte 0x9c0
+OpMemberName %2616 27 "swapchain_aspect_ratio" ; byte 0x9dc
+OpMemberName %2616 28 "is_photomode" ; byte 0xa00
+OpMemberName %2616 29 "is_topdown_mode" ; byte 0xa1c
+OpMemberName %2616 30 "is_firstperson_mode" ; byte 0xa38
+OpMemberName %2616 31 "brush_position" ; byte 0xa58
+OpMemberName %2616 32 "eraser_size_multiplier" ; byte 0xa74
+OpMemberName %2616 33 "roof_highlighted_slot_id" ; byte 0xa98
+OpMemberName %2616 34 "roof_highlight_mode" ; byte 0xac0
+OpMemberName %2616 35 "wall_highlighted_slot_id" ; byte 0xae0
+OpMemberName %2616 36 "wall_highlight_mode" ; byte 0xb08
+OpMemberName %2616 37 "highlight_bricks_to_delete" ; byte 0xb28
+OpMemberName %2616 38 "wind_strength" ; byte 0xb50
+OpMemberName %2616 39 "tree_canopy_cone_angle_mult" ; byte 0xb6c
+OpMemberName %2616 40 "tree_canopy_max_cone_cull_dist_range" ; byte 0xb94
+OpMemberName %2616 41 "debug_tweakers" ; byte 0xbc8
+OpMemberName %2616 42 "ground_fog" ; byte 0xbe4
+OpMemberName %2616 43 "moonswap" ; byte 0xbfc
+OpName %2618 "frame_constants" ; byte 0xc14
+OpName %2634 "material_data.dirtpath_heightmap" ; byte 0xc2c
+OpName %2 "ps_main" ; byte 0xc58
+OpDecorate %453 Block ; byte 0xc68
+OpMemberDecorate %453 0 Offset 0 ; byte 0xc74
+OpDecorate %455 Binding 0 ; byte 0xc88
+OpDecorate %455 DescriptorSet 3 ; byte 0xc98
+OpDecorate %489 Block ; byte 0xca8
+OpMemberDecorate %489 0 Offset 0 ; byte 0xcb4
+OpDecorate %491 DescriptorSet 10 ; byte 0xcc8
+OpDecorate %491 Binding 0 ; byte 0xcd8
+OpDecorate %516 Binding 3 ; byte 0xce8
+OpDecorate %516 DescriptorSet 10 ; byte 0xcf8
+OpDecorate %520 Binding 1 ; byte 0xd08
+OpDecorate %520 DescriptorSet 2 ; byte 0xd18
+OpDecorate %526 Block ; byte 0xd28
+OpMemberDecorate %526 0 Offset 0 ; byte 0xd34
+OpMemberDecorate %526 0 RowMajor ; byte 0xd48
+OpMemberDecorate %526 0 MatrixStride 16 ; byte 0xd58
+OpMemberDecorate %526 1 Offset 64 ; byte 0xd6c
+OpMemberDecorate %526 1 RowMajor ; byte 0xd80
+OpMemberDecorate %526 1 MatrixStride 16 ; byte 0xd90
+OpMemberDecorate %526 2 Offset 128 ; byte 0xda4
+OpMemberDecorate %526 2 RowMajor ; byte 0xdb8
+OpMemberDecorate %526 2 MatrixStride 16 ; byte 0xdc8
+OpMemberDecorate %526 3 Offset 192 ; byte 0xddc
+OpMemberDecorate %526 3 RowMajor ; byte 0xdf0
+OpMemberDecorate %526 3 MatrixStride 16 ; byte 0xe00
+OpMemberDecorate %526 4 Offset 256 ; byte 0xe14
+OpMemberDecorate %526 4 RowMajor ; byte 0xe28
+OpMemberDecorate %526 4 MatrixStride 16 ; byte 0xe38
+OpMemberDecorate %526 5 Offset 320 ; byte 0xe4c
+OpMemberDecorate %526 5 RowMajor ; byte 0xe60
+OpMemberDecorate %526 5 MatrixStride 16 ; byte 0xe70
+OpMemberDecorate %526 6 Offset 384 ; byte 0xe84
+OpMemberDecorate %526 6 RowMajor ; byte 0xe98
+OpMemberDecorate %526 6 MatrixStride 16 ; byte 0xea8
+OpMemberDecorate %526 7 Offset 448 ; byte 0xebc
+OpMemberDecorate %526 7 RowMajor ; byte 0xed0
+OpMemberDecorate %526 7 MatrixStride 16 ; byte 0xee0
+OpMemberDecorate %526 8 Offset 512 ; byte 0xef4
+OpMemberDecorate %526 8 RowMajor ; byte 0xf08
+OpMemberDecorate %526 8 MatrixStride 16 ; byte 0xf18
+OpMemberDecorate %526 9 Offset 576 ; byte 0xf2c
+OpMemberDecorate %526 9 RowMajor ; byte 0xf40
+OpMemberDecorate %526 9 MatrixStride 16 ; byte 0xf50
+OpMemberDecorate %526 10 Offset 640 ; byte 0xf64
+OpMemberDecorate %526 10 RowMajor ; byte 0xf78
+OpMemberDecorate %526 10 MatrixStride 16 ; byte 0xf88
+OpMemberDecorate %526 11 Offset 704 ; byte 0xf9c
+OpMemberDecorate %526 11 RowMajor ; byte 0xfb0
+OpMemberDecorate %526 11 MatrixStride 16 ; byte 0xfc0
+OpMemberDecorate %526 12 Offset 768 ; byte 0xfd4
+OpMemberDecorate %526 12 RowMajor ; byte 0xfe8
+OpMemberDecorate %526 12 MatrixStride 16 ; byte 0xff8
+OpMemberDecorate %526 13 Offset 832 ; byte 0x100c
+OpMemberDecorate %526 14 Offset 840 ; byte 0x1020
+OpMemberDecorate %526 15 Offset 848 ; byte 0x1034
+OpMemberDecorate %526 16 Offset 856 ; byte 0x1048
+OpMemberDecorate %526 17 Offset 864 ; byte 0x105c
+OpMemberDecorate %526 17 RowMajor ; byte 0x1070
+OpMemberDecorate %526 17 MatrixStride 16 ; byte 0x1080
+OpMemberDecorate %526 18 Offset 928 ; byte 0x1094
+OpMemberDecorate %526 18 RowMajor ; byte 0x10a8
+OpMemberDecorate %526 18 MatrixStride 16 ; byte 0x10b8
+OpMemberDecorate %526 19 Offset 992 ; byte 0x10cc
+OpMemberDecorate %526 20 Offset 1008 ; byte 0x10e0
+OpMemberDecorate %526 21 Offset 1012 ; byte 0x10f4
+OpMemberDecorate %526 22 Offset 1016 ; byte 0x1108
+OpMemberDecorate %526 23 Offset 1020 ; byte 0x111c
+OpDecorate %529 Binding 0 ; byte 0x1130
+OpDecorate %529 DescriptorSet 5 ; byte 0x1140
+OpDecorate %1184 Binding 1 ; byte 0x1150
+OpDecorate %1184 DescriptorSet 10 ; byte 0x1160
+OpDecorate %1332 Binding 2 ; byte 0x1170
+OpDecorate %1332 DescriptorSet 10 ; byte 0x1180
+OpDecorate %1434 Binding 4 ; byte 0x1190
+OpDecorate %1434 DescriptorSet 10 ; byte 0x11a0
+OpDecorate %1483 Binding 1 ; byte 0x11b0
+OpDecorate %1483 DescriptorSet 11 ; byte 0x11c0
+OpDecorate %1743 Block ; byte 0x11d0
+OpMemberDecorate %1743 0 Offset 0 ; byte 0x11dc
+OpDecorate %1745 DescriptorSet 9 ; byte 0x11f0
+OpDecorate %1745 Binding 0 ; byte 0x1200
+OpDecorate %1766 Binding 2 ; byte 0x1210
+OpDecorate %1766 DescriptorSet 9 ; byte 0x1220
+OpDecorate %2249 Binding 1 ; byte 0x1230
+OpDecorate %2249 DescriptorSet 9 ; byte 0x1240
+OpDecorate %2369 Binding 3 ; byte 0x1250
+OpDecorate %2369 DescriptorSet 9 ; byte 0x1260
+OpDecorate %2471 Binding 1 ; byte 0x1270
+OpDecorate %2471 DescriptorSet 8 ; byte 0x1280
+OpDecorate %2573 Binding 4 ; byte 0x1290
+OpDecorate %2573 DescriptorSet 9 ; byte 0x12a0
+OpDecorate %2616 Block ; byte 0x12b0
+OpMemberDecorate %2616 0 Offset 0 ; byte 0x12bc
+OpMemberDecorate %2616 1 Offset 16 ; byte 0x12d0
+OpMemberDecorate %2616 2 Offset 32 ; byte 0x12e4
+OpMemberDecorate %2616 3 Offset 48 ; byte 0x12f8
+OpMemberDecorate %2616 4 Offset 64 ; byte 0x130c
+OpMemberDecorate %2616 5 Offset 80 ; byte 0x1320
+OpMemberDecorate %2616 6 Offset 96 ; byte 0x1334
+OpMemberDecorate %2616 7 Offset 112 ; byte 0x1348
+OpMemberDecorate %2616 8 Offset 128 ; byte 0x135c
+OpMemberDecorate %2616 9 Offset 132 ; byte 0x1370
+OpMemberDecorate %2616 10 Offset 136 ; byte 0x1384
+OpMemberDecorate %2616 11 Offset 140 ; byte 0x1398
+OpMemberDecorate %2616 12 Offset 144 ; byte 0x13ac
+OpMemberDecorate %2616 13 Offset 152 ; byte 0x13c0
+OpMemberDecorate %2616 14 Offset 156 ; byte 0x13d4
+OpMemberDecorate %2616 15 Offset 160 ; byte 0x13e8
+OpMemberDecorate %2616 16 Offset 172 ; byte 0x13fc
+OpMemberDecorate %2616 17 Offset 176 ; byte 0x1410
+OpMemberDecorate %2616 18 Offset 188 ; byte 0x1424
+OpMemberDecorate %2616 19 Offset 192 ; byte 0x1438
+OpMemberDecorate %2616 20 Offset 204 ; byte 0x144c
+OpMemberDecorate %2616 21 Offset 208 ; byte 0x1460
+OpMemberDecorate %2616 22 Offset 220 ; byte 0x1474
+OpMemberDecorate %2616 23 Offset 224 ; byte 0x1488
+OpMemberDecorate %2616 24 Offset 240 ; byte 0x149c
+OpMemberDecorate %2616 25 Offset 244 ; byte 0x14b0
+OpMemberDecorate %2616 26 Offset 248 ; byte 0x14c4
+OpMemberDecorate %2616 27 Offset 256 ; byte 0x14d8
+OpMemberDecorate %2616 28 Offset 260 ; byte 0x14ec
+OpMemberDecorate %2616 29 Offset 264 ; byte 0x1500
+OpMemberDecorate %2616 30 Offset 268 ; byte 0x1514
+OpMemberDecorate %2616 31 Offset 272 ; byte 0x1528
+OpMemberDecorate %2616 32 Offset 284 ; byte 0x153c
+OpMemberDecorate %2616 33 Offset 288 ; byte 0x1550
+OpMemberDecorate %2616 34 Offset 292 ; byte 0x1564
+OpMemberDecorate %2616 35 Offset 296 ; byte 0x1578
+OpMemberDecorate %2616 36 Offset 300 ; byte 0x158c
+OpMemberDecorate %2616 37 Offset 304 ; byte 0x15a0
+OpMemberDecorate %2616 38 Offset 308 ; byte 0x15b4
+OpMemberDecorate %2616 39 Offset 312 ; byte 0x15c8
+OpMemberDecorate %2616 40 Offset 316 ; byte 0x15dc
+OpMemberDecorate %2616 41 Offset 320 ; byte 0x15f0
+OpMemberDecorate %2616 42 Offset 336 ; byte 0x1604
+OpMemberDecorate %2616 43 Offset 348 ; byte 0x1618
+OpDecorate %2618 Binding 0 ; byte 0x162c
+OpDecorate %2618 DescriptorSet 4 ; byte 0x163c
+OpDecorate %2634 Binding 2 ; byte 0x164c
+OpDecorate %2634 DescriptorSet 0 ; byte 0x165c
+%1 = OpTypeVoid ; byte 0x166c
+%3 = OpTypeFunction %1 ; byte 0x1674
+%6 = OpTypeFloat 32 ; byte 0x1680
+%7 = OpTypeVector %6 3 ; byte 0x168c
+%21 = OpTypeVector %6 2 ; byte 0x169c
+%22 = OpTypeVector %6 4 ; byte 0x16ac
+%216 = OpTypeInt 32 0 ; byte 0x16bc
+%367 = OpTypeVector %216 2 ; byte 0x16cc
+%453 = OpTypeStruct %216 ; byte 0x16dc
+%454 = OpTypePointer Uniform %453 ; byte 0x16e8
+%489 = OpTypeStruct %367 ; byte 0x16f8
+%490 = OpTypePointer Uniform %489 ; byte 0x1704
+%513 = OpTypeImage %6 2D 2 0 0 1 Unknown ; byte 0x1714
+%515 = OpTypePointer UniformConstant %513 ; byte 0x1738
+%517 = OpTypeSampler ; byte 0x1748
+%519 = OpTypePointer UniformConstant %517 ; byte 0x1750
+%527 = OpTypeMatrix %22 4 ; byte 0x1760
+%526 = OpTypeStruct %527 %527 %527 %527 %527 %527 %527 %527 %527 %527 %527 %527 %527 %21 %21 %21 %21 %527 %527 %22 %6 %6 %6 %6 ; byte 0x1770
+%528 = OpTypePointer Uniform %526 ; byte 0x17d8
+%1480 = OpTypeImage %6 2D 2 1 0 1 Unknown ; byte 0x17e8
+%1482 = OpTypePointer UniformConstant %1480 ; byte 0x180c
+%1743 = OpTypeStruct %367 ; byte 0x181c
+%1744 = OpTypePointer Uniform %1743 ; byte 0x1828
+%2616 = OpTypeStruct %22 %22 %22 %22 %22 %22 %22 %22 %6 %6 %6 %216 %367 %216 %6 %7 %6 %7 %216 %7 %216 %7 %6 %22 %6 %216 %367 %6 %216 %216 %216 %7 %6 %216 %216 %216 %216 %216 %6 %6 %6 %22 %7 %6 ; byte 0x1838
+%2617 = OpTypePointer Uniform %2616 ; byte 0x18f0
+%455 = OpVariable %454 Uniform ; byte 0x1900
+%491 = OpVariable %490 Uniform ; byte 0x1910
+%516 = OpVariable %515 UniformConstant ; byte 0x1920
+%520 = OpVariable %519 UniformConstant ; byte 0x1930
+%529 = OpVariable %528 Uniform ; byte 0x1940
+%1184 = OpVariable %515 UniformConstant ; byte 0x1950
+%1332 = OpVariable %515 UniformConstant ; byte 0x1960
+%1434 = OpVariable %515 UniformConstant ; byte 0x1970
+%1483 = OpVariable %1482 UniformConstant ; byte 0x1980
+%1745 = OpVariable %1744 Uniform ; byte 0x1990
+%1766 = OpVariable %515 UniformConstant ; byte 0x19a0
+%2249 = OpVariable %515 UniformConstant ; byte 0x19b0
+%2369 = OpVariable %515 UniformConstant ; byte 0x19c0
+%2471 = OpVariable %1482 UniformConstant ; byte 0x19d0
+%2573 = OpVariable %515 UniformConstant ; byte 0x19e0
+%2618 = OpVariable %2617 Uniform ; byte 0x19f0
+%2634 = OpVariable %515 UniformConstant ; byte 0x1a00
+%2 = OpFunction %1 None %3 ; byte 0x1a10
+%4 = OpLabel ; byte 0x1a24
+OpReturn ; byte 0x1a2c
+OpFunctionEnd ; byte 0x1a30

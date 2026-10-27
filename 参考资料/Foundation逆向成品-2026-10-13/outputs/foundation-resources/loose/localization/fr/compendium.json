@@ -1,0 +1,27 @@
+﻿{
+	"COMPENDIUM": {
+		"COMPENDIUM": "Encyclopédie",
+		"COMPENDIUM_X_ITEM_UNLOCKED": "{1} entrées déverrouillées",
+		"COMPENDIUM_UNKNOWN_MAIN_TITLE": "Non découvert",
+		"COMPENDIUM_UNKNOWN_SECONDARY_TITLE": "Non découvert",
+		"COMPENDIUM_UNKNOWN_ITEM": "???",
+		"COMPENDIUM_WORKPLACE_RECIPES": "Recettes de lieu de travail",
+		"COMPENDIUM_WORKPLACE_RECIPE": "Recette",
+		"COMPENDIUM_RECIPE_PLUR": "Recettes",
+		"COMPENDIUM_WORKPLACE_RECIPE_PRODUCTION": "Production",
+		"COMPENDIUM_WORKPLACE_RECIPE_LOCK_DESC": "Verrouillée\nRemplissez les conditions requises pour déverrouiller cette recette.",
+		"COMPENDIUM_WORKPLACE_RECIPE_UNLOCK_DESC": "Déverrouillée\nVous pouvez désormais produire cette recette dans votre village.",
+		"COMPENDIUM_VILLAGE_TITLES": "Titres du village et de dirigeant",
+		"COMPENDIUM_ITEM_UNLOCKER_STEPS_TITLE": "Remplir toutes les conditions :",
+		"COMPENDIUM_ITEM_UNLOCKER_LIST_TITLE": "Comment déverrouiller",
+		"COMPENDIUM_UNLOCKER_DEFAULT_TEXT": "Se déverrouille automatiquement au début d'une partie.",
+		"COMPENDIUM_UNLOCKER_MINERAL_TEXT": "Accomplir un des mandats \"Prospecter un filon de minerai à proximité\"",
+		"COMPENDIUM_X_UNLOCKED": "Déverrouillé : {1}",
+		"COMPENDIUM_COMPLETE_ANY_REQUIREMENTS": "Remplir une des conditions suivantes :",
+		"COMPENDIUM_VILLAGE_TITLE_LOCK_DESC": "Verrouillé\nRemplissez les conditions requises pour obtenir ce titre.",
+		"COMPENDIUM_VILLAGE_TITLE_UNLOCK_DESC": "Déverrouillé\nVous avez obtenu ce titre et pouvez désormais l'utiliser pour votre village.",
+		"COMPENDIUM_UNLOCKER_QUEST_TITLE": "Accomplir la quête \"{1}\"",
+		"COMPENDIUM_UNLOCK_CONDITION_RESOURCE_UNLOCKED_DESC": "Obtenir une ressource non découverte ({1})",
+		"COMPENDIUM_QUEST_BUY_UNLOCKABLE_FESTIVAL": "Déverrouiller \"{1}\" en progressant dans les niveaux de la fête des récoltes"
+	}
+}

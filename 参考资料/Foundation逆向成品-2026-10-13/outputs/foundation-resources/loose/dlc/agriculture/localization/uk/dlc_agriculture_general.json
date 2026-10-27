@@ -1,0 +1,61 @@
+﻿{
+	"FESTIVAL": {
+		"HARVEST_FESTIVAL": "Свято Врожаю",
+		"FESTIVAL_REWARDS": "Нагороди",
+		"FESTIVAL_NAME_EDITION": "{1} - {2}",
+		"FESTIVAL_TIER_REWARDS": "Нагороди",
+		"AGRI_ESTATE_INVITE_KINGDOM_TITLE": "Вельможі",
+		"FESTIVAL_DASHBOARD_PROGRESSION": "Розвиток",
+		"FESTIVAL_DASHBOARD_REWARDS": "Нагороди"
+	},
+	"FESTIVAL_EDITIONS": {},
+	"RESOURCES": {
+		"RESOURCE_APPLES": "Яблука",
+		"RESOURCE_PLUMS": "Сливи",
+		"RESOURCE_HAZELNUTS": "Ліщина",
+		"RESOURCE_TURNIPS": "Ріпа",
+		"RESOURCE_CHICKEN": "Курка",
+		"RESOURCE_GOOSE": "Гуска",
+		"RESOURCE_PIG": "Свиня",
+		"RESOURCE_ANIMALFAT": "Тваринне сало",
+		"RESOURCE_EGGS": "Яйця",
+		"RESOURCE_CUREDHAM": "В'ялений окіст",
+		"RESOURCE_DRIEDFRUITS": "Сухофрукти",
+		"RESOURCE_CIDER": "Сидр",
+		"RESOURCE_CONFITURE": "Конфітюр",
+		"RESOURCE_PASTRY": "Випічка",
+		"RESOURCE_FESTIVAL_CABBAGEFARCI": "Фарширована капуста",
+		"RESOURCE_FESTIVAL_PIGROAST": "Запечене порося",
+		"RESOURCE_FESTIVAL_GOOSEROAST": "Королівський гусак",
+		"MONASTIC_GLAZEDGOOSE": "Глазурована гуска",
+		"MONASTIC_CHICKENCABOCHE": "Куряче рагу",
+		"MONASTIC_FRIEDFISH": "Смажена риба"
+	},
+	"RESOURCE_TYPE": {
+		"FODDER": "Корм"
+	},
+	"JOBS": {
+		"JOB_CIDERMAKER": "Сидрівник"
+	},
+	"PART_TYPE": {},
+	"ENTERTAINERS": {
+		"FESTIVAL_MINSTREL_SING": "Менестрель",
+		"APPLEBOBBING": "Ловля яблук"
+	},
+	"MENU": {},
+	"GAME_CONDITIONS": {},
+	"COMMON CROFT": {
+		"PAINT_CROFT": "Позначити зону обійстя",
+		"CROFT_ANIMAL_CHICKEN_NAME_PLUR": "кури",
+		"CROFT_BABY_ANIMAL_CHICKEN_NAME_PLUR": "Курчата",
+		"CROFT_ANIMAL_GOOSE_NAME_PLUR": "гуси",
+		"CROFT_BABY_ANIMAL_GOOSE_NAME_PLUR": "Гусенята",
+		"CROFT_ANIMAL_PIG_NAME_PLUR": "свині",
+		"CROFT_BABY_ANIMAL_PIG_NAME_PLUR": "Поросята"
+	},
+	"TITLES": {},
+	"VILLAGE_TITLES": {},
+	"FESTIVAL_SUMMARY": {},
+	"NOTIFICATIONS": {},
+	"BUDGET": {}
+}

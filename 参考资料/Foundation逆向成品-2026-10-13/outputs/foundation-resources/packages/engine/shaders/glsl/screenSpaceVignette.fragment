@@ -1,0 +1,10 @@
+uniform vec3 uniVignetteParams;
+in vec4 SCREEN_COORD;
+layout(location = 0) out vec4 outColor;
+
+void main()
+{
+	vec2 mUv = SCREEN_COORD.xy * 0.5 / SCREEN_COORD.w + 0.5;
+	float d = length((mUv.xy - vec2(0.5, 0.5)));
+	outColor = vec4(0, 0, 0, smoothstep(uniVignetteParams.x, uniVignetteParams.y, d) * uniVignetteParams.z);
+}

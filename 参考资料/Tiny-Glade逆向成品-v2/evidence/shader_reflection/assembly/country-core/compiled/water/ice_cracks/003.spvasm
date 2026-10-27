@@ -1,0 +1,117 @@
+; SPIR-V 1.3
+; SHA256 6f18f0f90b50f69e1fb784f26929f553fb3d8238b5706b4660e9b19ec21ced82
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability Shader ; byte 0x14
+OpCapability StorageImageExtendedFormats ; byte 0x1c
+OpMemoryModel Logical GLSL450 ; byte 0x24
+OpEntryPoint Fragment %2 "main" ; byte 0x30
+OpExecutionMode %2 OriginUpperLeft ; byte 0x44
+OpSource Slang 1 ; byte 0x50
+OpName %103 "FrameConstants_natural" ; byte 0x5c
+OpMemberName %103 0 "sun_color" ; byte 0x7c
+OpMemberName %103 1 "sky_low_color" ; byte 0x94
+OpMemberName %103 2 "sky_high_color" ; byte 0xb0
+OpMemberName %103 3 "fog_tint_thickness" ; byte 0xcc
+OpMemberName %103 4 "fake_light_color" ; byte 0xec
+OpMemberName %103 5 "fake_light_dir" ; byte 0x10c
+OpMemberName %103 6 "fake_light2_color" ; byte 0x128
+OpMemberName %103 7 "fake_light2_dir" ; byte 0x148
+OpMemberName %103 8 "time_since_startup_secs" ; byte 0x164
+OpMemberName %103 9 "delta_time_seconds" ; byte 0x188
+OpMemberName %103 10 "ev_mult" ; byte 0x1a8
+OpMemberName %103 11 "glade_theme_id" ; byte 0x1bc
+OpMemberName %103 12 "world_render_resolution" ; byte 0x1d8
+OpMemberName %103 13 "game_time_sec" ; byte 0x1fc
+OpMemberName %103 14 "game_time_frac" ; byte 0x218
+OpMemberName %103 15 "editing_highlight_color" ; byte 0x234
+OpMemberName %103 16 "time_of_day" ; byte 0x258
+OpMemberName %103 17 "dir_to_sun" ; byte 0x270
+OpMemberName %103 18 "camera_idx" ; byte 0x288
+OpMemberName %103 19 "dir_to_moon" ; byte 0x2a0
+OpMemberName %103 20 "render_overrides" ; byte 0x2b8
+OpMemberName %103 21 "dir_to_primary_directional_light" ; byte 0x2d8
+OpMemberName %103 22 "main_view_lod_scale" ; byte 0x308
+OpMemberName %103 23 "main_view_eye_position" ; byte 0x328
+OpMemberName %103 24 "fog_relative_extinction" ; byte 0x34c
+OpMemberName %103 25 "highlighted_transient_stair_edge_id" ; byte 0x370
+OpMemberName %103 26 "swapchain_dims" ; byte 0x3a0
+OpMemberName %103 27 "swapchain_aspect_ratio" ; byte 0x3bc
+OpMemberName %103 28 "is_photomode" ; byte 0x3e0
+OpMemberName %103 29 "is_topdown_mode" ; byte 0x3fc
+OpMemberName %103 30 "is_firstperson_mode" ; byte 0x418
+OpMemberName %103 31 "brush_position" ; byte 0x438
+OpMemberName %103 32 "eraser_size_multiplier" ; byte 0x454
+OpMemberName %103 33 "roof_highlighted_slot_id" ; byte 0x478
+OpMemberName %103 34 "roof_highlight_mode" ; byte 0x4a0
+OpMemberName %103 35 "wall_highlighted_slot_id" ; byte 0x4c0
+OpMemberName %103 36 "wall_highlight_mode" ; byte 0x4e8
+OpMemberName %103 37 "highlight_bricks_to_delete" ; byte 0x508
+OpMemberName %103 38 "wind_strength" ; byte 0x530
+OpMemberName %103 39 "tree_canopy_cone_angle_mult" ; byte 0x54c
+OpMemberName %103 40 "tree_canopy_max_cone_cull_dist_range" ; byte 0x574
+OpMemberName %103 41 "debug_tweakers" ; byte 0x5a8
+OpMemberName %103 42 "ground_fog" ; byte 0x5c4
+OpMemberName %103 43 "moonswap" ; byte 0x5dc
+OpName %108 "frame_constants" ; byte 0x5f4
+OpName %2 "ps_main" ; byte 0x60c
+OpDecorate %103 Block ; byte 0x61c
+OpMemberDecorate %103 0 Offset 0 ; byte 0x628
+OpMemberDecorate %103 1 Offset 16 ; byte 0x63c
+OpMemberDecorate %103 2 Offset 32 ; byte 0x650
+OpMemberDecorate %103 3 Offset 48 ; byte 0x664
+OpMemberDecorate %103 4 Offset 64 ; byte 0x678
+OpMemberDecorate %103 5 Offset 80 ; byte 0x68c
+OpMemberDecorate %103 6 Offset 96 ; byte 0x6a0
+OpMemberDecorate %103 7 Offset 112 ; byte 0x6b4
+OpMemberDecorate %103 8 Offset 128 ; byte 0x6c8
+OpMemberDecorate %103 9 Offset 132 ; byte 0x6dc
+OpMemberDecorate %103 10 Offset 136 ; byte 0x6f0
+OpMemberDecorate %103 11 Offset 140 ; byte 0x704
+OpMemberDecorate %103 12 Offset 144 ; byte 0x718
+OpMemberDecorate %103 13 Offset 152 ; byte 0x72c
+OpMemberDecorate %103 14 Offset 156 ; byte 0x740
+OpMemberDecorate %103 15 Offset 160 ; byte 0x754
+OpMemberDecorate %103 16 Offset 172 ; byte 0x768
+OpMemberDecorate %103 17 Offset 176 ; byte 0x77c
+OpMemberDecorate %103 18 Offset 188 ; byte 0x790
+OpMemberDecorate %103 19 Offset 192 ; byte 0x7a4
+OpMemberDecorate %103 20 Offset 204 ; byte 0x7b8
+OpMemberDecorate %103 21 Offset 208 ; byte 0x7cc
+OpMemberDecorate %103 22 Offset 220 ; byte 0x7e0
+OpMemberDecorate %103 23 Offset 224 ; byte 0x7f4
+OpMemberDecorate %103 24 Offset 240 ; byte 0x808
+OpMemberDecorate %103 25 Offset 244 ; byte 0x81c
+OpMemberDecorate %103 26 Offset 248 ; byte 0x830
+OpMemberDecorate %103 27 Offset 256 ; byte 0x844
+OpMemberDecorate %103 28 Offset 260 ; byte 0x858
+OpMemberDecorate %103 29 Offset 264 ; byte 0x86c
+OpMemberDecorate %103 30 Offset 268 ; byte 0x880
+OpMemberDecorate %103 31 Offset 272 ; byte 0x894
+OpMemberDecorate %103 32 Offset 284 ; byte 0x8a8
+OpMemberDecorate %103 33 Offset 288 ; byte 0x8bc
+OpMemberDecorate %103 34 Offset 292 ; byte 0x8d0
+OpMemberDecorate %103 35 Offset 296 ; byte 0x8e4
+OpMemberDecorate %103 36 Offset 300 ; byte 0x8f8
+OpMemberDecorate %103 37 Offset 304 ; byte 0x90c
+OpMemberDecorate %103 38 Offset 308 ; byte 0x920
+OpMemberDecorate %103 39 Offset 312 ; byte 0x934
+OpMemberDecorate %103 40 Offset 316 ; byte 0x948
+OpMemberDecorate %103 41 Offset 320 ; byte 0x95c
+OpMemberDecorate %103 42 Offset 336 ; byte 0x970
+OpMemberDecorate %103 43 Offset 348 ; byte 0x984
+OpDecorate %108 Binding 0 ; byte 0x998
+OpDecorate %108 DescriptorSet 3 ; byte 0x9a8
+%1 = OpTypeVoid ; byte 0x9b8
+%3 = OpTypeFunction %1 ; byte 0x9c0
+%6 = OpTypeFloat 32 ; byte 0x9cc
+%7 = OpTypeVector %6 3 ; byte 0x9d8
+%104 = OpTypeVector %6 4 ; byte 0x9e8
+%105 = OpTypeInt 32 0 ; byte 0x9f8
+%106 = OpTypeVector %105 2 ; byte 0xa08
+%103 = OpTypeStruct %104 %104 %104 %104 %104 %104 %104 %104 %6 %6 %6 %105 %106 %105 %6 %7 %6 %7 %105 %7 %105 %7 %6 %104 %6 %105 %106 %6 %105 %105 %105 %7 %6 %105 %105 %105 %105 %105 %6 %6 %6 %104 %7 %6 ; byte 0xa18
+%107 = OpTypePointer Uniform %103 ; byte 0xad0
+%108 = OpVariable %107 Uniform ; byte 0xae0
+%2 = OpFunction %1 None %3 ; byte 0xaf0
+%4 = OpLabel ; byte 0xb04
+OpReturn ; byte 0xb0c
+OpFunctionEnd ; byte 0xb10

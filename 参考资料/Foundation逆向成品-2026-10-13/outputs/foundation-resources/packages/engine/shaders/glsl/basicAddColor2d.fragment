@@ -1,0 +1,14 @@
+uniform sampler2D uniTextureDiffuse;
+in vec2 var_attribUv;
+in vec4 var_attribColor;
+layout(location = 0) out vec4 outColor;
+
+void main()
+{
+	vec4 ATTRIB_COLOR = var_attribColor;
+	vec4 TEXTURE_COLOR = vec4(1);
+	vec4 COLOR = vec4(1);
+	TEXTURE_COLOR = texture(uniTextureDiffuse, var_attribUv);
+	COLOR = vec4(ATTRIB_COLOR.rgb * TEXTURE_COLOR.a, 0) + TEXTURE_COLOR;
+	outColor = COLOR;
+}

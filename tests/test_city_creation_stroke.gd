@@ -29,7 +29,9 @@ func _initialize() -> void:
 	var deviation := 0.0
 	for point in rounded:
 		deviation = maxf(deviation,minf(_distance(point,corner[0],corner[1]),_distance(point,corner[1],corner[2])))
-	_check(deviation > 0.02 and deviation < 0.19,"corner rounds without excessive overshoot")
+	# Exact R=.85 quarter circle has max distance to the original two line
+	# segments R * (1 - 1/sqrt(2)) = .249m (not distance to the corner).
+	_check(deviation > 0.24 and deviation < 0.25,"corner uses the designed .85m tangent-circle radius")
 	var duplicate: Array[Vector2] = [Vector2.ZERO,Vector2.ZERO,Vector2(2,0),Vector2(2,0),Vector2(2,2),Vector2(2,2)]
 	_check(Stroke.road_points(duplicate) == rounded,"repeated samples are ignored")
 	var loop: Array[Vector2] = [Vector2.ZERO,Vector2(2,0),Vector2(2,2),Vector2(0,2),Vector2.ZERO]

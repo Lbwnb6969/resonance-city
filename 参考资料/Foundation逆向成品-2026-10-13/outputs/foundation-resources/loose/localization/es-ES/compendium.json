@@ -1,0 +1,27 @@
+﻿{
+	"COMPENDIUM": {
+		"COMPENDIUM": "Compendio",
+		"COMPENDIUM_X_ITEM_UNLOCKED": "{1} entradas desbloqueadas",
+		"COMPENDIUM_UNKNOWN_MAIN_TITLE": "Por descubrir",
+		"COMPENDIUM_UNKNOWN_SECONDARY_TITLE": "Por descubrir",
+		"COMPENDIUM_UNKNOWN_ITEM": "¿¿??",
+		"COMPENDIUM_WORKPLACE_RECIPES": "Recetas de lugares de trabajo",
+		"COMPENDIUM_WORKPLACE_RECIPE": "Receta",
+		"COMPENDIUM_RECIPE_PLUR": "Recetas",
+		"COMPENDIUM_WORKPLACE_RECIPE_PRODUCTION": "Producción",
+		"COMPENDIUM_WORKPLACE_RECIPE_LOCK_DESC": "Bloqueada\nCumple las condiciones para desbloquear esta receta de producción.",
+		"COMPENDIUM_WORKPLACE_RECIPE_UNLOCK_DESC": "Desbloqueada\nEsta receta se puede producir en tu villa.",
+		"COMPENDIUM_VILLAGE_TITLES": "Títulos de villa y de autoridad",
+		"COMPENDIUM_ITEM_UNLOCKER_STEPS_TITLE": "Cumple todos los requisitos:",
+		"COMPENDIUM_ITEM_UNLOCKER_LIST_TITLE": "Cómo desbloquear",
+		"COMPENDIUM_UNLOCKER_DEFAULT_TEXT": "Se desbloquea automáticamente al comenzar una partida.",
+		"COMPENDIUM_UNLOCKER_MINERAL_TEXT": "Completa uno de los mandatos «Hacer una prospección en un depósito de minerales cercano».",
+		"COMPENDIUM_X_UNLOCKED": "Has desbloqueado: {1}",
+		"COMPENDIUM_COMPLETE_ANY_REQUIREMENTS": "Cumple cualquiera de los siguientes requisitos:",
+		"COMPENDIUM_VILLAGE_TITLE_LOCK_DESC": "Bloqueado\nCumple las condiciones de desbloqueo para conseguir este título.",
+		"COMPENDIUM_VILLAGE_TITLE_UNLOCK_DESC": "Desbloqueado\nHas conseguido este título y puedes usarlo en tu villa.",
+		"COMPENDIUM_UNLOCKER_QUEST_TITLE": "Completa la tarea «{1}».",
+		"COMPENDIUM_UNLOCK_CONDITION_RESOURCE_UNLOCKED_DESC": "Consigue {1} (recurso por descubrir).",
+		"COMPENDIUM_QUEST_BUY_UNLOCKABLE_FESTIVAL": "Desbloquea «{1}» progresando en los niveles de festival de la cosecha."
+	}
+}

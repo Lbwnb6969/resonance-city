@@ -1,0 +1,83 @@
+INFO  Using log config file: jar:file:/C:/Users/Administrator/Documents/Codex/2026-10-12/new-chat-2/work/tools/vendor/ghidra-12.1.4/ghidra_12.1.4_PUBLIC/Ghidra/Framework/Generic/lib/Generic.jar!/generic.log4j.xml (LoggingInitialization)  
+INFO  Using log file: C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\native\drill-headless.log (LoggingInitialization)  
+INFO  Loading user preferences: C:\Users\Administrator\AppData\Roaming\ghidra\ghidra_12.1.4_PUBLIC\preferences (Preferences)  
+INFO  Searching for classes... (ClassSearcher)  
+INFO  Class search complete (658 ms) (ClassSearcher)  
+INFO  Initializing SSL Context (DefaultSSLContextInitializer)  
+INFO  Initializing Random Number Generator... (SecureRandomFactory)  
+INFO  Random Number Generator initialization complete: SHA1PRNG (SecureRandomFactory)  
+INFO  Trust manager disabled, cacerts have not been set (DefaultTrustManagerFactory)  
+INFO  Headless startup complete (2418 ms) (AnalyzeHeadless)  
+INFO  Class searcher loaded 59 extension points (20 false positives) (ClassSearcher)  
+INFO  HEADLESS Script Paths:
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Processors\PIC\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\Base\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Processors\Atmel\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\MicrosoftCodeAnalyzer\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\PyGhidra\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Processors\JVM\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Processors\DATA\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\VersionTracking\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\WildcardAssembler\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Processors\8051\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\Decompiler\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\SystemEmulation\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\BSim\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\SwiftDemangler\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Debug\Debugger-rmi-trace\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\FunctionID\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\FileFormats\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\BytePatterns\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\GnuDemangler\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\native
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\DecompilerDependent\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Debug\Debugger\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\PDB\ghidra_scripts (HeadlessAnalyzer)  
+INFO  HEADLESS: execution starts (HeadlessAnalyzer)  
+INFO  Opening existing project: C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\native\ghidra-project\FoundationFocused (HeadlessAnalyzer)  
+INFO  Opening project: C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\native\ghidra-project\FoundationFocused (HeadlessProject)  
+INFO  REPORT: Processing project file: /foundation.exe (HeadlessAnalyzer)  
+INFO  REPORT: Execute script: FocusedNative.java 'C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\native' 'C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\outputs\foundation-native-analysis' 'drill-seeds.tsv' 'drill-functions.json'  (HeadlessAnalyzer)  
+INFO  SCRIPT: C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\native\FocusedNative.java (HeadlessAnalyzer)  
+INFO  FocusedNative.java> FOCUSED_STAGE create seeds 37 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_STAGE create expanded 125 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 1 14019d6b0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 2 1401c3860 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 3 14020a630 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 4 14020cdc0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 5 1403279d0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 6 140327dd0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 7 140326680 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 8 1403267d0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 9 140326da0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 10 140326ef0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 11 140327040 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 12 140326920 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 13 140326aa0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 14 140326c40 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 15 14015a8e0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 16 14012e6f0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 17 14012eae0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 18 1401bb540 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 19 140151410 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 20 140151790 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 21 140151220 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 22 140151340 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 23 14015e420 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 24 14015e580 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 25 14015e530 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 26 140164af0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 27 140166160 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 28 140166da0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 29 140166e00 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 30 14014cd40 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 31 14014c710 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 32 14014d040 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 33 14014d680 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 34 14015cc00 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 35 14015d230 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 36 14017ef50 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 37 14017fba0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DECOMPILE 38 1401805c0 (GhidraScript)  
+INFO  FocusedNative.java> FOCUSED_DONE functions 125 (GhidraScript)  
+INFO  REPORT: Save succeeded for processed file: /foundation.exe (HeadlessAnalyzer)  

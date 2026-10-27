@@ -1,0 +1,55 @@
+; SPIR-V 1.3
+; SHA256 9d71edb760a5ba950adb73b8c2d26b542e44c8e63326cfcd9ce4177662cb7df2
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability Shader ; byte 0x14
+OpCapability StorageImageExtendedFormats ; byte 0x1c
+OpMemoryModel Logical GLSL450 ; byte 0x24
+OpEntryPoint Fragment %2 "main" %45 %9 %13 ; byte 0x30
+OpExecutionMode %2 OriginUpperLeft ; byte 0x50
+OpSource Slang 1 ; byte 0x5c
+OpName %9 "vs_out.color" ; byte 0x68
+OpName %13 "vs_out.uv" ; byte 0x80
+OpName %17 "samplers.llc" ; byte 0x94
+OpName %21 "color_tex" ; byte 0xac
+OpName %24 "sampledImage" ; byte 0xc0
+OpName %25 "sampled" ; byte 0xd8
+OpName %27 "color" ; byte 0xe8
+OpName %45 "entryPointParam_ps_main._color" ; byte 0xf8
+OpName %2 "ps_main" ; byte 0x120
+OpDecorate %9 Location 0 ; byte 0x130
+OpDecorate %13 Location 1 ; byte 0x140
+OpDecorate %17 Binding 3 ; byte 0x150
+OpDecorate %17 DescriptorSet 1 ; byte 0x160
+OpDecorate %21 Binding 1 ; byte 0x170
+OpDecorate %21 DescriptorSet 0 ; byte 0x180
+OpDecorate %45 Location 0 ; byte 0x190
+%1 = OpTypeVoid ; byte 0x1a0
+%3 = OpTypeFunction %1 ; byte 0x1a8
+%5 = OpTypeFloat 32 ; byte 0x1b4
+%6 = OpTypeVector %5 4 ; byte 0x1c0
+%8 = OpTypePointer Input %6 ; byte 0x1d0
+%10 = OpTypeVector %5 2 ; byte 0x1e0
+%12 = OpTypePointer Input %10 ; byte 0x1f0
+%14 = OpTypeSampler ; byte 0x200
+%16 = OpTypePointer UniformConstant %14 ; byte 0x208
+%18 = OpTypeImage %5 2D 2 0 0 1 Unknown ; byte 0x218
+%20 = OpTypePointer UniformConstant %18 ; byte 0x23c
+%23 = OpTypeSampledImage %18 ; byte 0x24c
+%44 = OpTypePointer Output %6 ; byte 0x258
+%9 = OpVariable %8 Input ; byte 0x268
+%13 = OpVariable %12 Input ; byte 0x278
+%17 = OpVariable %16 UniformConstant ; byte 0x288
+%21 = OpVariable %20 UniformConstant ; byte 0x298
+%45 = OpVariable %44 Output ; byte 0x2a8
+%2 = OpFunction %1 None %3 ; byte 0x2b8
+%4 = OpLabel ; byte 0x2cc
+%7 = OpLoad %6 %9 ; byte 0x2d4
+%11 = OpLoad %10 %13 ; byte 0x2e4
+%15 = OpLoad %14 %17 ; byte 0x2f4
+%19 = OpLoad %18 %21 ; byte 0x304
+%24 = OpSampledImage %23 %19 %15 ; byte 0x314
+%25 = OpImageSampleImplicitLod %6 %24 %11 None ; byte 0x328
+%27 = OpFMul %6 %7 %25 ; byte 0x340
+OpStore %45 %27 ; byte 0x354
+OpReturn ; byte 0x360
+OpFunctionEnd ; byte 0x364

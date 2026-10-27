@@ -2,7 +2,8 @@
   "high_watermark": {
     "cell": 14,
     "house": 6,
-    "road": 7
+    "road": 7,
+    "district": 1
   },
   "houses": [
     {
@@ -322,5 +323,95 @@
       "width": 1.25
     }
   ],
-  "schema": 1
+  "schema": 2,
+  "terrain_strokes": [
+    {
+      "points": [
+        [
+          10.0,
+          -9.0
+        ],
+        [
+          13.0,
+          -8.0
+        ],
+        [
+          12.0,
+          -5.0
+        ]
+      ],
+      "mode": "raise",
+      "radius": 5.0,
+      "strength": 0.65
+    },
+    {
+      "points": [
+        [
+          10.0,
+          -9.0
+        ],
+        [
+          13.0,
+          -8.0
+        ],
+        [
+          12.0,
+          -5.0
+        ]
+      ],
+      "mode": "raise",
+      "radius": 5.0,
+      "strength": 0.65
+    },
+    {
+      "points": [
+        [
+          10.0,
+          -9.0
+        ],
+        [
+          13.0,
+          -8.0
+        ],
+        [
+          12.0,
+          -5.0
+        ]
+      ],
+      "mode": "raise",
+      "radius": 5.0,
+      "strength": 0.65
+    },
+    {
+      "points": [
+        [
+          12.0,
+          10.0
+        ]
+      ],
+      "mode": "lower",
+      "radius": 5.0,
+      "strength": 0.65
+    }
+  ],
+  "districts": [
+    {
+      "id": "d1",
+      "name": "河湾合奏",
+      "style": "warm",
+      "points": [
+        [
+          -6,
+          -8
+        ],
+        [
+          -6,
+          8
+        ]
+      ],
+      "width": 10.0,
+      "adaptive": true
+    }
+  ],
+  "next_district_id": 2
 }

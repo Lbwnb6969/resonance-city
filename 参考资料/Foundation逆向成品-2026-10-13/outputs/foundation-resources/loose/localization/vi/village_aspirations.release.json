@@ -1,0 +1,22 @@
+﻿{
+	"VICTORY_CONDITIONS": {
+		"VICTORY_CONDITIONS_LIST": "Danh Sách Khát Vọng Làng",
+		"EDIT_VICTORY_CONDITIONS": "Chỉnh Sửa Khát Vọng Làng",
+		"REACH_TOP_CLERGY": "Đạt đến đỉnh cao của Con Đường Tiến Bộ Tôn Giáo",
+		"REACH_TOP_KINGDOM": "Đạt đến đỉnh cao của Con Đường Tiến Bộ Vương Quốc",
+		"REACH_TOP_LABOUR": "Đạt đến đỉnh cao của Con Đường Tiến Bộ Lao Động"
+	},
+	"VICTORY_CONDITIONS_CELEBRATIONS": {
+		"VC_COMPLETED": "Khát Vọng Làng Hoàn Thành",
+		"VC_FAILED": "Khát Vọng Làng Thất Bại",
+		"VC_COMPLETED_DESC": "Chúng ta nên tự hào về việc hoàn thành các nhiệm vụ sau:",
+		"VC_FAILED_DESC": "Thật không may, chúng ta đã không thể đạt được khát vọng này:",
+		"VC_KINGDOM_FORTRESS_SUCCESS": "Nhờ những nỗ lực chiến tranh và tầm nhìn chiến lược của bạn, bạn đã biến lâu đài của mình thành một pháo đài không thể xâm phạm cho vương quốc, mang lại danh dự và vinh quang cho nhà vua. Bạn thực sự là một anh hùng của vương quốc!",
+		"VC_CLERGY_PROSPEROUS_PRIORY_SUCCESS": "Khi Giáo Hội làm lễ khai mạc Nhà Thờ Abbatial của bạn, bạn ngẫm nghĩ về những gì mình đã đạt được. Bạn đã xây dựng một Tu Viện của Đức Tin và tập hợp một cộng đồng tu sĩ kính trọng. Không còn nghi ngờ gì nữa, bạn đã làm cho vùng đất này trở nên tốt đẹp hơn.",
+		"VC_LABOR_COMMUNE_SUCCESS": "Khi bạn đi qua Cổng Thành Phố, bạn không thể không cảm thấy tự hào. Qua thời gian, bạn đã biến một khu nông nô nhỏ trở thành một ngôi làng thịnh vượng của những người tự do!"
+	},
+	"CONDITIONS": {
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_TITLE": "Dân Số Làng Tối Đa",
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_DESC": "Bạn đã đạt đến dân số làng tối đa cho Khát Vọng hiện tại của bạn. Việc chấp nhận một cư dân mới sẽ làm thất bại Khát Vọng này.\n\nBạn có muốn tiếp tục không?"
+	}
+}

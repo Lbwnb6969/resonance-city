@@ -1,0 +1,27 @@
+﻿{
+	"COMPENDIUM": {
+		"COMPENDIUM": "データ一覧",
+		"COMPENDIUM_X_ITEM_UNLOCKED": "{1}件のアンロックしたエントリー",
+		"COMPENDIUM_UNKNOWN_MAIN_TITLE": "未発見",
+		"COMPENDIUM_UNKNOWN_SECONDARY_TITLE": "未発見",
+		"COMPENDIUM_UNKNOWN_ITEM": "？？？",
+		"COMPENDIUM_WORKPLACE_RECIPES": "作業場レシピ",
+		"COMPENDIUM_WORKPLACE_RECIPE": "レシピ",
+		"COMPENDIUM_RECIPE_PLUR": "レシピ",
+		"COMPENDIUM_WORKPLACE_RECIPE_PRODUCTION": "生産",
+		"COMPENDIUM_WORKPLACE_RECIPE_LOCK_DESC": "ロック中\nアンロック条件を達成すると、生産用のレシピがアンロックできます。",
+		"COMPENDIUM_WORKPLACE_RECIPE_UNLOCK_DESC": "アンロック済\nこのレシピを使って生産ができます。",
+		"COMPENDIUM_VILLAGE_TITLES": "村と統治者の称号",
+		"COMPENDIUM_ITEM_UNLOCKER_STEPS_TITLE": "すべての条件を満たしてください：",
+		"COMPENDIUM_ITEM_UNLOCKER_LIST_TITLE": "アンロック方法",
+		"COMPENDIUM_UNLOCKER_DEFAULT_TEXT": "ゲームを始めた段階で自動的にアンロックされます。",
+		"COMPENDIUM_UNLOCKER_MINERAL_TEXT": "「近くの鉱床を調査する」の命令のうち、ひとつを完了してください。",
+		"COMPENDIUM_X_UNLOCKED": "{1}アンロック済",
+		"COMPENDIUM_COMPLETE_ANY_REQUIREMENTS": "以下のいずれかの条件を満たしてください：",
+		"COMPENDIUM_VILLAGE_TITLE_LOCK_DESC": "ロック中\nアンロック条件を満たすと、この称号が手に入ります。",
+		"COMPENDIUM_VILLAGE_TITLE_UNLOCK_DESC": "アンロック済\nこの称号は入手済みです。村の称号として使用できます。",
+		"COMPENDIUM_UNLOCKER_QUEST_TITLE": "クエスト「{1}」をクリアしましょう",
+		"COMPENDIUM_UNLOCK_CONDITION_RESOURCE_UNLOCKED_DESC": "未発見の資源、{1}を獲得しましょう",
+		"COMPENDIUM_QUEST_BUY_UNLOCKABLE_FESTIVAL": "収穫祭ティアを上げて「{1}」をアンロックしましょう"
+	}
+}

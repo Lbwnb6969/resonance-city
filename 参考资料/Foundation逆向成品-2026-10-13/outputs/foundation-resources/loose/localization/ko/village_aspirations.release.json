@@ -1,0 +1,22 @@
+﻿{
+	"VICTORY_CONDITIONS": {
+		"VICTORY_CONDITIONS_LIST": "마을의 열망 목록",
+		"EDIT_VICTORY_CONDITIONS": "마을의 열망 수정",
+		"REACH_TOP_CLERGY": "종교계 진척도 경로의 최고 단계에 도달하기",
+		"REACH_TOP_KINGDOM": "왕실계 진척도 경로의 최고 단계에 도달하기",
+		"REACH_TOP_LABOUR": "노동계 진척도의 최고 단계에 도달하세요."
+	},
+	"VICTORY_CONDITIONS_CELEBRATIONS": {
+		"VC_COMPLETED": "마을의 열망이 완료됨",
+		"VC_FAILED": "마을의 열망이 실패하였습니다.",
+		"VC_COMPLETED_DESC": "다음 업적을 달성한 것을 자랑스럽게 생각합시다.",
+		"VC_FAILED_DESC": "아쉽게도 다음 업적은 달성하지 못했습니다.",
+		"VC_KINGDOM_FORTRESS_SUCCESS": "전쟁에 대한 노력과 전략적 통찰력 덕분에 당신의 성을 왕국을 위한 무적의 요새로 만들었고, 왕에게 명예와 영광을 안겼습니다. 당신은 왕국의 진정한 영웅입니다!",
+		"VC_CLERGY_PROSPEROUS_PRIORY_SUCCESS": "성직자들이 당신의 대수도원 교회를 개관하면서, 당신은 자신이 이룬 것에 대해 생각에 잠깁니다. 당신은 신앙의 수도원을 세우고 존경받는 수도사 공동체를 구성했습니다. 이 땅을 더 나은 곳으로 만들었다는 것은 의심의 여지가 없습니다.",
+		"VC_LABOR_COMMUNE_SUCCESS": "도시 종루를 지나며 자부심을 느끼지 않을 수 없습니다. 시간이 지나면서 당신은 이 작은 농촌을 자유로운 사람들의 번영하는 마을로 변화시켰습니다!"
+	},
+	"CONDITIONS": {
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_TITLE": "최대 마을 주민 인구",
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_DESC": "현재의 열망 달성을 위한 마을 주민 인구가 최대치에 도달했습니다. 새로운 주민을 받아들이면 열망 달성에 실패하게 됩니다.\n\n새로운 주민을 받아들이시겠습니까?"
+	}
+}

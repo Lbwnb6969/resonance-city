@@ -1,0 +1,33 @@
+﻿{
+	"CONTROLS_ACTION": {
+		"LEFT_CLICK": "ЛКМ",
+		"LEFT_CLICK_DRAG": "Перетягніть ЛКМ",
+		"RIGHT_CLICK": "ПКМ",
+		"HOLD_KEY": "Утримувати {1}",
+		"HORIZONTAL_MOUSE_MOVEMENT": "Горизонтальний рух миші",
+		"MOUSE_WHEEL": "Колесо миші"
+	},
+	"CONTROLS": {
+		"X_TO_SELECT_PLACE_BUILDING_PART": "{1} вибрати/розмістити частину",
+		"X_ON_VERTICAL_ARROWS_TO_RESCALE_PART": "{1} на стрілках, щоб керувати частиною",
+		"X_TO_DELETE_PART": "{1} видалити частину",
+		"X_AND_Y_TO_ROTATE_PART": "{1} та {2} обертати частину",
+		"X_AND_Y_TO_MOVE_BRIDGE": "{1} та {2} рухати міст",
+		"X_AND_Y_TO_KEEP_PART_SELECTION": "{1} та {2} щоб розмістити частину і залишити її вибраною",
+		"X_ON_WALL_NODE_TO_SELECT_PLACE_NEW_NODE": "{1} на точці стіни для виділення/розміщення нових точок",
+		"X_ON_WALL_SECTION_TO_TOGGLE_WALL_CURVING": "{1} на секції стіни для зміни вигину стіни",
+		"X_AND_Y_TO_EXTEND_EXISTING_WALL": "{1} та {2} для розширення наявної стіни",
+		"X_AND_Y_TO_REMOVE_WALL_NODE_SECTION": "{1} та {2} для видалення точки/секції стіни",
+		"X_TO_CANCEL_SELECTION": "{1} для скасування виділення",
+		"X_TO_PAINT": "{1} щоб намалювати зону",
+		"X_TO_ERASE": "{1} щоб стерти зону",
+		"X_AND_Y_TO_RESIZE_BRUSH_SIZE": "{1} та {2} для зміни розміру пензля",
+		"X_TO_INCREASE_BRUSH_SIZE": "{1} для збільшення розміру пензля",
+		"X_TO_DECREASE_BRUSH_SIZE": "{1} для зменшення розміру пензля",
+		"X_TO_ROTATE_PART": "{1} під час переміщення частини, щоб обернути її",
+		"X_TO_KEEP_PART_SELECTION": "{1} під час розміщення частини, щоб розмістити декілька",
+		"X_TO_SELECT_CONNECTED": "{1} щоб вибрати всі з’єднані частини",
+		"X_TO_SELECT_ALL": "{1} щоб вибрати всі частини споруди",
+		"X_TO_SELECT_MULTIPLE": "{1} під час вибору частин, щоб вибрати декілька"
+	}
+}

@@ -1,0 +1,102 @@
+INFO  Using log config file: jar:file:/C:/Users/Administrator/Documents/Codex/2026-10-12/new-chat-2/work/tools/vendor/ghidra-12.1.4/ghidra_12.1.4_PUBLIC/Ghidra/Framework/Generic/lib/Generic.jar!/generic.log4j.xml (LoggingInitialization)  
+INFO  Using log file: C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\full-native\decompile-headless.log (LoggingInitialization)  
+INFO  Loading user preferences: C:\Users\Administrator\AppData\Roaming\ghidra\ghidra_12.1.4_PUBLIC\preferences (Preferences)  
+INFO  Searching for classes... (ClassSearcher)  
+INFO  Class search complete (668 ms) (ClassSearcher)  
+INFO  Initializing SSL Context (DefaultSSLContextInitializer)  
+INFO  Initializing Random Number Generator... (SecureRandomFactory)  
+INFO  Random Number Generator initialization complete: SHA1PRNG (SecureRandomFactory)  
+INFO  Trust manager disabled, cacerts have not been set (DefaultTrustManagerFactory)  
+INFO  Headless startup complete (2349 ms) (AnalyzeHeadless)  
+INFO  Class searcher loaded 59 extension points (20 false positives) (ClassSearcher)  
+INFO  HEADLESS Script Paths:
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Processors\PIC\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\Base\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Processors\Atmel\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\MicrosoftCodeAnalyzer\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\PyGhidra\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Processors\JVM\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Processors\DATA\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\VersionTracking\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\WildcardAssembler\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Processors\8051\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\Decompiler\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\SystemEmulation\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\full-native
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\BSim\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\SwiftDemangler\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Debug\Debugger-rmi-trace\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\FunctionID\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\FileFormats\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\BytePatterns\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\GnuDemangler\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\DecompilerDependent\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Debug\Debugger\ghidra_scripts
+    C:\Users\Administrator\Documents\Codex\2026-10-12\new-chat-2\work\tools\vendor\ghidra-12.1.4\ghidra_12.1.4_PUBLIC\Ghidra\Features\PDB\ghidra_scripts (HeadlessAnalyzer)  
+INFO  HEADLESS: execution starts (HeadlessAnalyzer)  
+INFO  Opening existing project: C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\full-native\ghidra-project\FoundationFull (HeadlessAnalyzer)  
+INFO  Opening project: C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\full-native\ghidra-project\FoundationFull (HeadlessProject)  
+INFO  REPORT: Processing project file: /foundation.exe (HeadlessAnalyzer)  
+INFO  REPORT: Execute script: FullNativeRecover.java 'C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\full-native' 'C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\outputs\foundation-full-native' 'decompile' '8' '8' '59'  (HeadlessAnalyzer)  
+INFO  SCRIPT: C:\Users\Administrator\Documents\Codex\2026-10-13\reverse-engineer-anything-c-users-administrator\work\full-native\FullNativeRecover.java (HeadlessAnalyzer)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 120000/194922 ok=2000 failed=0 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 122000/194922 ok=4000 failed=0 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 124000/194922 ok=6000 failed=0 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 126000/194922 ok=8000 failed=0 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 128000/194922 ok=10000 failed=0 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 130000/194922 ok=12000 failed=0 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 132000/194922 ok=14000 failed=0 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 134000/194922 ok=16000 failed=0 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 136000/194922 ok=18000 failed=0 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 138000/194922 ok=20000 failed=0 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 140000/194922 ok=22000 failed=0 (GhidraScript)  
+WARN  Decompiling 141ef8fd8: Unable to read bytes at ram:149090900 (DecompileCallback)  
+WARN  Decompiling 141ef94f8: Unable to read bytes at ram:149090900 (DecompileCallback)  
+WARN  Decompiling 141f10760, pcode error at 141f10760: Unable to resolve constructor at 141f10760 (DecompileCallback)  
+WARN  Decompiling 141f250d5: Unable to read bytes at ram:149090504 (DecompileCallback)  
+WARN  Decompiling 141f250d5, pcode error at 143020103: Unable to resolve constructor at 143020103 (DecompileCallback)  
+WARN  Decompiling 141f41320, pcode error at de01f413: Could not follow disassembly flow into non-existing memory at de01f413 (DecompileCallback)  
+WARN  Decompiling 141f416b0, pcode error at 141f41c68: Unable to resolve constructor at 141f41c68 (DecompileCallback)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 142000/194922 ok=23999 failed=1 (GhidraScript)  
+WARN  Decompiling 141fe0090, pcode error at 141fe009d: Unable to resolve constructor at 141fe009d (DecompileCallback)  
+WARN  Decompiling 141fe0090, pcode error at 141fe0091: Unable to resolve constructor at 141fe0091 (DecompileCallback)  
+WARN  Decompiling 141fe9cf8, pcode error at 141fe9d04: Unable to resolve constructor at 141fe9d04 (DecompileCallback)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 144000/194922 ok=25996 failed=4 (GhidraScript)  
+WARN  Decompiling 142063948, pcode error at 142063948: Unable to resolve constructor at 142063948 (DecompileCallback)  
+WARN  Decompiling 142074210, pcode error at 142074216: Unable to resolve constructor at 142074216 (DecompileCallback)  
+WARN  Decompiling 142074680, pcode error at 142074680: Unable to resolve constructor at 142074680 (DecompileCallback)  
+WARN  Decompiling 14207d328, pcode error at 14207d33a: Unable to resolve constructor at 14207d33a (DecompileCallback)  
+WARN  Decompiling 142084a00, pcode error at 142084a01: Unable to resolve constructor at 142084a01 (DecompileCallback)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 146000/194922 ok=27996 failed=4 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 148000/194922 ok=29996 failed=4 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 150000/194922 ok=31989 failed=11 (GhidraScript)  
+WARN  Decompiling 1421c6290: Unable to read bytes at ram:20ccccccc (DecompileCallback)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 152000/194922 ok=33988 failed=12 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 154000/194922 ok=35988 failed=12 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 156000/194922 ok=37988 failed=12 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 158000/194922 ok=39985 failed=15 (GhidraScript)  
+WARN  Decompiling 1423b7494, pcode error at 1423b74fc: Unable to resolve constructor at 1423b74fc (DecompileCallback)  
+WARN  Decompiling 142454afc, pcode error at 142454afd: Unable to resolve constructor at 142454afd (DecompileCallback)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 160000/194922 ok=41985 failed=15 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 162000/194922 ok=43985 failed=15 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 164000/194922 ok=45980 failed=20 (GhidraScript)  
+WARN  Decompiling 1425431c0, pcode error at 1425431c0: Unable to resolve constructor at 1425431c0 (DecompileCallback)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 166000/194922 ok=47978 failed=22 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 168000/194922 ok=49978 failed=22 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 170000/194922 ok=51977 failed=23 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 172000/194922 ok=53977 failed=23 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 174000/194922 ok=55977 failed=23 (GhidraScript)  
+WARN  Decompiling 14272ff70, pcode error at 14272ff7c: Unable to resolve constructor at 14272ff7c (DecompileCallback)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 176000/194922 ok=57976 failed=24 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 178000/194922 ok=59976 failed=24 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 180000/194922 ok=61976 failed=24 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 182000/194922 ok=63976 failed=24 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 184000/194922 ok=65976 failed=24 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 186000/194922 ok=67975 failed=25 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 188000/194922 ok=69975 failed=25 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 190000/194922 ok=71975 failed=25 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 192000/194922 ok=73975 failed=25 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 194000/194922 ok=75975 failed=25 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE 194922/194922 ok=76897 failed=25 (GhidraScript)  
+INFO  FullNativeRecover.java> FULL_DECOMPILE_DONE 194922 ok=76897 failed=25 (GhidraScript)  
+INFO  REPORT: Save succeeded for processed file: /foundation.exe (HeadlessAnalyzer)  

@@ -1,4 +1,0 @@
-# Preserve the original and pre-audit snapshots byte for byte in Git.
-原始文档/** -text -diff
-复核前文档/** -text -diff
-PROJECT_复核前.md -text -diff

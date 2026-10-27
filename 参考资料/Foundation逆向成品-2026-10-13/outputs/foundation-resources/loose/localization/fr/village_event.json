@@ -1,0 +1,37 @@
+﻿{
+	"VILLAGE_EVENT": {
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_TOOLTIP": "{1} en préparation",
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_COUNTDOWN_TOOLTIP": "{1} - Début dans :",
+		"VILLAGE_EVENT_PROGRESSION_INPROGRESS_TOOLTIP": "{1} - Fin dans :",
+		"VILLAGE_EVENT_PROGRESSION_COMPLETED_TOOLTIP": "{1} : l'événement a pris fin",
+		"VILLAGE_EVENT_PROGRESSION_SHOWRESULT_TOOLTIP": "{1} : afficher les résultats et récompenses",
+		"VILLAGE_EVENT_CANT_PREPARE_X_TOOLTIP": "{1} : il reste des conditions à remplir pour lancer les préparatifs",
+		"VILLAGE_EVENT_X_NOT_BUILT": "Le cabanon de la fête des récoltes doit être construit et toutes les ressources requises pour lancer l'événement {1} doivent être placées dans la zone concernée.",
+		"VILLAGE_EVENT_QUEST_COUNTDOWN": "Préparatifs terminés dans",
+		"VILLAGE_EVENT_QUEST_SCORE": "Score actuel",
+		"VILLAGE_EVENT_SHOW_RESULT": "Afficher les résultats",
+		"ADD_X_GUEST_INVITATION": "{1} invitation(s) d'ordre obtenue(s)",
+		"GUEST_REWARD_HEADER": "Niveau {1} (score : {2})",
+		"INVITATION_EXTRA_REWARDS": "Récompenses d'ordre supplémentaires",
+		"SELECT_X_ENTERTAINER": "Embaucher {1}",
+		"SELECT_X_GUEST_INVITATION": "Envoyer une invitation d'ordre aux {1}",
+		"SELECT_ANY_GUEST_CONDITION": "Envoyer n'importe quelle invitation",
+		"RECURRENT_REWARDS": "Récompenses récurrentes",
+		"VILLAGE_EVENT_INVITATION_REQUIRED_X": "(Invitation requise {1})",
+		"VILLAGE_EVENT_DEFAULT_NAME": "{2} de {1}"
+	},
+	"GAME_CONDITIONS": {
+		"START_X_VILLAGE_EVENT": "Organiser l'événement {1}",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING": "Organiser l'événement {1} dans {2}",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING_WITH_THE_FOLLOWING": "Organiser l'événement {1} dans {2} avec les éléments suivants :",
+		"START_X_VILLAGE_EVENT_WITH_THE_FOLLOWING": "Organiser l'événement {1} avec les éléments suivants :",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_Y_Z_VALUE": "Terminer un événement {1} avec un score {2} {3}",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_OF_Y_Z_VALUE": "Terminer un événement {1} avec un score {2} {3}",
+		"REACH_TIER_X_OF_VILLAGE_EVENT_Y": "Atteindre le niveau {1} avec l'événement {2}",
+		"BUILD_X_INSIDE_Y": "Construire 1 {1} dans le calque {2}",
+		"ACQUIRE_X_RECIPE": "Obtenir la recette \"{1}\"",
+		"DISCOVER_X_VILLAGE_EVENT_ENTERTAINER": "Rencontrer {1}",
+		"SELECT_ANY_ENTERTAINER_CONDITION": "Inviter un artiste",
+		"ATTRACTS_X_VILLAGERS": "{1} villageois participant à l'événement"
+	}
+}

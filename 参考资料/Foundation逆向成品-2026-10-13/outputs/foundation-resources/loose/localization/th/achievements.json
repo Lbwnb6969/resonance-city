@@ -1,0 +1,18 @@
+﻿{
+	"ACHIEVEMENTS": {
+		"X_ACHIEVEMENTS_EARNED": "{1} ความสำเร็จที่ได้รับ ({2}%)",
+		"ACHIEVEMENTS_DISABLED_MODS_NOTIFICATION": "ไม่มีการนับความสำเร็จ จะนับก็ต่อเมื่อเริ่มเกมใหม่แบบไม่มีม็อดปรับแต่ง",
+		"ACHIEVEMENTS_DISABLED_OLD_SAVEGAME_NOTIFICATION": "ระบบรางวัลจะถูกระงับ จนกว่าผู้เล่นจะเริ่มเกมใหม่โดย หรือโหลดบันทึกเกมที่ไม่มีไฟล์ตกแต่งเสริม",
+		"ACHIEVEMENTS_DISABLED_WARNING": "ระบบรางวัลจะถูกระงับหากไฟล์เกมถูกปรับแต่ง",
+		"ACHIEVEMENT_UNLOCKED": "ความสำเร็จถูกปลดล็อคแล้ว!",
+		"ACHIEVEMENT_PROGRESS": "ความคืบหน้าของความสำเร็จ",
+		"X_HIDDEN_ACHIEVEMENTS_REMAINING": "เหลือ {1} ความสำเร็จที่ถูกซ่อนไว้",
+		"ACHIEVEMENT_DETAILS_REVEALED_ONCE_UNLOCKED": "รายละเอียดของรางวัลจะแสดงออกเมื่อถูกปล็ดล็อก",
+		"ACHIEVEMENTS_DISABLED_IN_BUILD": "รางวัลนี้ถูกระงับในเกมเวอร์ชั่นนี้",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET_WARNING": "ระบบรางวัลถูกระงับ",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET": "ไม่สามารถปลดล็อกรางวัลนี้เมื่อเล่นด้วยกฎ {1}",
+		"SOME_ACHIEVEMENTS_DISABLED_DS_PRESET": "รางวัลบางส่วนจะไม่ปลดล็อกเมื่อเล่นด้วยกฎ {1}",
+		"ACHIEVEMENT_DISABLED_DS_PRESET": "ไม่สามารถปลดล็อกรางวัลนี้เมื่อเล่นด้วยกฎ {1}",
+		"ACHIEVEMENT_DISABLED_SAVEGAME": "รางวัลนี้ถูกระงับถาวร"
+	}
+}

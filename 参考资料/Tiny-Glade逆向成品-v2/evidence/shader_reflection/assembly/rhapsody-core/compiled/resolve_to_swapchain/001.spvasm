@@ -1,0 +1,100 @@
+; SPIR-V 1.3
+; SHA256 dc7449b4bafafac9e411779c513d9667f776e227fddd54f8f5267ae886eb389c
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability Shader ; byte 0x14
+OpCapability StorageImageExtendedFormats ; byte 0x1c
+%54 = OpExtInstImport "GLSL.std.450" ; byte 0x24
+OpMemoryModel Logical GLSL450 ; byte 0x3c
+OpEntryPoint Fragment %2 "main" %88 %9 ; byte 0x48
+OpExecutionMode %2 OriginUpperLeft ; byte 0x64
+OpSource Slang 1 ; byte 0x70
+OpName %9 "vs_out.uv" ; byte 0x7c
+OpName %13 "samplers.lnc_iso" ; byte 0x90
+OpName %17 "input_tex" ; byte 0xac
+OpName %20 "sampledImage" ; byte 0xc0
+OpName %22 "sampled" ; byte 0xd8
+OpName %88 "entryPointParam_ps_main._color" ; byte 0xe8
+OpName %2 "ps_main" ; byte 0x110
+OpDecorate %9 Location 0 ; byte 0x120
+OpDecorate %13 Binding 5 ; byte 0x130
+OpDecorate %13 DescriptorSet 1 ; byte 0x140
+OpDecorate %17 Binding 0 ; byte 0x150
+OpDecorate %17 DescriptorSet 0 ; byte 0x160
+OpDecorate %88 Location 0 ; byte 0x170
+%1 = OpTypeVoid ; byte 0x180
+%3 = OpTypeFunction %1 ; byte 0x188
+%5 = OpTypeFloat 32 ; byte 0x194
+%6 = OpTypeVector %5 2 ; byte 0x1a0
+%8 = OpTypePointer Input %6 ; byte 0x1b0
+%10 = OpTypeSampler ; byte 0x1c0
+%12 = OpTypePointer UniformConstant %10 ; byte 0x1c8
+%14 = OpTypeImage %5 2D 2 0 0 1 Unknown ; byte 0x1d8
+%16 = OpTypePointer UniformConstant %14 ; byte 0x1fc
+%19 = OpTypeSampledImage %14 ; byte 0x20c
+%21 = OpTypeVector %5 4 ; byte 0x218
+%23 = OpConstant %5 0x0 ; byte 0x228
+%28 = OpConstant %5 0x3f800000 ; byte 0x238
+%45 = OpTypeBool ; byte 0x248
+%47 = OpConstant %5 0x3b4d2e1c ; byte 0x250
+%50 = OpConstant %5 0x414eb852 ; byte 0x260
+%55 = OpConstant %5 0x3ed55555 ; byte 0x270
+%57 = OpConstant %5 0x3f870a3d ; byte 0x280
+%59 = OpConstant %5 0x3d6147ae ; byte 0x290
+%87 = OpTypePointer Output %21 ; byte 0x2a0
+%9 = OpVariable %8 Input ; byte 0x2b0
+%13 = OpVariable %12 UniformConstant ; byte 0x2c0
+%17 = OpVariable %16 UniformConstant ; byte 0x2d0
+%88 = OpVariable %87 Output ; byte 0x2e0
+%2 = OpFunction %1 None %3 ; byte 0x2f0
+%4 = OpLabel ; byte 0x304
+%7 = OpLoad %6 %9 ; byte 0x30c
+%11 = OpLoad %10 %13 ; byte 0x31c
+%15 = OpLoad %14 %17 ; byte 0x32c
+%20 = OpSampledImage %19 %15 %11 ; byte 0x33c
+%22 = OpImageSampleExplicitLod %21 %20 %7 Lod %23 ; byte 0x350
+%93 = OpCompositeExtract %5 %22 0 ; byte 0x36c
+%104 = OpFOrdGreaterThanEqual %45 %47 %93 ; byte 0x380
+OpSelectionMerge %111 None ; byte 0x394
+OpBranchConditional %104 %105 %107 ; byte 0x3a0
+%105 = OpLabel ; byte 0x3b0
+%106 = OpFMul %5 %50 %93 ; byte 0x3b8
+OpBranch %111 ; byte 0x3cc
+%107 = OpLabel ; byte 0x3d4
+%108 = OpExtInst %5 %54 26 %93 %55 ; byte 0x3dc
+%109 = OpFMul %5 %57 %108 ; byte 0x3f8
+%110 = OpFSub %5 %109 %59 ; byte 0x40c
+OpBranch %111 ; byte 0x420
+%111 = OpLabel ; byte 0x428
+%145 = OpPhi %5 %106 %105 %110 %107 ; byte 0x430
+%95 = OpCompositeExtract %5 %22 1 ; byte 0x44c
+%116 = OpFOrdGreaterThanEqual %45 %47 %95 ; byte 0x460
+OpSelectionMerge %123 None ; byte 0x474
+OpBranchConditional %116 %117 %119 ; byte 0x480
+%117 = OpLabel ; byte 0x490
+%118 = OpFMul %5 %50 %95 ; byte 0x498
+OpBranch %123 ; byte 0x4ac
+%119 = OpLabel ; byte 0x4b4
+%120 = OpExtInst %5 %54 26 %95 %55 ; byte 0x4bc
+%121 = OpFMul %5 %57 %120 ; byte 0x4d8
+%122 = OpFSub %5 %121 %59 ; byte 0x4ec
+OpBranch %123 ; byte 0x500
+%123 = OpLabel ; byte 0x508
+%146 = OpPhi %5 %118 %117 %122 %119 ; byte 0x510
+%97 = OpCompositeExtract %5 %22 2 ; byte 0x52c
+%128 = OpFOrdGreaterThanEqual %45 %47 %97 ; byte 0x540
+OpSelectionMerge %135 None ; byte 0x554
+OpBranchConditional %128 %129 %131 ; byte 0x560
+%129 = OpLabel ; byte 0x570
+%130 = OpFMul %5 %50 %97 ; byte 0x578
+OpBranch %135 ; byte 0x58c
+%131 = OpLabel ; byte 0x594
+%132 = OpExtInst %5 %54 26 %97 %55 ; byte 0x59c
+%133 = OpFMul %5 %57 %132 ; byte 0x5b8
+%134 = OpFSub %5 %133 %59 ; byte 0x5cc
+OpBranch %135 ; byte 0x5e0
+%135 = OpLabel ; byte 0x5e8
+%147 = OpPhi %5 %130 %129 %134 %131 ; byte 0x5f0
+%100 = OpCompositeConstruct %21 %145 %146 %147 %28 ; byte 0x60c
+OpStore %88 %100 ; byte 0x628
+OpReturn ; byte 0x634
+OpFunctionEnd ; byte 0x638

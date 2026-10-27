@@ -1,8 +1,0 @@
-Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
-
-SCRIPT ERROR: Parse Error: The member "Expression" shadows a native class.
-   at: GDScript::reload (res://tests/round216_player_neighborhoods.gd:7)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "original_members" variable because the value doesn't have a set type.
-   at: GDScript::reload (res://tests/round216_player_neighborhoods.gd:94)
-ERROR: Failed to load script "res://tests/round216_player_neighborhoods.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

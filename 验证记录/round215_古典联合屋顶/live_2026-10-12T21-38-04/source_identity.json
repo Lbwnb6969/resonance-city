@@ -1,8 +1,0 @@
-{
-  "scripts/visual/joined_classical_roofs.gd": "cb8a3755249b91112044024b123037e4323e8cc256c49528e84155350ac70374",
-  "scripts/ui/continuous_valley_demo.gd": "360ab4b97cfb0c1ceb7b77b364276a3b337b0f428211e67227a06f285439c9f6",
-  "scripts/ui/community_workbench.gd": "c27fd09cac64b9655902e747c5a11b9eb9987fc76753e14852a9dc266ac93b88",
-  "scripts/visual/community_label_layer.gd": "0bca0ed9fdff8eb41c75edcbb2dec9008350d7c1d6a89c24b20e61fbe187ae0d",
-  "tests/round215_joined_classical_roofs.gd": "0e820ce07cf0f6b3dc879a3cbccea9dfe01ea5d496e2f7a4c0a32177f8576211",
-  "tests/round215_joined_roofs_live.gd": "12b78114efe4387a6f6f7e6c5429183e6151eacbcc3320ec86f1b0d5acade18d"
-}

@@ -3,6 +3,7 @@ extends RefCounted
 const BAKE_DURATION := 6.0
 const REST_DURATION := 4.0
 const SHIFT_BATCHES := 3
+const Frontage := preload("res://scripts/world/city_creation_frontage.gd")
 var life: Node3D
 var workers: Array[Dictionary] = []
 
@@ -15,6 +16,8 @@ func clear() -> void:
 
 func sync() -> void:
 	var occupied_homes := {}
+	if life.workshop != null:
+		for worker: Dictionary in life.workshop.workers: occupied_homes[worker.home_id] = true
 	var occupied_shops := {}
 	for index in range(workers.size() - 1, -1, -1):
 		var worker: Dictionary = workers[index]
@@ -51,9 +54,7 @@ func sync() -> void:
 func _new_worker(home: String, shop: String) -> Dictionary:
 	var node: Node3D = life._person(workers.size())
 	node.name = "Baker_" + home + "_" + shop
-	# A light apron distinguishes the working household member.
-	var cloth: StandardMaterial3D = node.get_child(0).get_child(0).material_override
-	cloth.albedo_color = Color("eee0b8")
+	preload("res://scripts/visual/city_creation_citizen_visual.gd").identify(node,"bakery")
 	life.add_child(node)
 	node.position = _target(home) if life.connected_houses.has(home) else _door_position(home)
 	return {"node":node,"home_id":home,"bakery_id":shop,"phase":"walking","resume_phase":"walking","elapsed":0.0,"batches":0,"route":[],"index":0}
@@ -65,21 +66,26 @@ func _target(id: String) -> Vector3:
 	return life.positions[life.connected_houses[id]] + Vector3(0,0.10,0)
 
 func _door_position(id: String) -> Vector3:
-	for house: Dictionary in life.state.houses:
-		if str(house.id) != id: continue
-		for cell: Dictionary in house.cells:
-			if int(cell.level) != 0 or str(cell.kind) != "room": continue
-			var at := Vector2(float(house.origin[0])+int(cell.x)*1.8,float(house.origin[1])+int(cell.z)*1.8+1.52)
-			return Vector3(at.x,life.state.street_height(at)+0.10,at.y)
+	var entrances: Array[Dictionary] = life.state.house_entrances(id)
+	if not entrances.is_empty():
+		var at: Vector2 = entrances[0].at
+		return Vector3(at.x,life.state.street_height(at)+0.10,at.y)
 	return Vector3.ZERO
 
 func _near_door(id: String, point: Vector3) -> bool:
+	for entrance: Dictionary in life.state.house_entrances(id):
+		if Vector2(entrance.at).distance_to(Vector2(point.x,point.z)) < 0.97: return true
+	# A deleted approach leaves the worker physically outside the surviving
+	# wall. Validate that paused checkpoint without inventing an active door
+	# or allowing attendance to continue while the street is disconnected.
 	for house: Dictionary in life.state.houses:
-		if str(house.id) != id: continue
+		if str(house.id)!=id: continue
 		for cell: Dictionary in house.cells:
-			if int(cell.level) != 0 or str(cell.kind) != "room": continue
-			var door := Vector2(float(house.origin[0])+int(cell.x)*1.8,float(house.origin[1])+int(cell.z)*1.8+1.52)
-			if door.distance_to(Vector2(point.x,point.z)) < 0.97: return true
+			if int(cell.level)!=0 or str(cell.kind)!="room": continue
+			for side: Vector2i in Frontage.SIDES:
+				if not Frontage.exposed(house,cell,side): continue
+				var anchor: Vector2=Frontage.center(house,cell)+Vector2(side)*1.52
+				if anchor.distance_to(Vector2(point.x,point.z))<0.15: return true
 	return false
 
 func _pause(worker: Dictionary, phase: String) -> void:
@@ -89,6 +95,7 @@ func _pause(worker: Dictionary, phase: String) -> void:
 	worker.index = 0
 
 func _replan(worker: Dictionary) -> void:
+	life.worker_lod.flush(worker)
 	var phase := str(worker.resume_phase if worker.phase == "paused" else worker.phase)
 	if not _connected(worker):
 		_pause(worker,phase)
@@ -115,31 +122,51 @@ func _replan(worker: Dictionary) -> void:
 
 func tick(delta: float) -> void:
 	for worker: Dictionary in workers:
+		if not life.worker_lod.before(worker,delta,["walking","returning"]):continue
 		var phase := str(worker.phase)
 		if phase == "paused": continue
 		if phase in ["walking","returning"]:
 			_walk(worker,delta)
 		elif phase == "baking":
-			var batch: int = life.state.bakery_batch_size(str(worker.bakery_id))
-			var supply: Dictionary = life.state.bakery_status(str(worker.bakery_id))
-			if not bool(supply.open): continue
-			if int(supply.stock) + batch > int(supply.capacity): continue
-			worker.elapsed = minf(BAKE_DURATION,float(worker.elapsed)+delta)
-			if float(worker.elapsed) < BAKE_DURATION: continue
-			if not life.state.produce_bread(str(worker.bakery_id),batch): continue
-			if life.production_callback.is_valid(): life.production_callback.call(str(worker.bakery_id),batch)
-			worker.elapsed = 0.0
-			worker.batches = int(worker.batches) + 1
-			if int(worker.batches) >= SHIFT_BATCHES:
-				worker.phase = "returning"
-				_replan(worker)
+			_bake(worker, delta)
 		elif phase == "resting":
 			worker.elapsed = minf(REST_DURATION,float(worker.elapsed)+delta)
-			if float(worker.elapsed) >= REST_DURATION:
+			if float(worker.elapsed) >= REST_DURATION-.000000001:
 				worker.elapsed = 0.0
 				worker.batches = 0
 				worker.phase = "walking"
 				_replan(worker)
+		life.worker_lod.after(worker,delta)
+
+func _bake(worker: Dictionary, delta: float) -> void:
+	var shop := str(worker.bakery_id)
+	var bonus_remaining: float = life.state.afterglow_remaining(shop)
+	var site_speed: float = life.state.site_production_multiplier(shop)
+	var used := 0.0
+	# elapsed remains normalized base-6-second work in saves. Integrate across
+	# both afterglow expiry and batch boundaries without extending the bonus
+	# over an entire long simulation step or discarding completed work.
+	while used < delta and str(worker.phase) == "baking":
+		var batch: int = life.state.bakery_batch_size(shop)
+		var supply: Dictionary = life.state.bakery_status(shop)
+		if not bool(supply.open) or int(supply.stock) + batch > int(supply.capacity): return
+		var speed := site_speed * (1.25 if used < bonus_remaining else 1.0)
+		var period := delta - used
+		if used < bonus_remaining: period = minf(period, bonus_remaining - used)
+		var needed := maxf(0.0, BAKE_DURATION - float(worker.elapsed)) / speed
+		var step := minf(period, needed)
+		worker.elapsed = minf(BAKE_DURATION, float(worker.elapsed) + step * speed)
+		used += step
+		if float(worker.elapsed) < BAKE_DURATION - 0.000001: continue
+		if not life.state.produce_bread(shop, batch): return
+		life.state.grant_temperament_resonance(shop,used)
+		if life.state.house_temperament(shop)=="largo":bonus_remaining=maxf(bonus_remaining,used+20.)
+		if life.production_callback.is_valid(): life.production_callback.call(shop, batch)
+		worker.elapsed = 0.0
+		worker.batches = int(worker.batches) + 1
+		if int(worker.batches) >= SHIFT_BATCHES:
+			worker.phase = "returning"
+			_replan(worker)
 
 func _walk(worker: Dictionary, delta: float) -> void:
 	var route: Array = worker.route
@@ -154,25 +181,32 @@ func _walk(worker: Dictionary, delta: float) -> void:
 		worker.elapsed = 0.0
 		return
 	var node: Node3D = worker.node
+	var before := Vector2(node.position.x,node.position.z)
 	var target: Vector3 = route[index]
 	var direction := target - node.position
-	if direction.length() <= delta * 0.83:
+	var distance:=Vector2(direction.x,direction.z).length()
+	var step: float=delta*.83*life.state.walking_multiplier(str(worker.home_id))*life.state.temperament_walk(str(worker.bakery_id))
+	if distance <= step:
 		node.position = target
 		worker.index = index + 1
 	else:
-		node.position += direction.normalized() * delta * 0.83
+		node.position += direction/distance * step
 		node.rotation.y = atan2(direction.x,direction.z)
 	node.position.y = life.state.street_height(Vector2(node.position.x,node.position.z)) + 0.10
+	life.record_travel("baker/"+str(worker.home_id),before,Vector2(node.position.x,node.position.z))
 	node.get_child(0).position.y = sin(life.time * 9.0) * 0.025
 
 func status(id: String) -> Dictionary:
 	var result: Dictionary = life.state.bakery_status(id).duplicate(true)
+	result.afterglow_remaining = life.state.afterglow_remaining(id)
+	result.production_multiplier = life.state.production_multiplier(id)
+	result.bonus = result.afterglow_remaining > 0.0
 	result.merge({"worker_phase":"unassigned","worker_home_id":"","worker_name":"","elapsed":0.0,"duration":BAKE_DURATION,"batches":0})
 	for worker: Dictionary in workers:
 		if str(worker.bakery_id) != id: continue
 		result.worker_phase = str(worker.phase)
 		result.worker_home_id = str(worker.home_id)
-		result.elapsed = float(worker.elapsed)
+		result.elapsed = life.worker_lod.elapsed(worker)
 		result.duration = REST_DURATION if str(worker.resume_phase if worker.phase == "paused" else worker.phase) == "resting" else BAKE_DURATION
 		result.batches = int(worker.batches)
 		for house: Dictionary in life.state.houses:
@@ -183,6 +217,7 @@ func status(id: String) -> Dictionary:
 func checkpoint() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for worker: Dictionary in workers:
+		life.worker_lod.flush(worker)
 		var node: Node3D = worker.node
 		result.append({"home_id":str(worker.home_id),"bakery_id":str(worker.bakery_id),"position":[node.position.x,node.position.z],"yaw":node.rotation.y,"phase":str(worker.phase),"resume_phase":str(worker.resume_phase if worker.phase == "paused" else worker.phase),"elapsed":float(worker.elapsed),"batches":int(worker.batches)})
 	return result
@@ -197,6 +232,11 @@ func restore(data: Variant) -> void:
 		var home := str(entry.get("home_id", ""))
 		var shop := str(entry.get("bakery_id", ""))
 		if homes.has(home) or shops.has(shop) or str(life._roles.get(home,"")) != "residential" or str(life._roles.get(shop,"")) != "bakery": continue
+		var craft_home := false
+		if life.workshop != null:
+			for artisan: Dictionary in life.workshop.workers:
+				if str(artisan.home_id) == home: craft_home = true
+		if craft_home: continue
 		var worker := _new_worker(home,shop)
 		if not _restore_worker(worker,entry):
 			worker.node.queue_free()

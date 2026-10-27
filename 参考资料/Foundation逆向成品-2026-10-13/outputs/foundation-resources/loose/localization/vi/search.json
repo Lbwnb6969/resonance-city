@@ -1,0 +1,10 @@
+﻿{
+	"SEARCH": {
+		"FILTER_ENTRY_STATUS_UNLOCKED": "Mở Khóa"
+	},
+	"WORDING": {
+		"SEARCH_WORDING_PLANT": "công xưởng",
+		"SEARCH_WORDING_TRAINING": "buổi huấn luyện",
+		"SEARCH_WORDING_WALL": "tường"
+	}
+}

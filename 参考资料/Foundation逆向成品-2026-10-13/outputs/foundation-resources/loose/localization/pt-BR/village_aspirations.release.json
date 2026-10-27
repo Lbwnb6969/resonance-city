@@ -1,0 +1,22 @@
+﻿{
+	"VICTORY_CONDITIONS": {
+		"VICTORY_CONDITIONS_LIST": "Lista de Aspirações do Vilarejo",
+		"EDIT_VICTORY_CONDITIONS": "Editar as Aspirações do Vilarejo",
+		"REACH_TOP_CLERGY": "Alcance o topo do caminho de Progresso do Clero",
+		"REACH_TOP_KINGDOM": "Alcance o topo do caminho de Progresso da Nobreza",
+		"REACH_TOP_LABOUR": "Alcance o topo do caminho de Progresso do Proletariado"
+	},
+	"VICTORY_CONDITIONS_CELEBRATIONS": {
+		"VC_COMPLETED": "Aspiração do Vilarejo concluída",
+		"VC_FAILED": "Aspiração do Vilarejo fracassada",
+		"VC_COMPLETED_DESC": "Devemos nos orgulhar de ter finalizado as seguintes obras:",
+		"VC_FAILED_DESC": "Infelizmente, não conseguimos alcançar a seguinte aspiração:",
+		"VC_KINGDOM_FORTRESS_SUCCESS": "Graças à sua maestria na guerra e estratégias fantásticas, você transformou seu castelo em uma fortaleza imperscrutável para o reino. Você trouxe honra e glória para o Rei e entrou para a lista de heróis do reino!",
+		"VC_CLERGY_PROSPEROUS_PRIORY_SUCCESS": "O Clero inaugura sua Igreja Abacial e faz você ponderar sobre suas grandiosas conquistas: você criou um lugar sagrado para a Fé e reuniu uma congregação monástica respeitável. Não restam dúvidas do seu importante papel para o futuro destas terras.",
+		"VC_LABOR_COMMUNE_SUCCESS": "Conforme você passa pelo Campanário de Cidade, você sente orgulho. Ao longo do tempo, você transformou essa pequena comunidade de servos em um movimentado vilarejo de povos livres!"
+	},
+	"CONDITIONS": {
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_TITLE": "População Máxima de Moradores",
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_DESC": "Você atingiu a população máxima de moradores para a sua Aspiração atual. Caso aceite um novo morador, a Aspiração vai falhar.\n\nDeseja prosseguir?"
+	}
+}

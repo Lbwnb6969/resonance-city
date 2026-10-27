@@ -1,0 +1,18 @@
+﻿{
+	"ACHIEVEMENTS": {
+		"X_ACHIEVEMENTS_EARNED": "{1} conquistas obtidas ({2}%)",
+		"ACHIEVEMENTS_DISABLED_MODS_NOTIFICATION": "Conquistas desativadas. Para ativá-las, comece um novo jogo sem mods.",
+		"ACHIEVEMENTS_DISABLED_OLD_SAVEGAME_NOTIFICATION": "Conquistas desativadas. Para ativá-las, comece um novo jogo ou carregue um jogo salvo mais recente.",
+		"ACHIEVEMENTS_DISABLED_WARNING": "Não é possível obter conquistas enquanto houver mods ativados.",
+		"ACHIEVEMENT_UNLOCKED": "Conquista desbloqueada!",
+		"ACHIEVEMENT_PROGRESS": "Progresso de Conquista",
+		"X_HIDDEN_ACHIEVEMENTS_REMAINING": "{1} conquista(s) oculta(s)",
+		"ACHIEVEMENT_DETAILS_REVEALED_ONCE_UNLOCKED": "Os detalhes de cada conquista serão revelados assim que elas forem desbloqueadas.",
+		"ACHIEVEMENTS_DISABLED_IN_BUILD": "Conquistas desativadas nesta versão",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET_WARNING": "Conquistas desativadas",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET": "Não é possível obter conquistas ao jogar com a Predefinição de Regra {1}.",
+		"SOME_ACHIEVEMENTS_DISABLED_DS_PRESET": "Certas conquistas não podem ser obtidas ao jogar com a Predefinição de Regra {1}.",
+		"ACHIEVEMENT_DISABLED_DS_PRESET": "Esta conquista não pode ser obtida ao jogar com a Predefinição de Regra {1}.",
+		"ACHIEVEMENT_DISABLED_SAVEGAME": "As conquistas neste jogo foram desativadas anteriormente e não podem ser reativadas."
+	}
+}

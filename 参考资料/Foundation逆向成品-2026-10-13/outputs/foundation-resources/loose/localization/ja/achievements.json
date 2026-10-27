@@ -1,0 +1,18 @@
+﻿{
+	"ACHIEVEMENTS": {
+		"X_ACHIEVEMENTS_EARNED": "{1}点の実績を獲得({2}%)",
+		"ACHIEVEMENTS_DISABLED_MODS_NOTIFICATION": "現在、実績機能が無効になっています。有効化したい場合は、modを使用せずに新規ゲームを始めてください。",
+		"ACHIEVEMENTS_DISABLED_OLD_SAVEGAME_NOTIFICATION": "現在、実績機能が無効になっています。有効化したい場合は、新規ゲームを始める、または直近のセーブデータをロードしてください。",
+		"ACHIEVEMENTS_DISABLED_WARNING": "Modを有効化している場合、実績を獲得できません。",
+		"ACHIEVEMENT_UNLOCKED": "実績が解除されました！",
+		"ACHIEVEMENT_PROGRESS": "実績の進行状況",
+		"X_HIDDEN_ACHIEVEMENTS_REMAINING": "{1}点の隠し実績",
+		"ACHIEVEMENT_DETAILS_REVEALED_ONCE_UNLOCKED": "解除後に、実績内容が表示されます。",
+		"ACHIEVEMENTS_DISABLED_IN_BUILD": "現ビルドバージョンでは、実績機能が無効になっています。",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET_WARNING": "実績の無効化",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET": "{1}のゲームルールプリセット適用中は、実績が獲得できません。",
+		"SOME_ACHIEVEMENTS_DISABLED_DS_PRESET": "{1}のゲームルールプリセット適用中は、一部の実績が獲得できません。",
+		"ACHIEVEMENT_DISABLED_DS_PRESET": "{1}のゲームルールプリセット適用中は、この実績が獲得できません。",
+		"ACHIEVEMENT_DISABLED_SAVEGAME": "このデータは実績が無効化されており、有効化できません。"
+	}
+}

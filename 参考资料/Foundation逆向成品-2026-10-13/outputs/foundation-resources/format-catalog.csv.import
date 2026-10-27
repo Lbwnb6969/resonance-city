@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://plhgrgou0hut"
+
+[deps]
+
+files=["res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.resource.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.source.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.bytes.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.sha256.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.output.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.detected.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.file.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.extension.translation"]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.csv"
+dest_files=["res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.resource.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.source.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.bytes.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.sha256.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.output.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.detected.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.file.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/format-catalog.extension.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

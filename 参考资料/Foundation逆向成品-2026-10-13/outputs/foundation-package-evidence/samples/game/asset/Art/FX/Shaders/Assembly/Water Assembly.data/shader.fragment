@@ -1,0 +1,129 @@
+uniform vec2 uniTexelSize;
+uniform float uniShaderColorWeight;
+uniform vec4 uniformAlbedoColor[MAX_MATERIAL_COUNT];
+uniform float uniUnscaledTime;
+uniform sampler2D uniBackDepthBuffer;
+uniform sampler2D uniFlow;
+uniform sampler2D uniWaterNormal;
+uniform sampler2D uniFoamMask;
+uniform sampler2D uniWaterGradient;
+uniform samplerCube uniEnvMap;
+uniform mat4 uniEnvMapMatrix;
+uniform sampler2D uniTerrainTextureHeightMap;
+uniform vec2 uniTerrainSize;
+uniform float uniTerrainMinHeight;
+uniform float uniTerrainMaxHeight;
+uniform mat4 uniTerrainInverseMatrix;
+uniform vec2 uniCameraNearFar;
+uniform float uniEnvMapLod;
+uniform int uniFogType;
+uniform vec4 uniFogColor;
+uniform float uniFogLinearStart;
+uniform float uniFogLinearEnd;
+uniform float uniFogExponentialB;
+uniform float uniFogLinearHeightStart;
+uniform float uniFogLinearHeightEnd;
+uniform float uniFogSensibility;
+in mat4 MODEL_MATRIX;
+in vec3 WORLD_POSITION;
+in vec3 LOCAL_POSITION;
+in vec3 CAMERA_POSITION;
+in mat4 VIEW_MATRIX;
+flat in uint MATERIAL_ID;
+in vec4 INSTANCE_COLOR;
+in vec4 VERTEX_COLOR;
+in vec3 NORMAL;
+in vec4 SCREEN_COORD;
+in vec4 PREV_SCREEN_COORD;
+in vec4 UNJITERRED_SCREEN_POSITION;
+layout(location = 0) out vec4 outAlbedoColor;
+layout(location = 1) out vec4 outNormal;
+layout(location = 2) out vec4 outMotionVector;
+
+void main()
+{
+	vec3 cpy_NORMAL = normalize(NORMAL);
+	vec4 MATERIAL_ALBEDO = uniformAlbedoColor[MATERIAL_ID];
+	vec4 ALBEDO = MATERIAL_ALBEDO * VERTEX_COLOR;
+	ALBEDO *= INSTANCE_COLOR;
+	vec2 previousFrameScreenCoord = PREV_SCREEN_COORD.xy / PREV_SCREEN_COORD.w;
+	vec2 currentFrameScreenCoord = UNJITERRED_SCREEN_POSITION.xy / UNJITERRED_SCREEN_POSITION.w;
+	vec2 MOTION_VECTOR = (currentFrameScreenCoord - previousFrameScreenCoord) * 0.5 / uniTexelSize;
+	vec2 screenUV = SCREEN_COORD.xy / SCREEN_COORD.w * 0.5 + 0.5;
+	float cameraNear = uniCameraNearFar.x;
+	float cameraFar = uniCameraNearFar.y;
+	float z_n = SCREEN_COORD.z / SCREEN_COORD.w;
+	float z_e_water_surface = 2.0 * cameraNear * cameraFar / (cameraFar + cameraNear - z_n * (cameraFar - cameraNear));
+	float z_b = texture(uniBackDepthBuffer, screenUV).r;
+	z_n = 2.0 * z_b - 1.0;
+	float z_e_water_bottom = 2.0 * cameraNear * cameraFar / (cameraFar + cameraNear - z_n * (cameraFar - cameraNear));
+	float waterDepth = z_e_water_bottom - z_e_water_surface;
+	vec3 terrainPosition = (uniTerrainInverseMatrix * vec4(WORLD_POSITION, 1.0)).xyz;
+	if(terrainPosition.x > 0 && terrainPosition.z > 0 && terrainPosition.x < uniTerrainSize.x && terrainPosition.z < uniTerrainSize.y) {
+		{
+			vec2 uvHeighmap = terrainPosition.xz / uniTerrainSize;
+			float terrainHeight = uniTerrainMinHeight + texture(uniTerrainTextureHeightMap, uvHeighmap).x * (uniTerrainMaxHeight - uniTerrainMinHeight);
+			waterDepth = min(waterDepth, WORLD_POSITION.y - terrainHeight);
+		}
+	}
+	vec2 flowUv = WORLD_POSITION.xz / 1024;
+	vec4 flow = texture(uniFlow, flowUv);
+	vec2 flowDir = flow.rg * 2 - 1;
+	flowDir *= vec2(- 1, 1);
+	float foamMask = texture(uniFoamMask, flowUv).r;
+	vec2 uv = WORLD_POSITION.xz * 0.01;
+	float timeScale = 0.5;
+	vec2 offset1 = flowDir * fract(uniUnscaledTime * timeScale) * 0.06;
+	vec2 offset2 = flowDir * fract(uniUnscaledTime * timeScale + 0.5) * 0.06 + vec2(0.25, 0.33);
+	vec3 n0 = vec3(0, 20, 0) + texture(uniWaterNormal, uv * 2.5 + offset1).rbg * 2 - 1;
+	vec3 n1 = vec3(0, 20, 0) + texture(uniWaterNormal, uv * 2.5 + offset2).rbg * 2 - 1;
+	cpy_NORMAL = n0 * (0.5 - abs(fract(uniUnscaledTime * timeScale) - 0.5)) + n1 * (0.5 - abs(fract(uniUnscaledTime * timeScale + 0.5) - 0.5));
+	cpy_NORMAL = normalize(cpy_NORMAL);
+	vec3 ref = reflect(normalize(WORLD_POSITION - CAMERA_POSITION), cpy_NORMAL);
+	ref = (uniEnvMapMatrix * vec4(ref, 0)).xyz;
+	vec3 reflectionColor = textureLod(uniEnvMap, ref, uniEnvMapLod).rgb;
+	vec2 gradientUv = vec2(waterDepth / 20, 0);
+	vec3 gradientColor = pow(texture(uniWaterGradient, gradientUv), vec4(2.2, 2.2, 2.2, 1)).rgb;
+	float t = clamp(2 / waterDepth, 0, 1);
+	vec3 refractiveColor = gradientColor * (1 - t);
+	ALBEDO.a = t;
+	vec3 eyeVector = normalize(CAMERA_POSITION - WORLD_POSITION);
+	float NdotL = clamp(dot(eyeVector, cpy_NORMAL), 0.0, 0.5);
+	refractiveColor = gradientColor * (1 - NdotL) + refractiveColor * NdotL;
+	ALBEDO.a *= NdotL;
+	ALBEDO.rgb = refractiveColor * 0.6 + reflectionColor * 0.4;
+	ALBEDO.a *= 0.6;
+	t = min(0.3 / (waterDepth * waterDepth * 10), foamMask);
+	float t2 = min(1 / (waterDepth * waterDepth * 10), foamMask);
+	ALBEDO.rgb = ALBEDO.rgb * (1 - t2) + pow(vec3(0.8, 0.8, 1), vec3(2.2)) * t2;
+	ALBEDO.a *= (1 - t);
+	ALBEDO.a = 1 - ALBEDO.a;
+	ALBEDO.a *= 1 - t;
+	ALBEDO.a *= 1 - clamp((1 - foamMask) * (1 - waterDepth * 0.5), 0.0, 1.0);
+	vec4 mvPosition = VIEW_MATRIX * MODEL_MATRIX * vec4(LOCAL_POSITION, 1.0);
+	float fogDistance = length((mvPosition.xyz));
+	float fog = 0;
+	if(uniFogType == 1) {
+		{
+			fog = 1 - clamp((uniFogLinearEnd - fogDistance) / (uniFogLinearEnd - uniFogLinearStart), 0, 1);
+		}
+	} else {
+		if(uniFogType == 2) {
+			{
+				fog = 1 - exp(- fogDistance * uniFogExponentialB);
+			}
+		} else {
+			if(uniFogType == 3) {
+				{
+					float db = uniFogExponentialB * fogDistance;
+					fog = 1 - exp(- db * db);
+				}
+			}
+		}	}	fog *= mix(1, uniFogColor.a, clamp((uniFogLinearEnd - fogDistance) / (uniFogLinearEnd - uniFogLinearStart), 0, 1));
+	fog *= uniFogSensibility;
+	fog = 1 - (1 - fog) * clamp((uniFogLinearHeightEnd - WORLD_POSITION.y) / (uniFogLinearHeightEnd - uniFogLinearHeightStart), 0, 1);
+	ALBEDO.rgb = ALBEDO.rgb * (1 - fog) + uniFogColor.rgb * fog;
+	outAlbedoColor = mix(uniformAlbedoColor[MATERIAL_ID], ALBEDO, uniShaderColorWeight);
+	outNormal = vec4(cpy_NORMAL * 0.5 + 0.5, 1.0);
+	outMotionVector = vec4(MOTION_VECTOR, 0.0, 1.0);
+}

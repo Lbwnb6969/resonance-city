@@ -1,7 +1,0 @@
-Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
-OpenGL API 3.3.0 NVIDIA 617.14 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 5070 Ti Laptop GPU
-
-[MCPRuntimeServer] port: scanning 6570-6585 (default)
-[MCPRuntimeServer] listening on 127.0.0.1:6571
-[MCPRegistry] runtime port 6571 registered for d:/godot/godotpro/共鸣之城
-GROWTH_BATCHING {"checks":{"mature_materials_400_to_1":true,"stage_0_growing_private":true,"stage_0_mature_shared":true,"stage_0_pixels":true,"stage_1_growing_private":true,"stage_1_mature_shared":true,"stage_1_pixels":true,"stage_2_growing_private":true,"stage_2_mature_shared":true,"stage_2_pixels":true,"stage_3_growing_private":true,"stage_3_mature_shared":true,"stage_3_pixels":true},"passed":true,"samples":[{"draw_calls":400.0,"reference":true,"stage":0},{"draw_calls":267.0,"reference":false,"stage":0},{"draw_calls":400.0,"reference":true,"stage":1},{"draw_calls":267.0,"reference":false,"stage":1},{"draw_calls":400.0,"reference":true,"stage":2},{"draw_calls":267.0,"reference":false,"stage":2},{"draw_calls":400.0,"reference":true,"stage":3},{"draw_calls":267.0,"reference":false,"stage":3}],"sprites":400}

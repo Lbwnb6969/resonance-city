@@ -1,0 +1,22 @@
+﻿{
+	"VICTORY_CONDITIONS": {
+		"VICTORY_CONDITIONS_LIST": "村庄愿景列表",
+		"EDIT_VICTORY_CONDITIONS": "编辑村庄愿景",
+		"REACH_TOP_CLERGY": "完成神职人员发展路线",
+		"REACH_TOP_KINGDOM": "完成王公贵族发展路线",
+		"REACH_TOP_LABOUR": "完成劳动群众发展路线"
+	},
+	"VICTORY_CONDITIONS_CELEBRATIONS": {
+		"VC_COMPLETED": "成功实现村庄愿景",
+		"VC_FAILED": "未能实现村庄愿景",
+		"VC_COMPLETED_DESC": "既然完成过以下的壮举，我们理应感到骄傲：",
+		"VC_FAILED_DESC": "很不幸，我们并没能实现以下的愿景：",
+		"VC_KINGDOM_FORTRESS_SUCCESS": "你靠着独到的战略眼光纵横沙场，将城堡打造成了王国境内最强大的坚壁堡垒，为国王带来源源不断的荣耀。英雄之名，当之无愧！",
+		"VC_CLERGY_PROSPEROUS_PRIORY_SUCCESS": "在修道院教堂庄严的落成典礼上，在虔诚教士们的包围之中，你不禁回顾起迄今为止所取得的成就。你亲手打造了这座信仰的灯塔，并组建了一心尊奉上帝的僧侣团体。毋庸置疑，这片土地因为你才有了今日的荣光。",
+		"VC_LABOR_COMMUNE_SUCCESS": "每次从钟楼下走过，你都不禁为自己的成就感到分外自豪。时过境迁，在你的率领下，这个由农奴组成的小小社群终于发展成了遍地自由民的繁荣村庄！"
+	},
+	"CONDITIONS": {
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_TITLE": "村庄人口已达上限",
+		"WARN_FAIL_VC_PROSPEROUS_PRIORY_DESC": "已达当前愿景规定的村庄人口上限。但凡再接纳一名村民，愿景便会化为泡影。\n\n是否继续？"
+	}
+}

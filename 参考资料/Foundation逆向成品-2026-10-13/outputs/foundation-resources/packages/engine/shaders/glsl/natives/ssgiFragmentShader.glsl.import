@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://ikyumrpj2qwr"
+path="res://.godot/imported/ssgiFragmentShader.glsl-2a857b2885a4f37f1824e6c1541bb487.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/engine/shaders/glsl/natives/ssgiFragmentShader.glsl"
+dest_files=["res://.godot/imported/ssgiFragmentShader.glsl-2a857b2885a4f37f1824e6c1541bb487.res"]
+
+[params]
+

@@ -1,0 +1,49 @@
+; SPIR-V 1.3
+; SHA256 7511af0e32738f00dbabe52c39536f79c99d79c81e7217a4580957168ebae3df
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability Shader ; byte 0x14
+OpCapability StorageImageExtendedFormats ; byte 0x1c
+%15 = OpExtInstImport "GLSL.std.450" ; byte 0x24
+OpMemoryModel Logical GLSL450 ; byte 0x3c
+OpEntryPoint Fragment %2 "main" %31 %9 ; byte 0x48
+OpExecutionMode %2 OriginUpperLeft ; byte 0x64
+OpSource Slang 1 ; byte 0x70
+OpName %9 "input.normal_ws" ; byte 0x7c
+OpName %20 "shade" ; byte 0x94
+OpName %31 "entryPointParam_ps_main" ; byte 0xa4
+OpName %2 "ps_main" ; byte 0xc4
+OpDecorate %9 Location 0 ; byte 0xd4
+OpDecorate %31 Location 0 ; byte 0xe4
+%1 = OpTypeVoid ; byte 0xf4
+%3 = OpTypeFunction %1 ; byte 0xfc
+%5 = OpTypeFloat 32 ; byte 0x108
+%6 = OpTypeVector %5 3 ; byte 0x114
+%8 = OpTypePointer Input %6 ; byte 0x124
+%12 = OpConstant %5 0x3f000000 ; byte 0x134
+%16 = OpConstant %5 0x0 ; byte 0x144
+%17 = OpConstant %5 0x3f800000 ; byte 0x154
+%19 = OpConstant %5 0x3ee66666 ; byte 0x164
+%21 = OpConstant %5 0x3f0ccccd ; byte 0x174
+%24 = OpConstant %5 0x3dcccccd ; byte 0x184
+%25 = OpConstant %5 0x3f666666 ; byte 0x194
+%23 = OpConstantComposite %6 %24 %25 %17 ; byte 0x1a4
+%27 = OpConstant %5 0x3eb33333 ; byte 0x1bc
+%28 = OpTypeVector %5 4 ; byte 0x1cc
+%30 = OpTypePointer Output %28 ; byte 0x1dc
+%9 = OpVariable %8 Input ; byte 0x1ec
+%31 = OpVariable %30 Output ; byte 0x1fc
+%2 = OpFunction %1 None %3 ; byte 0x20c
+%4 = OpLabel ; byte 0x220
+%7 = OpLoad %6 %9 ; byte 0x228
+%10 = OpCompositeExtract %5 %7 1 ; byte 0x238
+%11 = OpFMul %5 %10 %12 ; byte 0x24c
+%13 = OpFAdd %5 %11 %12 ; byte 0x260
+%14 = OpExtInst %5 %15 43 %13 %16 %17 ; byte 0x274
+%18 = OpFMul %5 %19 %14 ; byte 0x294
+%20 = OpFAdd %5 %21 %18 ; byte 0x2a8
+%22 = OpVectorTimesScalar %6 %23 %20 ; byte 0x2bc
+%26 = OpVectorTimesScalar %6 %22 %27 ; byte 0x2d0
+%29 = OpCompositeConstruct %28 %26 %27 ; byte 0x2e4
+OpStore %31 %29 ; byte 0x2f8
+OpReturn ; byte 0x304
+OpFunctionEnd ; byte 0x308

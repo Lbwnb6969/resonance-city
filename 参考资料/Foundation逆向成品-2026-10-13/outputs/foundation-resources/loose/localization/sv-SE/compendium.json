@@ -1,0 +1,27 @@
+﻿{
+	"COMPENDIUM": {
+		"COMPENDIUM": "Kompendium",
+		"COMPENDIUM_X_ITEM_UNLOCKED": "{1} upplåsta poster",
+		"COMPENDIUM_UNKNOWN_MAIN_TITLE": "Oupptäckt",
+		"COMPENDIUM_UNKNOWN_SECONDARY_TITLE": "Oupptäckt",
+		"COMPENDIUM_UNKNOWN_ITEM": "???",
+		"COMPENDIUM_WORKPLACE_RECIPES": "Recept för arbetsplatser",
+		"COMPENDIUM_WORKPLACE_RECIPE": "Recept",
+		"COMPENDIUM_RECIPE_PLUR": "Recept",
+		"COMPENDIUM_WORKPLACE_RECIPE_PRODUCTION": "Produktion",
+		"COMPENDIUM_WORKPLACE_RECIPE_LOCK_DESC": "Låst\nUppfyll upplåsningsvillkoren för att låsa upp det här receptet för produktion.",
+		"COMPENDIUM_WORKPLACE_RECIPE_UNLOCK_DESC": "Upplåst\nDet här receptet kan produceras i din by.",
+		"COMPENDIUM_VILLAGE_TITLES": "Titlar för by och härskare",
+		"COMPENDIUM_ITEM_UNLOCKER_STEPS_TITLE": "Uppfyll alla krav:",
+		"COMPENDIUM_ITEM_UNLOCKER_LIST_TITLE": "Så här låser du upp",
+		"COMPENDIUM_UNLOCKER_DEFAULT_TEXT": "Låses upp automatiskt i början av en spelomgång.",
+		"COMPENDIUM_UNLOCKER_MINERAL_TEXT": "Slutför ett av uppdragen ”Prospektera en mineralfyndighet i närheten”",
+		"COMPENDIUM_X_UNLOCKED": "{1} upplåst",
+		"COMPENDIUM_COMPLETE_ANY_REQUIREMENTS": "Uppfyll något av följande krav:",
+		"COMPENDIUM_VILLAGE_TITLE_LOCK_DESC": "Låst\nUppfyll upplåsningsvillkoren för att få den här titeln.",
+		"COMPENDIUM_VILLAGE_TITLE_UNLOCK_DESC": "Upplåst\nDen här titeln har erhållits och kan användas för din by.",
+		"COMPENDIUM_UNLOCKER_QUEST_TITLE": "Slutför uppdraget ”{1}”",
+		"COMPENDIUM_UNLOCK_CONDITION_RESOURCE_UNLOCKED_DESC": "Skaffa {1} oupptäckt resurs",
+		"COMPENDIUM_QUEST_BUY_UNLOCKABLE_FESTIVAL": "Lås upp ”{1}” genom att avancera i skördefestens nivåer"
+	}
+}

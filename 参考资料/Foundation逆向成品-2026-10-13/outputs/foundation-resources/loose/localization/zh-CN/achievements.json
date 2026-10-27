@@ -1,0 +1,18 @@
+﻿{
+	"ACHIEVEMENTS": {
+		"X_ACHIEVEMENTS_EARNED": "已获得{1}个成就（{2}%）",
+		"ACHIEVEMENTS_DISABLED_MODS_NOTIFICATION": "成就未启用。如要启用成就，请创建未加载模组的新游戏。",
+		"ACHIEVEMENTS_DISABLED_OLD_SAVEGAME_NOTIFICATION": "成就未启用。如要启用成就，请开始新游戏或加载最近流程中的存档。",
+		"ACHIEVEMENTS_DISABLED_WARNING": "模组启用时无法获得成就。",
+		"ACHIEVEMENT_UNLOCKED": "成就已解锁！",
+		"ACHIEVEMENT_PROGRESS": "成就进度",
+		"X_HIDDEN_ACHIEVEMENTS_REMAINING": "{1}隐藏成就",
+		"ACHIEVEMENT_DETAILS_REVEALED_ONCE_UNLOCKED": "解锁后即可查看成就详情",
+		"ACHIEVEMENTS_DISABLED_IN_BUILD": "无法在该版本中启用成就",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET_WARNING": "无法解锁成就",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET": "使用“{1}”预设规则游玩游戏时，将无法获得成就。",
+		"SOME_ACHIEVEMENTS_DISABLED_DS_PRESET": "使用“{1}”预设规则游玩游戏时，将无法获得部分成就。",
+		"ACHIEVEMENT_DISABLED_DS_PRESET": "使用“{1}”预设规则游玩游戏时，无法获得本成就。",
+		"ACHIEVEMENT_DISABLED_SAVEGAME": "此存档的成就在早些时候被禁用，且无法重新启用。"
+	}
+}

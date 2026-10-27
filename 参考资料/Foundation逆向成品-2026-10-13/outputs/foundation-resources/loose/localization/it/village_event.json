@@ -1,0 +1,37 @@
+﻿{
+	"VILLAGE_EVENT": {
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_TOOLTIP": "{1} in preparazione",
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_COUNTDOWN_TOOLTIP": "Conto alla rovescia per l'inizio di {1}:",
+		"VILLAGE_EVENT_PROGRESSION_INPROGRESS_TOOLTIP": "Giorni rimanenti al termine di {1}:",
+		"VILLAGE_EVENT_PROGRESSION_COMPLETED_TOOLTIP": "{1} ha chiuso i battenti",
+		"VILLAGE_EVENT_PROGRESSION_SHOWRESULT_TOOLTIP": "Mostra risultati e ricompense di {1}",
+		"VILLAGE_EVENT_CANT_PREPARE_X_TOOLTIP": "Requisiti mancanti, impossibile preparare {1}",
+		"VILLAGE_EVENT_X_NOT_BUILT": "È necessario costruire il capanno della Festa del raccolto e tutte le risorse necessarie per {1} devono essere poste al suo interno.",
+		"VILLAGE_EVENT_QUEST_COUNTDOWN": "Tempo di preparazione",
+		"VILLAGE_EVENT_QUEST_SCORE": "Punteggio attuale",
+		"VILLAGE_EVENT_SHOW_RESULT": "Mostra risultati",
+		"ADD_X_GUEST_INVITATION": "Inviti per gli Ordini ottenuti: {1}",
+		"GUEST_REWARD_HEADER": "Livello {1} (punteggio {2})",
+		"INVITATION_EXTRA_REWARDS": "Ricompense dell'Ordine aggiuntive",
+		"SELECT_X_ENTERTAINER": "Assumi {1}",
+		"SELECT_X_GUEST_INVITATION": "Spedisci un invito per gli Ordini a: {1}",
+		"SELECT_ANY_GUEST_CONDITION": "Spedisci un invito qualsiasi",
+		"RECURRENT_REWARDS": "Ricompense ricorrenti",
+		"VILLAGE_EVENT_INVITATION_REQUIRED_X": "(Invito richiesto {1})",
+		"VILLAGE_EVENT_DEFAULT_NAME": "{2} di {1}"
+	},
+	"GAME_CONDITIONS": {
+		"START_X_VILLAGE_EVENT": "Organizza {1}",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING": "Organizza {1} presso {2}",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING_WITH_THE_FOLLOWING": "Organizza {1} presso {2} con i seguenti:",
+		"START_X_VILLAGE_EVENT_WITH_THE_FOLLOWING": "Organizza {1} con i seguenti:",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_Y_Z_VALUE": "Completa {1} con un punteggio {2} {3}",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_OF_Y_Z_VALUE": "Completa {1} con un punteggio {2} {3}",
+		"REACH_TIER_X_OF_VILLAGE_EVENT_Y": "Raggiungi il livello {1} di {2}",
+		"BUILD_X_INSIDE_Y": "Da costruire: {1} all'interno del livello {2}",
+		"ACQUIRE_X_RECIPE": "Ottieni la ricetta: {1}",
+		"DISCOVER_X_VILLAGE_EVENT_ENTERTAINER": "Incontra {1}",
+		"SELECT_ANY_ENTERTAINER_CONDITION": "Artista qualsiasi invitato",
+		"ATTRACTS_X_VILLAGERS": "Abitanti partecipanti: {1}"
+	}
+}

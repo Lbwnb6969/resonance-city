@@ -1,0 +1,25 @@
+{
+  "checks": [
+    {
+      "name": "standard_serializer_roundtrip",
+      "passed": true,
+      "count": 26274
+    },
+    {
+      "name": "non_v2_cache_parse",
+      "passed": true,
+      "count": 2418
+    },
+    {
+      "name": "native_decompile_pairs_nonempty",
+      "passed": true,
+      "count": 109
+    },
+    {
+      "name": "audio_directory_ranges",
+      "passed": true,
+      "count": 5
+    }
+  ],
+  "limits": "Integration checks read producer evidence and confirm consistency; they do not re-run identical full analyses or establish runtime behavior."
+}

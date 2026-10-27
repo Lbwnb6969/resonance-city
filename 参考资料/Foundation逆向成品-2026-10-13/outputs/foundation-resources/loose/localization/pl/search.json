@@ -1,0 +1,10 @@
+﻿{
+	"SEARCH": {
+		"FILTER_ENTRY_STATUS_UNLOCKED": "Odblokowane"
+	},
+	"WORDING": {
+		"SEARCH_WORDING_PLANT": "roślina",
+		"SEARCH_WORDING_TRAINING": "trening",
+		"SEARCH_WORDING_WALL": "mur"
+	}
+}

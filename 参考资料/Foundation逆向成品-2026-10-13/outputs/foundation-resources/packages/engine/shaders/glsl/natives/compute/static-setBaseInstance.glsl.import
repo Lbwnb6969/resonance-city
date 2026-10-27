@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://0bpdr5ie333a"
+path="res://.godot/imported/static-setBaseInstance.glsl-b984d250d01e82b678d63ae18659046c.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/engine/shaders/glsl/natives/compute/static-setBaseInstance.glsl"
+dest_files=["res://.godot/imported/static-setBaseInstance.glsl-b984d250d01e82b678d63ae18659046c.res"]
+
+[params]
+

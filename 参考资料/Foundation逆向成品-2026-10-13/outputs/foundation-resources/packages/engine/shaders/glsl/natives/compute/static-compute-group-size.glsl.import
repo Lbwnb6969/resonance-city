@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bfq82rex7t8yd"
+path="res://.godot/imported/static-compute-group-size.glsl-b0590973ab9b0326ff9bb2b4bff457c4.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/engine/shaders/glsl/natives/compute/static-compute-group-size.glsl"
+dest_files=["res://.godot/imported/static-compute-group-size.glsl-b0590973ab9b0326ff9bb2b4bff457c4.res"]
+
+[params]
+

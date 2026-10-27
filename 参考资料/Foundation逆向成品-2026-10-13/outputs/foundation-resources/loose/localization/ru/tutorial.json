@@ -1,0 +1,33 @@
+﻿{
+	"CONTROLS_ACTION": {
+		"LEFT_CLICK": "ЛКМ",
+		"LEFT_CLICK_DRAG": "ЛКМ + перетаскивание",
+		"RIGHT_CLICK": "ПКМ",
+		"HOLD_KEY": "Удержание {1}",
+		"HORIZONTAL_MOUSE_MOVEMENT": "Горизонтальное перемещение мыши",
+		"MOUSE_WHEEL": "Колесико мыши"
+	},
+	"CONTROLS": {
+		"X_TO_SELECT_PLACE_BUILDING_PART": "{1}: выбор/размещение элемента",
+		"X_ON_VERTICAL_ARROWS_TO_RESCALE_PART": "{1} + стрелки: работа с элементом",
+		"X_TO_DELETE_PART": "{1}: удаление элемента",
+		"X_AND_Y_TO_ROTATE_PART": "{1} + {2}: вращение элемента",
+		"X_AND_Y_TO_MOVE_BRIDGE": "{1} + {2}: перемещение моста",
+		"X_AND_Y_TO_KEEP_PART_SELECTION": "{1} + {2}: размещение элемента постройки с сохранением выбора",
+		"X_ON_WALL_NODE_TO_SELECT_PLACE_NEW_NODE": "{1} на узле стены: выбор/размещение нового узла",
+		"X_ON_WALL_SECTION_TO_TOGGLE_WALL_CURVING": "{1} на секции стены: возможность искривления",
+		"X_AND_Y_TO_EXTEND_EXISTING_WALL": "{1} + {2}: расширение имеющейся стены",
+		"X_AND_Y_TO_REMOVE_WALL_NODE_SECTION": "{1} + {2}: удаление узла/секции стены",
+		"X_TO_CANCEL_SELECTION": "{1}: отмена выбора",
+		"X_TO_PAINT": "{1}: разметка области",
+		"X_TO_ERASE": "{1}: стирание области",
+		"X_AND_Y_TO_RESIZE_BRUSH_SIZE": "{1} + {2}: изменение размера кисти",
+		"X_TO_INCREASE_BRUSH_SIZE": "{1}: увеличение размера кисти",
+		"X_TO_DECREASE_BRUSH_SIZE": "{1}: уменьшение размера кисти",
+		"X_TO_ROTATE_PART": "{1}: вращение элемента при его перемещении",
+		"X_TO_KEEP_PART_SELECTION": "{1}: размещение нескольких элементов вместо одного",
+		"X_TO_SELECT_CONNECTED": "{1}: выбор всех стыкующихся элементов",
+		"X_TO_SELECT_ALL": "{1}: выбор всех элементов монумента",
+		"X_TO_SELECT_MULTIPLE": "{1}: выбор нескольких элементов вместо одного"
+	}
+}

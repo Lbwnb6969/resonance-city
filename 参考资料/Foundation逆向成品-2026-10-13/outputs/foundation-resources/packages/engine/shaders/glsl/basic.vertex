@@ -1,0 +1,22 @@
+in vec3 attribPosition;
+in vec4 attribColor;
+in vec3 attribNormal;
+uniform mat4 uniMatModel;
+uniform mat4 uniMatViewProjection;
+uniform float uniVertexColorWeight;
+uniform vec2 uniCameraJitter;
+out vec4 VERTEX_COLOR;
+out vec3 NORMAL;
+
+void main()
+{
+	VERTEX_COLOR = mix(vec4(1), attribColor, uniVertexColorWeight);
+	mat4 MODEL_MATRIX = uniMatModel;
+	mat4 MVP_MATRIX = uniMatViewProjection * MODEL_MATRIX;
+	vec3 vertexPosition = attribPosition;
+	vec3 LOCAL_NORMAL = attribNormal;
+	NORMAL = ((MODEL_MATRIX) * vec4(LOCAL_NORMAL, 0.0)).xyz;
+	vec4 SCREEN_COORD = MVP_MATRIX * vec4(vertexPosition, 1.0);
+	SCREEN_COORD.xy += uniCameraJitter * SCREEN_COORD.w;
+	gl_Position = SCREEN_COORD;
+}

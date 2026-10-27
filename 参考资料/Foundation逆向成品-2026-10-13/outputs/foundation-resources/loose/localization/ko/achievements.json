@@ -1,0 +1,18 @@
+﻿{
+	"ACHIEVEMENTS": {
+		"X_ACHIEVEMENTS_EARNED": "{1} 도전 과제 진행중 ({2}%)",
+		"ACHIEVEMENTS_DISABLED_MODS_NOTIFICATION": "도전 과제가 비활성화되었습니다. 도전 과제를 활성화하려면 모드 없이 새 게임을 시작하세요.h",
+		"ACHIEVEMENTS_DISABLED_OLD_SAVEGAME_NOTIFICATION": "도전 과제가 비활성화되었습니다. 도전 과제를 활성화하려면 새 게임을 시작하거나 더 최근의 플레이 기록에서 저장된 게임을 로드하세요.",
+		"ACHIEVEMENTS_DISABLED_WARNING": "모드 사용시 도전 과제가 비활성화됩니다.",
+		"ACHIEVEMENT_UNLOCKED": "도전 과제 달성!",
+		"ACHIEVEMENT_PROGRESS": "도전 과제 진행률",
+		"X_HIDDEN_ACHIEVEMENTS_REMAINING": "{1} 개의 숨겨진 도전 과제가 있습니다",
+		"ACHIEVEMENT_DETAILS_REVEALED_ONCE_UNLOCKED": "각 도전 과제의 세부 사항은 잠금 해제 후 공개됨",
+		"ACHIEVEMENTS_DISABLED_IN_BUILD": "이 빌드는 도전 과제가 비활성화됨",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET_WARNING": "도전 과제 비활성화됨",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET": "{1} 난이도 사용자 설정으로 플레이하는 동안에는 도전 과제를 획득할 수 없습니다.",
+		"SOME_ACHIEVEMENTS_DISABLED_DS_PRESET": "{1} 난이도 사용자 설정으로 플레이하는 동안에는 일부 도전 과제를 획득할 수 없습니다.",
+		"ACHIEVEMENT_DISABLED_DS_PRESET": "{1} 난이도 사용자 설정으로 플레이하는 동안에는 이 도전 과제를 획득할 수 없습니다.",
+		"ACHIEVEMENT_DISABLED_SAVEGAME": "이 게임의 도전 과제 기능은 이전에 비활성화되었으며 다시 활성화할 수 없습니다."
+	}
+}

@@ -1,0 +1,16 @@
+﻿{
+	"MILITARY_GENERAL": {
+		"NOT_ENOUGH_GUARD_DESC": "¡No hay suficientes guardias! Asigna más guardias o combatientes a las compañías que tengan orden de patrullar.",
+		"CURRENT_GUARD_RATIO_X_PERCENT": "Protección de guardias actual: {1}",
+		"TOTAL_NUMBER_PATROLLERS": "Número total de patrulleros y combatientes con orden de patrullar: {1}",
+		"TOTAL_NUMBER_GUARD_LOCATIONS": "Número total de fortificación activa: {1}",
+		"ACTIVE_FORTIFICATION": "Fortificación {1} activa",
+		"ACTIVE_FORTIFICATION_DESC": "Cubre una zona con una fortificación {1}. Los combatientes con orden de hacer guardia y los centinelas dedicarán tiempo a vigilar este lugar.",
+		"LIGHT_X_FORTIFICATION": "básica",
+		"HEAVY_X_FORTIFICATION": "avanzada",
+		"PASSIVE_FORTIFICATION": "Fortificación {1} pasiva",
+		"PASSIVE_FORTIFICATION_DESC": "Protege una zona con fortificación {1} sin que ello requiera la atención de ningún centinela o combatiente.",
+		"NEW_COMPANY_X_FORMED": "¡Se ha formado una nueva compañía: {1}!",
+		"GUARD_DUTY_COMPANY": "Compañía con orden de guardia"
+	}
+}

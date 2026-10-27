@@ -1,1 +1,0 @@
-首次构建在纹理SHA审计失败，尚未进入运行检查。四SVG生成器Windows CRLF与manifest LF字符串SHA不一致；已保存原字节并固定生成器newline=LF。

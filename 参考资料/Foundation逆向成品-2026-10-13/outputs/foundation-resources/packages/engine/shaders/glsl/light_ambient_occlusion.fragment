@@ -1,0 +1,27 @@
+uniform sampler2D uniTextureDiffuse;
+uniform sampler2D uniTextureNormal;
+uniform sampler2D uniTextureOcclusion;
+uniform float uniOcclusionIntensity;
+uniform vec3 uniLightColor;
+uniform samplerCube uniTextureIrradiance;
+uniform mat4 uniSkyMatrix;
+in vec4 SCREEN_COORD;
+layout(location = 0) out vec4 outColor;
+
+void main()
+{
+	vec2 mUv = SCREEN_COORD.xy * 0.5 / SCREEN_COORD.w + 0.5;
+	vec4 COLOR = texture(uniTextureDiffuse, mUv);
+	vec3 NORMAL = texture(uniTextureNormal, mUv).rgb * 2.0 - 1.0;
+	float OCCLUSION = mix(1.0, texture(uniTextureOcclusion, mUv).r, uniOcclusionIntensity);
+	vec3 ALBEDO = COLOR.rgb;
+	vec3 N = normalize(NORMAL);
+	vec3 NSky = (uniSkyMatrix * vec4(N, 0)).xyz;
+	vec3 kD = vec3(0.96);
+	vec3 irradiance = texture(uniTextureIrradiance, NSky).rgb * uniLightColor;
+	vec3 diffuse = irradiance * ALBEDO;
+	vec3 specular = vec3(0);
+	COLOR.rgb = (kD * diffuse + specular);
+	outColor = COLOR;
+	outColor *= vec4(OCCLUSION, OCCLUSION, OCCLUSION, 1);
+}

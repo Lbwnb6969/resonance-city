@@ -1,0 +1,16 @@
+﻿{
+	"MILITARY_GENERAL": {
+		"NOT_ENOUGH_GUARD_DESC": "守卫不足！指派更多看守或战士加入巡逻队。",
+		"CURRENT_GUARD_RATIO_X_PERCENT": "当前守卫范围：{1}",
+		"TOTAL_NUMBER_PATROLLERS": "负责巡逻任务的巡逻员和战士数量：{1}",
+		"TOTAL_NUMBER_GUARD_LOCATIONS": "主动防御数量：{1}",
+		"ACTIVE_FORTIFICATION": "主动{1}防御",
+		"ACTIVE_FORTIFICATION_DESC": "为一片区域提供{1}防御。负责守卫任务的战士和看守会花时间守好此处。",
+		"LIGHT_X_FORTIFICATION": "轻型",
+		"HEAVY_X_FORTIFICATION": "重型",
+		"PASSIVE_FORTIFICATION": "被动{1}防御",
+		"PASSIVE_FORTIFICATION_DESC": "为一片区域提供{1}防御，不需要看守或战士拨出时间巡逻。",
+		"NEW_COMPANY_X_FORMED": "新的连队“{1}”成立了！",
+		"GUARD_DUTY_COMPANY": "负责守卫任务的连队"
+	}
+}

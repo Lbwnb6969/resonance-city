@@ -1,0 +1,18 @@
+﻿{
+	"ACHIEVEMENTS": {
+		"X_ACHIEVEMENTS_EARNED": "Получено достижений: {1} ({2}%)",
+		"ACHIEVEMENTS_DISABLED_MODS_NOTIFICATION": "Достижения отключены. Чтобы включить их, начните новую игру без модов.",
+		"ACHIEVEMENTS_DISABLED_OLD_SAVEGAME_NOTIFICATION": "Достижения отключены. Чтобы включить их, начните новую игру или загрузите более свежее сохранение.",
+		"ACHIEVEMENTS_DISABLED_WARNING": "Используя моды, вы не сможете получать достижения.",
+		"ACHIEVEMENT_UNLOCKED": "Получено достижение!",
+		"ACHIEVEMENT_PROGRESS": "Ход достижения",
+		"X_HIDDEN_ACHIEVEMENTS_REMAINING": "Скрытых достижений: {1}",
+		"ACHIEVEMENT_DETAILS_REVEALED_ONCE_UNLOCKED": "Описания этих достижений появятся, когда они будут получены",
+		"ACHIEVEMENTS_DISABLED_IN_BUILD": "В этой версии достижения отключены",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET_WARNING": "Достижения отключены",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET": "Вы не сможете получать достижения, играя с комплектом игровых правил «{1}».",
+		"SOME_ACHIEVEMENTS_DISABLED_DS_PRESET": "Некоторые достижения нельзя получить, играя с комплектом игровых правил «{1}».",
+		"ACHIEVEMENT_DISABLED_DS_PRESET": "Это достижение не может быть получено, когда вы играете с комплектом игровых правил «{1}».",
+		"ACHIEVEMENT_DISABLED_SAVEGAME": "Достижения в этой игре были отключены и не могут быть включены повторно."
+	}
+}

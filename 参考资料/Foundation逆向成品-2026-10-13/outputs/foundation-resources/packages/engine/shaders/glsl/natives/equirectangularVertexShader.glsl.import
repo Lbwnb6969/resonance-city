@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bssou00f1p362"
+path="res://.godot/imported/equirectangularVertexShader.glsl-89c16f5ea70dec83e0543f8a0d7fee48.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/engine/shaders/glsl/natives/equirectangularVertexShader.glsl"
+dest_files=["res://.godot/imported/equirectangularVertexShader.glsl-89c16f5ea70dec83e0543f8a0d7fee48.res"]
+
+[params]
+

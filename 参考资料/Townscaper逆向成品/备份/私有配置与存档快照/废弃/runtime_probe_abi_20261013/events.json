@@ -1,0 +1,25 @@
+[
+  {
+    "type": "send",
+    "payload": {
+      "kind": "module",
+      "base": "0x55bc0000",
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Townscaper\\GameAssembly.dll"
+    }
+  },
+  {
+    "type": "error",
+    "description": "Error: invalid abi specified",
+    "stack": "Error: invalid abi specified\n    at onAdded (/script1.js:18)",
+    "fileName": "/script1.js",
+    "lineNumber": 18,
+    "columnNumber": 1
+  },
+  {
+    "type": "send",
+    "payload": {
+      "kind": "il2cpp_initialized",
+      "domain": "0x1"
+    }
+  }
+]

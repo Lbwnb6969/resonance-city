@@ -1,0 +1,33 @@
+﻿{
+	"CONTROLS_ACTION": {
+		"LEFT_CLICK": "Clic col sinistro",
+		"LEFT_CLICK_DRAG": "Trascina col sinistro",
+		"RIGHT_CLICK": "Clic col destro",
+		"HOLD_KEY": "Tieni premuto {1}",
+		"HORIZONTAL_MOUSE_MOVEMENT": "Movimento orizzontale del mouse",
+		"MOUSE_WHEEL": "Rotellina del mouse"
+	},
+	"CONTROLS": {
+		"X_TO_SELECT_PLACE_BUILDING_PART": "{1}: seleziona/posiziona una parte",
+		"X_ON_VERTICAL_ARROWS_TO_RESCALE_PART": "{1} su frecce: manipola la parte",
+		"X_TO_DELETE_PART": "{1}: elimina una parte",
+		"X_AND_Y_TO_ROTATE_PART": "{1} e {2}: ruota una parte",
+		"X_AND_Y_TO_MOVE_BRIDGE": "{1} e {2}: sposta il ponte",
+		"X_AND_Y_TO_KEEP_PART_SELECTION": "{1} e {2}: posiziona una parte da costruzione e mantieni la selezione",
+		"X_ON_WALL_NODE_TO_SELECT_PLACE_NEW_NODE": "{1} su nodo del muro: seleziona/posiziona uno nuovo",
+		"X_ON_WALL_SECTION_TO_TOGGLE_WALL_CURVING": "{1} su sezione di muro: attiva/disattiva curvatura",
+		"X_AND_Y_TO_EXTEND_EXISTING_WALL": "{1} e {2}: estendi muro esistente",
+		"X_AND_Y_TO_REMOVE_WALL_NODE_SECTION": "{1} e {2}: rimuovi nodo/sezione del muro",
+		"X_TO_CANCEL_SELECTION": "{1}: annulla selezione",
+		"X_TO_PAINT": "{1}: delinea una zona",
+		"X_TO_ERASE": "{1}: rimuovi una zona",
+		"X_AND_Y_TO_RESIZE_BRUSH_SIZE": "{1} e {2}: ridimensiona pennello",
+		"X_TO_INCREASE_BRUSH_SIZE": "{1}: aumenta dimensione pennello",
+		"X_TO_DECREASE_BRUSH_SIZE": "{1}: diminuisci dimensione pennello",
+		"X_TO_ROTATE_PART": "{1} mentre muovi una parte: ruota la parte",
+		"X_TO_KEEP_PART_SELECTION": "{1} quando posizioni una parte: posiziona più parti",
+		"X_TO_SELECT_CONNECTED": "{1}: seleziona tutte le parti collegate",
+		"X_TO_SELECT_ALL": "{1}: seleziona tutte le parti di un monumento",
+		"X_TO_SELECT_MULTIPLE": "{1} mentre selezioni delle parti: seleziona più parti"
+	}
+}

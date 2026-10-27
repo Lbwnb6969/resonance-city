@@ -1,0 +1,88 @@
+; SPIR-V 1.3
+; SHA256 027f427f332609bce8fac9c6f22f8da3bae03acd3b8610c16853cc0770915b91
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability DemoteToHelperInvocation ; byte 0x14
+OpCapability Shader ; byte 0x1c
+OpCapability StorageImageExtendedFormats ; byte 0x24
+OpExtension "SPV_EXT_demote_to_helper_invocation" ; byte 0x2c
+OpMemoryModel Logical GLSL450 ; byte 0x54
+OpEntryPoint Fragment %2 "main" %26 %37 %30 %56 ; byte 0x60
+OpExecutionMode %2 OriginUpperLeft ; byte 0x84
+OpSource Slang 1 ; byte 0x90
+OpName %26 "vs_out.vertex_position_ws" ; byte 0x9c
+OpName %30 "vs_out.stone_foundation_clip_y" ; byte 0xc0
+OpName %37 "vs_out.global_arch_height" ; byte 0xe8
+OpName %56 "vs_out.flags" ; byte 0x10c
+OpName %2 "ps_main" ; byte 0x124
+OpDecorate %26 Location 2 ; byte 0x134
+OpDecorate %30 Location 8 ; byte 0x144
+OpDecorate %30 Flat ; byte 0x154
+OpDecorate %37 Location 7 ; byte 0x160
+OpDecorate %56 Location 12 ; byte 0x170
+OpDecorate %56 Flat ; byte 0x180
+%1 = OpTypeVoid ; byte 0x18c
+%3 = OpTypeFunction %1 ; byte 0x194
+%5 = OpTypeBool ; byte 0x1a0
+%22 = OpTypeFloat 32 ; byte 0x1a8
+%23 = OpTypeVector %22 3 ; byte 0x1b4
+%25 = OpTypePointer Input %23 ; byte 0x1c4
+%29 = OpTypePointer Input %22 ; byte 0x1d4
+%39 = OpConstant %22 0x0 ; byte 0x1e4
+%46 = OpConstantFalse %5 ; byte 0x1f4
+%53 = OpTypeInt 32 1 ; byte 0x200
+%55 = OpTypePointer Input %53 ; byte 0x210
+%58 = OpConstant %53 0x8 ; byte 0x220
+%60 = OpConstant %53 0x0 ; byte 0x230
+%26 = OpVariable %25 Input ; byte 0x240
+%30 = OpVariable %29 Input ; byte 0x250
+%37 = OpVariable %29 Input ; byte 0x260
+%56 = OpVariable %55 Input ; byte 0x270
+%2 = OpFunction %1 None %3 ; byte 0x280
+%4 = OpLabel ; byte 0x294
+%24 = OpLoad %23 %26 ; byte 0x29c
+%27 = OpCompositeExtract %22 %24 1 ; byte 0x2ac
+%28 = OpLoad %22 %30 ; byte 0x2c0
+%31 = OpFOrdLessThan %5 %27 %28 ; byte 0x2d0
+OpSelectionMerge %9 None ; byte 0x2e4
+OpBranchConditional %31 %8 %9 ; byte 0x2f0
+%8 = OpLabel ; byte 0x300
+OpDemoteToHelperInvocation ; byte 0x308
+OpBranch %9 ; byte 0x30c
+%9 = OpLabel ; byte 0x314
+%36 = OpLoad %22 %37 ; byte 0x31c
+%38 = OpFOrdGreaterThan %5 %36 %39 ; byte 0x32c
+OpSelectionMerge %13 None ; byte 0x340
+OpBranchConditional %38 %11 %12 ; byte 0x34c
+%11 = OpLabel ; byte 0x35c
+%43 = OpFOrdLessThan %5 %27 %36 ; byte 0x364
+OpBranch %13 ; byte 0x378
+%12 = OpLabel ; byte 0x380
+OpBranch %13 ; byte 0x388
+%13 = OpLabel ; byte 0x390
+%75 = OpPhi %5 %43 %11 %46 %12 ; byte 0x398
+OpSelectionMerge %15 None ; byte 0x3b4
+OpBranchConditional %75 %14 %15 ; byte 0x3c0
+%14 = OpLabel ; byte 0x3d0
+OpDemoteToHelperInvocation ; byte 0x3d8
+OpBranch %15 ; byte 0x3dc
+%15 = OpLabel ; byte 0x3e4
+%54 = OpLoad %53 %56 ; byte 0x3ec
+%57 = OpBitwiseAnd %53 %54 %58 ; byte 0x3fc
+%59 = OpINotEqual %5 %57 %60 ; byte 0x410
+OpSelectionMerge %18 None ; byte 0x424
+OpBranchConditional %59 %16 %17 ; byte 0x430
+%16 = OpLabel ; byte 0x440
+%64 = OpFOrdGreaterThan %5 %27 %36 ; byte 0x448
+OpBranch %18 ; byte 0x45c
+%17 = OpLabel ; byte 0x464
+OpBranch %18 ; byte 0x46c
+%18 = OpLabel ; byte 0x474
+%76 = OpPhi %5 %64 %16 %46 %17 ; byte 0x47c
+OpSelectionMerge %20 None ; byte 0x498
+OpBranchConditional %76 %19 %20 ; byte 0x4a4
+%19 = OpLabel ; byte 0x4b4
+OpDemoteToHelperInvocation ; byte 0x4bc
+OpBranch %20 ; byte 0x4c0
+%20 = OpLabel ; byte 0x4c8
+OpReturn ; byte 0x4d0
+OpFunctionEnd ; byte 0x4d4

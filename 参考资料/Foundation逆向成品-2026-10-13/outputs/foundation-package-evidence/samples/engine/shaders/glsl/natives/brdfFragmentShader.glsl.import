@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://baci7lkhls858"
+path="res://.godot/imported/brdfFragmentShader.glsl-400a8368c46a76c52d4c00f41c9dfe3a.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-package-evidence/samples/engine/shaders/glsl/natives/brdfFragmentShader.glsl"
+dest_files=["res://.godot/imported/brdfFragmentShader.glsl-400a8368c46a76c52d4c00f41c9dfe3a.res"]
+
+[params]
+

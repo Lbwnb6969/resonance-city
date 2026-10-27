@@ -1,0 +1,16 @@
+﻿{
+	"MILITARY_GENERAL": {
+		"NOT_ENOUGH_GUARD_DESC": "ยามไม่เพียงพอ! กำหนดยามหรือทหารเพิ่มเติมให้กับกองทหารที่ปฏิบัติหน้าที่ลาดตระเวน",
+		"CURRENT_GUARD_RATIO_X_PERCENT": "การครอบคลุมของยามปัจจุบัน: {1}",
+		"TOTAL_NUMBER_PATROLLERS": "จำนวนผู้ลาดตระเวนและนักรบที่ออกตรวจการณ์ทั้งหมด: {1}",
+		"TOTAL_NUMBER_GUARD_LOCATIONS": "จำนวนป้อมปราการที่ใช้งานอยู่ทั้งหมด: {1}",
+		"ACTIVE_FORTIFICATION": "ป้อมปราการ {1} ที่ใช้งานอยู่",
+		"ACTIVE_FORTIFICATION_DESC": "ป้องกันพื้นที่ด้วยแนวป้อมปราการระดับ {1} นักรบและยามหลวงจะสลับเวรยามเพื่อคุ้มกันบริเวณนี้",
+		"LIGHT_X_FORTIFICATION": "สว่าง",
+		"HEAVY_X_FORTIFICATION": "หนัก",
+		"PASSIVE_FORTIFICATION": "ป้อมปราการ {1} แบบพาสซีฟ",
+		"PASSIVE_FORTIFICATION_DESC": "ครอบคลุมพื้นที่ด้วยป้อมปราการ {1} โดยไม่ใช้เวลาของยามหรือทหาร",
+		"NEW_COMPANY_X_FORMED": "กองทหารใหม่ {1} ได้ถูกจัดตั้งขึ้นแล้ว!",
+		"GUARD_DUTY_COMPANY": "กองกำลังเฝ้ายาม"
+	}
+}

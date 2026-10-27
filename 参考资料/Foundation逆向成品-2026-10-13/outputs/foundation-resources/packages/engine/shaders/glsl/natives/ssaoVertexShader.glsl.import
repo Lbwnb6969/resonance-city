@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bdyf20yakgv44"
+path="res://.godot/imported/ssaoVertexShader.glsl-076dd9dd91264ad5d0ff47f33405fec7.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/engine/shaders/glsl/natives/ssaoVertexShader.glsl"
+dest_files=["res://.godot/imported/ssaoVertexShader.glsl-076dd9dd91264ad5d0ff47f33405fec7.res"]
+
+[params]
+

@@ -1,1 +1,0 @@
-第136轮前区域地形、世界、后台结算、小景/UI和运行包探针原文。新增样例只扩展受控规划模板，原默认起点继续使用；旧到站立即改需求/使任务失效由spec.city客流乐句归集替代。失败与中间验证保留在废弃/验证记录/第136轮_*。原容量/完整历史前沿诊断可先运行round136_scale_growth -- --original重建original_scale_final.bin，再运行frontier_diagnosis/land_capacity；缓存不入仓库，原报告为修改前一次真实运行。样例使用区域scale_final.bin，二者分开，避免混用。

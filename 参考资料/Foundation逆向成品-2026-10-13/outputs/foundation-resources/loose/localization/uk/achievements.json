@@ -1,0 +1,18 @@
+﻿{
+	"ACHIEVEMENTS": {
+		"X_ACHIEVEMENTS_EARNED": "{1} досягнень отримано ({2}%)",
+		"ACHIEVEMENTS_DISABLED_MODS_NOTIFICATION": "Досягнення вимкнено. Щоб увімкнути їх, необхідно почати нову гру без модифікацій.",
+		"ACHIEVEMENTS_DISABLED_OLD_SAVEGAME_NOTIFICATION": "Досягнення вимкнено. Щоб увімкнути їх, необхідно почати нову гру або завантажити збережену гру з останнього проходження.",
+		"ACHIEVEMENTS_DISABLED_WARNING": "Досягнення будуть недоступні при використанні модифікацій.",
+		"ACHIEVEMENT_UNLOCKED": "Досягнення розблоковано!",
+		"ACHIEVEMENT_PROGRESS": "Прогрес досягнень",
+		"X_HIDDEN_ACHIEVEMENTS_REMAINING": "Залишилося прихованих досягнень: {1}",
+		"ACHIEVEMENT_DETAILS_REVEALED_ONCE_UNLOCKED": "Подробиці досягнення стануть доступними після його розблокування",
+		"ACHIEVEMENTS_DISABLED_IN_BUILD": "У цій збірці досягнення вимкнено",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET_WARNING": "Досягнення вимкнено",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET": "Досягнення не можна здобути, граючи з {1} Передвстановленими правилами гри.",
+		"SOME_ACHIEVEMENTS_DISABLED_DS_PRESET": "Деякі досягнення не можна здобути, граючи з {1} Передвстановленими правилами гри.",
+		"ACHIEVEMENT_DISABLED_DS_PRESET": "Це досягнення не можна здобути, граючи з {1} Передвстановленими правилами гри.",
+		"ACHIEVEMENT_DISABLED_SAVEGAME": "Раніше в цій грі досягнення були вимкнені, отже не можуть бути знову увімкнені."
+	}
+}

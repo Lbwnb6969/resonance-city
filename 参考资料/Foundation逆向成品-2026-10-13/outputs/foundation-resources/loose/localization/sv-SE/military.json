@@ -1,0 +1,16 @@
+﻿{
+	"MILITARY_GENERAL": {
+		"NOT_ENOUGH_GUARD_DESC": "Inte tillräckligt med vakter! Tilldela fler vakter eller stridande till kompanier med patrulltjänst.",
+		"CURRENT_GUARD_RATIO_X_PERCENT": "Nuvarande vakttäckning: {1}",
+		"TOTAL_NUMBER_PATROLLERS": "Totalt antal patrullerande och kombattanter i patrulltjänst: {1}",
+		"TOTAL_NUMBER_GUARD_LOCATIONS": "Totalt antal aktiva befästningar: {1}",
+		"ACTIVE_FORTIFICATION": "Aktiv {1} Befästning",
+		"ACTIVE_FORTIFICATION_DESC": "Täcker ett område med {1} befästning. Stridande i vakttjänst och vakter övervakar denna plats.",
+		"LIGHT_X_FORTIFICATION": "Lätt",
+		"HEAVY_X_FORTIFICATION": "Tung",
+		"PASSIVE_FORTIFICATION": "Passiv {1} Befästning",
+		"PASSIVE_FORTIFICATION_DESC": "Täcker ett område med {1} befästning utan att ta tid från vakter eller stridande.",
+		"NEW_COMPANY_X_FORMED": "Ett nytt kompani {1} har bildats!",
+		"GUARD_DUTY_COMPANY": "Kompani i vakttjänst"
+	}
+}

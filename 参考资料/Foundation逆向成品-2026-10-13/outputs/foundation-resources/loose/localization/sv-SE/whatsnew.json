@@ -1,0 +1,107 @@
+﻿{
+	"WHATS_NEW_1.6": {
+		"WHATS_NEW_1.6_HEADER": "Hallå där! Mineral och Hantverks Uppdateringen är här!",
+		"WHATS_NEW_1.6_BUILDERS_WORKSHOP": "Den nya **Byggares Verkstad** är nu **OBLIGATORISK** för allt relaterat till byggnation och kan få utbyggnader för skulpturer och färgat glas.",
+		"WHATS_NEW_1.6_MINERAL": "Nya **Mineral tillgångar** har spridits ut på kartorna. Genom att bygga **mineralbrott** på dessa tillgångar gör att gruvarbetare kan utvinna mineraltillgångar (som järn) till nya produktionskedjor.",
+		"WHATS_NEW_1.6_BAILIFF": "Den förbättrade **Fogde** rollen kan tilldelas mandat för att öka inflytande till Ständer och prospektera mineral fyndigheter innan utvinning.",
+		"WHATS_NEW_1.6_MASTERPIECES": "Nya **Mästerverk**, låses upp när specifika villkor är uppfyllda, ger bonusar när de byggs på specifika sätt.",
+		"WHATS_NEW_1.6_NOTIFICATION": "En ny **notifikations panel** hjälper dig sortera notifikationer och varnar dig om problem.",
+		"WHATS_NEW_1.6_FOUNTAINS": "Dekorera din by med nya anpassningsbara fontäner.",
+		"WHATS_NEW_1.6_PATHING": "Bybor kan nu gå igenom byggnader med fler ingångar för att förbättra trafikflödet.",
+		"WHATS_NEW_1.6_FIXES": "Samt en massa anpassningar och rättningar!",
+		"WHATS_NEW_1.6_FOOTER": "Se mer information i Hjälp sektionen och kom ihåg att du kan ställa dina frågor på vår Discord. Ha de bra!"
+	},
+	"WHATS_NEW_1.6_PATCH": {
+		"WHATS_NEW_1.6_PATCH_HEADER": "{1} innehålls patchen är LIVE!",
+		"WHATS_NEW_1.6_PATCH_VILLAGER_NAMES": "Nu med ett tusen **bybo namn**, så kommer du inte hitta en till Female#0382 i bland din befolkning på ett bra tag. Du kan också bli kreativ med den nya **byta namn** funktionen!",
+		"WHATS_NEW_1.6_PATCH_PROMOTION": "Det blir mycket enklare att **befordra bybor** hädanefter, tack vare den nya sorterings funktionaliteten, tillsammans med knappar för att lokalisera en bybo, dess hus och dess arbetsplats.",
+		"WHATS_NEW_1.6_PATCH_MELODY_COMPOSER": "Kan du höra klockorna ringa harmoniskt? Det beror på att du nu kan anpassa hur och när klockorna ringer i dina kyrkor. Dessutom, när du låst upp det Automatiserade Fontän Mästerverket, kommer du kunna testa den nya **Melodi Kompositören** för dig själv!",
+		"WHATS_NEW_1.6_PATCH_MINERAL_DEPOSITS": "**Mineralfyndigheter** har justerats och förbättrats! Järnmalm borde vara mycket lättare att hitta och den stora kranen är nu en obligatorisk resursdepå för brotten. Kolla på dina gruvarbetare medan de staplar låda efter låda av dyrbara ädelstenar och malm!",
+		"WHATS_NEW_1.6_PATCH_MASTERPIECES": "**Mästerverk** har också sett förbättringar: nya delar för Port mästerverket, effekt- & förhållande justeringar och mer information om mästerverk i verktygstipsen i Byggmenyn. Hjälp avsnittet täcker också ämnet för att bekanta dig.",
+		"WHATS_NEW_1.6_PATCH_BUILDERS": "Bybor har blivit smartare... **Byggarbetare** kommer nu prioritera byggnader nära dess tilldelade **Byggares Verkstad** när de letar efter nästa ärende.",
+		"WHATS_NEW_1.6_PATCH_ANIMATIONS": "Vi fortsätter att arbeta och finslipa animationer. Förvänta er **Workstation animationer** med ett jädra anamma för riktig effekt.",
+		"WHATS_NEW_1.6_PATCH_FIXES": "Och mycket finlir, livskvalité-anpassningar och bugfixning!",
+		"WHATS_NEW_1.6_PATCH_FOOTER": "Vi hoppas ni kommer älska dessa anpassningar. Gå med i vår Discord om ni har något att dela med er av, förslag och frågor. Skål!"
+	},
+	"WHATS_NEW_1.6_KEYMAPPING": {
+		"WHATS_NEW_1.6_KEYMAPPING_HEADER": "Goda nyheter Lorder och Damer! {1} Uppdateringen har anlänt!",
+		"WHATS_NEW_1.6_KEYMAPPING_ACCESSIBILITY_PLAN": "Denna uppdatering är väldigt nära våra hjärtan då det är ett av de första stegen mot en större **tillgänglighetsanpassning** som vi kommer att implementera mot slutfasen av spelets släpp.",
+		"WHATS_NEW_1.6_KEYMAPPING_KEYMAPPING": "Med **Kortkommandon**, en mycket efterfrågad funktion från communityn, kan du nu ställa in spelkontrollerna för att de passa din egen spelstil och dina behov. Du hittar det i Inställningarna!",
+		"WHATS_NEW_1.6_KEYMAPPING_NEW_SHORTCUTS": "Njut av ett antal **nya genvägar** som att zooma via tangentbordskommandon, återställa kameran till Bycentrum med fler. Dessa nya funktioner ingår som kortkommandon för att tillåta dina egna personliga preferenser.",
+		"WHATS_NEW_1.6_KEYMAPPING_CAMERA_OPTIONS": "I samma veva har vi också lagt till inställningar för att invertera den vertikala eller horisontella **kameraaxeln** och justera **kamerans hastighetskänslighet** medan du använder musen eller tangentbordet.",
+		"WHATS_NEW_1.6_KEYMAPPING_UI_REHAUL": "Framöver fortsätter vi vårt arbete bakom scenen med den kompletta **UI-rehaulen**, som förbättrar både utseendet på gränssnittet och den övergripande användarupplevelsen. Förvänta dig enklare tillgång till viktig information, nya användbara funktioner och bättre verktygstips, allt insvept i en mjukare estetik. Det krävs fortfarande mycket arbete för att implementera alla ändringar i den inledande fasen av denna stora uppdatering. Vi kommer att hålla dig informerad om våra framsteg i början av nästa år.",
+		"WHATS_NEW_1.6_KEYMAPPING_GAME_DESIGN": "Sist men inte minst har vi jobbat heltid med att färdigställa den slutliga **speldesignen**. Vi planerar att publicera en **uppdaterad plan** tidigt nästa år som beskriver återstående uppdateringar och funktioner fram till den slutliga utgåvan.",
+		"WHATS_NEW_1.6_KEYMAPPING_FOOTER": "Ett stort tack till varenda en av er för all feedback, buggrapporteringar och support under året. Vi hoppas att ni alla får ett fantastiskt jullov!"
+	},
+	"WHATS_NEW_1.7_PREVIEW": {
+		"WHATS_NEW_1.7_PREVIEW_HEADER": "Alpha {1} är LIVE! Välkommen till förhandsgranskade versionen av den kommande Ny UI-uppdateringen!",
+		"WHATS_NEW_1.7_PREVIEW_NEW_UI": "Inuti kommer du att upptäcka en **helt ny UI**, med ändringar och förbättringar rakt igenom. En ny åtgärdsfält, ny HUD, en ny Bokfunktion och mycket, mycket mer. Allt, verkligen allt är nytt!",
+		"WHATS_NEW_1.7_PREVIEW_FEEDBACK": "Vi vill gärna få din **feedback** på förhandsgranskningen, för vilken du kan gå med oss ​​på Discord (länk nedan), där vi har en dedikerad förhandsgranskningsfeedback kanal, eller alternativt lämna oss dina kommentarer på Steam- eller GOG-forumen.",
+		"WHATS_NEW_1.7_PREVIEW_BUGS": "Även om majoriteten av den nya UI:n är på plats, är detta inte fulla versionen och kommer sannolikt att innehålla några **buggar**. Vänligen rapportera dem på vanligt sätt via Discord eller på GOG- och Steamforumen.",
+		"WHATS_NEW_1.7_PREVIEW_FOOTER": "Vi hoppas att ni alla kommer njuta av denna första upplevelse av den kommande 1.7 Ny UI Uppdateringen."
+	},
+	"WHATS_NEW_1.7_UI_UPDATE": {
+		"WHATS_NEW_1.7_UI_UPDATE_HEADER": "Välkommen till {1} Ny UI Uppdateringen!",
+		"WHATS_NEW_1.7_UI_UPDATE_WHAT_IS_NEW": "Så vad är nytt? Tja, en helt ny UI till att börja med! Allt från huvudmenyn, sparfiler med miniatyrbilder, sortering i mod-menyn, laddningsskärmen, till en komplett omarbetning av gränssnittet i spelet. Listan är alldeles för stor för att få in allt här men låt oss titta på några funktioner.",
+		"WHATS_NEW_1.7_UI_UPDATE_ACTION_BAR": "Ett nytt **åtgärdsfält** som inkluderar **bygg**-menyn (med filtrering efter kategorier och en sökfunktion), en **målning**-meny, en **synlighet**-meny och snabb åtkomst till **Boken**!",
+		"WHATS_NEW_1.7_UI_UPDATE_BOOK": "Boken är din informationsföljeslagare och innehåller ett antal sidor som en sorterbar **bybolista**, där du kan tilldela jobb och hitta hem och arbetsplatser, en **arbetsplatslista** som kan sorteras på många sätt, inklusive de under konstruktion. Boken innehåller också sidor för **handel**, **ständer**, **budget** och din **armé** med nya och förbättrade funktioner för alla.",
+		"WHATS_NEW_1.7_UI_UPDATE_HUD": "En mängd informationspaneler längst upp i den nya **HUD** som ger dig enkel tillgång till information om resurser, dina bybor, så som deras lycka samt information om din by och byggnader i den. Du kan snabbt navigera till byggnader som saknar arbetare eller resurser med ett enda klick.",
+		"WHATS_NEW_1.7_UI_UPDATE_STATUS": "**Byggnadsstatus** och **problemräknare** har introducerat som kommer göra det mycket lättare att se och lokalisera potentiella problem som påverkar din by.",
+		"WHATS_NEW_1.7_UI_UPDATE_TOOLTIPS": "Du kommer nu också att hitta ett stort utbud av **verktygstips** för att bättre förstå immigration, lycka och budgetinformation, för att endast nämna några. ",
+		"WHATS_NEW_1.7_UI_UPDATE_QUEST_MODULE": "En ny **uppdragsmodul** och aviseringar rakt igenom. Uppdrag kan enkelt fästas för spårning, medan notiser kan ses här och där i det nya gränssnittet för snabb identifiering av problem, varningar och andra notiser, såsom besök från sändebud och naturligtvis mycket mer.",
+		"WHATS_NEW_1.7_UI_UPDATE_HELP": "En fullständig revidering av **hjälpmenyn** med mer detalj och mycket mer information, som borde hjälpa dig att få ett grepp om spelet snabbare och enklare. Många användbara tips finns också i hjälpämnena för de som kanske redan har bra koll på spelet.",
+		"WHATS_NEW_1.7_UI_UPDATE_ART": "Allt ovan ned mer har lindats in i en tilltalande estetisk och vacker stil som passar både spelet och miljön. Nya **illustrationer** pryder den nya boken och vackra illustrationer finns genom hela spelet när du tar emot brev och berättande notiser.",
+		"WHATS_NEW_1.7_UI_UPDATE_ENVIRONMENT": "Inte bara det, vi har arbetat under huven och gjort förbättringar som inkluderar nya miljötexturer och gräsvariationer, vilket skapar en rikligare värld för dina bybor.",
+		"WHATS_NEW_1.7_UI_UPDATE_FOOTER": "Vi hoppas att du gillar uppdateringen och glöm inte att kolla in våra Discord och sociala mediekanaler nedan."
+	},
+	"WHATS_NEW_1.7_PATCH": {
+		"WHATS_NEW_1.7_PATCH_HEADER": "Alpha {1} UI/UX Patch är LIVE!",
+		"WHATS_NEW_1.7_PATCH_WHAT_IS_NEW": "Patchen är här och med det kommer en rad medeltida korrigeringar och förbättringar inklusive:",
+		"WHATS_NEW_1.7_PATCH_NEW_COUNTERS": "Förbättrad spårning av potentiella problem med tillägget av två nya klickbara **räknare** för att enkelt lokalisera färgzonsproblem såväl som pågående konstruktioner. De hittas överst på skärmen, med befintliga räknare.",
+		"WHATS_NEW_1.7_PATCH_RESOURCE_TEXTFIELD": "Möjligheten att **manuellt mata in värden** av resurser som ska handlas i Boken.",
+		"WHATS_NEW_1.7_PATCH_DISTANCE_WORK": "Återkomsten av **avstånd till arbete**-information vid tilldelning av jobb på arbetsplatser.",
+		"WHATS_NEW_1.7_PATCH_IMPROVED_MENUS": "En mängd förbättringar inom huvudmenyn, så som en mer detaljerad **kartväljare** samt mer effektiva **spara/ladda menyer**.",
+		"WHATS_NEW_1.7_PATCH_MOTION_SICKNESS": "En inställning för att **stänga av animationer** i miljön (träd- och grässvängningar) för att lindra symtom av **åksjuka**.",
+		"WHATS_NEW_1.7_PATCH_ZOOMING_OUT": "En mer responsiv **kamerazoom**, särskilt märkbar när du navigerar i hög terräng. Tittar på dig, Bergskartan!",
+		"WHATS_NEW_1.7_PATCH_TEXT_CONTRAST": "Ökad **textkontrast** och förfinade skuggor, förbättrar övergripande läsbarheten. (Tips: användargränssnittet storlek kan ändras i Inställningarna om så önskas.)",
+		"WHATS_NEW_1.7_PATCH_VISUAL_TWEAKS": "Nya **verktygstips**, plus många fler visuella och estetiska **ändringar* överallt.",
+		"WHATS_NEW_1.7_PATCH_BUGFIXES": "Flera buggfixar och krascher åtgärdade.",
+		"WHATS_NEW_1.7_PATCH_FOOTER": "Förbättringar av gränssnittet kommer fortsätta medan fokuset för 1.8 skiftar tillbaka till spelinnehåll. Tack för din värdefulla feedback och tills nästa gång, ha det bra!"
+	},
+	"WHATS_NEW_1.8": {
+		"WHATS_NEW_1.8_HEADER": "Foundations Höstuppdatering {1} Förhandsgranskning är äntligen här!",
+		"WHATS_NEW_1.8_HEADER_OFFICIAL": "Foundations höstuppdatering {1} är äntligen här!",
+		"WHATS_NEW_1.8_WHAT_IS_NEW": "Vi är stolta över att presentera den senaste förhandsgranskniken av Foundation. Den introducerar flera spännande nya funktioner som kommer att ge nytt liv till dina bosättningar! Här är några höjdpunkter:",
+		"WHATS_NEW_1.8_WHAT_IS_NEW_OFFICIAL": "Vi är mycket stolta över att kunna presentera den senaste uppdateringen för Foundation. Den introducerar flera spännande nya funktioner som kommer att ge nytt liv till dina bosättningar! Här är några höjdpunkter:",
+		"WHATS_NEW_1.8_NEW_PRODUCTION_BUILDINGS": "Två **nya produktionsbyggnader** att lägga till i din bosättning: **Ljusmakeriet** och **verkstaden för vanliga varor**. Båda byggnaderna är visuellt uppdaterade och en har distinkt resurshög så att du aldrig lämnas i mörkret. Vi planerar att lägga till denna användbara funktion till alla andra byggnader också, så snart vi har slutfört deras visuella översyn. Om du undrar vad som är syftet med våra nya byggnader, är svaret enkelt: Att erbjuda ett nytt sätt att tillgodose dina bybors behov av \"vanliga varor\" (utöver vanliga kläder).",
+		"WHATS_NEW_1.8_CONSTRUCTION_BUNDLES": "**Byggstegsbuntar** har lagts till i de nyligen introducerade byggnaderna i Foundation. Den här funktionen hjälper till att skapa en mer logisk och uppslukande byggprocess. Vi tog tillfället i akt att lägga till en relevant artikel i Hjälp om du någonsin behöver en påminnelse.",
+		"WHATS_NEW_1.8_STOCKPILING_COMMUNICATION": "**Lagring** av resurser är nu **bättre kommunicerad** i spelet. Det hindrar dina bybor från att använda lagrade resurser. Tillägget av ikoner, information som visas i verktygstips och till och med ibland omnämnanden i byggnadens status bör hjälpa spelare att förstå denna användbara funktion.",
+		"WHATS_NEW_1.8_GLOBAL_IMPROVEMENTS": "Varje ny patch innebär ett antal **globala förbättringar**. Foundation-fans kommer att bli glada över att höra om inkluderingen av nya och förbättrade verktygstips, förbättrad visning av arbetsplatslagring (indata och utdata) i översiktsfliken med mer.",
+		"WHATS_NEW_1.8_MODDING_IMPROVEMENTS": "Vi ägnar alltid särskild uppmärksamhet åt **modifiering**. Med 1.8 ville vi att moddare skulle ha tillgång till ännu ett kreativt verktyg: skapandet av **anpassade mandat** för fogdar! För att ytterligare stödja modgemenskapen och deras kreativitet kommer moddare nu att ha tillgång till **felsökningsverktyg**! För spelare har vi lagt till **webblänkar till mod.io** så att du lättare kan kommunicera med modskapare vid problem (Rapportverktyget är inte lämpat för mods).",
+		"WHATS_NEW_1.8_AND_MORE": "Med **mycket mer**!",
+		"WHATS_NEW_1.8_FEEDBACK": "Vi vill gärna få din feedback på förhandsvisningen, för vilken du kan gå med på Discord (Discord-knappen nedan), där vi har en dedikerad kanal för förhandsgranskningsfeedback, eller alternativt lämna oss dina kommentarer i Steam- eller GOG-forumen.",
+		"WHATS_NEW_1.8_FOOTER": "Med det sagt, njut av spelet! :)\n - Polymorph Games-teamet"
+	},
+	"WHATS_NEW_1.8_PATCH": {
+		"WHATS_NEW_1.8_PATCH_PREVIEW_NEW_FEATURES": "Det här är din chans att testa några av de nya funktionerna vi har arbetat på.",
+		"WHATS_NEW_1.8_PATCH_PREVIEW_HIGHLIGHTS": "Med de nya funktionerna kommer du märka att:",
+		"WHATS_NEW_1.8_PATCH_PREVIEW_BUGS": "Tänk på att denna version av spelet troligtvis innehåller buggar. Vänligen rapportera dem på den vanliga sättet genom Discord eller på GOG och Steam forumen.",
+		"WHATS_NEW_1.8_PATCH_OFFICIAL_HEADER": "Goda nyheter allesammans! Uppdatering {1} är nu tillgänglig!",
+		"WHATS_NEW_1.8_PATCH_OFFICIAL_HIGHLIGHTS": "Eftersom det gick ganska bra med förhandsversionen, släpper vi den här uppdateringen lite i förväg. Här är en översikt över vad som ingår:",
+		"WHATS_NEW_1.8_PATCH_OFFICIAL_RESOURCE_TRACKER": "**Resource Tracker (ny!)**: spåra dina resurser i realtid! Ikoner har lagts till ovanför enheter så att du kan ha bättre koll på var resurserna finns – och hur de används – i din by. Vi har också lagt till en genväg till boken för varje resurs i informationsmodulen, så att du enkelt kan hantera allt med ett eller två klick."
+	},
+	"WHATS_NEW_1.9_MEDIA_PREVIEW": {
+		"WHATS_NEW_1.9_MEDIA_PREVIEW_PROGRESSION": "**Utveckling** har gjorts om helt. I början kommer du att låsa upp byggnader från en allmän utvecklingsriktning, sedan måste du välja vilken av de tre ständerna – Allmoge, Kungadöme eller Prästerskap – du vill satsa på."
+	},
+	"WHATS_NEW_1.9_PUBLIC_PREVIEW": {},
+	"WHATS_NEW_1.9_RELEASE": {
+		"WHATS_NEW_1.9_RELEASE_PROGRESSION": "Ett **nytt utvecklingssystem** som ger mycket mer vikt åt dina beslut. Förutom en Allmän utvecklingsriktning som erbjuder några av de mest väsentliga Foundation-byggnaderna, har varje Stånd nu sin egen uppsättning upplåsbara byggnader...kan du få dem alla?\n\nFör närvarande fokuserade vi på prästerskapets utvecklingsriktning. Med våra nästa uppdateringar planerar vi att uppgradera både Kungadöme- och Allmoge-utvecklingsriktningar."
+	},
+	"WHATS_NEW_1.9.1_RELEASE": {},
+	"WHATS_NEW_1.9.2_RELEASE": {},
+	"WHATS_NEW_1.9.3_RELEASE": {},
+	"WHATS_NEW_1.9.4_RELEASE": {},
+	"WHATS_NEW_1.9.5_RELEASE": {},
+	"WHATS_NEW_1.9.6_RELEASE": {},
+	"WHATS_NEW_1.9.7_RELEASE": {}
+}

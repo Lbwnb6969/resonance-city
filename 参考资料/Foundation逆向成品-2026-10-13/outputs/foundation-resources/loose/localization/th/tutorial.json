@@ -1,0 +1,33 @@
+﻿{
+	"CONTROLS_ACTION": {
+		"LEFT_CLICK": "คลิกซ้าย",
+		"LEFT_CLICK_DRAG": "คลิกซ้าย ลาก",
+		"RIGHT_CLICK": "คลิกขวา",
+		"HOLD_KEY": "กด/ถือ {1}",
+		"HORIZONTAL_MOUSE_MOVEMENT": "การเคลื่อนไหวของเมาส์ในแนวนอน",
+		"MOUSE_WHEEL": "ล้อเมาส์"
+	},
+	"CONTROLS": {
+		"X_TO_SELECT_PLACE_BUILDING_PART": "{1} เพื่อเลือก/วางชิ้นส่วน",
+		"X_ON_VERTICAL_ARROWS_TO_RESCALE_PART": "{1} บนลูกศรเพื่อจัดการชิ้นส่วน",
+		"X_TO_DELETE_PART": "{1} เพื่อลบชิ้นส่วน",
+		"X_AND_Y_TO_ROTATE_PART": "{1} และ {2} เพื่อหมุนชิ้นส่วน",
+		"X_AND_Y_TO_MOVE_BRIDGE": "{1} และ {2} เพื่อย้ายสะพาน",
+		"X_AND_Y_TO_KEEP_PART_SELECTION": "{1} และ {2} เพื่อวางส่วนประกอบของอาคารและคงการเลือกไว้",
+		"X_ON_WALL_NODE_TO_SELECT_PLACE_NEW_NODE": "{1} บนกำแพงเพื่อเลือก/วางโหนดใหม่",
+		"X_ON_WALL_SECTION_TO_TOGGLE_WALL_CURVING": "{1} บนกำแพงเพื่อสลับการโค้งของกำแพง",
+		"X_AND_Y_TO_EXTEND_EXISTING_WALL": "{1} และ {2} เพื่อขยายกำแพงที่มีอยู่",
+		"X_AND_Y_TO_REMOVE_WALL_NODE_SECTION": "{1} และ {2} เพื่อลบโหนด/ส่วนกำแพง",
+		"X_TO_CANCEL_SELECTION": "{1} เพื่อยกเลิกการเลือก",
+		"X_TO_PAINT": "{1} เพื่อลงสีพื้นที่",
+		"X_TO_ERASE": "{1} เพื่อเลิกลงสีพื้นที่",
+		"X_AND_Y_TO_RESIZE_BRUSH_SIZE": "{1} และ {2} เพื่อปรับขนาดของแปรง",
+		"X_TO_INCREASE_BRUSH_SIZE": "{1} เพื่อเพิ่มขนาดแปรง",
+		"X_TO_DECREASE_BRUSH_SIZE": "{1} เพื่อลดขนาดแปรง",
+		"X_TO_ROTATE_PART": "{1}เมื่อขยับส่วนนี้ให้หมุนมัน",
+		"X_TO_KEEP_PART_SELECTION": "{1} เมื่อกำลังวางชิ้นส่วนเพื่อวางหลายอัน",
+		"X_TO_SELECT_CONNECTED": "{1} เพื่อเลือกชิ้นส่วนที่ต่อกันทั้งหมด",
+		"X_TO_SELECT_ALL": "{1} เพื่อเลือกชิ้นส่วนทั้งหมดของอนุเสาวรีย์",
+		"X_TO_SELECT_MULTIPLE": "{1} เมื่อกำลังเลือกชิ้นส่วนเพื่อเลือกหลายอัน"
+	}
+}

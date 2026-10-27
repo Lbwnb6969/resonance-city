@@ -1,0 +1,386 @@
+{
+  "sha256": "38e90f9bbb0b2949e29acb12392ca24dae13aad340995a5bbcc78826bc722344",
+  "functions": [
+    {
+      "entry": "0x180006d00",
+      "name": "export luaopen_socket_core",
+      "calls": [
+        {
+          "to": "0x18000ab50",
+          "from": "180006d09"
+        },
+        {
+          "to": "0x18000bee0",
+          "from": "180006d1a"
+        },
+        {
+          "to": "0x180005660",
+          "from": "180006d2c"
+        },
+        {
+          "to": "0x18000c7e0",
+          "from": "180006d3b"
+        },
+        {
+          "to": "0x18000c7e0",
+          "from": "180006d4a"
+        },
+        {
+          "to": "0x18000c9f0",
+          "from": "180006d57"
+        },
+        {
+          "to": "0x18000c7e0",
+          "from": "180006d65"
+        },
+        {
+          "to": "0x18000df00",
+          "from": "180006d6d"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\n/* WARNING: Globals starting with \u0027_\u0027 overlap smaller symbols at the same address */\r\n\r\nundefined8 luaopen_socket_core(undefined8 param_1)\r\n\r\n{\r\n  int iVar1;\r\n  longlong lVar2;\r\n  longlong lVar3;\r\n  \r\n                    /* 0x6d00  135  luaopen_socket_core */\r\n  iVar1 \u003d FUN_18000ab50();\r\n  if (iVar1 \u003d\u003d 0) {\r\n    FUN_18000c7e0(param_1,\"unable to initialize library\");\r\n    FUN_18000df00(param_1);\r\n  }\r\n  else {\r\n    FUN_18000bee0(param_1,0,0);\r\n    FUN_180005660(param_1,s_w_1800630e8,0);\r\n    FUN_18000c7e0(param_1,\"_VERSION\");\r\n    FUN_18000c7e0(param_1,\"LuaSocket 3.0-rc1\");\r\n    FUN_18000c9f0(param_1,0xfffffffd);\r\n  }\r\n  if (_DAT_180057650 !\u003d 0) {\r\n    lVar2 \u003d 0;\r\n    lVar3 \u003d lVar2;\r\n    do {\r\n      (**(code **)(\u0026UNK_180057658 + lVar2))(param_1);\r\n      lVar3 \u003d lVar3 + 1;\r\n      lVar2 \u003d lVar3 * 0x10;\r\n    } while (*(longlong *)(\u0026DAT_180057650 + lVar2) !\u003d 0);\r\n  }\r\n  return 1;\r\n}\r\n\r\n",
+      "assembly": "180006d00 PUSH RDI\n180006d02 SUB RSP,0x20\n180006d06 MOV RDI,RCX\n180006d09 CALL 0x18000ab50\n180006d0e MOV RCX,RDI\n180006d11 TEST EAX,EAX\n180006d13 JZ 0x180006d5e\n180006d15 XOR R8D,R8D\n180006d18 XOR EDX,EDX\n180006d1a CALL 0x18000bee0\n180006d1f XOR R8D,R8D\n180006d22 LEA RDX,[0x1800630e8]\n180006d29 MOV RCX,RDI\n180006d2c CALL 0x180005660\n180006d31 LEA RDX,[0x180057728]\n180006d38 MOV RCX,RDI\n180006d3b CALL 0x18000c7e0\n180006d40 LEA RDX,[0x180057738]\n180006d47 MOV RCX,RDI\n180006d4a CALL 0x18000c7e0\n180006d4f MOV EDX,0xfffffffd\n180006d54 MOV RCX,RDI\n180006d57 CALL 0x18000c9f0\n180006d5c JMP 0x180006d72\n180006d5e LEA RDX,[0x180057750]\n180006d65 CALL 0x18000c7e0\n180006d6a MOV RCX,RDI\n180006d6d CALL 0x18000df00\n180006d72 CMP qword ptr [0x180057650],0x0\n180006d7a JZ 0x180006db3\n"
+    },
+    {
+      "entry": "0x18000ab50",
+      "name": "FUN_18000ab50",
+      "calls": [
+        {
+          "to": "0x180055740",
+          "from": "18000aba1"
+        },
+        {
+          "to": "0x180055740",
+          "from": "18000abca"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\n/* WARNING: Globals starting with \u0027_\u0027 overlap smaller symbols at the same address */\r\n\r\nvoid FUN_18000ab50(void)\r\n\r\n{\r\n  int iVar1;\r\n  undefined1 auStack_1d8 [32];\r\n  undefined1 auStack_1b8 [416];\r\n  ulonglong uStack_18;\r\n  \r\n  uStack_18 \u003d _DAT_180063a08 ^ (ulonglong)auStack_1d8;\r\n  iVar1 \u003d WSAStartup(2,auStack_1b8);\r\n  if (iVar1 \u003d\u003d 0) {\r\n    if ((char)auStack_1b8._0_2_ \u003d\u003d \u0027\\x02\u0027) {\r\n      if (SUB21(auStack_1b8._0_2_,1) \u003d\u003d \u0027\\0\u0027) {\r\nLAB_18000abba:\r\n        FUN_180055740(uStack_18 ^ (ulonglong)auStack_1d8);\r\n        return;\r\n      }\r\n    }\r\n    else if (((char)auStack_1b8._0_2_ \u003d\u003d \u0027\\x01\u0027) \u0026\u0026 (SUB21(auStack_1b8._0_2_,1) \u003d\u003d \u0027\\x01\u0027))\r\n    goto LAB_18000abba;\r\n    WSACleanup();\r\n  }\r\n  FUN_180055740(uStack_18 ^ (ulonglong)auStack_1d8);\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "18000ab50 SUB RSP,0x1d8\n18000ab57 MOV RAX,qword ptr [0x180063a08]\n18000ab5e XOR RAX,RSP\n18000ab61 MOV qword ptr [RSP + 0x1c0],RAX\n18000ab69 MOV ECX,0x2\n18000ab6e LEA RDX,[RSP + 0x20]\n18000ab73 CALL qword ptr [0x180057190]\n18000ab79 TEST EAX,EAX\n18000ab7b JNZ 0x18000ab94\n18000ab7d MOVZX EAX,word ptr [RSP + 0x20]\n18000ab82 CMP AL,0x2\n18000ab84 JNZ 0x18000abae\n18000ab86 SHR AX,0x8\n18000ab8a TEST AL,AL\n18000ab8c JZ 0x18000abba\n18000ab8e CALL qword ptr [0x180057198]\n18000ab94 XOR EAX,EAX\n18000ab96 MOV RCX,qword ptr [RSP + 0x1c0]\n18000ab9e XOR RCX,RSP\n18000aba1 CALL 0x180055740\n18000aba6 ADD RSP,0x1d8\n18000abad RET\n18000abae CMP AL,0x1\n18000abb0 JNZ 0x18000ab8e\n18000abb2 SHR AX,0x8\n18000abb6 CMP AL,0x1\n18000abb8 JNZ 0x18000ab8e\n18000abba MOV EAX,0x1\n18000abbf MOV RCX,qword ptr [RSP + 0x1c0]\n18000abc7 XOR RCX,RSP\n18000abca CALL 0x180055740\n18000abcf ADD RSP,0x1d8\n18000abd6 RET\n"
+    },
+    {
+      "entry": "0x18000bee0",
+      "name": "FUN_18000bee0",
+      "calls": [
+        {
+          "to": "0x180013600",
+          "from": "18000bf05"
+        },
+        {
+          "to": "0x180015a80",
+          "from": "18000bf36"
+        },
+        {
+          "to": "0x180017dd0",
+          "from": "18000bf59"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nvoid FUN_18000bee0(longlong param_1,int param_2,int param_3)\r\n\r\n{\r\n  undefined4 *puVar1;\r\n  undefined4 uVar2;\r\n  int iVar3;\r\n  int iVar4;\r\n  \r\n  if (*(uint *)((ulonglong)*(uint *)(param_1 + 8) + 0x24) \u003c\u003d\r\n      *(uint *)((ulonglong)*(uint *)(param_1 + 8) + 0x20)) {\r\n    FUN_180013600();\r\n  }\r\n  if (param_3 \u003d\u003d 0) {\r\n    iVar4 \u003d 0;\r\n  }\r\n  else if (param_3 \u003d\u003d 1) {\r\n    iVar4 \u003d 1;\r\n  }\r\n  else {\r\n    iVar4 \u003d 0x1f;\r\n    if (param_3 - 1U !\u003d 0) {\r\n      for (; param_3 - 1U \u003e\u003e iVar4 \u003d\u003d 0; iVar4 \u003d iVar4 + -1) {\r\n      }\r\n    }\r\n    iVar4 \u003d iVar4 + 1;\r\n  }\r\n  iVar3 \u003d param_2 + 1;\r\n  if (param_2 \u003c 1) {\r\n    iVar3 \u003d 0;\r\n  }\r\n  uVar2 \u003d FUN_180015a80(param_1,iVar3,iVar4);\r\n  puVar1 \u003d *(undefined4 **)(param_1 + 0x18);\r\n  *puVar1 \u003d uVar2;\r\n  puVar1[1] \u003d 0xfffffff4;\r\n  *(longlong *)(param_1 + 0x18) \u003d *(longlong *)(param_1 + 0x18) + 8;\r\n  if ((ulonglong)*(uint *)(param_1 + 0x20) \u003c\u003d *(ulonglong *)(param_1 + 0x18)) {\r\n    FUN_180017dd0(param_1);\r\n  }\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "18000bee0 MOV qword ptr [RSP + 0x8],RBX\n18000bee5 MOV qword ptr [RSP + 0x10],RSI\n18000beea PUSH RDI\n18000beeb SUB RSP,0x20\n18000beef MOV R9D,dword ptr [RCX + 0x8]\n18000bef3 MOV EDI,R8D\n18000bef6 MOV ESI,EDX\n18000bef8 MOV RBX,RCX\n18000befb MOV EAX,dword ptr [R9 + 0x24]\n18000beff CMP dword ptr [R9 + 0x20],EAX\n18000bf03 JC 0x18000bf0a\n18000bf05 CALL 0x180013600\n18000bf0a XOR R9D,R9D\n18000bf0d TEST EDI,EDI\n18000bf0f JZ 0x18000bf27\n18000bf11 CMP EDI,0x1\n18000bf14 JNZ 0x18000bf1b\n18000bf16 MOV R8D,EDI\n18000bf19 JMP 0x18000bf2a\n18000bf1b LEA EAX,[RDI + -0x1]\n18000bf1e BSR R8D,EAX\n18000bf22 INC R8D\n18000bf25 JMP 0x18000bf2a\n18000bf27 MOV R8D,R9D\n18000bf2a LEA EDX,[RSI + 0x1]\n18000bf2d TEST ESI,ESI\n18000bf2f MOV RCX,RBX\n18000bf32 CMOVLE EDX,R9D\n18000bf36 CALL 0x180015a80\n18000bf3b MOV RCX,qword ptr [RBX + 0x18]\n18000bf3f MOV dword ptr [RCX],EAX\n18000bf41 MOV dword ptr [RCX + 0x4],0xfffffff4\n18000bf48 ADD qword ptr [RBX + 0x18],0x8\n18000bf4d MOV EAX,dword ptr [RBX + 0x20]\n18000bf50 CMP qword ptr [RBX + 0x18],RAX\n18000bf54 JC 0x18000bf5e\n18000bf56 MOV RCX,RBX\n18000bf59 CALL 0x180017dd0\n18000bf5e MOV RBX,qword ptr [RSP + 0x30]\n18000bf63 MOV RSI,qword ptr [RSP + 0x38]\n18000bf68 ADD RSP,0x20\n18000bf6c POP RDI\n18000bf6d RET\n"
+    },
+    {
+      "entry": "0x180005660",
+      "name": "FUN_180005660",
+      "calls": [
+        {
+          "to": "0x18000ba80",
+          "from": "18000567c"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nvoid FUN_180005660(longlong param_1,longlong *param_2,uint param_3)\r\n\r\n{\r\n  longlong lVar1;\r\n  undefined8 unaff_RBX;\r\n  ulonglong uVar2;\r\n  uint uVar3;\r\n  longlong lVar4;\r\n  \r\n  FUN_18000ba80(param_1,param_3 + 1,\"too many upvalues\");\r\n  lVar1 \u003d *param_2;\r\n  if (lVar1 !\u003d 0) {\r\n    do {\r\n      FUN_18000c7e0(param_1,lVar1);\r\n      if (0 \u003c (int)param_3) {\r\n        uVar2 \u003d (ulonglong)param_3;\r\n        do {\r\n          FUN_18000c8b0(param_1,~param_3);\r\n          uVar2 \u003d uVar2 - 1;\r\n        } while (uVar2 !\u003d 0);\r\n      }\r\n      FUN_18000c5e0(param_1,param_2[1],(ulonglong)param_3);\r\n      FUN_18000ce00(param_1,-3 - param_3);\r\n      lVar1 \u003d param_2[2];\r\n      param_2 \u003d param_2 + 2;\r\n    } while (lVar1 !\u003d 0);\r\n  }\r\n  uVar3 \u003d ~param_3;\r\n  if (-1 \u003c (int)param_3) {\r\n    *(longlong *)(param_1 + 0x18) \u003d *(longlong *)(param_1 + 0x18) + (longlong)(int)(uVar3 + 1) * 8;\r\n    return;\r\n  }\r\n  lVar1 \u003d *(longlong *)(param_1 + 0x10);\r\n  uVar2 \u003d lVar1 + (longlong)(int)uVar3 * 8;\r\n  if (uVar2 \u003c\u003d *(ulonglong *)(param_1 + 0x18)) {\r\n    *(ulonglong *)(param_1 + 0x18) \u003d uVar2;\r\n    return;\r\n  }\r\n  if (*(uint *)(param_1 + 0x20) \u003c\u003d uVar2) {\r\n    lVar4 \u003d (longlong)(*(ulonglong *)(param_1 + 0x18) - lVar1) \u003e\u003e 3;\r\n    FUN_180017d70(param_1,uVar3 - (int)lVar4,lVar4,lVar1,unaff_RBX);\r\n  }\r\n  do {\r\n    *(undefined4 *)(*(longlong *)(param_1 + 0x18) + 4) \u003d 0xffffffff;\r\n    *(longlong *)(param_1 + 0x18) \u003d *(longlong *)(param_1 + 0x18) + 8;\r\n  } while (*(ulonglong *)(param_1 + 0x18) \u003c\r\n           (ulonglong)(*(longlong *)(param_1 + 0x10) + (longlong)(int)uVar3 * 8));\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "180005660 PUSH RBP\n180005662 PUSH RSI\n180005663 PUSH R14\n180005665 SUB RSP,0x20\n180005669 MOV EBP,R8D\n18000566c MOV R14,RDX\n18000566f LEA R8,[0x180057518]\n180005676 MOV RSI,RCX\n180005679 LEA EDX,[RBP + 0x1]\n18000567c CALL 0x18000ba80\n180005681 MOV RAX,qword ptr [R14]\n180005684 TEST RAX,RAX\n180005687 JZ 0x180005706\n"
+    },
+    {
+      "entry": "0x18000c7e0",
+      "name": "FUN_18000c7e0",
+      "calls": [
+        {
+          "to": "0x180013600",
+          "from": "18000c810"
+        },
+        {
+          "to": "0x1800149e0",
+          "from": "18000c830"
+        },
+        {
+          "to": "0x180017dd0",
+          "from": "18000c853"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nvoid FUN_18000c7e0(longlong param_1,longlong param_2)\r\n\r\n{\r\n  undefined4 *puVar1;\r\n  undefined4 uVar2;\r\n  longlong lVar3;\r\n  \r\n  if (param_2 \u003d\u003d 0) {\r\n    *(undefined4 *)(*(longlong *)(param_1 + 0x18) + 4) \u003d 0xffffffff;\r\n  }\r\n  else {\r\n    if (*(uint *)((ulonglong)*(uint *)(param_1 + 8) + 0x24) \u003c\u003d\r\n        *(uint *)((ulonglong)*(uint *)(param_1 + 8) + 0x20)) {\r\n      FUN_180013600(param_1);\r\n    }\r\n    lVar3 \u003d -1;\r\n    do {\r\n      lVar3 \u003d lVar3 + 1;\r\n    } while (*(char *)(param_2 + lVar3) !\u003d \u0027\\0\u0027);\r\n    uVar2 \u003d FUN_1800149e0(param_1,param_2);\r\n    puVar1 \u003d *(undefined4 **)(param_1 + 0x18);\r\n    *puVar1 \u003d uVar2;\r\n    puVar1[1] \u003d 0xfffffffb;\r\n  }\r\n  *(longlong *)(param_1 + 0x18) \u003d *(longlong *)(param_1 + 0x18) + 8;\r\n  if ((ulonglong)*(uint *)(param_1 + 0x20) \u003c\u003d *(ulonglong *)(param_1 + 0x18)) {\r\n    FUN_180017dd0(param_1);\r\n  }\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "18000c7e0 MOV qword ptr [RSP + 0x8],RBX\n18000c7e5 PUSH RDI\n18000c7e6 SUB RSP,0x20\n18000c7ea MOV RDI,RDX\n18000c7ed MOV RBX,RCX\n18000c7f0 TEST RDX,RDX\n18000c7f3 JNZ 0x18000c802\n18000c7f5 MOV RAX,qword ptr [RCX + 0x18]\n18000c7f9 MOV dword ptr [RAX + 0x4],0xffffffff\n18000c800 JMP 0x18000c842\n18000c802 MOV ECX,dword ptr [RCX + 0x8]\n18000c805 MOV EAX,dword ptr [RCX + 0x24]\n18000c808 CMP dword ptr [RCX + 0x20],EAX\n18000c80b JC 0x18000c815\n18000c80d MOV RCX,RBX\n18000c810 CALL 0x180013600\n18000c815 OR R8,-0x1\n18000c819 NOP dword ptr [RAX]\n18000c820 INC R8\n18000c823 CMP byte ptr [RDI + R8*0x1],0x0\n18000c828 JNZ 0x18000c820\n18000c82a MOV RDX,RDI\n18000c82d MOV RCX,RBX\n18000c830 CALL 0x1800149e0\n18000c835 MOV RCX,qword ptr [RBX + 0x18]\n18000c839 MOV dword ptr [RCX],EAX\n18000c83b MOV dword ptr [RCX + 0x4],0xfffffffb\n18000c842 ADD qword ptr [RBX + 0x18],0x8\n18000c847 MOV EAX,dword ptr [RBX + 0x20]\n18000c84a CMP qword ptr [RBX + 0x18],RAX\n18000c84e JC 0x18000c858\n18000c850 MOV RCX,RBX\n18000c853 CALL 0x180017dd0\n18000c858 MOV RBX,qword ptr [RSP + 0x30]\n18000c85d ADD RSP,0x20\n18000c861 POP RDI\n18000c862 RET\n"
+    },
+    {
+      "entry": "0x18000c9f0",
+      "name": "FUN_18000c9f0",
+      "calls": [
+        {
+          "to": "0x18000b710",
+          "from": "18000ca02"
+        },
+        {
+          "to": "0x180015e20",
+          "from": "18000ca19"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nvoid FUN_18000c9f0(longlong param_1)\r\n\r\n{\r\n  uint uVar1;\r\n  uint uVar2;\r\n  longlong lVar3;\r\n  uint *puVar4;\r\n  undefined8 *puVar5;\r\n  ulonglong uVar6;\r\n  longlong lVar7;\r\n  \r\n  puVar4 \u003d (uint *)func_0x00018000b710();\r\n  lVar3 \u003d *(longlong *)(param_1 + 0x18);\r\n  lVar7 \u003d lVar3 + -0x10;\r\n  uVar1 \u003d *puVar4;\r\n  uVar6 \u003d (ulonglong)uVar1;\r\n  puVar5 \u003d (undefined8 *)FUN_180015e20(param_1,uVar6,lVar7);\r\n  *puVar5 \u003d *(undefined8 *)(lVar3 + -8);\r\n  if ((*(byte *)(uVar6 + 4) \u0026 4) !\u003d 0) {\r\n    uVar2 \u003d *(uint *)(param_1 + 8);\r\n    *(byte *)(uVar6 + 4) \u003d *(byte *)(uVar6 + 4) \u0026 0xfb;\r\n    *(undefined4 *)(uVar6 + 0xc) \u003d *(undefined4 *)((ulonglong)uVar2 + 0x3c);\r\n    *(uint *)((ulonglong)uVar2 + 0x3c) \u003d uVar1;\r\n  }\r\n  *(longlong *)(param_1 + 0x18) \u003d lVar7;\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "18000c9f0 MOV qword ptr [RSP + 0x8],RBX\n18000c9f5 MOV qword ptr [RSP + 0x10],RSI\n18000c9fa PUSH RDI\n18000c9fb SUB RSP,0x20\n18000c9ff MOV RBX,RCX\n18000ca02 CALL 0x18000b710\n18000ca07 MOV RDI,qword ptr [RBX + 0x18]\n18000ca0b MOV RCX,RBX\n18000ca0e SUB RDI,0x10\n18000ca12 MOV R8,RDI\n18000ca15 MOV ESI,dword ptr [RAX]\n18000ca17 MOV EDX,ESI\n18000ca19 CALL 0x180015e20\n18000ca1e MOV RCX,qword ptr [RDI + 0x8]\n18000ca22 MOV qword ptr [RAX],RCX\n18000ca25 MOVZX EAX,byte ptr [RSI + 0x4]\n18000ca29 TEST AL,0x4\n18000ca2b JZ 0x18000ca3e\n18000ca2d MOV ECX,dword ptr [RBX + 0x8]\n18000ca30 AND AL,0xfb\n18000ca32 MOV byte ptr [RSI + 0x4],AL\n18000ca35 MOV EAX,dword ptr [RCX + 0x3c]\n18000ca38 MOV dword ptr [RSI + 0xc],EAX\n18000ca3b MOV dword ptr [RCX + 0x3c],ESI\n18000ca3e MOV RSI,qword ptr [RSP + 0x38]\n18000ca43 MOV qword ptr [RBX + 0x18],RDI\n18000ca47 MOV RBX,qword ptr [RSP + 0x30]\n18000ca4c ADD RSP,0x20\n18000ca50 POP RDI\n18000ca51 RET\n"
+    },
+    {
+      "entry": "0x18000df00",
+      "name": "FUN_18000df00",
+      "calls": [
+        {
+          "to": "0x18000db80",
+          "from": "18000df04"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nvoid FUN_18000df00(void)\r\n\r\n{\r\n  code *pcVar1;\r\n  \r\n  FUN_18000db80();\r\n  pcVar1 \u003d (code *)swi(3);\r\n  (*pcVar1)();\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "18000df00 SUB RSP,0x28\n18000df04 CALL 0x18000db80\n18000df09 INT3\n"
+    },
+    {
+      "entry": "0x180055740",
+      "name": "FUN_180055740",
+      "calls": [],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\n/* WARNING: Globals starting with \u0027_\u0027 overlap smaller symbols at the same address */\r\n\r\nvoid FUN_180055740(longlong param_1)\r\n\r\n{\r\n  code *pcVar1;\r\n  int iVar2;\r\n  undefined1 *puVar3;\r\n  undefined1 auStack_38 [8];\r\n  undefined1 auStack_30 [48];\r\n  \r\n  if ((param_1 \u003d\u003d _DAT_180063a08) \u0026\u0026 ((short)((ulonglong)param_1 \u003e\u003e 0x30) \u003d\u003d 0)) {\r\n    return;\r\n  }\r\n  puVar3 \u003d auStack_38;\r\n  iVar2 \u003d IsProcessorFeaturePresent(0x17);\r\n  if (iVar2 !\u003d 0) {\r\n    pcVar1 \u003d (code *)swi(0x29);\r\n    (*pcVar1)(2);\r\n    puVar3 \u003d auStack_30;\r\n  }\r\n  *(undefined **)(puVar3 + -8) \u003d \u0026UNK_180055d23;\r\n  FUN_180055dcc(0x180063b40);\r\n  uRam0000000180063ab0 \u003d *(undefined8 *)(puVar3 + 0x38);\r\n  puRam0000000180063bd8 \u003d puVar3 + 0x40;\r\n  uRam0000000180063bc0 \u003d *(undefined8 *)(puVar3 + 0x40);\r\n  uRam0000000180063aa0 \u003d 0xc0000409;\r\n  uRam0000000180063aa4 \u003d 1;\r\n  uRam0000000180063ab8 \u003d 1;\r\n  uRam0000000180063ac0 \u003d 2;\r\n  *(longlong *)(puVar3 + 0x20) \u003d _DAT_180063a08;\r\n  *(undefined8 *)(puVar3 + 0x28) \u003d uRam0000000180063a00;\r\n  *(undefined **)(puVar3 + -8) \u003d \u0026UNK_180055dc5;\r\n  uRam0000000180063c38 \u003d uRam0000000180063ab0;\r\n  FUN_180055cc4(\u0026UNK_18005c588);\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "180055740 CMP RCX,qword ptr [0x180063a08]\n180055747 JNZ 0x180055759\n180055749 ROL RCX,0x10\n18005574d TEST CX,0xffff\n180055752 JNZ 0x180055755\n180055754 RET\n180055755 ROR RCX,0x10\n180055759 JMP 0x180055cf8\n"
+    },
+    {
+      "entry": "0x180013600",
+      "name": "FUN_180013600",
+      "calls": [],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nundefined8 FUN_180013600(longlong param_1)\r\n\r\n{\r\n  byte bVar1;\r\n  undefined4 uVar2;\r\n  longlong lVar3;\r\n  int iVar4;\r\n  undefined8 uVar5;\r\n  longlong *plVar6;\r\n  uint uVar7;\r\n  uint *puVar8;\r\n  uint *puVar9;\r\n  int iVar10;\r\n  ulonglong uVar11;\r\n  \r\n  uVar11 \u003d (ulonglong)*(uint *)(param_1 + 8);\r\n  uVar2 \u003d *(undefined4 *)(uVar11 + 0xe8);\r\n  *(undefined4 *)(uVar11 + 0xe8) \u003d 0xfffffffd;\r\n  iVar10 \u003d *(int *)(uVar11 + 0x48) * 10;\r\n  if (iVar10 \u003d\u003d 0) {\r\n    iVar10 \u003d 0x7fffff00;\r\n  }\r\n  if (*(uint *)(uVar11 + 0x24) \u003c *(uint *)(uVar11 + 0x20)) {\r\n    *(int *)(uVar11 + 0x4c) \u003d\r\n         *(int *)(uVar11 + 0x4c) + (*(uint *)(uVar11 + 0x20) - *(uint *)(uVar11 + 0x24));\r\n  }\r\n  do {\r\n    iVar4 \u003d 0;\r\n    plVar6 \u003d (longlong *)(ulonglong)*(uint *)(param_1 + 8);\r\n    switch(*(undefined1 *)((longlong)plVar6 + 0x29)) {\r\n    case 0:\r\n      plVar6[7] \u003d 0;\r\n      *(undefined4 *)(plVar6 + 8) \u003d 0;\r\n      if ((*(byte *)((ulonglong)*(uint *)((longlong)plVar6 + 0x94) + 4) \u0026 3) !\u003d 0) {\r\n        FUN_180012420(plVar6);\r\n      }\r\n      if ((*(byte *)((ulonglong)*(uint *)((ulonglong)*(uint *)((longlong)plVar6 + 0x94) + 0x2c) + 4)\r\n          \u0026 3) !\u003d 0) {\r\n        FUN_180012420(plVar6);\r\n      }\r\n      if ((0xfffffff6 \u003c *(int *)((longlong)plVar6 + 0x9c) + 4U) \u0026\u0026\r\n         ((*(byte *)((ulonglong)*(uint *)(plVar6 + 0x13) + 4) \u0026 3) !\u003d 0)) {\r\n        FUN_180012420(plVar6);\r\n      }\r\n      FUN_1800124d0(plVar6);\r\n      *(undefined1 *)((longlong)plVar6 + 0x29) \u003d 1;\r\n      break;\r\n    case 1:\r\n      if ((int)plVar6[7] \u003d\u003d 0) {\r\n        *(undefined1 *)((longlong)plVar6 + 0x29) \u003d 2;\r\n      }\r\n      else {\r\n        iVar4 \u003d FUN_180013c50(plVar6);\r\n      }\r\n      break;\r\n    case 2:\r\n      if (*(int *)((longlong)plVar6 + 0xf4) \u003d\u003d 0) {\r\n        FUN_180011ff0(plVar6,param_1);\r\n        *(undefined1 *)((longlong)plVar6 + 0x29) \u003d 3;\r\n        *(undefined4 *)((longlong)plVar6 + 0x2c) \u003d 0;\r\n      }\r\n      else {\r\n        iVar4 \u003d 0x7fffff00;\r\n      }\r\n      break;\r\n    case 3:\r\n      bVar1 \u003d *(byte *)(plVar6 + 5);\r\n      puVar8 \u003d (uint *)(*plVar6 + (ulonglong)*(uint *)((longlong)plVar6 + 0x2c) * 4);\r\n      lVar3 \u003d plVar6[4];\r\n      *(uint *)((longlong)plVar6 + 0x2c) \u003d *(uint *)((longlong)plVar6 + 0x2c) + 1;\r\n      uVar7 \u003d *puVar8;\r\n      iVar4 \u003d 0x7fffff00;\r\n      while ((puVar9 \u003d (uint *)(ulonglong)uVar7, puVar9 !\u003d (uint *)0x0 \u0026\u0026 (iVar4 !\u003d 0))) {\r\n        if (*(char *)((longlong)puVar9 + 5) \u003d\u003d \u0027\\x06\u0027) {\r\n          FUN_180012af0(plVar6,puVar9 + 10,0x7fffff00);\r\n        }\r\n        if ((byte)((bVar1 ^ 3) \u0026 ((byte)puVar9[1] ^ 3)) \u003d\u003d 0) {\r\n          *puVar8 \u003d *puVar9;\r\n          if (puVar9 \u003d\u003d (uint *)(ulonglong)*(uint *)(plVar6 + 6)) {\r\n            *(uint *)(plVar6 + 6) \u003d *puVar9;\r\n          }\r\n          (**(code **)(\u0026UNK_1800593d0 + (ulonglong)(*(byte *)((longlong)puVar9 + 5) - 4) * 8))\r\n                    (plVar6,puVar9);\r\n        }\r\n        else {\r\n          *(byte *)(puVar9 + 1) \u003d (byte)puVar9[1] \u0026 0xf8 | *(byte *)(plVar6 + 5) \u0026 3;\r\n          puVar8 \u003d puVar9;\r\n        }\r\n        uVar7 \u003d *puVar8;\r\n        iVar4 \u003d iVar4 + -1;\r\n      }\r\n      if (*(uint *)(plVar6 + 1) \u003c *(uint *)((longlong)plVar6 + 0x2c)) {\r\n        *(undefined1 *)((longlong)plVar6 + 0x29) \u003d 4;\r\n      }\r\n      *(int *)(plVar6 + 10) \u003d (int)plVar6[10] + ((int)plVar6[4] - (int)lVar3);\r\n      iVar4 \u003d 10;\r\n      break;\r\n    case 4:\r\n      uVar7 \u003d *(uint *)((longlong)plVar6 + 0x34);\r\n      puVar8 \u003d (uint *)(ulonglong)uVar7;\r\n      iVar4 \u003d 0x28;\r\n      bVar1 \u003d *(byte *)(plVar6 + 5);\r\n      lVar3 \u003d plVar6[4];\r\n      puVar9 \u003d (uint *)(ulonglong)*puVar8;\r\n      if (puVar9 !\u003d (uint *)0x0) {\r\n        do {\r\n          if (iVar4 \u003d\u003d 0) break;\r\n          if (*(char *)((longlong)puVar9 + 5) \u003d\u003d \u0027\\x06\u0027) {\r\n            FUN_180012af0(plVar6,puVar9 + 10,0x7fffff00);\r\n          }\r\n          if ((byte)((bVar1 ^ 3) \u0026 ((byte)puVar9[1] ^ 3)) \u003d\u003d 0) {\r\n            *puVar8 \u003d *puVar9;\r\n            if (puVar9 \u003d\u003d (uint *)(ulonglong)*(uint *)(plVar6 + 6)) {\r\n              *(uint *)(plVar6 + 6) \u003d *puVar9;\r\n            }\r\n            (**(code **)(\u0026UNK_1800593d0 + (ulonglong)(*(byte *)((longlong)puVar9 + 5) - 4) * 8))\r\n                      (plVar6,puVar9);\r\n          }\r\n          else {\r\n            *(byte *)(puVar9 + 1) \u003d (byte)puVar9[1] \u0026 0xf8 | *(byte *)(plVar6 + 5) \u0026 3;\r\n            puVar8 \u003d puVar9;\r\n          }\r\n          puVar9 \u003d (uint *)(ulonglong)*puVar8;\r\n          iVar4 \u003d iVar4 + -1;\r\n        } while (puVar9 !\u003d (uint *)0x0);\r\n        uVar7 \u003d (uint)puVar8;\r\n      }\r\n      *(uint *)((longlong)plVar6 + 0x34) \u003d uVar7;\r\n      *(int *)(plVar6 + 10) \u003d (int)plVar6[10] + ((int)plVar6[4] - (int)lVar3);\r\n      if (*(int *)(ulonglong)uVar7 \u003d\u003d 0) {\r\n        FUN_180012a50(plVar6,param_1);\r\n        if (*(int *)((longlong)plVar6 + 0x44) \u003d\u003d 0) {\r\n          *(undefined1 *)((longlong)plVar6 + 0x29) \u003d 0;\r\n          iVar4 \u003d 400;\r\n          *(undefined4 *)((longlong)plVar6 + 0x4c) \u003d 0;\r\n        }\r\n        else {\r\n          *(undefined2 *)((longlong)plVar6 + 0x29) \u003d 0x105;\r\n          iVar4 \u003d 400;\r\n        }\r\n      }\r\n      else {\r\n        iVar4 \u003d 400;\r\n      }\r\n      break;\r\n    case 5:\r\n      if (*(int *)((longlong)plVar6 + 0x44) \u003d\u003d 0) {\r\n        if (*(char *)((longlong)plVar6 + 0x2a) \u003d\u003d \u0027\\0\u0027) {\r\n          func_0x000180015e10(param_1,*(undefined8 *)\r\n                                       ((ulonglong)*(uint *)((longlong)plVar6 + 0xfc) + 0x20));\r\n        }\r\n        *(undefined1 *)((longlong)plVar6 + 0x29) \u003d 0;\r\n        *(undefined4 *)((longlong)plVar6 + 0x4c) \u003d 0;\r\n      }\r\n      else if (*(int *)((longlong)plVar6 + 0xf4) \u003d\u003d 0) {\r\n        FUN_180012320(param_1);\r\n        if (100 \u003c *(uint *)(plVar6 + 10)) {\r\n          *(uint *)(plVar6 + 10) \u003d *(uint *)(plVar6 + 10) - 100;\r\n        }\r\n        iVar4 \u003d 100;\r\n      }\r\n      else {\r\n        iVar4 \u003d 0x7fffff00;\r\n      }\r\n    }\r\n    iVar10 \u003d iVar10 - iVar4;\r\n    if (*(char *)(uVar11 + 0x29) \u003d\u003d \u0027\\0\u0027) {\r\n      *(uint *)(uVar11 + 0x24) \u003d (*(uint *)(uVar11 + 0x50) / 100) * *(int *)(uVar11 + 0x54);\r\n      *(undefined4 *)(uVar11 + 0xe8) \u003d uVar2;\r\n      return 1;\r\n    }\r\n    if (iVar10 \u003c 1) {\r\n      if (*(uint *)(uVar11 + 0x4c) \u003c 0x400) {\r\n        *(int *)(uVar11 + 0x24) \u003d *(int *)(uVar11 + 0x20) + 0x400;\r\n        *(undefined4 *)(uVar11 + 0xe8) \u003d uVar2;\r\n        uVar5 \u003d 0xffffffff;\r\n      }\r\n      else {\r\n        *(uint *)(uVar11 + 0x4c) \u003d *(uint *)(uVar11 + 0x4c) - 0x400;\r\n        *(undefined4 *)(uVar11 + 0x24) \u003d *(undefined4 *)(uVar11 + 0x20);\r\n        *(undefined4 *)(uVar11 + 0xe8) \u003d uVar2;\r\n        uVar5 \u003d 0;\r\n      }\r\n      return uVar5;\r\n    }\r\n  } while( true );\r\n}\r\n\r\n",
+      "assembly": "180013600 MOV qword ptr [RSP + 0x8],RCX\n180013605 PUSH RBX\n180013606 PUSH RBP\n180013607 PUSH RSI\n180013608 PUSH RDI\n180013609 PUSH R12\n18001360b PUSH R13\n18001360d PUSH R14\n18001360f PUSH R15\n180013611 SUB RSP,0x28\n180013615 MOV R13D,dword ptr [RCX + 0x8]\n180013619 MOV EDX,0x7fffff00\n18001361e MOV R8,RCX\n180013621 MOV qword ptr [RSP + 0x88],R13\n180013629 MOV EAX,dword ptr [R13 + 0xe8]\n180013630 MOV ECX,dword ptr [R13 + 0x24]\n180013634 MOV dword ptr [RSP + 0x78],EAX\n180013638 MOV EAX,dword ptr [R13 + 0x48]\n18001363c MOV dword ptr [R13 + 0xe8],0xfffffffd\n180013647 LEA R12D,[RAX + RAX*0x4]\n18001364b MOV EAX,dword ptr [R13 + 0x20]\n18001364f ADD R12D,R12D\n180013652 CMOVZ R12D,EDX\n180013656 CMP EAX,ECX\n180013658 JBE 0x180013660\n18001365a SUB EAX,ECX\n18001365c ADD dword ptr [R13 + 0x4c],EAX\n180013660 LEA R9,[0x180000000]\n180013667 XOR EDI,EDI\n180013669 NOP dword ptr [RAX]\n180013670 MOV EBX,dword ptr [R8 + 0x8]\n180013674 MOVZX EAX,byte ptr [RBX + 0x29]\n180013678 CMP EAX,0x5\n18001367b JA 0x180013974\n180013681 MOV ECX,dword ptr [R9 + RAX*0x4 + 0x13a1c]\n180013689 ADD RCX,R9\n18001368c JMP RCX\n180013974 MOV RAX,RDI\n180013977 SUB R12D,EAX\n18001397a CMP byte ptr [R13 + 0x29],0x0\n18001397f JZ 0x1800139e3\n180013981 MOV R8,qword ptr [RSP + 0x70]\n180013986 MOV EDX,0x7fffff00\n18001398b LEA R9,[0x180000000]\n180013992 TEST R12D,R12D\n180013995 JG 0x180013670\n18001399b MOV EAX,dword ptr [R13 + 0x4c]\n18001399f CMP EAX,0x400\n1800139a4 JNC 0x1800139c3\n1800139a6 MOV EAX,dword ptr [R13 + 0x20]\n1800139aa ADD EAX,0x400\n1800139af MOV dword ptr [R13 + 0x24],EAX\n1800139b3 MOV EAX,dword ptr [RSP + 0x78]\n1800139b7 MOV dword ptr [R13 + 0xe8],EAX\n1800139be OR EAX,0xffffffff\n1800139c1 JMP 0x180013a08\n1800139c3 ADD EAX,0xfffffc00\n1800139c8 MOV dword ptr [R13 + 0x4c],EAX\n1800139cc MOV EAX,dword ptr [R13 + 0x20]\n1800139d0 MOV dword ptr [R13 + 0x24],EAX\n1800139d4 MOV EAX,dword ptr [RSP + 0x78]\n1800139d8 MOV dword ptr [R13 + 0xe8],EAX\n1800139df XOR EAX,EAX\n1800139e1 JMP 0x180013a08\n1800139e3 MOV EAX,0x51eb851f\n1800139e8 MUL dword ptr [R13 + 0x50]\n1800139ec MOV EAX,dword ptr [RSP + 0x78]\n1800139f0 SHR EDX,0x5\n1800139f3 IMUL EDX,dword ptr [R13 + 0x54]\n1800139f8 MOV dword ptr [R13 + 0x24],EDX\n1800139fc MOV dword ptr [R13 + 0xe8],EAX\n180013a03 MOV EAX,0x1\n180013a08 ADD RSP,0x28\n180013a0c POP R15\n180013a0e POP R14\n180013a10 POP R13\n180013a12 POP R12\n180013a14 POP RDI\n180013a15 POP RSI\n180013a16 POP RBP\n180013a17 POP RBX\n180013a18 RET\n"
+    },
+    {
+      "entry": "0x180015a80",
+      "name": "FUN_180015a80",
+      "calls": [
+        {
+          "to": "0x180016070",
+          "from": "180015a84"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nlonglong FUN_180015a80(void)\r\n\r\n{\r\n  longlong lVar1;\r\n  undefined4 *puVar2;\r\n  ulonglong uVar3;\r\n  \r\n  lVar1 \u003d FUN_180016070();\r\n  if (*(uint *)(lVar1 + 0x18) !\u003d 0) {\r\n    puVar2 \u003d (undefined4 *)((ulonglong)*(uint *)(lVar1 + 8) + 4);\r\n    uVar3 \u003d (ulonglong)*(uint *)(lVar1 + 0x18);\r\n    do {\r\n      *puVar2 \u003d 0xffffffff;\r\n      puVar2 \u003d puVar2 + 2;\r\n      uVar3 \u003d uVar3 - 1;\r\n    } while (uVar3 !\u003d 0);\r\n  }\r\n  if (*(int *)(lVar1 + 0x1c) !\u003d 0) {\r\n    uVar3 \u003d (ulonglong)(*(int *)(lVar1 + 0x1c) + 1);\r\n    puVar2 \u003d (undefined4 *)((ulonglong)*(uint *)(lVar1 + 0x14) + 0xc);\r\n    do {\r\n      puVar2[1] \u003d 0;\r\n      *puVar2 \u003d 0xffffffff;\r\n      puVar2[-2] \u003d 0xffffffff;\r\n      puVar2 \u003d puVar2 + 6;\r\n      uVar3 \u003d uVar3 - 1;\r\n    } while (uVar3 !\u003d 0);\r\n  }\r\n  return lVar1;\r\n}\r\n\r\n",
+      "assembly": "180015a80 SUB RSP,0x28\n180015a84 CALL 0x180016070\n180015a89 MOV R8,RAX\n180015a8c MOV EAX,dword ptr [RAX + 0x18]\n180015a8f MOV ECX,dword ptr [R8 + 0x8]\n180015a93 TEST EAX,EAX\n180015a95 JZ 0x180015ab0\n180015a97 ADD RCX,0x4\n180015a9b MOV EDX,EAX\n180015a9d NOP dword ptr [RAX]\n180015aa0 MOV dword ptr [RCX],0xffffffff\n180015aa6 LEA RCX,[RCX + 0x8]\n180015aaa SUB RDX,0x1\n180015aae JNZ 0x180015aa0\n180015ab0 MOV ECX,dword ptr [R8 + 0x1c]\n180015ab4 TEST ECX,ECX\n180015ab6 JZ 0x180015aea\n180015ab8 MOV EAX,dword ptr [R8 + 0x14]\n180015abc LEA EDX,[RCX + 0x1]\n180015abf ADD RAX,0xc\n180015ac3 XOR ECX,ECX\n180015ac5 NOP word ptr [RAX + RAX*0x1]\n180015ad0 MOV dword ptr [RAX + 0x4],ECX\n180015ad3 MOV dword ptr [RAX],0xffffffff\n180015ad9 MOV dword ptr [RAX + -0x8],0xffffffff\n180015ae0 LEA RAX,[RAX + 0x18]\n180015ae4 SUB RDX,0x1\n180015ae8 JNZ 0x180015ad0\n180015aea MOV RAX,R8\n180015aed ADD RSP,0x28\n180015af1 RET\n"
+    },
+    {
+      "entry": "0x180017dd0",
+      "name": "FUN_180017dd0",
+      "calls": [
+        {
+          "to": "0x180017f60",
+          "from": "180017e04"
+        },
+        {
+          "to": "0x18000dc40",
+          "from": "180017e1d"
+        },
+        {
+          "to": "0x18000da10",
+          "from": "180017e2b"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nvoid FUN_180017dd0(longlong param_1)\r\n\r\n{\r\n  uint uVar1;\r\n  code *pcVar2;\r\n  uint uVar3;\r\n  \r\n  uVar1 \u003d *(uint *)(param_1 + 0x38);\r\n  if (0xffe2 \u003c uVar1) {\r\n    FUN_18000dc40(param_1,5);\r\n    pcVar2 \u003d (code *)swi(3);\r\n    (*pcVar2)();\r\n    return;\r\n  }\r\n  uVar3 \u003d uVar1 + 1;\r\n  if (uVar3 \u003c 0xffdd) {\r\n    uVar1 \u003d uVar1 * 2;\r\n    if ((uVar3 \u003c uVar1) \u0026\u0026 (uVar3 \u003d uVar1, 0xffdb \u003c uVar1)) {\r\n      uVar3 \u003d 0xffdc;\r\n    }\r\n  }\r\n  else {\r\n    uVar3 \u003d uVar1 + 0x29;\r\n  }\r\n  FUN_180017f60(param_1,uVar3);\r\n  if (*(uint *)(param_1 + 0x38) \u003c 0xffe3) {\r\n    return;\r\n  }\r\n  FUN_18000da10(param_1,0x68);\r\n  pcVar2 \u003d (code *)swi(3);\r\n  (*pcVar2)();\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "180017dd0 PUSH RBX\n180017dd2 SUB RSP,0x20\n180017dd6 MOV EAX,dword ptr [RCX + 0x38]\n180017dd9 MOV RBX,RCX\n180017ddc CMP EAX,0xffe2\n180017de1 JA 0x180017e18\n180017de3 LEA EDX,[RAX + 0x1]\n180017de6 MOV ECX,0xffdc\n180017deb CMP EDX,ECX\n180017ded JBE 0x180017df4\n180017def ADD EDX,0x28\n180017df2 JMP 0x180017e01\n180017df4 ADD EAX,EAX\n180017df6 CMP EDX,EAX\n180017df8 JNC 0x180017e01\n180017dfa CMP EAX,ECX\n180017dfc MOV EDX,EAX\n180017dfe CMOVNC EDX,ECX\n180017e01 MOV RCX,RBX\n180017e04 CALL 0x180017f60\n180017e09 CMP dword ptr [RBX + 0x38],0xffe2\n180017e10 JA 0x180017e23\n180017e12 ADD RSP,0x20\n180017e16 POP RBX\n180017e17 RET\n180017e18 MOV EDX,0x5\n180017e1d CALL 0x18000dc40\n180017e22 INT3\n180017e23 MOV EDX,0x68\n180017e28 MOV RCX,RBX\n180017e2b CALL 0x18000da10\n180017e30 INT3\n"
+    },
+    {
+      "entry": "0x18000ba80",
+      "name": "FUN_18000ba80",
+      "calls": [
+        {
+          "to": "0x18000d850",
+          "from": "18000bad8"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nvoid FUN_18000ba80(longlong param_1,uint param_2)\r\n\r\n{\r\n  uint uVar1;\r\n  code *pcVar2;\r\n  \r\n  if ((int)param_2 \u003c 0x1f41) {\r\n    if ((*(longlong *)(param_1 + 0x18) - *(longlong *)(param_1 + 0x10) \u003e\u003e 3) +\r\n        (longlong)(int)param_2 \u003c 0x1f41) {\r\n      if (((int)param_2 \u003c 1) ||\r\n         ((longlong)((ulonglong)param_2 * 8) \u003c\r\n          (longlong)((ulonglong)*(uint *)(param_1 + 0x20) - *(longlong *)(param_1 + 0x18)))) {\r\n        return;\r\n      }\r\n      uVar1 \u003d *(uint *)(param_1 + 0x38);\r\n      if (0xffe2 \u003c uVar1) {\r\n        FUN_18000dc40(param_1,5);\r\n        pcVar2 \u003d (code *)swi(3);\r\n        (*pcVar2)();\r\n        return;\r\n      }\r\n      param_2 \u003d param_2 + uVar1;\r\n      if (param_2 \u003c 0xffdd) {\r\n        uVar1 \u003d uVar1 * 2;\r\n        if ((param_2 \u003c uVar1) \u0026\u0026 (param_2 \u003d uVar1, 0xffdb \u003c uVar1)) {\r\n          param_2 \u003d 0xffdc;\r\n        }\r\n      }\r\n      else {\r\n        param_2 \u003d param_2 + 0x28;\r\n      }\r\n      FUN_180017f60(param_1,param_2);\r\n      if (*(uint *)(param_1 + 0x38) \u003c 0xffe3) {\r\n        return;\r\n      }\r\n      FUN_18000da10(param_1,0x68);\r\n      pcVar2 \u003d (code *)swi(3);\r\n      (*pcVar2)();\r\n      return;\r\n    }\r\n  }\r\n  FUN_18000d850(param_1,0x77);\r\n  pcVar2 \u003d (code *)swi(3);\r\n  (*pcVar2)();\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "18000ba80 SUB RSP,0x28\n18000ba84 MOV R10,RCX\n18000ba87 CMP EDX,0x1f40\n18000ba8d JG 0x18000bad3\n18000ba8f MOV R11,qword ptr [RCX + 0x18]\n18000ba93 MOV R9,R11\n18000ba96 MOVSXD RAX,EDX\n18000ba99 SUB R9,qword ptr [RCX + 0x10]\n18000ba9d SAR R9,0x3\n18000baa1 ADD R9,RAX\n18000baa4 CMP R9,0x1f40\n18000baab JG 0x18000bad3\n18000baad TEST EDX,EDX\n18000baaf JLE 0x18000bace\n18000bab1 MOV ECX,dword ptr [RCX + 0x20]\n18000bab4 MOV EAX,EDX\n18000bab6 SUB RCX,R11\n18000bab9 SHL RAX,0x3\n18000babd CMP RCX,RAX\n18000bac0 JG 0x18000bace\n18000bac2 MOV RCX,R10\n18000bac5 ADD RSP,0x28\n18000bac9 JMP 0x180017d70\n18000bace ADD RSP,0x28\n18000bad2 RET\n18000bad3 MOV EDX,0x77\n18000bad8 CALL 0x18000d850\n18000badd INT3\n"
+    },
+    {
+      "entry": "0x1800149e0",
+      "name": "FUN_1800149e0",
+      "calls": [],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nuint * FUN_1800149e0(longlong param_1,uint *param_2,ulonglong param_3)\r\n\r\n{\r\n  byte bVar1;\r\n  code *pcVar2;\r\n  uint *puVar3;\r\n  uint uVar4;\r\n  int iVar5;\r\n  ulonglong uVar6;\r\n  uint uVar7;\r\n  uint uVar8;\r\n  uint uVar9;\r\n  longlong *plVar10;\r\n  \r\n  if (0x7ffffeff \u003c param_3) {\r\n    FUN_18000da10(param_1,0x38);\r\n    pcVar2 \u003d (code *)swi(3);\r\n    puVar3 \u003d (uint *)(*pcVar2)();\r\n    return puVar3;\r\n  }\r\n  plVar10 \u003d (longlong *)(ulonglong)*(uint *)(param_1 + 8);\r\n  uVar8 \u003d (uint)param_3;\r\n  if (uVar8 \u003c 4) {\r\n    if (uVar8 \u003d\u003d 0) {\r\n      return (uint *)(plVar10 + 0x10);\r\n    }\r\n    uVar9 \u003d (uint)(byte)*param_2;\r\n    bVar1 \u003d *(byte *)(((param_3 \u0026 0xffffffff) \u003e\u003e 1) + (longlong)param_2);\r\n    uVar7 \u003d (uint)bVar1;\r\n    uVar4 \u003d ((*(byte *)(((param_3 \u0026 0xffffffff) - 1) + (longlong)param_2) ^ bVar1) ^ uVar8) +\r\n            uVar7 * -0x4000;\r\n  }\r\n  else {\r\n    uVar9 \u003d *param_2;\r\n    uVar7 \u003d *(uint *)((((param_3 \u0026 0xffffffff) \u003e\u003e 1) - 2) + (longlong)param_2);\r\n    uVar4 \u003d (*(uint *)(((param_3 \u0026 0xffffffff) - 4) + (longlong)param_2) ^ uVar7 ^ uVar8) -\r\n            (uVar7 \u003c\u003c 0xe | uVar7 \u003e\u003e 0x12);\r\n    uVar7 \u003d uVar7 + *(int *)((((param_3 \u0026 0xffffffff) \u003e\u003e 2) - 1) + (longlong)param_2);\r\n  }\r\n  param_3 \u003d param_3 \u0026 0xffffffff;\r\n  uVar9 \u003d (uVar9 ^ uVar4) - (uVar4 \u003c\u003c 0xb | uVar4 \u003e\u003e 0x15);\r\n  uVar9 \u003d (uVar7 ^ uVar9) - (uVar9 \u003e\u003e 7 | uVar9 * 0x2000000);\r\n  uVar9 \u003d (uVar9 ^ uVar4) - (uVar9 * 0x10000 | uVar9 \u003e\u003e 0x10);\r\n  puVar3 \u003d (uint *)(ulonglong)*(uint *)(*plVar10 + (ulonglong)(*(uint *)(plVar10 + 1) \u0026 uVar9) * 4);\r\n  if (((uVar8 + (int)param_2) - 1 \u0026 0xfff) \u003c 0xffd) {\r\n    for (; puVar3 !\u003d (uint *)0x0; puVar3 \u003d (uint *)(ulonglong)*puVar3) {\r\n      if (puVar3[3] \u003d\u003d uVar8) {\r\n        uVar6 \u003d 0;\r\n        while( true ) {\r\n          uVar7 \u003d *(uint *)((longlong)puVar3 + uVar6 + 0x10) ^ *(uint *)(uVar6 + (longlong)param_2);\r\n          if (uVar7 !\u003d 0) break;\r\n          uVar7 \u003d (int)uVar6 + 4;\r\n          uVar6 \u003d (ulonglong)uVar7;\r\n          if (uVar8 \u003c\u003d uVar7) goto code_r0x000180014ad7;\r\n        }\r\n        iVar5 \u003d (int)uVar6 - uVar8;\r\n        if ((-4 \u003c iVar5) \u0026\u0026 (uVar7 \u003c\u003c ((char)iVar5 * \u0027\\b\u0027 + 0x20U \u0026 0x1f) \u003d\u003d 0)) {\r\ncode_r0x000180014ad7:\r\n          if ((~*(byte *)(plVar10 + 5) \u0026 (byte)puVar3[1] \u0026 3) \u003d\u003d 0) {\r\n            return puVar3;\r\n          }\r\n          *(byte *)(puVar3 + 1) \u003d (byte)puVar3[1] ^ 3;\r\n          return puVar3;\r\n        }\r\n      }\r\n    }\r\n  }\r\n  else {\r\n    for (; puVar3 !\u003d (uint *)0x0; puVar3 \u003d (uint *)(ulonglong)*puVar3) {\r\n      if ((puVar3[3] \u003d\u003d uVar8) \u0026\u0026\r\n         (iVar5 \u003d func_0x000180056478(param_2,puVar3 + 4,param_3), iVar5 \u003d\u003d 0)) {\r\n        if ((~*(byte *)(plVar10 + 5) \u0026 (byte)puVar3[1] \u0026 3) \u003d\u003d 0) {\r\n          return puVar3;\r\n        }\r\n        *(byte *)(puVar3 + 1) \u003d (byte)puVar3[1] ^ 3;\r\n        return puVar3;\r\n      }\r\n    }\r\n  }\r\n  puVar3 \u003d (uint *)FUN_180013bf0(param_1,0,0,uVar8 + 0x11);\r\n  *(byte *)(puVar3 + 1) \u003d *(byte *)(plVar10 + 5) \u0026 3;\r\n  *(undefined2 *)((longlong)puVar3 + 5) \u003d 4;\r\n  puVar3[3] \u003d uVar8;\r\n  puVar3[2] \u003d uVar9;\r\n  func_0x000180056472(puVar3 + 4,param_2,param_3);\r\n  *(undefined1 *)(param_3 + 0x10 + (longlong)puVar3) \u003d 0;\r\n  uVar8 \u003d *(uint *)(plVar10 + 1);\r\n  *puVar3 \u003d *(uint *)(*plVar10 + (ulonglong)(uVar8 \u0026 uVar9) * 4);\r\n  *(int *)(*plVar10 + (ulonglong)(uVar8 \u0026 uVar9) * 4) \u003d (int)puVar3;\r\n  uVar8 \u003d *(uint *)((longlong)plVar10 + 0xc);\r\n  *(uint *)((longlong)plVar10 + 0xc) \u003d uVar8 + 1;\r\n  if (*(uint *)(plVar10 + 1) \u003c uVar8) {\r\n    FUN_180015280(param_1,*(uint *)(plVar10 + 1) * 2 + 1);\r\n  }\r\n  return puVar3;\r\n}\r\n\r\n",
+      "assembly": "1800149e0 PUSH RBP\n1800149e2 PUSH RSI\n1800149e3 PUSH RDI\n1800149e4 SUB RSP,0x20\n1800149e8 MOV RDI,R8\n1800149eb MOV RSI,RDX\n1800149ee MOV RBP,RCX\n1800149f1 CMP R8,0x7fffff00\n1800149f8 JNC 0x180014c02\n"
+    },
+    {
+      "entry": "0x180015e20",
+      "name": "FUN_180015e20",
+      "calls": [
+        {
+          "to": "0x180015b90",
+          "from": "180015e8d"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\n/* WARNING: Removing unreachable block (ram,0x000180015f06) */\r\n\r\nulonglong FUN_180015e20(undefined8 param_1,longlong param_2,double *param_3)\r\n\r\n{\r\n  double dVar1;\r\n  code *pcVar2;\r\n  int iVar3;\r\n  ulonglong uVar4;\r\n  uint uVar5;\r\n  uint uVar6;\r\n  uint uVar7;\r\n  undefined8 uStackX_10;\r\n  \r\n  *(undefined1 *)(param_2 + 6) \u003d 0;\r\n  uVar5 \u003d *(uint *)((longlong)param_3 + 4);\r\n  if (uVar5 \u003d\u003d 0xfffffffb) {\r\n    uVar5 \u003d *(uint *)param_3;\r\n    uVar4 \u003d (ulonglong)*(uint *)(param_2 + 0x14) +\r\n            (ulonglong)(*(uint *)((ulonglong)uVar5 + 8) \u0026 *(uint *)(param_2 + 0x1c)) * 0x18;\r\n    while ((*(int *)(uVar4 + 0xc) !\u003d -5 || ((ulonglong)*(uint *)(uVar4 + 8) !\u003d (ulonglong)uVar5))) {\r\n      uVar4 \u003d (ulonglong)*(uint *)(uVar4 + 0x10);\r\n      if (uVar4 \u003d\u003d 0) {\r\n        uStackX_10 \u003d (double)CONCAT44(0xfffffffb,uVar5);\r\n        uVar4 \u003d FUN_180015b90(param_1,param_2,\u0026uStackX_10);\r\n        return uVar4;\r\n      }\r\n    }\r\n    return uVar4;\r\n  }\r\n  if (uVar5 \u003c 0xfffeffff) {\r\n    dVar1 \u003d *param_3;\r\n    uVar5 \u003d (uint)dVar1;\r\n    if (dVar1 \u003d\u003d (double)(int)uVar5) {\r\n      if (uVar5 \u003c *(uint *)(param_2 + 0x18)) {\r\n        return (ulonglong)*(uint *)(param_2 + 8) + (longlong)(int)uVar5 * 8;\r\n      }\r\n      uStackX_10 \u003d (double)(int)uVar5;\r\n      uVar6 \u003d (uint)((ulonglong)uStackX_10 \u003e\u003e 0x20);\r\n      uVar7 \u003d uVar6 \u003c\u003c 0xf | (uVar6 \u0026 0x7fffffff) \u003e\u003e 0x11;\r\n      uVar5 \u003d (uVar6 * 2 ^ SUB84(uStackX_10,0)) - uVar7;\r\n      uVar4 \u003d (ulonglong)*(uint *)(param_2 + 0x14) +\r\n              (ulonglong)\r\n              (((uVar7 \u003c\u003c 5 | (uVar6 \u0026 0x1ffff) \u003e\u003e 0xc) ^ uVar5) - (uVar5 * 0x2000 | uVar5 \u003e\u003e 0x13)\r\n              \u0026 *(uint *)(param_2 + 0x1c)) * 0x18;\r\n      while ((0xfffefffe \u003c *(uint *)(uVar4 + 0xc) || (*(double *)(uVar4 + 8) !\u003d uStackX_10))) {\r\n        uVar4 \u003d (ulonglong)*(uint *)(uVar4 + 0x10);\r\n        if (uVar4 \u003d\u003d 0) {\r\n          uVar4 \u003d FUN_180015b90(param_1,uStackX_10,\u0026uStackX_10);\r\n          return uVar4;\r\n        }\r\n      }\r\n      return uVar4;\r\n    }\r\n    if (NAN(dVar1)) {\r\n      FUN_18000da10((double)(int)uVar5,0x9a);\r\n      pcVar2 \u003d (code *)swi(3);\r\n      uVar4 \u003d (*pcVar2)();\r\n      return uVar4;\r\n    }\r\n  }\r\n  else if (uVar5 \u003d\u003d 0xffffffff) {\r\n    FUN_18000da10(param_1,0xad);\r\n    pcVar2 \u003d (code *)swi(3);\r\n    uVar4 \u003d (*pcVar2)();\r\n    return uVar4;\r\n  }\r\n  uVar4 \u003d func_0x000180015540(param_2,param_3);\r\n  do {\r\n    iVar3 \u003d func_0x000180011f90(uVar4 + 8,param_3);\r\n    if (iVar3 !\u003d 0) {\r\n      return uVar4;\r\n    }\r\n    uVar4 \u003d (ulonglong)*(uint *)(uVar4 + 0x10);\r\n  } while (uVar4 !\u003d 0);\r\n  uVar4 \u003d FUN_180015b90(param_1,param_2,param_3);\r\n  return uVar4;\r\n}\r\n\r\n",
+      "assembly": "180015e20 MOV qword ptr [RSP + 0x18],RBP\n180015e25 MOV qword ptr [RSP + 0x20],RSI\n180015e2a PUSH RDI\n180015e2b SUB RSP,0x20\n180015e2f MOV byte ptr [RDX + 0x6],0x0\n180015e33 MOV RDI,R8\n180015e36 MOV EAX,dword ptr [R8 + 0x4]\n180015e3a MOV RSI,RDX\n180015e3d MOV RBP,RCX\n180015e40 CMP EAX,-0x5\n180015e43 JNZ 0x180015ea8\n180015e45 MOV EDX,dword ptr [R8]\n180015e48 MOV EAX,dword ptr [RSI + 0x1c]\n180015e4b MOV R8D,dword ptr [RDX + 0x8]\n180015e4f AND R8,RAX\n180015e52 MOV EAX,dword ptr [RSI + 0x14]\n180015e55 LEA R8,[R8 + R8*0x2]\n180015e59 LEA RCX,[RAX + R8*0x8]\n180015e5d NOP dword ptr [RAX]\n180015e60 CMP dword ptr [RCX + 0xc],-0x5\n180015e64 JNZ 0x180015e6e\n180015e66 MOV EAX,dword ptr [RCX + 0x8]\n180015e69 CMP RAX,RDX\n180015e6c JZ 0x180015e95\n180015e6e MOV ECX,dword ptr [RCX + 0x10]\n180015e71 TEST RCX,RCX\n180015e74 JNZ 0x180015e60\n180015e76 MOV dword ptr [RSP + 0x38],EDX\n180015e7a LEA R8,[RSP + 0x38]\n180015e7f MOV RDX,RSI\n180015e82 MOV dword ptr [RSP + 0x3c],0xfffffffb\n180015e8a MOV RCX,RBP\n180015e8d CALL 0x180015b90\n180015e92 MOV RCX,RAX\n180015e95 MOV RAX,RCX\n180015e98 MOV RBP,qword ptr [RSP + 0x40]\n180015e9d MOV RSI,qword ptr [RSP + 0x48]\n180015ea2 ADD RSP,0x20\n180015ea6 POP RDI\n180015ea7 RET\n180015ea8 CMP EAX,0xfffeffff\n180015ead JNC 0x180015f08\n180015eaf MOVSD XMM1,qword ptr [R8]\n180015eb4 CVTTSD2SI R8D,XMM1\n180015eb9 MOVD XMM0,R8D\n180015ebe CVTDQ2PD XMM0,XMM0\n180015ec2 UCOMISD XMM1,XMM0\n180015ec6 JP 0x180015efe\n180015ec8 JNZ 0x180015efe\n180015eca CMP R8D,dword ptr [RDX + 0x18]\n180015ece JNC 0x180015eea\n180015ed0 MOV EAX,dword ptr [RDX + 0x8]\n180015ed3 MOVSXD RCX,R8D\n180015ed6 LEA RAX,[RAX + RCX*0x8]\n180015eda MOV RBP,qword ptr [RSP + 0x40]\n180015edf MOV RSI,qword ptr [RSP + 0x48]\n180015ee4 ADD RSP,0x20\n180015ee8 POP RDI\n180015ee9 RET\n180015eea MOV RBP,qword ptr [RSP + 0x40]\n180015eef MOV RSI,qword ptr [RSP + 0x48]\n180015ef4 ADD RSP,0x20\n180015ef8 POP RDI\n180015ef9 JMP 0x180015f80\n180015efe UCOMISD XMM1,XMM1\n180015f02 JP 0x180015f60\n180015f04 JZ 0x180015f0d\n180015f06 JMP 0x180015f60\n180015f08 CMP EAX,-0x1\n180015f0b JZ 0x180015f6b\n180015f0d MOV RDX,RDI\n"
+    },
+    {
+      "entry": "0x18000db80",
+      "name": "FUN_18000db80",
+      "calls": [
+        {
+          "to": "0x18000d510",
+          "from": "18000db8d"
+        },
+        {
+          "to": "0x180002a0e",
+          "from": "18000dbdd"
+        },
+        {
+          "to": "0x18000dc40",
+          "from": "18000dbea"
+        },
+        {
+          "to": "0x18000dc20",
+          "from": "18000dbf8"
+        },
+        {
+          "to": "0x18000dc40",
+          "from": "18000dc0f"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nvoid FUN_18000db80(longlong param_1)\r\n\r\n{\r\n  uint *puVar1;\r\n  undefined8 *puVar2;\r\n  code *pcVar3;\r\n  undefined4 uVar4;\r\n  longlong lVar5;\r\n  undefined8 *puVar6;\r\n  \r\n  lVar5 \u003d func_0x00018000d510();\r\n  if (lVar5 !\u003d 0) {\r\n    puVar2 \u003d *(undefined8 **)(param_1 + 0x18);\r\n    puVar6 \u003d (undefined8 *)((ulonglong)*(uint *)(param_1 + 0x24) + lVar5);\r\n    puVar1 \u003d (uint *)((ulonglong)*(uint *)(param_1 + 8) + 0x254);\r\n    *puVar1 \u003d *puVar1 \u0026 0xffffffef;\r\n    if ((*(int *)((longlong)puVar6 + 4) !\u003d -9) || (*(char *)(param_1 + 7) \u003d\u003d \u0027\\x05\u0027)) {\r\n      uVar4 \u003d func_0x00018000dc20(param_1,0x12);\r\n      *(undefined4 *)(puVar2 + -1) \u003d uVar4;\r\n      *(undefined4 *)((longlong)puVar2 + -4) \u003d 0xfffffffb;\r\n      FUN_18000dc40(param_1,5);\r\n      pcVar3 \u003d (code *)swi(3);\r\n      (*pcVar3)();\r\n      return;\r\n    }\r\n    *(undefined1 *)(param_1 + 7) \u003d 5;\r\n    *puVar2 \u003d puVar2[-1];\r\n    puVar2[-1] \u003d *puVar6;\r\n    *(undefined8 **)(param_1 + 0x18) \u003d puVar2 + 1;\r\n    func_0x000180002a0e(param_1,puVar2,2);\r\n  }\r\n  FUN_18000dc40(param_1,2);\r\n  pcVar3 \u003d (code *)swi(3);\r\n  (*pcVar3)();\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "18000db80 MOV qword ptr [RSP + 0x8],RBX\n18000db85 PUSH RDI\n18000db86 SUB RSP,0x20\n18000db8a MOV RBX,RCX\n18000db8d CALL 0x18000d510\n18000db92 TEST RAX,RAX\n18000db95 JZ 0x18000dbe2\n18000db97 MOV ECX,dword ptr [RBX + 0x24]\n18000db9a MOV RDI,qword ptr [RBX + 0x18]\n18000db9e ADD RCX,RAX\n18000dba1 MOV EAX,dword ptr [RBX + 0x8]\n18000dba4 AND dword ptr [RAX + 0x254],0xffffffef\n18000dbab CMP dword ptr [RCX + 0x4],-0x9\n18000dbaf JNZ 0x18000dbf0\n18000dbb1 CMP byte ptr [RBX + 0x7],0x5\n18000dbb5 JZ 0x18000dbf0\n18000dbb7 MOV byte ptr [RBX + 0x7],0x5\n18000dbbb MOV R8D,0x2\n18000dbc1 MOV RAX,qword ptr [RDI + -0x8]\n18000dbc5 MOV RDX,RDI\n18000dbc8 MOV qword ptr [RDI],RAX\n18000dbcb MOV RAX,qword ptr [RCX]\n18000dbce MOV RCX,RBX\n18000dbd1 MOV qword ptr [RDI + -0x8],RAX\n18000dbd5 LEA RAX,[RDI + 0x8]\n18000dbd9 MOV qword ptr [RBX + 0x18],RAX\n18000dbdd CALL 0x180002a0e\n18000dbe2 MOV EDX,0x2\n18000dbe7 MOV RCX,RBX\n18000dbea CALL 0x18000dc40\n18000dbef INT3\n18000dbf0 MOV EDX,0x12\n18000dbf5 MOV RCX,RBX\n18000dbf8 CALL 0x18000dc20\n18000dbfd MOV EDX,0x5\n18000dc02 MOV dword ptr [RDI + -0x8],EAX\n18000dc05 MOV RCX,RBX\n18000dc08 MOV dword ptr [RDI + -0x4],0xfffffffb\n18000dc0f CALL 0x18000dc40\n18000dc14 INT3\n"
+    },
+    {
+      "entry": "0x180016070",
+      "name": "FUN_180016070",
+      "calls": [
+        {
+          "to": "0x180013b80",
+          "from": "18001609b"
+        },
+        {
+          "to": "0x180013b80",
+          "from": "1800160cf"
+        },
+        {
+          "to": "0x180013bf0",
+          "from": "180016112"
+        },
+        {
+          "to": "0x180013bf0",
+          "from": "180016144"
+        },
+        {
+          "to": "0x18000da10",
+          "from": "180016175"
+        },
+        {
+          "to": "0x18000da10",
+          "from": "180016183"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nlonglong FUN_180016070(longlong param_1,uint param_2,uint param_3)\r\n\r\n{\r\n  code *pcVar1;\r\n  undefined4 uVar2;\r\n  longlong lVar3;\r\n  longlong lVar4;\r\n  int iVar5;\r\n  int iVar6;\r\n  \r\n  if (param_2 - 1 \u003c 0x10) {\r\n    lVar3 \u003d FUN_180013b80(param_1,param_2 * 8 + 0x20);\r\n    *(undefined2 *)(lVar3 + 5) \u003d 0xff0b;\r\n    *(int *)(lVar3 + 8) \u003d (int)lVar3 + 0x20;\r\n    *(char *)(lVar3 + 7) \u003d (char)param_2;\r\n    *(undefined4 *)(lVar3 + 0x10) \u003d 0;\r\n    *(undefined4 *)(lVar3 + 0x1c) \u003d 0;\r\n    *(uint *)(lVar3 + 0x18) \u003d param_2;\r\n    *(int *)(lVar3 + 0x14) \u003d *(int *)(param_1 + 8) + 0x68;\r\n  }\r\n  else {\r\n    lVar3 \u003d FUN_180013b80(param_1,0x20);\r\n    *(undefined2 *)(lVar3 + 5) \u003d 0xff0b;\r\n    *(undefined1 *)(lVar3 + 7) \u003d 0;\r\n    *(undefined4 *)(lVar3 + 8) \u003d 0;\r\n    *(undefined4 *)(lVar3 + 0x10) \u003d 0;\r\n    *(undefined8 *)(lVar3 + 0x18) \u003d 0;\r\n    *(int *)(lVar3 + 0x14) \u003d *(int *)(param_1 + 8) + 0x68;\r\n    if (param_2 !\u003d 0) {\r\n      if (0x8000001 \u003c param_2) {\r\n        FUN_18000da10(param_1,0x8b);\r\n        pcVar1 \u003d (code *)swi(3);\r\n        lVar3 \u003d (*pcVar1)();\r\n        return lVar3;\r\n      }\r\n      uVar2 \u003d FUN_180013bf0(param_1,0,0,param_2 * 8);\r\n      *(undefined4 *)(lVar3 + 8) \u003d uVar2;\r\n      *(uint *)(lVar3 + 0x18) \u003d param_2;\r\n    }\r\n  }\r\n  if (param_3 !\u003d 0) {\r\n    if (0x1a \u003c param_3) {\r\n      FUN_18000da10(param_1,0x8b);\r\n      pcVar1 \u003d (code *)swi(3);\r\n      lVar3 \u003d (*pcVar1)();\r\n      return lVar3;\r\n    }\r\n    iVar6 \u003d 1 \u003c\u003c ((byte)param_3 \u0026 0x1f);\r\n    iVar5 \u003d iVar6 * 0x18;\r\n    lVar4 \u003d FUN_180013bf0(param_1,0,0,iVar5);\r\n    *(int *)(lVar4 + 0x14) \u003d iVar5 + (int)lVar4;\r\n    *(int *)(lVar3 + 0x14) \u003d (int)lVar4;\r\n    *(int *)(lVar3 + 0x1c) \u003d iVar6 + -1;\r\n  }\r\n  return lVar3;\r\n}\r\n\r\n",
+      "assembly": "180016070 MOV qword ptr [RSP + 0x8],RBX\n180016075 MOV qword ptr [RSP + 0x10],RBP\n18001607a MOV qword ptr [RSP + 0x18],RSI\n18001607f PUSH RDI\n180016080 SUB RSP,0x20\n180016084 LEA EAX,[RDX + -0x1]\n180016087 MOV EDI,R8D\n18001608a MOV EBX,EDX\n18001608c MOV RBP,RCX\n18001608f CMP EAX,0xf\n180016092 JA 0x1800160ca\n180016094 LEA EDX,[0x20 + RDX*0x8]\n18001609b CALL 0x180013b80\n1800160a0 MOV RSI,RAX\n1800160a3 LEA R8D,[RAX + 0x20]\n1800160a7 MOV word ptr [RAX + 0x5],0xff0b\n1800160ad MOV dword ptr [RAX + 0x8],R8D\n1800160b1 MOV byte ptr [RAX + 0x7],BL\n1800160b4 XOR EAX,EAX\n1800160b6 MOV dword ptr [RSI + 0x10],EAX\n1800160b9 MOV dword ptr [RSI + 0x1c],EAX\n1800160bc MOV dword ptr [RSI + 0x18],EBX\n1800160bf MOV ECX,dword ptr [RBP + 0x8]\n1800160c2 ADD ECX,0x68\n1800160c5 MOV dword ptr [RSI + 0x14],ECX\n1800160c8 JMP 0x18001611d\n1800160ca MOV EDX,0x20\n1800160cf CALL 0x180013b80\n1800160d4 MOV RSI,RAX\n1800160d7 MOV word ptr [RAX + 0x5],0xff0b\n1800160dd MOV byte ptr [RAX + 0x7],0x0\n1800160e1 XOR EAX,EAX\n1800160e3 MOV dword ptr [RSI + 0x8],EAX\n1800160e6 MOV dword ptr [RSI + 0x10],EAX\n1800160e9 MOV qword ptr [RSI + 0x18],RAX\n1800160ed MOV EAX,dword ptr [RBP + 0x8]\n1800160f0 ADD EAX,0x68\n1800160f3 MOV dword ptr [RSI + 0x14],EAX\n1800160f6 TEST EBX,EBX\n1800160f8 JZ 0x18001611d\n1800160fa MOV RCX,RBP\n1800160fd CMP EBX,0x8000001\n180016103 JA 0x180016170\n180016105 LEA R9D,[RBX*0x8]\n18001610d XOR R8D,R8D\n180016110 XOR EDX,EDX\n180016112 CALL 0x180013bf0\n180016117 MOV dword ptr [RSI + 0x8],EAX\n18001611a MOV dword ptr [RSI + 0x18],EBX\n18001611d TEST EDI,EDI\n18001611f JZ 0x180016158\n180016121 CMP EDI,0x1a\n180016124 JA 0x18001617b\n180016126 MOV ECX,EDI\n180016128 XOR R8D,R8D\n18001612b MOV EDI,0x1\n180016130 XOR EDX,EDX\n180016132 SHL EDI,CL\n180016134 MOV RCX,RBP\n180016137 LEA EAX,[RDI + RDI*0x2]\n18001613a LEA EBX,[RAX*0x8]\n180016141 MOV R9D,EBX\n180016144 CALL 0x180013bf0\n180016149 LEA ECX,[RBX + RAX*0x1]\n18001614c MOV dword ptr [RAX + 0x14],ECX\n18001614f MOV dword ptr [RSI + 0x14],EAX\n180016152 LEA EAX,[RDI + -0x1]\n180016155 MOV dword ptr [RSI + 0x1c],EAX\n180016158 MOV RBX,qword ptr [RSP + 0x30]\n18001615d MOV RAX,RSI\n180016160 MOV RSI,qword ptr [RSP + 0x40]\n180016165 MOV RBP,qword ptr [RSP + 0x38]\n18001616a ADD RSP,0x20\n18001616e POP RDI\n18001616f RET\n180016170 MOV EDX,0x8b\n180016175 CALL 0x18000da10\n18001617a INT3\n18001617b MOV EDX,0x8b\n180016180 MOV RCX,RBP\n180016183 CALL 0x18000da10\n180016188 INT3\n"
+    },
+    {
+      "entry": "0x180017f60",
+      "name": "FUN_180017f60",
+      "calls": [
+        {
+          "to": "0x180013bf0",
+          "from": "180017f9b"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nvoid FUN_180017f60(ulonglong param_1,int param_2)\r\n\r\n{\r\n  int *piVar1;\r\n  uint uVar2;\r\n  uint uVar3;\r\n  uint *puVar4;\r\n  longlong lVar5;\r\n  ulonglong uVar6;\r\n  undefined4 *puVar7;\r\n  longlong lVar8;\r\n  uint uVar9;\r\n  \r\n  uVar2 \u003d *(uint *)(param_1 + 0x38);\r\n  uVar9 \u003d param_2 + 6;\r\n  uVar3 \u003d *(uint *)(param_1 + 0x24);\r\n  lVar5 \u003d FUN_180013bf0(param_1,(ulonglong)uVar3,uVar2 * 8,uVar9 * 8);\r\n  *(int *)(param_1 + 0x24) \u003d (int)lVar5;\r\n  lVar8 \u003d lVar5 - (ulonglong)uVar3;\r\n  *(int *)(param_1 + 0x20) \u003d (int)lVar5 + param_2 * 8;\r\n  if (uVar2 \u003c uVar9) {\r\n    puVar7 \u003d (undefined4 *)((ulonglong)uVar2 * 8 + 4 + lVar5);\r\n    uVar6 \u003d (ulonglong)(uVar9 - uVar2);\r\n    do {\r\n      *puVar7 \u003d 0xffffffff;\r\n      puVar7 \u003d puVar7 + 2;\r\n      uVar6 \u003d uVar6 - 1;\r\n    } while (uVar6 !\u003d 0);\r\n  }\r\n  *(longlong *)(param_1 + 0x10) \u003d *(longlong *)(param_1 + 0x10) + lVar8;\r\n  *(longlong *)(param_1 + 0x18) \u003d *(longlong *)(param_1 + 0x18) + lVar8;\r\n  uVar2 \u003d *(uint *)(param_1 + 0x28);\r\n  *(uint *)(param_1 + 0x38) \u003d uVar9;\r\n  while (puVar4 \u003d (uint *)(ulonglong)uVar2, puVar4 !\u003d (uint *)0x0) {\r\n    puVar4[4] \u003d puVar4[4] + (int)lVar8;\r\n    uVar2 \u003d *puVar4;\r\n  }\r\n  if (param_1 \u003d\u003d *(uint *)((ulonglong)*(uint *)(param_1 + 8) + 0xf4)) {\r\n    piVar1 \u003d (int *)((ulonglong)*(uint *)(param_1 + 8) + 0xf8);\r\n    *piVar1 \u003d *piVar1 + (int)lVar8;\r\n  }\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "180017f60 MOV qword ptr [RSP + 0x8],RBX\n180017f65 MOV qword ptr [RSP + 0x10],RBP\n180017f6a MOV qword ptr [RSP + 0x18],RSI\n180017f6f MOV qword ptr [RSP + 0x20],RDI\n180017f74 PUSH R14\n180017f76 SUB RSP,0x20\n180017f7a MOV EBP,dword ptr [RCX + 0x38]\n180017f7d LEA R14D,[RDX + 0x6]\n180017f81 MOV EBX,dword ptr [RCX + 0x24]\n180017f84 LEA R9D,[R14*0x8]\n180017f8c MOV EDI,EDX\n180017f8e MOV RSI,RCX\n180017f91 MOV EDX,EBX\n180017f93 LEA R8D,[RBP*0x8]\n180017f9b CALL 0x180013bf0\n180017fa0 MOV R8,RAX\n180017fa3 MOV dword ptr [RSI + 0x24],EAX\n180017fa6 SUB R8,RBX\n180017fa9 LEA ECX,[RAX + RDI*0x8]\n180017fac MOV dword ptr [RSI + 0x20],ECX\n180017faf CMP EBP,R14D\n180017fb2 JNC 0x180017fe0\n180017fb4 LEA RDX,[0x4 + RBP*0x8]\n180017fbc MOV ECX,R14D\n180017fbf ADD RDX,RAX\n180017fc2 SUB ECX,EBP\n180017fc4 NOP dword ptr [RAX]\n180017fc8 NOP dword ptr [RAX + RAX*0x1]\n180017fd0 MOV dword ptr [RDX],0xffffffff\n180017fd6 LEA RDX,[RDX + 0x8]\n180017fda SUB RCX,0x1\n180017fde JNZ 0x180017fd0\n180017fe0 ADD qword ptr [RSI + 0x10],R8\n180017fe4 ADD qword ptr [RSI + 0x18],R8\n180017fe8 MOV EAX,dword ptr [RSI + 0x28]\n180017feb MOV dword ptr [RSI + 0x38],R14D\n180017fef TEST RAX,RAX\n180017ff2 JZ 0x180017fff\n180017ff4 ADD dword ptr [RAX + 0x10],R8D\n180017ff8 MOV EAX,dword ptr [RAX]\n180017ffa TEST RAX,RAX\n180017ffd JNZ 0x180017ff4\n180017fff MOV ECX,dword ptr [RSI + 0x8]\n180018002 MOV EAX,dword ptr [RCX + 0xf4]\n180018008 CMP RSI,RAX\n18001800b JNZ 0x180018014\n18001800d ADD dword ptr [RCX + 0xf8],R8D\n180018014 MOV RBX,qword ptr [RSP + 0x30]\n180018019 MOV RBP,qword ptr [RSP + 0x38]\n18001801e MOV RSI,qword ptr [RSP + 0x40]\n180018023 MOV RDI,qword ptr [RSP + 0x48]\n180018028 ADD RSP,0x20\n18001802c POP R14\n18001802e RET\n"
+    },
+    {
+      "entry": "0x18000dc40",
+      "name": "FUN_18000dc40",
+      "calls": [
+        {
+          "to": "0x1800564a2",
+          "from": "18000dc97"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nvoid FUN_18000dc40(longlong param_1,uint param_2)\r\n\r\n{\r\n  uint *puVar1;\r\n  uint uVar2;\r\n  code *pcVar3;\r\n  \r\n  uVar2 \u003d *(uint *)(param_1 + 8);\r\n  puVar1 \u003d (uint *)((ulonglong)uVar2 + 0x254);\r\n  *puVar1 \u003d *puVar1 \u0026 0xffffffef;\r\n  *(undefined4 *)((ulonglong)uVar2 + 0xf4) \u003d 0;\r\n  *(undefined1 *)(param_1 + 7) \u003d 0;\r\n  RaiseException(param_2 | 0xe24c4a00,1,0);\r\n  pcVar3 \u003d *(code **)((ulonglong)*(uint *)(param_1 + 8) + 0xe0);\r\n  if (pcVar3 !\u003d (code *)0x0) {\r\n    (*pcVar3)(param_1);\r\n  }\r\n  func_0x0001800564a2(1);\r\n  pcVar3 \u003d (code *)swi(3);\r\n  (*pcVar3)();\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "18000dc40 PUSH RBX\n18000dc42 SUB RSP,0x20\n18000dc46 MOV EAX,dword ptr [RCX + 0x8]\n18000dc49 MOV R10D,EDX\n18000dc4c XOR R9D,R9D\n18000dc4f OR R10D,0xe24c4a00\n18000dc56 MOV RBX,RCX\n18000dc59 XOR R8D,R8D\n18000dc5c AND dword ptr [RAX + 0x254],0xffffffef\n18000dc63 MOV dword ptr [RAX + 0xf4],0x0\n18000dc6d LEA EDX,[R9 + 0x1]\n18000dc71 MOV byte ptr [RCX + 0x7],0x0\n18000dc75 MOV ECX,R10D\n18000dc78 CALL qword ptr [0x1800570b0]\n18000dc7e MOV EAX,dword ptr [RBX + 0x8]\n18000dc81 MOV RDX,qword ptr [RAX + 0xe0]\n18000dc88 TEST RDX,RDX\n18000dc8b JZ 0x18000dc92\n18000dc8d MOV RCX,RBX\n18000dc90 CALL RDX\n18000dc92 MOV ECX,0x1\n18000dc97 CALL 0x1800564a2\n18000dc9c INT3\n"
+    },
+    {
+      "entry": "0x18000da10",
+      "name": "FUN_18000da10",
+      "calls": [
+        {
+          "to": "0x18000d240",
+          "from": "18000da14"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nvoid FUN_18000da10(void)\r\n\r\n{\r\n  code *pcVar1;\r\n  \r\n  FUN_18000d240();\r\n  pcVar1 \u003d (code *)swi(3);\r\n  (*pcVar1)();\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "18000da10 SUB RSP,0x28\n18000da14 CALL 0x18000d240\n18000da19 INT3\n"
+    },
+    {
+      "entry": "0x18000d850",
+      "name": "FUN_18000d850",
+      "calls": [
+        {
+          "to": "0x180014c40",
+          "from": "18000d875"
+        },
+        {
+          "to": "0x18000d7b0",
+          "from": "18000d880"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\n/* WARNING: Globals starting with \u0027_\u0027 overlap smaller symbols at the same address */\r\n\r\nvoid FUN_18000d850(undefined8 param_1,int param_2,undefined8 param_3,undefined8 param_4)\r\n\r\n{\r\n  code *pcVar1;\r\n  undefined8 uVar2;\r\n  undefined8 uStackX_18;\r\n  undefined8 uStackX_20;\r\n  \r\n  uStackX_18 \u003d param_3;\r\n  uStackX_20 \u003d param_4;\r\n  uVar2 \u003d FUN_180014c40(param_1,param_2 + _DAT_180063870,\u0026uStackX_18);\r\n  FUN_18000d7b0(param_1,uVar2);\r\n  pcVar1 \u003d (code *)swi(3);\r\n  (*pcVar1)();\r\n  return;\r\n}\r\n\r\n",
+      "assembly": "18000d850 MOV dword ptr [RSP + 0x10],EDX\n18000d854 MOV qword ptr [RSP + 0x18],R8\n18000d859 MOV qword ptr [RSP + 0x20],R9\n18000d85e PUSH RBX\n18000d85f SUB RSP,0x20\n18000d863 MOVSXD RDX,EDX\n18000d866 LEA R8,[RSP + 0x40]\n18000d86b ADD RDX,qword ptr [0x180063870]\n18000d872 MOV RBX,RCX\n18000d875 CALL 0x180014c40\n18000d87a MOV RDX,RAX\n18000d87d MOV RCX,RBX\n18000d880 CALL 0x18000d7b0\n18000d885 INT3\n"
+    },
+    {
+      "entry": "0x180015b90",
+      "name": "FUN_180015b90",
+      "calls": [
+        {
+          "to": "0x180015540",
+          "from": "180015bb4"
+        }
+      ],
+      "complete": true,
+      "error": "",
+      "pseudocode": "\r\nundefined8 * FUN_180015b90(longlong param_1,longlong param_2,longlong *param_3)\r\n\r\n{\r\n  int *piVar1;\r\n  uint uVar2;\r\n  int iVar3;\r\n  undefined8 *puVar4;\r\n  undefined8 *puVar5;\r\n  undefined8 *puVar6;\r\n  longlong lVar7;\r\n  undefined8 *puVar8;\r\n  \r\n  puVar4 \u003d (undefined8 *)func_0x000180015540(param_2,param_3);\r\n  if ((*(int *)((longlong)puVar4 + 4) !\u003d -1) || (puVar8 \u003d puVar4, *(int *)(param_2 + 0x1c) \u003d\u003d 0)) {\r\n    puVar5 \u003d (undefined8 *)(ulonglong)*(uint *)(param_2 + 0x14);\r\n    puVar6 \u003d (undefined8 *)(ulonglong)*(uint *)((longlong)puVar5 + 0x14);\r\n    do {\r\n      if (puVar6 \u003d\u003d puVar5) {\r\n        FUN_180016190(param_1,param_2,param_3);\r\n        puVar4 \u003d (undefined8 *)FUN_180015e20(param_1,param_2,param_3);\r\n        return puVar4;\r\n      }\r\n      puVar8 \u003d puVar6 + -3;\r\n      piVar1 \u003d (int *)((longlong)puVar6 + -0xc);\r\n      puVar6 \u003d puVar8;\r\n    } while (*piVar1 !\u003d -1);\r\n    *(int *)((longlong)puVar5 + 0x14) \u003d (int)puVar8;\r\n    puVar6 \u003d (undefined8 *)func_0x000180015540(param_2,puVar4 + 1);\r\n    if (puVar6 \u003d\u003d puVar4) {\r\n      *(undefined4 *)(puVar8 + 2) \u003d *(undefined4 *)(puVar4 + 2);\r\n      *(int *)(puVar4 + 2) \u003d (int)puVar8;\r\n    }\r\n    else {\r\n      uVar2 \u003d *(uint *)(puVar6 + 2);\r\n      while ((undefined8 *)(ulonglong)uVar2 !\u003d puVar4) {\r\n        puVar6 \u003d (undefined8 *)(ulonglong)*(uint *)(puVar6 + 2);\r\n        uVar2 \u003d *(uint *)(puVar6 + 2);\r\n      }\r\n      *(int *)(puVar6 + 2) \u003d (int)puVar8;\r\n      *puVar8 \u003d *puVar4;\r\n      puVar8[1] \u003d puVar4[1];\r\n      *(undefined4 *)(puVar8 + 2) \u003d *(undefined4 *)(puVar4 + 2);\r\n      *(undefined4 *)(puVar4 + 2) \u003d 0;\r\n      *(undefined4 *)((longlong)puVar4 + 4) \u003d 0xffffffff;\r\n      iVar3 \u003d *(int *)(puVar8 + 2);\r\n      puVar6 \u003d puVar8;\r\n      while (puVar8 \u003d puVar4, iVar3 !\u003d 0) {\r\n        uVar2 \u003d *(uint *)(puVar6 + 2);\r\n        puVar8 \u003d (undefined8 *)(ulonglong)uVar2;\r\n        if (((*(int *)((longlong)puVar8 + 0xc) \u003d\u003d -5) \u0026\u0026 (*(int *)((longlong)puVar8 + 4) !\u003d -1)) \u0026\u0026\r\n           ((undefined8 *)\r\n            ((ulonglong)*(uint *)(param_2 + 0x14) +\r\n            (ulonglong)(*(uint *)((ulonglong)*(uint *)(puVar8 + 1) + 8) \u0026 *(uint *)(param_2 + 0x1c))\r\n            * 0x18) \u003d\u003d puVar4)) {\r\n          *(undefined4 *)(puVar6 + 2) \u003d *(undefined4 *)(puVar8 + 2);\r\n          *(undefined4 *)(puVar8 + 2) \u003d *(undefined4 *)(puVar4 + 2);\r\n          *(uint *)(puVar4 + 2) \u003d uVar2;\r\n          puVar8 \u003d puVar6;\r\n        }\r\n        puVar6 \u003d puVar8;\r\n        iVar3 \u003d *(int *)(puVar8 + 2);\r\n      }\r\n    }\r\n  }\r\n  lVar7 \u003d *param_3;\r\n  if (*param_3 \u003d\u003d -0x8000000000000000) {\r\n    lVar7 \u003d 0;\r\n  }\r\n  puVar8[1] \u003d lVar7;\r\n  if ((*(byte *)(param_2 + 4) \u0026 4) !\u003d 0) {\r\n    uVar2 \u003d *(uint *)(param_1 + 8);\r\n    *(byte *)(param_2 + 4) \u003d *(byte *)(param_2 + 4) \u0026 0xfb;\r\n    *(undefined4 *)(param_2 + 0xc) \u003d *(undefined4 *)((ulonglong)uVar2 + 0x3c);\r\n    *(int *)((ulonglong)uVar2 + 0x3c) \u003d (int)param_2;\r\n  }\r\n  return puVar8;\r\n}\r\n\r\n",
+      "assembly": "180015b90 MOV qword ptr [RSP + 0x10],RBX\n180015b95 MOV qword ptr [RSP + 0x18],RBP\n180015b9a MOV qword ptr [RSP + 0x20],RSI\n180015b9f PUSH R14\n180015ba1 SUB RSP,0x20\n180015ba5 MOV RBX,RDX\n180015ba8 MOV RBP,RCX\n180015bab MOV RCX,RBX\n180015bae MOV RDX,R8\n180015bb1 MOV RSI,R8\n180015bb4 CALL 0x180015540\n180015bb9 XOR R14D,R14D\n180015bbc MOV R11,RAX\n180015bbf CMP dword ptr [RAX + 0x4],-0x1\n180015bc3 JNZ 0x180015bcf\n180015bc5 CMP dword ptr [RBX + 0x1c],R14D\n180015bc9 JNZ 0x180015cbf\n180015bcf MOV EAX,dword ptr [RBX + 0x14]\n180015bd2 MOV R10D,dword ptr [RAX + 0x14]\n180015bd6 CMP R10,RAX\n180015bd9 JZ 0x180015cf5\n180015bdf SUB R10,0x18\n180015be3 CMP dword ptr [R10 + 0xc],-0x1\n180015be8 JNZ 0x180015bd6\n180015bea LEA RDX,[R11 + 0x8]\n"
+    }
+  ],
+  "artifact": "/D:/steamtest/steamapps/common/Foundation/mods/libs/socket/core.dll",
+  "profile": "Ghidra -noanalysis, luaopen_socket_core plus 3 direct-call levels bounded by DLL .pdata, static import symbols, 20s/function"
+}

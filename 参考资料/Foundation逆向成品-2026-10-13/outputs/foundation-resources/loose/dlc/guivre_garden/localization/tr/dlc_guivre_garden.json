@@ -1,0 +1,32 @@
+﻿{
+	"GENERAL": {
+		"SUPPACK_GUIVRE_BUILDING": "Ejderha Bahçesi"
+	},
+	"BUILDING_PART": {
+		"SUPPACK_GUIVRE_ARCHWAY_01A": "Ejderha Bahçe Kemeri",
+		"SUPPACK_GUIVRE_BRAZIER_01A": "Ejderha Bahçe Mangalı, Zemin",
+		"SUPPACK_GUIVRE_FLOWER_01A": "Ejderha Bahçe Çiçekleri, Halat Kafes",
+		"SUPPACK_GUIVRE_FLOWER_02A": "Ejderha Bahçe Çiçekleri, Narin",
+		"SUPPACK_GUIVRE_FLOWER_03A": "Ejderha Bahçe Çiçekleri, Kokulu",
+		"SUPPACK_GUIVRE_HALFWALL_01A": "Ejderha Bahçe Çiti, Düz",
+		"SUPPACK_GUIVRE_HALFWALL_02A": "Ejderha Bahçe Çiçekleri, Ahşap Kafes",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_01A": "Ejderha Bahçe Çiti, Köşe",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_02A": "Ejderha Bahçe Çiçekleri, Köşe",
+		"SUPPACK_GUIVRE_FOUNTAIN_LARGE_01A": "Ejderha Bahçe Göleti",
+		"SUPPACK_GUIVRE_TORCH_MEDIUM_01A": "Ejderha Bahçe Mangalı, Asma",
+		"SUPPACK_GUIVRE_BASSIN_RECTANGLE_01A": "Ejderha Bahçe Havuzu",
+		"SUPPACK_GUIVRE_TORCH_SMALL_01A": "Ejderha Bahçe Mangalı, Sütun",
+		"SUPPACK_GUIVRE_STATUE_BASILISK_01A": "Taşlaşmış Şahmerdan, Mermer",
+		"SUPPACK_GUIVRE_STATUE_FISH_01A": "Uçan Balık, Mermer",
+		"SUPPACK_GUIVRE_STATUE_GUIVRE_01A": "Muhteşem Ejderha, Mermer",
+		"SUPPACK_GUIVRE_STATUE_PEDESTAL_01A": "Ejderha Bahçe Temel",
+		"SUPPACK_GUIVRE_STATUE_PINECONE_01A": "Kutsal Palamut, Mermer",
+		"SUPPACK_GUIVRE_BENCH_STONE_01A": "Ejderha Bahçe Bankı",
+		"SUPPACK_GUIVRE_PILLAR_01A": "Ejderha Bahçe Sütunu"
+	},
+	"DESCRIPTION": {
+		"SUPPACK_GUIVRE_BUILDING_DESC": "Bizim diyarımız ortaya çıkmadan çok önce, mücevherlerle süslü, yılan gibi görkemli bir canavar olan Ejderha hakkında hikayeler anlatılırdı; kanatları o kadar genişti ve pençeleri o kadar keskindi ki, dikkatsiz çobanların burnunun dibindeki koyunları savurabilirdi!\n\nGünümüzde, ister hayranlıktan ister korkudan olsun, köylüler bu güçlü yılanı onurlandırmak için bu etkileyici anıtları inşa ediyorlar.",
+		"SUPPACK_GUIVRE_DECORATIVE_DESC": "Ejderha Bahçesi için daha fazla dekorasyon, böylece heykellerinizin kendilerine ait küçük bir dünyası olabilir.",
+		"SUPPACK_GUIVRE_STATUE_DESC": "Kimileri bu heykellerin görkemli göründüğünü söylerken, kimileri de onları korkutucu buluyor; ancak kesin olan bir şey var: Kimse taş kesilmiyor."
+	}
+}

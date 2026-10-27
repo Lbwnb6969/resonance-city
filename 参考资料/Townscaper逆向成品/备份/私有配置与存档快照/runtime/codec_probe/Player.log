@@ -1,0 +1,46 @@
+Initialize engine version: 2020.3.4f1 (0abb6314276a)
+[Subsystems] Discovering subsystems at path D:/SteamLibrary/steamapps/common/Townscaper/Townscaper_Data/UnitySubsystems
+Forcing GfxDevice: Null
+GfxDevice: creating device client; threaded=0
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+
+ERROR: Shader Sprites/Default shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+Microsoft Media Foundation video decoding to texture disabled: graphics device is Null, only Direct3D 11 and Direct3D 12 (only on desktop) are supported.
+Registered PlatformPlayerPrefs: FuryStudios.FurySDK.Internal.PlatformPlayerPrefs
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+FuryStudios.FurySDK.Platform:RegisterPlayerPrefsType(Type)
+FuryStudios.FurySDK.Internal.PlatformPlayerPrefs:RegisterSelf()
+
+Registered fallback PlatformSDK: FuryStudios.FurySDK.Noop.NoopPlatformSDK
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+FuryStudios.FurySDK.Platform:RegisterFallbackPlatformSDK(Type)
+FuryStudios.FurySDK.Noop.NoopPlatformSDK:RegisterSelf()
+
+Registered PlatformSDK: FuryStudios.FurySDK.StandalonePC.StandalonePCPlatformSDK
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+FuryStudios.FurySDK.Platform:RegisterPlatformSDK(Type)
+FuryStudios.FurySDK.StandalonePC.StandalonePCPlatformSDK:RegisterSelf()
+
+ERROR: Shader Sprites/Mask shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader TextMeshPro/Mobile/Distance Field shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader GUI/Text Shader shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+ERROR: Shader PlacemakerUi/MultiFieldUi shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+WARNING: Shader Unsupported: 'TextMeshPro/Distance Field' - All subshaders removed
+WARNING: Shader Did you use #pragma only_renderers and omit this platform?
+WARNING: Shader If subshaders removal was intentional, you may have forgotten turning Fallback off?
+ERROR: Shader TextMeshPro/Distance Field shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+WARNING: Shader Unsupported: 'TextMeshPro/Distance Field' - All subshaders removed
+WARNING: Shader Did you use #pragma only_renderers and omit this platform?
+WARNING: Shader If subshaders removal was intentional, you may have forgotten turning Fallback off?
+ERROR: Shader PlacemakerUi/DistanceFieldUi shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
+UnloadTime: 2.691100 ms

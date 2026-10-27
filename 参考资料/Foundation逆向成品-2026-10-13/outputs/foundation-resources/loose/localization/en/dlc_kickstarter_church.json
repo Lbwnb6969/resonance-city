@@ -1,0 +1,18 @@
+﻿{
+	"GENERAL": {
+		"KICKSTARTER_CHURCH_BUILDING": "Founders Church"
+	},
+	"BUILDING_PART": {
+		"KICKSTARTER_CHURCH_ROOM_01A": "Founders Nave",
+		"KICKSTARTER_CHURCH_ROOM_02A": "Founders Chapel",
+		"KICKSTARTER_CHURCH_ROOM_03A": "Founders Apse",
+		"KICKSTARTER_CHURCH_BELLTOWER_01A": "Founders Bell Tower",
+		"KICKSTARTER_CHURCH_BELLTOWER_02A": "Founders Steeple",
+		"KICKSTARTER_CHURCH_ENTRANCE_01A": "Founders Gate, Minor",
+		"KICKSTARTER_CHURCH_ENTRANCE_02A": "Founders Gate, Major",
+		"KICKSTARTER_CHURCH_CROSS_01A": "Founders Cross"
+	},
+	"DESCRIPTION": {
+		"KICKSTARTER_CHURCH_BUILDING_DESC": "Long ago, brave founders banded together to build the village they longed for. This church stands as a reminder that their dream came true."
+	}
+}

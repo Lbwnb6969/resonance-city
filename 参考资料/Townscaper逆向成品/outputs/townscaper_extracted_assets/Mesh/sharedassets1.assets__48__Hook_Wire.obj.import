@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cpkidcx42y4ka"
+path="res://.godot/imported/sharedassets1.assets__48__Hook_Wire.obj-f7c7c9af4f2d3fad57424f1a53fa7ab4.mesh"
+
+[deps]
+
+files=["res://.godot/imported/sharedassets1.assets__48__Hook_Wire.obj-f7c7c9af4f2d3fad57424f1a53fa7ab4.mesh"]
+
+source_file="res://参考资料/Townscaper逆向成品/outputs/townscaper_extracted_assets/Mesh/sharedassets1.assets__48__Hook_Wire.obj"
+dest_files=["res://.godot/imported/sharedassets1.assets__48__Hook_Wire.obj-f7c7c9af4f2d3fad57424f1a53fa7ab4.mesh", "res://.godot/imported/sharedassets1.assets__48__Hook_Wire.obj-f7c7c9af4f2d3fad57424f1a53fa7ab4.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

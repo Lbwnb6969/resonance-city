@@ -1,0 +1,26 @@
+﻿{
+	"LOADING_TIPS": {
+		"LOADING_TIP_PRIORITY_TAX_OFFICE": "Büyük köylerin etrafına birden fazla Vergi Ofisi inşa etmek iyi bir stratejidir.",
+		"LOADING_TIP_PRIORITY_TAX_TRACKER": "Vergi Takibini değiştirmek için {1} üzerine sağ tıklayın.",
+		"LOADING_TIP_PRIORITY_BUILDER_WORKSHOP_CLOSE": "Daha iyi verimlilik için İnşaatçıları büyük yapılara yakın yerleştirin.",
+		"LOADING_TIP_PRIORITY_PLAN_DESIRABILITY": "Köylüleri terfi ettirmeden önce, arzu edilen konutları önceden planlayın.",
+		"LOADING_TIP_PRIORITY_NEED_PROXY": "Köylüler ihtiyaçlarını konutlarına yakın yerlerden karşılar.",
+		"LOADING_TIP_PRIORITY_STATUS_PRODUCTIVITY": "Bazı iş yerleri daha yüksek statüdeki köylüleri işe aldıklarında verimlilikleri artar.",
+		"LOADING_TIP_PRIORITY_TOOL_INVESTMENT": "{1} ürünlerini erken üretmek değerli bir yatırımdır.",
+		"LOADING_TIP_PRIORITY_TREASURY_LIMIT": "Görev ödülleri de dahil olmak üzere altın gelirleri hazine kapasitenizle sınırlıdır.",
+		"LOADING_TIP_PRIORITY_MONASTIC_WORK": "Rahipler yalnızca kendilerine tahsis edilen manastırda çalışırlar.",
+		"LOADING_TIP_PRIORITY_STORAGE_EFFICIENCY": "Verimli kaynak dağıtımı için işyerleri ve pazarların yakınında depo binaları inşa edin.",
+		"LOADING_TIP_PRIORITY_HAPPY_COMBATANT": "Mutlu, iyi eğitilmiş ve iyi silahlanmış bir savaşçı dayanıklı olur.",
+		"LOADING_TIP_PRIORITY_TOWER_FORTIFICATION": "Malikanenin kuleleri, kiliseler ve kale pasif güçlendirme sağlar.",
+		"LOADING_TIP_PRIORITY_MONASTERY_AUTONOMOUS": "Manastırlar özerktir; işçiler otomatik olarak iş yerlerine atanır.",
+		"LOADING_TIP_PRIORITY_BUILDING_BORDER": "Binaları yerleştirirken köylülerin hareketini belirleyen mavi sınırlara ve giriş oklarına dikkat edin.",
+		"LOADING_TIP_PRIORITY_PATH_DECAY": "Kullanılmayan toprak yollar zamanla bozulur. Taş yollar, kaldırımcılar {1} boyunca taş ile bakımını yaptığı sürece bozulmaz.",
+		"LOADING_TIP_PRIORITY_LEVY_EMERGENCY": "Acil fona ihtiyacınız varsa Büyük Salon'daki Vergilendirme Yetkisini kullanın.",
+		"LOADING_TIP_PRIORITY_RESOURCE_TRACKER": "Üst bilgi çubuğunda görüntülenen kaynaklara sağ tıklayarak {1} İzleyicisini açıp kapatın.",
+		"LOADING_TIP_PRIORITY_PROMOTE_VILLAGERS": "Köylülerin desteklenmesi refahın anahtarıdır; yeni ihtiyaçlarının karşılandığından emin olun.",
+		"LOADING_TIP_PRIORITY_VISIT_HELP": "Ekranınızın sol üst köşesindeki {1} Yardım Panelini ziyaret ederek oyun hakkında daha fazla bilgi edinin!",
+		"LOADING_TIP_PRIORITY_CLOSE_WINDOWS": "Sağ tıklamak pencereleri daha hızlı kapatmanızı sağlar.",
+		"LOADING_TIP_PRIORITY_VISIBILITY_PANEL": "{1} Görünürlük Paneli'ni kullanarak köy bilgilerinin görüntülenmesini açın veya kapatın.",
+		"LOADING_TIP_PRIORITY_COMMON_DECORATIONS": "Ortak Süslemeler, Anıtın bir parçası olup olmadıklarına bağlı olarak {1}{2}{3} İhtişam veya {4} Güzelleştirme sağlar."
+	}
+}

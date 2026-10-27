@@ -1,0 +1,18 @@
+﻿{
+	"ACHIEVEMENTS": {
+		"X_ACHIEVEMENTS_EARNED": "{1} Splněné úspěchy ({2}%)",
+		"ACHIEVEMENTS_DISABLED_MODS_NOTIFICATION": "Achievementy jsou zakázány. Chcete-li je povolit, spusťte novou hru bez modů.",
+		"ACHIEVEMENTS_DISABLED_OLD_SAVEGAME_NOTIFICATION": "Achievementy nejsou povoleny. Pro jejich povolení spusťte novou hru anebo nahrajte nověji uloženou hru.",
+		"ACHIEVEMENTS_DISABLED_WARNING": "Achievementy nelze získat, pokud jsou aktivní módy.",
+		"ACHIEVEMENT_UNLOCKED": "Achievement odemknut!",
+		"ACHIEVEMENT_PROGRESS": "Postup v úspěchu",
+		"X_HIDDEN_ACHIEVEMENTS_REMAINING": "{1} zbývající skryté achievementy",
+		"ACHIEVEMENT_DETAILS_REVEALED_ONCE_UNLOCKED": "Podrobnosti jednotlivých achievementů budou odhaleny po jejich splnění",
+		"ACHIEVEMENTS_DISABLED_IN_BUILD": "Achievementy nejsou povoleny v této verzi hry",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET_WARNING": "Úspěchy zakázány",
+		"ACHIEVEMENTS_DISABLED_DS_PRESET": "Úspěchy nejsou dostupné v režimu {1}.",
+		"SOME_ACHIEVEMENTS_DISABLED_DS_PRESET": "Některé úspěchy nemohou být získany hraním v režimu {1}.",
+		"ACHIEVEMENT_DISABLED_DS_PRESET": "Tento úspěch nemůže být získán hraním v režimu {1}.",
+		"ACHIEVEMENT_DISABLED_SAVEGAME": "Úspěchy byly v této hře dříve zakázány a nemohou být obnoveny."
+	}
+}

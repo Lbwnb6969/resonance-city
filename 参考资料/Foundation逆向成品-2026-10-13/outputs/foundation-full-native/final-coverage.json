@@ -1,0 +1,388 @@
+{
+  "artifact": "D:\\steamtest\\steamapps\\common\\Foundation\\foundation.exe",
+  "sha256": "2c0a048bc1fa2791f58ea432b85cbd9b816af0efec6d6d1c0be6c12195da31af",
+  "text_byte_partition_closed": true,
+  "function_records": 194922,
+  "final_status_counts": {
+    "complete": 194904,
+    "failed": 18
+  },
+  "retry_records": [
+    {
+      "entry": "0x1400364b0",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x1400c1650",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x140893340",
+      "status": "failed",
+      "error": "Exception while decompiling 140893340: process: timeout\n",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x1408b1be0",
+      "status": "failed",
+      "error": "Exception while decompiling 1408b1be0: process: timeout\n",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x1408c1350",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x140973180",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x1409797a0",
+      "status": "failed",
+      "error": "Exception while decompiling 1409797a0: Decompiler process died\n",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x141f6b350",
+      "status": "failed",
+      "error": "Exception while decompiling 141f6b350: Decompiler process died\n",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x14200d540",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x142014af0",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x14201a230",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x142159830",
+      "status": "failed",
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x142159c80",
+      "status": "failed",
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x1421782c0",
+      "status": "failed",
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x1421751f0",
+      "status": "failed",
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x1421760a0",
+      "status": "failed",
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x142178a40",
+      "status": "failed",
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x142178ee0",
+      "status": "failed",
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x1421c6290",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x14235118e",
+      "status": "failed",
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x1423510f7",
+      "status": "failed",
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x142351102",
+      "status": "failed",
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x14251c215",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x14251c1e0",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x14251c498",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x14251c262",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x14251c5d5",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x142540038",
+      "status": "failed",
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x142540422",
+      "status": "failed",
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x14260d718",
+      "status": "failed",
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x1427474dc",
+      "status": "failed",
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "timeout_seconds": 45
+    },
+    {
+      "entry": "0x142a9e970",
+      "status": "complete",
+      "error": "",
+      "timeout_seconds": 45
+    }
+  ],
+  "remaining_decompile_failures": [
+    {
+      "entry": "0x140893340",
+      "status": "failed",
+      "shard": "pseudocode-0021.jsonl.gz",
+      "line": 1997,
+      "error": "Exception while decompiling 140893340: process: timeout\n",
+      "body_bytes": 125085
+    },
+    {
+      "entry": "0x1408b1be0",
+      "status": "failed",
+      "shard": "pseudocode-0021.jsonl.gz",
+      "line": 1998,
+      "error": "Exception while decompiling 1408b1be0: process: timeout\n",
+      "body_bytes": 63336
+    },
+    {
+      "entry": "0x1409797a0",
+      "status": "failed",
+      "shard": "pseudocode-0023.jsonl.gz",
+      "line": 1999,
+      "error": "Exception while decompiling 1409797a0: process: timeout\n",
+      "body_bytes": 208048
+    },
+    {
+      "entry": "0x141f6b350",
+      "status": "failed",
+      "shard": "pseudocode-0070.jsonl.gz",
+      "line": 1797,
+      "error": "Exception while decompiling 141f6b350: Decompiler process died\n",
+      "body_bytes": 1347
+    },
+    {
+      "entry": "0x142159830",
+      "status": "failed",
+      "shard": "pseudocode-0074.jsonl.gz",
+      "line": 270,
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "body_bytes": 1097
+    },
+    {
+      "entry": "0x142159c80",
+      "status": "failed",
+      "shard": "pseudocode-0074.jsonl.gz",
+      "line": 273,
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "body_bytes": 1110
+    },
+    {
+      "entry": "0x1421782c0",
+      "status": "failed",
+      "shard": "pseudocode-0074.jsonl.gz",
+      "line": 733,
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "body_bytes": 996
+    },
+    {
+      "entry": "0x1421751f0",
+      "status": "failed",
+      "shard": "pseudocode-0074.jsonl.gz",
+      "line": 736,
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "body_bytes": 1881
+    },
+    {
+      "entry": "0x1421760a0",
+      "status": "failed",
+      "shard": "pseudocode-0074.jsonl.gz",
+      "line": 738,
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "body_bytes": 1835
+    },
+    {
+      "entry": "0x142178a40",
+      "status": "failed",
+      "shard": "pseudocode-0074.jsonl.gz",
+      "line": 744,
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "body_bytes": 1176
+    },
+    {
+      "entry": "0x142178ee0",
+      "status": "failed",
+      "shard": "pseudocode-0074.jsonl.gz",
+      "line": 748,
+      "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+      "body_bytes": 918
+    },
+    {
+      "entry": "0x14235118e",
+      "status": "failed",
+      "shard": "pseudocode-0078.jsonl.gz",
+      "line": 1269,
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "body_bytes": 278
+    },
+    {
+      "entry": "0x1423510f7",
+      "status": "failed",
+      "shard": "pseudocode-0078.jsonl.gz",
+      "line": 1270,
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "body_bytes": 11
+    },
+    {
+      "entry": "0x142351102",
+      "status": "failed",
+      "shard": "pseudocode-0078.jsonl.gz",
+      "line": 1273,
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "body_bytes": 140
+    },
+    {
+      "entry": "0x142540038",
+      "status": "failed",
+      "shard": "pseudocode-0082.jsonl.gz",
+      "line": 617,
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "body_bytes": 987
+    },
+    {
+      "entry": "0x142540422",
+      "status": "failed",
+      "shard": "pseudocode-0082.jsonl.gz",
+      "line": 620,
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "body_bytes": 1343
+    },
+    {
+      "entry": "0x14260d718",
+      "status": "failed",
+      "shard": "pseudocode-0084.jsonl.gz",
+      "line": 1385,
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "body_bytes": 1033
+    },
+    {
+      "entry": "0x1427474dc",
+      "status": "failed",
+      "shard": "pseudocode-0087.jsonl.gz",
+      "line": 1157,
+      "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+      "body_bytes": 144
+    }
+  ],
+  "code_coverage": {
+    "text_start": "0x140001000",
+    "text_end_exclusive": "0x142c64360",
+    "text_bytes": 46543712,
+    "decoded_instructions": 10557895,
+    "decoded_instruction_bytes": 43390918,
+    "unassigned_bytes": 3152794,
+    "unassigned_0x00_or_0xcc_bytes": 1598672,
+    "byte_partition_closed": true,
+    "recovered_function_entries": 194922,
+    "additional_created": 28353,
+    "limits": "Unassigned bytes are preserved verbatim and classified only bytewise; no inference that every gap is padding or executable code. Short branches/indirect calls are assembly observations, unresolved targets retained."
+  },
+  "rtti": {
+    "rtti_type_descriptors": 33202,
+    "verified_complete_object_locators": 25415,
+    "vtable_candidates": 25415
+  },
+  "runtime_target_execution": false,
+  "limitations": [
+    "C output is Ghidra pseudo-source, not original/recompilable source.",
+    "31,060 chained unwind ranges remain fragments rather than merged original functions.",
+    "Unassigned .text bytes retained verbatim; meaningful code/data classification not established for all remaining bytes.",
+    "All call instructions are exported but indirect call target resolution is incomplete.",
+    "Recovered vtable boundaries and original types/variable names remain partially unknown."
+  ],
+  "analysis_profile": {
+    "ghidra_version": "12.1.4 PUBLIC",
+    "jdk_version": "21.0.12.1+1",
+    "headless_heap": "8G",
+    "default_autoanalysis": false,
+    "bounded_workers": 8,
+    "first_pass_function_timeout_seconds": 8,
+    "retry_function_timeout_seconds": 45,
+    "source_mapping": "preferred PE ImageBase 0x140000000; exact .pdata RUNTIME_FUNCTION ranges plus disassembly-bounded leaf candidates",
+    "evidence_origin": "Local execution-free Ghidra supplement following REA skill; not new retained REA Evidence IDs.",
+    "global_tool_settings_modified": false
+  }
+}

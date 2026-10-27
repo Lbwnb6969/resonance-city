@@ -1,0 +1,2189 @@
+{
+  "relative_path": "libwinpthread-1.dll",
+  "artifact": "D:\\steamtest\\steamapps\\common\\Foundation\\libwinpthread-1.dll",
+  "sha256": "c6bf892e14e0ff834a626b4e243903e50d0f228cc826fdfd0b8c7ca1a4fbf921",
+  "bytes": 61343,
+  "machine": "0x8664",
+  "format": "PE32+",
+  "role": "dll",
+  "image_base": "0x2e3650000",
+  "entry_va": "0x2e3651320",
+  "timestamp": 1731523538,
+  "sections": [
+    {
+      "name": ".text",
+      "rva": 4096,
+      "virtual_size": 35360,
+      "file_offset": 1024,
+      "file_bytes": 35840,
+      "characteristics": "0x60000060"
+    },
+    {
+      "name": ".data",
+      "rva": 40960,
+      "virtual_size": 208,
+      "file_offset": 36864,
+      "file_bytes": 512,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".rdata",
+      "rva": 45056,
+      "virtual_size": 3520,
+      "file_offset": 37376,
+      "file_bytes": 3584,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".pdata",
+      "rva": 49152,
+      "virtual_size": 2820,
+      "file_offset": 40960,
+      "file_bytes": 3072,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".xdata",
+      "rva": 53248,
+      "virtual_size": 2480,
+      "file_offset": 44032,
+      "file_bytes": 2560,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".bss",
+      "rva": 57344,
+      "virtual_size": 464,
+      "file_offset": 0,
+      "file_bytes": 0,
+      "characteristics": "0xc0000080"
+    },
+    {
+      "name": ".edata",
+      "rva": 61440,
+      "virtual_size": 4383,
+      "file_offset": 46592,
+      "file_bytes": 4608,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".idata",
+      "rva": 69632,
+      "virtual_size": 3244,
+      "file_offset": 51200,
+      "file_bytes": 3584,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".CRT",
+      "rva": 73728,
+      "virtual_size": 96,
+      "file_offset": 54784,
+      "file_bytes": 512,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".tls",
+      "rva": 77824,
+      "virtual_size": 16,
+      "file_offset": 55296,
+      "file_bytes": 512,
+      "characteristics": "0xc0000040"
+    },
+    {
+      "name": ".rsrc",
+      "rva": 81920,
+      "virtual_size": 1128,
+      "file_offset": 55808,
+      "file_bytes": 1536,
+      "characteristics": "0x40000040"
+    },
+    {
+      "name": ".reloc",
+      "rva": 86016,
+      "virtual_size": 104,
+      "file_offset": 57344,
+      "file_bytes": 512,
+      "characteristics": "0x42000040"
+    }
+  ],
+  "data_directories": [
+    {
+      "rva": 61440,
+      "size": 4383
+    },
+    {
+      "rva": 69632,
+      "size": 3244
+    },
+    {
+      "rva": 81920,
+      "size": 1128
+    },
+    {
+      "rva": 49152,
+      "size": 2820
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 86016,
+      "size": 104
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 45952,
+      "size": 40
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 70392,
+      "size": 696
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    },
+    {
+      "rva": 0,
+      "size": 0
+    }
+  ],
+  "managed_cli_present": false,
+  "imports": [
+    {
+      "dll": "KERNEL32.dll",
+      "symbols": [
+        {
+          "iat_va": "0x2e36612f8",
+          "name": "CloseHandle",
+          "hint": 150
+        },
+        {
+          "iat_va": "0x2e3661300",
+          "name": "CreateEventA",
+          "hint": 207
+        },
+        {
+          "iat_va": "0x2e3661308",
+          "name": "CreateSemaphoreA",
+          "hint": 253
+        },
+        {
+          "iat_va": "0x2e3661310",
+          "name": "DeleteCriticalSection",
+          "hint": 294
+        },
+        {
+          "iat_va": "0x2e3661318",
+          "name": "DuplicateHandle",
+          "hint": 324
+        },
+        {
+          "iat_va": "0x2e3661320",
+          "name": "EnterCriticalSection",
+          "hint": 332
+        },
+        {
+          "iat_va": "0x2e3661328",
+          "name": "FileTimeToSystemTime",
+          "hint": 391
+        },
+        {
+          "iat_va": "0x2e3661330",
+          "name": "GetCurrentProcess",
+          "hint": 566
+        },
+        {
+          "iat_va": "0x2e3661338",
+          "name": "GetCurrentProcessId",
+          "hint": 567
+        },
+        {
+          "iat_va": "0x2e3661340",
+          "name": "GetCurrentThread",
+          "hint": 570
+        },
+        {
+          "iat_va": "0x2e3661348",
+          "name": "GetCurrentThreadId",
+          "hint": 571
+        },
+        {
+          "iat_va": "0x2e3661350",
+          "name": "GetHandleInformation",
+          "hint": 641
+        },
+        {
+          "iat_va": "0x2e3661358",
+          "name": "GetLastError",
+          "hint": 645
+        },
+        {
+          "iat_va": "0x2e3661360",
+          "name": "GetModuleHandleA",
+          "hint": 667
+        },
+        {
+          "iat_va": "0x2e3661368",
+          "name": "GetModuleHandleW",
+          "hint": 670
+        },
+        {
+          "iat_va": "0x2e3661370",
+          "name": "GetProcAddress",
+          "hint": 727
+        },
+        {
+          "iat_va": "0x2e3661378",
+          "name": "GetProcessAffinityMask",
+          "hint": 728
+        },
+        {
+          "iat_va": "0x2e3661380",
+          "name": "GetProcessTimes",
+          "hint": 744
+        },
+        {
+          "iat_va": "0x2e3661388",
+          "name": "GetSystemTimeAdjustment",
+          "hint": 787
+        },
+        {
+          "iat_va": "0x2e3661390",
+          "name": "GetSystemTimeAsFileTime",
+          "hint": 788
+        },
+        {
+          "iat_va": "0x2e3661398",
+          "name": "GetThreadContext",
+          "hint": 804
+        },
+        {
+          "iat_va": "0x2e36613a0",
+          "name": "GetThreadPriority",
+          "hint": 815
+        },
+        {
+          "iat_va": "0x2e36613a8",
+          "name": "GetThreadTimes",
+          "hint": 820
+        },
+        {
+          "iat_va": "0x2e36613b0",
+          "name": "GetTickCount",
+          "hint": 822
+        },
+        {
+          "iat_va": "0x2e36613b8",
+          "name": "InitializeCriticalSection",
+          "hint": 915
+        },
+        {
+          "iat_va": "0x2e36613c0",
+          "name": "IsDebuggerPresent",
+          "hint": 943
+        },
+        {
+          "iat_va": "0x2e36613c8",
+          "name": "IsProcessorFeaturePresent",
+          "hint": 951
+        },
+        {
+          "iat_va": "0x2e36613d0",
+          "name": "LeaveCriticalSection",
+          "hint": 1009
+        },
+        {
+          "iat_va": "0x2e36613d8",
+          "name": "LoadLibraryW",
+          "hint": 1016
+        },
+        {
+          "iat_va": "0x2e36613e0",
+          "name": "OpenProcess",
+          "hint": 1094
+        },
+        {
+          "iat_va": "0x2e36613e8",
+          "name": "OutputDebugStringA",
+          "hint": 1103
+        },
+        {
+          "iat_va": "0x2e36613f0",
+          "name": "QueryPerformanceCounter",
+          "hint": 1158
+        },
+        {
+          "iat_va": "0x2e36613f8",
+          "name": "QueryPerformanceFrequency",
+          "hint": 1159
+        },
+        {
+          "iat_va": "0x2e3661400",
+          "name": "RaiseException",
+          "hint": 1181
+        },
+        {
+          "iat_va": "0x2e3661408",
+          "name": "ReleaseSemaphore",
+          "hint": 1225
+        },
+        {
+          "iat_va": "0x2e3661410",
+          "name": "ResetEvent",
+          "hint": 1243
+        },
+        {
+          "iat_va": "0x2e3661418",
+          "name": "ResumeThread",
+          "hint": 1250
+        },
+        {
+          "iat_va": "0x2e3661420",
+          "name": "SetEvent",
+          "hint": 1337
+        },
+        {
+          "iat_va": "0x2e3661428",
+          "name": "SetLastError",
+          "hint": 1366
+        },
+        {
+          "iat_va": "0x2e3661430",
+          "name": "SetProcessAffinityMask",
+          "hint": 1377
+        },
+        {
+          "iat_va": "0x2e3661438",
+          "name": "SetSystemTime",
+          "hint": 1397
+        },
+        {
+          "iat_va": "0x2e3661440",
+          "name": "SetThreadContext",
+          "hint": 1403
+        },
+        {
+          "iat_va": "0x2e3661448",
+          "name": "SetThreadPriority",
+          "hint": 1413
+        },
+        {
+          "iat_va": "0x2e3661450",
+          "name": "Sleep",
+          "hint": 1445
+        },
+        {
+          "iat_va": "0x2e3661458",
+          "name": "SuspendThread",
+          "hint": 1454
+        },
+        {
+          "iat_va": "0x2e3661460",
+          "name": "TerminateProcess",
+          "hint": 1461
+        },
+        {
+          "iat_va": "0x2e3661468",
+          "name": "TlsAlloc",
+          "hint": 1479
+        },
+        {
+          "iat_va": "0x2e3661470",
+          "name": "TlsGetValue",
+          "hint": 1481
+        },
+        {
+          "iat_va": "0x2e3661478",
+          "name": "TlsSetValue",
+          "hint": 1482
+        },
+        {
+          "iat_va": "0x2e3661480",
+          "name": "TryEnterCriticalSection",
+          "hint": 1488
+        },
+        {
+          "iat_va": "0x2e3661488",
+          "name": "VirtualProtect",
+          "hint": 1528
+        },
+        {
+          "iat_va": "0x2e3661490",
+          "name": "VirtualQuery",
+          "hint": 1530
+        },
+        {
+          "iat_va": "0x2e3661498",
+          "name": "WaitForMultipleObjects",
+          "hint": 1537
+        },
+        {
+          "iat_va": "0x2e36614a0",
+          "name": "WaitForSingleObject",
+          "hint": 1539
+        }
+      ]
+    },
+    {
+      "dll": "msvcrt.dll",
+      "symbols": [
+        {
+          "iat_va": "0x2e36614b0",
+          "name": "__C_specific_handler",
+          "hint": 89
+        },
+        {
+          "iat_va": "0x2e36614b8",
+          "name": "__iob_func",
+          "hint": 129
+        },
+        {
+          "iat_va": "0x2e36614c0",
+          "name": "_amsg_exit",
+          "hint": 181
+        },
+        {
+          "iat_va": "0x2e36614c8",
+          "name": "_beginthreadex",
+          "hint": 197
+        },
+        {
+          "iat_va": "0x2e36614d0",
+          "name": "_endthreadex",
+          "hint": 266
+        },
+        {
+          "iat_va": "0x2e36614d8",
+          "name": "_errno",
+          "hint": 270
+        },
+        {
+          "iat_va": "0x2e36614e0",
+          "name": "_initterm",
+          "hint": 415
+        },
+        {
+          "iat_va": "0x2e36614e8",
+          "name": "_lock",
+          "hint": 525
+        },
+        {
+          "iat_va": "0x2e36614f0",
+          "name": "_setjmp",
+          "hint": 761
+        },
+        {
+          "iat_va": "0x2e36614f8",
+          "name": "_strdup",
+          "hint": 824
+        },
+        {
+          "iat_va": "0x2e3661500",
+          "name": "_unlock",
+          "hint": 920
+        },
+        {
+          "iat_va": "0x2e3661508",
+          "name": "_vscprintf",
+          "hint": 946
+        },
+        {
+          "iat_va": "0x2e3661510",
+          "name": "_vsnprintf",
+          "hint": 953
+        },
+        {
+          "iat_va": "0x2e3661518",
+          "name": "_write",
+          "hint": 1097
+        },
+        {
+          "iat_va": "0x2e3661520",
+          "name": "abort",
+          "hint": 1147
+        },
+        {
+          "iat_va": "0x2e3661528",
+          "name": "calloc",
+          "hint": 1165
+        },
+        {
+          "iat_va": "0x2e3661530",
+          "name": "exit",
+          "hint": 1179
+        },
+        {
+          "iat_va": "0x2e3661538",
+          "name": "fprintf",
+          "hint": 1200
+        },
+        {
+          "iat_va": "0x2e3661540",
+          "name": "free",
+          "hint": 1207
+        },
+        {
+          "iat_va": "0x2e3661548",
+          "name": "fwrite",
+          "hint": 1221
+        },
+        {
+          "iat_va": "0x2e3661550",
+          "name": "longjmp",
+          "hint": 1268
+        },
+        {
+          "iat_va": "0x2e3661558",
+          "name": "malloc",
+          "hint": 1269
+        },
+        {
+          "iat_va": "0x2e3661560",
+          "name": "mbstowcs",
+          "hint": 1273
+        },
+        {
+          "iat_va": "0x2e3661568",
+          "name": "memmove",
+          "hint": 1279
+        },
+        {
+          "iat_va": "0x2e3661570",
+          "name": "memset",
+          "hint": 1280
+        },
+        {
+          "iat_va": "0x2e3661578",
+          "name": "printf",
+          "hint": 1289
+        },
+        {
+          "iat_va": "0x2e3661580",
+          "name": "realloc",
+          "hint": 1300
+        },
+        {
+          "iat_va": "0x2e3661588",
+          "name": "signal",
+          "hint": 1311
+        },
+        {
+          "iat_va": "0x2e3661590",
+          "name": "strlen",
+          "hint": 1333
+        },
+        {
+          "iat_va": "0x2e3661598",
+          "name": "strncmp",
+          "hint": 1336
+        },
+        {
+          "iat_va": "0x2e36615a0",
+          "name": "vfprintf",
+          "hint": 1372
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "ordinal": 1,
+      "rva": "0x5110",
+      "va": "0x2e3655110",
+      "names": [
+        "__pth_gpointer_locked"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "rva": "0x1b40",
+      "va": "0x2e3651b40",
+      "names": [
+        "__pthread_clock_nanosleep"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "rva": "0x59d0",
+      "va": "0x2e36559d0",
+      "names": [
+        "_pthread_cleanup_dest"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "rva": "0x62c0",
+      "va": "0x2e36562c0",
+      "names": [
+        "_pthread_get_state"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "rva": "0x5cc0",
+      "va": "0x2e3655cc0",
+      "names": [
+        "_pthread_invoke_cancel"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "rva": "0xe060",
+      "va": "0x2e365e060",
+      "names": [
+        "_pthread_key_dest"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "rva": "0x2c40",
+      "va": "0x2e3652c40",
+      "names": [
+        "_pthread_rel_time_in_ms"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "rva": "0x62d0",
+      "va": "0x2e36562d0",
+      "names": [
+        "_pthread_set_state"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "rva": "0x2ba0",
+      "va": "0x2e3652ba0",
+      "names": [
+        "_pthread_time_in_ms"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "rva": "0x2c10",
+      "va": "0x2e3652c10",
+      "names": [
+        "_pthread_time_in_ms_from_timespec"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "rva": "0x6a00",
+      "va": "0x2e3656a00",
+      "names": [
+        "_pthread_tryjoin"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "rva": "0x7cc0",
+      "va": "0x2e3657cc0",
+      "names": [
+        "clock_getres"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "rva": "0x7da0",
+      "va": "0x2e3657da0",
+      "names": [
+        "clock_gettime"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "rva": "0x7f40",
+      "va": "0x2e3657f40",
+      "names": [
+        "clock_nanosleep"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "rva": "0x8030",
+      "va": "0x2e3658030",
+      "names": [
+        "clock_settime"
+      ]
+    },
+    {
+      "ordinal": 16,
+      "rva": "0x80f0",
+      "va": "0x2e36580f0",
+      "names": [
+        "nanosleep"
+      ]
+    },
+    {
+      "ordinal": 17,
+      "rva": "0x6310",
+      "va": "0x2e3656310",
+      "names": [
+        "pthread_attr_destroy"
+      ]
+    },
+    {
+      "ordinal": 18,
+      "rva": "0x6350",
+      "va": "0x2e3656350",
+      "names": [
+        "pthread_attr_getdetachstate"
+      ]
+    },
+    {
+      "ordinal": 19,
+      "rva": "0x6390",
+      "va": "0x2e3656390",
+      "names": [
+        "pthread_attr_getinheritsched"
+      ]
+    },
+    {
+      "ordinal": 20,
+      "rva": "0x7a00",
+      "va": "0x2e3657a00",
+      "names": [
+        "pthread_attr_getschedparam"
+      ]
+    },
+    {
+      "ordinal": 21,
+      "rva": "0x7a40",
+      "va": "0x2e3657a40",
+      "names": [
+        "pthread_attr_getschedpolicy"
+      ]
+    },
+    {
+      "ordinal": 22,
+      "rva": "0x63d0",
+      "va": "0x2e36563d0",
+      "names": [
+        "pthread_attr_getscope"
+      ]
+    },
+    {
+      "ordinal": 23,
+      "rva": "0x63e0",
+      "va": "0x2e36563e0",
+      "names": [
+        "pthread_attr_getstack"
+      ]
+    },
+    {
+      "ordinal": 24,
+      "rva": "0x6410",
+      "va": "0x2e3656410",
+      "names": [
+        "pthread_attr_getstackaddr"
+      ]
+    },
+    {
+      "ordinal": 25,
+      "rva": "0x6430",
+      "va": "0x2e3656430",
+      "names": [
+        "pthread_attr_getstacksize"
+      ]
+    },
+    {
+      "ordinal": 26,
+      "rva": "0x62f0",
+      "va": "0x2e36562f0",
+      "names": [
+        "pthread_attr_init"
+      ]
+    },
+    {
+      "ordinal": 27,
+      "rva": "0x6320",
+      "va": "0x2e3656320",
+      "names": [
+        "pthread_attr_setdetachstate"
+      ]
+    },
+    {
+      "ordinal": 28,
+      "rva": "0x6360",
+      "va": "0x2e3656360",
+      "names": [
+        "pthread_attr_setinheritsched"
+      ]
+    },
+    {
+      "ordinal": 29,
+      "rva": "0x79e0",
+      "va": "0x2e36579e0",
+      "names": [
+        "pthread_attr_setschedparam"
+      ]
+    },
+    {
+      "ordinal": 30,
+      "rva": "0x7a20",
+      "va": "0x2e3657a20",
+      "names": [
+        "pthread_attr_setschedpolicy"
+      ]
+    },
+    {
+      "ordinal": 31,
+      "rva": "0x63a0",
+      "va": "0x2e36563a0",
+      "names": [
+        "pthread_attr_setscope"
+      ]
+    },
+    {
+      "ordinal": 32,
+      "rva": "0x6400",
+      "va": "0x2e3656400",
+      "names": [
+        "pthread_attr_setstack"
+      ]
+    },
+    {
+      "ordinal": 33,
+      "rva": "0x6420",
+      "va": "0x2e3656420",
+      "names": [
+        "pthread_attr_setstackaddr"
+      ]
+    },
+    {
+      "ordinal": 34,
+      "rva": "0x6440",
+      "va": "0x2e3656440",
+      "names": [
+        "pthread_attr_setstacksize"
+      ]
+    },
+    {
+      "ordinal": 35,
+      "rva": "0x1530",
+      "va": "0x2e3651530",
+      "names": [
+        "pthread_barrier_destroy"
+      ]
+    },
+    {
+      "ordinal": 36,
+      "rva": "0x1650",
+      "va": "0x2e3651650",
+      "names": [
+        "pthread_barrier_init"
+      ]
+    },
+    {
+      "ordinal": 37,
+      "rva": "0x1780",
+      "va": "0x2e3651780",
+      "names": [
+        "pthread_barrier_wait"
+      ]
+    },
+    {
+      "ordinal": 38,
+      "rva": "0x1880",
+      "va": "0x2e3651880",
+      "names": [
+        "pthread_barrierattr_destroy"
+      ]
+    },
+    {
+      "ordinal": 39,
+      "rva": "0x18f0",
+      "va": "0x2e36518f0",
+      "names": [
+        "pthread_barrierattr_getpshared"
+      ]
+    },
+    {
+      "ordinal": 40,
+      "rva": "0x1850",
+      "va": "0x2e3651850",
+      "names": [
+        "pthread_barrierattr_init"
+      ]
+    },
+    {
+      "ordinal": 41,
+      "rva": "0x18c0",
+      "va": "0x2e36518c0",
+      "names": [
+        "pthread_barrierattr_setpshared"
+      ]
+    },
+    {
+      "ordinal": 42,
+      "rva": "0x5fd0",
+      "va": "0x2e3655fd0",
+      "names": [
+        "pthread_cancel"
+      ]
+    },
+    {
+      "ordinal": 43,
+      "rva": "0x2390",
+      "va": "0x2e3652390",
+      "names": [
+        "pthread_cond_broadcast"
+      ]
+    },
+    {
+      "ordinal": 44,
+      "rva": "0x2090",
+      "va": "0x2e3652090",
+      "names": [
+        "pthread_cond_destroy"
+      ]
+    },
+    {
+      "ordinal": 45,
+      "rva": "0x1c10",
+      "va": "0x2e3651c10",
+      "names": [
+        "pthread_cond_init"
+      ]
+    },
+    {
+      "ordinal": 46,
+      "rva": "0x2240",
+      "va": "0x2e3652240",
+      "names": [
+        "pthread_cond_signal"
+      ]
+    },
+    {
+      "ordinal": 47,
+      "rva": "0x2ad0",
+      "va": "0x2e3652ad0",
+      "names": [
+        "pthread_cond_timedwait"
+      ]
+    },
+    {
+      "ordinal": 48,
+      "rva": "0x2ae0",
+      "va": "0x2e3652ae0",
+      "names": [
+        "pthread_cond_timedwait_relative_np"
+      ]
+    },
+    {
+      "ordinal": 49,
+      "rva": "0x24b0",
+      "va": "0x2e36524b0",
+      "names": [
+        "pthread_cond_wait"
+      ]
+    },
+    {
+      "ordinal": 50,
+      "rva": "0x1aa0",
+      "va": "0x2e3651aa0",
+      "names": [
+        "pthread_condattr_destroy"
+      ]
+    },
+    {
+      "ordinal": 51,
+      "rva": "0x1b00",
+      "va": "0x2e3651b00",
+      "names": [
+        "pthread_condattr_getclock"
+      ]
+    },
+    {
+      "ordinal": 52,
+      "rva": "0x1ae0",
+      "va": "0x2e3651ae0",
+      "names": [
+        "pthread_condattr_getpshared"
+      ]
+    },
+    {
+      "ordinal": 53,
+      "rva": "0x1ac0",
+      "va": "0x2e3651ac0",
+      "names": [
+        "pthread_condattr_init"
+      ]
+    },
+    {
+      "ordinal": 54,
+      "rva": "0x1b20",
+      "va": "0x2e3651b20",
+      "names": [
+        "pthread_condattr_setclock"
+      ]
+    },
+    {
+      "ordinal": 55,
+      "rva": "0x1be0",
+      "va": "0x2e3651be0",
+      "names": [
+        "pthread_condattr_setpshared"
+      ]
+    },
+    {
+      "ordinal": 56,
+      "rva": "0x6580",
+      "va": "0x2e3656580",
+      "names": [
+        "pthread_create"
+      ]
+    },
+    {
+      "ordinal": 57,
+      "rva": "0x4d70",
+      "va": "0x2e3654d70",
+      "names": [
+        "pthread_create_wrapper"
+      ]
+    },
+    {
+      "ordinal": 58,
+      "rva": "0x5e70",
+      "va": "0x2e3655e70",
+      "names": [
+        "pthread_delay_np"
+      ]
+    },
+    {
+      "ordinal": 59,
+      "rva": "0x6be0",
+      "va": "0x2e3656be0",
+      "names": [
+        "pthread_detach"
+      ]
+    },
+    {
+      "ordinal": 60,
+      "rva": "0x59c0",
+      "va": "0x2e36559c0",
+      "names": [
+        "pthread_equal"
+      ]
+    },
+    {
+      "ordinal": 61,
+      "rva": "0x5b30",
+      "va": "0x2e3655b30",
+      "names": [
+        "pthread_exit"
+      ]
+    },
+    {
+      "ordinal": 62,
+      "rva": "0x5b10",
+      "va": "0x2e3655b10",
+      "names": [
+        "pthread_get_concurrency"
+      ]
+    },
+    {
+      "ordinal": 63,
+      "rva": "0x5ad0",
+      "va": "0x2e3655ad0",
+      "names": [
+        "pthread_getclean"
+      ]
+    },
+    {
+      "ordinal": 64,
+      "rva": "0x6d50",
+      "va": "0x2e3656d50",
+      "names": [
+        "pthread_getconcurrency"
+      ]
+    },
+    {
+      "ordinal": 65,
+      "rva": "0x5a40",
+      "va": "0x2e3655a40",
+      "names": [
+        "pthread_getevent"
+      ]
+    },
+    {
+      "ordinal": 66,
+      "rva": "0x5a80",
+      "va": "0x2e3655a80",
+      "names": [
+        "pthread_gethandle"
+      ]
+    },
+    {
+      "ordinal": 67,
+      "rva": "0x6f20",
+      "va": "0x2e3656f20",
+      "names": [
+        "pthread_getname_np"
+      ]
+    },
+    {
+      "ordinal": 68,
+      "rva": "0x7a60",
+      "va": "0x2e3657a60",
+      "names": [
+        "pthread_getschedparam"
+      ]
+    },
+    {
+      "ordinal": 69,
+      "rva": "0x5810",
+      "va": "0x2e3655810",
+      "names": [
+        "pthread_getspecific"
+      ]
+    },
+    {
+      "ordinal": 70,
+      "rva": "0x6840",
+      "va": "0x2e3656840",
+      "names": [
+        "pthread_join"
+      ]
+    },
+    {
+      "ordinal": 71,
+      "rva": "0x5590",
+      "va": "0x2e3655590",
+      "names": [
+        "pthread_key_create"
+      ]
+    },
+    {
+      "ordinal": 72,
+      "rva": "0x5720",
+      "va": "0x2e3655720",
+      "names": [
+        "pthread_key_delete"
+      ]
+    },
+    {
+      "ordinal": 73,
+      "rva": "0x6220",
+      "va": "0x2e3656220",
+      "names": [
+        "pthread_kill"
+      ]
+    },
+    {
+      "ordinal": 74,
+      "rva": "0x33c0",
+      "va": "0x2e36533c0",
+      "names": [
+        "pthread_mutex_destroy"
+      ]
+    },
+    {
+      "ordinal": 75,
+      "rva": "0x3370",
+      "va": "0x2e3653370",
+      "names": [
+        "pthread_mutex_init"
+      ]
+    },
+    {
+      "ordinal": 76,
+      "rva": "0x2f50",
+      "va": "0x2e3652f50",
+      "names": [
+        "pthread_mutex_lock"
+      ]
+    },
+    {
+      "ordinal": 77,
+      "rva": "0x3090",
+      "va": "0x2e3653090",
+      "names": [
+        "pthread_mutex_timedlock"
+      ]
+    },
+    {
+      "ordinal": 78,
+      "rva": "0x32d0",
+      "va": "0x2e36532d0",
+      "names": [
+        "pthread_mutex_trylock"
+      ]
+    },
+    {
+      "ordinal": 79,
+      "rva": "0x3220",
+      "va": "0x2e3653220",
+      "names": [
+        "pthread_mutex_unlock"
+      ]
+    },
+    {
+      "ordinal": 80,
+      "rva": "0x3410",
+      "va": "0x2e3653410",
+      "names": [
+        "pthread_mutexattr_destroy"
+      ]
+    },
+    {
+      "ordinal": 81,
+      "rva": "0x3500",
+      "va": "0x2e3653500",
+      "names": [
+        "pthread_mutexattr_getprioceiling"
+      ]
+    },
+    {
+      "ordinal": 82,
+      "rva": "0x34d0",
+      "va": "0x2e36534d0",
+      "names": [
+        "pthread_mutexattr_getprotocol"
+      ]
+    },
+    {
+      "ordinal": 83,
+      "rva": "0x3470",
+      "va": "0x2e3653470",
+      "names": [
+        "pthread_mutexattr_getpshared"
+      ]
+    },
+    {
+      "ordinal": 84,
+      "rva": "0x3420",
+      "va": "0x2e3653420",
+      "names": [
+        "pthread_mutexattr_gettype"
+      ]
+    },
+    {
+      "ordinal": 85,
+      "rva": "0x3400",
+      "va": "0x2e3653400",
+      "names": [
+        "pthread_mutexattr_init"
+      ]
+    },
+    {
+      "ordinal": 86,
+      "rva": "0x3510",
+      "va": "0x2e3653510",
+      "names": [
+        "pthread_mutexattr_setprioceiling"
+      ]
+    },
+    {
+      "ordinal": 87,
+      "rva": "0x34e0",
+      "va": "0x2e36534e0",
+      "names": [
+        "pthread_mutexattr_setprotocol"
+      ]
+    },
+    {
+      "ordinal": 88,
+      "rva": "0x34a0",
+      "va": "0x2e36534a0",
+      "names": [
+        "pthread_mutexattr_setpshared"
+      ]
+    },
+    {
+      "ordinal": 89,
+      "rva": "0x3440",
+      "va": "0x2e3653440",
+      "names": [
+        "pthread_mutexattr_settype"
+      ]
+    },
+    {
+      "ordinal": 90,
+      "rva": "0x5290",
+      "va": "0x2e3655290",
+      "names": [
+        "pthread_num_processors_np"
+      ]
+    },
+    {
+      "ordinal": 91,
+      "rva": "0x53d0",
+      "va": "0x2e36553d0",
+      "names": [
+        "pthread_once"
+      ]
+    },
+    {
+      "ordinal": 92,
+      "rva": "0x3960",
+      "va": "0x2e3653960",
+      "names": [
+        "pthread_rwlock_destroy"
+      ]
+    },
+    {
+      "ordinal": 93,
+      "rva": "0x3790",
+      "va": "0x2e3653790",
+      "names": [
+        "pthread_rwlock_init"
+      ]
+    },
+    {
+      "ordinal": 94,
+      "rva": "0x3ad0",
+      "va": "0x2e3653ad0",
+      "names": [
+        "pthread_rwlock_rdlock"
+      ]
+    },
+    {
+      "ordinal": 95,
+      "rva": "0x3b90",
+      "va": "0x2e3653b90",
+      "names": [
+        "pthread_rwlock_timedrdlock"
+      ]
+    },
+    {
+      "ordinal": 96,
+      "rva": "0x4030",
+      "va": "0x2e3654030",
+      "names": [
+        "pthread_rwlock_timedwrlock"
+      ]
+    },
+    {
+      "ordinal": 97,
+      "rva": "0x3c70",
+      "va": "0x2e3653c70",
+      "names": [
+        "pthread_rwlock_tryrdlock"
+      ]
+    },
+    {
+      "ordinal": 98,
+      "rva": "0x3d30",
+      "va": "0x2e3653d30",
+      "names": [
+        "pthread_rwlock_trywrlock"
+      ]
+    },
+    {
+      "ordinal": 99,
+      "rva": "0x3e00",
+      "va": "0x2e3653e00",
+      "names": [
+        "pthread_rwlock_unlock"
+      ]
+    },
+    {
+      "ordinal": 100,
+      "rva": "0x3eb0",
+      "va": "0x2e3653eb0",
+      "names": [
+        "pthread_rwlock_wrlock"
+      ]
+    },
+    {
+      "ordinal": 101,
+      "rva": "0x41f0",
+      "va": "0x2e36541f0",
+      "names": [
+        "pthread_rwlockattr_destroy"
+      ]
+    },
+    {
+      "ordinal": 102,
+      "rva": "0x4220",
+      "va": "0x2e3654220",
+      "names": [
+        "pthread_rwlockattr_getpshared"
+      ]
+    },
+    {
+      "ordinal": 103,
+      "rva": "0x4200",
+      "va": "0x2e3654200",
+      "names": [
+        "pthread_rwlockattr_init"
+      ]
+    },
+    {
+      "ordinal": 104,
+      "rva": "0x4240",
+      "va": "0x2e3654240",
+      "names": [
+        "pthread_rwlockattr_setpshared"
+      ]
+    },
+    {
+      "ordinal": 105,
+      "rva": "0x59f0",
+      "va": "0x2e36559f0",
+      "names": [
+        "pthread_self"
+      ]
+    },
+    {
+      "ordinal": 106,
+      "rva": "0x5b20",
+      "va": "0x2e3655b20",
+      "names": [
+        "pthread_set_concurrency"
+      ]
+    },
+    {
+      "ordinal": 107,
+      "rva": "0x5310",
+      "va": "0x2e3655310",
+      "names": [
+        "pthread_set_num_processors_np"
+      ]
+    },
+    {
+      "ordinal": 108,
+      "rva": "0x6450",
+      "va": "0x2e3656450",
+      "names": [
+        "pthread_setcancelstate"
+      ]
+    },
+    {
+      "ordinal": 109,
+      "rva": "0x64e0",
+      "va": "0x2e36564e0",
+      "names": [
+        "pthread_setcanceltype"
+      ]
+    },
+    {
+      "ordinal": 110,
+      "rva": "0x6d60",
+      "va": "0x2e3656d60",
+      "names": [
+        "pthread_setconcurrency"
+      ]
+    },
+    {
+      "ordinal": 111,
+      "rva": "0x6d70",
+      "va": "0x2e3656d70",
+      "names": [
+        "pthread_setname_np"
+      ]
+    },
+    {
+      "ordinal": 112,
+      "rva": "0x7ae0",
+      "va": "0x2e3657ae0",
+      "names": [
+        "pthread_setschedparam"
+      ]
+    },
+    {
+      "ordinal": 113,
+      "rva": "0x58a0",
+      "va": "0x2e36558a0",
+      "names": [
+        "pthread_setspecific"
+      ]
+    },
+    {
+      "ordinal": 114,
+      "rva": "0x4270",
+      "va": "0x2e3654270",
+      "names": [
+        "pthread_spin_destroy"
+      ]
+    },
+    {
+      "ordinal": 115,
+      "rva": "0x4260",
+      "va": "0x2e3654260",
+      "names": [
+        "pthread_spin_init"
+      ]
+    },
+    {
+      "ordinal": 116,
+      "rva": "0x4280",
+      "va": "0x2e3654280",
+      "names": [
+        "pthread_spin_lock"
+      ]
+    },
+    {
+      "ordinal": 117,
+      "rva": "0x42c0",
+      "va": "0x2e36542c0",
+      "names": [
+        "pthread_spin_trylock"
+      ]
+    },
+    {
+      "ordinal": 118,
+      "rva": "0x42e0",
+      "va": "0x2e36542e0",
+      "names": [
+        "pthread_spin_unlock"
+      ]
+    },
+    {
+      "ordinal": 119,
+      "rva": "0x5db0",
+      "va": "0x2e3655db0",
+      "names": [
+        "pthread_testcancel"
+      ]
+    },
+    {
+      "ordinal": 120,
+      "rva": "0x5280",
+      "va": "0x2e3655280",
+      "names": [
+        "pthread_timechange_handler_np"
+      ]
+    },
+    {
+      "ordinal": 121,
+      "rva": "0x45e0",
+      "va": "0x2e36545e0",
+      "names": [
+        "pthread_tls_init"
+      ]
+    },
+    {
+      "ordinal": 122,
+      "rva": "0x79b0",
+      "va": "0x2e36579b0",
+      "names": [
+        "sched_get_priority_max"
+      ]
+    },
+    {
+      "ordinal": 123,
+      "rva": "0x7980",
+      "va": "0x2e3657980",
+      "names": [
+        "sched_get_priority_min"
+      ]
+    },
+    {
+      "ordinal": 124,
+      "rva": "0x7b90",
+      "va": "0x2e3657b90",
+      "names": [
+        "sched_getscheduler"
+      ]
+    },
+    {
+      "ordinal": 125,
+      "rva": "0x7c00",
+      "va": "0x2e3657c00",
+      "names": [
+        "sched_setscheduler"
+      ]
+    },
+    {
+      "ordinal": 126,
+      "rva": "0x7ca0",
+      "va": "0x2e3657ca0",
+      "names": [
+        "sched_yield"
+      ]
+    },
+    {
+      "ordinal": 127,
+      "rva": "0x7840",
+      "va": "0x2e3657840",
+      "names": [
+        "sem_close"
+      ]
+    },
+    {
+      "ordinal": 128,
+      "rva": "0x7280",
+      "va": "0x2e3657280",
+      "names": [
+        "sem_destroy"
+      ]
+    },
+    {
+      "ordinal": 129,
+      "rva": "0x7880",
+      "va": "0x2e3657880",
+      "names": [
+        "sem_getvalue"
+      ]
+    },
+    {
+      "ordinal": 130,
+      "rva": "0x7190",
+      "va": "0x2e3657190",
+      "names": [
+        "sem_init"
+      ]
+    },
+    {
+      "ordinal": 131,
+      "rva": "0x7820",
+      "va": "0x2e3657820",
+      "names": [
+        "sem_open"
+      ]
+    },
+    {
+      "ordinal": 132,
+      "rva": "0x7670",
+      "va": "0x2e3657670",
+      "names": [
+        "sem_post"
+      ]
+    },
+    {
+      "ordinal": 133,
+      "rva": "0x7740",
+      "va": "0x2e3657740",
+      "names": [
+        "sem_post_multiple"
+      ]
+    },
+    {
+      "ordinal": 134,
+      "rva": "0x7500",
+      "va": "0x2e3657500",
+      "names": [
+        "sem_timedwait"
+      ]
+    },
+    {
+      "ordinal": 135,
+      "rva": "0x7330",
+      "va": "0x2e3657330",
+      "names": [
+        "sem_trywait"
+      ]
+    },
+    {
+      "ordinal": 136,
+      "rva": "0x7860",
+      "va": "0x2e3657860",
+      "names": [
+        "sem_unlink"
+      ]
+    },
+    {
+      "ordinal": 137,
+      "rva": "0x73c0",
+      "va": "0x2e36573c0",
+      "names": [
+        "sem_wait"
+      ]
+    }
+  ],
+  "debug_records": [],
+  "certificate_records": [],
+  "static_identity_strings": [
+    {
+      "file_offset": 37376,
+      "value": "../mingw-w64/mingw-w64-libraries/winpthreads/src/barrier.c"
+    },
+    {
+      "file_offset": 37744,
+      "value": "../mingw-w64/mingw-w64-libraries/winpthreads/src/rwlock.c"
+    },
+    {
+      "file_offset": 48002,
+      "value": "libwinpthread-1.dll"
+    },
+    {
+      "file_offset": 48044,
+      "value": "__pthread_clock_nanosleep"
+    },
+    {
+      "file_offset": 48070,
+      "value": "_pthread_cleanup_dest"
+    },
+    {
+      "file_offset": 48092,
+      "value": "_pthread_get_state"
+    },
+    {
+      "file_offset": 48111,
+      "value": "_pthread_invoke_cancel"
+    },
+    {
+      "file_offset": 48134,
+      "value": "_pthread_key_dest"
+    },
+    {
+      "file_offset": 48152,
+      "value": "_pthread_rel_time_in_ms"
+    },
+    {
+      "file_offset": 48176,
+      "value": "_pthread_set_state"
+    },
+    {
+      "file_offset": 48195,
+      "value": "_pthread_time_in_ms"
+    },
+    {
+      "file_offset": 48215,
+      "value": "_pthread_time_in_ms_from_timespec"
+    },
+    {
+      "file_offset": 48249,
+      "value": "_pthread_tryjoin"
+    },
+    {
+      "file_offset": 48333,
+      "value": "pthread_attr_destroy"
+    },
+    {
+      "file_offset": 48354,
+      "value": "pthread_attr_getdetachstate"
+    },
+    {
+      "file_offset": 48382,
+      "value": "pthread_attr_getinheritsched"
+    },
+    {
+      "file_offset": 48411,
+      "value": "pthread_attr_getschedparam"
+    },
+    {
+      "file_offset": 48438,
+      "value": "pthread_attr_getschedpolicy"
+    },
+    {
+      "file_offset": 48466,
+      "value": "pthread_attr_getscope"
+    },
+    {
+      "file_offset": 48488,
+      "value": "pthread_attr_getstack"
+    },
+    {
+      "file_offset": 48510,
+      "value": "pthread_attr_getstackaddr"
+    },
+    {
+      "file_offset": 48536,
+      "value": "pthread_attr_getstacksize"
+    },
+    {
+      "file_offset": 48562,
+      "value": "pthread_attr_init"
+    },
+    {
+      "file_offset": 48580,
+      "value": "pthread_attr_setdetachstate"
+    },
+    {
+      "file_offset": 48608,
+      "value": "pthread_attr_setinheritsched"
+    },
+    {
+      "file_offset": 48637,
+      "value": "pthread_attr_setschedparam"
+    },
+    {
+      "file_offset": 48664,
+      "value": "pthread_attr_setschedpolicy"
+    },
+    {
+      "file_offset": 48692,
+      "value": "pthread_attr_setscope"
+    },
+    {
+      "file_offset": 48714,
+      "value": "pthread_attr_setstack"
+    },
+    {
+      "file_offset": 48736,
+      "value": "pthread_attr_setstackaddr"
+    },
+    {
+      "file_offset": 48762,
+      "value": "pthread_attr_setstacksize"
+    },
+    {
+      "file_offset": 48788,
+      "value": "pthread_barrier_destroy"
+    },
+    {
+      "file_offset": 48812,
+      "value": "pthread_barrier_init"
+    },
+    {
+      "file_offset": 48833,
+      "value": "pthread_barrier_wait"
+    },
+    {
+      "file_offset": 48854,
+      "value": "pthread_barrierattr_destroy"
+    },
+    {
+      "file_offset": 48882,
+      "value": "pthread_barrierattr_getpshared"
+    },
+    {
+      "file_offset": 48913,
+      "value": "pthread_barrierattr_init"
+    },
+    {
+      "file_offset": 48938,
+      "value": "pthread_barrierattr_setpshared"
+    },
+    {
+      "file_offset": 48969,
+      "value": "pthread_cancel"
+    },
+    {
+      "file_offset": 48984,
+      "value": "pthread_cond_broadcast"
+    },
+    {
+      "file_offset": 49007,
+      "value": "pthread_cond_destroy"
+    },
+    {
+      "file_offset": 49028,
+      "value": "pthread_cond_init"
+    },
+    {
+      "file_offset": 49046,
+      "value": "pthread_cond_signal"
+    },
+    {
+      "file_offset": 49066,
+      "value": "pthread_cond_timedwait"
+    },
+    {
+      "file_offset": 49089,
+      "value": "pthread_cond_timedwait_relative_np"
+    },
+    {
+      "file_offset": 49124,
+      "value": "pthread_cond_wait"
+    },
+    {
+      "file_offset": 49142,
+      "value": "pthread_condattr_destroy"
+    },
+    {
+      "file_offset": 49167,
+      "value": "pthread_condattr_getclock"
+    },
+    {
+      "file_offset": 49193,
+      "value": "pthread_condattr_getpshared"
+    },
+    {
+      "file_offset": 49221,
+      "value": "pthread_condattr_init"
+    },
+    {
+      "file_offset": 49243,
+      "value": "pthread_condattr_setclock"
+    },
+    {
+      "file_offset": 49269,
+      "value": "pthread_condattr_setpshared"
+    },
+    {
+      "file_offset": 49297,
+      "value": "pthread_create"
+    },
+    {
+      "file_offset": 49312,
+      "value": "pthread_create_wrapper"
+    },
+    {
+      "file_offset": 49335,
+      "value": "pthread_delay_np"
+    },
+    {
+      "file_offset": 49352,
+      "value": "pthread_detach"
+    },
+    {
+      "file_offset": 49367,
+      "value": "pthread_equal"
+    },
+    {
+      "file_offset": 49381,
+      "value": "pthread_exit"
+    },
+    {
+      "file_offset": 49394,
+      "value": "pthread_get_concurrency"
+    },
+    {
+      "file_offset": 49418,
+      "value": "pthread_getclean"
+    },
+    {
+      "file_offset": 49435,
+      "value": "pthread_getconcurrency"
+    },
+    {
+      "file_offset": 49458,
+      "value": "pthread_getevent"
+    },
+    {
+      "file_offset": 49475,
+      "value": "pthread_gethandle"
+    },
+    {
+      "file_offset": 49493,
+      "value": "pthread_getname_np"
+    },
+    {
+      "file_offset": 49512,
+      "value": "pthread_getschedparam"
+    },
+    {
+      "file_offset": 49534,
+      "value": "pthread_getspecific"
+    },
+    {
+      "file_offset": 49554,
+      "value": "pthread_join"
+    },
+    {
+      "file_offset": 49567,
+      "value": "pthread_key_create"
+    },
+    {
+      "file_offset": 49586,
+      "value": "pthread_key_delete"
+    },
+    {
+      "file_offset": 49605,
+      "value": "pthread_kill"
+    },
+    {
+      "file_offset": 49618,
+      "value": "pthread_mutex_destroy"
+    },
+    {
+      "file_offset": 49640,
+      "value": "pthread_mutex_init"
+    },
+    {
+      "file_offset": 49659,
+      "value": "pthread_mutex_lock"
+    },
+    {
+      "file_offset": 49678,
+      "value": "pthread_mutex_timedlock"
+    },
+    {
+      "file_offset": 49702,
+      "value": "pthread_mutex_trylock"
+    },
+    {
+      "file_offset": 49724,
+      "value": "pthread_mutex_unlock"
+    },
+    {
+      "file_offset": 49745,
+      "value": "pthread_mutexattr_destroy"
+    },
+    {
+      "file_offset": 49771,
+      "value": "pthread_mutexattr_getprioceiling"
+    },
+    {
+      "file_offset": 49804,
+      "value": "pthread_mutexattr_getprotocol"
+    },
+    {
+      "file_offset": 49834,
+      "value": "pthread_mutexattr_getpshared"
+    },
+    {
+      "file_offset": 49863,
+      "value": "pthread_mutexattr_gettype"
+    },
+    {
+      "file_offset": 49889,
+      "value": "pthread_mutexattr_init"
+    },
+    {
+      "file_offset": 49912,
+      "value": "pthread_mutexattr_setprioceiling"
+    },
+    {
+      "file_offset": 49945,
+      "value": "pthread_mutexattr_setprotocol"
+    },
+    {
+      "file_offset": 49975,
+      "value": "pthread_mutexattr_setpshared"
+    },
+    {
+      "file_offset": 50004,
+      "value": "pthread_mutexattr_settype"
+    },
+    {
+      "file_offset": 50030,
+      "value": "pthread_num_processors_np"
+    },
+    {
+      "file_offset": 50056,
+      "value": "pthread_once"
+    },
+    {
+      "file_offset": 50069,
+      "value": "pthread_rwlock_destroy"
+    },
+    {
+      "file_offset": 50092,
+      "value": "pthread_rwlock_init"
+    },
+    {
+      "file_offset": 50112,
+      "value": "pthread_rwlock_rdlock"
+    },
+    {
+      "file_offset": 50134,
+      "value": "pthread_rwlock_timedrdlock"
+    },
+    {
+      "file_offset": 50161,
+      "value": "pthread_rwlock_timedwrlock"
+    },
+    {
+      "file_offset": 50188,
+      "value": "pthread_rwlock_tryrdlock"
+    },
+    {
+      "file_offset": 50213,
+      "value": "pthread_rwlock_trywrlock"
+    },
+    {
+      "file_offset": 50238,
+      "value": "pthread_rwlock_unlock"
+    },
+    {
+      "file_offset": 50260,
+      "value": "pthread_rwlock_wrlock"
+    },
+    {
+      "file_offset": 50282,
+      "value": "pthread_rwlockattr_destroy"
+    },
+    {
+      "file_offset": 50309,
+      "value": "pthread_rwlockattr_getpshared"
+    },
+    {
+      "file_offset": 50339,
+      "value": "pthread_rwlockattr_init"
+    },
+    {
+      "file_offset": 50363,
+      "value": "pthread_rwlockattr_setpshared"
+    },
+    {
+      "file_offset": 50393,
+      "value": "pthread_self"
+    },
+    {
+      "file_offset": 50406,
+      "value": "pthread_set_concurrency"
+    },
+    {
+      "file_offset": 50430,
+      "value": "pthread_set_num_processors_np"
+    },
+    {
+      "file_offset": 50460,
+      "value": "pthread_setcancelstate"
+    },
+    {
+      "file_offset": 50483,
+      "value": "pthread_setcanceltype"
+    },
+    {
+      "file_offset": 50505,
+      "value": "pthread_setconcurrency"
+    },
+    {
+      "file_offset": 50528,
+      "value": "pthread_setname_np"
+    },
+    {
+      "file_offset": 50547,
+      "value": "pthread_setschedparam"
+    },
+    {
+      "file_offset": 50569,
+      "value": "pthread_setspecific"
+    },
+    {
+      "file_offset": 50589,
+      "value": "pthread_spin_destroy"
+    },
+    {
+      "file_offset": 50610,
+      "value": "pthread_spin_init"
+    },
+    {
+      "file_offset": 50628,
+      "value": "pthread_spin_lock"
+    },
+    {
+      "file_offset": 50646,
+      "value": "pthread_spin_trylock"
+    },
+    {
+      "file_offset": 50667,
+      "value": "pthread_spin_unlock"
+    },
+    {
+      "file_offset": 50687,
+      "value": "pthread_testcancel"
+    },
+    {
+      "file_offset": 50706,
+      "value": "pthread_timechange_handler_np"
+    },
+    {
+      "file_offset": 50736,
+      "value": "pthread_tls_init"
+    }
+  ],
+  "scope": "Execution-free PE header/regular imports/export/debug/security-directory parse; regular import list excludes delay imports. No claim of signature trust or runtime DLL loading."
+}

@@ -1,0 +1,26 @@
+﻿{
+	"LOADING_TIPS": {
+		"LOADING_TIP_PRIORITY_TAX_OFFICE": "It is a good strategy to build multiple Tax Offices around large villages.",
+		"LOADING_TIP_PRIORITY_TAX_TRACKER": "Right-click on {1} to toggle the Taxation Tracker.",
+		"LOADING_TIP_PRIORITY_BUILDER_WORKSHOP_CLOSE": "Place Builder's Workshops close to large constructions for better efficiency.",
+		"LOADING_TIP_PRIORITY_PLAN_DESIRABILITY": "Plan desirable housing in advance before promoting villagers.",
+		"LOADING_TIP_PRIORITY_NEED_PROXY": "Villagers fulfil needs located close to their housing.",
+		"LOADING_TIP_PRIORITY_STATUS_PRODUCTIVITY": "Some workplaces gain increased productivity when employing villagers of higher status.",
+		"LOADING_TIP_PRIORITY_TOOL_INVESTMENT": "Producing {1} Tools early on is a valuable investment.",
+		"LOADING_TIP_PRIORITY_TREASURY_LIMIT": "Coin revenues, including quest rewards, are limited by your Treasury capacity.",
+		"LOADING_TIP_PRIORITY_MONASTIC_WORK": "Monastics work exclusively in their assigned Monastery.",
+		"LOADING_TIP_PRIORITY_STORAGE_EFFICIENCY": "Build storage buildings near workplaces and markets for efficient resource distribution.",
+		"LOADING_TIP_PRIORITY_HAPPY_COMBATANT": "A happy, well-trained, and well-armed Combatant is a lasting one.",
+		"LOADING_TIP_PRIORITY_TOWER_FORTIFICATION": "Towers from the Manor House, Churches, and the Castle provide Passive Fortification.",
+		"LOADING_TIP_PRIORITY_MONASTERY_AUTONOMOUS": "Monasteries are autonomous; they automatically assign workers to their workplaces.",
+		"LOADING_TIP_PRIORITY_BUILDING_BORDER": "When placing buildings, pay attention to the blue borders and entrance arrows as they determine villagers' movement.",
+		"LOADING_TIP_PRIORITY_PATH_DECAY": "Unused Dirt Paths decay over time. Stone Roads don't decay so long as Paviours maintain them with {1} Stone.",
+		"LOADING_TIP_PRIORITY_LEVY_EMERGENCY": "Use the Levy Mandate from the Great Hall if you need emergency funds.",
+		"LOADING_TIP_PRIORITY_RESOURCE_TRACKER": "Right-click on resources displayed on the HUD to toggle their {1} Tracker.",
+		"LOADING_TIP_PRIORITY_PROMOTE_VILLAGERS": "Promoting villagers is key to prosperity; make sure to fulfil their new needs.",
+		"LOADING_TIP_PRIORITY_VISIT_HELP": "Learn more about the game by visiting the {1} Help Panel at the top-left corner of your screen!",
+		"LOADING_TIP_PRIORITY_CLOSE_WINDOWS": "Right-clicking lets you close windows faster.",
+		"LOADING_TIP_PRIORITY_VISIBILITY_PANEL": "Toggle the display of village information using the {1} Visibility Panel.",
+		"LOADING_TIP_PRIORITY_COMMON_DECORATIONS": "Common Decorations yield {1}{2}{3} Splendour or {4} Beautification, depending on whether they are part of a Monument."
+	}
+}

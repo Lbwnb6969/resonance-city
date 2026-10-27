@@ -1,0 +1,56 @@
+in vec3 attribPosition;
+in vec2 attribUv;
+in vec4 attribColor;
+in vec3 attribNormal;
+in vec4 instMatModel0;
+in vec4 instMatModel1;
+in vec4 instMatModel2;
+in uvec4 instDataPacked;
+uniform mat4 uniMatViewProjection;
+uniform vec3 uniCameraPosition;
+uniform float uniDecalConstantOffset;
+uniform float uniVertexColorWeight;
+uniform samplerBuffer uniBlendShapeBuffer;
+uniform samplerBuffer uniBlendShapeWeightBuffer;
+uniform isamplerBuffer uniBlendShapeIdBuffer;
+uniform int uniBlendShapeCount;
+uniform int uniBlendShapeBufferOffset;
+uniform vec2 uniCameraJitter;
+flat out uint MATERIAL_ID;
+out vec4 INSTANCE_COLOR;
+out vec4 VERTEX_COLOR;
+out vec3 NORMAL;
+out vec2 UV;
+
+void main()
+{
+	vec3 CAMERA_POSITION = uniCameraPosition;
+	VERTEX_COLOR = mix(vec4(1), attribColor, uniVertexColorWeight);
+	mat4 MODEL_MATRIX = mat4(instMatModel0.x, instMatModel0.y, instMatModel0.z, 0, instMatModel0.w, instMatModel1.x, instMatModel1.y, 0, instMatModel1.z, instMatModel1.w, instMatModel2.x, 0, instMatModel2.y, instMatModel2.z, instMatModel2.w, 1);
+	MATERIAL_ID = instDataPacked.x;
+	INSTANCE_COLOR = vec4((instDataPacked.y & 0x000000ff), (instDataPacked.y & 0x0000ff00) >> 8, (instDataPacked.y & 0x00ff0000) >> 16, (instDataPacked.y & 0xff000000) >> 24) / 255.0;
+	mat4 VP_MATRIX = uniMatViewProjection;
+	vec3 vertexPosition = attribPosition;
+	vec3 LOCAL_NORMAL = attribNormal;
+	UV = attribUv;
+	for(int i = 0; i < uniBlendShapeCount; ++ i)
+	{
+		int bufferIndex = uniBlendShapeBufferOffset + gl_InstanceID * uniBlendShapeCount + i;
+		vec2 weight = texelFetch(uniBlendShapeWeightBuffer, bufferIndex).xy;
+		if(weight.x > 0 || weight.y > 0) {
+			{
+				int id = texelFetch(uniBlendShapeIdBuffer, bufferIndex).x;
+				vec3 vertexOffset = texelFetch(uniBlendShapeBuffer, gl_VertexID + id).xyz;
+				vertexPosition += vertexOffset * weight.x;
+			}
+		}
+	}
+	vec3 LOCAL_POSITION = vertexPosition;
+	vec3 WORLD_POSITION = ((MODEL_MATRIX) * vec4(LOCAL_POSITION, 1.0)).xyz;
+	NORMAL = ((MODEL_MATRIX) * vec4(LOCAL_NORMAL, 0.0)).xyz;
+	vec3 constantOffset = normalize(CAMERA_POSITION - WORLD_POSITION) * uniDecalConstantOffset;
+	WORLD_POSITION += constantOffset;
+	vec4 SCREEN_COORD = VP_MATRIX * vec4(WORLD_POSITION, 1.0);
+	SCREEN_COORD.xy += uniCameraJitter * SCREEN_COORD.w;
+	gl_Position = SCREEN_COORD;
+}

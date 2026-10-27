@@ -1,0 +1,116 @@
+uniform vec2 uniTexelSize;
+uniform float uniShaderColorWeight;
+uniform vec4 uniformAlbedoColor[MAX_MATERIAL_COUNT];
+uniform sampler2D instTextureAlbedo[MAX_MATERIAL_COUNT];
+flat in uint MATERIAL_ID;
+in vec4 INSTANCE_COLOR;
+in vec4 VERTEX_COLOR;
+in vec3 NORMAL;
+in vec2 UV;
+in vec4 PREV_SCREEN_COORD;
+in vec4 UNJITERRED_SCREEN_POSITION;
+layout(location = 0) out vec4 outAlbedoColor;
+layout(location = 1) out vec4 outNormal;
+layout(location = 2) out vec4 outMotionVector;
+
+void main()
+{
+	float SHADER_COLOR_WEIGHT = uniShaderColorWeight;
+	vec3 cpy_NORMAL = normalize(NORMAL);
+	vec4 MATERIAL_ALBEDO = uniformAlbedoColor[MATERIAL_ID];
+	MATERIAL_ALBEDO *= texture(instTextureAlbedo[MATERIAL_ID], UV);
+	vec4 ALBEDO = MATERIAL_ALBEDO * VERTEX_COLOR;
+	ALBEDO *= INSTANCE_COLOR;
+	vec2 previousFrameScreenCoord = PREV_SCREEN_COORD.xy / PREV_SCREEN_COORD.w;
+	vec2 currentFrameScreenCoord = UNJITERRED_SCREEN_POSITION.xy / UNJITERRED_SCREEN_POSITION.w;
+	vec2 MOTION_VECTOR = (currentFrameScreenCoord - previousFrameScreenCoord) * 0.5 / uniTexelSize;
+	if(SHADER_COLOR_WEIGHT > 0.5) {
+		{
+			float cMax = max(max(MATERIAL_ALBEDO.rgb.r, MATERIAL_ALBEDO.rgb.g), MATERIAL_ALBEDO.rgb.b);
+			float cMin = min(min(MATERIAL_ALBEDO.rgb.r, MATERIAL_ALBEDO.rgb.g), MATERIAL_ALBEDO.rgb.b);
+			float delta = cMax - cMin;
+			float hue = 0.0;
+			if(delta == 0.0) {
+				{
+					hue = 0.0;
+				}
+			} else {
+				if(cMax == MATERIAL_ALBEDO.rgb.r) {
+					{
+						hue = (MATERIAL_ALBEDO.rgb.g - MATERIAL_ALBEDO.rgb.b) / delta;
+					}
+				} else {
+					if(cMax == MATERIAL_ALBEDO.rgb.g) {
+						{
+							hue = (MATERIAL_ALBEDO.rgb.b - MATERIAL_ALBEDO.rgb.r) / delta + 2;
+						}
+					} else {
+						if(cMax == MATERIAL_ALBEDO.rgb.b) {
+							{
+								hue = (MATERIAL_ALBEDO.rgb.r - MATERIAL_ALBEDO.rgb.g) / delta + 4;
+							}
+						}
+					}				}			}			hue = mod(hue, 6.0) / 6.0;
+			float saturation = ((cMax == 0.0) ? (0.0) : (delta / cMax));
+			float brightness = cMax;
+			vec3 hsv = vec3(hue, saturation, brightness);
+			hsv += (INSTANCE_COLOR.rgb - 0.5);
+			hsv.r = fract(hsv.r);
+			hsv.gb = clamp(hsv.gb, 0.0, 1.0);
+			float hue_1 = hsv.x;
+			float saturation_1 = hsv.y;
+			float brightness_1 = hsv.z;
+			hue_1 *= 6.0;
+			float c = brightness_1 * saturation_1;
+			float x = c * (1 - abs(mod(hue_1, 2.0) - 1));
+			float m = brightness_1 - c;
+			float r0;
+			float g0;
+			float b0;
+			if(hue_1 < 1.0) {
+				{
+					r0 = c;
+					g0 = x;
+					b0 = 0.0;
+				}
+			} else {
+				if(hue_1 < 2.0) {
+					{
+						r0 = x;
+						g0 = c;
+						b0 = 0.0;
+					}
+				} else {
+					if(hue_1 < 3.0) {
+						{
+							r0 = 0.0;
+							g0 = c;
+							b0 = x;
+						}
+					} else {
+						if(hue_1 < 4.0) {
+							{
+								r0 = 0.0;
+								g0 = x;
+								b0 = c;
+							}
+						} else {
+							if(hue_1 < 5.0) {
+								{
+									r0 = x;
+									g0 = 0.0;
+									b0 = c;
+								}
+							} else {
+								{
+									r0 = c;
+									g0 = 0.0;
+									b0 = x;
+								}
+							}						}					}				}			}			ALBEDO.rgb = vec3(r0 + m, g0 + m, b0 + m);
+		}
+	}
+	outAlbedoColor = mix(uniformAlbedoColor[MATERIAL_ID], ALBEDO, uniShaderColorWeight);
+	outNormal = vec4(cpy_NORMAL * 0.5 + 0.5, 1.0);
+	outMotionVector = vec4(MOTION_VECTOR, 0.0, 1.0);
+}

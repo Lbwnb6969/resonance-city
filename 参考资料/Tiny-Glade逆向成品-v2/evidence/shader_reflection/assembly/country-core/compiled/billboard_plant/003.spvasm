@@ -1,0 +1,367 @@
+; SPIR-V 1.3
+; SHA256 a702c4d2f65d9144bcedd729bf490c54b63d4e29e13f45c481cf5a1648b14546
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability DemoteToHelperInvocation ; byte 0x14
+OpCapability Shader ; byte 0x1c
+OpCapability StorageImageExtendedFormats ; byte 0x24
+OpExtension "SPV_EXT_demote_to_helper_invocation" ; byte 0x2c
+%89 = OpExtInstImport "GLSL.std.450" ; byte 0x54
+OpMemoryModel Logical GLSL450 ; byte 0x6c
+OpEntryPoint Fragment %2 "main" %55 %50 %144 ; byte 0x78
+OpExecutionMode %2 OriginUpperLeft ; byte 0x98
+OpSource Slang 1 ; byte 0xa4
+OpName %36 "material_data.terrain_texture" ; byte 0xb0
+OpName %40 "samplers.lnc" ; byte 0xd8
+OpName %50 "vs_out.plant_id" ; byte 0xf0
+OpName %55 "vs_out.uv" ; byte 0x108
+OpName %56 "ViewConstants_natural" ; byte 0x11c
+OpMemberName %56 0 "view_to_clip" ; byte 0x13c
+OpMemberName %56 1 "clip_to_view" ; byte 0x158
+OpMemberName %56 2 "view_to_sample" ; byte 0x174
+OpMemberName %56 3 "sample_to_view" ; byte 0x190
+OpMemberName %56 4 "world_to_view" ; byte 0x1ac
+OpMemberName %56 5 "view_to_world" ; byte 0x1c8
+OpMemberName %56 6 "world_to_sample" ; byte 0x1e4
+OpMemberName %56 7 "clip_to_prev_clip" ; byte 0x200
+OpMemberName %56 8 "prev_clip_to_clip" ; byte 0x220
+OpMemberName %56 9 "prev_view_to_prev_clip" ; byte 0x240
+OpMemberName %56 10 "prev_clip_to_prev_view" ; byte 0x264
+OpMemberName %56 11 "prev_world_to_prev_view" ; byte 0x288
+OpMemberName %56 12 "prev_view_to_prev_world" ; byte 0x2ac
+OpMemberName %56 13 "sample_offset_pixels" ; byte 0x2d0
+OpMemberName %56 14 "sample_offset_clip" ; byte 0x2f4
+OpMemberName %56 15 "prev_sample_offset_pixels" ; byte 0x314
+OpMemberName %56 16 "prev_sample_offset_clip" ; byte 0x33c
+OpMemberName %56 17 "pad0" ; byte 0x360
+OpMemberName %56 18 "pad1" ; byte 0x374
+OpMemberName %56 19 "pad2" ; byte 0x388
+OpMemberName %56 20 "pad3" ; byte 0x39c
+OpMemberName %56 21 "pad4" ; byte 0x3b0
+OpMemberName %56 22 "pad5" ; byte 0x3c4
+OpMemberName %56 23 "mip_bias" ; byte 0x3d8
+OpName %59 "current_view" ; byte 0x3f0
+OpName %67 "material_data.flower1" ; byte 0x408
+OpName %70 "sampledImage" ; byte 0x428
+OpName %71 "sampled" ; byte 0x440
+OpName %102 "material_data.flower2" ; byte 0x450
+OpName %105 "sampledImage" ; byte 0x470
+OpName %106 "sampled" ; byte 0x488
+OpName %127 "material_data.flower3" ; byte 0x498
+OpName %130 "sampledImage" ; byte 0x4b8
+OpName %131 "sampled" ; byte 0x4d0
+OpName %144 "vs_out.billboard_id" ; byte 0x4e0
+OpName %145 "id" ; byte 0x4fc
+OpName %147 "row" ; byte 0x508
+OpName %151 "col" ; byte 0x514
+OpName %178 "material_data.grass_patch" ; byte 0x520
+OpName %180 "samplers.llr" ; byte 0x544
+OpName %182 "sampledImage" ; byte 0x55c
+OpName %183 "sampled" ; byte 0x574
+OpName %191 "FrameConstants_natural" ; byte 0x584
+OpMemberName %191 0 "sun_color" ; byte 0x5a4
+OpMemberName %191 1 "sky_low_color" ; byte 0x5bc
+OpMemberName %191 2 "sky_high_color" ; byte 0x5d8
+OpMemberName %191 3 "fog_tint_thickness" ; byte 0x5f4
+OpMemberName %191 4 "fake_light_color" ; byte 0x614
+OpMemberName %191 5 "fake_light_dir" ; byte 0x634
+OpMemberName %191 6 "fake_light2_color" ; byte 0x650
+OpMemberName %191 7 "fake_light2_dir" ; byte 0x670
+OpMemberName %191 8 "time_since_startup_secs" ; byte 0x68c
+OpMemberName %191 9 "delta_time_seconds" ; byte 0x6b0
+OpMemberName %191 10 "ev_mult" ; byte 0x6d0
+OpMemberName %191 11 "glade_theme_id" ; byte 0x6e4
+OpMemberName %191 12 "world_render_resolution" ; byte 0x700
+OpMemberName %191 13 "game_time_sec" ; byte 0x724
+OpMemberName %191 14 "game_time_frac" ; byte 0x740
+OpMemberName %191 15 "editing_highlight_color" ; byte 0x75c
+OpMemberName %191 16 "time_of_day" ; byte 0x780
+OpMemberName %191 17 "dir_to_sun" ; byte 0x798
+OpMemberName %191 18 "camera_idx" ; byte 0x7b0
+OpMemberName %191 19 "dir_to_moon" ; byte 0x7c8
+OpMemberName %191 20 "render_overrides" ; byte 0x7e0
+OpMemberName %191 21 "dir_to_primary_directional_light" ; byte 0x800
+OpMemberName %191 22 "main_view_lod_scale" ; byte 0x830
+OpMemberName %191 23 "main_view_eye_position" ; byte 0x850
+OpMemberName %191 24 "fog_relative_extinction" ; byte 0x874
+OpMemberName %191 25 "highlighted_transient_stair_edge_id" ; byte 0x898
+OpMemberName %191 26 "swapchain_dims" ; byte 0x8c8
+OpMemberName %191 27 "swapchain_aspect_ratio" ; byte 0x8e4
+OpMemberName %191 28 "is_photomode" ; byte 0x908
+OpMemberName %191 29 "is_topdown_mode" ; byte 0x924
+OpMemberName %191 30 "is_firstperson_mode" ; byte 0x940
+OpMemberName %191 31 "brush_position" ; byte 0x960
+OpMemberName %191 32 "eraser_size_multiplier" ; byte 0x97c
+OpMemberName %191 33 "roof_highlighted_slot_id" ; byte 0x9a0
+OpMemberName %191 34 "roof_highlight_mode" ; byte 0x9c8
+OpMemberName %191 35 "wall_highlighted_slot_id" ; byte 0x9e8
+OpMemberName %191 36 "wall_highlight_mode" ; byte 0xa10
+OpMemberName %191 37 "highlight_bricks_to_delete" ; byte 0xa30
+OpMemberName %191 38 "wind_strength" ; byte 0xa58
+OpMemberName %191 39 "tree_canopy_cone_angle_mult" ; byte 0xa74
+OpMemberName %191 40 "tree_canopy_max_cone_cull_dist_range" ; byte 0xa9c
+OpMemberName %191 41 "debug_tweakers" ; byte 0xad0
+OpMemberName %191 42 "ground_fog" ; byte 0xaec
+OpMemberName %191 43 "moonswap" ; byte 0xb04
+OpName %195 "frame_constants" ; byte 0xb1c
+OpName %2 "ps_main" ; byte 0xb34
+OpDecorate %36 Binding 4 ; byte 0xb44
+OpDecorate %36 DescriptorSet 0 ; byte 0xb54
+OpDecorate %40 Binding 0 ; byte 0xb64
+OpDecorate %40 DescriptorSet 2 ; byte 0xb74
+OpDecorate %50 Location 5 ; byte 0xb84
+OpDecorate %50 Flat ; byte 0xb94
+OpDecorate %55 Location 0 ; byte 0xba0
+OpDecorate %56 Block ; byte 0xbb0
+OpMemberDecorate %56 0 Offset 0 ; byte 0xbbc
+OpMemberDecorate %56 0 RowMajor ; byte 0xbd0
+OpMemberDecorate %56 0 MatrixStride 16 ; byte 0xbe0
+OpMemberDecorate %56 1 Offset 64 ; byte 0xbf4
+OpMemberDecorate %56 1 RowMajor ; byte 0xc08
+OpMemberDecorate %56 1 MatrixStride 16 ; byte 0xc18
+OpMemberDecorate %56 2 Offset 128 ; byte 0xc2c
+OpMemberDecorate %56 2 RowMajor ; byte 0xc40
+OpMemberDecorate %56 2 MatrixStride 16 ; byte 0xc50
+OpMemberDecorate %56 3 Offset 192 ; byte 0xc64
+OpMemberDecorate %56 3 RowMajor ; byte 0xc78
+OpMemberDecorate %56 3 MatrixStride 16 ; byte 0xc88
+OpMemberDecorate %56 4 Offset 256 ; byte 0xc9c
+OpMemberDecorate %56 4 RowMajor ; byte 0xcb0
+OpMemberDecorate %56 4 MatrixStride 16 ; byte 0xcc0
+OpMemberDecorate %56 5 Offset 320 ; byte 0xcd4
+OpMemberDecorate %56 5 RowMajor ; byte 0xce8
+OpMemberDecorate %56 5 MatrixStride 16 ; byte 0xcf8
+OpMemberDecorate %56 6 Offset 384 ; byte 0xd0c
+OpMemberDecorate %56 6 RowMajor ; byte 0xd20
+OpMemberDecorate %56 6 MatrixStride 16 ; byte 0xd30
+OpMemberDecorate %56 7 Offset 448 ; byte 0xd44
+OpMemberDecorate %56 7 RowMajor ; byte 0xd58
+OpMemberDecorate %56 7 MatrixStride 16 ; byte 0xd68
+OpMemberDecorate %56 8 Offset 512 ; byte 0xd7c
+OpMemberDecorate %56 8 RowMajor ; byte 0xd90
+OpMemberDecorate %56 8 MatrixStride 16 ; byte 0xda0
+OpMemberDecorate %56 9 Offset 576 ; byte 0xdb4
+OpMemberDecorate %56 9 RowMajor ; byte 0xdc8
+OpMemberDecorate %56 9 MatrixStride 16 ; byte 0xdd8
+OpMemberDecorate %56 10 Offset 640 ; byte 0xdec
+OpMemberDecorate %56 10 RowMajor ; byte 0xe00
+OpMemberDecorate %56 10 MatrixStride 16 ; byte 0xe10
+OpMemberDecorate %56 11 Offset 704 ; byte 0xe24
+OpMemberDecorate %56 11 RowMajor ; byte 0xe38
+OpMemberDecorate %56 11 MatrixStride 16 ; byte 0xe48
+OpMemberDecorate %56 12 Offset 768 ; byte 0xe5c
+OpMemberDecorate %56 12 RowMajor ; byte 0xe70
+OpMemberDecorate %56 12 MatrixStride 16 ; byte 0xe80
+OpMemberDecorate %56 13 Offset 832 ; byte 0xe94
+OpMemberDecorate %56 14 Offset 840 ; byte 0xea8
+OpMemberDecorate %56 15 Offset 848 ; byte 0xebc
+OpMemberDecorate %56 16 Offset 856 ; byte 0xed0
+OpMemberDecorate %56 17 Offset 864 ; byte 0xee4
+OpMemberDecorate %56 17 RowMajor ; byte 0xef8
+OpMemberDecorate %56 17 MatrixStride 16 ; byte 0xf08
+OpMemberDecorate %56 18 Offset 928 ; byte 0xf1c
+OpMemberDecorate %56 18 RowMajor ; byte 0xf30
+OpMemberDecorate %56 18 MatrixStride 16 ; byte 0xf40
+OpMemberDecorate %56 19 Offset 992 ; byte 0xf54
+OpMemberDecorate %56 20 Offset 1008 ; byte 0xf68
+OpMemberDecorate %56 21 Offset 1012 ; byte 0xf7c
+OpMemberDecorate %56 22 Offset 1016 ; byte 0xf90
+OpMemberDecorate %56 23 Offset 1020 ; byte 0xfa4
+OpDecorate %59 Binding 0 ; byte 0xfb8
+OpDecorate %59 DescriptorSet 5 ; byte 0xfc8
+OpDecorate %67 Binding 0 ; byte 0xfd8
+OpDecorate %67 DescriptorSet 0 ; byte 0xfe8
+OpDecorate %102 Binding 1 ; byte 0xff8
+OpDecorate %102 DescriptorSet 0 ; byte 0x1008
+OpDecorate %127 Binding 2 ; byte 0x1018
+OpDecorate %127 DescriptorSet 0 ; byte 0x1028
+OpDecorate %144 Location 6 ; byte 0x1038
+OpDecorate %144 Flat ; byte 0x1048
+OpDecorate %178 Binding 3 ; byte 0x1054
+OpDecorate %178 DescriptorSet 0 ; byte 0x1064
+OpDecorate %180 Binding 1 ; byte 0x1074
+OpDecorate %180 DescriptorSet 2 ; byte 0x1084
+OpDecorate %191 Block ; byte 0x1094
+OpMemberDecorate %191 0 Offset 0 ; byte 0x10a0
+OpMemberDecorate %191 1 Offset 16 ; byte 0x10b4
+OpMemberDecorate %191 2 Offset 32 ; byte 0x10c8
+OpMemberDecorate %191 3 Offset 48 ; byte 0x10dc
+OpMemberDecorate %191 4 Offset 64 ; byte 0x10f0
+OpMemberDecorate %191 5 Offset 80 ; byte 0x1104
+OpMemberDecorate %191 6 Offset 96 ; byte 0x1118
+OpMemberDecorate %191 7 Offset 112 ; byte 0x112c
+OpMemberDecorate %191 8 Offset 128 ; byte 0x1140
+OpMemberDecorate %191 9 Offset 132 ; byte 0x1154
+OpMemberDecorate %191 10 Offset 136 ; byte 0x1168
+OpMemberDecorate %191 11 Offset 140 ; byte 0x117c
+OpMemberDecorate %191 12 Offset 144 ; byte 0x1190
+OpMemberDecorate %191 13 Offset 152 ; byte 0x11a4
+OpMemberDecorate %191 14 Offset 156 ; byte 0x11b8
+OpMemberDecorate %191 15 Offset 160 ; byte 0x11cc
+OpMemberDecorate %191 16 Offset 172 ; byte 0x11e0
+OpMemberDecorate %191 17 Offset 176 ; byte 0x11f4
+OpMemberDecorate %191 18 Offset 188 ; byte 0x1208
+OpMemberDecorate %191 19 Offset 192 ; byte 0x121c
+OpMemberDecorate %191 20 Offset 204 ; byte 0x1230
+OpMemberDecorate %191 21 Offset 208 ; byte 0x1244
+OpMemberDecorate %191 22 Offset 220 ; byte 0x1258
+OpMemberDecorate %191 23 Offset 224 ; byte 0x126c
+OpMemberDecorate %191 24 Offset 240 ; byte 0x1280
+OpMemberDecorate %191 25 Offset 244 ; byte 0x1294
+OpMemberDecorate %191 26 Offset 248 ; byte 0x12a8
+OpMemberDecorate %191 27 Offset 256 ; byte 0x12bc
+OpMemberDecorate %191 28 Offset 260 ; byte 0x12d0
+OpMemberDecorate %191 29 Offset 264 ; byte 0x12e4
+OpMemberDecorate %191 30 Offset 268 ; byte 0x12f8
+OpMemberDecorate %191 31 Offset 272 ; byte 0x130c
+OpMemberDecorate %191 32 Offset 284 ; byte 0x1320
+OpMemberDecorate %191 33 Offset 288 ; byte 0x1334
+OpMemberDecorate %191 34 Offset 292 ; byte 0x1348
+OpMemberDecorate %191 35 Offset 296 ; byte 0x135c
+OpMemberDecorate %191 36 Offset 300 ; byte 0x1370
+OpMemberDecorate %191 37 Offset 304 ; byte 0x1384
+OpMemberDecorate %191 38 Offset 308 ; byte 0x1398
+OpMemberDecorate %191 39 Offset 312 ; byte 0x13ac
+OpMemberDecorate %191 40 Offset 316 ; byte 0x13c0
+OpMemberDecorate %191 41 Offset 320 ; byte 0x13d4
+OpMemberDecorate %191 42 Offset 336 ; byte 0x13e8
+OpMemberDecorate %191 43 Offset 348 ; byte 0x13fc
+OpDecorate %195 Binding 0 ; byte 0x1410
+OpDecorate %195 DescriptorSet 4 ; byte 0x1420
+%1 = OpTypeVoid ; byte 0x1430
+%3 = OpTypeFunction %1 ; byte 0x1438
+%5 = OpTypeFloat 32 ; byte 0x1444
+%6 = OpTypeVector %5 3 ; byte 0x1450
+%12 = OpTypeBool ; byte 0x1460
+%29 = OpTypeVector %5 2 ; byte 0x1468
+%31 = OpTypePointer Input %29 ; byte 0x1478
+%33 = OpTypeImage %5 2D 2 0 0 1 Unknown ; byte 0x1488
+%35 = OpTypePointer UniformConstant %33 ; byte 0x14ac
+%37 = OpTypeSampler ; byte 0x14bc
+%39 = OpTypePointer UniformConstant %37 ; byte 0x14c4
+%42 = OpTypeSampledImage %33 ; byte 0x14d4
+%44 = OpTypeVector %5 4 ; byte 0x14e0
+%47 = OpTypeInt 32 1 ; byte 0x14f0
+%49 = OpTypePointer Input %47 ; byte 0x1500
+%52 = OpConstant %47 0x0 ; byte 0x1510
+%57 = OpTypeMatrix %44 4 ; byte 0x1520
+%56 = OpTypeStruct %57 %57 %57 %57 %57 %57 %57 %57 %57 %57 %57 %57 %57 %29 %29 %29 %29 %57 %57 %44 %5 %5 %5 %5 ; byte 0x1530
+%58 = OpTypePointer Uniform %56 ; byte 0x1598
+%60 = OpConstant %47 0x17 ; byte 0x15a8
+%61 = OpTypePointer Uniform %5 ; byte 0x15b8
+%65 = OpConstant %5 0xbf800000 ; byte 0x15c8
+%95 = OpConstant %47 0x2 ; byte 0x15d8
+%120 = OpConstant %47 0x3 ; byte 0x15e8
+%146 = OpConstant %47 0x4 ; byte 0x15f8
+%165 = OpConstant %5 0x3f000000 ; byte 0x1608
+%192 = OpTypeInt 32 0 ; byte 0x1618
+%193 = OpTypeVector %192 2 ; byte 0x1628
+%191 = OpTypeStruct %44 %44 %44 %44 %44 %44 %44 %44 %5 %5 %5 %192 %193 %192 %5 %6 %5 %6 %192 %6 %192 %6 %5 %44 %5 %192 %193 %5 %192 %192 %192 %6 %5 %192 %192 %192 %192 %192 %5 %5 %5 %44 %6 %5 ; byte 0x1638
+%194 = OpTypePointer Uniform %191 ; byte 0x16f0
+%228 = OpConstant %5 0x3dcccccd ; byte 0x1700
+%36 = OpVariable %35 UniformConstant ; byte 0x1710
+%40 = OpVariable %39 UniformConstant ; byte 0x1720
+%50 = OpVariable %49 Input ; byte 0x1730
+%55 = OpVariable %31 Input ; byte 0x1740
+%59 = OpVariable %58 Uniform ; byte 0x1750
+%67 = OpVariable %35 UniformConstant ; byte 0x1760
+%102 = OpVariable %35 UniformConstant ; byte 0x1770
+%127 = OpVariable %35 UniformConstant ; byte 0x1780
+%144 = OpVariable %49 Input ; byte 0x1790
+%178 = OpVariable %35 UniformConstant ; byte 0x17a0
+%180 = OpVariable %39 UniformConstant ; byte 0x17b0
+%195 = OpVariable %194 Uniform ; byte 0x17c0
+%2 = OpFunction %1 None %3 ; byte 0x17d0
+%4 = OpLabel ; byte 0x17e4
+%48 = OpLoad %47 %50 ; byte 0x17ec
+%51 = OpIEqual %12 %48 %52 ; byte 0x17fc
+OpSelectionMerge %26 None ; byte 0x1810
+OpBranchConditional %51 %15 %16 ; byte 0x181c
+%15 = OpLabel ; byte 0x182c
+%54 = OpLoad %29 %55 ; byte 0x1834
+%62 = OpAccessChain %61 %59 %60 ; byte 0x1844
+%63 = OpLoad %5 %62 ; byte 0x1858
+%64 = OpFAdd %5 %65 %63 ; byte 0x1868
+%66 = OpLoad %33 %67 ; byte 0x187c
+%68 = OpLoad %37 %40 ; byte 0x188c
+%70 = OpSampledImage %42 %66 %68 ; byte 0x189c
+%71 = OpImageSampleImplicitLod %44 %70 %54 Bias %64 ; byte 0x18b0
+%73 = OpCompositeExtract %5 %71 3 ; byte 0x18cc
+%326 = OpFMul %5 %73 %73 ; byte 0x18e0
+OpBranch %26 ; byte 0x18f4
+%16 = OpLabel ; byte 0x18fc
+%94 = OpIEqual %12 %48 %95 ; byte 0x1904
+OpSelectionMerge %25 None ; byte 0x1918
+OpBranchConditional %94 %17 %18 ; byte 0x1924
+%17 = OpLabel ; byte 0x1934
+%97 = OpLoad %29 %55 ; byte 0x193c
+%98 = OpAccessChain %61 %59 %60 ; byte 0x194c
+%99 = OpLoad %5 %98 ; byte 0x1960
+%100 = OpFAdd %5 %65 %99 ; byte 0x1970
+%101 = OpLoad %33 %102 ; byte 0x1984
+%103 = OpLoad %37 %40 ; byte 0x1994
+%105 = OpSampledImage %42 %101 %103 ; byte 0x19a4
+%106 = OpImageSampleImplicitLod %44 %105 %97 Bias %100 ; byte 0x19b8
+%108 = OpCompositeExtract %5 %106 3 ; byte 0x19d4
+%332 = OpFMul %5 %108 %108 ; byte 0x19e8
+OpBranch %25 ; byte 0x19fc
+%18 = OpLabel ; byte 0x1a04
+%119 = OpIEqual %12 %48 %120 ; byte 0x1a0c
+OpSelectionMerge %24 None ; byte 0x1a20
+OpBranchConditional %119 %19 %20 ; byte 0x1a2c
+%19 = OpLabel ; byte 0x1a3c
+%122 = OpLoad %29 %55 ; byte 0x1a44
+%123 = OpAccessChain %61 %59 %60 ; byte 0x1a54
+%124 = OpLoad %5 %123 ; byte 0x1a68
+%125 = OpFAdd %5 %65 %124 ; byte 0x1a78
+%126 = OpLoad %33 %127 ; byte 0x1a8c
+%128 = OpLoad %37 %40 ; byte 0x1a9c
+%130 = OpSampledImage %42 %126 %128 ; byte 0x1aac
+%131 = OpImageSampleImplicitLod %44 %130 %122 Bias %125 ; byte 0x1ac0
+%133 = OpCompositeExtract %5 %131 3 ; byte 0x1adc
+%335 = OpFMul %5 %133 %133 ; byte 0x1af0
+OpBranch %24 ; byte 0x1b04
+%20 = OpLabel ; byte 0x1b0c
+%143 = OpLoad %47 %144 ; byte 0x1b14
+%145 = OpSRem %47 %143 %146 ; byte 0x1b24
+%147 = OpSRem %47 %145 %95 ; byte 0x1b38
+%148 = OpSDiv %47 %145 %95 ; byte 0x1b4c
+%149 = OpConvertSToF %5 %148 ; byte 0x1b60
+%150 = OpExtInst %5 %89 8 %149 ; byte 0x1b70
+%151 = OpConvertFToS %47 %150 ; byte 0x1b88
+%152 = OpLoad %29 %55 ; byte 0x1b98
+%339 = OpCompositeExtract %5 %152 0 ; byte 0x1ba8
+%341 = OpConvertSToF %5 %147 ; byte 0x1bbc
+%389 = OpFAdd %5 %339 %341 ; byte 0x1bcc
+%343 = OpFMul %5 %165 %389 ; byte 0x1be0
+%344 = OpCompositeExtract %5 %152 1 ; byte 0x1bf4
+%346 = OpConvertSToF %5 %151 ; byte 0x1c08
+%390 = OpFAdd %5 %344 %346 ; byte 0x1c18
+%348 = OpFMul %5 %165 %390 ; byte 0x1c2c
+%349 = OpCompositeConstruct %29 %343 %348 ; byte 0x1c40
+%174 = OpAccessChain %61 %59 %60 ; byte 0x1c54
+%175 = OpLoad %5 %174 ; byte 0x1c68
+%176 = OpFAdd %5 %65 %175 ; byte 0x1c78
+%177 = OpLoad %33 %178 ; byte 0x1c8c
+%179 = OpLoad %37 %180 ; byte 0x1c9c
+%182 = OpSampledImage %42 %177 %179 ; byte 0x1cac
+%183 = OpImageSampleImplicitLod %44 %182 %349 Bias %176 ; byte 0x1cc0
+%185 = OpCompositeExtract %5 %183 3 ; byte 0x1cdc
+%352 = OpFMul %5 %185 %185 ; byte 0x1cf0
+OpBranch %24 ; byte 0x1d04
+%24 = OpLabel ; byte 0x1d0c
+%388 = OpPhi %5 %335 %19 %352 %20 ; byte 0x1d14
+OpBranch %25 ; byte 0x1d30
+%25 = OpLabel ; byte 0x1d38
+%387 = OpPhi %5 %332 %17 %388 %24 ; byte 0x1d40
+OpBranch %26 ; byte 0x1d5c
+%26 = OpLabel ; byte 0x1d64
+%386 = OpPhi %5 %326 %15 %387 %25 ; byte 0x1d6c
+%227 = OpFOrdLessThan %12 %386 %228 ; byte 0x1d88
+OpSelectionMerge %28 None ; byte 0x1d9c
+OpBranchConditional %227 %27 %28 ; byte 0x1da8
+%27 = OpLabel ; byte 0x1db8
+OpDemoteToHelperInvocation ; byte 0x1dc0
+OpBranch %28 ; byte 0x1dc4
+%28 = OpLabel ; byte 0x1dcc
+OpReturn ; byte 0x1dd4
+OpFunctionEnd ; byte 0x1dd8

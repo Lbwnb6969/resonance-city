@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SettingsData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <version>1</version>
+  <lastSave>no path</lastSave>
+  <currentColor>0</currentColor>
+  <audioVolume>255</audioVolume>
+  <antiAliasing>true</antiAliasing>
+  <axis>
+    <rotationXInverted>false</rotationXInverted>
+    <rotationYInverted>false</rotationYInverted>
+  </axis>
+  <vSync>false</vSync>
+  <fullscreen>true</fullscreen>
+  <language />
+  <screenshot>
+    <path />
+    <x>2048</x>
+    <y>2048</y>
+  </screenshot>
+  <objExport>
+    <path />
+  </objExport>
+</SettingsData>

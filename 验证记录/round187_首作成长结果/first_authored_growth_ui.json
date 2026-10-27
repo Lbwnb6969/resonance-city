@@ -1,9 +1,0 @@
-{
-  "checks": {
-    "growth_entry_delegates_real_child_focus_without_submit": true,
-    "growth_entry_names_the_real_latest_child": true
-  },
-  "failures": [],
-  "passed": true,
-  "scope": "Dummy guide entry over an observed authored child; no operation submission, audio or human preference claim."
-}

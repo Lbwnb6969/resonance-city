@@ -1,0 +1,114 @@
+[
+  {
+    "file": "resources.assets",
+    "path_id": 1251,
+    "name": "eosPluginVersion",
+    "exact_payload_bytes": 5,
+    "sha256": "da046477e641cdaa83e830d391c3f2ae706d155e11cbd4b61110a9e50e9aa4e2",
+    "first32_hex": "342e312e31"
+  },
+  {
+    "file": "resources.assets",
+    "path_id": 1252,
+    "name": "PerformanceTestRunInfo",
+    "exact_payload_bytes": 3447,
+    "sha256": "6ada4d22e6fb5770e8ef2b94f648e29e322baca4dfe8b6306cd1b4eed33399a5",
+    "first32_hex": "7b22546573745375697465223a22222c2244617465223a302c22506c61796572"
+  },
+  {
+    "file": "resources.assets",
+    "path_id": 1253,
+    "name": "PerformanceTestRunSettings",
+    "exact_payload_bytes": 23,
+    "sha256": "600c5c3dab7e18e51c28aad096457da91fcf60a3eedd908b6bf30194dae2b55b",
+    "first32_hex": "7b224d6561737572656d656e74436f756e74223a2d317d"
+  },
+  {
+    "file": "resources.assets",
+    "path_id": 1254,
+    "name": "BillingMode",
+    "exact_payload_bytes": 29,
+    "sha256": "7b15cfeef90aebae19207b130175fbc1726b66f7d42d105abc0426cee002ba92",
+    "first32_hex": "7b22616e64726f696453746f7265223a22476f6f676c65506c6179227d"
+  },
+  {
+    "file": "resources.assets",
+    "path_id": 1255,
+    "name": "LineBreaking Leading Characters",
+    "exact_payload_bytes": 95,
+    "sha256": "62d3f4d5f64aaf885692d2d13a8313f6918e6e4c5aeb3990a43f614652bfd89c",
+    "first32_hex": "efbbbf285befbd9be38094e38088e3808ae3808ce3808ee38090e38098e38096"
+  },
+  {
+    "file": "resources.assets",
+    "path_id": 1256,
+    "name": "LineBreaking Following Characters",
+    "exact_payload_bytes": 269,
+    "sha256": "3a73e5ffe2510756dd3c2e982fdc1218b4be82c6e21abde88070d6860e1bc8e6",
+    "first32_hex": "efbbbf295defbd9de38095e38089e3808be3808de3808fe38091e38099e38097"
+  },
+  {
+    "file": "sharedassets1.assets",
+    "path_id": 821,
+    "name": "cover_low_res",
+    "exact_payload_bytes": 51969,
+    "sha256": "bc3fafc47e4d6bcdd6b84c8d12df30a45d55a163158e5d6404945e900c605b8f",
+    "first32_hex": "ffd8ffe000104a46494600010100000100010000ffdb00430008060607060508"
+  },
+  {
+    "file": "sharedassets1.assets",
+    "path_id": 822,
+    "name": "world",
+    "exact_payload_bytes": 10186570,
+    "sha256": "8718af06406d1689e560dbb0eb22e5efe488a961afa01ee5bd90aa450dbf350d",
+    "first32_hex": "0001000000ffffffff01000000000000000c0200000046417373656d626c792d"
+  },
+  {
+    "file": "sharedassets1.assets",
+    "path_id": 823,
+    "name": "summary",
+    "exact_payload_bytes": 324,
+    "sha256": "46176c827bab31b0a3358bc67ab450a8534215a62dc92dc4a3662279748a8200",
+    "first32_hex": "0001000000ffffffff01000000000000000c0200000046417373656d626c792d"
+  },
+  {
+    "file": "sharedassets1.assets",
+    "path_id": 824,
+    "name": "world",
+    "exact_payload_bytes": 10251794,
+    "sha256": "c6b47159e36017e149d91e4e64949fdea12f87e6c8dd87fccf3c9279f9903a5c",
+    "first32_hex": "0001000000ffffffff01000000000000000c0200000046417373656d626c792d"
+  },
+  {
+    "file": "sharedassets1.assets",
+    "path_id": 825,
+    "name": "cover",
+    "exact_payload_bytes": 892520,
+    "sha256": "a6628e1b7504046743c32721fba7fd0a62e6ae5d50321eee8262d5563933d484",
+    "first32_hex": "ffd8ffe000104a46494600010100000100010000ffdb00430008060607060508"
+  },
+  {
+    "file": "sharedassets1.assets",
+    "path_id": 826,
+    "name": "cover",
+    "exact_payload_bytes": 592764,
+    "sha256": "5687b1d03c6e4937cc3208b0d42044f463c4325d466a7950f06105ed66ed2c6d",
+    "first32_hex": "ffd8ffe000104a46494600010100000100010000ffdb00430008060607060508"
+  },
+  {
+    "file": "sharedassets1.assets",
+    "path_id": 827,
+    "name": "summary",
+    "exact_payload_bytes": 323,
+    "sha256": "20e04c406015ee26021d9b65fd24a1a6f19ae518a3aea1d26327f7c488a37814",
+    "first32_hex": "0001000000ffffffff01000000000000000c0200000046417373656d626c792d"
+  },
+  {
+    "file": "sharedassets1.assets",
+    "path_id": 828,
+    "name": "cover_low_res",
+    "exact_payload_bytes": 64460,
+    "sha256": "1cacc636962554d33ad22124f553b7698ede1d37414918631f56566697b1c829",
+    "first32_hex": "ffd8ffe000104a46494600010100000100010000ffdb00430008060607060508"
+  }
+]

@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dt3iic6o0sjky"
+path="res://.godot/imported/unity_default_resources__10202__Cube.obj-e779ebb6202a1aca1aa5238c18758009.mesh"
+
+[deps]
+
+files=["res://.godot/imported/unity_default_resources__10202__Cube.obj-e779ebb6202a1aca1aa5238c18758009.mesh"]
+
+source_file="res://参考资料/Townscaper逆向成品/outputs/townscaper_extracted_assets/Mesh/unity_default_resources__10202__Cube.obj"
+dest_files=["res://.godot/imported/unity_default_resources__10202__Cube.obj-e779ebb6202a1aca1aa5238c18758009.mesh", "res://.godot/imported/unity_default_resources__10202__Cube.obj-e779ebb6202a1aca1aa5238c18758009.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

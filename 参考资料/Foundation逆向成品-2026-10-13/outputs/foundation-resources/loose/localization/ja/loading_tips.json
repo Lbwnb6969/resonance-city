@@ -1,0 +1,26 @@
+﻿{
+	"LOADING_TIPS": {
+		"LOADING_TIP_PRIORITY_TAX_OFFICE": "大きな村では、税務署を数か所建設すると効率的です。",
+		"LOADING_TIP_PRIORITY_TAX_TRACKER": "{1}を右クリックして、徴税情報の切り替えを行います。",
+		"LOADING_TIP_PRIORITY_BUILDER_WORKSHOP_CLOSE": "大きな建設場所の近くに建設者の作業場を置くと、効率性が見込めます",
+		"LOADING_TIP_PRIORITY_PLAN_DESIRABILITY": "村人の格上げを行う前に、望ましさを満たした住居を計画しましょう。",
+		"LOADING_TIP_PRIORITY_NEED_PROXY": "村人は住居の近くで要求を満たします。",
+		"LOADING_TIP_PRIORITY_STATUS_PRODUCTIVITY": "一部の作業場では、身分の高い村人を雇うと生産性が上がります。",
+		"LOADING_TIP_PRIORITY_TOOL_INVESTMENT": "ゲーム初期に{1}道具を作っておくと、見返りのよい投資になります。",
+		"LOADING_TIP_PRIORITY_TREASURY_LIMIT": "クエスト報酬を含む金貨収入には上限があり、金庫の容量に左右されます。",
+		"LOADING_TIP_PRIORITY_MONASTIC_WORK": "修道僧は、割り当てられた修道院内だけで労働を行います。",
+		"LOADING_TIP_PRIORITY_STORAGE_EFFICIENCY": "作業場や市場の近くに保管所を建てると、運搬の効率性を高められます。",
+		"LOADING_TIP_PRIORITY_HAPPY_COMBATANT": "幸福感が高く、訓練を積み、武装を整えた戦士は長生きします。",
+		"LOADING_TIP_PRIORITY_TOWER_FORTIFICATION": "領主の館の塔、教会の塔、城の塔は要塞化(パッシブ)をもたらします。",
+		"LOADING_TIP_PRIORITY_MONASTERY_AUTONOMOUS": "修道院は独自に運営され、働き手は自動的に作業場に割り当てられます。",
+		"LOADING_TIP_PRIORITY_BUILDING_BORDER": "建物を建てる時は、村人の通り道に影響を与える青色の境界線と、入口の矢印を考慮に入れましょう。",
+		"LOADING_TIP_PRIORITY_PATH_DECAY": "使用していない泥道は時間が経つと消えていきます。石畳の道は舗装工が{1}石で保全を行っている限り、消えることはありません。",
+		"LOADING_TIP_PRIORITY_LEVY_EMERGENCY": "急な資金が必要になった時は、集会場から「一時課税」の命令を出しましょう。",
+		"LOADING_TIP_PRIORITY_RESOURCE_TRACKER": "HUDに表示された資源を右クリックすると、{1}トラッカーが切り替わります。",
+		"LOADING_TIP_PRIORITY_PROMOTE_VILLAGERS": "村人の格上げは、村を繁栄させる鍵です。格上げに伴って新しく生まれた要求はしっかり満たしてあげましょう。",
+		"LOADING_TIP_PRIORITY_VISIT_HELP": "画面の右上にある{1}ヘルプパネルから、ゲームの仕組みについて理解を深められます！",
+		"LOADING_TIP_PRIORITY_CLOSE_WINDOWS": "右クリックでウィンドウを素早く閉じられます。",
+		"LOADING_TIP_PRIORITY_VISIBILITY_PANEL": "{1}可視化パネルから村の情報表示を切り替えましょう。",
+		"LOADING_TIP_PRIORITY_COMMON_DECORATIONS": "一般的な景観は建造物の所属に応じて、{1}{2}{3}の名声か{4}の美観が得られます。"
+	}
+}

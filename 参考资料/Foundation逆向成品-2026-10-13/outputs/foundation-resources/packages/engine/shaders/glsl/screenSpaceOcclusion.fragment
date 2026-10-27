@@ -1,0 +1,14 @@
+uniform sampler2D uniTextureDiffuse;
+uniform sampler2D uniTextureOcclusion;
+uniform float uniOcclusionIntensity;
+in vec4 SCREEN_COORD;
+layout(location = 0) out vec4 outColor;
+
+void main()
+{
+	vec2 mUv = SCREEN_COORD.xy * 0.5 / SCREEN_COORD.w + 0.5;
+	vec4 COLOR = texture(uniTextureDiffuse, mUv);
+	float OCCLUSION = mix(1.0, texture(uniTextureOcclusion, mUv).r, uniOcclusionIntensity);
+	outColor = COLOR;
+	outColor *= vec4(OCCLUSION, OCCLUSION, OCCLUSION, 1);
+}

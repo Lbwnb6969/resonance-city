@@ -1,0 +1,295 @@
+preferred_auth_method = "apikey"
+model_provider = "sudocode"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "high"
+model_context_window = 272000
+model_auto_compact_token_limit = 258000
+model_auto_compact_token_limit_scope = "total"
+
+notify = [ "C:\\Users\\Administrator\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\cfb32733c877621e\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe", "turn-ended" ]
+[model_providers.sudocode]
+name = "OpenAI"
+base_url = "https://api.sudorelay.com/v1"
+wire_api = "responses"
+env_key = "OPENAI_API_KEY"
+
+[sandbox]
+mode = "workspace-write"
+network_access = true
+allow_file_deletion = true
+
+[tools]
+enable_web_search = true
+enable_semantic_search = true
+enable_terminal = true
+
+[features]
+multi_agent = true
+auto_test = true
+js_repl = false
+
+[projects.'C:\Users\Falcons的Niko本人的PC']
+trust_level = "trusted"
+
+[projects.'\\?\D:\UE5PROJECT\Blast']
+trust_level = "trusted"
+
+[projects.'C:\Users\Falcons的Niko本人的PC\.codex']
+trust_level = "trusted"
+
+[projects.'D:\']
+trust_level = "trusted"
+
+[projects.'D:\MyPCB']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator']
+trust_level = "trusted"
+
+[projects.'c:\ck3mods\rol']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\desktop\middlefile\gd32']
+trust_level = "trusted"
+
+[projects.'d:\ue5project\gaslearn']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\desktop\51板子\51基础例程v1.4\51核心板综合测试例程']
+trust_level = "trusted"
+
+[projects.'d:\forzashuache\fh6_auto-main']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\appdata\roaming\r2modmanplus-local\lethalcompany\profiles\default']
+trust_level = "trusted"
+
+[projects.'d:\steamlibrary\steamapps\workshop\content\294100']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-05\wei']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-07\ni-s']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-07\gpt-x20']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-10\ni']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-10\wo']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-10\x20']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-10\excel-1-2-3-4']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-10\x20-2']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-12\new-chat']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-12\rimsiege']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-14\gei']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\desktop\apex']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-16\z']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-16\openai-codex-codex-reads-agent-skills']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-16\skill-openai-codex-codex-reads-agent']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-16\7-9-8-7-6-4']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-16\7-9-8-7-6-4-2']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-16\7-9-8-7-6-4-3']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-19\vscode-claude-code-api-base-url']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-26\7-9-8-7-6-4']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\desktop\crusadeking']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-26\ce']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex\2026-09-27\c-steam-steamapps-workshop-content-289070']
+trust_level = "trusted"
+
+[projects."c:\\users\\administrator\\documents\\my games\\sid meier's civilization vi\\mods\\haikesi_local_3751996207"]
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\desktop\新的拆解']
+trust_level = "trusted"
+
+[projects.'d:\godot\godotpro\共鸣之城']
+trust_level = "trusted"
+
+[windows]
+sandbox = "elevated"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+
+[marketplaces.openai-bundled]
+source_type = "local"
+source = '\\?\C:\Users\Administrator\.codex\.tmp\bundled-marketplaces\openai-bundled'
+
+[marketplaces.openai-primary-runtime]
+source_type = "local"
+source = '\\?\C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
+
+[marketplaces.mcp-for-blender]
+source_type = "local"
+source = '\\?\C:\mcp-for-blender\integrations\codex'
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."codex-app-tools@openai-bundled"]
+enabled = true
+
+[plugins."mcp-for-blender@mcp-for-blender"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."unified-computer-use@openai-bundled"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."code-review@openai-bundled"]
+enabled = true
+
+[mcp_servers.brave-search]
+command = "node"
+args = ['C:\Users\Administrator\Desktop\mIDDLEFILE\brave-search-mcp-server-main\dist\index.js', "--transport", "stdio"]
+startup_timeout_sec = 30.0
+
+[mcp_servers.brave-search.env]
+BRAVE_API_KEY_FILE = 'C:\Users\Administrator\.codex\secrets\brave_api_key.txt'
+HTTPS_PROXY = "http://127.0.0.1:10809"
+HTTP_PROXY = "http://127.0.0.1:10809"
+NODE_USE_ENV_PROXY = "1"
+
+[mcp_servers.exa]
+url = "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,web_fetch_exa"
+
+[mcp_servers.tavily]
+command = "node"
+args = ['C:\Users\Administrator\Desktop\mIDDLEFILE\tavily-mcp-main\build\index.js']
+env_vars = ["TAVILY_API_KEY"]
+startup_timeout_sec = 30.0
+
+[mcp_servers.rimsage]
+command = 'C:\Users\Administrator\AppData\Roaming\npm\node_modules\bun\bin\bun.exe'
+args = ["run", 'C:\Users\Administrator\Desktop\mIDDLEFILE\RimSage-main\src\stdio.ts']
+startup_timeout_sec = 120.0
+
+[mcp_servers.civ6]
+command = 'C:\Users\Administrator\AppData\Roaming\Python\Python314\Scripts\uv.exe'
+args = ["run", "--directory", 'C:\Users\Administrator\Desktop\mIDDLEFILE\civ6-mcp-main', "civ-mcp"]
+startup_timeout_sec = 120.0
+
+[mcp_servers.godot-mcp-toolkit]
+command = 'D:\NotejsundAnderen\node.exe'
+args = ['C:\Users\Administrator\.codex\tools\godot-mcp-server\node_modules\@npgamedev\godot-mcp-server\dist\index.js']
+
+[mcp_servers.godot-mcp-toolkit.env]
+GODOT_MCP_CONFIG_VERSION = "1"
+GODOT_MCP_PROJECT_PATH = 'D:\GODOT\GODOTPRO\共鸣之城'
+
+[mcp_servers.blender]
+command = 'C:\Users\Administrator\.local\bin\uvx.EXE'
+args = ["mcp-for-blender"]
+tool_timeout_sec = 600
+
+[mcp_servers.blender.env]
+BLENDER_MCP_APPS = "1"
+BLENDER_MCP_OPENAI_FORMS = "1"
+
+[shell_environment_policy.set]
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "3fdfe9a7ad39456da69c5e8fa7bbf7229ec2fe9de5f4cf2e476166bf30a08a7e,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
+
+[desktop]
+conversationDetailMode = "STEPS_COMMANDS"
+ambient-suggestions-enabled = true
+enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "max"]
+followUpQueueMode = "queue"
+localeOverride = "zh-CN"
+notifications-turn-mode = "always"
+toys-confetti-enabled = true
+show-context-window-usage = true
+
+[desktop.open-in-target-preferences]
+global = "fileManager"
+
+[desktop.open-in-target-preferences.perPath]
+'D:\GODOT\GODOTPRO\共鸣之城' = "fileManager"
+
+[mcp_servers.rea]
+command = "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe"
+args = [ "C:\\Users\\Administrator\\AppData\\Local\\npm-cache\\_npx\\af752b90495482d7\\node_modules\\rea-agents\\scripts\\rea.mjs", "mcp" ]
+startup_timeout_sec = 30
+
+[mcp_servers.node_repl]
+args = []
+command = 'C:\Users\Administrator\AppData\Local\OpenAI\Codex\runtimes\cua_node\cfb32733c877621e\bin\node_repl.exe'
+env_vars = ["CODEX_WINDOWS_REGISTERED_CORE"]
+startup_timeout_sec = 120
+
+[mcp_servers.node_repl.env]
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\Administrator\AppData\Local\OpenAI\Codex\runtimes\cua_node\cfb32733c877621e\bin\node_modules'
+NODE_REPL_NODE_PATH = 'C:\Users\Administrator\AppData\Local\OpenAI\Codex\runtimes\cua_node\cfb32733c877621e\bin\node.exe'
+NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\Administrator\.codex;C:\Users\Administrator\AppData\Local\OpenAI\Codex\runtimes\cua_node\cfb32733c877621e\bin\node_modules'
+CODEX_HOME = 'C:\Users\Administrator\.codex'
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab,mcpapps"
+BROWSER_USE_TINYSKY_ENABLED = "1"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.1007.21434"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"C:/Users/Administrator/.codex/plugins/cache/openai-bundled/browser/26.1007.21434/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+SKY_CUA_NATIVE_PIPE = "1"
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-cb58306b-b261-49ea-a913-b54b4be17a2c'
+CODEX_CLI_PATH = 'C:\Users\Administrator\AppData\Local\OpenAI\Codex\bin\2e5e00daee91c61d\codex.exe'
+NODE_REPL_UNTRUSTED_ENV_ALLOWLIST = "CODEX_WINDOWS_REGISTERED_CORE"

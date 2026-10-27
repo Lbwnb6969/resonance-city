@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://8pueeo0h17tb"
+path="res://.godot/imported/cubemapBlendFragmentShader.glsl-cd1572043e040a65d0a209fbaeb8eaca.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/engine/shaders/glsl/natives/cubemapBlendFragmentShader.glsl"
+dest_files=["res://.godot/imported/cubemapBlendFragmentShader.glsl-cd1572043e040a65d0a209fbaeb8eaca.res"]
+
+[params]
+

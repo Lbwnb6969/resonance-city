@@ -1,6 +1,0 @@
-Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
-
-[MCPRuntimeServer] port: scanning 6570-6585 (default)
-[MCPRuntimeServer] listening on 127.0.0.1:6571
-[MCPRegistry] runtime port 6571 registered for d:/godot/godotpro/共鸣之城
-CITY_CREATION_PLAY {"cells":5,"failures":[],"gatherings":7,"houses":6,"ok":true,"purchases":9,"real_input":true,"revision":22}

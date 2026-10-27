@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://ccebdnkimpwy8"
+path="res://.godot/imported/spriteVertexShader.glsl-cb1b14d3f44e48cd5144c8847fb56279.res"
+
+[deps]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/engine/shaders/glsl/natives/spriteVertexShader.glsl"
+dest_files=["res://.godot/imported/spriteVertexShader.glsl-cb1b14d3f44e48cd5144c8847fb56279.res"]
+
+[params]
+

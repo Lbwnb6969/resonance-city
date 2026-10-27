@@ -1,0 +1,258 @@
+[
+  {
+    "entry": "0x1400364b0",
+    "status": "failed",
+    "shard": "pseudocode-0000.jsonl.gz",
+    "line": 1999,
+    "error": "Exception while decompiling 1400364b0: process: timeout\n",
+    "body_bytes": 12850
+  },
+  {
+    "entry": "0x1400c1650",
+    "status": "failed",
+    "shard": "pseudocode-0002.jsonl.gz",
+    "line": 1999,
+    "error": "Exception while decompiling 1400c1650: process: timeout\n",
+    "body_bytes": 14581
+  },
+  {
+    "entry": "0x140893340",
+    "status": "failed",
+    "shard": "pseudocode-0021.jsonl.gz",
+    "line": 1997,
+    "error": "Exception while decompiling 140893340: process: timeout\n",
+    "body_bytes": 125085
+  },
+  {
+    "entry": "0x1408b1be0",
+    "status": "failed",
+    "shard": "pseudocode-0021.jsonl.gz",
+    "line": 1998,
+    "error": "Exception while decompiling 1408b1be0: process: timeout\n",
+    "body_bytes": 63336
+  },
+  {
+    "entry": "0x1408c1350",
+    "status": "failed",
+    "shard": "pseudocode-0021.jsonl.gz",
+    "line": 1999,
+    "error": "Exception while decompiling 1408c1350: process: timeout\n",
+    "body_bytes": 14470
+  },
+  {
+    "entry": "0x140973180",
+    "status": "failed",
+    "shard": "pseudocode-0023.jsonl.gz",
+    "line": 1998,
+    "error": "Exception while decompiling 140973180: process: timeout\n",
+    "body_bytes": 26138
+  },
+  {
+    "entry": "0x1409797a0",
+    "status": "failed",
+    "shard": "pseudocode-0023.jsonl.gz",
+    "line": 1999,
+    "error": "Exception while decompiling 1409797a0: process: timeout\n",
+    "body_bytes": 208048
+  },
+  {
+    "entry": "0x141f6b350",
+    "status": "failed",
+    "shard": "pseudocode-0070.jsonl.gz",
+    "line": 1797,
+    "error": "Exception while decompiling 141f6b350: Decompiler process died\n",
+    "body_bytes": 1347
+  },
+  {
+    "entry": "0x14200d540",
+    "status": "failed",
+    "shard": "pseudocode-0071.jsonl.gz",
+    "line": 1994,
+    "error": "Exception while decompiling 14200d540: process: timeout\n",
+    "body_bytes": 226
+  },
+  {
+    "entry": "0x142014af0",
+    "status": "failed",
+    "shard": "pseudocode-0071.jsonl.gz",
+    "line": 1997,
+    "error": "Exception while decompiling 142014af0: process: timeout\n",
+    "body_bytes": 12416
+  },
+  {
+    "entry": "0x14201a230",
+    "status": "failed",
+    "shard": "pseudocode-0071.jsonl.gz",
+    "line": 1998,
+    "error": "Exception while decompiling 14201a230: process: timeout\n",
+    "body_bytes": 484
+  },
+  {
+    "entry": "0x142159830",
+    "status": "failed",
+    "shard": "pseudocode-0074.jsonl.gz",
+    "line": 270,
+    "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+    "body_bytes": 1097
+  },
+  {
+    "entry": "0x142159c80",
+    "status": "failed",
+    "shard": "pseudocode-0074.jsonl.gz",
+    "line": 273,
+    "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+    "body_bytes": 1110
+  },
+  {
+    "entry": "0x1421782c0",
+    "status": "failed",
+    "shard": "pseudocode-0074.jsonl.gz",
+    "line": 733,
+    "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+    "body_bytes": 996
+  },
+  {
+    "entry": "0x1421751f0",
+    "status": "failed",
+    "shard": "pseudocode-0074.jsonl.gz",
+    "line": 736,
+    "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+    "body_bytes": 1881
+  },
+  {
+    "entry": "0x1421760a0",
+    "status": "failed",
+    "shard": "pseudocode-0074.jsonl.gz",
+    "line": 738,
+    "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+    "body_bytes": 1835
+  },
+  {
+    "entry": "0x142178a40",
+    "status": "failed",
+    "shard": "pseudocode-0074.jsonl.gz",
+    "line": 744,
+    "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+    "body_bytes": 1176
+  },
+  {
+    "entry": "0x142178ee0",
+    "status": "failed",
+    "shard": "pseudocode-0074.jsonl.gz",
+    "line": 748,
+    "error": "\nRecoverable Error: Unable to find unique hash for varnode",
+    "body_bytes": 918
+  },
+  {
+    "entry": "0x1421c6290",
+    "status": "failed",
+    "shard": "pseudocode-0075.jsonl.gz",
+    "line": 1999,
+    "error": "Exception while decompiling 1421c6290: process: timeout\n",
+    "body_bytes": 19668
+  },
+  {
+    "entry": "0x14235118e",
+    "status": "failed",
+    "shard": "pseudocode-0078.jsonl.gz",
+    "line": 1269,
+    "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+    "body_bytes": 278
+  },
+  {
+    "entry": "0x1423510f7",
+    "status": "failed",
+    "shard": "pseudocode-0078.jsonl.gz",
+    "line": 1270,
+    "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+    "body_bytes": 11
+  },
+  {
+    "entry": "0x142351102",
+    "status": "failed",
+    "shard": "pseudocode-0078.jsonl.gz",
+    "line": 1273,
+    "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+    "body_bytes": 140
+  },
+  {
+    "entry": "0x14251c215",
+    "status": "failed",
+    "shard": "pseudocode-0081.jsonl.gz",
+    "line": 1995,
+    "error": "Exception while decompiling 14251c215: process: timeout\n",
+    "body_bytes": 77
+  },
+  {
+    "entry": "0x14251c1e0",
+    "status": "failed",
+    "shard": "pseudocode-0081.jsonl.gz",
+    "line": 1996,
+    "error": "Exception while decompiling 14251c1e0: process: timeout\n",
+    "body_bytes": 53
+  },
+  {
+    "entry": "0x14251c498",
+    "status": "failed",
+    "shard": "pseudocode-0081.jsonl.gz",
+    "line": 1997,
+    "error": "Exception while decompiling 14251c498: process: timeout\n",
+    "body_bytes": 317
+  },
+  {
+    "entry": "0x14251c262",
+    "status": "failed",
+    "shard": "pseudocode-0081.jsonl.gz",
+    "line": 1998,
+    "error": "Exception while decompiling 14251c262: process: timeout\n",
+    "body_bytes": 566
+  },
+  {
+    "entry": "0x14251c5d5",
+    "status": "failed",
+    "shard": "pseudocode-0081.jsonl.gz",
+    "line": 1999,
+    "error": "Exception while decompiling 14251c5d5: process: timeout\n",
+    "body_bytes": 11284
+  },
+  {
+    "entry": "0x142540038",
+    "status": "failed",
+    "shard": "pseudocode-0082.jsonl.gz",
+    "line": 617,
+    "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+    "body_bytes": 987
+  },
+  {
+    "entry": "0x142540422",
+    "status": "failed",
+    "shard": "pseudocode-0082.jsonl.gz",
+    "line": 620,
+    "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+    "body_bytes": 1343
+  },
+  {
+    "entry": "0x14260d718",
+    "status": "failed",
+    "shard": "pseudocode-0084.jsonl.gz",
+    "line": 1385,
+    "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+    "body_bytes": 1033
+  },
+  {
+    "entry": "0x1427474dc",
+    "status": "failed",
+    "shard": "pseudocode-0087.jsonl.gz",
+    "line": 1157,
+    "error": "\nLow-level Error: Cannot properly adjust input varnodes",
+    "body_bytes": 144
+  },
+  {
+    "entry": "0x142a9e970",
+    "status": "failed",
+    "shard": "pseudocode-0092.jsonl.gz",
+    "line": 1998,
+    "error": "Exception while decompiling 142a9e970: process: timeout\n",
+    "body_bytes": 25396
+  }
+]

@@ -1,0 +1,26 @@
+﻿{
+	"LOADING_TIPS": {
+		"LOADING_TIP_PRIORITY_TAX_OFFICE": "在大型村庄各处兴建多间税务办公室，是个很好的策略。",
+		"LOADING_TIP_PRIORITY_TAX_TRACKER": "鼠标右键单击{1}，显示/隐藏税收追踪器。",
+		"LOADING_TIP_PRIORITY_BUILDER_WORKSHOP_CLOSE": "将建筑工坊放置在离大型建筑工地较近的地方，可提高建造效率。",
+		"LOADING_TIP_PRIORITY_PLAN_DESIRABILITY": "提拔村民前，应先提前规划宜居的住宅。",
+		"LOADING_TIP_PRIORITY_NEED_PROXY": "村民将在住宅附近满足自己的需求。",
+		"LOADING_TIP_PRIORITY_STATUS_PRODUCTIVITY": "部分工作场地招收高地位村民时，生产效率也会相应提高。",
+		"LOADING_TIP_PRIORITY_TOOL_INVESTMENT": "尽早生产{1}工具，回报会相当丰厚。",
+		"LOADING_TIP_PRIORITY_TREASURY_LIMIT": "金库的容量有限，包括差事报酬在内的金币收入都无法突破其储蓄上限。",
+		"LOADING_TIP_PRIORITY_MONASTIC_WORK": "修道院人员只会在其被指派的修道院工作。",
+		"LOADING_TIP_PRIORITY_STORAGE_EFFICIENCY": "在工作场地和市场附近修建仓储建筑可以更高效地分配资源。",
+		"LOADING_TIP_PRIORITY_HAPPY_COMBATANT": "战士心情愉快、训练到位、装备精良，才能长久服役。",
+		"LOADING_TIP_PRIORITY_TOWER_FORTIFICATION": "庄园宅邸、教堂和城堡的塔楼都能提供被动防御。",
+		"LOADING_TIP_PRIORITY_MONASTERY_AUTONOMOUS": "修道院是自主运作的，会自动为其中的工作场地分配劳动者。",
+		"LOADING_TIP_PRIORITY_BUILDING_BORDER": "放置建筑时，务必注意蓝色的边界和代表入口的箭头，它们将决定村民的移动路线。",
+		"LOADING_TIP_PRIORITY_PATH_DECAY": "无人行走的土路会逐渐自行消失。而石路只要有养路人用{1}石材养护，是不会损耗消失的。",
+		"LOADING_TIP_PRIORITY_LEVY_EMERGENCY": "如果急用钱，可以在领主大厅开启征款委托。",
+		"LOADING_TIP_PRIORITY_RESOURCE_TRACKER": "鼠标右键单击HUD上显示的资源，可以开/关其{1}追踪器。",
+		"LOADING_TIP_PRIORITY_PROMOTE_VILLAGERS": "提拔村民是提升村庄繁荣度的关键；此外也要注意满足提拔后产生的新需求。",
+		"LOADING_TIP_PRIORITY_VISIT_HELP": "查阅屏幕左上角的{1}帮助界面，可以了解有关游戏的更多信息。",
+		"LOADING_TIP_PRIORITY_CLOSE_WINDOWS": "鼠标右键单击可以快速关闭窗口。",
+		"LOADING_TIP_PRIORITY_VISIBILITY_PANEL": "使用可见性界面（{1}）可显示/隐藏村庄信息。",
+		"LOADING_TIP_PRIORITY_COMMON_DECORATIONS": "常规装饰可提供{1}、{2}、{3}荣光或{4}美观度，具体哪一种取决于它们是否属于丰碑的一部分。"
+	}
+}

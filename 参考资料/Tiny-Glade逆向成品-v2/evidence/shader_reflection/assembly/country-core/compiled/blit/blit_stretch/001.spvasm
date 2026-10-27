@@ -1,0 +1,48 @@
+; SPIR-V 1.3
+; SHA256 743c31b750e3b1dedac4e6007d2174762d84750551503bad266ee21a61c96b9e
+; Hex literal words are raw IEEE/integer bits; no external assembler validation.
+OpCapability Shader ; byte 0x14
+OpCapability StorageImageExtendedFormats ; byte 0x1c
+OpMemoryModel Logical GLSL450 ; byte 0x24
+OpEntryPoint Fragment %2 "main" %41 %9 ; byte 0x30
+OpExecutionMode %2 OriginUpperLeft ; byte 0x4c
+OpSource Slang 1 ; byte 0x58
+OpName %9 "vs_out.uv" ; byte 0x64
+OpName %13 "samplers.llc" ; byte 0x78
+OpName %17 "input_tex" ; byte 0x90
+OpName %20 "sampledImage" ; byte 0xa4
+OpName %22 "sampled" ; byte 0xbc
+OpName %41 "entryPointParam_ps_main._color" ; byte 0xcc
+OpName %2 "ps_main" ; byte 0xf4
+OpDecorate %9 Location 0 ; byte 0x104
+OpDecorate %13 Binding 3 ; byte 0x114
+OpDecorate %13 DescriptorSet 1 ; byte 0x124
+OpDecorate %17 Binding 1 ; byte 0x134
+OpDecorate %17 DescriptorSet 0 ; byte 0x144
+OpDecorate %41 Location 0 ; byte 0x154
+%1 = OpTypeVoid ; byte 0x164
+%3 = OpTypeFunction %1 ; byte 0x16c
+%5 = OpTypeFloat 32 ; byte 0x178
+%6 = OpTypeVector %5 2 ; byte 0x184
+%8 = OpTypePointer Input %6 ; byte 0x194
+%10 = OpTypeSampler ; byte 0x1a4
+%12 = OpTypePointer UniformConstant %10 ; byte 0x1ac
+%14 = OpTypeImage %5 2D 2 0 0 1 Unknown ; byte 0x1bc
+%16 = OpTypePointer UniformConstant %14 ; byte 0x1e0
+%19 = OpTypeSampledImage %14 ; byte 0x1f0
+%21 = OpTypeVector %5 4 ; byte 0x1fc
+%40 = OpTypePointer Output %21 ; byte 0x20c
+%9 = OpVariable %8 Input ; byte 0x21c
+%13 = OpVariable %12 UniformConstant ; byte 0x22c
+%17 = OpVariable %16 UniformConstant ; byte 0x23c
+%41 = OpVariable %40 Output ; byte 0x24c
+%2 = OpFunction %1 None %3 ; byte 0x25c
+%4 = OpLabel ; byte 0x270
+%7 = OpLoad %6 %9 ; byte 0x278
+%11 = OpLoad %10 %13 ; byte 0x288
+%15 = OpLoad %14 %17 ; byte 0x298
+%20 = OpSampledImage %19 %15 %11 ; byte 0x2a8
+%22 = OpImageSampleImplicitLod %21 %20 %7 None ; byte 0x2bc
+OpStore %41 %22 ; byte 0x2d4
+OpReturn ; byte 0x2e0
+OpFunctionEnd ; byte 0x2e4

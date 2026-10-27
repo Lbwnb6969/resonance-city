@@ -1,0 +1,10 @@
+﻿{
+	"SEARCH": {
+		"FILTER_ENTRY_STATUS_UNLOCKED": "ปลดล็อกแล้ว"
+	},
+	"WORDING": {
+		"SEARCH_WORDING_PLANT": "พืช",
+		"SEARCH_WORDING_TRAINING": "การฝึก",
+		"SEARCH_WORDING_WALL": "กำแพง"
+	}
+}

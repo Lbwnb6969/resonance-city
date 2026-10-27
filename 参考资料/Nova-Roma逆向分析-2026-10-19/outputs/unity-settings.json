@@ -1,0 +1,126 @@
+{
+  "note": "Selected readable fields; large pointer arrays and shader define bitfields archived in work/evidence. Build token excluded.",
+  "globalgamemanagers:7:GraphicsSettings": {
+    "m_CustomRenderPipeline": {
+      "m_FileID": 0,
+      "m_PathID": 0
+    },
+    "m_LightsUseLinearIntensity": false,
+    "m_LightsUseColorTemperature": false,
+    "m_CurrentRenderPipelineGlobalSettings": {
+      "m_FileID": 0,
+      "m_PathID": 0
+    }
+  },
+  "globalgamemanagers:11:BuildSettings": {
+    "scenes": [
+      "Assets/startup.unity",
+      "Assets/simulation.unity"
+    ],
+    "preloadedPlugins": [
+      "GfxPluginNativeRender-x64",
+      "DynamicLibraryLoaderHelper-x64",
+      "GfxPluginNativeRender-x86"
+    ],
+    "enabledVRDevices": [
+      "None",
+      "OpenVR"
+    ],
+    "m_Version": "6000.2.10f1",
+    "m_GraphicsAPIs": [
+      2,
+      18
+    ],
+    "enableDynamicBatching": true
+  },
+  "globalgamemanagers:12:QualitySettings": {
+    "m_CurrentQuality": 0,
+    "m_QualitySettings": [
+      {
+        "name": "Fantastic",
+        "pixelLightCount": 4,
+        "shadows": 1,
+        "shadowResolution": 3,
+        "shadowProjection": 1,
+        "shadowCascades": 4,
+        "shadowDistance": 70.0,
+        "shadowNearPlaneOffset": 1.0,
+        "shadowCascade2Split": 0.3333333432674408,
+        "shadowCascade4Split": {
+          "x": 0.09070733934640884,
+          "y": 0.20832166075706482,
+          "z": 0.3575470447540283
+        },
+        "shadowmaskMode": 0,
+        "skinWeights": 4,
+        "globalTextureMipmapLimit": 0,
+        "textureMipmapLimitSettings": [],
+        "anisotropicTextures": 0,
+        "antiAliasing": 0,
+        "softParticles": true,
+        "softVegetation": true,
+        "realtimeReflectionProbes": false,
+        "billboardsFaceCameraPosition": true,
+        "useLegacyDetailDistribution": true,
+        "adaptiveVsync": false,
+        "vSyncCount": 1,
+        "realtimeGICPUUsage": 25,
+        "adaptiveVsyncExtraA": 0,
+        "adaptiveVsyncExtraB": 0,
+        "lodBias": 2.0,
+        "meshLodThreshold": 1.0,
+        "maximumLODLevel": 0,
+        "enableLODCrossFade": true,
+        "streamingMipmapsActive": false,
+        "streamingMipmapsAddAllCameras": true,
+        "streamingMipmapsMemoryBudget": 512.0,
+        "streamingMipmapsRenderersPerFrame": 512,
+        "streamingMipmapsMaxLevelReduction": 2,
+        "streamingMipmapsMaxFileIORequests": 1024,
+        "particleRaycastBudget": 4096,
+        "asyncUploadTimeSlice": 2,
+        "asyncUploadBufferSize": 4,
+        "asyncUploadPersistentBuffer": true,
+        "resolutionScalingFixedDPIFactor": 1.0,
+        "customRenderPipeline": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "terrainQualityOverrides": 0,
+        "terrainPixelError": 1.0,
+        "terrainDetailDensityScale": 1.0,
+        "terrainBasemapDistance": 1000.0,
+        "terrainDetailDistance": 80.0,
+        "terrainTreeDistance": 5000.0,
+        "terrainBillboardStart": 50.0,
+        "terrainFadeLength": 5.0,
+        "terrainMaxTrees": 50
+      }
+    ],
+    "m_TextureMipmapLimitGroupNames": [],
+    "m_StrippedMaximumLODLevel": 0
+  },
+  "globalgamemanagers:13:ResourceManager": {
+    "resource_entry_count": 868,
+    "dependent_asset_count": 53479
+  },
+  "globalgamemanagers:PlayerSettings:partial": {
+    "parser_note": "check_read=False; UnityPy consumed 884 of 888 bytes. Fields parsed before trailing mismatch are retained; final field coverage incomplete.",
+    "data": {
+      "companyName": "LionShield",
+      "productName": "Nova Roma",
+      "bundleVersion": "0.7.2963",
+      "runInBackground": true,
+      "usePlayerLog": true,
+      "forceSingleInstance": true,
+      "resizableWindow": true,
+      "defaultIsNativeResolution": true,
+      "defaultScreenWidth": 9999,
+      "defaultScreenHeight": 9999,
+      "m_ActiveColorSpace": 1,
+      "allowHDRDisplaySupport": false,
+      "useHDRDisplay": false,
+      "activeInputHandler": 0
+    }
+  }
+}

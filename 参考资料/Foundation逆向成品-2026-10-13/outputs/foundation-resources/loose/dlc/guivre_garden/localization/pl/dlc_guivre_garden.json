@@ -1,0 +1,32 @@
+﻿{
+	"GENERAL": {
+		"SUPPACK_GUIVRE_BUILDING": "Ogród Guivre"
+	},
+	"BUILDING_PART": {
+		"SUPPACK_GUIVRE_ARCHWAY_01A": "Łuk ogrodowy Guivre",
+		"SUPPACK_GUIVRE_BRAZIER_01A": "Kociołek ogrodowy Guivre, naziemny",
+		"SUPPACK_GUIVRE_FLOWER_01A": "Kwiaty ogrodowe Guivre, linowa krata",
+		"SUPPACK_GUIVRE_FLOWER_02A": "Kwiaty ogrodowe Guivre, delikatne",
+		"SUPPACK_GUIVRE_FLOWER_03A": "Kwiaty ogrodowe Guivre, pachnące",
+		"SUPPACK_GUIVRE_HALFWALL_01A": "Bariera ogrodowa Guivre, prosta",
+		"SUPPACK_GUIVRE_HALFWALL_02A": "Kwiat ogrodowy Guivre, drewniana krata",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_01A": "Bariera ogrodowa Guivre, narożna",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_02A": "Kwiat ogrodu Guivre, narożnik",
+		"SUPPACK_GUIVRE_FOUNTAIN_LARGE_01A": "Staw ogrodu Guivre",
+		"SUPPACK_GUIVRE_TORCH_MEDIUM_01A": "Wiszący kociołek Ogrodu Guivre",
+		"SUPPACK_GUIVRE_BASSIN_RECTANGLE_01A": "Basen ogrodu Guivre",
+		"SUPPACK_GUIVRE_TORCH_SMALL_01A": "Kociołek Ogrodu Guivre na Kolumnie",
+		"SUPPACK_GUIVRE_STATUE_BASILISK_01A": "Marmurowy Skamieniały Bazyliszek",
+		"SUPPACK_GUIVRE_STATUE_FISH_01A": "Marmurowa latająca ryba",
+		"SUPPACK_GUIVRE_STATUE_GUIVRE_01A": "Wielki Guivre z Marmuru",
+		"SUPPACK_GUIVRE_STATUE_PEDESTAL_01A": "Piedestał ogrodu Guivre",
+		"SUPPACK_GUIVRE_STATUE_PINECONE_01A": "Święty Żołądź z Marmuru",
+		"SUPPACK_GUIVRE_BENCH_STONE_01A": "Ławka ogrodowa Guivre",
+		"SUPPACK_GUIVRE_PILLAR_01A": "Kolumna ogrodowa Guivre"
+	},
+	"DESCRIPTION": {
+		"SUPPACK_GUIVRE_BUILDING_DESC": "Na długo przed powstaniem naszego królestwa opowiadano historie o Guivre, majestatycznym, ozdobionym klejnotami wężopodobnym zwierzęciu, które miało tak wielkie skrzydła i tak ostre szpony, że mogło rozszarpać owce tuż pod nosem nieostrożnych pasterzy!\n\nW dzisiejszych czasach, czy to z podziwu, czy ze strachu, mieszkańcy wsi budują te imponujące pomniki, aby uczcić potężnego węża.",
+		"SUPPACK_GUIVRE_DECORATIVE_DESC": "Więcej dekoracji do Ogrodu Guivre, dzięki którym Twoje posągi będą mogły mieć swój własny, mały świat.",
+		"SUPPACK_GUIVRE_STATUE_DESC": "Niektórzy twierdzą, że te posągi wyglądają majestatycznie, podczas gdy inni uważają je za przerażające. Jedno jest jednak pewne: nikogo nie pozostawiają zimnym ze strachu."
+	}
+}

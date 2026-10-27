@@ -1,0 +1,32 @@
+﻿{
+	"GENERAL": {
+		"SUPPACK_GUIVRE_BUILDING": "Jardim da Serpe"
+	},
+	"BUILDING_PART": {
+		"SUPPACK_GUIVRE_ARCHWAY_01A": "Arco do Jardim da Serpe",
+		"SUPPACK_GUIVRE_BRAZIER_01A": "Braseiro do Jardim da Serpe, Chão",
+		"SUPPACK_GUIVRE_FLOWER_01A": "Flores do Jardim da Serpe, Treliça de Corda",
+		"SUPPACK_GUIVRE_FLOWER_02A": "Flores do Jardim da Serpe, Delicadas",
+		"SUPPACK_GUIVRE_FLOWER_03A": "Flores do Jardim da Serpe, Perfumadas",
+		"SUPPACK_GUIVRE_HALFWALL_01A": "Barreira do Jardim da Serpe, Reta",
+		"SUPPACK_GUIVRE_HALFWALL_02A": "Flor do Jardim da Serpe, Treliça de Madeira",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_01A": "Barreira do Jardim da Serpe, Canto",
+		"SUPPACK_GUIVRE_HALFWALL_CORNER_02A": "Flor do Jardim da Serpe, Canto",
+		"SUPPACK_GUIVRE_FOUNTAIN_LARGE_01A": "Lagoa do Jardim da Serpe",
+		"SUPPACK_GUIVRE_TORCH_MEDIUM_01A": "Braseiro do Jardim da Serpe, Pendurado",
+		"SUPPACK_GUIVRE_BASSIN_RECTANGLE_01A": "Bacia do Jardim da Serpe",
+		"SUPPACK_GUIVRE_TORCH_SMALL_01A": "Braseiro do Jardim da Serpe, Muro",
+		"SUPPACK_GUIVRE_STATUE_BASILISK_01A": "O Basilisco Petrificado, Mármore",
+		"SUPPACK_GUIVRE_STATUE_FISH_01A": "O Peixe Voador, Mármore",
+		"SUPPACK_GUIVRE_STATUE_GUIVRE_01A": "A Grande Serpe, Mármore",
+		"SUPPACK_GUIVRE_STATUE_PEDESTAL_01A": "Pedestal do Jardim da Serpe",
+		"SUPPACK_GUIVRE_STATUE_PINECONE_01A": "A Bolota Sagrada, Mármore",
+		"SUPPACK_GUIVRE_BENCH_STONE_01A": "Banco do Jardim da Serpe",
+		"SUPPACK_GUIVRE_PILLAR_01A": "Coluna de Jardim da Serpe"
+	},
+	"DESCRIPTION": {
+		"SUPPACK_GUIVRE_BUILDING_DESC": "\"Há muito tempo, antes do reino existir, as lendas falavam da Serpe, uma fera serpentina majestosa incrustada por joias, com asas tão grandiosas e garras tão afiadas que ela era capaz de raptar ovelhas bem na frente dos pastores desavisados!\n\nHoje em dia, seja por admiração ou medo, os moradores constroem esses monumentos impressionantes para honrar a poderosa serpente.\"",
+		"SUPPACK_GUIVRE_DECORATIVE_DESC": "Mais decorações para o Jardim da Serpe, para construir um ambiente único e acolhedor para suas estátuas.",
+		"SUPPACK_GUIVRE_STATUE_DESC": "Alguns dizem que essas estátuas parecem majestosas, outros acreditam que elas sejam aterrorizantes. Uma coisa é certa: elas não geram emoções mornas."
+	}
+}

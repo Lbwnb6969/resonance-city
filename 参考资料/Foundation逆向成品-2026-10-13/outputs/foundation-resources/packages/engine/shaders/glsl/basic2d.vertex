@@ -1,0 +1,14 @@
+in vec2 attribPosition;
+in vec2 attribUv;
+in vec4 attribColor;
+uniform mat4 uniMatMVP;
+out vec2 var_attribUv;
+out vec4 var_attribColor;
+
+void main()
+{
+	vec4 POSITION = uniMatMVP * vec4(attribPosition, 0.0, 1.0);
+	gl_Position = POSITION;
+	var_attribUv = attribUv;
+	var_attribColor = attribColor;
+}

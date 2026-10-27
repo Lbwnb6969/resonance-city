@@ -1,0 +1,37 @@
+﻿{
+	"VILLAGE_EVENT": {
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_TOOLTIP": "{1} hazırlanıyor",
+		"VILLAGE_EVENT_PROGRESSION_PREPARING_COUNTDOWN_TOOLTIP": "{1} başlayana kadar geri sayım:",
+		"VILLAGE_EVENT_PROGRESSION_INPROGRESS_TOOLTIP": "{1}'in sona ermesine kalan gün:",
+		"VILLAGE_EVENT_PROGRESSION_COMPLETED_TOOLTIP": "{1} sona erdi",
+		"VILLAGE_EVENT_PROGRESSION_SHOWRESULT_TOOLTIP": "{1} sonuç ve ödüllerini göster",
+		"VILLAGE_EVENT_CANT_PREPARE_X_TOOLTIP": "{1} hazırlığın için gerekli şartlar eksik",
+		"VILLAGE_EVENT_X_NOT_BUILT": "Hasat Festivali Kulübesi inşa edilmeli ve {1}'i inşa etmek için gereken tüm kaynaklar kulübenin içine yerleştirilmelidir.",
+		"VILLAGE_EVENT_QUEST_COUNTDOWN": "Hazırlıklar için",
+		"VILLAGE_EVENT_QUEST_SCORE": "Güncel Skor",
+		"VILLAGE_EVENT_SHOW_RESULT": "Sonuçları Göster",
+		"ADD_X_GUEST_INVITATION": "{1} Sınıf Davetiyesi(leri) Kazanıldı",
+		"GUEST_REWARD_HEADER": "Seviye {1} (Puan {2})",
+		"INVITATION_EXTRA_REWARDS": "Ekstra Sınıf Ödülleri",
+		"SELECT_X_ENTERTAINER": "{1}'i işe alın",
+		"SELECT_X_GUEST_INVITATION": "{1}'e bir Sınıf davetiyesi gönderin",
+		"SELECT_ANY_GUEST_CONDITION": "Herhangi bir davetiye gönderin",
+		"RECURRENT_REWARDS": "Tekrarlanan Ödüller",
+		"VILLAGE_EVENT_INVITATION_REQUIRED_X": "({1} Daveti Gerekli)",
+		"VILLAGE_EVENT_DEFAULT_NAME": "{1}'in {2}'si"
+	},
+	"GAME_CONDITIONS": {
+		"START_X_VILLAGE_EVENT": "{1} düzenleyin",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING": "{2}'de bir {1} düzenleyin",
+		"START_X_VILLAGE_EVENT_FROM_THE_Y_BUILDING_WITH_THE_FOLLOWING": "{2}'de bir {1} düzenleyin; bunun için aşağıdakileri kullanın:",
+		"START_X_VILLAGE_EVENT_WITH_THE_FOLLOWING": "Aşağıdakileri içeren bir {1} düzenleyin:",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_Y_Z_VALUE": "{1}'i {2} veya {3} puanla tamamlayın",
+		"COMPLETE_VILLAGE_EVENT_X_WITH_SCORE_OF_Y_Z_VALUE": "{1}'i {2} veya {3} puanla tamamlayın",
+		"REACH_TIER_X_OF_VILLAGE_EVENT_Y": "{2} Seviye {1}'e Ulaş",
+		"BUILD_X_INSIDE_Y": "{2} çinde bir {1} oluşturun",
+		"ACQUIRE_X_RECIPE": "{1}'in tarifini edinin",
+		"DISCOVER_X_VILLAGE_EVENT_ENTERTAINER": "{1} ile tanışın",
+		"SELECT_ANY_ENTERTAINER_CONDITION": "Herhangi Bir Sanatçı Davet Et",
+		"ATTRACTS_X_VILLAGERS": "Katılan Köylüler {1}"
+	}
+}

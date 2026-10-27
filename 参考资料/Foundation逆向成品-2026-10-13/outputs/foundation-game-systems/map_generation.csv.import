@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://oedcpdy1p4w2"
+
+[deps]
+
+files=["res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.package.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.resource.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.absolute.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.length.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.sha256.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.type.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.uuid.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.name.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.scalar.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.references.translation"]
+
+source_file="res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.csv"
+dest_files=["res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.package.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.resource.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.absolute.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.length.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.sha256.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.type.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.uuid.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.name.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.scalar.translation", "res://参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-game-systems/map_generation.references.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true
