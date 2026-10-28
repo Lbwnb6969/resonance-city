@@ -325,6 +325,9 @@
     "scripts/audio/city_creation_cluster_harmony.gd.uid",
     "scripts/audio/city_creation_construction_walk.gd",
     "scripts/audio/city_creation_construction_walk.gd.uid",
+    "scripts/audio/city_creation_core_orchestration.gd",
+    "scripts/audio/city_creation_core_score_cache.gd",
+    "scripts/audio/city_creation_core_scores.gd",
     "scripts/audio/city_creation_counterpoint.gd",
     "scripts/audio/city_creation_cue_grid.gd",
     "scripts/audio/city_creation_cue_grid.gd.uid",
@@ -345,6 +348,7 @@
     "scripts/audio/city_creation_music_experience.gd.uid",
     "scripts/audio/city_creation_octave_dyad.gd",
     "scripts/audio/city_creation_octave_dyad.gd.uid",
+    "scripts/audio/city_creation_orchestration_plan.gd",
     "scripts/audio/city_creation_pastoral_score.gd",
     "scripts/audio/city_creation_phonograph.gd",
     "scripts/audio/city_creation_phonograph.gd.uid",
@@ -431,6 +435,7 @@
     "scripts/ui/city_creation_life_capsules.gd",
     "scripts/ui/city_creation_life_capsules.gd.uid",
     "scripts/ui/city_creation_manuscript_toast.gd",
+    "scripts/ui/city_creation_music_preferences.gd",
     "scripts/ui/city_creation_organic_stamp.gd",
     "scripts/ui/city_creation_paper_hud.gd",
     "scripts/ui/city_creation_paper_hud.gd.uid",
@@ -1186,6 +1191,8 @@
     "tests/test_city_creation_contact_field.gd.uid",
     "tests/test_city_creation_contact_publish.gd",
     "tests/test_city_creation_contact_publish.gd.uid",
+    "tests/test_city_creation_core_cache.gd",
+    "tests/test_city_creation_core_scores.gd",
     "tests/test_city_creation_cpu_retirement.gd",
     "tests/test_city_creation_cpu_retirement.gd.uid",
     "tests/test_city_creation_craft_geometry.gd",
@@ -1671,6 +1678,9 @@
     "tools/check_creation_conservatory.gd.uid",
     "tools/check_creation_conservatory_birds.gd",
     "tools/check_creation_conservatory_birds.gd.uid",
+    "tools/check_creation_core_edges_live.gd",
+    "tools/check_creation_core_music_live.gd",
+    "tools/check_creation_core_relation_ab_live.gd",
     "tools/check_creation_courtyards_live.gd",
     "tools/check_creation_courtyards_live.gd.uid",
     "tools/check_creation_courtyards_state.gd",
@@ -3013,6 +3023,7 @@
     "文档/43_自由创作政策与版本化存档.md",
     "文档/44_道路紧凑控件与输入验证.md",
     "文档/45_单主题谱材与连续换流.md",
+    "文档/46_三核心风格与六段城市乐章.md",
     "文档/Demo快速开始.md",
     "文档/README.md",
     "文档/code_artifact.md",
@@ -3207,8 +3218,76 @@
       "large_rebuildable_or_reference_payload"
     ],
     "资源/音乐/城市同步声部库.res": [
-      272505535,
+      277607007,
       "large_rebuildable_or_reference_payload"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/decoded/audio/core/917724130.wav": [
+      69136,
+      "reference_payload_budget"
+    ],
+    "参考资料/Townscaper逆向成品/outputs/townscaper_extracted_assets/Texture2D/sharedassets0.assets__15__ButtonFont_Latin_SDF_Atlas.png": [
+      69147,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/Buildings/Housing/HousingRevamp/Q2/Model/Q2D2_01.fbx.meta": [
+      69157,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/original/audio/core/322325893.wem": [
+      69159,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/dlc__agriculture__content/GuiSettings/Shared Textures/Illustrations/Portraits/Portrait_Male_Juggler-2.png": [
+      69161,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-models/sidecars/game/asset/Agent/Models/Animations/Female/Female_Scythe.json.gz": [
+      69175,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/decoded/audio/core/344398500.wav": [
+      69236,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/decoded/audio/core/380799019.wav": [
+      69270,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/original/audio/core/749739392.wem": [
+      69281,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/decoded/audio/core/210569163.wav": [
+      69314,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Illustrations/Portraits/Portrait_Male_RoyalCompany.png": [
+      69346,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/decoded/audio/core/187095979.wav": [
+      69364,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/decoded/audio/core/672883171.wav": [
+      69400,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/dlc__agriculture__content/Art/Textures/FX/AGR_VFX_MaypoleSprites.tif": [
+      69453,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-textures/standard-images/dlc__agriculture__content/Art/Textures/FX/AGR_VFX_MaypoleSprites.tif.png": [
+      69453,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Illustrations/Portraits/Portrait_Female_Forester.png": [
+      69455,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Icons/Book/Progression/Privileges/Icon_Privilege_Clergy_06.png": [
+      69478,
+      "reference_payload_budget"
     ],
     "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Illustrations/Portraits/Portrait_Female_Transporter.png": [
       69524,
