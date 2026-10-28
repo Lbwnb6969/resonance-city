@@ -385,6 +385,7 @@
     "scripts/ui/city_creation_conductor_gesture.gd.uid",
     "scripts/ui/city_creation_copy.gd",
     "scripts/ui/city_creation_copy.gd.uid",
+    "scripts/ui/city_creation_creation_options.gd",
     "scripts/ui/city_creation_demo.gd",
     "scripts/ui/city_creation_demo.gd.uid",
     "scripts/ui/city_creation_draft_leaf.gd",
@@ -904,6 +905,8 @@
     "scripts/world/city_creation_conservatory_plan.gd.uid",
     "scripts/world/city_creation_courtyards.gd",
     "scripts/world/city_creation_courtyards.gd.uid",
+    "scripts/world/city_creation_creation_policy.gd",
+    "scripts/world/city_creation_creative_save.gd",
     "scripts/world/city_creation_curve_hug.gd",
     "scripts/world/city_creation_debut_encore.gd",
     "scripts/world/city_creation_debut_encore.gd.uid",
@@ -1063,6 +1066,15 @@
     "scripts/world/city_creation_worker_lod.gd.uid",
     "scripts/world/city_creation_workshop.gd",
     "scripts/world/city_creation_workshop.gd.uid",
+    "song-analysis/.gitignore",
+    "song-analysis/README.md",
+    "song-analysis/ai-skill/song-analysis/SKILL.md",
+    "song-analysis/analyze.cmd",
+    "song-analysis/analyze.py",
+    "song-analysis/config/essentia.yaml",
+    "song-analysis/requirements.lock.txt",
+    "song-analysis/requirements.txt",
+    "song-analysis/setup.ps1",
     "tests/city_creation_audio_comparison.gd",
     "tests/city_creation_audio_comparison.gd.uid",
     "tests/creation_bundle_probe.gd",
@@ -1174,6 +1186,7 @@
     "tests/test_city_creation_craft_geometry.gd.uid",
     "tests/test_city_creation_craft_refresh.gd",
     "tests/test_city_creation_craft_refresh.gd.uid",
+    "tests/test_city_creation_creation_policy.gd",
     "tests/test_city_creation_curved_tram.gd",
     "tests/test_city_creation_curved_tram.gd.uid",
     "tests/test_city_creation_custom_color_mesh.gd",
@@ -1655,6 +1668,7 @@
     "tools/check_creation_courtyards_state.gd",
     "tools/check_creation_courtyards_state.gd.uid",
     "tools/check_creation_craft_batching.gd.uid",
+    "tools/check_creation_creation_policy_live.gd",
     "tools/check_creation_cue_grid_live.gd",
     "tools/check_creation_cue_grid_live.gd.uid",
     "tools/check_creation_curved_tram_live.gd",
@@ -2987,6 +3001,7 @@
     "文档/40_分阶段施工与验收.md",
     "文档/41_代码审计与两版取舍.md",
     "文档/42_整合基线与施工记录.md",
+    "文档/43_自由创作政策与版本化存档.md",
     "文档/Demo快速开始.md",
     "文档/README.md",
     "文档/code_artifact.md",
@@ -3128,6 +3143,10 @@
     "资源/音乐/轻量音色库说明.md"
   ],
   "omitted": {
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Icons/Book/Progression/Icon_Estate2_Rating_24px.png": [
+      71257,
+      "reference_payload_budget"
+    ],
     "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-models/sidecars/game/asset/Agent/Models/Animations/Male/Male_Idle_Work_Lean.json.gz": [
       71305,
       "reference_payload_budget"
