@@ -1473,6 +1473,7 @@
     "tools/check_creation_clockwork_prototypes_live.gd",
     "tools/check_creation_close_life_audio_live.gd",
     "tools/check_creation_closed_roads.gd",
+    "tools/check_creation_cloud.py",
     "tools/check_creation_cluster_choir_live.gd",
     "tools/check_creation_collection_live.gd",
     "tools/check_creation_collection_storage.gd",
