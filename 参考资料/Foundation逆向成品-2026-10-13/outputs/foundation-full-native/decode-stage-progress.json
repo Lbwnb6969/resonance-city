@@ -1,1 +1,0 @@
-{"stage":"decode_complete","processed":160598,"total":160598,"success":160598,"failed":0,"elapsed_seconds":155,"updated_utc":"2026-10-13T13:29:26.036445100Z","leaf_functions":5970,"ascii_labels":56285,"decoded_bytes":42699976,"calls":1095896,"ghidra_functions":166569,"instructions":10376735,"leaf_candidates":5982}

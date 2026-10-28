@@ -1,8 +1,0 @@
-public class AL_FoodStamp3x11_2 : AL_FoodStamp
-{
-	public override void Init()
-	{
-		isUnique = true;
-		ParseEditorCodes(AIBuildingBlockType.Food, "3,11:F,farm,0,0,1,1:F,farm,1,0,1,1:F,farm,2,0,1,1:F,farm,0,1,1,1:F,farm,1,1,1,1:F,farm,2,1,1,1:F,farm,0,2,1,1:F,farm,1,2,1,1:F,farm,2,2,1,1:F,0,3,1,1:F,1,3,1,1:F,2,3,1,1:F,0,4,1,1:F,1,4,1,1:F,2,4,1,1:F,0,5,1,1:F,well,1,5,1,1:F,2,5,1,1:F,0,6,1,1:F,1,6,1,1:F,2,6,1,1:F,0,7,1,1:F,1,7,1,1:F,2,7,1,1:F,farm,0,8,1,1:F,farm,1,8,1,1:F,farm,2,8,1,1:F,farm,0,9,1,1:F,farm,1,9,1,1:F,farm,2,9,1,1:F,farm,0,10,1,1:F,farm,1,10,1,1:F,farm,2,10,1,1");
-	}
-}

@@ -1,7 +1,0 @@
-﻿{
-	"ANALYTICS_POPUP": {
-		"ANALYTICS_POPUP_TITLE": "Funciones de análisis y privacidad",
-		"ANALYTICS_POPUP_MESSAGE": "Para ayudarnos a hacer de Foundation una magnífica experiencia de construcción de ciudades, nos gustaría que nos dieras permiso para recoger cierta información sobre tu hardware y tu forma de jugar al juego.\n\n Si aceptas, recogeremos datos únicamente para fines de análisis por parte de Polymorph Games. Nunca venderemos ni cederemos la información que recojamos a ninguna otra empresa o persona. En ningún caso recogeremos información personal, como tu nombre, dirección, correo electrónico o similares.\n\nLa información que recojamos tendrá que ver con la configuración de tu ordenador (la versión del sistema operativo, la marca del procesador, la marca de la tarjeta gráfica, la cantidad de memoria RAM, etc.) y tu comportamiento como jugador (la duración de tus sesiones de juego, las edificaciones que construyes, el orden en el que lo haces, el tamaño de tu villa, tu uso de las funciones de embellecimiento, etc.).",
-		"ANALYTICS_POPUP_INFO_SENT_ONCE_MESSAGE": "¿Nos permitirías enviar la siguiente información una única vez?"
-	}
-}

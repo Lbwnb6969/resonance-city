@@ -1,9 +1,0 @@
-{
-  "command": "idalib-mcp",
-  "args": [
-    "--stdio",
-    "--max-workers",
-    "1"
-  ],
-  "mode": "headless"
-}

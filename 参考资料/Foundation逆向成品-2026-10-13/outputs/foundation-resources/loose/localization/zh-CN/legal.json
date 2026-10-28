@@ -1,7 +1,0 @@
-﻿{
-	"ANALYTICS_POPUP": {
-		"ANALYTICS_POPUP_TITLE": "分析和隐私",
-		"ANALYTICS_POPUP_MESSAGE": "为了把《Foundation》的城市建设体验越做越好，我们希望能征得您的许可，获取一些与硬件和游戏方式有关的信息。\n\n如同意，我们仅会将收集到的数据应用到Polymorph Games的各项分析中，绝不会将这些信息出售或泄露给任何公司或个人。我们绝不会收集姓名、电子邮件、地址等个人信息。\n\n收集的数据包括计算机配置（如操作系统版本、CPU品牌、GPU品牌、内存大小等）和玩家行为（如每次游玩时间、建造了哪些建筑、建造顺序、村庄大小、美观度道具使用等）。",
-		"ANALYTICS_POPUP_INFO_SENT_ONCE_MESSAGE": "是否允许我们发送一次以下信息？"
-	}
-}

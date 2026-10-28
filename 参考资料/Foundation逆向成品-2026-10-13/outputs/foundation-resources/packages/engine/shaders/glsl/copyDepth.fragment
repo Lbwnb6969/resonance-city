@@ -1,8 +1,0 @@
-uniform sampler2D uniTextureDepth;
-in vec4 POSITION;
-
-void main()
-{
-	float DEPTH = texture(uniTextureDepth, POSITION.xy * 0.5 + 0.5).x;
-	gl_FragDepth = DEPTH;
-}

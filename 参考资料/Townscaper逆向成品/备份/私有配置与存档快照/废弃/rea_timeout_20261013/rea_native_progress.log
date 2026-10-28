@@ -1,8 +1,0 @@
-CALL open_binary
-{"result": {"path": "D:\\SteamLibrary\\steamapps\\common\\Townscaper\\GameAssembly.dll", "format": "pe", "kind": "executable", "sha256": "4aa99a8deaa9a322026094186ed283020a8b6d897f2777dbb330ebf0ca89532c", "architecture": "x86"}}
-CALL analyze_function
-{"address": "0x103f7a90", "keys": ["error"], "error": {"code": "provider_timeout", "category": "timeout", "message": "Analysis took too long. Try a smaller request, then run `rea doctor` if it continues.", "retryable": true, "remediation": {"action": "Analysis took too long. Try a smaller request, then run `rea doctor` if it continues."}, "details": {"operation": "analyze_function", "timeout_ms": 330000}}}
-CALL export_evidence_bundle
-{"result": {"path": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-12\\new-chat-2\\outputs\\townscaper_rea_evidence_v2.json", "bytes": 105, "records": 0, "unknowns": 0}}
-CALL close_binary
-{"result": null}

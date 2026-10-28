@@ -1,9 +1,0 @@
-in vec3 attribPosition;
-uniform mat4 uniMvp;
-out vec4 SCREEN_COORD;
-
-void main()
-{
-	SCREEN_COORD = uniMvp * vec4(attribPosition, 1.0);
-	gl_Position = SCREEN_COORD;
-}

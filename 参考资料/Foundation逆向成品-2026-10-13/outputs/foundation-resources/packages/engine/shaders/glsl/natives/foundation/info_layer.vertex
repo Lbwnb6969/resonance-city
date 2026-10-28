@@ -1,9 +1,0 @@
-in vec2 attribPosition;
-in vec2 attribUv;
-out vec2 varUv;
-
-void main()
-{
-	varUv = attribUv;
-	gl_Position = vec4(attribPosition, 0.0, 1.0);
-}

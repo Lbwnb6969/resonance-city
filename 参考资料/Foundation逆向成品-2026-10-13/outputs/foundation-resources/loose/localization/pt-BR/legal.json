@@ -1,7 +1,0 @@
-﻿{
-	"ANALYTICS_POPUP": {
-		"ANALYTICS_POPUP_TITLE": "Análise de Dados e Privacidade",
-		"ANALYTICS_POPUP_MESSAGE": "Para tornar Foundation uma experiência excelente de construção de cidades, gostaríamos da sua permissão para coletar algumas informações sobre seu hardware e sobre como você joga.\n\nSe aceitar, nós só coletaremos dados para os propósitos analíticos da Polymorph Games. Nunca vamos vender ou ceder informações coletadas para outras empresas ou pessoas. NÃO coletaremos informações pessoais, como nomes, e-mails, endereços etc.\n\nOs dados coletados incluem as configurações do computador (como versão do Sistema Operacional, marca do CPU, marca da GPU, quantidade de RAM etc.) e o comportamento do jogador (como duração da sessão, quais edifícios são criados, em qual ordem, tamanho do vilarejo, uso de Embelezamento etc.).",
-		"ANALYTICS_POPUP_INFO_SENT_ONCE_MESSAGE": "Você nos permite enviar as seguintes informações uma única vez?"
-	}
-}

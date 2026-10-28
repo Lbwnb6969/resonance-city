@@ -1,6 +1,14 @@
 # Construction repository: user exclusions and rebuildable large caches.
+/AI资料/
+/UI/
+/备份/
 /废弃/
+/新文档/
 /资产/
 /验证记录/
 /.godot/
+/.mcp.json
+/tools/**/*.gd.uid
+/tests/**/*.gd.uid
+**/__pycache__/
 /资源/音乐/城市同步声部库.res

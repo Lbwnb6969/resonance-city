@@ -1,9 +1,0 @@
-{
-  "status": "cancelled-by-user",
-  "scope": "startup/main-menu observation only",
-  "launch_attempt": "sky.launch_app explicit installed foundation.exe path",
-  "reported_event": "Computer Use was stopped by the user with the physical Escape key",
-  "followup": "No further Computer Use calls after cancellation",
-  "process_snapshot_after_cancellation": "No foundation.exe process returned by Win32_Process query",
-  "claims": "No runtime execution/UI/Steam/DLC activation result is established."
-}
