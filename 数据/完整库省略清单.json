@@ -407,6 +407,7 @@
     "scripts/ui/city_creation_gallery.gd.uid",
     "scripts/ui/city_creation_gallery_panel.gd",
     "scripts/ui/city_creation_gallery_panel.gd.uid",
+    "scripts/ui/city_creation_ground_landmark_tool.gd",
     "scripts/ui/city_creation_guidance.gd",
     "scripts/ui/city_creation_guidance.gd.uid",
     "scripts/ui/city_creation_guide_panel.gd",
@@ -656,6 +657,7 @@
     "scripts/visual/city_creation_pending_mesh.gd.uid",
     "scripts/visual/city_creation_pending_modules.gd",
     "scripts/visual/city_creation_pending_modules.gd.uid",
+    "scripts/visual/city_creation_placed_landmark_mesh.gd",
     "scripts/visual/city_creation_prepared_frontages.gd",
     "scripts/visual/city_creation_promenade.gd",
     "scripts/visual/city_creation_promenade.gd.uid",
@@ -979,6 +981,7 @@
     "scripts/world/city_creation_organic_form.gd",
     "scripts/world/city_creation_passage.gd",
     "scripts/world/city_creation_passage.gd.uid",
+    "scripts/world/city_creation_placed_landmarks.gd",
     "scripts/world/city_creation_poem_features.gd",
     "scripts/world/city_creation_poem_features.gd.uid",
     "scripts/world/city_creation_poem_sites.gd",
@@ -1359,6 +1362,7 @@
     "tests/test_city_creation_phase_seven.gd.uid",
     "tests/test_city_creation_phrase_tide.gd",
     "tests/test_city_creation_phrase_tide.gd.uid",
+    "tests/test_city_creation_placed_landmarks.gd",
     "tests/test_city_creation_play.gd",
     "tests/test_city_creation_play.gd.uid",
     "tests/test_city_creation_poems.gd",
@@ -1886,6 +1890,7 @@
     "tools/check_creation_phase_two.gd.uid",
     "tools/check_creation_phonograph_live.gd",
     "tools/check_creation_phonograph_live.gd.uid",
+    "tools/check_creation_placed_landmarks_live.gd",
     "tools/check_creation_plateau_live.gd",
     "tools/check_creation_plateau_live.gd.uid",
     "tools/check_creation_pluck.gd",
@@ -3038,6 +3043,7 @@
     "文档/45_单主题谱材与连续换流.md",
     "文档/46_三核心风格与六段城市乐章.md",
     "文档/47_参考分析与原创谱材接口.md",
+    "文档/48_传世地标与真实留白.md",
     "文档/Demo快速开始.md",
     "文档/README.md",
     "文档/code_artifact.md",
@@ -3234,6 +3240,10 @@
     "资源/音乐/城市同步声部库.res": [
       277607007,
       "large_rebuildable_or_reference_payload"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/Buildings/Props/Kingdom/Modest/Model/Castle_Modest_Deco.fbx.prefab.meta": [
+      69089,
+      "reference_payload_budget"
     ],
     "参考资料/Tiny-Glade逆向成品-v2/reconstruction/shaders-compiled/f3b6844cad6c179a721924944d568f8cd0144c364b160b86ee8c7165ae916bc1.spv": [
       69124,
