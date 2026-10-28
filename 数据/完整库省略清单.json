@@ -381,6 +381,7 @@
     "scripts/ui/city_creation_city_whispers.gd.uid",
     "scripts/ui/city_creation_compact_journal.gd",
     "scripts/ui/city_creation_compact_journal.gd.uid",
+    "scripts/ui/city_creation_compact_roads.gd",
     "scripts/ui/city_creation_conductor_gesture.gd",
     "scripts/ui/city_creation_conductor_gesture.gd.uid",
     "scripts/ui/city_creation_copy.gd",
@@ -1655,6 +1656,7 @@
     "tools/check_creation_color_resize_live.gd",
     "tools/check_creation_commissions_live.gd",
     "tools/check_creation_commissions_live.gd.uid",
+    "tools/check_creation_compact_roads_live.gd",
     "tools/check_creation_concert_relay_live.gd",
     "tools/check_creation_concert_relay_live.gd.uid",
     "tools/check_creation_conductor_parade_live.gd",
@@ -3002,6 +3004,7 @@
     "文档/41_代码审计与两版取舍.md",
     "文档/42_整合基线与施工记录.md",
     "文档/43_自由创作政策与版本化存档.md",
+    "文档/44_道路紧凑控件与输入验证.md",
     "文档/Demo快速开始.md",
     "文档/README.md",
     "文档/code_artifact.md",
@@ -3143,146 +3146,6 @@
     "资源/音乐/轻量音色库说明.md"
   ],
   "omitted": {
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Icons/Book/Progression/Icon_Estate2_Rating_24px.png": [
-      71257,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-models/sidecars/game/asset/Agent/Models/Animations/Male/Male_Idle_Work_Lean.json.gz": [
-      71305,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/decoded/dlc/agriculture/audio/148295950.wav": [
-      71306,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/dlc__agriculture__content/GuiSettings/Icons/Needs/Icon_Need_FestiveEntertainement.png": [
-      71341,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/original/audio/core/829249511.wem": [
-      71346,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/decoded/audio/core/498317376.wav": [
-      71352,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/dlc__agriculture__content/GuiSettings/Icons/Resources/Icon_Resource_HarvestHam.png": [
-      71366,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/decoded/audio/core/609997914.wav": [
-      71464,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Icons/Book/Progression/Unlockables/Icon_Unlockable_Beautification_256px.png": [
-      71504,
-      "reference_payload_budget"
-    ],
-    "参考资料/Townscaper逆向成品/outputs/townscaper_shader_programs/unity_builtin_extra__64__Hidden_Internal-ScreenSpaceShadows__p4.decompressed.bin": [
-      71588,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/original/audio/core/440004418.wem": [
-      71627,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Illustrations/Portraits/Portrait_Male_PilgrimSoldier.png": [
-      71670,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Icons/Book/Progression/Unlockables/Icon_Unlockable_Keep_256px.png": [
-      71714,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/original/audio/core/201566037.wem": [
-      71721,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-models/sidecars/game/asset/Agent/Models/Animations/Male/Male_WalkInjury.json.gz": [
-      71763,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/dlc__agriculture__content/Buildings/Props/Model/AGR_GPI_ArcheryRange.fbx.prefab.meta": [
-      71828,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-models/sidecars/game/asset/Agent/Models/Animations/Male/Male_SpearAttack01.json.gz": [
-      71918,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Illustrations/Portraits/Portrait_Male_GuestPriest.png": [
-      71918,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Icons/Resources/Icon_Resource_MonasticGoldenGruel_256px.png": [
-      71948,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/mod-examples-complete/Example Mithril Factory/models/Smoke.png": [
-      72025,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Icons/Resources/HouseRequirements/Icon_PavedRoads.png": [
-      72032,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/Environment/Sky Box/Sunset/Sun Set HDR EnvMap.envmap.prefiltered-0-1.meta": [
-      72046,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-textures/standard-images/game/asset/Environment/Sky Box/Sunset/Sun Set HDR EnvMap.envmap.prefiltered-0-1.meta.tiff": [
-      72046,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/dlc__agriculture__content/GuiSettings/Shared Textures/Illustrations/Portraits/Portrait_Female_Tambourine_Minstrel_1.png": [
-      72077,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/original/audio/core/217626136.wem": [
-      72088,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-models/sidecars/dlc__agriculture__content/Agent/Characters/Animations/Hen/A_AGR_Hen_Idle_01.json.gz": [
-      72096,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-audio-recovered/decoded/audio/core/869954948.wav": [
-      72104,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-models/sidecars/game/asset/Agent/Models/Animations/Horse/Horse_DownhillWalk.json.gz": [
-      72175,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Icons/Book/Progression/Privileges/Icon_Privilege_Clergy_07.png": [
-      72175,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Illustrations/Portraits/Portrait_Male_EnvoyFisher.png": [
-      72227,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-models/glb/game/asset/Buildings/Workplaces/Jeweler Workshop/Model/JewelerWorkshop_CS_Tex_Metal_Ornements_01A_Diff.png": [
-      72242,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-models/glb/game/asset/Buildings/Workplaces/Jeweler Workshop/Model/JewelerWorkshop_Tex_Metal_Ornements_01A_Diff.png": [
-      72242,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-textures/png/game/asset/Art/Textures/Shared Textures/Revamp/Gen_Texture/Props/Tex_Metal_Ornements_01A_Diff.png.dxt.meta.png": [
-      72242,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/dlc__agriculture__content/GuiSettings/Icons/Resources/Icon_Resource_Grease.png": [
-      72247,
-      "reference_payload_budget"
-    ],
-    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/Buildings/Gate/Model/Wall_Comm_Modest_Gate_01A_CS.fbx.prefab.meta": [
-      72253,
-      "reference_payload_budget"
-    ],
     "参考资料/Foundation逆向成品-2026-10-13/analysis-databases/FoundationFull.rep/idata/00/~00000000.db/db.4.gbf": [
       660422656,
       "large_rebuildable_or_reference_payload"
@@ -3338,6 +3201,22 @@
     "资源/音乐/城市同步声部库.res": [
       268926233,
       "large_rebuildable_or_reference_payload"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-models/glb/game/asset/Buildings/Workplaces/Jeweler Workshop/Model/JewelerWorkshop_Tex_Metal_Ornements_01A_Diff.png": [
+      72242,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-textures/png/game/asset/Art/Textures/Shared Textures/Revamp/Gen_Texture/Props/Tex_Metal_Ornements_01A_Diff.png.dxt.meta.png": [
+      72242,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/dlc__agriculture__content/GuiSettings/Icons/Resources/Icon_Resource_Grease.png": [
+      72247,
+      "reference_payload_budget"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/Buildings/Gate/Model/Wall_Comm_Modest_Gate_01A_CS.fbx.prefab.meta": [
+      72253,
+      "reference_payload_budget"
     ],
     "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/dlc__agriculture__content/GuiSettings/Icons/Generic/Icon_Animal_Piglet.png": [
       72256,
