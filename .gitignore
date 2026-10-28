@@ -1,4 +1,8 @@
 # Construction repository: user exclusions and rebuildable large caches.
+/.mypy_cache/
+/.pytest_cache/
+/.ruff_cache/
+/.venv/
 /AI资料/
 /UI/
 /备份/
