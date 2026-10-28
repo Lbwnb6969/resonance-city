@@ -725,6 +725,7 @@
     "scripts/visual/city_creation_stair_contact.gd.uid",
     "scripts/visual/city_creation_stepping.gd",
     "scripts/visual/city_creation_stepping.gd.uid",
+    "scripts/visual/city_creation_street_furniture_footprints.gd",
     "scripts/visual/city_creation_street_rhythm.gd",
     "scripts/visual/city_creation_street_wonders.gd",
     "scripts/visual/city_creation_street_wonders.gd.uid",
@@ -1474,6 +1475,7 @@
     "tests/test_city_creation_stair_surface.gd.uid",
     "tests/test_city_creation_state.gd",
     "tests/test_city_creation_state.gd.uid",
+    "tests/test_city_creation_street_furniture_footprints.gd",
     "tests/test_city_creation_street_height_dependencies.gd",
     "tests/test_city_creation_street_height_dependencies.gd.uid",
     "tests/test_city_creation_street_rhythm.gd",
@@ -1996,6 +1998,7 @@
     "tools/check_creation_stepping.gd.uid",
     "tools/check_creation_stepping_preview.gd",
     "tools/check_creation_stepping_preview.gd.uid",
+    "tools/check_creation_street_furniture_contact_live.gd",
     "tools/check_creation_street_rhythm_live.gd",
     "tools/check_creation_street_wonders_live.gd",
     "tools/check_creation_street_wonders_live.gd.uid",
@@ -3061,13 +3064,18 @@
     "文档/47_参考分析与原创谱材接口.md",
     "文档/48_传世地标与真实留白.md",
     "文档/49_灵感长椅与收藏循环.md",
+    "文档/50_空间驱动城建音乐与整合排期修订.md",
+    "文档/52_画面连续性修补与证据.md",
     "文档/Demo快速开始.md",
     "文档/README.md",
     "文档/code_artifact.md",
     "文档/参考索引.md",
     "文档/来源/20261028_共鸣之城_整合设计与施工.md",
+    "文档/来源/20261028_去模拟人生化_回归城建音乐本源与M82_M86终极大师设计总案.md",
+    "文档/来源/20261028_四大功能区与去模拟人生化_50_m82_m86.md",
     "文档/来源/20261028_整合前_AI_START_HERE.txt",
     "文档/来源/20261028_整合前_PROJECT.txt",
+    "文档/来源/20261028_音乐与城建深度重审_51.md",
     "文档/许可记录/CityKits/commercial/License.txt",
     "文档/许可记录/CityKits/commercial/official-page.html",
     "文档/许可记录/CityKits/commercial/package.json",
@@ -3257,6 +3265,10 @@
     "资源/音乐/城市同步声部库.res": [
       277607007,
       "large_rebuildable_or_reference_payload"
+    ],
+    "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Icons/Book/Progression/Privileges/Icon_Privilege_Clergy_01.png": [
+      69059,
+      "reference_payload_budget"
     ],
     "参考资料/Foundation逆向成品-2026-10-13/outputs/foundation-resources/packages/game/asset/GuiSettings/Shared Textures/Icons/Book/Progression/Unlockables/Icon_Unlockable_Boar_256px.png": [
       69076,
