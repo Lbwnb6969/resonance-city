@@ -14,8 +14,7 @@
     "验证记录"
   ],
   "excluded_files": [
-    ".mcp.json",
-    "文档/提案/resonance_city_v6_整体设计与施工总案.md"
+    ".mcp.json"
   ],
   "generated_uid_directories": [
     "tools",
@@ -433,6 +432,8 @@
     "scripts/audio/city_creation_score_register.gd.uid",
     "scripts/audio/city_creation_score_sample_routing.gd",
     "scripts/audio/city_creation_score_sample_routing.gd.uid",
+    "scripts/audio/city_creation_score_solo.gd",
+    "scripts/audio/city_creation_score_solo.gd.uid",
     "scripts/audio/city_creation_smooth_variation.gd",
     "scripts/audio/city_creation_smooth_variation.gd.uid",
     "scripts/audio/city_creation_spatial.gd",
@@ -1493,6 +1494,7 @@
     "tests/test_city_creation_score_harmony.gd",
     "tests/test_city_creation_score_modifiers.gd",
     "tests/test_city_creation_score_sample.gd",
+    "tests/test_city_creation_score_solo.gd",
     "tests/test_city_creation_season_stamps.gd",
     "tests/test_city_creation_service_routes.gd",
     "tests/test_city_creation_shore.gd",
@@ -1810,6 +1812,7 @@
     "tools/check_creation_score_harmony_live.gd",
     "tools/check_creation_score_modifiers_live.gd",
     "tools/check_creation_score_sample_live.gd",
+    "tools/check_creation_score_solo_live.gd",
     "tools/check_creation_season_stamps_live.gd",
     "tools/check_creation_shared_wind_live.gd",
     "tools/check_creation_shore_clusters_live.gd",
