@@ -14,7 +14,8 @@
     "验证记录"
   ],
   "excluded_files": [
-    ".mcp.json"
+    ".mcp.json",
+    "文档/提案/resonance_city_v6_整体设计与施工总案.md"
   ],
   "generated_uid_directories": [
     "tools",
@@ -394,6 +395,8 @@
     "scripts/audio/city_creation_life_sparkle.gd.uid",
     "scripts/audio/city_creation_long_form.gd",
     "scripts/audio/city_creation_long_form.gd.uid",
+    "scripts/audio/city_creation_master_score.gd",
+    "scripts/audio/city_creation_master_score.gd.uid",
     "scripts/audio/city_creation_music.gd",
     "scripts/audio/city_creation_music.gd.uid",
     "scripts/audio/city_creation_music_catalog.gd",
@@ -1418,6 +1421,7 @@
     "tests/test_city_creation_local_service_cache.gd",
     "tests/test_city_creation_long_form.gd",
     "tests/test_city_creation_market_frontages.gd",
+    "tests/test_city_creation_master_score.gd",
     "tests/test_city_creation_matinee.gd",
     "tests/test_city_creation_meadow_clumps.gd",
     "tests/test_city_creation_meadow_drifts.gd",
@@ -1721,6 +1725,7 @@
     "tools/check_creation_manuscript_hud_live.gd",
     "tools/check_creation_manuscript_scroll_live.gd",
     "tools/check_creation_market_frontages_live.gd",
+    "tools/check_creation_master_score_live.gd",
     "tools/check_creation_matinee.gd",
     "tools/check_creation_meadow_art.gd",
     "tools/check_creation_meadow_carpet.gd",
@@ -2728,6 +2733,7 @@
     "数据/庭院河湾样例.json",
     "数据/建筑街景样例.json",
     "数据/柱廊河湾样例.json",
+    "数据/母曲/田园晨风_master2.json",
     "数据/汀步河湾样例.json",
     "数据/灯街河湾样例.json",
     "数据/睡莲池塘样例.json",
