@@ -43,8 +43,10 @@ def main():
                               '--script', script, '--', '--isolated-session']))
     if args.geometry:
         for name, extra in [('roof_valleys', ['--verify-valleys']),
+                            ('roof_drainage', ['--verify-drainage']),
                             ('junction_grades', ['--verify-grades']),
-                            ('bridge_surface', []), ('truss_bridge', []), ('bridge_grades', [])]:
+                            ('bridge_surface', []), ('truss_bridge', []), ('bridge_grades', []),
+                            ('bridge_banks', ['--verify-banks'])]:
             checks.append((name, [godot, '--headless', '--path', '.', '--audio-driver', 'Dummy',
                                   '--script', 'tests/test_city_creation_' + name + '.gd',
                                   '--', '--isolated-session', *extra]))
