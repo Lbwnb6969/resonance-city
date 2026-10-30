@@ -1735,6 +1735,7 @@
     "tools/check_creation_flagship_live.gd",
     "tools/check_creation_free_finish_access_live.gd",
     "tools/check_creation_free_growth_opening_live.gd",
+    "tools/check_creation_free_growth_presentation_live.gd",
     "tools/check_creation_free_landmark_access_live.gd",
     "tools/check_creation_free_mode_access_live.gd",
     "tools/check_creation_free_sample_access_live.gd",
