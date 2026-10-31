@@ -1847,6 +1847,7 @@
     "tools/check_creation_meadow_color_art.gd",
     "tools/check_creation_meadow_drifts_art.gd",
     "tools/check_creation_meadow_gait_live.gd",
+    "tools/check_creation_meadow_light_live.gd",
     "tools/check_creation_meadow_palette_live.gd",
     "tools/check_creation_microclimate_live.gd",
     "tools/check_creation_modern_architecture.gd",
