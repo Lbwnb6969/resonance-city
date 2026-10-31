@@ -1757,6 +1757,8 @@
     "tools/check_creation_edit_latency.gd",
     "tools/check_creation_emergence_live.gd",
     "tools/check_creation_entry_height_live.gd",
+    "tools/check_creation_environment_final_live.gd",
+    "tools/check_creation_environment_groups_live.gd",
     "tools/check_creation_era_preservation_live.gd",
     "tools/check_creation_era_streets_live.gd",
     "tools/check_creation_examples.gd",
