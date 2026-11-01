@@ -1416,6 +1416,8 @@
     "tests/test_city_creation_clockwork_landmarks.gd",
     "tests/test_city_creation_clockwork_prototypes.gd",
     "tests/test_city_creation_close_life_audio.gd",
+    "tests/test_city_creation_comfort_p1.gd",
+    "tests/test_city_creation_comfort_p3.gd",
     "tests/test_city_creation_comfort_slice.gd",
     "tests/test_city_creation_comfort_variants.gd",
     "tests/test_city_creation_commissions.gd",
@@ -1666,6 +1668,8 @@
     "tools/analyze_creation_continuity.py",
     "tools/analyze_creation_master.py",
     "tools/audit_city_references.py",
+    "tools/audit_creation_comfort_p1_pcm.py",
+    "tools/audit_creation_comfort_p3_pcm.py",
     "tools/audit_creation_workspace.py",
     "tools/bake_creation_life_foley.py",
     "tools/bake_creation_music_bank.gd",
@@ -1746,6 +1750,8 @@
     "tools/check_creation_collection_live.gd",
     "tools/check_creation_collection_storage.gd",
     "tools/check_creation_color_resize_live.gd",
+    "tools/check_creation_comfort_p1_live.gd",
+    "tools/check_creation_comfort_p3_live.gd",
     "tools/check_creation_comfort_slice_live.gd",
     "tools/check_creation_commissions_live.gd",
     "tools/check_creation_compact_roads_live.gd",
@@ -2814,7 +2820,6 @@
     "参考资料/Tiny-Glade逆向成品-v2/tools/roof_gpu_reference.py",
     "参考资料/Tiny-Glade逆向成品-v2/tools/roof_lift_runtime.py",
     "参考资料/Tiny-Glade逆向成品-v2/tools/roof_math.py",
-    "参考资料/Tiny-Glade逆向成品-v2/tools/roof_rectangle_lifted.py",
     "参考资料/Tiny-Glade逆向成品-v2/tools/roof_sparse_reference.py",
     "参考资料/Tiny-Glade逆向成品-v2/tools/roof_state_preview.py",
     "参考资料/Tiny-Glade逆向成品-v2/tools/roof_tile_oracle.py",
@@ -2917,9 +2922,13 @@
     "数据/建筑街景样例.json",
     "数据/柱廊河湾样例.json",
     "数据/母曲/田园晨风_arrangement_ab1.json",
+    "数据/母曲/田园晨风_comfort_p0_p1_p2_b1.json",
+    "数据/母曲/田园晨风_comfort_p0_p1_p2_c1.json",
     "数据/母曲/田园晨风_comfort_p0_p2_c1.json",
     "数据/母曲/田园晨风_comfort_p0_p2_v1.json",
     "数据/母曲/田园晨风_comfort_p0_p2_v2.json",
+    "数据/母曲/田园晨风_comfort_p0_p3_b1.json",
+    "数据/母曲/田园晨风_comfort_p0_p3_c1.json",
     "数据/母曲/田园晨风_master2.json",
     "数据/母曲/田园晨风_orchestration_v3.json",
     "数据/汀步河湾样例.json",
@@ -281572,7 +281581,7 @@
       "reference_bulk_data_or_media_local_original"
     ],
     "资源/音乐/城市同步声部库.res": [
-      277607101,
+      277607047,
       "large_rebuildable_or_reference_payload"
     ]
   }
