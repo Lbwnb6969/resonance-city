@@ -1942,6 +1942,7 @@
     "tools/check_creation_pluck.gd",
     "tools/check_creation_progression_epoch_live.gd",
     "tools/check_creation_progression_pause_live.gd",
+    "tools/check_creation_progression_roles_live.gd",
     "tools/check_creation_progression_ui_live.gd",
     "tools/check_creation_promenade.gd",
     "tools/check_creation_prosperity.gd",
