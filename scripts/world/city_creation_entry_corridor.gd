@@ -3,9 +3,10 @@ extends RefCounted
 const Frame=preload("res://scripts/world/city_creation_house_frame.gd")
 const Obstacles=preload("res://scripts/world/city_creation_public_space_obstacles.gd")
 const Roads=preload("res://scripts/world/city_creation_road_heights.gd")
+const EntryObstacles=preload("res://scripts/world/city_creation_entry_obstacles.gd")
 const HALF_WIDTH:=.35
 const SPACING:=.04
-static func assess(city:RefCounted,house:Dictionary,entry:Dictionary,target:Vector2,road:Dictionary,surface:Callable)->Dictionary:
+static func assess(city:RefCounted,house:Dictionary,entry:Dictionary,target:Vector2,road:Dictionary,surface:Callable,prepared_obstacles:Variant=null)->Dictionary:
 	var normal:=Frame.normal(entry)
 	var start:Vector2=entry.wall_at+normal*.18
 	var result:={"ok":false,"reason":"street_target_missing","half_width":HALF_WIDTH,"from":start,"entry_at":entry.at,"street_at":target,"source_ids":[house.id,entry.cell_id,road.id],"samples":0,"max_rise":0.,"max_grade":0.}
@@ -14,7 +15,7 @@ static func assess(city:RefCounted,house:Dictionary,entry:Dictionary,target:Vect
 	var path:Array[Vector2]=[start,entry.at]
 	if target.distance_to(entry.at)>.00001:path.append(target)
 	result.path=PackedVector2Array(path);result.polygons=[]
-	var obstacles:=Obstacles.collect(city)
+	var obstacles:Array=prepared_obstacles.along(path,HALF_WIDTH) if prepared_obstacles is EntryObstacles else prepared_obstacles if prepared_obstacles is Array else Obstacles.collect(city)
 	for segment in range(1,path.size()):
 		var from:Vector2=path[segment-1];var to:Vector2=path[segment]
 		var direction:Vector2=(to-from).normalized();var tangent:=Vector2(-direction.y,direction.x)

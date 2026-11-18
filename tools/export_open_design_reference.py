@@ -1,8 +1,10 @@
 """Export current text-only Gemini design background without overwriting old batches."""
 from pathlib import Path
-import datetime, hashlib, json, subprocess
+import argparse, datetime, hashlib, json, subprocess
 ROOT = Path(__file__).resolve().parents[1]
-DEST = ROOT.parent / 'AI参考包'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--out-dir', type=Path, default=ROOT.parent / 'AI参考包')
+DEST = parser.parse_args().out_dir.resolve()
 stamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 out = DEST / ('共鸣之城_全系统开放设计_' + stamp)
 out.mkdir(parents=True, exist_ok=False)
@@ -27,7 +29,12 @@ docs = ROOT/'文档'
 base=[ROOT/n for n in ['AI_START_HERE.md','PROJECT.md','AGENTS.md','project.godot']]
 for pattern in ['54_*.md','56_*.md','59_*.md','60_*.md','61_*.md','62_*.md','63_*.md','64_*.md','65_*.md','66_*.md','67_*.md','68_*.md','69_*.md','70_*.md','工程维护.md','全系统开放设计委托_20261103.md']:
     base.extend(docs.glob(pattern))
-base.append(docs/'音乐制作批次/Lyria35_施工AI音乐接入手册_20261103.md')
+base.extend([docs/'音乐制作批次/Lyria35_施工AI音乐接入手册_20261103.md',
+             docs/'专题B_音乐系统与音乐资产生产设计案_工程校准与曲库生产版_20261103.md',
+             docs/'Gemini音乐补曲设计提示词_20261103.md',
+             docs/'施工模板/音乐制作交付单.md',
+             ROOT/'数据/音乐制作/README.md',
+             ROOT/'数据/音乐制作/游戏音乐施工包_20261103.json'])
 volume('01_当前背景与有效设计.txt',base)
 for index,folder in enumerate(['audio','world','visual','ui','city','proposals'],2):
     paths=[p for p in (ROOT/'scripts'/folder).rglob('*') if p.suffix in ['.gd','.gdshader']]
@@ -52,7 +59,8 @@ volume('09_用户原音乐提示词_历史参考需校正.txt',[Path('C:/Users/A
 
 ## 按任务上传
 - 城建/美术：00、01、03_world相关分卷、04_visual、08。
-- 音乐：00、01、02_audio、08、09；需空间实现再补03_world。
+- 音乐：00、01（已含专题B、精简完整新曲委托、69/70、交付模板与现用接入手册）、02_audio和08；09仅追溯历史，不作为现行生成输入。需空间实现再补03_world。
+- 当前音乐要求：简单城稀疏背景、零领唱允许，不起播满编；用户仅文字生成完整新曲，不上传旧曲修改。约16条可选短提示词不代表必须全生产，不锁统一BPM/调性、不保证纯净四层或跨曲叠轨。技术筛选后先本期隔离接入，集中Play Test，正式采用仍需听评；旧尖薄合成曲不作正式默认或自动回退。
 - 成长/居民：00、01、03_world、05_ui、08。
 - UI/作品：00、01、05_ui，持久化与状态补03_world。
 代码分卷保留原路径，可先按函数名搜索；不要假称读过未上传分卷。

@@ -80,8 +80,16 @@ static func for_cell(house: Dictionary,cell: Dictionary,points: Array,width: flo
 
 static func for_house(house: Dictionary,roads: Array) -> Array[Dictionary]:
 	var result: Array[Dictionary]=[]
+	if house.cells.is_empty():return result
+	var bounds:=Frame.house_bounds(house);var nearby:Array=[]
+	for road:Dictionary in roads:
+		if road.points.size()<2:continue
+		var road_bounds:=Rect2(Vector2(road.points[0][0],road.points[0][1]),Vector2.ZERO)
+		for point:Array in road.points:road_bounds=road_bounds.expand(Vector2(point[0],point[1]))
+		# Only discard wholly separated roads; exact clipping and pier checks stay below.
+		if bounds.intersects(road_bounds.grow(float(road.width)*.5+.0001),true):nearby.append(road)
 	for cell: Dictionary in house.cells:
-		for road: Dictionary in roads:
+		for road: Dictionary in nearby:
 			var record := for_cell(house,cell,road.points,float(road.width),str(road.get("id","")))
 			if record.is_empty(): continue
 			var merged := false

@@ -1,6 +1,7 @@
 extends RefCounted
 ## v1: a private wet slip, twin real piers and a shore-side house. No earned perks.
 const ID:="creek_boathouse"
+const Roof=preload("res://scripts/world/city_creation_boathouse_roof_pitch.gd")
 const VERSION:=1
 const EXTENT:=2.25
 const Deck=preload("res://scripts/world/city_creation_tea_deck_plan.gd")
@@ -21,7 +22,7 @@ static func for_house(city:RefCounted,house:Dictionary)->Dictionary:
 		if cell.kind!="room" or int(cell.level)!=0:continue
 		for side:Vector2i in SIDES:
 			var normal:=Frame.direction(house,Vector2(side),cell)
-			var plan:={"version":VERSION,"house_id":str(house.get("id","preview")),"cell_id":str(cell.id),"side":side,"wall":Frame.center(house,cell)+normal*.9,"normal":normal,"tangent":Vector2(normal.y,-normal.x),"top":top,"reserved":Rect2(-1.15,0.,2.3,EXTENT),"floors":[Rect2(-1.,0.,.40,2.),Rect2(.60,0.,.40,2.),Rect2(-1.,0.,2.,.28)]}
+			var plan:={"version":VERSION,"house_id":str(house.get("id","preview")),"cell_id":str(cell.id),"side":side,"wall":Frame.center(house,cell)+normal*.9,"normal":normal,"tangent":Vector2(normal.y,-normal.x),"top":top,"roof_clearance":Roof.clearance(house),"reserved":Rect2(-1.15,0.,2.3,EXTENT),"floors":[Rect2(-1.,0.,.40,2.),Rect2(.60,0.,.40,2.),Rect2(-1.,0.,2.,.28)]}
 			if not _clear(city,house,plan):continue
 			var outline:PackedVector2Array=Frame.corners(plan.floors[2])
 			for i in range(2):outline=Geometry2D.merge_polygons(outline,Frame.corners(plan.floors[i]))[0]
@@ -42,10 +43,10 @@ static func _clear(city:RefCounted,source:Dictionary,plan:Dictionary)->bool:
 		if str(house.id)==str(source.get("id","preview")):continue
 		for cell:Dictionary in house.cells:
 			var low:=float(house.get("base_y",0.))+int(cell.level)*1.7
-			if low>=float(plan.top)+2.3 or low+1.7<=float(city.Terrain.WATER_LEVEL)-.10:continue
+			if low>=float(plan.top)+float(plan.roof_clearance) or low+1.7<=float(city.Terrain.WATER_LEVEL)-.10:continue
 			if Frame.boxes_overlap(footprint,Frame.footprint(house,cell,-.002)):return false
 	for cell:Dictionary in source.cells:
-		if int(cell.level)>1:continue
+		if float(source.get("base_y",0.))+int(cell.level)*1.7>=float(plan.top)+float(plan.roof_clearance):continue
 		if Frame.boxes_overlap(footprint,Frame.footprint(source,cell,-.002)):return false
 	for landmark:Dictionary in city.placed_landmarks:
 		if Frame.boxes_overlap(footprint,city.PlacedLandmarks.footprint(landmark,.03)):return false

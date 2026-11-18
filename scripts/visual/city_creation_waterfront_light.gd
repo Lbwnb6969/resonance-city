@@ -37,17 +37,18 @@ func refresh()->void:
 	_select_targets()
 	_bind_lamps()
 	var low:=1.-smoothstep(.24,.35,float(demo.pitch))
-	var camera_direction:Vector3=(demo.camera.global_position-demo.focus).normalized()
+	var camera_direction:Vector3=demo.camera.global_basis.z.normalized()
 	var to_sun:Vector3=demo.sun.global_basis.z
 	var back:=smoothstep(-.20,.75,-camera_direction.dot(to_sun))
 	var strength:=low*(.25+.75*back) if demo.light_phase==1 else 0.
 	material.set_shader_parameter("strength",strength)
 	for i in range(veils.size()):
 		var node:=veils[i];var row:Dictionary=targets[i];var at:Vector3=row.at
+		node.visible=strength>.001 and demo.camera.is_position_in_frustum(at)
+		if not node.visible:continue
 		var toward:Vector3=(demo.camera.global_position-at).normalized()
 		node.position=at-Vector3(toward.x,0,toward.z)*float(row.width)*.40
 		node.look_at(demo.camera.global_position,Vector3.UP)
-		node.visible=strength>.001 and demo.camera.is_position_in_frustum(at)
 	set_meta("diagnostics",{"lamps":sources.size(),"veils":veils.size(),"strength":strength,"phase":demo.light_phase})
 
 func _collect(scenery:Node3D)->void:

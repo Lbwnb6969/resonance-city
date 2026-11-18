@@ -1,0 +1,35 @@
+extends "res://tools/check_creation_shape_palette_live.gd"
+
+func geometry()->Array:
+	var result:Array=[]
+	for mesh:MeshInstance3D in demo.town.house_roots.h1.find_children("*","MeshInstance3D",true,false):
+		if mesh.name in ["ResonanceVisualRig","ResonanceArc"]:continue
+		for i in range(mesh.mesh.get_surface_count()):result.append(hash([mesh.mesh.surface_get_arrays(i),mesh.global_transform]))
+	return result
+
+func shot(label:String)->void:
+	for i in range(20):await process_frame
+	await capture(label)
+
+func run()->void:
+	var camera_size:=8.
+	for arg:String in OS.get_cmdline_user_args():
+		if arg.begins_with("--out-dir="):OUT=arg.trim_prefix("--out-dir=")
+		if arg.begins_with("--zoom="):camera_size=float(arg.trim_prefix("--zoom="))
+	if not OS.get_cmdline_user_args().has("--isolated-session") or not OUT.begins_with("res://验证记录/") or DirAccess.dir_exists_absolute(OUT):quit(1);return
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT));root.size=Vector2i(1280,800);Engine.max_fps=60
+	var personal:=FileAccess.get_file_as_bytes(State.DEFAULT_PATH) if FileAccess.file_exists(State.DEFAULT_PATH) else PackedByteArray()
+	demo=Scene.instantiate();demo.persistence=false;demo.start_empty=true;demo.collection_directory=OUT+"/works";root.add_child(demo);await settle();isolate_input();quiet()
+	var city:=State.new();city.initialize_free();city.add_house(Vector2(-25,-20));city.set_house_style("h1","classic");city.set_house_era("h1","pastoral");city.set_house_architecture("h1","portico")
+	await show(city,Vector2(-25,-20),"墙面阴影参数诊断");await settle();quiet();demo._set_light_phase(0)
+	demo.focus=Vector3(-25,.85,-20);demo.zoom=camera_size;demo.pitch=.5;demo.yaw=-.65;demo._update_camera();demo.set_process(false);demo.life.set_process(false);demo.town.set_process(false);demo.town.wildlife.hide();demo.ui_layer.hide();demo.weather_visual.hide();Engine.time_scale=0.
+	var author:Dictionary=demo.state.snapshot();var shape:=geometry()
+	var variants:Array=[{"id":"current_5_012_blur12","normal":5.0,"bias":.012,"blur":1.2},{"id":"scale_075_006_blur14","normal":.75,"bias":.006,"blur":1.4},{"id":"tight_025_003_blur18","normal":.25,"bias":.003,"blur":1.8}]
+	facts={"variants":variants,"shadow_distance":demo.sun.directional_shadow_max_distance,"camera_distance":demo.camera.position.distance_to(demo.focus),"camera_size":camera_size}
+	for row:Dictionary in variants:
+		demo.sun.shadow_normal_bias=float(row.normal);demo.sun.shadow_bias=float(row.bias);demo.sun.shadow_blur=float(row.blur)
+		for phase:int in [0,2]:demo._set_light_phase(phase);await shot(str(row.id)+"_"+str(phase))
+	check(demo.state.snapshot()==author,"shadow parameter study preserves authored city")
+	check(geometry()==shape,"shadow parameter study preserves GPU construction arrays and transforms")
+	check(personal==(FileAccess.get_file_as_bytes(State.DEFAULT_PATH) if FileAccess.file_exists(State.DEFAULT_PATH) else PackedByteArray()),"personal save remains byte-identical")
+	Engine.time_scale=1.;var report:={"ok":failures.is_empty(),"checks":checks,"failures":failures,"facts":facts,"rendering":DisplayServer.get_name(),"persistence":demo.persistence};FileAccess.open(OUT+"/report.json",FileAccess.WRITE).store_string(JSON.stringify(report,"\t"));print("WALL_SHADOW_BIAS_LIVE ",JSON.stringify(report));demo.queue_free();await process_frame;quit(0 if failures.is_empty() else 1)

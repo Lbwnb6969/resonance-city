@@ -87,48 +87,25 @@ func _run() -> void:
 			patch_max = maxf(patch_max, patch)
 	_expect(smooth_direction and patch_max - patch_min > 0.5, "continuous broad direction/density field varies across town")
 	var mesh: Mesh = meadow._mesh("lawn")
-	_expect(mesh.get_faces().size() / 3 == 110, "seven V-folded leaves omit collapsed tip faces and retain basal trefoil")
-	_expect(meadow._mesh("lawn_lod").get_faces().size()/3 == 20, "far mesh retains two leaves from each ring")
-	_expect(mesh == meadow._mesh("lawn") and mesh == meadow._mesh("grass"), "lawn and fringe share one cached ribbon mesh")
-	var arrays: Array = mesh.surface_get_arrays(0)
-	var tip_points := {}
-	var tips := 0
-	var low_tips := 0
-	var high_tips := 0
-	var tip_directions := {}
-	var continuous_normals := true
-	var creases:=0;var finite_faces:=true;var aligned_faces:=true;var face_ids:PackedInt32Array=arrays[Mesh.ARRAY_INDEX]
-	for face in range(0,face_ids.size(),3):
-		var a:Vector3=arrays[Mesh.ARRAY_VERTEX][face_ids[face]];var b:Vector3=arrays[Mesh.ARRAY_VERTEX][face_ids[face+1]];var c:Vector3=arrays[Mesh.ARRAY_VERTEX][face_ids[face+2]]
-		var area:Vector3=(c-a).cross(b-a)
-		finite_faces=finite_faces and area.is_finite() and area.length()>1e-8
-		if arrays[Mesh.ARRAY_TEX_UV][face_ids[face]].x>0.:
-			for offset in range(3):aligned_faces=aligned_faces and area.normalized().dot(arrays[Mesh.ARRAY_NORMAL][face_ids[face+offset]])>0.
-	_expect(finite_faces and aligned_faces,"all actual V triangles have area and clockwise front normals agree with each face")
-	var normals_by_vertex := {}
-	for index in range(arrays[Mesh.ARRAY_VERTEX].size()):
-		var at: Vector3 = arrays[Mesh.ARRAY_VERTEX][index]
-		var uv: Vector2 = arrays[Mesh.ARRAY_TEX_UV][index]
-		var normal: Vector3 = arrays[Mesh.ARRAY_NORMAL][index]
-		continuous_normals = continuous_normals and normal.is_normalized() and normal.is_finite()
-		if normals_by_vertex.has(at) and not normal.is_equal_approx(normals_by_vertex[at]):creases+=1
-		normals_by_vertex[at] = normal
-		var tip := false
-		for blade in range(7):
-			var angle:float=[.08,.95,2.38,4.12,.45,2.05,3.65][blade]
-			var outward:=Vector3(cos(angle),0,sin(angle))
-			var height:float=[.16,.19,.17,.18,.22,.27,.245][blade]
-			var reach:float=[.16,.17,.165,.175,.07,.06,.075][blade]
-			var expected:=preload("res://scripts/visual/city_creation_meadow_fold.gd")._center(outward*.006,outward,height,reach,1.,blade)
-			if at.distance_to(expected)<.000001:tip=true
-		if tip and not tip_points.has(at):
-			tip_points[at]=true
-			tips += 1
-			if at.y < 0.16: low_tips += 1
-			else: high_tips += 1
-			tip_directions[Vector2i(signf(at.x),signf(at.z))] = true
-	_expect(tips == 7 and low_tips == 4 and high_tips == 3 and tip_directions.size() >= 3, "seven actual tapered tips retain four low outer and three higher inner leaves")
-	_expect(continuous_normals and creases>0, "all normals finite and normalized; deliberate ridge keeps distinct slope normals")
+	var far:Mesh=meadow._mesh("lawn_lod");var tall:Mesh=meadow._mesh("grass")
+	_expect(far.get_faces().size()<mesh.get_faces().size(), "far turf simplifies the same curved grass family")
+	_expect(mesh==meadow._mesh("lawn") and tall==meadow._mesh("grass") and mesh!=tall, "short turf and tall fringe each retain one shared cached exemplar")
+	_expect(tall.get_aabb().size.y>mesh.get_aabb().size.y*1.5 and tall.get_aabb().size.y<.65, "tree skirts have distinct taller blades at a bounded metre scale")
+	for shape:Mesh in [mesh,far,tall]:
+		var arrays:Array=shape.surface_get_arrays(0);var points:PackedVector3Array=arrays[Mesh.ARRAY_VERTEX];var normals:PackedVector3Array=arrays[Mesh.ARRAY_NORMAL];var face_ids:PackedInt32Array=arrays[Mesh.ARRAY_INDEX];var uvs:PackedVector2Array=arrays[Mesh.ARRAY_TEX_UV]
+		var valid:=true;var aligned:=true;var leaf_rows:Dictionary={};var max_width:=0.
+		for i in range(points.size()):
+			valid=valid and points[i].is_finite() and normals[i].is_finite() and absf(normals[i].length()-1.)<.001
+			var key:=Vector2(floorf(uvs[i].x),uvs[i].y)
+			if not leaf_rows.has(key):leaf_rows[key]=[]
+			for other:Vector3 in leaf_rows[key]:max_width=maxf(max_width,points[i].distance_to(other))
+			leaf_rows[key].append(points[i])
+		for face in range(0,face_ids.size(),3):
+			var area:Vector3=(points[face_ids[face+2]]-points[face_ids[face]]).cross(points[face_ids[face+1]]-points[face_ids[face]])
+			valid=valid and area.is_finite() and area.length()>1e-8
+			for offset in range(3):aligned=aligned and area.normalized().dot(normals[face_ids[face+offset]])>0.
+		_expect(valid and aligned,"complete finite nondegenerate grass faces agree with clockwise front normals")
+		_expect(max_width<.045 and shape.get_aabb().position.y>-.005,"grass stays narrow-bladed with roots meeting the same ground plane")
 	var legal := true
 	var custom_matches := true
 	var soft_edge := 0

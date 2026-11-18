@@ -4,6 +4,7 @@ var strolling := false
 var saved: Dictionary = {}
 var postcard_busy := false
 var last_postcard := ""
+var navigation=preload("res://scripts/ui/city_creation_overview_navigation.gd").new()
 var bench_view:=preload("res://scripts/ui/city_creation_bench_view.gd").new()
 var tour:=preload("res://scripts/ui/city_creation_chord_tour.gd").new()
 var aura:=preload("res://scripts/visual/city_creation_stroll_glow.gd").new()
@@ -45,6 +46,7 @@ func update(demo: Node3D, delta: float) -> void:
 	if tour.update(demo,delta):return
 	if bench_view.update(demo):return
 	aura.update(demo,strolling)
+	navigation.update(demo,delta)
 	if not strolling: return
 	if demo.gallery.panel.visible or demo.journal.panel.visible or demo.ledger.visible() or demo.guide.visible(): return
 	if demo.get_viewport().gui_get_focus_owner() is LineEdit: return

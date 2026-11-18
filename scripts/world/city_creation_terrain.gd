@@ -238,7 +238,7 @@ func _changed_stroke_bounds(strokes: Array) -> Array:
 
 func _protection_bounds(row: Dictionary) -> Rect2:
 	if row.has("rect"):return Frame.bounds(row.rect).grow(PAD_TRANSITION)
-	return Rect2(row.a,Vector2.ZERO).expand(row.b).grow(float(row.radius)+PAD_TRANSITION)
+	return Rect2(row.a,Vector2.ZERO).expand(row.b).grow(float(row.radius)+(maxf(PAD_TRANSITION,float(row.transition)) if row.get("natural_cut",false) else PAD_TRANSITION))
 
 func _changed_protection_bounds(protection: Array) -> Array:
 	var before: Dictionary = {}
@@ -396,11 +396,13 @@ func _protected_height(at: Vector2,raw: float) -> float:
 	# Cuts can only remove ground and fade continuously; never raise a low
 	# endpoint into the adjacent high platform. No tread-sized targets enter
 	# the coarse field, so interpolation cannot turn stairs into terrain teeth.
+	var natural:=false
 	for row: Dictionary in rows:
 		if not bool(row.get("cut_only",false)): continue
+		if row.get("natural_cut",false):natural=true;continue
 		var influence := _pad_influence(at,row)
 		height=lerpf(height,minf(height,float(row.target_y)),influence)
-	return height
+	return preload("res://scripts/world/city_creation_road_shoulder.gd").height(at,height,rows,_pad_influence) if natural else height
 
 func _pad_influence(at: Vector2,row: Dictionary) -> float:
 	var distance: float

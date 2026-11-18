@@ -4,7 +4,7 @@ extends RefCounted
 const Growth = preload("res://scripts/world/city_creation_growth.gd")
 const WORLD_RECT = preload("res://scripts/world/city_creation_bounds.gd").WORLD_RECT
 
-static func snapshot(city: RefCounted) -> Dictionary:
+static func snapshot(city: RefCounted,complete_paused_baseline:bool=true) -> Dictionary:
 	var result := {"schema": city.TERRAIN_SCHEMA if not city.terrain_strokes.is_empty() else city.SCHEMA, "revision": city.revision, "houses": city.houses.duplicate(true), "roads": city.roads.duplicate(true), "plants": city.plants.duplicate(true), "waters": city.waters.duplicate(true), "terrain_strokes": city.terrain_strokes.duplicate(true), "districts": city.districts.duplicate(true), "next_district_id": city._next_district_id, "next_water_id": city._next_water_id, "next_house_id": city._next_house_id, "next_cell_id": city._next_cell_id, "next_road_id": city._next_road_id, "next_plant_id": city._next_plant_id, "high_watermark": city._high_watermark.duplicate(), "life_progress":city.life_progress.duplicate(),"cafe_credits":city.cafe_credits.duplicate(true),"cafe_progress":city.cafe_progress.duplicate(true),"matinee_credits":city.matinee_credits.duplicate(true),"matinee_progress":city.matinee_progress.duplicate(true),"matinee_pending":city.matinee_pending.duplicate(true),"matinee_cooldown":city.matinee_cooldown,"matinee_last_venue":city.matinee_last_venue,"bakery_supply":city.bakery_supply.duplicate(true),"workshop_supply":city.workshop_supply.duplicate(true),"house_improvements":city.house_improvements.duplicate(),"venue_commissions":city.venue_commissions.duplicate(true),"resonance_afterglow":city.resonance_afterglow.duplicate(),"journey_checkpoint":city.journey_checkpoint.duplicate(true)}
 	if not city.growth_memories.is_empty():
 		result.growth_memories = city.growth_memories.duplicate()
@@ -95,7 +95,7 @@ static func snapshot(city: RefCounted) -> Dictionary:
 	if city.TerrainTarget.Rules.has_target(city.terrain_strokes):result.schema=city.TerrainTarget.Rules.SCHEMA
 	if city.TerrainTarget.Rules.has_version(city.terrain_strokes,city.TerrainTarget.Rules.Smooth.VERSION):result.schema=city.TerrainTarget.Rules.Smooth.SCHEMA
 	if city.TerrainPolicy.enabled(city) or city.journey_checkpoint.has("cafe_terrain"):result.schema=city.TerrainPolicy.SCHEMA;result.terrain_policy=city.terrain_policy
-	city.CreationPolicy.Save.Progression.write(city,result)
+	city.CreationPolicy.Save.Progression.write(city,result,complete_paused_baseline)
 	preload("res://scripts/world/city_creation_architecture_variants.gd").write(city,result)
 	city.Grillhouse.write(city,result)
 	preload("res://scripts/world/city_creation_skybridge_span.gd").write(city,result)
@@ -103,14 +103,19 @@ static func snapshot(city: RefCounted) -> Dictionary:
 	preload("res://scripts/world/city_creation_water_ghat.gd").write(city,result)
 	preload("res://scripts/world/city_creation_roundabout_width.gd").write(city,result)
 	preload("res://scripts/world/city_creation_plaza_loops.gd").write(city,result)
+	preload("res://scripts/world/city_creation_roof_pitch.gd").write(city,result)
+	preload("res://scripts/world/city_creation_compound_parts.gd").write(city,result)
+	if city.terrain_policy==city.TerrainPolicy.VERSION:result.schema=maxi(result.schema,city.TerrainPolicy.NATURAL_SCHEMA)
 	return result
 
-static func apply_data(city: RefCounted, data: Dictionary, preserve_issued_ids: bool) -> bool:
+static func apply_data(city: RefCounted, data: Dictionary, preserve_issued_ids: bool,paused_policy:Dictionary={}) -> bool:
+	if not preserve_issued_ids:
+		for key:String in ["paused_counter_sources","paused_counter_baseline","paused_counter_serial"]:city.remove_meta(key)
 	city.plaza_loops.assign(data.get("plaza_loops",[]))
 	city.remove_meta("tea_deck_plans")
 	city.remove_meta("boathouse_plans")
 	city.remove_meta("functional_zones")
-	city.CreationPolicy.Save.apply(city,data,preserve_issued_ids)
+	city.CreationPolicy.Save.apply(city,data,preserve_issued_ids,paused_policy)
 	city.terrain_policy=int(data.get("terrain_policy",1))
 	city.biome_seed=data.get("biome_seed",{}).duplicate();city._biome_revision=-1;city._biome_bonuses={}
 	if not preserve_issued_ids:city.archive_unlocks.assign(data.get("archive_unlocks",[]))
@@ -228,6 +233,19 @@ static func apply_data(city: RefCounted, data: Dictionary, preserve_issued_ids: 
 	# JSON numbers enter as floats; restore the authoritative integer fields.
 	for house in city.houses:
 		if house.has("skybridge_span"):house.skybridge_span={"version":1,"meters":9}
+		if house.has("assembly_part"):house.assembly_part={"version":int(house.assembly_part.version)}
+		if house.has("roof_pitch"):
+			var version:int=int(house.roof_pitch.version);house.roof_pitch={"version":version,"degrees":float(house.roof_pitch.degrees)}
+			if version==2:house.roof_pitch.profile="round"
+			elif version==3:house.roof_pitch.profile="modern"
+			elif version==4:house.roof_pitch.profile="clockwork"
+			elif version==5:house.roof_pitch.profile="renaissance"
+			elif version==6:house.roof_pitch.profile="boathouse"
+			elif version==7:house.roof_pitch.profile="acoustic_shell"
+			elif version==8:house.roof_pitch.profile="ionic_stoa"
+			elif version==9:house.roof_pitch.profile="roman_basilica"
+			elif version==10:house.roof_pitch.profile="portico"
+			elif version==11:house.roof_pitch.profile="guildhall"
 		if house.has("architecture_variant"):
 			preload("res://scripts/world/city_creation_architecture_variants.gd").normalize(house.architecture_variant)
 		if house.has("bend_angle_deg"):house.bend_angle_deg=float(house.bend_angle_deg)
@@ -358,6 +376,10 @@ static func validate(city: RefCounted, data: Dictionary) -> Dictionary:
 	if not variants.ok:return variants
 	var spans:Dictionary=preload("res://scripts/world/city_creation_skybridge_span.gd").validate(city,data)
 	if not spans.ok:return spans
+	var pitch:Dictionary=preload("res://scripts/world/city_creation_roof_pitch.gd").validate(city,data)
+	if not pitch.ok:return pitch
+	var compound:Dictionary=preload("res://scripts/world/city_creation_compound_parts.gd").validate(city,data)
+	if not compound.ok:return compound
 	var shallow:Dictionary=preload("res://scripts/world/city_creation_shallow_stair_keys.gd").validate(city,data)
 	if not shallow.ok:return shallow
 	var food:Dictionary=city.Grillhouse.validate(city,data)

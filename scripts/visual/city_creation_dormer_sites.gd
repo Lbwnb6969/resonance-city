@@ -22,7 +22,9 @@ static func plan(city,parent:Node3D,house:Dictionary,diagnostics:Dictionary={})-
 	if not Choice.dormer_supported(city,house):return {}
 	var surface:=faces(parent,true)
 	if surface.is_empty():diagnostics.no_roof_surface=true;return {}
-	var occupied:=faces(parent,false);var ridges:=ridge_lines(surface);var top:=-1
+	return from_faces(city,house,surface,faces(parent,false),diagnostics)
+static func from_faces(city,house:Dictionary,surface:Array[Vector3],occupied:Array[Vector3],diagnostics:Dictionary={})->Dictionary:
+	var ridges:=ridge_lines(surface);var top:=-1
 	for cell:Dictionary in house.cells:
 		if cell.kind=="room":top=maxi(top,int(cell.level))
 	var rooms:Array=house.cells.filter(func(c):return c.kind=="room" and int(c.level)==top)

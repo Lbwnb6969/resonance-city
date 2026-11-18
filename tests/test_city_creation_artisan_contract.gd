@@ -14,6 +14,10 @@ func rows(city:RefCounted)->Array:
 	check(before==city.snapshot(),"read-only author/history/rights")
 	return result
 func run()->void:
+	var out:="res://验证记录/M84/artisan_contract_20261030/cpu"
+	for arg:String in OS.get_cmdline_user_args():
+		if arg.begins_with("--out-dir="):out=arg.trim_prefix("--out-dir=")
+	if OS.get_cmdline_user_args().has("--isolated-session") and (not out.begins_with("res://验证记录/") or DirAccess.dir_exists_absolute(out)):quit(1);return
 	var began:=Time.get_ticks_msec()
 	for kind:String in ["workshop","clock","label","wall","water"]:
 		for yaw:float in [0.,.4,PI*.5]:
@@ -43,7 +47,6 @@ func run()->void:
 	check(not rows(ridge.city)[0].eligibility.district,"steep actual ground cannot borrow an open forecourt")
 	check(ridge.city.undo().ok,"Undo ridge");network(ridge.city);check(rows(ridge.city)[0].eligibility.district,"Undo restores real dry forecourt")
 	var legacy:=Fixture.Base.State.new();legacy.initialize();check(legacy.functional_zones().spaces.is_empty(),"legacy untouched")
-	var out:="res://验证记录/M84/artisan_contract_20261030/cpu"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out))
 	var report:={"ok":failures.is_empty(),"checks":checks,"failures":failures,"elapsed_seconds":(Time.get_ticks_msec()-began)/1000.}
 	FileAccess.open(out+"/report.json",FileAccess.WRITE).store_string(JSON.stringify(report,"\t"));print("ARTISAN_CONTRACT ",JSON.stringify(report));quit(0 if failures.is_empty() else 1)

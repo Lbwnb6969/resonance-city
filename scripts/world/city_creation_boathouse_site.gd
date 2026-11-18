@@ -5,7 +5,7 @@ static func house_conflict(city:RefCounted,house:Dictionary,except_id:String)->b
 		if plan.house_id==except_id or plan.house_id==str(house.get("id","")):continue
 		for cell:Dictionary in house.cells:
 			var low:=float(house.get("base_y",0.))+int(cell.level)*1.7
-			if low>=float(plan.top)+2.3 or low+1.7<=float(city.Terrain.WATER_LEVEL)-.10:continue
+			if low>=float(plan.top)+float(plan.roof_clearance) or low+1.7<=float(city.Terrain.WATER_LEVEL)-.10:continue
 			if Plan.Frame.boxes_overlap(Plan.shape(plan,plan.reserved),Plan.Frame.footprint(house,cell)):return true
 	return false
 static func road_conflict(city:RefCounted,points:Array,width:float)->bool:

@@ -2,9 +2,9 @@ extends RefCounted
 const State=preload("res://scripts/world/city_creation_state.gd")
 const Choice=preload("res://scripts/world/city_creation_architecture_choice.gd")
 const Variants=preload("res://scripts/world/city_creation_architecture_variants.gd")
-const FIELDS:=["palette","finish","custom_colors","style","era_theme","architecture","architecture_variant"]
+const FIELDS:=["palette","finish","custom_colors","style","era_theme","architecture","architecture_variant","roof_pitch"]
 static func custom(house:Dictionary)->bool:
-	return house.has("custom_colors") or not str(house.get("architecture","")).is_empty() or not house.get("architecture_variant",{}).is_empty() or house.has("finish")
+	return house.has("roof_pitch") or house.has("custom_colors") or not str(house.get("architecture","")).is_empty() or not house.get("architecture_variant",{}).is_empty() or house.has("finish")
 static func appearance(house:Dictionary)->Dictionary:
 	var result:Dictionary={}
 	for key:String in FIELDS:

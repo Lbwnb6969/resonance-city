@@ -6,14 +6,25 @@ const Terrain=preload("res://scripts/world/city_creation_terrain.gd")
 const RADIUS:=.30
 const INSET:=.44
 const Festival=preload("res://scripts/world/city_creation_festival_scenery.gd")
+static func _input(city:RefCounted)->Array:
+	return [city.houses,city.roads,city.waters,city.plants,city.terrain_strokes,city.terrain_policy,city.biome_seed,city.placed_landmarks,city.creative_settings,city.districts,Festival.key(city)]
+static func prepare(city:RefCounted)->void:
+	var rows:=derive(city)
+	city.set_meta("prepared_water_lanterns",{"input":_input(city).duplicate(true),"rows":rows})
+static func adopt(city:RefCounted,source:RefCounted)->void:
+	var prepared:Dictionary=source.get_meta("prepared_water_lanterns",{})
+	if prepared.get("input",[])==_input(city):city.set_meta("prepared_water_lanterns",prepared)
 static func derive(city:RefCounted)->Array[Dictionary]:
 	var rows:Array[Dictionary]=[]
 	if not city.CreationPolicy.is_free(city) or not city.creative_settings.presentation.automatic_decoration:return rows
 	var zones:Dictionary=city.functional_zones()
 	if not zones.network_ready:return rows
+	var prepared:Dictionary=city.get_meta("prepared_water_lanterns",{})
+	if prepared.get("input",[])==_input(city):return prepared.rows
 	var piers:Array=Street.derive(city).piers;var houses:Array=city.houses.duplicate()
 	var insets:Array=[INSET,.60,.76] if Festival.enabled(city) else [INSET]
 	var offsets:Array=[0.,-1.,1.] if Festival.enabled(city) else [0.]
+	var obstacles:Array=[]
 	houses.sort_custom(func(a,b):return str(a.id)<str(b.id))
 	for house:Dictionary in houses:
 		var zone:Dictionary=zones.houses[house.id]
@@ -39,17 +50,27 @@ static func derive(city:RefCounted)->Array[Dictionary]:
 			row.distance=Frame.distance(Frame.footprint(house,house.cells.filter(func(c):return str(c.id)==row.cell_id)[0]),row.at)
 		candidates.sort_custom(func(a,b):return str(a.water_id)<str(b.water_id) if is_equal_approx(a.distance,b.distance) else a.distance<b.distance)
 		for row:Dictionary in candidates:
-			if row.distance>5.2+INSET or not clear(city,row.at,rows,piers):continue
+			if row.distance>5.2+INSET:continue
+			if obstacles.is_empty():obstacles=_obstacles(city)
+			if not clear(city,row.at,rows,piers,obstacles):continue
 			rows.append(row);break
 	return rows
-static func clear(city:RefCounted,at:Vector2,accepted:Array=[],piers:Array=[])->bool:
+static func _obstacles(city:RefCounted)->Array:
+	var rows:Array=[]
+	for house:Dictionary in city.houses:
+		var cells:Array=[]
+		for cell:Dictionary in house.cells:cells.append(Frame.footprint(house,cell))
+		rows.append({"cells":cells,"doors":city.house_entrances(str(house.id))})
+	return rows
+static func clear(city:RefCounted,at:Vector2,accepted:Array=[],piers:Array=[],obstacles:Array=[])->bool:
 	if not city.WORLD_RECT.grow(-RADIUS).has_point(at) or city.water_clearance(at)>-INSET+.001:return false
 	for offset:Vector2 in [Vector2.ZERO,Vector2(RADIUS,0),Vector2(-RADIUS,0),Vector2(0,RADIUS),Vector2(0,-RADIUS)]:
 		if city.ground_height(at+offset)>Terrain.WATER_LEVEL+.005:return false
-	for house:Dictionary in city.houses:
-		for cell:Dictionary in house.cells:
-			if Frame.distance(Frame.footprint(house,cell),at)<RADIUS+.1:return false
-		for door:Dictionary in city.house_entrances(str(house.id)):
+	if obstacles.is_empty():obstacles=_obstacles(city)
+	for house:Dictionary in obstacles:
+		for footprint:Variant in house.cells:
+			if Frame.distance(footprint,at)<RADIUS+.1:return false
+		for door:Dictionary in house.doors:
 			if at.distance_to(Geometry2D.get_closest_point_to_segment(at,door.wall_at,door.at))<RADIUS+.4:return false
 	for road:Dictionary in city.roads:
 		if city._water_stroke_distance(at,road.points)<float(road.width)*.5+RADIUS+.15:return false

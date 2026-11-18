@@ -14,6 +14,7 @@ static func facade(r,job,frame,wall:Node3D,door:bool,width:float)->bool:
 static func build(r,root:Node3D,house:Dictionary)->void:
 	if not Plan.selected(r.state,house):return
 	root.set_meta("rigid_architecture",true)
+	root.set_meta("boathouse_roof_anchor",anchor(root))
 	var plan:=Plan.find(r.state,str(house.id));var index:int=r.state._house_index(str(house.id))
 	if index<0 or r.state.houses[index]!=house:plan=Plan.preview(r.state,house)
 	root.set_meta("prototype_caption","溪畔木船坞" if not plan.is_empty() else "木船屋 · 水岸或净空不足")
@@ -38,15 +39,19 @@ static func build(r,root:Node3D,house:Dictionary)->void:
 		for z:float in [.45,1.55]:r._cylinder(node,.028,.028,.13,Vector3(x,.065,z),dark,8).name="BoathouseMooringBollard"
 	for z:float in [.1,1.90]:
 		r._box(node,Vector3(1.75,.10,.10),Vector3(0,1.56,z),wood).name="BoathouseCanopyTie"
-		for x:float in [-1.,1.]:Parts.beam(r,node,Vector3(x*1.06,1.64,z),Vector3(0,2.18,z),.075,dark)
-	var faces:Array[Vector3]=[Vector3(-1.08,1.64,-.02),Vector3(-1.08,1.64,2.14),Vector3(0,2.18,2.14),Vector3(-1.08,1.64,-.02),Vector3(0,2.18,2.14),Vector3(0,2.18,-.02),Vector3(0,2.18,-.02),Vector3(0,2.18,2.14),Vector3(1.08,1.64,2.14),Vector3(0,2.18,-.02),Vector3(1.08,1.64,2.14),Vector3(1.08,1.64,-.02)]
+		for x:float in [-1.,1.]:Parts.beam(r,node,Vector3(x*1.06,1.64,z),Vector3(0,Plan.Roof.ridge(house),z),.075,dark)
+	var faces:Array[Vector3]=Plan.Roof.faces(house)
 	var roof:MeshInstance3D=r._roof_surface(node,faces,palette[1]);roof.name="BoathouseSlipRoof";var tiles:=ShaderMaterial.new();tiles.shader=r.JoinedRoofShader;tiles.set_shader_parameter("roof_color",palette[1]);roof.material_override=tiles
 	var boat:=Node3D.new();boat.name="MooredWoodenSkiff";node.add_child(boat);boat.position=Vector3(0,float(r.state.Terrain.WATER_LEVEL)-float(plan.top),1.15);_skiff(r,boat,wood,dark)
 	for side:float in [-1.,1.]:Parts.beam(r,node,Vector3(side*.80,.13,.45),Vector3(side*.27,float(r.state.Terrain.WATER_LEVEL)-float(plan.top)+.17,1.05),.012,dark)
 	var body:=StaticBody3D.new();body.name="BoathouseDockPick";node.add_child(body);body.set_meta("house_id",str(house.id));body.set_meta("cell_id",str(plan.cell_id));body.set_meta("boat_dock",true)
 	for cell:Dictionary in house.cells:
 		if str(cell.id)==str(plan.cell_id):body.set_meta("cell",cell.duplicate(true));break
-	Pick.from_geometry(body,node,"BoathouseDockSurface")
+	Pick.from_geometry(body,node,"BoathouseDockSurface",[roof])
+	var roof_body:=StaticBody3D.new();roof_body.name="BoathouseCanopyPick";node.add_child(roof_body)
+	for key:String in ["house_id","cell_id","cell"]:roof_body.set_meta(key,body.get_meta(key))
+	roof_body.set_meta("roof_surface",true);roof_body.set_meta("boat_dock",true)
+	var shape:=ConcavePolygonShape3D.new();shape.backface_collision=true;shape.set_faces(roof.mesh.get_faces());var collision:=CollisionShape3D.new();collision.shape=shape;roof_body.add_child(collision)
 static func _skiff(r,node:Node3D,wood:Material,dark:Material)->void:
 	var hull:=Wall.source(wood.albedo_color,null,"component",Wall.Kind.TIMBER);hull.cull_mode=BaseMaterial3D.CULL_DISABLED
 	var rim:=PackedVector2Array([Vector2(0,-.82),Vector2(.21,-.57),Vector2(.30,.20),Vector2(.22,.62),Vector2(0,.84),Vector2(-.22,.62),Vector2(-.30,.20),Vector2(-.21,-.57)])
@@ -59,3 +64,14 @@ static func _skiff(r,node:Node3D,wood:Material,dark:Material)->void:
 	Parts.face(r,node,faces,dark,"SkiffDryInnerFloor")
 	for z:float in [-.34,.20]:r._box(node,Vector3(.43,.035,.12),Vector3(0,.135,z),wood).name="SkiffThwart"
 	Parts.beam(r,node,Vector3(-.20,.22,-.40),Vector3(.21,.22,.45),.018,dark)
+
+static func anchor(root:Node3D)->Vector3:
+	if root.has_meta("boathouse_roof_anchor"):return root.get_meta("boathouse_roof_anchor")
+	var result:=Vector3.ZERO;var top:=-INF;var inverse:=root.global_transform.affine_inverse()
+	for mesh:MeshInstance3D in root.find_children("*","MeshInstance3D",true,false):
+		if not (str(mesh.name).begins_with("AncientLowTileRoof") or mesh.name in ["GreekContinuousTileRoof","JoinedRoofSurface"]):continue
+		var faces:=mesh.mesh.get_faces();var pose:=inverse*mesh.global_transform
+		for i in range(0,faces.size(),3):
+			var center:Vector3=pose*((faces[i]+faces[i+1]+faces[i+2])/3.)
+			if center.y>top:top=center.y;result=center
+	return result

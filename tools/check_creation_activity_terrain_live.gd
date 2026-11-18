@@ -36,7 +36,7 @@ func run()->void:
 		FileAccess.open(OUT+"/report.json",FileAccess.WRITE).store_string(JSON.stringify(result,"\t"));print("ACTIVITY_TERRAIN_UI ",JSON.stringify(result));demo.queue_free();await process_frame;quit(0 if failures.is_empty() else 1);return
 	await key(KEY_ESCAPE);check(ui.plan.is_empty() and demo.state.snapshot()==before,"native Escape cancels policy preview without authorship changes")
 	await ui_click(ui.preview_button);await ui_click(ui.apply_button);await settle();demo.life.set_process(false)
-	check(demo.state.terrain_policy==2 and demo.state.snapshot().schema==23,"native adoption commits explicit new schema and city rule")
+	check(demo.state.terrain_policy==3 and demo.state.snapshot().schema==47,"native adoption commits explicit new schema and city rule")
 	var works:Dictionary=demo.gallery.library.entries();var backups:Array=works.items.filter(func(item):return item.get("reason")=="before_activity_terrain")
 	check(backups.size()==1,"new city policy requires one real immutable original backup")
 	if backups.size()==1:
@@ -50,8 +50,8 @@ func run()->void:
 	for key:String in ["houses","plants","roads","cafe_credits","cafe_progress","life_progress","harmony_journey"]:check(demo.state.snapshot().get(key)==before.get(key),"adoption preserves "+key)
 	demo._capture_journeys();var full:Dictionary=demo.state.snapshot();var raw:PackedFloat32Array=demo.state._ground_terrain.vertices.duplicate();var meshes:Dictionary=ground_meshes()
 	await key(KEY_Z,true);await settle();check(demo.state.terrain_policy==1 and demo.state.ground_height(at)<.01,"native Undo restores original broad pad")
-	await key(KEY_Y,true);await settle();check(demo.state.terrain_policy==2 and demo.state._ground_terrain.vertices==raw,"native Redo restores liberated terrain exactly")
-	demo._capture_journeys();full=demo.state.snapshot();var cold:=State.new();check(cold.restore(JSON.parse_string(JSON.stringify(full,"",true,true))).ok,"full schema23 and suspended intent read cold")
+	await key(KEY_Y,true);await settle();check(demo.state.terrain_policy==3 and demo.state._ground_terrain.vertices==raw,"native Redo restores liberated terrain exactly")
+	demo._capture_journeys();full=demo.state.snapshot();var cold:=State.new();check(cold.restore(JSON.parse_string(JSON.stringify(full,"",true,true))).ok,"full schema47 and suspended intent read cold")
 	same_field(cold,"independent policy field");await show(cold,at,"街景规则独立冷读");quiet();demo.select_tool(8)
 	var differences:Dictionary={}
 	for key:String in full:

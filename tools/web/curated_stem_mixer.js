@@ -1,4 +1,4 @@
-const $=s=>document.querySelector(s), names={bass:'低音候选',drums:'打击／起音候选',guitar:'吉他候选',piano:'钢琴候选',other:'其余器乐',vocals:'未归类器乐残余',woodwinds:'木管候选'};
+const $=s=>document.querySelector(s), names={bass:'低音候选',drums:'打击／起音候选',guitar:'吉他候选',piano:'钢琴候选',other:'其余器乐',vocals:'人声 / 未归类残余（模型槽）',woodwinds:'木管候选'};
 let report,song,group,ctx,master,buffers=[],sources=[],gains=[],values=[],position=0,began=0,running=false,version=0,loading=false;
 function relative(path){return '../'+path.replaceAll('\\','/').slice(window.curatedRoot.length+1).split('/').map(encodeURIComponent).join('/')}
 function halt(){version++;loading=false;$('#play').disabled=false;if(running)position=Math.min(song.frames/song.sample_rate,position+Math.max(0,ctx.currentTime-began));for(const source of sources)source.stop();sources=[];gains=[];master?.disconnect();master=null;running=false;$('#seek').value=position;}

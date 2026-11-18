@@ -1,0 +1,8881 @@
+{
+	"bakery_supply": {
+		"h2": {
+			"produced": 1,
+			"served": 0,
+			"stock": 1
+		}
+	},
+	"cafe_credits": {},
+	"cafe_progress": {},
+	"cozy_progression": {
+		"baseline": {
+			"bread/h2": 1,
+			"cell_peak": 20,
+			"chord/pastoral_triad/functional_city": 1,
+			"house/h1": 1,
+			"house/h10": 1,
+			"house/h100": 1,
+			"house/h101": 1,
+			"house/h102": 1,
+			"house/h103": 1,
+			"house/h104": 1,
+			"house/h105": 1,
+			"house/h106": 1,
+			"house/h107": 1,
+			"house/h108": 1,
+			"house/h109": 1,
+			"house/h11": 1,
+			"house/h110": 1,
+			"house/h111": 1,
+			"house/h112": 1,
+			"house/h113": 1,
+			"house/h114": 1,
+			"house/h115": 1,
+			"house/h116": 1,
+			"house/h117": 1,
+			"house/h118": 1,
+			"house/h119": 1,
+			"house/h12": 1,
+			"house/h120": 1,
+			"house/h121": 1,
+			"house/h122": 1,
+			"house/h123": 1,
+			"house/h124": 1,
+			"house/h125": 1,
+			"house/h126": 1,
+			"house/h127": 1,
+			"house/h128": 1,
+			"house/h129": 1,
+			"house/h13": 1,
+			"house/h130": 1,
+			"house/h131": 1,
+			"house/h132": 1,
+			"house/h133": 1,
+			"house/h134": 1,
+			"house/h135": 1,
+			"house/h136": 1,
+			"house/h137": 1,
+			"house/h138": 1,
+			"house/h139": 1,
+			"house/h14": 1,
+			"house/h140": 1,
+			"house/h141": 1,
+			"house/h142": 1,
+			"house/h143": 1,
+			"house/h144": 1,
+			"house/h145": 1,
+			"house/h146": 1,
+			"house/h147": 1,
+			"house/h148": 1,
+			"house/h149": 1,
+			"house/h15": 1,
+			"house/h150": 1,
+			"house/h151": 1,
+			"house/h152": 1,
+			"house/h153": 1,
+			"house/h154": 1,
+			"house/h155": 1,
+			"house/h156": 1,
+			"house/h157": 1,
+			"house/h158": 1,
+			"house/h159": 1,
+			"house/h16": 1,
+			"house/h160": 1,
+			"house/h161": 1,
+			"house/h162": 1,
+			"house/h163": 1,
+			"house/h164": 1,
+			"house/h165": 1,
+			"house/h166": 1,
+			"house/h167": 1,
+			"house/h168": 1,
+			"house/h169": 1,
+			"house/h17": 1,
+			"house/h170": 1,
+			"house/h171": 1,
+			"house/h172": 1,
+			"house/h173": 1,
+			"house/h174": 1,
+			"house/h175": 1,
+			"house/h176": 1,
+			"house/h177": 1,
+			"house/h178": 1,
+			"house/h179": 1,
+			"house/h18": 1,
+			"house/h180": 1,
+			"house/h181": 1,
+			"house/h182": 1,
+			"house/h183": 1,
+			"house/h184": 1,
+			"house/h185": 1,
+			"house/h186": 1,
+			"house/h187": 1,
+			"house/h188": 1,
+			"house/h189": 1,
+			"house/h19": 1,
+			"house/h190": 1,
+			"house/h191": 1,
+			"house/h192": 1,
+			"house/h193": 1,
+			"house/h194": 1,
+			"house/h195": 1,
+			"house/h196": 1,
+			"house/h197": 1,
+			"house/h198": 1,
+			"house/h199": 1,
+			"house/h2": 1,
+			"house/h20": 1,
+			"house/h200": 1,
+			"house/h201": 1,
+			"house/h202": 1,
+			"house/h203": 1,
+			"house/h204": 1,
+			"house/h205": 1,
+			"house/h206": 1,
+			"house/h207": 1,
+			"house/h208": 1,
+			"house/h209": 1,
+			"house/h21": 1,
+			"house/h210": 1,
+			"house/h211": 1,
+			"house/h212": 1,
+			"house/h213": 1,
+			"house/h214": 1,
+			"house/h215": 1,
+			"house/h216": 1,
+			"house/h217": 1,
+			"house/h218": 1,
+			"house/h219": 1,
+			"house/h22": 1,
+			"house/h220": 1,
+			"house/h221": 1,
+			"house/h222": 1,
+			"house/h223": 1,
+			"house/h224": 1,
+			"house/h225": 1,
+			"house/h226": 1,
+			"house/h227": 1,
+			"house/h228": 1,
+			"house/h229": 1,
+			"house/h23": 1,
+			"house/h230": 1,
+			"house/h231": 1,
+			"house/h232": 1,
+			"house/h233": 1,
+			"house/h234": 1,
+			"house/h235": 1,
+			"house/h236": 1,
+			"house/h237": 1,
+			"house/h238": 1,
+			"house/h239": 1,
+			"house/h24": 1,
+			"house/h240": 1,
+			"house/h241": 1,
+			"house/h242": 1,
+			"house/h243": 1,
+			"house/h244": 1,
+			"house/h245": 1,
+			"house/h246": 1,
+			"house/h247": 1,
+			"house/h248": 1,
+			"house/h249": 1,
+			"house/h25": 1,
+			"house/h250": 1,
+			"house/h251": 1,
+			"house/h252": 1,
+			"house/h253": 1,
+			"house/h254": 1,
+			"house/h255": 1,
+			"house/h256": 1,
+			"house/h257": 1,
+			"house/h258": 1,
+			"house/h259": 1,
+			"house/h26": 1,
+			"house/h260": 1,
+			"house/h261": 1,
+			"house/h262": 1,
+			"house/h263": 1,
+			"house/h264": 1,
+			"house/h265": 1,
+			"house/h266": 1,
+			"house/h267": 1,
+			"house/h268": 1,
+			"house/h269": 1,
+			"house/h27": 1,
+			"house/h270": 1,
+			"house/h271": 1,
+			"house/h272": 1,
+			"house/h273": 1,
+			"house/h274": 1,
+			"house/h275": 1,
+			"house/h276": 1,
+			"house/h277": 1,
+			"house/h278": 1,
+			"house/h279": 1,
+			"house/h28": 1,
+			"house/h280": 1,
+			"house/h281": 1,
+			"house/h282": 1,
+			"house/h283": 1,
+			"house/h284": 1,
+			"house/h285": 1,
+			"house/h286": 1,
+			"house/h287": 1,
+			"house/h288": 1,
+			"house/h289": 1,
+			"house/h29": 1,
+			"house/h290": 1,
+			"house/h291": 1,
+			"house/h292": 1,
+			"house/h293": 1,
+			"house/h294": 1,
+			"house/h295": 1,
+			"house/h296": 1,
+			"house/h297": 1,
+			"house/h298": 1,
+			"house/h299": 1,
+			"house/h3": 1,
+			"house/h30": 1,
+			"house/h300": 1,
+			"house/h301": 1,
+			"house/h302": 1,
+			"house/h31": 1,
+			"house/h32": 1,
+			"house/h33": 1,
+			"house/h34": 1,
+			"house/h35": 1,
+			"house/h36": 1,
+			"house/h37": 1,
+			"house/h38": 1,
+			"house/h39": 1,
+			"house/h4": 1,
+			"house/h40": 1,
+			"house/h41": 1,
+			"house/h42": 1,
+			"house/h43": 1,
+			"house/h44": 1,
+			"house/h45": 1,
+			"house/h46": 1,
+			"house/h47": 1,
+			"house/h48": 1,
+			"house/h49": 1,
+			"house/h50": 1,
+			"house/h51": 1,
+			"house/h52": 1,
+			"house/h53": 1,
+			"house/h54": 1,
+			"house/h55": 1,
+			"house/h56": 1,
+			"house/h57": 1,
+			"house/h58": 1,
+			"house/h59": 1,
+			"house/h60": 1,
+			"house/h61": 1,
+			"house/h62": 1,
+			"house/h63": 1,
+			"house/h64": 1,
+			"house/h65": 1,
+			"house/h66": 1,
+			"house/h67": 1,
+			"house/h68": 1,
+			"house/h69": 1,
+			"house/h7": 1,
+			"house/h70": 1,
+			"house/h71": 1,
+			"house/h72": 1,
+			"house/h73": 1,
+			"house/h74": 1,
+			"house/h75": 1,
+			"house/h76": 1,
+			"house/h77": 1,
+			"house/h78": 1,
+			"house/h79": 1,
+			"house/h8": 1,
+			"house/h80": 1,
+			"house/h81": 1,
+			"house/h82": 1,
+			"house/h83": 1,
+			"house/h84": 1,
+			"house/h85": 1,
+			"house/h86": 1,
+			"house/h87": 1,
+			"house/h88": 1,
+			"house/h89": 1,
+			"house/h9": 1,
+			"house/h90": 1,
+			"house/h91": 1,
+			"house/h92": 1,
+			"house/h93": 1,
+			"house/h94": 1,
+			"house/h95": 1,
+			"house/h96": 1,
+			"house/h97": 1,
+			"house/h98": 1,
+			"house/h99": 1,
+			"house_peak": 300,
+			"space_cluster/civic_-1_-1": 1,
+			"space_cluster/civic_-2_-1": 1,
+			"space_cluster/courtyard_-1_-2": 1,
+			"space_cluster/courtyard_-1_-3": 1,
+			"space_cluster/courtyard_-1_-4": 1,
+			"space_cluster/courtyard_-1_-5": 1,
+			"space_cluster/courtyard_-1_1": 1,
+			"space_cluster/courtyard_-1_2": 1,
+			"space_cluster/courtyard_-1_3": 1,
+			"space_cluster/courtyard_-2_-2": 1,
+			"space_cluster/courtyard_-2_-3": 1,
+			"space_cluster/courtyard_-2_-4": 1,
+			"space_cluster/courtyard_-2_-5": 1,
+			"space_cluster/courtyard_-2_1": 1,
+			"space_cluster/courtyard_-2_2": 1,
+			"space_cluster/courtyard_-2_3": 1,
+			"space_cluster/courtyard_-3_-2": 1,
+			"space_cluster/courtyard_-3_-3": 1,
+			"space_cluster/courtyard_-3_-4": 1,
+			"space_cluster/courtyard_-3_-5": 1,
+			"space_cluster/courtyard_-3_1": 1,
+			"space_cluster/courtyard_-3_2": 1,
+			"space_cluster/courtyard_-3_3": 1,
+			"space_cluster/courtyard_-4_-2": 1,
+			"space_cluster/courtyard_-4_-3": 1,
+			"space_cluster/courtyard_-4_-4": 1,
+			"space_cluster/courtyard_-4_-5": 1,
+			"space_cluster/courtyard_-4_1": 1,
+			"space_cluster/courtyard_-4_2": 1,
+			"space_cluster/courtyard_-4_3": 1,
+			"space_cluster/courtyard_-5_-2": 1,
+			"space_cluster/courtyard_-5_-3": 1,
+			"space_cluster/courtyard_-5_-4": 1,
+			"space_cluster/courtyard_-5_-5": 1,
+			"space_cluster/courtyard_-5_1": 1,
+			"space_cluster/courtyard_-5_2": 1,
+			"space_cluster/courtyard_-5_3": 1,
+			"space_cluster/courtyard_0_-4": 1,
+			"space_cluster/courtyard_0_-5": 1,
+			"space_cluster/courtyard_0_1": 1,
+			"space_cluster/courtyard_1_-2": 1,
+			"space_cluster/courtyard_1_-3": 1,
+			"space_cluster/courtyard_1_-4": 1,
+			"space_cluster/courtyard_1_-5": 1,
+			"space_cluster/courtyard_1_1": 1,
+			"space_cluster/courtyard_1_2": 1,
+			"space_cluster/courtyard_1_3": 1,
+			"space_cluster/courtyard_2_-2": 1,
+			"space_cluster/courtyard_2_-3": 1,
+			"space_cluster/courtyard_2_-4": 1,
+			"space_cluster/courtyard_2_-5": 1,
+			"space_cluster/courtyard_2_1": 1,
+			"space_cluster/courtyard_2_2": 1,
+			"space_cluster/courtyard_2_3": 1,
+			"space_cluster/courtyard_3_-2": 1,
+			"space_cluster/courtyard_3_-3": 1,
+			"space_cluster/courtyard_3_-4": 1,
+			"space_cluster/courtyard_3_-5": 1,
+			"space_cluster/courtyard_3_1": 1,
+			"space_cluster/courtyard_3_2": 1,
+			"space_cluster/courtyard_3_3": 1,
+			"space_cluster/courtyard_4_-2": 1,
+			"space_cluster/courtyard_4_-3": 1,
+			"space_cluster/courtyard_4_-4": 1,
+			"space_cluster/courtyard_4_-5": 1,
+			"space_cluster/courtyard_4_1": 1,
+			"space_cluster/courtyard_4_2": 1,
+			"space_cluster/courtyard_4_3": 1,
+			"space_cluster/courtyard_5_-2": 1,
+			"space_cluster/courtyard_5_-3": 1,
+			"space_cluster/courtyard_5_-4": 1,
+			"space_cluster/courtyard_5_-5": 1,
+			"space_cluster/courtyard_5_1": 1,
+			"space_cluster/courtyard_5_2": 1,
+			"space_cluster/courtyard_5_3": 1,
+			"space_cluster/waterfront_-1_-1": 1,
+			"space_cluster/waterfront_-1_-2": 1,
+			"space_cluster/waterfront_-1_-3": 1,
+			"space_cluster/waterfront_-1_-5": 1,
+			"space_cluster/waterfront_-1_2": 1,
+			"space_cluster/waterfront_-1_3": 1,
+			"space_cluster/waterfront_1_-1": 1,
+			"space_cluster/waterfront_1_-2": 1,
+			"space_cluster/waterfront_1_-3": 1,
+			"space_cluster/waterfront_1_-4": 1,
+			"space_cluster/waterfront_1_-5": 1,
+			"space_cluster/waterfront_1_0": 1,
+			"space_cluster/waterfront_1_1": 1,
+			"space_cluster/waterfront_1_2": 1,
+			"space_cluster/waterfront_1_3": 1,
+			"space_district/civic_-1_-1": 1,
+			"space_district/civic_-2_-1": 1,
+			"tea": 0
+		},
+		"enabled": false,
+		"epoch_id": "800db2bc687a956a2ed36c7d27750fb68ca5d3f4b3b43866fea1f7ea92bf2e57",
+		"inflight_policy": "pause",
+		"level": 1,
+		"origin_sha256": "505d440ea0f630e80233f774285c5d85cfe83fd7d15a305df69c2b12afb37bc5",
+		"receipts": {},
+		"started_at": 1793744446,
+		"version": 1,
+		"xp": 0,
+		"xp_remainder": 0.0
+	},
+	"creative_settings": {
+		"creation_policy": "free",
+		"guidance": false,
+		"migration_version": 1,
+		"music": {
+			"mode": "auto",
+			"seed": 74001,
+			"style": ""
+		},
+		"presentation": {
+			"automatic_decoration": true,
+			"legacy_crowns": false,
+			"window_pennants": false
+		},
+		"version": 1
+	},
+	"district_answers": [
+		{
+			"from": "d1",
+			"to": "d2"
+		},
+		{
+			"from": "d2",
+			"to": "d3"
+		}
+	],
+	"districts": [
+		{
+			"id": "d1",
+			"name": "暖声街坊1",
+			"points": [
+				[
+					-14.0,
+					-2.0
+				]
+			],
+			"style": "warm",
+			"width": 3.5999999046325684
+		},
+		{
+			"era_theme": "renaissance",
+			"id": "d2",
+			"name": "低吟街坊2",
+			"points": [
+				[
+					-10.0,
+					-2.0
+				]
+			],
+			"style": "deep",
+			"width": 3.5999999046325684
+		},
+		{
+			"era_theme": "clockwork",
+			"id": "d3",
+			"name": "织音街坊3",
+			"points": [
+				[
+					-6.0,
+					-2.0
+				]
+			],
+			"style": "weave",
+			"width": 3.5999999046325684
+		},
+		{
+			"id": "d4",
+			"name": "暖声街坊4",
+			"points": [
+				[
+					-29.0,
+					-36.0
+				],
+				[
+					-29.0,
+					36.0
+				]
+			],
+			"style": "warm",
+			"width": 10.0
+		},
+		{
+			"era_theme": "renaissance",
+			"id": "d5",
+			"name": "暖声街坊5",
+			"points": [
+				[
+					-9.0,
+					-36.0
+				],
+				[
+					-9.0,
+					36.0
+				]
+			],
+			"style": "warm",
+			"width": 10.0
+		},
+		{
+			"era_theme": "clockwork",
+			"id": "d6",
+			"name": "暖声街坊6",
+			"points": [
+				[
+					11.0,
+					-36.0
+				],
+				[
+					11.0,
+					36.0
+				]
+			],
+			"style": "warm",
+			"width": 10.0
+		},
+		{
+			"era_theme": "modern_eco",
+			"id": "d7",
+			"name": "暖声街坊7",
+			"points": [
+				[
+					31.0,
+					-36.0
+				],
+				[
+					31.0,
+					36.0
+				]
+			],
+			"style": "warm",
+			"width": 10.0
+		}
+	],
+	"era_answers": [
+		{
+			"from": "d1",
+			"from_era": "pastoral",
+			"to": "d2",
+			"to_era": "renaissance"
+		},
+		{
+			"from": "d2",
+			"from_era": "renaissance",
+			"to": "d3",
+			"to_era": "clockwork"
+		}
+	],
+	"era_unlocks": [
+		"pastoral",
+		"renaissance",
+		"clockwork",
+		"modern_eco"
+	],
+	"growth_memories": [
+		"dawn"
+	],
+	"harmony_journey": {
+		"growth_cutoff": {
+			"source": "converted_legacy",
+			"version": 1,
+			"vignette": {}
+		},
+		"harmony_level": 1,
+		"harmony_xp": 0,
+		"pending_draft": [],
+		"ranks": {},
+		"receipts": {
+			"bread/h2": 1,
+			"house/h1": 1,
+			"house/h10": 1,
+			"house/h100": 1,
+			"house/h101": 1,
+			"house/h102": 1,
+			"house/h103": 1,
+			"house/h104": 1,
+			"house/h105": 1,
+			"house/h106": 1,
+			"house/h107": 1,
+			"house/h108": 1,
+			"house/h109": 1,
+			"house/h11": 1,
+			"house/h110": 1,
+			"house/h111": 1,
+			"house/h112": 1,
+			"house/h113": 1,
+			"house/h114": 1,
+			"house/h115": 1,
+			"house/h116": 1,
+			"house/h117": 1,
+			"house/h118": 1,
+			"house/h119": 1,
+			"house/h12": 1,
+			"house/h120": 1,
+			"house/h121": 1,
+			"house/h122": 1,
+			"house/h123": 1,
+			"house/h124": 1,
+			"house/h125": 1,
+			"house/h126": 1,
+			"house/h127": 1,
+			"house/h128": 1,
+			"house/h129": 1,
+			"house/h13": 1,
+			"house/h130": 1,
+			"house/h131": 1,
+			"house/h132": 1,
+			"house/h133": 1,
+			"house/h134": 1,
+			"house/h135": 1,
+			"house/h136": 1,
+			"house/h137": 1,
+			"house/h138": 1,
+			"house/h139": 1,
+			"house/h14": 1,
+			"house/h140": 1,
+			"house/h141": 1,
+			"house/h142": 1,
+			"house/h143": 1,
+			"house/h144": 1,
+			"house/h145": 1,
+			"house/h146": 1,
+			"house/h147": 1,
+			"house/h148": 1,
+			"house/h149": 1,
+			"house/h15": 1,
+			"house/h150": 1,
+			"house/h151": 1,
+			"house/h152": 1,
+			"house/h153": 1,
+			"house/h154": 1,
+			"house/h155": 1,
+			"house/h156": 1,
+			"house/h157": 1,
+			"house/h158": 1,
+			"house/h159": 1,
+			"house/h16": 1,
+			"house/h160": 1,
+			"house/h161": 1,
+			"house/h162": 1,
+			"house/h163": 1,
+			"house/h164": 1,
+			"house/h165": 1,
+			"house/h166": 1,
+			"house/h167": 1,
+			"house/h168": 1,
+			"house/h169": 1,
+			"house/h17": 1,
+			"house/h170": 1,
+			"house/h171": 1,
+			"house/h172": 1,
+			"house/h173": 1,
+			"house/h174": 1,
+			"house/h175": 1,
+			"house/h176": 1,
+			"house/h177": 1,
+			"house/h178": 1,
+			"house/h179": 1,
+			"house/h18": 1,
+			"house/h180": 1,
+			"house/h181": 1,
+			"house/h182": 1,
+			"house/h183": 1,
+			"house/h184": 1,
+			"house/h185": 1,
+			"house/h186": 1,
+			"house/h187": 1,
+			"house/h188": 1,
+			"house/h189": 1,
+			"house/h19": 1,
+			"house/h190": 1,
+			"house/h191": 1,
+			"house/h192": 1,
+			"house/h193": 1,
+			"house/h194": 1,
+			"house/h195": 1,
+			"house/h196": 1,
+			"house/h197": 1,
+			"house/h198": 1,
+			"house/h199": 1,
+			"house/h2": 1,
+			"house/h20": 1,
+			"house/h200": 1,
+			"house/h201": 1,
+			"house/h202": 1,
+			"house/h203": 1,
+			"house/h204": 1,
+			"house/h205": 1,
+			"house/h206": 1,
+			"house/h207": 1,
+			"house/h208": 1,
+			"house/h209": 1,
+			"house/h21": 1,
+			"house/h210": 1,
+			"house/h211": 1,
+			"house/h212": 1,
+			"house/h213": 1,
+			"house/h214": 1,
+			"house/h215": 1,
+			"house/h216": 1,
+			"house/h217": 1,
+			"house/h218": 1,
+			"house/h219": 1,
+			"house/h22": 1,
+			"house/h220": 1,
+			"house/h221": 1,
+			"house/h222": 1,
+			"house/h223": 1,
+			"house/h224": 1,
+			"house/h225": 1,
+			"house/h226": 1,
+			"house/h227": 1,
+			"house/h228": 1,
+			"house/h229": 1,
+			"house/h23": 1,
+			"house/h230": 1,
+			"house/h231": 1,
+			"house/h232": 1,
+			"house/h233": 1,
+			"house/h234": 1,
+			"house/h235": 1,
+			"house/h236": 1,
+			"house/h237": 1,
+			"house/h238": 1,
+			"house/h239": 1,
+			"house/h24": 1,
+			"house/h240": 1,
+			"house/h241": 1,
+			"house/h242": 1,
+			"house/h243": 1,
+			"house/h244": 1,
+			"house/h245": 1,
+			"house/h246": 1,
+			"house/h247": 1,
+			"house/h248": 1,
+			"house/h249": 1,
+			"house/h25": 1,
+			"house/h250": 1,
+			"house/h251": 1,
+			"house/h252": 1,
+			"house/h253": 1,
+			"house/h254": 1,
+			"house/h255": 1,
+			"house/h256": 1,
+			"house/h257": 1,
+			"house/h258": 1,
+			"house/h259": 1,
+			"house/h26": 1,
+			"house/h260": 1,
+			"house/h261": 1,
+			"house/h262": 1,
+			"house/h263": 1,
+			"house/h264": 1,
+			"house/h265": 1,
+			"house/h266": 1,
+			"house/h267": 1,
+			"house/h268": 1,
+			"house/h269": 1,
+			"house/h27": 1,
+			"house/h270": 1,
+			"house/h271": 1,
+			"house/h272": 1,
+			"house/h273": 1,
+			"house/h274": 1,
+			"house/h275": 1,
+			"house/h276": 1,
+			"house/h277": 1,
+			"house/h278": 1,
+			"house/h279": 1,
+			"house/h28": 1,
+			"house/h280": 1,
+			"house/h281": 1,
+			"house/h282": 1,
+			"house/h283": 1,
+			"house/h284": 1,
+			"house/h285": 1,
+			"house/h286": 1,
+			"house/h287": 1,
+			"house/h288": 1,
+			"house/h289": 1,
+			"house/h29": 1,
+			"house/h290": 1,
+			"house/h291": 1,
+			"house/h292": 1,
+			"house/h293": 1,
+			"house/h294": 1,
+			"house/h295": 1,
+			"house/h296": 1,
+			"house/h297": 1,
+			"house/h298": 1,
+			"house/h299": 1,
+			"house/h3": 1,
+			"house/h30": 1,
+			"house/h300": 1,
+			"house/h301": 1,
+			"house/h302": 1,
+			"house/h31": 1,
+			"house/h32": 1,
+			"house/h33": 1,
+			"house/h34": 1,
+			"house/h35": 1,
+			"house/h36": 1,
+			"house/h37": 1,
+			"house/h38": 1,
+			"house/h39": 1,
+			"house/h4": 1,
+			"house/h40": 1,
+			"house/h41": 1,
+			"house/h42": 1,
+			"house/h43": 1,
+			"house/h44": 1,
+			"house/h45": 1,
+			"house/h46": 1,
+			"house/h47": 1,
+			"house/h48": 1,
+			"house/h49": 1,
+			"house/h50": 1,
+			"house/h51": 1,
+			"house/h52": 1,
+			"house/h53": 1,
+			"house/h54": 1,
+			"house/h55": 1,
+			"house/h56": 1,
+			"house/h57": 1,
+			"house/h58": 1,
+			"house/h59": 1,
+			"house/h60": 1,
+			"house/h61": 1,
+			"house/h62": 1,
+			"house/h63": 1,
+			"house/h64": 1,
+			"house/h65": 1,
+			"house/h66": 1,
+			"house/h67": 1,
+			"house/h68": 1,
+			"house/h69": 1,
+			"house/h7": 1,
+			"house/h70": 1,
+			"house/h71": 1,
+			"house/h72": 1,
+			"house/h73": 1,
+			"house/h74": 1,
+			"house/h75": 1,
+			"house/h76": 1,
+			"house/h77": 1,
+			"house/h78": 1,
+			"house/h79": 1,
+			"house/h8": 1,
+			"house/h80": 1,
+			"house/h81": 1,
+			"house/h82": 1,
+			"house/h83": 1,
+			"house/h84": 1,
+			"house/h85": 1,
+			"house/h86": 1,
+			"house/h87": 1,
+			"house/h88": 1,
+			"house/h89": 1,
+			"house/h9": 1,
+			"house/h90": 1,
+			"house/h91": 1,
+			"house/h92": 1,
+			"house/h93": 1,
+			"house/h94": 1,
+			"house/h95": 1,
+			"house/h96": 1,
+			"house/h97": 1,
+			"house/h98": 1,
+			"house/h99": 1,
+			"legacy_charter/clockwork": 1,
+			"legacy_charter/modern_eco": 1,
+			"legacy_charter/renaissance": 1,
+			"school_receipts_baseline": 1,
+			"tea": 0,
+			"unified_rewards/v1": 1
+		},
+		"traditions": []
+	},
+	"high_watermark": {
+		"cell": 327,
+		"district": 7,
+		"house": 302,
+		"plant": 32,
+		"road": 21,
+		"water": 0
+	},
+	"house_culture": {},
+	"house_improvements": {},
+	"houses": [
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"cells": [
+				{
+					"id": "c1",
+					"kind": "room",
+					"level": 0,
+					"source": "seed",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c308",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h1",
+			"name": "石榴巷1号",
+			"origin": [
+				-14.0,
+				-2.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 81000,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"cells": [
+				{
+					"id": "c3",
+					"kind": "room",
+					"level": 0,
+					"source": "seed",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h2",
+			"name": "石榴巷2号",
+			"origin": [
+				-10.0,
+				-2.0
+			],
+			"palette": 1,
+			"role": "bakery",
+			"seed": 81977,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"cells": [
+				{
+					"id": "c7",
+					"kind": "room",
+					"level": 0,
+					"source": "seed",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h4",
+			"name": "石榴巷4号",
+			"origin": [
+				-6.0,
+				-2.0
+			],
+			"palette": 3,
+			"role": "garden_cafe",
+			"seed": 83931,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"cells": [
+				{
+					"id": "c5",
+					"kind": "room",
+					"level": 0,
+					"source": "seed",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h3",
+			"name": "石榴巷3号",
+			"origin": [
+				-2.0,
+				-2.0
+			],
+			"palette": 2,
+			"role": "venue",
+			"seed": 82954,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c12",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h7",
+			"name": "石榴巷7号",
+			"origin": [
+				-34.0,
+				-32.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 87839,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c13",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h8",
+			"name": "石榴巷8号",
+			"origin": [
+				-30.0,
+				-32.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 88816,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c14",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h9",
+			"name": "石榴巷9号",
+			"origin": [
+				-26.0,
+				-32.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 89793,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c15",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h10",
+			"name": "石榴巷10号",
+			"origin": [
+				-22.0,
+				-32.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 90770,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c16",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h11",
+			"name": "石榴巷11号",
+			"origin": [
+				-18.0,
+				-32.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 91747,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c17",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h12",
+			"name": "石榴巷12号",
+			"origin": [
+				-14.0,
+				-32.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 92724,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c18",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h13",
+			"name": "石榴巷13号",
+			"origin": [
+				-34.0,
+				-28.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 93701,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c19",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h14",
+			"name": "石榴巷14号",
+			"origin": [
+				-30.0,
+				-28.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 94678,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c20",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h15",
+			"name": "石榴巷15号",
+			"origin": [
+				-26.0,
+				-28.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 95655,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c21",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h16",
+			"name": "石榴巷16号",
+			"origin": [
+				-22.0,
+				-28.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 96632,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c22",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h17",
+			"name": "石榴巷17号",
+			"origin": [
+				-18.0,
+				-28.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 97609,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c23",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c309",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h18",
+			"name": "石榴巷18号",
+			"origin": [
+				-14.0,
+				-28.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 98586,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c24",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h19",
+			"name": "石榴巷19号",
+			"origin": [
+				-34.0,
+				-24.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 99563,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c25",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h20",
+			"name": "石榴巷20号",
+			"origin": [
+				-30.0,
+				-24.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 100540,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c26",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h21",
+			"name": "石榴巷21号",
+			"origin": [
+				-26.0,
+				-24.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 101517,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c27",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h22",
+			"name": "石榴巷22号",
+			"origin": [
+				-22.0,
+				-24.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 102494,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c28",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h23",
+			"name": "石榴巷23号",
+			"origin": [
+				-18.0,
+				-24.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 103471,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c29",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h24",
+			"name": "石榴巷24号",
+			"origin": [
+				-14.0,
+				-24.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 104448,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c30",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h25",
+			"name": "石榴巷25号",
+			"origin": [
+				-34.0,
+				-20.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 105425,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c31",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h26",
+			"name": "石榴巷26号",
+			"origin": [
+				-30.0,
+				-20.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 106402,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c32",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h27",
+			"name": "石榴巷27号",
+			"origin": [
+				-26.0,
+				-20.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 107379,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c33",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h28",
+			"name": "石榴巷28号",
+			"origin": [
+				-22.0,
+				-20.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 108356,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c34",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h29",
+			"name": "石榴巷29号",
+			"origin": [
+				-18.0,
+				-20.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 109333,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c35",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h30",
+			"name": "石榴巷30号",
+			"origin": [
+				-14.0,
+				-20.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 110310,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c36",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h31",
+			"name": "石榴巷31号",
+			"origin": [
+				-36.0,
+				-36.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 111287,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c37",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h32",
+			"name": "石榴巷32号",
+			"origin": [
+				-32.0,
+				-36.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 112264,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c38",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c310",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h33",
+			"name": "石榴巷33号",
+			"origin": [
+				-28.0,
+				-36.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 113241,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c39",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h34",
+			"name": "石榴巷34号",
+			"origin": [
+				-24.0,
+				-36.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 114218,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c40",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h35",
+			"name": "石榴巷35号",
+			"origin": [
+				-20.0,
+				-36.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 115195,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c41",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h36",
+			"name": "石榴巷36号",
+			"origin": [
+				-16.0,
+				-36.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 116172,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c42",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h37",
+			"name": "石榴巷37号",
+			"origin": [
+				-12.0,
+				-36.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 117149,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c43",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h38",
+			"name": "石榴巷38号",
+			"origin": [
+				-8.0,
+				-36.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 118126,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c44",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h39",
+			"name": "石榴巷39号",
+			"origin": [
+				-4.0,
+				-36.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 119103,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c45",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h40",
+			"name": "石榴巷40号",
+			"origin": [
+				8.0,
+				-36.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 120080,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c46",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h41",
+			"name": "石榴巷41号",
+			"origin": [
+				12.0,
+				-36.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 121057,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c47",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h42",
+			"name": "石榴巷42号",
+			"origin": [
+				16.0,
+				-36.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 122034,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c48",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h43",
+			"name": "石榴巷43号",
+			"origin": [
+				20.0,
+				-36.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 123011,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c49",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h44",
+			"name": "石榴巷44号",
+			"origin": [
+				24.0,
+				-36.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 123988,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c50",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h45",
+			"name": "石榴巷45号",
+			"origin": [
+				28.0,
+				-36.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 124965,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c51",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h46",
+			"name": "石榴巷46号",
+			"origin": [
+				32.0,
+				-36.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 125942,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c52",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h47",
+			"name": "石榴巷47号",
+			"origin": [
+				36.0,
+				-36.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 126919,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c53",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c311",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h48",
+			"name": "石榴巷48号",
+			"origin": [
+				-36.0,
+				-32.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 127896,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c54",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h49",
+			"name": "石榴巷49号",
+			"origin": [
+				-32.0,
+				-32.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 128873,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c55",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h50",
+			"name": "石榴巷50号",
+			"origin": [
+				-28.0,
+				-32.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 129850,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c56",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h51",
+			"name": "石榴巷51号",
+			"origin": [
+				-24.0,
+				-32.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 130827,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c57",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h52",
+			"name": "石榴巷52号",
+			"origin": [
+				-20.0,
+				-32.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 131804,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c58",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h53",
+			"name": "石榴巷53号",
+			"origin": [
+				-18.0,
+				-2.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 132781,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c59",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h54",
+			"name": "石榴巷54号",
+			"origin": [
+				-22.0,
+				-2.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 133758,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c60",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h55",
+			"name": "石榴巷55号",
+			"origin": [
+				-16.0,
+				-32.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 134735,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c61",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h56",
+			"name": "石榴巷56号",
+			"origin": [
+				-12.0,
+				-32.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 135712,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c62",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h57",
+			"name": "石榴巷57号",
+			"origin": [
+				-8.0,
+				-32.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 136689,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c63",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h58",
+			"name": "石榴巷58号",
+			"origin": [
+				-4.0,
+				-32.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 137666,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c64",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h59",
+			"name": "石榴巷59号",
+			"origin": [
+				0.0,
+				-32.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 138643,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c65",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h60",
+			"name": "石榴巷60号",
+			"origin": [
+				8.0,
+				-32.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 139620,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c66",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h61",
+			"name": "石榴巷61号",
+			"origin": [
+				12.0,
+				-32.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 140597,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c67",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h62",
+			"name": "石榴巷62号",
+			"origin": [
+				16.0,
+				-32.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 141574,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c68",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c312",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h63",
+			"name": "石榴巷63号",
+			"origin": [
+				20.0,
+				-32.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 142551,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c69",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h64",
+			"name": "石榴巷64号",
+			"origin": [
+				24.0,
+				-32.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 143528,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c70",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h65",
+			"name": "石榴巷65号",
+			"origin": [
+				28.0,
+				-32.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 144505,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c71",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h66",
+			"name": "石榴巷66号",
+			"origin": [
+				32.0,
+				-32.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 145482,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c72",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h67",
+			"name": "石榴巷67号",
+			"origin": [
+				36.0,
+				-32.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 146459,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c73",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h68",
+			"name": "石榴巷68号",
+			"origin": [
+				-36.0,
+				-28.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 147436,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c74",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h69",
+			"name": "石榴巷69号",
+			"origin": [
+				-32.0,
+				-28.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 148413,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c75",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h70",
+			"name": "石榴巷70号",
+			"origin": [
+				-28.0,
+				-28.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 149390,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c76",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h71",
+			"name": "石榴巷71号",
+			"origin": [
+				-24.0,
+				-28.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 150367,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c77",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h72",
+			"name": "石榴巷72号",
+			"origin": [
+				-20.0,
+				-28.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 151344,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c78",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h73",
+			"name": "石榴巷73号",
+			"origin": [
+				-16.0,
+				-28.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 152321,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c79",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h74",
+			"name": "石榴巷74号",
+			"origin": [
+				-12.0,
+				-28.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 153298,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c80",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h75",
+			"name": "石榴巷75号",
+			"origin": [
+				-8.0,
+				-28.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 154275,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c81",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h76",
+			"name": "石榴巷76号",
+			"origin": [
+				-4.0,
+				-28.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 155252,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c82",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h77",
+			"name": "石榴巷77号",
+			"origin": [
+				0.0,
+				-28.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 156229,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c83",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c313",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h78",
+			"name": "石榴巷78号",
+			"origin": [
+				8.0,
+				-28.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 157206,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c84",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h79",
+			"name": "石榴巷79号",
+			"origin": [
+				12.0,
+				-28.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 158183,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c85",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h80",
+			"name": "石榴巷80号",
+			"origin": [
+				16.0,
+				-28.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 159160,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c86",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h81",
+			"name": "石榴巷81号",
+			"origin": [
+				20.0,
+				-28.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 160137,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c87",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h82",
+			"name": "石榴巷82号",
+			"origin": [
+				24.0,
+				-28.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 161114,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c88",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h83",
+			"name": "石榴巷83号",
+			"origin": [
+				28.0,
+				-28.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 162091,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c89",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h84",
+			"name": "石榴巷84号",
+			"origin": [
+				32.0,
+				-28.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 163068,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c90",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h85",
+			"name": "石榴巷85号",
+			"origin": [
+				36.0,
+				-28.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 164045,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c91",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h86",
+			"name": "石榴巷86号",
+			"origin": [
+				-36.0,
+				-24.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 165022,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c92",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h87",
+			"name": "石榴巷87号",
+			"origin": [
+				-32.0,
+				-24.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 165999,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c93",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h88",
+			"name": "石榴巷88号",
+			"origin": [
+				-28.0,
+				-24.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 166976,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c94",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h89",
+			"name": "石榴巷89号",
+			"origin": [
+				-24.0,
+				-24.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 167953,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c95",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h90",
+			"name": "石榴巷90号",
+			"origin": [
+				-20.0,
+				-24.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 168930,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c96",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h91",
+			"name": "石榴巷91号",
+			"origin": [
+				-16.0,
+				-24.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 169907,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c97",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h92",
+			"name": "石榴巷92号",
+			"origin": [
+				-12.0,
+				-24.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 170884,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c98",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c314",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h93",
+			"name": "石榴巷93号",
+			"origin": [
+				-8.0,
+				-24.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 171861,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c99",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h94",
+			"name": "石榴巷94号",
+			"origin": [
+				-4.0,
+				-24.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 172838,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c100",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h95",
+			"name": "石榴巷95号",
+			"origin": [
+				0.0,
+				-24.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 173815,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c101",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h96",
+			"name": "石榴巷96号",
+			"origin": [
+				8.0,
+				-24.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 174792,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c102",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h97",
+			"name": "石榴巷97号",
+			"origin": [
+				12.0,
+				-24.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 175769,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c103",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h98",
+			"name": "石榴巷98号",
+			"origin": [
+				16.0,
+				-24.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 176746,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c104",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h99",
+			"name": "石榴巷99号",
+			"origin": [
+				20.0,
+				-24.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 177723,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c105",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h100",
+			"name": "石榴巷100号",
+			"origin": [
+				24.0,
+				-24.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 178700,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c106",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h101",
+			"name": "石榴巷101号",
+			"origin": [
+				28.0,
+				-24.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 179677,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c107",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h102",
+			"name": "石榴巷102号",
+			"origin": [
+				32.0,
+				-24.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 180654,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c108",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h103",
+			"name": "石榴巷103号",
+			"origin": [
+				36.0,
+				-24.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 181631,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c109",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h104",
+			"name": "石榴巷104号",
+			"origin": [
+				-36.0,
+				-20.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 182608,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c110",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h105",
+			"name": "石榴巷105号",
+			"origin": [
+				-32.0,
+				-20.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 183585,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c111",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h106",
+			"name": "石榴巷106号",
+			"origin": [
+				-28.0,
+				-20.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 184562,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c112",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h107",
+			"name": "石榴巷107号",
+			"origin": [
+				-24.0,
+				-20.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 185539,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c113",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c315",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h108",
+			"name": "石榴巷108号",
+			"origin": [
+				-20.0,
+				-20.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 186516,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c114",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h109",
+			"name": "石榴巷109号",
+			"origin": [
+				-16.0,
+				-20.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 187493,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c115",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h110",
+			"name": "石榴巷110号",
+			"origin": [
+				-12.0,
+				-20.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 188470,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c116",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h111",
+			"name": "石榴巷111号",
+			"origin": [
+				-8.0,
+				-20.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 189447,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c117",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h112",
+			"name": "石榴巷112号",
+			"origin": [
+				-4.0,
+				-20.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 190424,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c118",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h113",
+			"name": "石榴巷113号",
+			"origin": [
+				8.0,
+				-20.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 191401,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c119",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h114",
+			"name": "石榴巷114号",
+			"origin": [
+				12.0,
+				-20.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 192378,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c120",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h115",
+			"name": "石榴巷115号",
+			"origin": [
+				16.0,
+				-20.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 193355,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c121",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h116",
+			"name": "石榴巷116号",
+			"origin": [
+				20.0,
+				-20.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 194332,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c122",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h117",
+			"name": "石榴巷117号",
+			"origin": [
+				24.0,
+				-20.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 195309,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c123",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h118",
+			"name": "石榴巷118号",
+			"origin": [
+				28.0,
+				-20.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 196286,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c124",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h119",
+			"name": "石榴巷119号",
+			"origin": [
+				32.0,
+				-20.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 197263,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c125",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h120",
+			"name": "石榴巷120号",
+			"origin": [
+				36.0,
+				-20.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 198240,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c126",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h121",
+			"name": "石榴巷121号",
+			"origin": [
+				-36.0,
+				-16.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 199217,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c127",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h122",
+			"name": "石榴巷122号",
+			"origin": [
+				-32.0,
+				-16.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 200194,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c128",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c316",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h123",
+			"name": "石榴巷123号",
+			"origin": [
+				-28.0,
+				-16.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 201171,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c129",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h124",
+			"name": "石榴巷124号",
+			"origin": [
+				-24.0,
+				-16.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 202148,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c130",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h125",
+			"name": "石榴巷125号",
+			"origin": [
+				-20.0,
+				-16.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 203125,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c131",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h126",
+			"name": "石榴巷126号",
+			"origin": [
+				-16.0,
+				-16.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 204102,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c132",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h127",
+			"name": "石榴巷127号",
+			"origin": [
+				-12.0,
+				-16.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 205079,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c133",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h128",
+			"name": "石榴巷128号",
+			"origin": [
+				-8.0,
+				-16.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 206056,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c134",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h129",
+			"name": "石榴巷129号",
+			"origin": [
+				-4.0,
+				-16.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 207033,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c135",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h130",
+			"name": "石榴巷130号",
+			"origin": [
+				8.0,
+				-16.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 208010,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c136",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h131",
+			"name": "石榴巷131号",
+			"origin": [
+				12.0,
+				-16.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 208987,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c137",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h132",
+			"name": "石榴巷132号",
+			"origin": [
+				16.0,
+				-16.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 209964,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c138",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h133",
+			"name": "石榴巷133号",
+			"origin": [
+				20.0,
+				-16.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 210941,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c139",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h134",
+			"name": "石榴巷134号",
+			"origin": [
+				24.0,
+				-16.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 211918,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c140",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h135",
+			"name": "石榴巷135号",
+			"origin": [
+				28.0,
+				-16.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 212895,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c141",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h136",
+			"name": "石榴巷136号",
+			"origin": [
+				32.0,
+				-16.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 213872,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c142",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h137",
+			"name": "石榴巷137号",
+			"origin": [
+				36.0,
+				-16.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 214849,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c143",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c317",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h138",
+			"name": "石榴巷138号",
+			"origin": [
+				-36.0,
+				-12.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 215826,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c144",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h139",
+			"name": "石榴巷139号",
+			"origin": [
+				-32.0,
+				-12.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 216803,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c145",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h140",
+			"name": "石榴巷140号",
+			"origin": [
+				-28.0,
+				-12.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 217780,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c146",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h141",
+			"name": "石榴巷141号",
+			"origin": [
+				-24.0,
+				-12.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 218757,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c147",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h142",
+			"name": "石榴巷142号",
+			"origin": [
+				-20.0,
+				-12.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 219734,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c148",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h143",
+			"name": "石榴巷143号",
+			"origin": [
+				-16.0,
+				-12.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 220711,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c149",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h144",
+			"name": "石榴巷144号",
+			"origin": [
+				-12.0,
+				-12.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 221688,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c150",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h145",
+			"name": "石榴巷145号",
+			"origin": [
+				-8.0,
+				-12.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 222665,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c151",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h146",
+			"name": "石榴巷146号",
+			"origin": [
+				-4.0,
+				-12.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 223642,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c152",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h147",
+			"name": "石榴巷147号",
+			"origin": [
+				8.0,
+				-12.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 224619,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c153",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h148",
+			"name": "石榴巷148号",
+			"origin": [
+				12.0,
+				-12.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 225596,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c154",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h149",
+			"name": "石榴巷149号",
+			"origin": [
+				16.0,
+				-12.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 226573,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c155",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h150",
+			"name": "石榴巷150号",
+			"origin": [
+				20.0,
+				-12.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 227550,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c156",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h151",
+			"name": "石榴巷151号",
+			"origin": [
+				24.0,
+				-12.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 228527,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c157",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h152",
+			"name": "石榴巷152号",
+			"origin": [
+				28.0,
+				-12.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 229504,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c158",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c318",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h153",
+			"name": "石榴巷153号",
+			"origin": [
+				32.0,
+				-12.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 230481,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c159",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h154",
+			"name": "石榴巷154号",
+			"origin": [
+				36.0,
+				-12.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 231458,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c160",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h155",
+			"name": "石榴巷155号",
+			"origin": [
+				-36.0,
+				-8.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 232435,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c161",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h156",
+			"name": "石榴巷156号",
+			"origin": [
+				-32.0,
+				-8.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 233412,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c162",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h157",
+			"name": "石榴巷157号",
+			"origin": [
+				-28.0,
+				-8.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 234389,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c163",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h158",
+			"name": "石榴巷158号",
+			"origin": [
+				-24.0,
+				-8.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 235366,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c164",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h159",
+			"name": "石榴巷159号",
+			"origin": [
+				-20.0,
+				-8.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 236343,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c165",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h160",
+			"name": "石榴巷160号",
+			"origin": [
+				-16.0,
+				-8.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 237320,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c166",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h161",
+			"name": "石榴巷161号",
+			"origin": [
+				-12.0,
+				-8.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 238297,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c167",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h162",
+			"name": "石榴巷162号",
+			"origin": [
+				8.0,
+				-8.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 239274,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c168",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h163",
+			"name": "石榴巷163号",
+			"origin": [
+				12.0,
+				-8.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 240251,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c169",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h164",
+			"name": "石榴巷164号",
+			"origin": [
+				16.0,
+				-8.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 241228,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c170",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h165",
+			"name": "石榴巷165号",
+			"origin": [
+				20.0,
+				-8.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 242205,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c171",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h166",
+			"name": "石榴巷166号",
+			"origin": [
+				24.0,
+				-8.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 243182,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c172",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h167",
+			"name": "石榴巷167号",
+			"origin": [
+				28.0,
+				-8.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 244159,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c173",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c319",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h168",
+			"name": "石榴巷168号",
+			"origin": [
+				32.0,
+				-8.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 245136,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c174",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h169",
+			"name": "石榴巷169号",
+			"origin": [
+				36.0,
+				-8.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 246113,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c175",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h170",
+			"name": "石榴巷170号",
+			"origin": [
+				-36.0,
+				-4.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 247090,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c176",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h171",
+			"name": "石榴巷171号",
+			"origin": [
+				-32.0,
+				-4.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 248067,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c177",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h172",
+			"name": "石榴巷172号",
+			"origin": [
+				-28.0,
+				-4.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 249044,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c178",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h173",
+			"name": "石榴巷173号",
+			"origin": [
+				-24.0,
+				-4.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 250021,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c179",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h174",
+			"name": "石榴巷174号",
+			"origin": [
+				-20.0,
+				-4.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 250998,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c180",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h175",
+			"name": "石榴巷175号",
+			"origin": [
+				-16.0,
+				-4.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 251975,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c181",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h176",
+			"name": "石榴巷176号",
+			"origin": [
+				8.0,
+				-4.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 252952,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c182",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h177",
+			"name": "石榴巷177号",
+			"origin": [
+				12.0,
+				-4.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 253929,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c183",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h178",
+			"name": "石榴巷178号",
+			"origin": [
+				16.0,
+				-4.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 254906,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c184",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h179",
+			"name": "石榴巷179号",
+			"origin": [
+				20.0,
+				-4.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 255883,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c185",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h180",
+			"name": "石榴巷180号",
+			"origin": [
+				24.0,
+				-4.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 256860,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c186",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h181",
+			"name": "石榴巷181号",
+			"origin": [
+				28.0,
+				-4.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 257837,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c187",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h182",
+			"name": "石榴巷182号",
+			"origin": [
+				32.0,
+				-4.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 258814,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c188",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c320",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h183",
+			"name": "石榴巷183号",
+			"origin": [
+				36.0,
+				-4.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 259791,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c189",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h184",
+			"name": "石榴巷184号",
+			"origin": [
+				-36.0,
+				0.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 260768,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c190",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h185",
+			"name": "石榴巷185号",
+			"origin": [
+				-32.0,
+				0.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 261745,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c191",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h186",
+			"name": "石榴巷186号",
+			"origin": [
+				-28.0,
+				0.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 262722,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c192",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h187",
+			"name": "石榴巷187号",
+			"origin": [
+				-24.0,
+				0.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 263699,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c193",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h188",
+			"name": "石榴巷188号",
+			"origin": [
+				-20.0,
+				0.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 264676,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c194",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h189",
+			"name": "石榴巷189号",
+			"origin": [
+				8.0,
+				0.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 265653,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c195",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h190",
+			"name": "石榴巷190号",
+			"origin": [
+				12.0,
+				0.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 266630,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c196",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h191",
+			"name": "石榴巷191号",
+			"origin": [
+				16.0,
+				0.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 267607,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c197",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h192",
+			"name": "石榴巷192号",
+			"origin": [
+				20.0,
+				0.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 268584,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c198",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h193",
+			"name": "石榴巷193号",
+			"origin": [
+				24.0,
+				0.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 269561,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c199",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h194",
+			"name": "石榴巷194号",
+			"origin": [
+				28.0,
+				0.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 270538,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c200",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h195",
+			"name": "石榴巷195号",
+			"origin": [
+				32.0,
+				0.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 271515,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c201",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h196",
+			"name": "石榴巷196号",
+			"origin": [
+				36.0,
+				0.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 272492,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c202",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h197",
+			"name": "石榴巷197号",
+			"origin": [
+				-36.0,
+				4.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 273469,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c203",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c321",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h198",
+			"name": "石榴巷198号",
+			"origin": [
+				-32.0,
+				4.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 274446,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c204",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h199",
+			"name": "石榴巷199号",
+			"origin": [
+				-28.0,
+				4.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 275423,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c205",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h200",
+			"name": "石榴巷200号",
+			"origin": [
+				-24.0,
+				4.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 276400,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c206",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h201",
+			"name": "石榴巷201号",
+			"origin": [
+				-20.0,
+				4.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 277377,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c207",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h202",
+			"name": "石榴巷202号",
+			"origin": [
+				-16.0,
+				4.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 278354,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c208",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h203",
+			"name": "石榴巷203号",
+			"origin": [
+				-12.0,
+				4.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 279331,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c209",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h204",
+			"name": "石榴巷204号",
+			"origin": [
+				0.0,
+				4.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 280308,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c210",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h205",
+			"name": "石榴巷205号",
+			"origin": [
+				8.0,
+				4.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 281285,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c211",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h206",
+			"name": "石榴巷206号",
+			"origin": [
+				12.0,
+				4.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 282262,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c212",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h207",
+			"name": "石榴巷207号",
+			"origin": [
+				16.0,
+				4.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 283239,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c213",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h208",
+			"name": "石榴巷208号",
+			"origin": [
+				20.0,
+				4.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 284216,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c214",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h209",
+			"name": "石榴巷209号",
+			"origin": [
+				24.0,
+				4.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 285193,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c215",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h210",
+			"name": "石榴巷210号",
+			"origin": [
+				28.0,
+				4.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 286170,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c216",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h211",
+			"name": "石榴巷211号",
+			"origin": [
+				32.0,
+				4.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 287147,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c217",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h212",
+			"name": "石榴巷212号",
+			"origin": [
+				36.0,
+				4.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 288124,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c218",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c322",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h213",
+			"name": "石榴巷213号",
+			"origin": [
+				-36.0,
+				8.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 289101,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c219",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h214",
+			"name": "石榴巷214号",
+			"origin": [
+				-32.0,
+				8.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 290078,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c220",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h215",
+			"name": "石榴巷215号",
+			"origin": [
+				-28.0,
+				8.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 291055,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c221",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h216",
+			"name": "石榴巷216号",
+			"origin": [
+				-24.0,
+				8.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 292032,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c222",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h217",
+			"name": "石榴巷217号",
+			"origin": [
+				-20.0,
+				8.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 293009,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c223",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h218",
+			"name": "石榴巷218号",
+			"origin": [
+				-16.0,
+				8.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 293986,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c224",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h219",
+			"name": "石榴巷219号",
+			"origin": [
+				-12.0,
+				8.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 294963,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c225",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h220",
+			"name": "石榴巷220号",
+			"origin": [
+				-8.0,
+				8.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 295940,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c226",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h221",
+			"name": "石榴巷221号",
+			"origin": [
+				-4.0,
+				8.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 296917,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c227",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h222",
+			"name": "石榴巷222号",
+			"origin": [
+				0.0,
+				8.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 297894,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c228",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h223",
+			"name": "石榴巷223号",
+			"origin": [
+				8.0,
+				8.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 298871,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c229",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h224",
+			"name": "石榴巷224号",
+			"origin": [
+				12.0,
+				8.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 299848,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c230",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h225",
+			"name": "石榴巷225号",
+			"origin": [
+				16.0,
+				8.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 300825,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c231",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h226",
+			"name": "石榴巷226号",
+			"origin": [
+				20.0,
+				8.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 301802,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c232",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h227",
+			"name": "石榴巷227号",
+			"origin": [
+				24.0,
+				8.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 302779,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c233",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c323",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h228",
+			"name": "石榴巷228号",
+			"origin": [
+				28.0,
+				8.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 303756,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c234",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h229",
+			"name": "石榴巷229号",
+			"origin": [
+				32.0,
+				8.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 304733,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c235",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h230",
+			"name": "石榴巷230号",
+			"origin": [
+				36.0,
+				8.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 305710,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c236",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h231",
+			"name": "石榴巷231号",
+			"origin": [
+				-36.0,
+				12.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 306687,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c237",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h232",
+			"name": "石榴巷232号",
+			"origin": [
+				-32.0,
+				12.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 307664,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c238",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h233",
+			"name": "石榴巷233号",
+			"origin": [
+				-28.0,
+				12.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 308641,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c239",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h234",
+			"name": "石榴巷234号",
+			"origin": [
+				-24.0,
+				12.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 309618,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c240",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h235",
+			"name": "石榴巷235号",
+			"origin": [
+				-20.0,
+				12.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 310595,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c241",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h236",
+			"name": "石榴巷236号",
+			"origin": [
+				-16.0,
+				12.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 311572,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c242",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h237",
+			"name": "石榴巷237号",
+			"origin": [
+				-12.0,
+				12.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 312549,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c243",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h238",
+			"name": "石榴巷238号",
+			"origin": [
+				-8.0,
+				12.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 313526,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c244",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h239",
+			"name": "石榴巷239号",
+			"origin": [
+				-4.0,
+				12.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 314503,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c245",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h240",
+			"name": "石榴巷240号",
+			"origin": [
+				0.0,
+				12.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 315480,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c246",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h241",
+			"name": "石榴巷241号",
+			"origin": [
+				8.0,
+				12.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 316457,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c247",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h242",
+			"name": "石榴巷242号",
+			"origin": [
+				12.0,
+				12.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 317434,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c248",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c324",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h243",
+			"name": "石榴巷243号",
+			"origin": [
+				16.0,
+				12.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 318411,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c249",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h244",
+			"name": "石榴巷244号",
+			"origin": [
+				20.0,
+				12.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 319388,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c250",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h245",
+			"name": "石榴巷245号",
+			"origin": [
+				24.0,
+				12.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 320365,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c251",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h246",
+			"name": "石榴巷246号",
+			"origin": [
+				28.0,
+				12.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 321342,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c252",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h247",
+			"name": "石榴巷247号",
+			"origin": [
+				32.0,
+				12.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 322319,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c253",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h248",
+			"name": "石榴巷248号",
+			"origin": [
+				36.0,
+				12.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 323296,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c254",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h249",
+			"name": "石榴巷249号",
+			"origin": [
+				-36.0,
+				16.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 324273,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c255",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h250",
+			"name": "石榴巷250号",
+			"origin": [
+				-32.0,
+				16.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 325250,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c256",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h251",
+			"name": "石榴巷251号",
+			"origin": [
+				-28.0,
+				16.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 326227,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c257",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h252",
+			"name": "石榴巷252号",
+			"origin": [
+				-24.0,
+				16.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 327204,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c258",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h253",
+			"name": "石榴巷253号",
+			"origin": [
+				-20.0,
+				16.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 328181,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c259",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h254",
+			"name": "石榴巷254号",
+			"origin": [
+				-16.0,
+				16.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 329158,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c260",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h255",
+			"name": "石榴巷255号",
+			"origin": [
+				-12.0,
+				16.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 330135,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c261",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h256",
+			"name": "石榴巷256号",
+			"origin": [
+				-8.0,
+				16.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 331112,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c262",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h257",
+			"name": "石榴巷257号",
+			"origin": [
+				-4.0,
+				16.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 332089,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c263",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c325",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h258",
+			"name": "石榴巷258号",
+			"origin": [
+				8.0,
+				16.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 333066,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c264",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h259",
+			"name": "石榴巷259号",
+			"origin": [
+				12.0,
+				16.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 334043,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c265",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h260",
+			"name": "石榴巷260号",
+			"origin": [
+				16.0,
+				16.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 335020,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c266",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h261",
+			"name": "石榴巷261号",
+			"origin": [
+				20.0,
+				16.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 335997,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c267",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h262",
+			"name": "石榴巷262号",
+			"origin": [
+				24.0,
+				16.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 336974,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c268",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h263",
+			"name": "石榴巷263号",
+			"origin": [
+				28.0,
+				16.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 337951,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c269",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h264",
+			"name": "石榴巷264号",
+			"origin": [
+				32.0,
+				16.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 338928,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c270",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h265",
+			"name": "石榴巷265号",
+			"origin": [
+				36.0,
+				16.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 339905,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c271",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h266",
+			"name": "石榴巷266号",
+			"origin": [
+				-36.0,
+				20.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 340882,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c272",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h267",
+			"name": "石榴巷267号",
+			"origin": [
+				-32.0,
+				20.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 341859,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c273",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h268",
+			"name": "石榴巷268号",
+			"origin": [
+				-28.0,
+				20.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 342836,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c274",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h269",
+			"name": "石榴巷269号",
+			"origin": [
+				-24.0,
+				20.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 343813,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c275",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h270",
+			"name": "石榴巷270号",
+			"origin": [
+				-20.0,
+				20.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 344790,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c276",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h271",
+			"name": "石榴巷271号",
+			"origin": [
+				-16.0,
+				20.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 345767,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c277",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h272",
+			"name": "石榴巷272号",
+			"origin": [
+				-12.0,
+				20.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 346744,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c278",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c326",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h273",
+			"name": "石榴巷273号",
+			"origin": [
+				-8.0,
+				20.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 347721,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c279",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h274",
+			"name": "石榴巷274号",
+			"origin": [
+				-4.0,
+				20.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 348698,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c280",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h275",
+			"name": "石榴巷275号",
+			"origin": [
+				8.0,
+				20.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 349675,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c281",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h276",
+			"name": "石榴巷276号",
+			"origin": [
+				12.0,
+				20.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 350652,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c282",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h277",
+			"name": "石榴巷277号",
+			"origin": [
+				16.0,
+				20.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 351629,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c283",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h278",
+			"name": "石榴巷278号",
+			"origin": [
+				20.0,
+				20.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 352606,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c284",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h279",
+			"name": "石榴巷279号",
+			"origin": [
+				24.0,
+				20.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 353583,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c285",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h280",
+			"name": "石榴巷280号",
+			"origin": [
+				28.0,
+				20.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 354560,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c286",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h281",
+			"name": "石榴巷281号",
+			"origin": [
+				32.0,
+				20.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 355537,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c287",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h282",
+			"name": "石榴巷282号",
+			"origin": [
+				36.0,
+				20.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 356514,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c288",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h283",
+			"name": "石榴巷283号",
+			"origin": [
+				-36.0,
+				24.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 357491,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c289",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h284",
+			"name": "石榴巷284号",
+			"origin": [
+				-32.0,
+				24.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 358468,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c290",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h285",
+			"name": "石榴巷285号",
+			"origin": [
+				-28.0,
+				24.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 359445,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c291",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h286",
+			"name": "石榴巷286号",
+			"origin": [
+				-24.0,
+				24.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 360422,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c292",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h287",
+			"name": "石榴巷287号",
+			"origin": [
+				-20.0,
+				24.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 361399,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c293",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				},
+				{
+					"id": "c327",
+					"kind": "room",
+					"level": 1,
+					"source": "player",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h288",
+			"name": "石榴巷288号",
+			"origin": [
+				-16.0,
+				24.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 362376,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c294",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h289",
+			"name": "石榴巷289号",
+			"origin": [
+				-12.0,
+				24.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 363353,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c295",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h290",
+			"name": "石榴巷290号",
+			"origin": [
+				-8.0,
+				24.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 364330,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c296",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h291",
+			"name": "石榴巷291号",
+			"origin": [
+				-4.0,
+				24.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 365307,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c297",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h292",
+			"name": "石榴巷292号",
+			"origin": [
+				8.0,
+				24.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 366284,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c298",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h293",
+			"name": "石榴巷293号",
+			"origin": [
+				12.0,
+				24.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 367261,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c299",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h294",
+			"name": "石榴巷294号",
+			"origin": [
+				16.0,
+				24.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 368238,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c300",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h295",
+			"name": "石榴巷295号",
+			"origin": [
+				20.0,
+				24.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 369215,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c301",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h296",
+			"name": "石榴巷296号",
+			"origin": [
+				24.0,
+				24.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 370192,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c302",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h297",
+			"name": "石榴巷297号",
+			"origin": [
+				28.0,
+				24.0
+			],
+			"palette": 2,
+			"role": "residential",
+			"seed": 371169,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c303",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h298",
+			"name": "石榴巷298号",
+			"origin": [
+				32.0,
+				24.0
+			],
+			"palette": 3,
+			"role": "residential",
+			"seed": 372146,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c304",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h299",
+			"name": "石榴巷299号",
+			"origin": [
+				36.0,
+				24.0
+			],
+			"palette": 4,
+			"role": "residential",
+			"seed": 373123,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c305",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h300",
+			"name": "石榴巷300号",
+			"origin": [
+				-36.0,
+				28.0
+			],
+			"palette": 5,
+			"role": "residential",
+			"seed": 374100,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c306",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h301",
+			"name": "石榴巷301号",
+			"origin": [
+				-32.0,
+				28.0
+			],
+			"palette": 0,
+			"role": "residential",
+			"seed": 375077,
+			"workshop_open": true
+		},
+		{
+			"auto_matinee": false,
+			"bakery_open": true,
+			"base_y": 0.0,
+			"cells": [
+				{
+					"id": "c307",
+					"kind": "room",
+					"level": 0,
+					"source": "new_house",
+					"x": 0,
+					"z": 0
+				}
+			],
+			"id": "h302",
+			"name": "石榴巷302号",
+			"origin": [
+				-28.0,
+				28.0
+			],
+			"palette": 1,
+			"role": "residential",
+			"seed": 376054,
+			"workshop_open": true
+		}
+	],
+	"journey_checkpoint": {},
+	"landmark_high_watermark": 0,
+	"life_progress": {
+		"auto_concerts": 0,
+		"concerts": 1,
+		"gatherings": 0,
+		"purchases": 0,
+		"tea_parties": 0,
+		"tea_visits": 0
+	},
+	"matinee_cooldown": 0.0,
+	"matinee_credits": {},
+	"matinee_last_venue": "",
+	"matinee_pending": {},
+	"matinee_progress": {},
+	"next_cell_id": 328,
+	"next_district_id": 8,
+	"next_house_id": 303,
+	"next_landmark_id": 1,
+	"next_plant_id": 33,
+	"next_road_id": 22,
+	"next_water_id": 1,
+	"placed_landmarks": [],
+	"plants": [],
+	"resonance_afterglow": {},
+	"revision": 352,
+	"roads": [
+		{
+			"bridge": false,
+			"id": "r1",
+			"points": [
+				[
+					-16.0,
+					0.0
+				],
+				[
+					-1.0,
+					0.0
+				]
+			],
+			"source": "seed",
+			"style": "promenade",
+			"width": 1.75
+		},
+		{
+			"bridge": true,
+			"id": "r7",
+			"points": [
+				[
+					-38.0,
+					-34.47999954223633
+				],
+				[
+					38.0,
+					-34.47999954223633
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r8",
+			"points": [
+				[
+					-38.0,
+					-30.479999542236328
+				],
+				[
+					38.0,
+					-30.479999542236328
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r9",
+			"points": [
+				[
+					-38.0,
+					-26.479999542236328
+				],
+				[
+					38.0,
+					-26.479999542236328
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r10",
+			"points": [
+				[
+					-38.0,
+					-22.479999542236328
+				],
+				[
+					38.0,
+					-22.479999542236328
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r11",
+			"points": [
+				[
+					-38.0,
+					-18.479999542236328
+				],
+				[
+					38.0,
+					-18.479999542236328
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r12",
+			"points": [
+				[
+					-38.0,
+					-14.479999542236328
+				],
+				[
+					38.0,
+					-14.479999542236328
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r13",
+			"points": [
+				[
+					-38.0,
+					-10.479999542236328
+				],
+				[
+					38.0,
+					-10.479999542236328
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r14",
+			"points": [
+				[
+					-38.0,
+					9.520000457763672
+				],
+				[
+					38.0,
+					9.520000457763672
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r15",
+			"points": [
+				[
+					-38.0,
+					13.520000457763672
+				],
+				[
+					38.0,
+					13.520000457763672
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r16",
+			"points": [
+				[
+					-38.0,
+					17.520000457763672
+				],
+				[
+					38.0,
+					17.520000457763672
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r17",
+			"points": [
+				[
+					-38.0,
+					21.520000457763672
+				],
+				[
+					38.0,
+					21.520000457763672
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r18",
+			"points": [
+				[
+					-38.0,
+					25.520000457763672
+				],
+				[
+					38.0,
+					25.520000457763672
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": true,
+			"id": "r19",
+			"points": [
+				[
+					-38.0,
+					29.520000457763672
+				],
+				[
+					38.0,
+					29.520000457763672
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": false,
+			"id": "r20",
+			"points": [
+				[
+					-38.0,
+					-34.47999954223633
+				],
+				[
+					-38.0,
+					29.520000457763672
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		},
+		{
+			"bridge": false,
+			"id": "r21",
+			"points": [
+				[
+					-38.0,
+					0.0
+				],
+				[
+					-16.0,
+					0.0
+				]
+			],
+			"source": "player",
+			"style": "cobble",
+			"width": 1.25
+		}
+	],
+	"schema": 24,
+	"signature_unlocks": [
+		"music_academy"
+	],
+	"terrain_strokes": [],
+	"venue_commissions": {
+		"h4": {
+			"delivered": 0,
+			"requested": 1,
+			"used": 0
+		}
+	},
+	"waters": [],
+	"workshop_supply": {}
+}

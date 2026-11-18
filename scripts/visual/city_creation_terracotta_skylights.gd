@@ -30,7 +30,7 @@ static func build(r,parent:Node3D,house:Dictionary,palette:Array)->void:
 			var y:=surface_height(roof_faces,at+corner)
 			if not is_finite(y):valid=false;break
 			low=minf(low,y);high=maxf(high,y)
-		if not valid:continue
+		if not valid or high-low>.55:continue
 		_light(r,parent,house,cell,palette,at,low,high);count+=1
 		if count>=2:break
 	parent.set_meta("terracotta_skylights",count)
@@ -50,7 +50,8 @@ static func _light(r,parent:Node3D,house:Dictionary,cell:Dictionary,palette:Arra
 	for x:float in [-.23,.23]:r._box(node,Vector3(.055,eave,.48),Vector3(x,eave*.5,0),cream)
 	r._box(node,Vector3(.48,eave,.055),Vector3(0,eave*.5,-.23),cream)
 	var glass:Material=r._material(Color("536f73"));glass.roughness=.30
-	r._box(node,Vector3(.38,.23,.025),Vector3(0,eave-.13,.245),glass).name="SkylightPane"
+	var pane:MeshInstance3D=r._box(node,Vector3(.38,.23,.025),Vector3(0,eave-.13,.245),glass);pane.name="SkylightPane"
+	preload("res://scripts/visual/city_creation_roof_window_glow.gd").record_mesh(parent,pane,"terracotta_skylight")
 	for x:float in [-.20,0.,.20]:r._box(node,Vector3(.022,.25,.04),Vector3(x,eave-.13,.27),cream)
 	r._box(node,Vector3(.46,.045,.10),Vector3(0,eave-.26,.265),cream)
 	var faces:Array[Vector3]=[Vector3(-.30,eave,-.29),Vector3(-.30,eave,.31),Vector3(0,ridge,.31),Vector3(-.30,eave,-.29),Vector3(0,ridge,.31),Vector3(0,ridge,-.29),Vector3(0,ridge,-.29),Vector3(0,ridge,.31),Vector3(.30,eave,.31),Vector3(0,ridge,-.29),Vector3(.30,eave,.31),Vector3(.30,eave,-.29)]

@@ -18,12 +18,19 @@ static func preview(city,road:Dictionary,value:bool=true)->Dictionary:
 	if value:candidate.water_ghat=true
 	else:candidate.erase("water_ghat")
 	var derived:Array=[]
-	if value:
+	if value and _water_endpoint(city,candidate):
 		var shadow:RefCounted=load("res://scripts/world/city_creation_chemistry_preview.gd").fork(city)
 		for i in range(shadow.roads.size()):
 			if shadow.roads[i].id==road.id:shadow.roads[i]=candidate
 		shadow.revision+=1;shadow.prepare_ground_height();derived=plans(shadow,candidate,true)
 	return {"road":candidate,"plans":derived}
+static func _water_endpoint(city,road:Dictionary)->bool:
+	# Water distance and outward direction do not depend on the shadow road's
+	# terrain profile. Reject dry endpoints before creating the whole preview city.
+	for first:bool in [true,false]:
+		var index:int=0 if first else road.points.size()-1;var at:=Vector2(road.points[index][0],road.points[index][1]);var prior:=Vector2(road.points[1 if first else index-1][0],road.points[1 if first else index-1][1]);var distance:float=city.water_clearance(at)
+		if distance>=-.15 and distance<=.35 and city.water_clearance(at+(at-prior).normalized()*.55)<distance-.20:return true
+	return false
 static func water_site(city,points:Array,width:float,waters:Array,roads:Array)->Dictionary:
 	var original:Dictionary=city._road_water_crossings(points,width,waters)
 	if original.ok:return original

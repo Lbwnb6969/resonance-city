@@ -90,6 +90,7 @@ func _view() -> Dictionary:
 func _capture(title: String, reason: String, is_current:Callable=Callable()) -> Dictionary:
 	# A real viewport image without UI, not an artist-created thumbnail. Pause
 	# actors for this one capture frame so the saved checkpoint matches it.
+	var preview_mix:Dictionary=preload("res://scripts/audio/city_creation_candidate_record.gd").capture(demo.music) if demo.music.phonograph.active else {}
 	stop_preview()
 	var life_processing: bool=demo.life.is_processing()
 	var capture_city:RefCounted=demo.state;var capture_life:Node=demo.life
@@ -103,7 +104,8 @@ func _capture(title: String, reason: String, is_current:Callable=Callable()) -> 
 		return {"ok":false,"message":"收藏会话已取消"}
 	var image: Image=demo.get_viewport().get_texture().get_image()
 	demo._capture_journeys()
-	var mix:Dictionary=Phonograph.reconstruct(demo.state,_view()) if demo.music.muted or demo.music._loading or demo.music.has_meta("authored_score") else Phonograph.capture(demo.music)
+	var mix:Dictionary=preview_mix if not preview_mix.is_empty() else preload("res://scripts/audio/city_creation_candidate_record.gd").capture(demo.music)
+	if mix.is_empty():mix=Phonograph.reconstruct(demo.state,_view()) if demo.music.muted or demo.music._loading or demo.music.has_meta("authored_score") else Phonograph.capture(demo.music)
 	var result: Dictionary=library.save(title,demo.state.snapshot(),_view(),image,reason,mix,authorship.capture())
 	if result.ok:authorship.saved(str(result.id),reason,str(result.title))
 	demo.ui_layer.visible=ui_visible
@@ -184,6 +186,7 @@ func _open_chosen(chosen: Dictionary) -> void:
 		return
 	last_auto_id=str(kept.id)
 	demo.camera_rig.bench_view.leave(demo)
+	if demo.camera_rig.strolling:demo.camera_rig.toggle(demo)
 	demo.life.set_process(false)
 	demo._cancel_draft()
 	panel.show()
@@ -235,7 +238,7 @@ func _open_chosen(chosen: Dictionary) -> void:
 	# Legacy works store only the evening bool; current works preserve all three
 	# authored looks so nocturne does not reopen as a warm evening.
 	var wanted_phase := int(chosen.view.get("light_phase",1 if bool(chosen.view.evening) else 0))
-	while demo.light_phase!=wanted_phase: demo._toggle_light()
+	demo.weather_visual.restore_phase(wanted_phase)
 	demo._update_camera()
 	demo._refresh_ui()
 	# Keep restored actors paused through the publication frame. Saved work
@@ -284,9 +287,17 @@ func play_work(id:String)->void:
 	_preview_life_processing=demo.life.is_processing()
 	demo.life.set_process(false);demo.ambience.set_muted(true)
 	preview_id=id
-	panel.set_playing(id,str(selected.title),str(demo.music.Palette.NAMES[maxi(0,int(value.mode))]))
+	panel.set_playing(id,str(selected.title),"保存的同源混音 · 待听评" if value.version==2 else str(demo.music.Palette.NAMES[maxi(0,int(value.mode))]))
 
 func tick_preview()->void:
+	if not demo.music.phonograph.active and demo.music.phonograph.candidate_player==null:
+		var error:bool=demo.music.has_meta("candidate_record_error");stop_preview()
+		if error:demo.music.remove_meta("candidate_record_error");panel.set_status("保存的本地曲目未准备好，未改播其他音乐")
+		return
+	if demo.music.phonograph.mix.get("version")==2:
+		panel.playback_progress.max_value=float(demo.music.phonograph.mix.frames)/44100.
+		panel.playback_progress.value=float(demo.music.get_meta("candidate_record",{}).get("position",demo.music.phonograph.mix.position));return
+	panel.playback_progress.max_value=24.
 	panel.playback_progress.value=demo.music._players.concert.get_playback_position()
 
 func stop_preview()->void:

@@ -23,7 +23,7 @@ func build(column:Control)->void:
 	column.add_child(demo._label("传世蓝图 · 自由选址",18))
 	status=demo._label("",13);status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART;column.add_child(status)
 	for id:String in Plan.SIZES:
-		var button:Button=demo._button("",begin.bind(id,""));button.name="PlaceGround_"+id;column.add_child(button);buttons[id]=button
+		var button=preload("res://scripts/ui/city_creation_shape_button.gd").new();button.configure("landmark/"+id,Legacy.TITLES[id]);button.pressed.connect(begin.bind(id,""));button.name="PlaceGround_"+id;column.add_child(button);buttons[id]=button
 	column.add_child(demo._button("显示／隐藏自动微景",toggle_automatic))
 	column.add_child(demo._button("屋顶冠冕转为待放置蓝图",retire_crowns))
 	selection=PanelContainer.new();selection.name="GroundLandmarkActions";demo.ui_layer.get_child(0).add_child(selection);selection.add_theme_stylebox_override("panel",UI.card(12))
@@ -43,7 +43,7 @@ func refresh()->void:
 	for id:String in buttons:
 		var placed:bool=demo.state.placed_landmarks.any(func(row):return row.blueprint==id)
 		buttons[id].disabled=not free or not rights.has(id) or placed
-		buttons[id].text=Legacy.TITLES[id]+(" · 已落位" if placed else " · 免费选址" if rights.has(id) else " · 尚未获得蓝图")
+		buttons[id].caption=Legacy.TITLES[id]+(" · 已落位" if placed else " · 免费选址" if rights.has(id) else " · 尚未获得蓝图");buttons[id].tooltip_text=buttons[id].caption;buttons[id].queue_redraw()
 	status.text="四类地标均可自由选址，每类限一处。Q/E旋转，点击空地放置，Esc取消；回收后可重新放置。" if free else "经典旧城保留屋顶原貌；F1备份转换后可自由选址，历史权益保留。"
 	selection.visible=not selected.is_empty()
 	if selection.visible:selection_title.text=Legacy.TITLES[Plan.row(demo.state,selected).blueprint]

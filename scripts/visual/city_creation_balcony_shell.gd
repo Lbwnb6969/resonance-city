@@ -98,6 +98,7 @@ static func build(r,job)->void:
 			for j:int in [0,2,1]:var at:Vector3=source[i+j];faces.append(Vector3(x+at.z,at.y,at.x))
 		var mesh:MeshInstance3D=r._triangles(feature,faces,job.palette[2]);Wall.apply(mesh,Wall.Kind.CANTILEVER)
 	job.root.set_meta("organic_facade",{"mode":mode,"cell_id":str(cell.id),"lower_id":str(p.lower.id),"side":p.side,"outline":poly,"stair_steps":12 if mode>=3 else 0})
+	preload("res://scripts/visual/city_creation_roof_window_glow.gd").record(job.root,feature,"balcony")
 static func oriel(r,node:Node3D,pick:StaticBody3D,p:Dictionary,palette:Array)->void:
 	var poly:=Plan.outline(p)
 	for i in range(1,poly.size()):
@@ -107,7 +108,7 @@ static func oriel(r,node:Node3D,pick:StaticBody3D,p:Dictionary,palette:Array)->v
 		box(r,wall,collider,Vector3(width,.30,.08),Vector3(0,2.,0),palette[0],Wall.Kind.PLASTER)
 		box(r,wall,collider,Vector3(width,.13,.10),Vector3(0,3.03,0),palette[2])
 		for x:float in [-width*.5,width*.5,0.]:box(r,wall,collider,Vector3(.035,.85,.10),Vector3(x,2.57,0),palette[2])
-		box(r,wall,collider,Vector3(width,.77,.022),Vector3(0,2.57,-.025),Color("829e9d"))
+		var pane:=box(r,wall,collider,Vector3(width,.77,.022),Vector3(0,2.57,-.025),Color("829e9d"));pane.set_meta("creation_roof_window_glass",true)
 	slab(r,node,pick,poly,3.12,.12,palette[1])
 static func stairs(r,job,p:Dictionary)->void:
 	var parent:Node3D=job.root.get_node(str(p.lower.id));var node:=Node3D.new();node.name="BalconyInternalStair";node.rotation.y=float(p.angle);parent.add_child(node);var pick:=body(node,job.house,p.lower)

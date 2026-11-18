@@ -621,6 +621,7 @@ func _make_batch(root: Node3D, part: String, records: Array) -> void:
 	# Actual terrain heights are baked into the transforms; retain extra
 	# room for GPU wind, obstacle push and the slender species' taller tips.
 	var mesh_bounds := multi.mesh.get_aabb()
+	if part in ["lawn","grass"]:mesh_bounds=mesh_bounds.expand(Vector3(mesh_bounds.end.x,mesh_bounds.end.y*1.284,mesh_bounds.end.z))
 	var source_transform: Transform3D = meshes.get(part+"_transform",Transform3D.IDENTITY)
 	var bounds := AABB()
 	for index in range(records.size()):
@@ -644,7 +645,6 @@ func _make_batch(root: Node3D, part: String, records: Array) -> void:
 	root.add_child(instance)
 
 func _mesh(part: String) -> Mesh:
-	if part == "grass": return _mesh("lawn")
 	if meshes.has(part):
 		return meshes[part]
 	if part in ["boulder_a","boulder_b"]:
@@ -662,11 +662,10 @@ func _mesh(part: String) -> Mesh:
 		var surface := SurfaceTool.new()
 		surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 		if part in ["grass","lawn","lawn_lod"]:
-			# Four low spreading leaves cup three upright leaves. Keep two of
-			# each ring in the far mesh; near leaves gain a ridge and basal trefoil.
-			for blade in ([0,2,4,6] if part == "lawn_lod" else [0,1,2,3,4,5,6]):
-				_ribbon(surface,blade,part!="lawn_lod")
-			if part!="lawn_lod":preload("res://scripts/visual/city_creation_meadow_fold.gd").base(surface)
+			# Short turf and taller tree skirts share wind and masks, with distinct
+			# narrow-blade exemplars. Far turf retains four full curved silhouettes.
+			for blade in ([0,2,4,6] if part == "lawn_lod" else range(9 if part=="grass" else 7)):
+				preload("res://scripts/visual/city_creation_meadow_fold.gd").blade(self,surface,blade,part!="lawn_lod",part=="grass")
 		else:
 			# Three blooms remain inside the existing .085m flower footprint.
 			for bloom in range(3):
@@ -721,6 +720,7 @@ func _material(part: String) -> Material:
 		lawn.shader = LawnShader
 		ShorePalette.configure(lawn)
 		lawn.set_shader_parameter("detail",detail if part == "lawn" else 1.0)
+		lawn.set_shader_parameter("tall_grass",1.0 if part=="grass" else 0.0)
 		lawn.set_shader_parameter("water_field",water_field)
 		material = lawn
 	elif part == "stone":

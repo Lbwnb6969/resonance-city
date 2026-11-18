@@ -124,7 +124,7 @@ var road_measure_material: StandardMaterial3D
 var road_geometry_cache: Dictionary = {}
 var road_outline_fingerprints: Dictionary = {}
 var road_segment_bins: Dictionary = {}
-var road_box_mesh: BoxMesh
+var road_box_mesh: Mesh
 var path_edge := PathEdge.new()
 var path_pebbles := PathPebbles.new()
 var promenade := Promenade.new()
@@ -190,6 +190,8 @@ var road_roots: Dictionary = {}
 var road_water_signatures: Dictionary = {}
 var rebuild_stats := {"houses_changed":0,"roads_changed":0,"houses_removed":0,"roads_removed":0,"vegetation_blocks_changed":0,"vegetation_instances":0,"elapsed_ms":0.0}
 var setup_stats:Dictionary={}
+var surface_height_field=preload("res://scripts/visual/city_creation_surface_height_field.gd").new()
+var street_lighting:Node3D
 
 func setup(city_state: RefCounted, defer_rebuild:bool=false) -> void:
 	var began:=Time.get_ticks_usec()
@@ -214,6 +216,9 @@ func setup(city_state: RefCounted, defer_rebuild:bool=false) -> void:
 	roads_layer = Node3D.new()
 	roads_layer.name = "ContinuousStreets"
 	add_child(roads_layer)
+	street_lighting=preload("res://scripts/visual/city_creation_street_lighting.gd").new()
+	add_child(street_lighting)
+	street_lighting.setup(self)
 	vegetation_layer = Node3D.new()
 	vegetation_layer.name = "VegetationBlocks"
 	add_child(vegetation_layer)
@@ -298,8 +303,8 @@ func rebuild() -> void:
 	terrain_surface.rebuild()
 	_rebuild_background_trees()
 	_rebuild_water()
-	building_context.prepare(state.houses,state.roads)
-	building_input_signature = hash([state.houses,state.roads])
+	building_context.prepare(state.houses,state.roads,state)
+	building_input_signature = hash([state.houses,state.roads,state.districts])
 	rebuild_stats["architecture"] = building_context.stats.duplicate()
 	var stage_started := Time.get_ticks_usec()
 	var live_houses: Dictionary = {}
@@ -902,6 +907,7 @@ func try_update_house_colors(house_id: String) -> Dictionary:
 	return result
 
 func clear_preview() -> void:
+	if preview!=null:preview.remove_meta("shore_request") if preview.has_meta("shore_request") else null
 	if preview == null: return
 	road_draft_field.clear(self)
 	_clear(preview);preview.transform=Transform3D.IDENTITY;preview.remove_meta("design_transform") if preview.has_meta("design_transform") else null
@@ -929,8 +935,10 @@ func set_evening(value: bool) -> void:
 
 
 func set_light_phase(phase: int) -> void:
-	preload("res://scripts/visual/city_creation_facade_glass.gd").phase(self,phase)
 	light_phase = phase
+	preload("res://scripts/visual/city_creation_facade_glass.gd").phase(self,phase)
+	preload("res://scripts/visual/city_creation_phase_lamp.gd").apply(self,phase)
+	if street_lighting!=null:street_lighting.set_phase(phase)
 	set_evening(phase>=1)
 	wildlife.set_night(phase==2)
 	resonance.night = phase==2
@@ -1040,7 +1048,7 @@ func preview_road(points: Array[Vector2], valid: bool = true, width: float = 1.2
 			var indices := Geometry2D.triangulate_polygon(polygon)
 			for index in indices:
 				var at := polygon[index]
-				vertices.append(Vector3(at.x,_street_height(at)+0.04,at.y))
+				vertices.append(Vector3(at.x,_preview_street_height(at)+0.04,at.y))
 		if not vertices.is_empty(): _triangles(preview,vertices,color)
 		preview.set_meta("junction_profile_ms",profile_ms)
 		preview.set_meta("junction_mesh_ms",float(Time.get_ticks_usec()-preview_started)/1000.0-profile_ms)
@@ -1059,7 +1067,7 @@ func preview_road(points: Array[Vector2], valid: bool = true, width: float = 1.2
 	if valid:preload("res://scripts/visual/city_creation_shore_road_preview.gd").show(self,points,width,style)
 	for point: Vector2 in [points[0],points[-1]]:
 		var radius:=width*.5+(.15 if valid else 0.)
-		_cylinder(preview,radius,radius,0.012,Vector3(point.x,_street_height(point)+0.013,point.y),road_draft_field.material if valid else _material(color),24)
+		_cylinder(preview,radius,radius,0.012,Vector3(point.x,_preview_street_height(point)+0.013,point.y),road_draft_field.material if valid else _material(color),24)
 	var shown := {}
 	var arches := {}
 	if valid:
@@ -1120,7 +1128,7 @@ func _preview_bridge_rails(samples: Array[Vector2], width: float, color: Color) 
 		var tangent := (b-a)/length
 		var side := Vector2(-tangent.y,tangent.x)
 		var center := (a+b)*0.5
-		var y := (_street_height(a)+_street_height(b))*0.5+0.16
+		var y := (_preview_street_height(a)+_preview_street_height(b))*0.5+0.16
 		var segment := Node3D.new()
 		segment.position = Vector3(center.x,y,center.y)
 		segment.rotation.y = atan2(tangent.x,tangent.y)
@@ -1148,7 +1156,7 @@ func preview_road_measure(points: Array[Vector2], locked_segments: int) -> void:
 		while next_mark <= travelled+length:
 			var at := a+direction*(next_mark-travelled)
 			var basis := Basis(Vector3.UP,-atan2(direction.y,direction.x)).scaled(Vector3(0.045,0.008,0.42))
-			marks.append(Transform3D(basis,Vector3(at.x,_street_height(at)+0.09,at.y)))
+			marks.append(Transform3D(basis,Vector3(at.x,_preview_street_height(at)+0.09,at.y)))
 			next_mark += 5.0
 		travelled += length
 	if not marks.is_empty():
@@ -1359,6 +1367,7 @@ func _water_surface_material(_shallow: bool = false) -> ShaderMaterial:
 		water_material.shader = WaterShader
 		ShorePalette.configure(water_material)
 		water_material.set_shader_parameter("water_field",water_field.texture)
+	surface_height_field.bind(water_material)
 	return water_material
 
 func _box(parent: Node3D, size: Vector3, at: Vector3, material: Material) -> MeshInstance3D:
@@ -1473,7 +1482,7 @@ func _house_budgeted(house:Dictionary,budget_ms:float)->bool:
 func _prepare_house_assembly(house:Dictionary)->Dictionary:
 	# Values only: the budget worker resolves topology and architectural plans
 	# before any main-thread mesh, material, node or physics allocation.
-	if building_context.signature(str(house.id)).is_empty():building_context.prepare(state.houses,state.roads)
+	if building_context.signature(str(house.id)).is_empty():building_context.prepare(state.houses,state.roads,state)
 	var era:String=state.house_era(house)
 	if era not in ["clockwork","modern_eco"] and not RoundTowerPlan.for_house(house,state.houses,state.roads).is_empty():return {"round":true}
 	var palette:Array=HouseColors.base_palette(self,house)
@@ -1528,6 +1537,7 @@ func _begin_house_assembly(house:Dictionary,hidden:bool)->HouseAssembly:
 			job.modern_parts=parts[str(house.id)] if parts.has(str(house.id)) else Modern.prepare(state,house)
 	var ms:=float(Time.get_ticks_usec()-began)/1000.
 	job.stats.cpu_ms=ms;job.stats.peak_ms=ms;job.stats.part_peaks.plan=ms
+	preload("res://scripts/visual/city_creation_roof_pitch_render.gd").configure(self,job)
 	return job
 
 func _hold_house_body(body:StaticBody3D)->void:
@@ -1552,7 +1562,8 @@ func _advance_house_assembly(job:HouseAssembly,budget_ms:float)->bool:
 		units+=1
 	if job.stage!=HouseAssembly.Stage.DONE:return false
 	preload("res://scripts/visual/city_creation_tea_deck.gd").build(self,job.root,job.house)
-	preload("res://scripts/visual/city_creation_house_finish.gd").build(self,job.root,job.house)
+	preload("res://scripts/visual/city_creation_house_finish.gd").build(self,job.root,job.house,job.hidden)
+	preload("res://scripts/visual/city_creation_roof_pitch_render.gd").finish(self,job)
 	preload("res://scripts/world/city_creation_house_frame.gd").apply(job.root,job.house)
 	job.root.set_meta("house_assembly",job.stats)
 	return true
@@ -1774,14 +1785,19 @@ func _house_cell_wall(job:HouseAssembly,frame:HouseAssembly.Cell,direction:Vecto
 	if door:
 		wall.name = "Entrance_%d_%d" % [direction.x,direction.y]
 		wall.set_meta("entrance",entrance.duplicate(true))
-	if era=="modern_eco" and house.get("architecture","")!="recessed_townhouse":Modern.facade(self,wall,door,int(house.get("seed",0))+x*17+z*31+level*7,palette,house,cell,direction)
+	if era=="modern_eco" and house.get("architecture","")=="chalet":preload("res://scripts/visual/city_creation_chalet_frontage.gd").build(self,wall,palette,level,entrance,principal,str(house.get("role","residential")))
+	elif era=="modern_eco" and house.get("architecture","")!="recessed_townhouse":Modern.facade(self,wall,door,int(house.get("seed",0))+x*17+z*31+level*7,palette,house,cell,direction)
 	else:Classical.openings(self,job,frame,wall,door,active,wall_width)
+	preload("res://scripts/visual/city_creation_modern_window_glow.gd").record(job.root,wall,cell,direction)
 	if era in ["pastoral","renaissance"] and not house.has("signature"):Classical.facade(self,job,frame,wall,direction,door,wall_width)
 	elif era == "renaissance" and house.has("signature"): Renaissance.facade(self,wall,door,level>0)
 	elif era=="clockwork":Clockwork.facade(self,wall,door,level>0)
 	preload("res://scripts/visual/city_creation_street_rhythm.gd").decorate(self,job,frame,wall,direction,wall_width)
 	if wall_width>=UNIT-.01 and era!="modern_eco" and not Classical.Ancient.active(house,era): HouseStyles.build_details(self,wall,palette,door,style,int(house.get("seed",0))+x*17+z*31+level*7)
-	if active and not entrance.get("upper_stoop",false): _door_porch(wall,retreats.has(direction) or (principal and str(house.get("role","residential")) == "bakery"),Frontage.porch_plan(state,house,entrance))
+	if active and not entrance.get("upper_stoop",false):
+		var home_gable:=principal and str(house.get("role","residential"))=="residential" and not house.has("signature") and str(house.get("architecture",""))=="" and not retreats.has(direction)
+		if home_gable:preload("res://scripts/visual/city_creation_street_rhythm.gd").entry_gable(self,wall,palette)
+		_door_porch(wall,home_gable or retreats.has(direction) or (principal and str(house.get("role","residential")) == "bakery"),Frontage.porch_plan(state,house,entrance))
 	if principal and not job.role_prop_added:
 		if not state.Grillhouse.active_house(house):_role_frontage(wall,str(house.get("role","residential")))
 		job.role_prop_added = true
@@ -1874,7 +1890,7 @@ func _house_geometry_fingerprint(house: Dictionary) -> int:
 	var frontages:=_frontage_signature(house)
 	quality_visual.prepare_geometry(self,house,frontages,arcades)
 	craft.prepare_layout(self,house,frontages,arcades)
-	var fingerprint:int=hash([house.get("signature",""),state.AmphitheaterPlan.for_house(state,house),state.Signatures.wheel_plan(state,house) if house.get("signature","")=="watermill" else {},state.house_era(house),house.origin,house.cells,house.get("base_y",0.0),footings,highland.contact_plan(self,house,footings).signature,RoundTowerPlan.for_house(house,state.houses,state.roads),ConservatoryPlan.for_house(state,house),Clockwork.adjacency_signature(state,house),Modern.Plan.adjacency_signature(state,house),arcades,house.get("style","classic"),house.get("architecture",""),house.get("architecture_variant",{}),house.get("food_kind",""),preload("res://scripts/world/city_creation_organic_form.gd").geometry_key(state,house),preload("res://scripts/world/city_creation_house_hinge.gd").key(house),house.get("seed",0),house.get("role","residential"),frontages,preload("res://scripts/world/city_creation_upper_stoop.gd").entries(state,house),building_context.signature(str(house.id)),preload("res://scripts/visual/city_creation_dormer_sites.gd").foreign_signature(state,house),TerraceCanopy.choose(state.houses,house)])
+	var fingerprint:int=hash([house.get("signature",""),state.AmphitheaterPlan.for_house(state,house),state.Signatures.wheel_plan(state,house) if house.get("signature","")=="watermill" else {},state.house_era(house),house.origin,house.cells,house.get("roof_pitch",{}),house.get("base_y",0.0),footings,highland.contact_plan(self,house,footings).signature,RoundTowerPlan.for_house(house,state.houses,state.roads),ConservatoryPlan.for_house(state,house),Clockwork.adjacency_signature(state,house),Modern.Plan.adjacency_signature(state,house),arcades,house.get("style","classic"),house.get("architecture",""),house.get("architecture_variant",{}),house.get("food_kind",""),preload("res://scripts/world/city_creation_organic_form.gd").geometry_key(state,house),preload("res://scripts/world/city_creation_house_hinge.gd").key(house),house.get("seed",0),house.get("role","residential"),frontages,preload("res://scripts/world/city_creation_upper_stoop.gd").entries(state,house),building_context.signature(str(house.id)),preload("res://scripts/visual/city_creation_dormer_sites.gd").foreign_signature(state,house),TerraceCanopy.choose(state.houses,house),preload("res://scripts/visual/city_creation_neoclassical.gd").corner_signature(state,house)])
 	house_geometry_cache[id]={"dependency":dependency,"fingerprint":fingerprint}
 	return fingerprint
 
@@ -1915,6 +1931,8 @@ func _joined_roofs(parent: Node3D, house: Dictionary, palette: Array) -> void:
 	if preload("res://scripts/world/city_creation_renaissance_prototype_plan.gd").active(state,house):return
 	if not preload("res://scripts/world/city_creation_neoclassical_civic_plan.gd").guild(state,house).is_empty():return
 	var roofs: Array[Vector3] = []
+	var ridge_caps: Array[Vector3] = []
+	var ridge_builder=preload("res://scripts/visual/city_creation_row_ridge.gd")
 	var roof_coordinates:=PackedVector2Array()
 	var fascia: Array[Vector3] = []
 	var gables: Array[Vector3] = []
@@ -1931,6 +1949,7 @@ func _joined_roofs(parent: Node3D, house: Dictionary, palette: Array) -> void:
 		patch=preload("res://scripts/visual/city_creation_organic_corners.gd").patch(self,house,patch,parent);preload("res://scripts/visual/city_creation_gable_trim.gd").prepare_part(parent,patch,tower_ids,dome_cells)
 		if tower_ids.has(str(patch.cell_id)) or dome_cells.has(str(patch.cell_id)): continue
 		if patch.surface=="roof":
+			ridge_builder.collect(parent,house,patch,ridge_caps)
 			roofs.append_array(patch.vertices)
 			roof_coordinates.append_array(patch.coordinates)
 			roof_info.append({"cell_id":patch.cell_id,"group_id":patch.group_id,"bounds":patch.bounds})
@@ -1952,6 +1971,7 @@ func _joined_roofs(parent: Node3D, house: Dictionary, palette: Array) -> void:
 			material.set_shader_parameter("roof_color",palette[1])
 			materials[key]=material
 		mesh.material_override=materials[key]
+	ridge_builder.finish(self,parent,ridge_caps,palette[1])
 	if not fascia.is_empty(): _triangles(parent,fascia,palette[1].darkened(0.20))
 	if not gables.is_empty():
 		_triangles(parent,gables,palette[0])
@@ -2042,9 +2062,7 @@ func _role_frontage(wall: Node3D, role: String) -> void:
 		_crown(wall,Vector3(0.59,0.94,0.15),Vector3(0.17,0.065,0.07),Color("d9af72"))
 	elif role == "atelier":
 		wall.set_meta("atelier_frontage",true)
-		_box(wall,Vector3(.42,.32,.04),Vector3(.59,.93,.13),_material(Color("a06d8c")))
-		_box(wall,Vector3(.32,.025,.025),Vector3(.59,.93,.17),_material(Color("e3c784")))
-		_box(wall,Vector3(.025,.22,.025),Vector3(.59,.93,.17),_material(Color("e3c784")))
+		preload("res://scripts/visual/city_creation_street_rhythm.gd").atelier_banner(self,wall)
 	elif role=="clockmaker":
 		wall.set_meta("clockmaker_frontage",true)
 		var face:=_cylinder(wall,.19,.19,.045,Vector3(.61,.96,.14),_material(Color("d6bd7d")),20);face.rotation.x=PI*.5
@@ -2085,11 +2103,7 @@ func _role_frontage(wall: Node3D, role: String) -> void:
 				cut.rotation.x = PI*0.5
 		# The hanging half-lute stays on the facade even where outdoor furniture
 		# cannot fit. A soundhole, neck and three strings make its role legible.
-		_box(wall,Vector3(0.38,0.55,0.045),Vector3(0.59,1.10,0.10),_material(Color("526d60")))
-		_crown(wall,Vector3(0.59,1.01,0.165),Vector3(0.115,0.16,0.035),Color("ceaa74"))
-		_crown(wall,Vector3(0.59,1.07,0.20),Vector3(0.037,0.045,0.009),Color("5d4d39"))
-		_box(wall,Vector3(0.046,0.26,0.04),Vector3(0.59,1.25,0.18),wood)
-		for x in [-0.015,0.0,0.015]: _box(wall,Vector3(0.004,0.38,0.007),Vector3(0.59+x,1.14,0.21),_material(Color("dbc795")))
+		preload("res://scripts/visual/city_creation_street_rhythm.gd").lute_sign(self,wall)
 	elif role == "garden_cafe":
 		wall.set_meta("garden_cafe_frontage",true)
 		# A painted cup keeps a cafe readable even when no complete safe
@@ -2137,10 +2151,7 @@ func _door_porch(wall: Node3D, covered_by_shop: bool, plan: Dictionary={}) -> vo
 		_quad(wall,Vector3(-0.60,1.59,0.05),Vector3(0.60,1.59,0.05),Vector3(0.60,1.43,0.76),Vector3(-0.60,1.43,0.76),Color("ad8660"))
 		_box(wall,Vector3(1.24,0.09,0.07),Vector3(0,1.42,0.74),timber)
 		for x in [-0.50,0.50]: _box(wall,Vector3(0.045,0.19,0.38),Vector3(x,1.40,0.24),timber)
-	var lamp := _material(Color("e8c47b"))
-	lamp.emission_enabled = true
-	lamp.emission = Color("e8b565")
-	lamp.emission_energy_multiplier = 0.35
+	var lamp:Material = preload("res://scripts/visual/city_creation_phase_lamp.gd").material(self,Color("e8c47b"),Color("e8b565"),.35)
 	_box(wall,Vector3(0.13,0.19,0.13),Vector3(0.56,1.01,0.20),lamp)
 	var frame := _material(Color("657267"))
 	_box(wall,Vector3(0.16,0.035,0.16),Vector3(0.56,0.90,0.20),frame)
@@ -2158,8 +2169,7 @@ func _facade(wall: Node3D, palette: Array, door: bool, seed_value: int, active: 
 		for x in [-0.11,0.0,0.11]: _box(wall,Vector3(0.018,0.8,0.018),Vector3(x,0.62,0.21),_material(Color("7d8870")))
 		_cylinder(wall,0.025,0.025,0.035,Vector3(0.16,0.61,0.22),_material(Color("d6bb74")))
 		if not active:
-			_box(wall,Vector3(0.96,0.10,0.54),Vector3(0,0.055,0.3),_material(Color("d7c8a5")))
-			_box(wall,Vector3(1.04,0.045,0.68),Vector3(0,0.022,0.55),_material(Color("bdb797")))
+			Classical.TimberEntries.threshold(self,wall)
 	else:
 		for x in ([0.0] if width_value<UNIT-.01 else [-0.46,0.46]):
 			_box(wall,Vector3(0.47,0.70,0.075),Vector3(x,1.00,0.092),trim)
@@ -2224,6 +2234,9 @@ func _terrace(node: Node3D, cell: Dictionary, cells: Array, y: float, palette: A
 	_cylinder(node,0.28,0.12,0.47,Vector3(0.49,top+0.48,0.49),_material(Color("779374")))
 
 func _river_x(z: float) -> float: return 3.0+sin(z*0.17)*0.52
+
+func _preview_street_height(p:Vector2)->float:
+	return preload("res://scripts/visual/city_creation_road_preview_height.gd").height(self,p)
 
 func _street_height(p: Vector2) -> float:
 	return float(state.call("street_height", p))
@@ -2474,6 +2487,7 @@ func _water_edge_x(edge: Array, height: float) -> float:
 	return lerpf(a.x, b.x, (height - a.y) / (b.y - a.y))
 
 func _rebuild_water() -> void:
+	surface_height_field.publish(self)
 	water_field.update()
 	var records := _water_records()
 	var fingerprint := hash(records)
@@ -2626,10 +2640,10 @@ func _road_offsets(samples: Array[Vector2], width: float) -> Array[Vector2]:
 	return result
 
 func _road_ribbon(parent: Node3D, samples: Array[Vector2], width: float, color: Color, lift: float = 0.0) -> void:
-	var key: Array=[state.get_instance_id(),state.revision]
+	var key:Array=preload("res://scripts/visual/city_creation_road_preview_height.gd").key(self)
 	if key!=_preview_height_key:_preview_heights.clear();_preview_height_key=key
 	var heights: Dictionary={}
-	for at: Vector2 in samples:heights[at]=_preview_heights[at] if _preview_heights.has(at) else _street_height(at)
+	for at: Vector2 in samples:heights[at]=_preview_heights[at] if _preview_heights.has(at) else _preview_street_height(at)
 	_preview_heights=heights
 	var offsets := _road_offsets(samples,width)
 	var vertices: Array[Vector3] = []
@@ -2787,7 +2801,7 @@ func _subdivide_road(vertices: Array[Vector3]) -> Array[Vector3]:
 		triangles.append([middle,b,c])
 	return output
 
-func _prepare_road_data(road: Dictionary) -> Dictionary:
+func _prepare_road_data(road: Dictionary,shore_preview:bool=false) -> Dictionary:
 	var started := Time.get_ticks_usec()
 	var material_code:=preload("res://scripts/world/city_creation_road_paving.gd").code(road)
 	var samples: Array[Vector2] = _road_geometry(road).samples
@@ -2812,44 +2826,11 @@ func _prepare_road_data(road: Dictionary) -> Dictionary:
 	var vertices: Array[Vector3] = _road_surface_vertices(road_outlines[road.id],cuts)
 	# Height-aware streets require intermediate vertices even on dry land.
 	if bool(road.get("bridge",false)) or bool(profile.get("elevated",false)): vertices = _subdivide_road(vertices)
-	var heights: Dictionary = {}
-	var paving: Dictionary = {}
-	var paving_uv: Dictionary = {}
 	var bridge_spans: Array[Vector2] = Bridges.paving_spans(profile)
 	var stone_spans: Array[Vector2] = Bridges.paving_spans(profile,true)
-	var height_started := Time.get_ticks_usec()
-	# Every surface vertex is inside the exact round-ended road footprint.
-	# Its nearest centre segment lies within half-width plus the dry flare; retain
-	# source segment order in metre bins so equal-distance ties stay identical.
-	var center_segments: Array = []
-	var center_arc := 0.0
-	for index in range(samples.size()-1):
-		center_segments.append([samples[index],samples[index+1],center_arc])
-		center_arc += samples[index].distance_to(samples[index+1])
-	var height_bins: Dictionary = path_edge._bins(center_segments,width*0.5+Junctions.EXTRA+0.002)
-	for index in range(vertices.size()):
-		var at := Vector2(vertices[index].x,vertices[index].z)
-		if heights.has(at):
-			vertices[index].y = heights[at]
-			continue
-		var nearest := samples[0]
-		var distance := INF
-		var arc := 0.0
-		var across := 0.0
-		var bin := Vector2i(floori(at.x),floori(at.y))
-		for segment: Array in height_bins.get(bin,center_segments):
-			var candidate := Geometry2D.get_closest_point_to_segment(at,segment[0],segment[1])
-			if at.distance_squared_to(candidate) < distance:
-				distance = at.distance_squared_to(candidate)
-				nearest = candidate
-				arc = float(segment[2])+Vector2(segment[0]).distance_to(candidate)
-				var tangent: Vector2=(Vector2(segment[1])-Vector2(segment[0])).normalized()
-				across=(at-candidate).dot(Vector2(-tangent.y,tangent.x))
-		vertices[index].y = _street_height(nearest)
-		heights[at] = vertices[index].y
-		paving[at] = Vector2(Bridges.paving_weight(arc,bridge_spans),Bridges.paving_weight(arc,stone_spans))
-		paving_uv[at] = Vector2(arc,across)
-	rebuild_stats["road_heights_ms"] = float(rebuild_stats.get("road_heights_ms",0.0))+float(Time.get_ticks_usec()-height_started)/1000.0
+	var elevation:=preload("res://scripts/visual/city_creation_road_surface_heights.gd").prepare(self,samples,vertices,width,bridge_spans,stone_spans)
+	var paving:Dictionary=elevation.paving
+	var paving_uv:Dictionary=elevation.paving_uv
 	var surface := SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for index in range(0,vertices.size(),3):
@@ -2865,6 +2846,8 @@ func _prepare_road_data(road: Dictionary) -> Dictionary:
 	surface.generate_normals()
 	surface.index()
 	var arrays := surface.commit_to_arrays() if not vertices.is_empty() else []
+	if shore_preview:
+		return preload("res://scripts/visual/city_creation_shore_preview_worker.gd").bed(self,road,arrays)
 	var curb_started := Time.get_ticks_usec()
 	for index in range(samples.size()-1):
 		var p := samples[index]
@@ -2906,6 +2889,7 @@ func _prepare_road_data(road: Dictionary) -> Dictionary:
 	var adjunct_started:=Time.get_ticks_usec()
 	var earthworks:Dictionary=RoadEarthworks.prepare(self,road,profile)
 	earthworks.shore_bed=preload("res://scripts/visual/city_creation_shore_road_bed.gd").prepare(self,road,arrays)
+	earthworks.shore_bed_mesh=preload("res://scripts/visual/city_creation_road_triangle_data.gd").prepare(earthworks.shore_bed.faces)
 	rebuild_stats["road_earthworks_ms"]=float(rebuild_stats.get("road_earthworks_ms",0.))+float(Time.get_ticks_usec()-adjunct_started)/1000.;adjunct_started=Time.get_ticks_usec()
 	var roundabouts:Array=RoundaboutVisual.prepare(self,road)
 	rebuild_stats["road_roundabouts_ms"]=float(rebuild_stats.get("road_roundabouts_ms",0.))+float(Time.get_ticks_usec()-adjunct_started)/1000.;adjunct_started=Time.get_ticks_usec()
@@ -2924,35 +2908,7 @@ func _append_road_descriptor(records: Array, size: Vector3, at: Vector3, color: 
 	records.append([size,at,color,rotation])
 
 func _install_road_data(road: Dictionary, data: Dictionary, parent: Node3D) -> Node3D:
-	var root := Node3D.new()
-	root.name = str(road.id)
-	parent.add_child(root)
-	if not data.arrays.is_empty():
-		var mesh := ArrayMesh.new()
-		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,data.arrays)
-		var surface := MeshInstance3D.new()
-		surface.mesh = mesh
-		surface.material_override = promenade.road_material() if str(road.get("style","path")) in ["promenade","avenue","tram"] else _shared_road_material()
-		surface.name="PromenadeSurface" if str(road.get("style","path")) in ["promenade","avenue","tram"] else "PathSurface"
-		root.add_child(surface)
-	var batches := {}
-	for record: Array in data.curbs:
-		_append_road_box(batches,record[0],record[1],_material(record[2]),record[3])
-	for batch: Dictionary in batches.values():
-		var instance := MeshInstance3D.new()
-		instance.mesh = batch.surface.commit()
-		instance.material_override = batch.material
-		root.add_child(instance)
-	root.set_meta("soft_edge",path_edge.install(self,data.edge,root))
-	RoadStairs.install(self,root,data.stairs,road)
-	RoadEarthworks.install(self,root,data.earthworks,road)
-	preload("res://scripts/visual/city_creation_shore_road_bed.gd").install(self,root,data.earthworks.shore_bed,road)
-	RoundaboutVisual.install(self,root,data.roundabouts)
-	Stepping.install(self,root,data.get("stepping_runs",[]),road)
-	preload("res://scripts/visual/city_creation_road_finish.gd").install(self,root,road,data)
-	TramTracks.install(self,root,data.tram)
-	_update_road_pebbles(road,root)
-	return root
+	return preload("res://scripts/visual/city_creation_road_install.gd").install(self,road,data,parent)
 
 func _road(road: Dictionary) -> Node3D:
 	return _install_road_data(road,_prepare_road_data(road),roads_layer)
@@ -2982,8 +2938,7 @@ func _append_road_box(batches: Dictionary, size: Vector3, at: Vector3, material:
 		surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 		batches[key] = {"surface":surface,"material":material}
 	if road_box_mesh == null:
-		road_box_mesh = BoxMesh.new()
-		road_box_mesh.size = Vector3.ONE
+		road_box_mesh = preload("res://scripts/visual/city_creation_box_source.gd").new()
 	batches[key].surface.append_from(road_box_mesh,0,Transform3D(Basis.from_euler(rotation)*Basis.from_scale(size),at))
 
 func _roads_touch(road: Dictionary, other: Dictionary) -> bool:

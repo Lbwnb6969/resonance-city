@@ -1,5 +1,6 @@
 extends Node
 ## Opt-in construction API. Loads on a worker, borrows one existing player.
+const Sparse=preload("res://scripts/audio/city_creation_sparse_music_bundle.gd")
 const Bundle=preload("res://scripts/audio/city_creation_game_music_bundle.gd")
 const Affinity=preload("res://scripts/audio/city_creation_music_affinity.gd")
 const Envelope=preload("res://scripts/audio/city_creation_affinity_envelope.gd")
@@ -44,7 +45,7 @@ var player:AudioStreamPlayer
 static func request(owner:Node,path:String)->Dictionary:
 	var imported:Node=owner.get_node_or_null("AuthoredScore")
 	if imported!=null and imported.worker!=null or owner.has_meta("authored_score_ready"):return {"ok":false,"reason":"music_context_busy"}
-	if owner._loading or owner._pluck_city==null or owner.concert_active or owner.phonograph.active or owner.has_meta("authored_score") or owner.get_node_or_null("LyriaSpatialPreview")!=null or owner.get_node_or_null("GameMusicPlayer")!=null:return {"ok":false,"reason":"music_context_busy"}
+	if owner._loading or owner._pluck_city==null or owner.concert_active or owner.phonograph.active or owner.phonograph.candidate_player!=null or owner.has_meta("authored_score") or owner.get_node_or_null("LyriaSpatialPreview")!=null or owner.get_node_or_null("GameMusicPlayer")!=null:return {"ok":false,"reason":"music_context_busy"}
 	var node=load("res://scripts/audio/city_creation_game_music_player.gd").new()
 	node.name="GameMusicPlayer";node.music=owner;node.manifest_path=path;owner.add_child(node)
 	return {"ok":true,"status":"preparing","node":node}
@@ -53,12 +54,18 @@ func _ready()->void:
 	city_id=music._pluck_city.get_instance_id();preferences=JSON.stringify(music._pluck_city.creative_settings.music)
 	city_epoch=music._pluck_city._wish_epoch
 	cues.setup(self)
-	worker=Thread.new();worker.start(func():return Bundle.read(manifest_path))
+	music._pluck_city.set_meta("game_expression_owner",weakref(self))
+	var shape_snapshot:=ExpressionGeometry.capture(music._pluck_city);var path:=manifest_path
+	worker=Thread.new();worker.start(func():
+		var packet:Dictionary=Bundle.read(path)
+		if packet.get("ok",false) and not shape_snapshot.is_empty():packet.expression_geometry=ExpressionGeometry.prepare_snapshot(shape_snapshot)
+		return packet)
 
 func valid_context()->bool:
 	return music._pluck_city!=null and music._pluck_city.get_instance_id()==city_id and music._pluck_city._wish_epoch==city_epoch and JSON.stringify(music._pluck_city.creative_settings.music)==preferences
 
 func activate()->void:
+	ExpressionGeometry.adopt(music._pluck_city,prepared.get("expression_geometry",{}))
 	if saved.is_empty():
 		old_processing=music.is_processing();music.set_process(false)
 		for child:Node in music.get_children():
@@ -72,7 +79,7 @@ func activate()->void:
 		music.attention.clear()
 		music.attention.last_sculpt_sec=-INF
 	player=music._players.foundation;player.stream=prepared.stream;player.stream_paused=false;player.bus="Master";player.volume_linear=0.
-	for id:String in prepared.ids:values[id]=1. if id=="core" else .35
+	for id:String in prepared.ids:values[id]=Sparse.initial(prepared,id)
 	apply_volumes();player.play();player.stream_paused=paused
 	if not player.finished.is_connected(finished):player.finished.connect(finished)
 	active=true
@@ -91,6 +98,14 @@ func switch_packet(packet:Dictionary,path:String)->void:
 	last_edit=-INF;edit_marker=music.attention.sculpt_serial;lost_since.clear()
 	activate()
 
+func refresh_spatial()->void:
+	affinity.refresh(music._pluck_city)
+	var facts:=affinity.sample(music._listener_focus,float(music.acoustic.zoom))
+	if facts.era.is_empty():facts.era=preload("res://scripts/world/city_creation_build_brush.gd").current(music._pluck_city).era
+	geometry.refresh(music._pluck_city)
+	spatial_facts=facts.merged(geometry.sample(facts.weights))
+	spatial_facts=geometry.Context.merge_activity(spatial_facts,geometry.Context.activity(music,facts.weights))
+
 func _process(delta:float)->void:
 	if cancelled and worker==null:
 		if sequence.worker!=null and sequence.worker.is_alive():return
@@ -103,14 +118,12 @@ func _process(delta:float)->void:
 		activate()
 	if not active:return
 	if not valid_context() or player.stream!=prepared.stream or music.concert_active or music.phonograph.active or music.has_meta("authored_score"):stop();return
+	if not paused:refresh_spatial()
 	sequence.step(delta)
+	if not paused and spatial_facts.is_empty():refresh_spatial()
 	cues.step(delta)
 	if not paused and not sequence.breathing:
-		clock+=delta;affinity.refresh(music._pluck_city)
-		var facts:=affinity.sample(music._listener_focus,float(music.acoustic.zoom))
-		geometry.refresh(music._pluck_city)
-		spatial_facts=facts.merged(geometry.sample(facts.weights))
-		spatial_facts=geometry.Context.merge_activity(spatial_facts,geometry.Context.activity(music,facts.weights))
+		clock+=delta
 		sequence.observe()
 		var marker:int=music.attention.sculpt_serial
 		if music.attention.dragging or marker!=edit_marker:last_edit=clock
@@ -118,20 +131,23 @@ func _process(delta:float)->void:
 		var observing:bool=clock-last_edit>=3.
 		contour_state=contour_envelope.step({"city":city_id,"enclosure":spatial_facts.highland.value,"source_ids":spatial_facts.highland.source_ids},clock,delta,observing)
 		contour_value=contour_state.value
-		var warmth:=envelope.step(facts,clock,delta,observing)
+		var warmth:=envelope.step(spatial_facts,clock,delta,observing)
 		envelope_state=warmth
 		if not manual_expression:
 			for kind:String in color_envelopes:
-				var input:={"city":city_id,"enclosure":spatial_facts[kind],"source_ids":spatial_facts[kind+"_sources"]}
+				var input:={"city":city_id,"enclosure":spatial_facts[kind],"source_ids":spatial_facts[kind+"_sources"],
+					"contributions":spatial_facts[kind+"_contributions"]}
 				color_states[kind]=color_envelopes[kind].step(input,clock,delta,observing)
 				expression[kind]=color_states[kind].value
-		for id:String in values:
-			if id=="core":continue
-			var target:=.35+.65*float(warmth.value if id=="body" else expression.get("flow" if id=="motion" else "craft",0.))
-			if id=="body":target=minf(target,1.-.25*contour_value)
-			if id=="motion" and not manual_expression:target=.35+.65*clampf(float(expression.flow)+.25*contour_value,0.,1.)
-			values[id]=target if id=="body" or not manual_expression else lerpf(float(values[id]),target,1.-exp(-delta/3.2))
-			if lost_since.has(id) and clock-float(lost_since[id])>=6.:values[id]=.35
+		if prepared.manifest.schema==Sparse.SCHEMA:Sparse.step(self,warmth)
+		else:
+			for id:String in values:
+				if id=="core":continue
+				var target:=.35+.65*float(warmth.value if id=="body" else expression.get("flow" if id=="motion" else "craft",0.))
+				if id=="body":target=minf(target,1.-.25*contour_value)
+				if id=="motion" and not manual_expression:target=.35+.65*clampf(float(expression.flow)+.25*contour_value,0.,1.)
+				values[id]=target if id=="body" or not manual_expression else lerpf(float(values[id]),target,1.-exp(-delta/3.2))
+				if lost_since.has(id) and clock-float(lost_since[id])>=6.:values[id]=.35
 		apply_volumes()
 	player.volume_linear=0. if music.muted else .8*minf(1.,clock/.8)
 	music.set_meta("game_music",{"source_id":prepared.manifest.source_id,"position":player.get_playback_position(),"values":values.duplicate(),"clock":clock,"paused":paused,"fallback":prepared.fallback,"voices":prepared.ids.size(),"signature":prepared.signature,"spatial_envelope":envelope.value,"spatial_facts":spatial_facts,"color_states":color_states,"manual_expression":manual_expression,"breathing":sequence.breathing,"next_error":sequence.failed})

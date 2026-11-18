@@ -233,6 +233,17 @@ func _preview_matches(city: RefCounted,points: Array[Vector2],label: String) -> 
 	var reversed: Array[Vector2]=points.duplicate()
 	reversed.reverse()
 	_check(preview.preview_additions(city,reversed,1.25)==expected,label+": repeated reversed preview remains exact without copying live cache again")
+	if label=="near portal with remote cached house":
+		# An external caller may restore/edit values without changing revision.
+		# Reusing published frontages must compare values, not just the revision.
+		var remote:Dictionary=city.houses[1];var original_origin:Array=remote.origin
+		remote.origin=[-9.2,-5.4]
+		var changed:=Junctions.new();changed.prepare(expected_city)
+		var changed_expected:Array[PackedVector2Array]=changed.additions("draft")
+		_check(changed_expected!=expected,"external house relocation genuinely changes mouth coverage")
+		_check(preview.preview_additions(city,points,1.25)==changed_expected,"same-revision external relocation rejects stale frontage snapshot")
+		remote.origin=original_origin
+		_check(preview.preview_additions(city,points,1.25)==expected,"restored original values recover exact published frontage coverage")
 	if label=="porch terminal":
 		var active:=false
 		for entrance: Dictionary in expected_city.house_entrances("h1"): active=active or (entrance.active and str(entrance.road_id)=="draft")

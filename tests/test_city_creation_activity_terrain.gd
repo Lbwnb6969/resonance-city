@@ -53,7 +53,7 @@ func late_guest()->void:
 	life.queue_free()
 func run()->void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT));var began:=Time.get_ticks_msec()
-	var fresh:=State.new();fresh.initialize_free();check(fresh.terrain_policy==2 and fresh.snapshot().schema==23,"new free cities use versioned liberated activity terrain")
+	var fresh:=State.new();fresh.initialize_free();check(fresh.terrain_policy==3 and fresh.snapshot().schema==47,"new free cities use versioned liberated activity terrain")
 	var city:=State.new();city.initialize();city.set_house_role("h4","garden_cafe");var life:=make_life(city)
 	check(until(life,func():return life.cafe_status("h4").phase=="tea"),"real stocked bread purchases produce a genuine seated party")
 	life._process(2.);check(city.set_journey_checkpoint(life.checkpoint()).ok,"actual mid-tea checkpoint validates")
@@ -62,7 +62,7 @@ func run()->void:
 	var old_plan:Dictionary=life.cafe.layouts.h4.duplicate(true);var positions:Dictionary={}
 	for person:Dictionary in life.residents:positions[person.home_id]=person.node.position
 	var plan:=city.plan_terrain_policy();check(plan.ok and city.snapshot()==before,"policy preview preserves all author and earned records")
-	check(city.apply_terrain_policy(plan).ok and city.snapshot().schema==23,"explicit policy commit records schema23")
+	check(city.apply_terrain_policy(plan).ok and city.snapshot().schema==47,"explicit policy commit records schema47")
 	life._process(0.)
 	check(life.cafe.groups.has("h4") and life.cafe.groups.h4.phase=="tea" and life.cafe.groups.h4.elapsed==elapsed,"same physical seats retain in-progress normalized tea time")
 	for person:Dictionary in life.residents:check(Vector2(person.node.position.x,person.node.position.z)==Vector2(positions[person.home_id].x,positions[person.home_id].z),"adoption never teleports residents in plan view")
@@ -94,7 +94,7 @@ func run()->void:
 	var departure_world:Dictionary=city.snapshot()
 	check(city.redo().ok,"Redo sculpt");life._process(0.);check(city.set_journey_checkpoint(life.checkpoint()).ok,"post-Redo checkpoint validates")
 	var data:Dictionary=city.snapshot()
-	for change:Callable in [func(d):d.schema=22,func(d):d.terrain_policy=3,func(d):d.creative_settings.creation_policy="legacy",func(d):d.terrain_policy=2.5]:
+	for change:Callable in [func(d):d.schema=22,func(d):d.terrain_policy=4,func(d):d.creative_settings.creation_policy="legacy",func(d):d.terrain_policy=2.5]:
 		var bad:Dictionary=data.duplicate(true);change.call(bad);check(not State.new().restore(bad).ok,"invalid policy payload rejected")
 	if data.journey_checkpoint.has("cafe_terrain"):
 		var bad:Dictionary=data.duplicate(true);bad.journey_checkpoint.cafe_terrain.groups.h4.elapsed=6.;check(not State.new().restore(bad).ok,"forged completed pending dwell rejected")

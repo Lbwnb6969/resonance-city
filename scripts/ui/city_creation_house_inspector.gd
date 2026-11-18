@@ -35,6 +35,8 @@ func setup(owner:RefCounted,ring:RefCounted)->void:
  preload("res://scripts/ui/city_creation_gable_trim_choices.gd").new().setup(pop,appearance)
  preload("res://scripts/ui/city_creation_porch_choices.gd").new().setup(pop,appearance)
  preload("res://scripts/ui/city_creation_skybridge_choices.gd").new().setup(pop,appearance)
+ preload("res://scripts/ui/city_creation_roof_pitch_control.gd").new().setup(pop,appearance)
+ preload("res://scripts/ui/city_creation_compound_controls.gd").new().setup(pop,appearance)
  preload("res://scripts/ui/city_creation_detail_status.gd").new().setup(pop,appearance)
  music=VBoxContainer.new();music.name="HouseMusicDetails";music.add_theme_constant_override("separation",5);column.add_child(music)
  for button:Button in [pop.choir_button,pop.temperament_button,pop.concert_button,pop.parade_button]:button.reparent(music)

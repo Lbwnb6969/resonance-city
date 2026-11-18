@@ -17,14 +17,15 @@ static func setup(dock,parent:Control)->RefCounted:
 	dock.demo.set_meta("terrain_policy_ui",ui)
 	return ui
 func refresh()->bool:
-	column.visible=demo.state.CreationPolicy.is_free(demo.state) and not demo.state.TerrainPolicy.enabled(demo.state)
+	column.visible=demo.state.CreationPolicy.is_free(demo.state) and demo.state.terrain_policy!=demo.state.TerrainPolicy.VERSION
 	if not column.visible:
 		if not plan.is_empty():cancel()
 		return false
 	if not plan.is_empty() and (plan.revision!=demo.state.revision or plan.city_instance!=demo.state.get_instance_id()):cancel()
 	apply_button.visible=not plan.is_empty();cancel_button.visible=not plan.is_empty()
 	preview_button.disabled=demo.edit_pending() or demo.gallery.busy
-	message.text="茶座和聚会坪不再压平大片地面。\n先预览变化，再采用；原作品会另存。" if plan.is_empty() else plan.message
+	preview_button.text="预览自然路肩" if demo.state.terrain_policy==2 else "预览解除街景地形锁定"
+	message.text="道路削坡平缓展开，屋基与路面保持。先预览，采用前另存原作品。" if plan.is_empty() and demo.state.terrain_policy==2 else "茶座和聚会坪不再压平大片地面。\n先预览变化，再采用；原作品会另存。" if plan.is_empty() else plan.message
 	return true
 func preview()->void:
 	demo._cancel_draft();plan=demo.state.plan_terrain_policy()
@@ -41,7 +42,7 @@ func keep_preview()->void:
 func apply()->void:
 	if plan.is_empty():return
 	var planned:Dictionary=plan;cancel();demo.gallery._set_busy(true)
-	var backup:Dictionary=await demo.gallery._capture("街景地形调整前的河湾","before_activity_terrain")
+	var backup:Dictionary=await demo.gallery._capture("地形规则调整前的河湾","before_activity_terrain")
 	demo.gallery._set_busy(false)
 	if not backup.ok:demo._message("原作品未能备份，新地形规则尚未采用");return
 	var result:Dictionary=demo.state.apply_terrain_policy(planned)

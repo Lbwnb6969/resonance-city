@@ -1,12 +1,19 @@
 #include "res://scripts/visual/shaders/creation_safe_math.gdshaderinc"
 // One meadow base for ground, blades, road fringes and shallow shore blends.
-// v3 display anchors: deeper green roots and a warm meadow crown. These
-// authored colors are not original TG LUT quantiles or deferred exposure.
-uniform vec4 grass_low : source_color = vec4(0.25,0.43,0.27,1.0);
-uniform vec4 grass_mid : source_color = vec4(0.345,0.505,0.29,1.0);
-uniform vec4 grass_high : source_color = vec4(0.44,0.58,0.31,1.0);
+uniform vec4 grass_low : source_color = vec4(0.278,0.382,0.239,1.0);
+uniform vec4 grass_mid : source_color = vec4(0.423,0.523,0.293,1.0);
+uniform vec4 grass_high : source_color = vec4(0.598,0.633,0.354,1.0);
 uniform float season_gold=0.0;
 float meadow_hash(vec2 p) { return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+// Integer corners must agree whichever neighboring cell evaluates them.
+// sin(dot(...)) amplifies float reassociation into visible boundary jumps.
+float meadow_lattice_hash(ivec2 cell) {
+	uvec2 bits=uvec2(cell);
+	uint value=(bits.x*0x8da6b343u)^(bits.y*0xd8163841u);
+	value^=value>>16u;value*=0x7feb352du;
+	value^=value>>15u;value*=0x846ca68bu;value^=value>>16u;
+	return float(value&0x00ffffffu)/16777216.0;
+}
 // Extracted Grass2 world_albedo_tint, sampled in the original 128 m mirrored
 // domain. The mean exposure adapts our local meadow palette; this is not the
 // original per-card palette texture or the separate base-bake gain.
@@ -39,16 +46,15 @@ vec3 meadow_world_tint_linear(vec2 at, vec3 local_linear) {
 	return local_linear*mix(vec3(1.0),chroma,0.28)*lightness;
 }
 float meadow_noise(vec2 p) {
-	vec2 cell = floor(p); vec2 f = fract(p); f = f*f*(3.0-2.0*f);
-	return mix(mix(meadow_hash(cell),meadow_hash(cell+vec2(1.0,0.0)),f.x),mix(meadow_hash(cell+vec2(0.0,1.0)),meadow_hash(cell+vec2(1.0)),f.x),f.y);
+	ivec2 cell = ivec2(floor(p)); vec2 f = fract(p); f = f*f*(3.0-2.0*f);
+	return mix(mix(meadow_lattice_hash(cell),meadow_lattice_hash(cell+ivec2(1,0)),f.x),mix(meadow_lattice_hash(cell+ivec2(0,1)),meadow_lattice_hash(cell+ivec2(1)),f.x),f.y);
 }
-vec3 meadow_color(vec2 at,vec3 low,vec3 high) {
+vec3 meadow_color(vec2 at,mat4 projection) {
+	vec3 low=grass_low.rgb,high=grass_high.rgb;
 	float field = meadow_noise(at*0.055)*0.85 + meadow_noise(at*0.285+7.3)*0.15;
-	// Keep the Tiny Glade-inspired broad field visible across the open lawn;
-	// the previous range compressed it into a single carpet tone. This reuses
-	// the existing noise samples and adds no texture fetch or instance work.
-	field = clamp(0.5+(field-0.5)*0.72,0.0,1.0);
-	float blend = smoothstep(0.20,0.80,field);
+	float overview = projection[3][3] * smoothstep(28.0,68.0,2.0/abs(projection[1][1]));
+	field = 0.5+(field-0.5)*mix(0.72,0.32,overview);
+	float blend = smoothstep(0.18,0.86,field);
 	vec3 middle = grass_mid.rgb;
 	if (OUTPUT_IS_SRGB) {
 		low=meadow_srgb_to_linear(low);middle=meadow_srgb_to_linear(middle);high=meadow_srgb_to_linear(high);

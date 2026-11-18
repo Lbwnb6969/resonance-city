@@ -6,6 +6,9 @@ static func face(rig,root:Node3D,cell:Dictionary,side:Vector2i,surface:SurfaceTo
 	if data.is_empty() or side!=data.side:return false
 	var upper:bool=str(cell.id)==str(data.cell_id)
 	if not upper and (int(data.mode)<3 or str(cell.id)!=str(data.lower_id)):return false
+	if int(data.mode)<3:
+		for pane:Dictionary in root.get_meta("roof_window_panes",[]):
+			if str(pane.get("source",""))=="balcony" and str(pane.get("cell_id",""))==str(cell.id) and pane.get("side",Vector2i.ZERO)==side:return true
 	if int(data.mode)>=3:
 		var x:=.56 if not upper else -.10 if int(data.mode)==4 else -.55
 		rig._panel(surface,frame,Vector3(x,1.,1.034),Vector2(.08,.13),1)

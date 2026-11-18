@@ -11,7 +11,9 @@ varying vec2 world_at;
 void vertex() { world_at=(MODEL_MATRIX*vec4(VERTEX,1.)).xz; }
 void fragment() {
 	float mask=texture(draft_field,(world_at-draft_world_rect.xy)/draft_world_rect.zw).r;
-	ALBEDO=paving_sample(world_at,surface_pattern,paved ? promenade_color(world_at) : path_color(world_at)).rgb;
+	vec4 paving=paving_sample(world_at,surface_pattern,paved ? promenade_color(world_at) : path_color(world_at));
+	ALBEDO=paving.rgb;
+	NORMAL=paving_normal(normalize(NORMAL),VERTEX,paved ? promenade_height(world_at) : 0.0);
 	ROUGHNESS=1.;
 	ALPHA=smoothstep(.05,.90,mask);
 }

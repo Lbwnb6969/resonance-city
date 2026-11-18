@@ -12,6 +12,7 @@ const ROOF_HEIGHT := 1.35
 const RADIUS_POWER := 0.78
 const FLOOR := 1.7
 const DIRECTIONS := [Vector2i.LEFT,Vector2i.RIGHT,Vector2i.UP,Vector2i.DOWN]
+const Roof=preload("res://scripts/world/city_creation_round_roof_geometry.gd")
 const RoofCoordinates=preload("res://scripts/visual/city_creation_roof_coordinates.gd")
 
 static func build(renderer,house: Dictionary) -> Node3D:
@@ -81,6 +82,7 @@ static func build(renderer,house: Dictionary) -> Node3D:
 			if level==0:
 				for entrance: Dictionary in entrances:
 					if str(entrance.cell_id)==str(cell.id) and entrance.side==side: entry=entrance;break
+			if plan.get("joins",[]).any(func(j):return j.side==side and float(j.low)<base+(level+1)*FLOOR-.01 and float(j.high)>base+level*FLOOR+.01):continue
 			var frame := Node3D.new()
 			frame.name="RoundDoor_%d_%d" % [side.x,side.y] if not entry.is_empty() else "RoundWindow_%d_%d" % [side.x,side.y]
 			frame.position=Vector3(side.x*0.89,float(level)*FLOOR,side.y*0.89)
@@ -91,20 +93,29 @@ static func build(renderer,house: Dictionary) -> Node3D:
 				renderer._facade(frame,palette,true,int(house.get("seed",0)),bool(entry.active))
 				door_frames.append({"cell_id":str(cell.id),"name":str(frame.name),"entrance":entry.duplicate(true)})
 			else:
-				_window(renderer,frame,palette)
+				_window(renderer,frame,palette,str(cell.id),side)
 				var normal := Vector3(side.x,0,side.y)
 				windows.append({"cell_id":str(cell.id),"side":side,"at":Vector3(center.x,base+float(level)*FLOOR+1.0,center.y)+normal*0.955,"normal":normal,"size":Vector2(0.35,0.55)})
+	for joint:Dictionary in plan.get("joins",[]):
+		var side:Vector2i=joint.side;var height:float=joint.high-joint.low
+		if height<=0.:continue
+		var at:=Vector3(center.x,((joint.low+joint.high)*.5),center.y)+Vector3(side.x,0,side.y)*.86
+		var size:=Vector3(.22,height,.72) if side.x!=0 else Vector3(.72,height,.22)
+		var mesh:MeshInstance3D=renderer._box(root,size,at,stone);mesh.name="RoundTowerWallJoint"
+		var body:StaticBody3D=bodies[str(joint.cell_id)];var collision:=CollisionShape3D.new();var shape:=BoxShape3D.new();shape.size=size;collision.shape=shape;collision.position=at-Vector3(center.x,base,center.y);collision.name="RoundTowerWallJointPick";body.add_child(collision)
+	root.set_meta("round_joints",plan.get("joins",[]))
 	root.set_meta("round_windows",windows)
+	preload("res://scripts/visual/city_creation_roof_window_glow.gd").record(root,root,"round_tower")
 	root.set_meta("round_door_frames",door_frames)
 	var eave: float = plan.roof_base_y
-	var domes: Array = renderer.RenaissancePlan.for_house(renderer.state,house)
+	var domes: Array = [] if Roof.authored(house) else renderer.RenaissancePlan.for_house(renderer.state,house)
 	if not domes.is_empty():
 		renderer.Renaissance.build(renderer,root,house,domes)
 		var top: float = eave + float(domes[0].height) + 1.01
 		root.set_meta("round_tower",{"house_id":str(house.id),"center":center,"radius":RADIUS,"sides":SIDES,"levels":plan.cells.size(),"base_y":base,"footing_bottom":bottom,"eave_y":eave,"roof_top_y":top,"top":top,"roof_cell_id":str(plan.top_cell_id),"dome":true})
 		return root
 	var roof_center := Vector3(center.x,eave,center.y)
-	var vertices := roof_vertices(roof_center)
+	var vertices := roof_vertices(roof_center,house)
 	var color: Color = palette[1]
 	var roof: MeshInstance3D = renderer._roof_surface(root,vertices,color,RoofCoordinates.build(vertices,roof_center,true))
 	roof.name="RoundTowerRoof"
@@ -122,22 +133,23 @@ static func build(renderer,house: Dictionary) -> Node3D:
 	roof_shape.backface_collision=true
 	roof_shape.set_faces(roof_faces)
 	var roof_pick := CollisionShape3D.new()
-	roof_pick.name="RoundTowerRoofPick"
+	roof_pick.name="RoundTowerRoofPick";roof_pick.set_meta("roof_surface",true)
 	roof_pick.shape=roof_shape
 	roof_body.add_child(roof_pick)
 	# The underside fascia closes the overhang without a solid square roof box.
-	renderer._cylinder(root,ROOF_RADIUS,ROOF_RADIUS,0.065,roof_center+Vector3.UP*0.01,renderer._material(color.darkened(0.20)),SIDES).name="RoundTowerEave"
-	var top := eave+ROOF_HEIGHT
+	renderer._cylinder(root,ROOF_RADIUS,ROOF_RADIUS,Roof.EAVE_HEIGHT,roof_center+Vector3.UP*Roof.eave_lift(house),renderer._material(color.darkened(0.20)),SIDES).name="RoundTowerEave"
+	var top:float = plan.roof_top_y
 	_wind_vane(renderer,root,Vector3(center.x,top,center.y))
-	root.set_meta("round_tower",{"house_id":str(house.id),"center":center,"radius":RADIUS,"sides":SIDES,"levels":plan.cells.size(),"base_y":base,"footing_bottom":bottom,"roof_radius":ROOF_RADIUS,"eave_y":eave,"roof_top_y":top,"top":top+0.35,"roof_cell_id":str(plan.top_cell_id),"roof_triangles":roof.mesh.get_faces().size()/3,"profile_samples":PROFILE_SAMPLES,"radius_power":RADIUS_POWER})
+	root.set_meta("round_tower",{"house_id":str(house.id),"center":center,"radius":RADIUS,"sides":SIDES,"levels":plan.cells.size(),"base_y":base,"footing_bottom":bottom,"roof_radius":ROOF_RADIUS,"eave_y":eave,"roof_top_y":top,"top":top+0.35,"roof_cell_id":str(plan.top_cell_id),"roof_triangles":roof.mesh.get_faces().size()/3,"profile_samples":PROFILE_SAMPLES,"radius_power":1. if Roof.authored(house) else RADIUS_POWER})
 	if str(house.get("role",""))=="bakery":
 		var offset := Vector2(0.43,-0.30)
-		var t := 1.0-pow(offset.length()/ROOF_RADIUS,1.0/RADIUS_POWER)
-		var chimney_base := eave+ROOF_HEIGHT*t
+		var chimney_base := eave+Roof.surface_height(offset.length(),house)
 		var at := Vector3(center.x+offset.x,chimney_base+0.24,center.y+offset.y)
 		renderer._box(root,Vector3(0.20,0.54,0.20),at,stone).name="RoundTowerChimney"
-		renderer._box(root,Vector3(0.27,0.07,0.27),at+Vector3.UP*0.28,trim)
+		renderer._box(root,Vector3(0.27,0.07,0.27),at+Vector3.UP*0.28,trim).name="RoundTowerChimneyCap"
 		root.set_meta("chimneys",[at+Vector3.UP*0.34])
+	if Roof.authored(house):
+		root.set_meta("roof_pitch",house.roof_pitch.duplicate());_accessory_picks(root,roof_body,Vector3(center.x,base,center.y))
 	return root
 
 static func finish(renderer,root: Node3D,house: Dictionary) -> void:
@@ -170,37 +182,21 @@ static func _cylinder_mesh(radius: float,height: float) -> ArrayMesh:
 	result.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
 	return result
 
-static func roof_vertices(center: Vector3) -> Array[Vector3]:
-	var result: Array[Vector3] = []
-	for row in range(PROFILE_SAMPLES-1):
-		var t0 := float(row)/float(PROFILE_SAMPLES-1)
-		var t1 := float(row+1)/float(PROFILE_SAMPLES-1)
-		var r0 := ROOF_RADIUS*pow(1.0-t0,RADIUS_POWER)
-		var r1 := ROOF_RADIUS*pow(1.0-t1,RADIUS_POWER)
-		# A short eave curl raises the outer lip by three centimetres.
-		var y0 := ROOF_HEIGHT*t0+0.03*pow(maxf(0.0,1.0-t0/0.18),2.0)
-		var y1 := ROOF_HEIGHT*t1+0.03*pow(maxf(0.0,1.0-t1/0.18),2.0)
-		for side in range(SIDES):
-			var a := float(side)*TAU/float(SIDES)
-			var b := float(side+1)*TAU/float(SIDES)
-			var aa := center+Vector3(cos(a)*r0,y0,sin(a)*r0)
-			var bb := center+Vector3(cos(b)*r0,y0,sin(b)*r0)
-			var cc := center+Vector3(cos(b)*r1,y1,sin(b)*r1)
-			var dd := center+Vector3(cos(a)*r1,y1,sin(a)*r1)
-			var normal := Vector3(cos((a+b)*0.5),0.5,sin((a+b)*0.5))
-			_triangle(result,aa,bb,cc,normal)
-			if row<PROFILE_SAMPLES-2: _triangle(result,aa,cc,dd,normal)
-	return result
+static func roof_vertices(center:Vector3,house:Dictionary={})->Array[Vector3]:return Roof.vertices(center,house)
 
-static func _triangle(vertices: Array[Vector3],a: Vector3,b: Vector3,c: Vector3,normal: Vector3) -> void:
-	if (b-a).cross(c-a).dot(normal)>=0.0: vertices.append_array([a,b,c])
-	else: vertices.append_array([a,c,b])
+static func _accessory_picks(root:Node3D,body:StaticBody3D,origin:Vector3)->void:
+	var faces:=PackedVector3Array()
+	for mesh:MeshInstance3D in root.find_children("RoundTower*","MeshInstance3D",true,false):
+		if mesh.name not in ["RoundTowerWindVane","RoundTowerVaneBar","RoundTowerVaneFlag","RoundTowerChimney","RoundTowerChimneyCap","RoundTowerEave"]:continue
+		for p:Vector3 in mesh.mesh.get_faces():faces.append(mesh.transform*p-origin)
+	var shape:=ConcavePolygonShape3D.new();shape.backface_collision=true;shape.set_faces(faces)
+	var collision:=CollisionShape3D.new();collision.name="RoundTowerRoofDetailsPick";collision.set_meta("roof_surface",true);collision.shape=shape;body.add_child(collision)
 
-static func _window(renderer,frame: Node3D,palette: Array) -> void:
+static func _window(renderer,frame: Node3D,palette: Array,cell_id:String,window_side:Vector2i) -> void:
 	var trim: Material = renderer._material(Color("dfd4bb"))
 	var dark: Material = renderer._material(Color("435e59"))
 	renderer._box(frame,Vector3(0.47,0.69,0.07),Vector3(0,1.0,0.015),trim)
-	renderer._box(frame,Vector3(0.35,0.55,0.035),Vector3(0,1.0,0.059),dark)
+	var pane:MeshInstance3D=renderer._box(frame,Vector3(0.35,0.55,0.035),Vector3(0,1.0,0.059),dark);pane.set_meta("creation_roof_window_glass",true);pane.set_meta("round_window",{"cell_id":cell_id,"side":window_side})
 	for x: float in [-0.12,0.12]:
 		renderer._box(frame,Vector3(0.023,0.56,0.025),Vector3(x,1.0,0.087),trim)
 	renderer._box(frame,Vector3(0.36,0.025,0.025),Vector3(0,1.0,0.087),trim)
@@ -210,7 +206,8 @@ static func _window(renderer,frame: Node3D,palette: Array) -> void:
 
 static func _wind_vane(renderer,root: Node3D,at: Vector3) -> void:
 	var metal: Material = renderer._material(Color("766a4b"),0.72)
-	renderer._cylinder(root,0.028,0.020,0.32,at+Vector3.UP*0.14,metal,8).name="RoundTowerWindVane"
-	renderer._box(root,Vector3(0.42,0.025,0.025),at+Vector3.UP*0.26,metal)
-	var flag: Array[Vector3] = [at+Vector3(0.23,0.26,0),at+Vector3(0.09,0.34,0),at+Vector3(0.09,0.18,0)]
-	renderer._triangles(root,flag,Color("887754"))
+	renderer._cylinder(root,Roof.STEM_BOTTOM,Roof.STEM_TOP,Roof.STEM_HEIGHT,at+Vector3.UP*0.14,metal,8).name="RoundTowerWindVane"
+	renderer._box(root,Roof.BAR_SIZE,at+Vector3.UP*0.26,metal).name="RoundTowerVaneBar"
+	var flag:Array[Vector3]=[]
+	for point:Vector3 in Roof.FLAG:flag.append(at+point)
+	renderer._triangles(root,flag,Color("887754")).name="RoundTowerVaneFlag"

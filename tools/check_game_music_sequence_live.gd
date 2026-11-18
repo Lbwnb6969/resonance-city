@@ -5,7 +5,11 @@ func sequence_ready()->bool:return is_instance_valid(trial.conductor) and trial.
 func start(index:int)->Node:
 	trial.picker.select(index);trial.start_selected();check(await wait_for(sequence_ready,30000),"real candidate prepares and takes original pooled player")
 	if not sequence_ready():return null
-	trial.conductor.sequence.configure(trial.conductor,[trial.packs[0],trial.packs[-1]])
+	var fit:Dictionary=preload("res://scripts/audio/city_creation_music_era_fit.gd").read()
+	var same:Array=trial.packs.filter(func(row):return fit.get(row.source_id,"")==fit.get(trial.packs[0].source_id,"") and row.get("automatic_candidate",true) and JSON.parse_string(FileAccess.get_file_as_string(row.manifest)).schema=="city_adaptive_music_v1")
+	var continuation:Array=[trial.packs[0],same.back()]
+	if not continuation.has(trial.packs[index]):continuation.append(trial.packs[index])
+	trial.conductor.sequence.configure(trial.conductor,continuation)
 	return trial.conductor
 func near_end(node:Node)->void:
 	var duration:float=float(node.prepared.manifest.frames)/44100.;check(node.seek(duration-.65),"seek all synchronized streams to natural complete ending")

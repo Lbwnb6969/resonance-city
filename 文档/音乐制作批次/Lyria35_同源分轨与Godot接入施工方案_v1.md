@@ -1,5 +1,7 @@
 # 《共鸣之城》Lyria 3.5 同源分轨与 Godot 接入施工方案
 
+**采用边界（2026-11-03）：** 本文件的lyria_stem_bundle_v1/bed/lead是旧候选方案；现用独立city_adaptive_music_v1入口按[施工AI接入手册](Lyria35_施工AI音乐接入手册_20261103.md)。新曲为稀疏背景优先的完整作品，允许没有领唱；用户仅文字生成，后续处理由工程端完成。旧单曲样板数量与bed/lead目标不约束当前整库制作，正式采用与隔离接入分开。
+
 日期：2026-11-02 · 状态：设计规范与候选契约，`runtime_ready=false`
 
 本方案把新音乐链路限定为：**Lyria 3.5 完整曲 → 可复现离线分轨与时间线测绘 → 同源 stem 在 Godot 中变换/叠加**。本文件保留候选规范；用户最新要求已授权首曲显式隔离样板，实际交付见[有效分轨与空间叠加](Lyria35_有效分轨与空间叠加_20261102.md)。正式默认仍待听评。
@@ -17,12 +19,12 @@
 
 - 曲目：`ly35_river_dawn/v1`，来源为 `D:/GODOT/Music/Pastoral Riverside Dawn Chamber Music.mp3`。
 - 空间变化：真实闭合院落围合度控制已有同源 stem 的支撑暖度；不以经营、等级或接路解锁基础音乐。
-- 回退：优先 `full_mix`，bundle 缺失或校验失败时回到旧预编译声部库/已验证 v3 基线。
+- 回退：优先适配当前背景场景且已核验的同曲 `full_mix`；无可用曲时保持自然底景和音乐留白。正式路径不恢复旧尖薄预编译/v3音色，旧库仅留显式兼容/隔离回归。
 - 其余外部 MP3 自动制作候选；分离可用性与游戏上线分别验证。
 
-## 3. 外置批次结构
+## 3. 制作批次结构（旧路径仅历史定位）
 
-批次根目录：`C:/Users/Administrator/Desktop/mIDDLEFILE/资产/音乐/制作批次/lyria35/<source_id>/<version>/`。
+当前批次根目录按`数据/音乐资产`及音乐资料路径映射定位；旧外置路径`C:/Users/Administrator/Desktop/mIDDLEFILE/资产/音乐/制作批次/lyria35/<source_id>/<version>/`仅保留历史定位，工具/模型仍外置。
 
 ```text
 brief.md
@@ -52,14 +54,14 @@ listening/listen.html
 首批按以下阶梯交付：
 
 1. `full_mix`：始终保留的完整曲回退。
-2. `bed + lead`：首批目标；bed 单听必须自足，lead 不得有明显残影、金属毛刺或起音损伤。
+2. `bed + lead`：旧样板可选方案，不要求每首有lead；bed 单听必须自足，lead 不得有明显残影、金属毛刺或起音损伤。
 3. `bed + lead + pulse`：只有第三轨通过单听、串音、残差和组合试听后才允许。
 
 任一条件失败即降级：主奏残影、频谱空洞、水声伪影、相位抵消、帧数不一致、独立增益标尺、削波或不自然起音。分离器不合格时退回 `full_mix`；必要时才用同一 beat map 的开放音源重制局部伴奏，并重新绑定来源与授权。
 
 ## 5. 时间线与 manifest
 
-`beat_map.json` 是唯一运输时钟，记录实际 beat 时间点、速度曲线、前导和尾音；`sections_harmony.json` 记录实际 P0—P5 区间、每小节和弦、lead 空位、loop/transition 窗口。名义 80 BPM、D 大调、4/4 只能作为生成意图。
+`beat_map.json` 是唯一运输时钟，记录实际 beat 时间点、速度曲线、前导和尾音；`sections_harmony.json` 记录实际段落（不强制P0—P5）区间、每小节和弦、lead 空位、loop/transition 窗口。名义 80 BPM、D 大调、4/4 只能作为生成意图。
 
 候选 manifest 必须包含：`schema`、`source_id/version`、原件路径/字节数/SHA256、生成入口和完整提示词、分轨模型与报告、sample rate/channels/frames、共同增益、beat map 与和声文件哈希、stem role/layer、允许组合、空间包络、缓存版本、回退策略、听评状态和 `runtime_ready`。
 
@@ -86,4 +88,4 @@ python -X utf8 tools/check_ai_harness.py
 python -X utf8 tools/separate_music.py --list-models
 ```
 
-只读复制 MP3 到外置新批次，直接运行器乐分离与必要的定向细分；不再运行 BS-RoFormer 人声阶段。历史原件、分轨输出和报告保留，输出目录不覆盖。
+只读复制MP3到项目音乐资产中的独立新批次，直接运行器乐分离与必要的定向细分；不再运行 BS-RoFormer 人声阶段。历史原件、分轨输出和报告保留，输出目录不覆盖。

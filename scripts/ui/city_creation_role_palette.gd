@@ -23,7 +23,11 @@ func setup(owner:RefCounted)->void:
   button.pressed.connect(choose.bind(id))
  panel.hide();_sync_visibility()
 func _sync_visibility()->void:
- for id:String in buttons:buttons[id].visible=pop.demo.state.CreationPolicy.is_free(pop.demo.state) or id not in ["venue","symphony_hall"]
+ var selected_role:=""
+ if pop!=null and not pop.target_house_id.is_empty():
+  var house:Dictionary=pop.demo.town._house_record(pop.target_house_id)
+  selected_role=str(house.get("role",""))
+ for id:String in buttons:buttons[id].visible=pop.demo.state.CreationPolicy.is_free(pop.demo.state) or id not in ["venue","symphony_hall"] or id==selected_role
 func show_for(single:bool)->void:
  pop.demo.journal.scrollbook.close_all()
  batch=not single;_state_id=pop.demo.state.get_instance_id()

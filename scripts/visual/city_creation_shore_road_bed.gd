@@ -9,7 +9,7 @@ static func empty()->Dictionary:return {"faces":[],"pieces":[],"triangles":0}
 static func prepare(renderer,road:Dictionary,arrays:Array)->Dictionary:
 	var result:=empty()
 	if arrays.is_empty():return result
-	var city:RefCounted=renderer.state;var near:=false
+	var city:RefCounted=renderer.state;var near:=false;var ground:Dictionary={};var clearance:Dictionary={};var cell_bottoms:Dictionary={}
 	for i in range(1,road.points.size()):
 		var a:=Vector2(road.points[i-1][0],road.points[i-1][1]);var b:=Vector2(road.points[i][0],road.points[i][1]);var count:=maxi(1,ceili(a.distance_to(b)/.35))
 		for j in range(count+1):
@@ -26,26 +26,47 @@ static func prepare(renderer,road:Dictionary,arrays:Array)->Dictionary:
 		for p:Vector3 in source:
 			polygon.append(Vector2(p.x,p.z))
 		var bounds:=Rect2(polygon[0],Vector2.ZERO).expand(polygon[1]).expand(polygon[2])
+		# River clearance has gradient length <1.01; editable capsule distances
+		# are 1-Lipschitz. Include every potentially intersected cell's center.
+		var support_radius:float=(bounds.size*.5+Vector2.ONE*terrain.STEP*.5).length()*1.01
+		var clearance_floor:float=city.water_clearance(bounds.get_center())-support_radius
+		if clearance_floor>=float(road.width)+REACH:continue
+		var certified_dry:=clearance_floor>=.02
 		var lo:=Vector2i(((bounds.position-terrain.LAND_RECT.position)/terrain.STEP).floor()).max(Vector2i.ZERO)
 		var hi:=Vector2i(((bounds.end-terrain.LAND_RECT.position)/terrain.STEP).floor()).min(Vector2i(terrain.COLUMNS-2,terrain.ROWS-2))
 		var bottom:=INF;var supported:=false;var dry:=true
 		for at:Vector2 in polygon:
-			bottom=minf(bottom,city.ground_height(at)-BURIAL);dry=dry and city.water_clearance(at)>=.02
-			supported=supported or city.water_clearance(at)<float(road.width)+REACH
+			bottom=minf(bottom,_ground(city,at,ground)-BURIAL);dry=dry and _clearance(city,at,clearance)>=.02
+			supported=supported or _clearance(city,at,clearance)<float(road.width)+REACH
 		for x in range(lo.x,hi.x+1):
 			for z in range(lo.y,hi.y+1):
 				var at:Vector2=terrain.LAND_RECT.position+Vector2(x,z)*terrain.STEP
+				bottom=minf(bottom,_cell_bottom(city,terrain,Vector2i(x,z),at,ground,cell_bottoms))
+				# Once support is known, clipping can only change the dry flag.
+				# The same conservative clearance bound certifies every clip point.
+				if supported and certified_dry:continue
 				var corners:=PackedVector2Array([at,at+Vector2(terrain.STEP,0),at+Vector2.ONE*terrain.STEP,at+Vector2(0,terrain.STEP)])
-				for p:Vector2 in corners:bottom=minf(bottom,city.ground_height(p)-BURIAL)
 				for part:PackedVector2Array in Geometry2D.intersect_polygons(polygon,corners):
-					supported=supported or city.water_clearance(at+Vector2.ONE*terrain.STEP*.5)<float(road.width)+REACH
+					supported=supported or _clearance(city,at+Vector2.ONE*terrain.STEP*.5,clearance)<float(road.width)+REACH
 					for j in range(part.size()):
-						for p:Vector2 in [part[j],part[j].lerp(part[(j+1)%part.size()],.5)]:dry=dry and city.water_clearance(p)>=.02
+						for p:Vector2 in [part[j],part[j].lerp(part[(j+1)%part.size()],.5)]:dry=dry and _clearance(city,p,clearance)>=.02
 		# Retain original paving vertices exactly: integer polygon clipping can
 		# otherwise shrink a curved rim or leave a hairline under its edge.
 		if supported and dry:_piece(result,polygon,source,bottom)
 	result.triangles=result.faces.size()/3
 	return result
+static func _cell_bottom(city:RefCounted,terrain,cell:Vector2i,at:Vector2,ground:Dictionary,cache:Dictionary)->float:
+	if not cache.has(cell):
+		var bottom:=INF
+		for p:Vector2 in [at,at+Vector2(terrain.STEP,0),at+Vector2.ONE*terrain.STEP,at+Vector2(0,terrain.STEP)]:bottom=minf(bottom,_ground(city,p,ground)-BURIAL)
+		cache[cell]=bottom
+	return float(cache[cell])
+static func _ground(city:RefCounted,at:Vector2,cache:Dictionary)->float:
+	if not cache.has(at):cache[at]=city.ground_height(at)
+	return float(cache[at])
+static func _clearance(city:RefCounted,at:Vector2,cache:Dictionary)->float:
+	if not cache.has(at):cache[at]=city.water_clearance(at)
+	return float(cache[at])
 static func height(source:Array[Vector3],at:Vector2)->float:
 	var a:=Vector2(source[0].x,source[0].z);var b:=Vector2(source[1].x,source[1].z);var c:=Vector2(source[2].x,source[2].z)
 	var denominator:float=(b-a).cross(c-a)
@@ -65,13 +86,20 @@ static func _piece(data:Dictionary,polygon:PackedVector2Array,source:Array[Vecto
 		var a:=top[i];var b:=top[(i+1)%top.size()];var c:=Vector3(b.x,bottom,b.z);var d:=Vector3(a.x,bottom,a.z)
 		data.faces.append_array([a,d,c,a,c,b] if clockwise else [a,b,c,a,c,d])
 	data.pieces.append({"polygon":polygon,"top":top,"bottom":bottom})
-static func install(renderer,parent:Node3D,data:Dictionary,road:Dictionary,preview:bool=false)->void:
-	if data.faces.is_empty():return
-	var mesh:MeshInstance3D=renderer._triangles(parent,data.faces,Color("b9b49b"));mesh.name="ShoreRoadBed"
+static func mesh_for(parent:Node3D,data:Dictionary,road:Dictionary,prepared:Dictionary)->MeshInstance3D:
+	if data.faces.is_empty():return null
+	var mesh:=MeshInstance3D.new();mesh.mesh=ArrayMesh.new();mesh.mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,prepared.arrays);mesh.name="ShoreRoadBed";parent.add_child(mesh)
 	var bounds:=mesh.mesh.get_aabb();var material:=Walls.source(Color("b9b49b"),null,"component",Walls.Kind.STONE)
 	mesh.material_override=Walls.merged(material,bounds.position.y,bounds.size.y,Walls.WallShader,Vector2(bounds.position.y,bounds.end.y))
 	mesh.material_override.set_shader_parameter("albedo_color",Color("b9b49b"))
 	mesh.set_meta("bed_signature",hash(data));mesh.set_meta("road_id",road.id)
-	if preview:return
+	return mesh
+static func collide(parent:Node3D,road:Dictionary,prepared:Dictionary)->void:
+	if prepared.collision.is_empty():return
 	var body:=StaticBody3D.new();body.name="ShoreRoadBedGroundPick";body.collision_layer=2;body.set_meta("ground",true);body.set_meta("road_id",road.id)
-	var shape:=CollisionShape3D.new();shape.shape=mesh.mesh.create_trimesh_shape();body.add_child(shape);parent.add_child(body)
+	var shape:=CollisionShape3D.new();shape.shape=ConcavePolygonShape3D.new();shape.shape.set_faces(prepared.collision);body.add_child(shape);parent.add_child(body)
+static func install(_renderer,parent:Node3D,data:Dictionary,road:Dictionary,preview:bool=false,prepared:Dictionary={})->void:
+	if data.faces.is_empty():return
+	if prepared.is_empty():prepared=preload("res://scripts/visual/city_creation_road_triangle_data.gd").prepare(data.faces)
+	mesh_for(parent,data,road,prepared)
+	if not preview:collide(parent,road,prepared)

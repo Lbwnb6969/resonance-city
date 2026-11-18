@@ -29,7 +29,7 @@ func handle(owner,event:InputEvent)->bool:
 	if event.ctrl_pressed and event.shift_pressed and owner.demo.tool==0:
 		owner.close();dragging=true;start=event.position;finish=start;return true
 	var id:=house_at(owner,event.position)
-	if event.double_click and not id.is_empty():
+	if event.double_click and owner.demo.tool==4 and not id.is_empty():
 		owner.select(owner.demo.state.natural_clusters().get(id,{}).get("members",[id]));return true
 	if event.ctrl_pressed and not owner.selected.is_empty() and not id.is_empty():
 		var ids:Array=owner.selected.duplicate()

@@ -59,6 +59,9 @@ func build(renderer, house: Dictionary, root: Node3D) -> void:
 	var passages: Array = renderer.house_passages(id)
 	var entrances: Array = renderer.house_entrances(id)
 	var round_tower: Dictionary = root.get_meta("round_tower",{})
+	var timber_panes := {}
+	for pane: Dictionary in root.get_meta("roof_window_panes", []):
+		if pane.source == "timber_entry": timber_panes[[pane.cell_id, pane.side]] = true
 	for cell: Dictionary in house.cells:
 		var at: Vector3 = renderer._cell_position(house,cell)
 		var level := int(cell.level)
@@ -67,9 +70,10 @@ func build(renderer, house: Dictionary, root: Node3D) -> void:
 		if root.has_meta("acoustic_shell"):continue
 		if str(cell.kind) != "room": continue
 		for side: Vector2i in [Vector2i.LEFT,Vector2i.RIGHT,Vector2i.UP,Vector2i.DOWN]:
-			if house.get("architecture","")=="stepped_guildhouse" and preload("res://scripts/visual/city_creation_stepped_guildhouse.gd").glow(self,root,cell,side,surface,windows):continue
-			if house.get("architecture","")=="recessed_townhouse" and preload("res://scripts/visual/city_creation_layered_windows.gd").glow(self,root,cell,side,surface,windows):continue
 			if preload("res://scripts/visual/city_creation_civic_glow.gd").face(self,root,house,cell,side,surface,windows):continue
+			if house.get("architecture","")=="stepped_guildhouse" and preload("res://scripts/visual/city_creation_stepped_guildhouse.gd").glow(self,root,cell,side,surface,windows):continue
+			if preload("res://scripts/visual/city_creation_ancient_window_glow.gd").face(self,root,cell,side,surface,windows):continue
+			if house.get("architecture","")=="recessed_townhouse" and preload("res://scripts/visual/city_creation_layered_windows.gd").glow(self,root,cell,side,surface,windows):continue
 			var neighbor: Dictionary = renderer._neighbor_cell(house,cell,side)
 			if not neighbor.is_empty() and str(neighbor.kind) == "room": continue
 			var cuts: Array = []
@@ -83,6 +87,11 @@ func build(renderer, house: Dictionary, root: Node3D) -> void:
 				elif Vector2(face.side).dot(Vector2(side))==0: facade_width-=float(face.retreat)
 			var opening: Dictionary = Architecture.wall_opening(cuts,side) if level == 0 else {}
 			if preload("res://scripts/visual/city_creation_balcony_glow.gd").face(self,root,cell,side,surface,frame,windows):continue
+			if preload("res://scripts/visual/city_creation_modern_window_glow.gd").face(self,root,cell,side,surface,windows):continue
+			var neo_wall:=false
+			for candidate:Node in root.find_children("*","Node3D",true,false):
+				if candidate.has_meta("neoclassical_glass") and Vector2(candidate.transform.basis.z.x,candidate.transform.basis.z.z).dot(Vector2(side))>.99:neo_wall=true;break
+			if neo_wall:continue
 			if not opening.is_empty():
 				# Even a four-way arcade has warm afterglow: the lamp fits
 				# entirely on its wider structural pier, never across the hole.
@@ -104,6 +113,7 @@ func build(renderer, house: Dictionary, root: Node3D) -> void:
 			for entrance: Dictionary in entrances:
 				if level == 0 and str(entrance.cell_id) == str(cell.id) and entrance.side == side: door = true
 			if door:
+				if timber_panes.has([str(cell.id), side]): continue
 				# A little glass lantern beside, never in, the real doorway.
 				_panel(surface,frame,Vector3(0.56,1.02,1.175),Vector2(0.095,0.145),1)
 				lanterns += 1
@@ -121,10 +131,14 @@ func build(renderer, house: Dictionary, root: Node3D) -> void:
 				garlands += 1
 	# A round facade owns its actual tangent window positions; rectangular
 	# room-corner panes would otherwise hang outside the circular stone wall.
+	var round_actual:=false
+	for pane:Dictionary in root.get_meta("roof_window_panes",[]):
+		if str(pane.get("source",""))=="round_tower":round_actual=true;break
 	for window: Dictionary in root.get_meta("round_windows",[]):
-		var normal: Vector3=window.normal
-		var frame := Transform3D(Basis(Vector3.UP,atan2(normal.x,normal.z)),Vector3(window.at)+normal*.012)
-		_panel(surface,frame,Vector3.ZERO,window.size,0)
+		if not round_actual:
+			var normal: Vector3=window.normal
+			var frame := Transform3D(Basis(Vector3.UP,atan2(normal.x,normal.z)),Vector3(window.at)+normal*.012)
+			_panel(surface,frame,Vector3.ZERO,window.size,0)
 		windows.append(window)
 	if not round_tower.is_empty(): top=float(round_tower.top)
 	# Crown panes/highlights join the existing house surface. The real bell
@@ -170,6 +184,13 @@ func build(renderer, house: Dictionary, root: Node3D) -> void:
 	for window: Dictionary in root.get_meta("attic_windows",[]):
 		_attic_pane(surface,window)
 		windows.append(window)
+	for pane:Dictionary in root.get_meta("roof_window_panes",[]):
+		var faces:PackedVector3Array=pane.faces
+		for i in range(0,faces.size(),3):
+			var normal:Vector3=(faces[i+2]-faces[i]).cross(faces[i+1]-faces[i]).normalized()
+			_tri(surface,[faces[i]+normal*.003,faces[i+1]+normal*.003,faces[i+2]+normal*.003],0)
+		var kind:=str(pane.get("source","roof"));
+		if kind!="round_tower":windows.append({"source":"facade" if kind in ["layered","balcony","guild_shop","timber_entry"] else "roof","kind":kind,"triangles":faces.size()/3,"cell_id":pane.get("cell_id",""),"side":pane.get("side",Vector2i.ZERO)})
 	rig.mesh = surface.commit()
 	rig.custom_aabb = rig.mesh.get_aabb().grow(0.8)
 	var material := ShaderMaterial.new()
@@ -199,7 +220,7 @@ func build(renderer, house: Dictionary, root: Node3D) -> void:
 	arc.custom_aabb = AABB(Vector3(-22,-1,-19),Vector3(44,21,38))
 	root.add_child(arc);arc.set_as_top_level(true);arc.global_transform=Transform3D.IDENTITY
 	var row := {"root":root,"pivot":pivot,"mesh":rig,"material":material,"arc":arc,"arc_material":arc_material,"anchor":Frame.world3(house,Vector3(center.x,top+0.10,center.z)),"base_y":center.y,"height":maxf(FLOOR,top-center.y),"weight":0.0,"afterglow":0.0,"level_tier":renderer.state.level_tier(id),"inhabited":str(house.get("role",""))=="residential"}
-	row.fixed_window_geometry=(house.get("architecture","")=="recessed_townhouse" and root.get_meta("structural_joined",false)) or root.has_meta("tea_deck") or root.get_meta("roof_detail",{}).get("active",false) or root.get_meta("chimney_detail",{}).get("active",false) or root.get_meta("gable_trim",{}).get("active",false) or root.get_meta("porch_detail",{}).get("active",false)
+	row.fixed_window_geometry=root.has_meta("clockwork_roof_pitch") or (house.get("architecture","")=="recessed_townhouse" and root.get_meta("structural_joined",false)) or root.has_meta("tea_deck") or root.get_meta("roof_detail",{}).get("active",false) or root.get_meta("chimney_detail",{}).get("active",false) or root.get_meta("gable_trim",{}).get("active",false) or root.get_meta("porch_detail",{}).get("active",false)
 	material.set_shader_parameter("pluck_base_y",center.y)
 	material.set_shader_parameter("pluck_height",float(row.height))
 	rigs[id] = row

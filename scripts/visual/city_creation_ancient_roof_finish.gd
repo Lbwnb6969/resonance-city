@@ -8,7 +8,7 @@ static func tiles(renderer,parent:Node3D,faces:Array,color:Color,coordinates:Pac
 	var mesh:MeshInstance3D=renderer._roof_surface(parent,faces,color,coordinates)
 	var key:="ancient_low_tiles/"+str(color)
 	if not renderer.materials.has(key):
-		var material:=ShaderMaterial.new();material.shader=renderer.JoinedRoofShader
+		var material:=ShaderMaterial.new();material.shader=preload("res://scripts/visual/shaders/creation_ancient_tiles.gdshader")
 		material.set_shader_parameter("roof_color",color);renderer.materials[key]=material
 	mesh.material_override=renderer.materials[key]
 	return mesh

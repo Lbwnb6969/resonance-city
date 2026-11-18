@@ -8,10 +8,40 @@ var signature:=0
 var city_id:=0
 var records:Dictionary={}
 var rebuilds:=0
+static func key(city:RefCounted)->int:
+	return hash([city.houses,city.roads,city.waters,city.terrain_strokes,city.terrain_policy,city.districts,city.placed_landmarks])
+static func ready(city:RefCounted)->bool:
+	var life:Node3D=preload("res://scripts/world/city_creation_economy_pause.gd").owner(city)
+	return life==null or (not life.budget_sync_pending() and not life._budget_hold and life.last_revision==city.revision)
+static func needed(city:RefCounted)->bool:
+	if not city.has_meta("game_expression_owner"):return false
+	var owner:Node=city.get_meta("game_expression_owner").get_ref()
+	return owner!=null and not owner.cancelled
+static func prepare(city:RefCounted)->Dictionary:
+	var model:RefCounted=load("res://scripts/audio/city_creation_expression_geometry.gd").new();model.refresh(city)
+	return {"signature":model.signature,"records":model.records}
+static func capture(city:RefCounted)->Dictionary:
+	if not ready(city):return {}
+	var fields:Dictionary={}
+	for field:String in ["houses","roads","waters","terrain_strokes","terrain_policy","districts","placed_landmarks","creative_settings","harmony_journey","cozy_progression","plants","era_modifiers","biome_seed","era_unlocks","revision","_region_network","_region_network_revision"]:
+		var value:Variant=city.get(field);fields[field]=value.duplicate(true) if value is Array or value is Dictionary else value
+	return {"fields":fields,"zones":city.functional_zones().duplicate(true),"courts":city.courtyard_plans().duplicate(true)}
+static func prepare_snapshot(snapshot:Dictionary)->Dictionary:
+	var city:RefCounted=load("res://scripts/world/city_creation_state.gd").new()
+	for field:String in snapshot.fields:city.set(field,snapshot.fields[field])
+	city._courtyard_plans_cache.assign(snapshot.courts);city._courtyard_revision=city.revision
+	city.set_meta("functional_zones",{"key":[city.revision,city._region_network_revision],"value":snapshot.zones})
+	preload("res://scripts/visual/city_creation_prepared_frontages.gd").prepare(city)
+	return prepare(city)
+static func adopt(city:RefCounted,prepared:Dictionary)->void:
+	if prepared.get("signature",-1)==key(city):city.set_meta("expression_geometry_prepared",prepared)
 func refresh(city:RefCounted)->void:
-	var key:=hash([city.houses,city.roads,city.waters,city.terrain_strokes,city.terrain_policy,city.districts,city.placed_landmarks])
-	if city_id==city.get_instance_id() and signature==key:return
-	city_id=city.get_instance_id();signature=key;rebuilds+=1;records={}
+	if not ready(city):return
+	var next_key:=key(city)
+	if city_id==city.get_instance_id() and signature==next_key:return
+	city_id=city.get_instance_id();signature=next_key;rebuilds+=1;records={}
+	var prepared:Dictionary=city.get_meta("expression_geometry_prepared",{})
+	if prepared.get("signature",-1)==signature:records=prepared.records;return
 	var spaces:Dictionary=city.functional_zones()
 	var curves:Array=[]
 	for road:Dictionary in city.roads:curves.append({"id":road.id,"bins":Chamber.curves([road])})
@@ -47,13 +77,16 @@ func refresh(city:RefCounted)->void:
 		sources.sort();craft_ids.sort()
 		records[house.id]={"flow":flow,"craft":.65 if not craft_ids.is_empty() else 0.,"base_y":float(house.get("base_y",0.)),"flow_sources":sources,"craft_sources":craft_ids}
 func sample(weights:Dictionary)->Dictionary:
-	var result:={"flow":0.,"craft":0.,"flow_sources":[],"craft_sources":[]}
+	var result:={"flow":0.,"craft":0.,"flow_sources":[],"craft_sources":[],"flow_contributions":[],"craft_contributions":[]}
 	for id:String in weights:
 		var row:Dictionary=records.get(id,{})
 		for kind:String in ["flow","craft"]:
-			result[kind]+=float(weights[id])*float(row.get(kind,0.))
-			if float(weights[id])<=0. or float(row.get(kind,0.))<=0.:continue
-			for source:String in row[kind+"_sources"]:
+			var contribution := float(weights[id]) * float(row.get(kind, 0.))
+			if contribution <= 0.: continue
+			result[kind] += contribution
+			var sources: Array = row[kind+"_sources"]
+			result[kind+"_contributions"].append({"source_ids":sources, "value":contribution})
+			for source: String in sources:
 				if not result[kind+"_sources"].has(source):result[kind+"_sources"].append(source)
 	for kind:String in ["flow","craft"]:result[kind+"_sources"].sort()
 	result.highland=Context.contour(records,weights)

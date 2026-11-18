@@ -16,7 +16,9 @@ static func build(r,parent:Node3D,house:Dictionary)->void:
 		var node:=Node3D.new();node.name="CornerLoggiaRoof_"+str(row.cell.id);parent.add_child(node);node.position=Vector3(row.center.x,row.base,row.center.y)
 		r._box(node,Vector3(1.8,.14,1.8),Vector3(0,.025,0),stone).name="LoggiaRoofPlatform"
 		var crowned:bool=not crown.is_empty() and crown.cell.id==row.cell.id
-		if crowned:_gallery(r,node,float(crown.angle),stone,plaster,palette)
+		if crowned:
+			_gallery(r,node,float(crown.angle),stone,plaster,palette)
+			preload("res://scripts/visual/city_creation_roof_window_glow.gd").record(parent,node,"corner_loggia")
 		else:
 			for side:Vector2i in Plan.SIDES:
 				if not r.building_context.neighbor(house,row.cell,side,0,true).is_empty() or not r.building_context.neighbor(house,row.cell,side,1,true).is_empty():continue

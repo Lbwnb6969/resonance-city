@@ -111,8 +111,7 @@ func _clear(city,road: Dictionary,at: Vector2,radius: float) -> bool:
 			"road":
 				if str(row.id)!=str(road.id) and at.distance_to(Geometry2D.get_closest_point_to_segment(at,row.a,row.b))<float(row.radius)+radius:return false
 			"wall":
-				var delta:Vector2=(at-Vector2(row.at)).abs()-Vector2.ONE*.9
-				if delta.max(Vector2.ZERO).length()<radius+.12:return false
+				if preload("res://scripts/world/city_creation_house_frame.gd").distance(row.box,at)<radius+.12:return false
 			_:
 				if at.distance_to(row.at)<radius+float(row.radius):return false
 	return true
@@ -130,8 +129,8 @@ func _prepare_clearance(city:RefCounted)->void:
 	for house:Dictionary in city.houses:
 		for cell:Dictionary in house.cells:
 			if int(cell.level)!=0:continue
-			var at:=Vector2(house.origin[0],house.origin[1])+Vector2(cell.x,cell.z)*1.8
-			_add_clearance({"kind":"wall","at":at},Rect2(at-Vector2.ONE*.9,Vector2.ONE*1.8).grow(.12))
+			var box:Variant=preload("res://scripts/world/city_creation_house_frame.gd").footprint(house,cell)
+			_add_clearance({"kind":"wall","box":box},preload("res://scripts/world/city_creation_house_frame.gd").bounds(box).grow(.12))
 		for door:Dictionary in city.house_entrances(str(house.id)):
 			_add_clearance({"kind":"door","at":door.at,"clearance_at":door.clearance_at,"radius":1.15},Rect2(door.at,Vector2.ZERO).grow(1.15))
 	for plant:Dictionary in city.plants:
@@ -248,11 +247,7 @@ func install(renderer,parent: Node3D,records: Array) -> void:
 		var node := MeshInstance3D.new();node.mesh=batch.surface.commit();node.material_override=batch.material;root.add_child(node)
 		if batch.material is ShaderMaterial and batch.material.shader==preload("res://scripts/visual/city_creation_soft_wind.gd").WindShader:node.extra_cull_margin=.03
 	_glows(root,lamps,false);_glows(root,pools,true)
-	if not trees.is_empty():
-		var trunk:=CylinderMesh.new();trunk.bottom_radius=.10;trunk.top_radius=.065;trunk.height=1.65;trunk.radial_segments=8
-		_tree_batch(root,"AvenueTrunks",trunk,renderer._material(Color("75634b")),trees,Vector3(0,.9,0))
-		var crown:=SphereMesh.new();crown.radius=.65;crown.height=1.45;crown.radial_segments=10;crown.rings=4
-		_tree_batch(root,"AvenueCrowns",crown,renderer._material(Color("5e805b")),trees,Vector3(0,2.0,0))
+	if not trees.is_empty():preload("res://scripts/visual/city_creation_avenue_trees.gd").install(renderer,root,trees)
 	# New batches inherit the current shared light state immediately.
 	var saved_evening := evening;var saved_concert := concert;evening=not evening
 	set_light(saved_evening,saved_concert)

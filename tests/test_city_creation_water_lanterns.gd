@@ -20,6 +20,23 @@ func run()->void:
 		check(city.water_clearance(row.at)<=-Plan.INSET+.001 and row.y==Plan.Terrain.WATER_LEVEL+.01,"actual floating level follows visible water surface")
 		accepted.append(row)
 	check(city.snapshot()==before,"lamp planning never authors water homes or history")
+	Plan.prepare(city);var ready:Dictionary=city.get_meta("prepared_water_lanterns")
+	check(Plan.derive(city)==rows,"prepared lamp rows equal ordinary current derivation")
+	var receiver:=Fixture.State.new();check(receiver.restore(before).ok,"prepared lamp receiver uses independent source")
+	var receiver_life:=Life.new();root.add_child(receiver_life);receiver_life.set_process(false);receiver_life.setup(receiver)
+	Plan.adopt(receiver,city)
+	check(is_same(receiver.get_meta("prepared_water_lanterns",{}),ready) and Plan.derive(receiver)==rows,"matching published city adopts exact worker lamp rows")
+	var district:Dictionary=receiver.add_district([Vector2(-26,-24),Vector2(-6,-24)] as Array[Vector2],8.,"warm")
+	check(district.ok and Plan._input(receiver)!=ready.input,"authored district input affecting bridge heights invalidates prepared lamps")
+	check(receiver.undo().ok and Plan._input(receiver)==ready.input,"Undo restores exact prepared lamp source values")
+	receiver.creative_settings.presentation.automatic_decoration=false
+	check(Plan.derive(receiver).is_empty(),"same-revision preference change cannot reuse prepared lamps")
+	receiver.creative_settings.presentation.automatic_decoration=true
+	receiver.houses[0]=receiver.houses[0].duplicate(true);receiver.houses[0].origin[0]+=.5
+	check(Plan._input(receiver)!=ready.input,"same-revision geometry edit invalidates full prepared source values")
+	receiver.remove_meta("prepared_water_lanterns");Plan.adopt(receiver,city)
+	check(not receiver.has_meta("prepared_water_lanterns"),"changed geometry cannot adopt an old city's lamps")
+	receiver_life.free()
 	check(city.remove_road("r1").ok and Plan.derive(city).is_empty(),"pending road edit withdraws old generation")
 	life.setup(city);check(Plan.derive(city).is_empty(),"disconnected shoreline cannot retain lamps")
 	check(city.undo().ok,"actual street Undo");life.setup(city);check(Plan.derive(city)==rows,"published Undo restores exact sources")

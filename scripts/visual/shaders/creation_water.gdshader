@@ -2,8 +2,8 @@ shader_type spatial;
 #include "res://scripts/visual/shaders/creation_safe_math.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_festival_wave.gdshaderinc"
 render_mode cull_disabled, diffuse_burley, specular_schlick_ggx;
-uniform vec4 water_deep : source_color = vec4(0.38,0.61,0.56,1.0);
-uniform vec4 water_shallow : source_color = vec4(0.46,0.63,0.52,1.0);
+uniform vec4 water_deep : source_color = vec4(0.25,0.50,0.49,1.0);
+uniform vec4 water_shallow : source_color = vec4(0.52,0.65,0.51,1.0);
 uniform vec4 sky_reflection_day : source_color = vec4(0.72,0.86,0.92,1.0);
 uniform vec4 sky_reflection_evening : source_color = vec4(0.96,0.72,0.52,1.0);
 uniform float evening : hint_range(0.0,1.0) = 0.0;
@@ -17,6 +17,7 @@ varying vec3 world_at;
 #include "res://scripts/visual/shaders/creation_meadow_palette.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_shore_palette.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_travel_ripple.gdshaderinc"
+#include "res://scripts/visual/shaders/creation_surface_height.gdshaderinc"
 
 void vertex() { world_at = (MODEL_MATRIX*vec4(VERTEX,1.0)).xyz; }
 
@@ -24,6 +25,9 @@ void fragment() {
 	vec2 at = world_at.xz;
 	// This is horizontal distance into water, not vertical bathymetry.
 	float depth = max(0.0,-shore_distance(at));
+	float bed_depth=depth;
+	bool bed_sample=terrain_height_enabled && all(greaterThanEqual(at,terrain_height_rect.xy)) && all(lessThanEqual(at,terrain_height_rect.xy+terrain_height_rect.zw));
+	if(bed_sample){bed_depth=max(0.0,world_at.y-terrain_surface_height(at));}
 	float grain = meadow_noise(at*2.1)*0.06+meadow_noise(at*0.45)*0.03;
 	float water_cover = smoothstep(0.01,0.13+grain,depth);
 	float wave_a = sin(at.x*2.4+at.y*1.6+TIME*0.85);
@@ -32,12 +36,21 @@ void fragment() {
 	NORMAL = safe_normalize((VIEW_MATRIX*vec4(wave_normal,0.0)).xyz);
 
 	// Preserve the shared meadow/Foundation wet-sand contact palette.
-	vec3 ground = shore_ground(at,meadow_color(at,grass_low.rgb,grass_high.rgb));
-	vec3 bed = mix(bank_soil.rgb*0.64,water_shallow.rgb,smoothstep(0.03,0.27+grain,depth));
+	vec3 ground = shore_ground(world_at,meadow_color(at,PROJECTION_MATRIX));
+	vec3 bed = mix(bank_soil.rgb*0.64,water_shallow.rgb,smoothstep(0.03,0.27+grain,bed_depth));
 	float caustic = smoothstep(0.65,0.94,sin(at.x*6.5+TIME*0.7)*cos(at.y*6.5-TIME*0.6)*0.5+0.5);
-	float shallows = smoothstep(0.03,0.14,depth)*(1.0-smoothstep(0.22,0.55,depth));
+	float shallows = smoothstep(0.03,0.14,bed_depth)*(1.0-smoothstep(0.22,0.55,bed_depth));
 	bed += vec3(0.016,0.021,0.015)*caustic*shallows*(1.0-night*0.8);
-	vec3 water = mix(bed,water_deep.rgb,smoothstep(0.18,0.60+grain,depth));
+	float absorption=bed_sample ? 1.0-exp(-bed_depth*4.5) : smoothstep(0.18,0.85+grain,depth);
+	vec3 water = mix(bed,water_deep.rgb,absorption);
+	// Sand and silt collect intermittently in the shelter of the valley banks.
+	float river_edge = abs(at.x-valley_river_x(at.y,water_world_rect.y+water_world_rect.w))-2.3;
+	if (river_edge < 0.0 && river_edge > -.9 && depth < .9) {
+		float connected_bank = 1.0-smoothstep(.08,.24,abs(depth+river_edge));
+		float deposit = smoothstep(.32,.72,meadow_noise(at*vec2(.42,.20)));
+		float shelf = smoothstep(.06,.17,depth)*(1.0-smoothstep(.16,.36+.5*deposit,depth));
+		water = mix(water,water_shallow.rgb,connected_bank*shelf*deposit*.6);
+	}
 	float ripples = sin(at.y*1.05+TIME*0.28)+sin(at.x*1.73-at.y*0.31-TIME*0.17);
 	water *= 1.0+ripples*0.018;
 	vec2 rain_cell=floor(at*2.0);

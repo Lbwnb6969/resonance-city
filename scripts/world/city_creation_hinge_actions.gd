@@ -2,6 +2,11 @@ extends RefCounted
 const Hinge=preload("res://scripts/world/city_creation_house_hinge.gd")
 static func supported(city,house:Dictionary)->bool:
 	return not Hinge.layout(house).is_empty() and preload("res://scripts/world/city_creation_arcade_plan.gd").for_house(city,house).is_empty() and preload("res://scripts/world/city_creation_passage.gd").for_house(house,city.roads).is_empty()
+static func removal_site(city,before:Dictionary,remaining:Dictionary)->Dictionary:
+	var angle:=Hinge.angle(before)
+	if is_equal_approx(angle,Hinge.angle(remaining)) and (is_zero_approx(angle) or Hinge.layout(before).axis==Hinge.layout(remaining).axis):return {"ok":true,"message":""}
+	if city._house_overlaps(remaining,str(remaining.id)):return city._fail("拆除后侧翼变形会与其他房屋重叠")
+	return city._validate_house_site(remaining)
 static func publish(city,index:int,candidate:Dictionary,caption:String)->Dictionary:
 	if city._house_overlaps(candidate,str(candidate.id)):return city._fail("微折后与街坊重叠")
 	var site:Dictionary=city._validate_house_site(candidate)

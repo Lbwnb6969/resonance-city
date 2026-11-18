@@ -3,6 +3,7 @@ render_mode cull_disabled, depth_draw_opaque, diffuse_burley, specular_disabled;
 #include "res://scripts/visual/shaders/creation_safe_math.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_wind.gdshaderinc"
 uniform float detail = 1.0;
+uniform float tall_grass = 0.0;
 uniform float meadow_time_override = -1.0;
 uniform sampler2D road_draft_field : filter_linear, repeat_disable;
 uniform bool road_draft_enabled = false;
@@ -13,7 +14,9 @@ varying float tip;
 varying float gust;
 varying vec3 clump_tint;
 varying vec2 clump_world_at;
+varying float clump_ground_y;
 varying float species;
+varying float blade_across;
 #include "res://scripts/visual/shaders/creation_meadow_palette.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_shore_palette.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_meadow_contact.gdshaderinc"
@@ -24,8 +27,11 @@ void vertex() {
 	tip = clamp(UV.y,0.0,1.0);
 	clump_tint = COLOR.rgb;
 	clump_world_at = (MODEL_MATRIX*vec4(0.0,0.0,0.0,1.0)).xz;
+	clump_ground_y=(MODEL_MATRIX*vec4(0.0,0.0,0.0,1.0)).y-.017;
 	species = clamp(INSTANCE_CUSTOM.a,0.0,1.0);
-	float leaf_seed=meadow_hash(clump_world_at*1.37+vec2(UV.x*3.71,UV.x*.83));
+	blade_across=fract(UV.x)*4.0;
+	float blade_id=floor(UV.x);
+	float leaf_seed=meadow_hash(clump_world_at*1.37+vec2(blade_id*3.71,blade_id*.83));
 	VERTEX.xz*=mix(.82,1.0,leaf_seed);
 	VERTEX.y*=mix(.86,1.07,leaf_seed);
 	float edge_height = clamp(INSTANCE_CUSTOM.b,0.0,1.0);
@@ -35,7 +41,7 @@ void vertex() {
 	}
 	// Derived meadow retreats from the same shore as the exposed sand. The
 	// authored plants, CPU clumps and terrain stay intact and undo unchanged.
-	if (bank_sand_enabled) { edge_height *= smoothstep(.22,.85,shore_distance(world_at.xz)); }
+	if (bank_sand_enabled) { edge_height *= 1.-smoothstep(.15,.85,shore_sand_cover(vec3(world_at.x,clump_ground_y,world_at.z),shore_distance(world_at.xz))); }
 	vec2 wind = CREATION_WIND_DIRECTION;
 	float wind_time = meadow_time_override < 0.0 ? TIME : meadow_time_override;
 	gust = creation_wind_gust(world_at.xz,wind_time);
@@ -44,7 +50,7 @@ void vertex() {
 	vec3 local_push = world_to_local*push;
 	VERTEX.y *= detail*edge_height*mix(1.0,1.20,species);
 	VERTEX.y -= (1.0-smoothstep(0.0,.30,tip))*.020;
-	VERTEX.z *= mix(1.0,0.46,species);
+	VERTEX.z *= mix(1.0,mix(0.46,0.78,tall_grass),species);
 	// Mask's .18 parameter reserves 7.56 cm, not 18 cm. Contract the whole
 	// footprint at the edge, including its wind, rather than clipping grass roots.
 	// Contract the cupped clump beside obstacles, including wind and push,
@@ -60,10 +66,12 @@ void fragment() {
 	EMISSION=window_ground_bounce(world_at.xz);
 	float leaf = smoothstep(0.12,0.92,tip)*detail;
 	vec3 turf_normal = meadow_normal(world_at.xz);
-	vec3 soft_normal = safe_normalize(mix(turf_normal,safe_normalize(blade_world_normal),leaf*0.35)
-		+ vec3(0.82,0.0,0.57)*gust*leaf*0.035);
+	// Subpixel blade folds merge into the shared turf normal before lighting.
+	float normal_resolved=smoothstep(.75,2.5,1.0/max(fwidth(blade_across),.0001));
+	vec3 soft_normal = safe_normalize(mix(turf_normal,safe_normalize(blade_world_normal),leaf*0.65*normal_resolved)
+		+ vec3(0.82,0.0,0.57)*gust*leaf*0.035*normal_resolved);
 	NORMAL = safe_normalize((VIEW_MATRIX*vec4(soft_normal,0.0)).xyz);
-	vec3 ground = meadow_contact_color(world_at.xz,shore_ground(world_at.xz,meadow_color(clump_world_at,grass_low.rgb,grass_high.rgb)));
+	vec3 ground = meadow_contact_color(world_at.xz,shore_ground(vec3(world_at.x,clump_ground_y,world_at.z),meadow_color(clump_world_at,PROJECTION_MATRIX)));
 	vec3 ground_linear=OUTPUT_IS_SRGB ? meadow_srgb_to_linear(ground) : ground;
 	// TG's seed tint belongs to the whole clump. Our quarter-strength mapping
 	// keeps it stable; wind moves geometry/normals instead of adding green.
@@ -72,7 +80,7 @@ void fragment() {
 	vec3 root_tone=ground_linear*vec3(0.80,0.86,0.78);
 	vec3 tip_lift=vec3(0.05,0.06,0.01);
 	// The authored lift is an sRGB color, not .05 units of linear radiance.
-	if (OUTPUT_IS_SRGB) { tip_lift=meadow_srgb_to_linear(tip_lift); }
+	tip_lift=meadow_srgb_to_linear(tip_lift);
 	vec3 sun_tip_tone=ground_linear*vec3(1.06,1.08,0.97)+tip_lift;
 	vec3 blade=mix(root_tone,sun_tip_tone,smoothstep(0.08,0.92,tip))*seed_tint;
 	blade*=mix(vec3(1.0),vec3(0.985,1.0,0.985),species);
@@ -82,12 +90,14 @@ void fragment() {
 	float resolved=1.0-smoothstep(.018,.09,length(fwidth(world_at.xz)));
 	float reveal = smoothstep(0.04,0.94,tip)*detail*mix(.28,.58,resolved);
 	vec3 albedo=mix(ground_linear,blade,reveal);
+	float vein=(1.0-smoothstep(.025,.13,abs(blade_across-.5)))*resolved*leaf;
+	albedo*=1.0+vein*.035;
 	// Only wind-compressed tips catch the passing warm sheen; roots keep AO.
 	albedo*=vec3(1.0)+vec3(.06,.035,.006)*max(0.0,gust)*leaf;
 	ALBEDO=OUTPUT_IS_SRGB ? meadow_linear_to_srgb(albedo) : albedo;
-	AO = mix(0.98,1.0,smoothstep(0.0,0.55,tip)*detail);
+	AO = mix(0.90,1.0,smoothstep(0.0,0.55,tip)*detail);
 	AO_LIGHT_AFFECT = 0.30;
-	ROUGHNESS = mix(0.94,0.74,tip*detail);
+	ROUGHNESS = mix(0.98,0.90,tip*detail);
 	BACKLIGHT = vec3(0.24,0.28,0.09)*leaf;
 }
 void light() {

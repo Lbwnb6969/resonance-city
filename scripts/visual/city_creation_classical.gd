@@ -2,13 +2,16 @@ extends RefCounted
 ## Era dispatch stays small; residential massing lives in Neoclassical.
 const Ancient=preload("res://scripts/visual/city_creation_ancient_architecture.gd")
 const Neo = preload("res://scripts/visual/city_creation_neoclassical.gd")
+const TimberEntries = preload("res://scripts/visual/city_creation_timber_entries.gd")
 
 static func openings(renderer, job, frame, wall: Node3D, door: bool, active: bool, width: float) -> void:
-	if wall.has_meta("guild_shop_window"):preload("res://scripts/visual/city_creation_recessed_openings.gd").build(renderer,job,frame,wall,active);return
-	if wall.has_meta("recessed_facade") and job.house.get("architecture","")=="recessed_townhouse":preload("res://scripts/visual/city_creation_layered_windows.gd").build(renderer,job,frame,wall);return
+	if wall.has_meta("guild_shop_window"):preload("res://scripts/visual/city_creation_recessed_openings.gd").build(renderer,job,frame,wall,active);preload("res://scripts/visual/city_creation_roof_window_glow.gd").record(job.root,wall,"guild_shop");return
+	if wall.has_meta("recessed_facade") and job.house.get("architecture","")=="recessed_townhouse":preload("res://scripts/visual/city_creation_layered_windows.gd").build(renderer,job,frame,wall);preload("res://scripts/visual/city_creation_roof_window_glow.gd").record(job.root,wall,"layered");return
 	if Ancient.active(job.house,job.era):Ancient.openings(renderer,job,frame,wall,door,active,width);return
+	if door and TimberEntries.build(renderer, job, frame, wall, active, width):return
 	if Neo.eligible(job.house, job.era, job.style) and not door and frame.retreats.is_empty() and width >= 1.79:
 		Neo.windows(renderer, wall, int(frame.level), job.palette)
+		preload("res://scripts/visual/city_creation_roof_window_glow.gd").record(job.root,wall,"neoclassical")
 	else:
 		renderer._facade(wall, job.palette, door, int(job.house.get("seed", 0)) + frame.x*17 + frame.z*31 + frame.level*7, active, width)
 
@@ -20,3 +23,4 @@ static func facade(renderer, job, frame, wall: Node3D, direction: Vector2i, door
 	if not preload("res://scripts/world/city_creation_neoclassical_civic_plan.gd").guild(renderer.state,job.house).is_empty(): return
 	if not Neo.eligible(job.house, job.era, job.style) or not frame.retreats.is_empty() or width < 1.79: return
 	Neo.build(renderer, wall, job.house, frame.cell, direction, door, job.palette)
+	preload("res://scripts/visual/city_creation_roof_window_glow.gd").record(job.root,wall,"corner_oriel","FacetedBayGlazing")

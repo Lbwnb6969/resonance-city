@@ -343,8 +343,1019 @@
       "line": 176,
       "section": "自然底景模板（对应源码 `city_creation_ambience.gd` 的 2 条固定环境声池：`water` 与 `forest`）",
       "text": "Pure, high-definition natural field recording of a sunlit Mediterranean olive and cypress grove in a gentle breeze. No musical instruments, no melodies, no vocals. Soft, warm rustling of leaves in the wind with occasional, distant, gentle songbird calls that never pierce the high frequencies. Steady, peaceful, uncluttered acoustic atmosphere ideal for a seamless background loop."
+    },
+    {
+      "id": "四时代.md:33",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 33,
+      "section": "1-01 · 孤屋与初垦基线（简单城默认 · 开放五度木吉他与空谷呼吸 · 无主奏）",
+      "text": "Complete instrumental acoustic folk piece for a quiet pastoral riverbank, slow and unhurried at 68 BPM in a loose 6/8 meter. A single fingerpicked acoustic guitar in open DADGAD tuning plays sparse, resonant open fifths and fourths with audible warm wood-body resonance and gentle fingerpad articulation. A bowed double bass enters occasionally with soft, grounding drone notes. No piano, no continuous lead melody, and no percussion. The arrangement breathes with wide two-bar rests, thins out in the middle to bare open strings, and ends with a natural decaying chord.",
+      "prompt_code": "1-01",
+      "era": "pastoral",
+      "density_intent": "simple_background",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "7dace1320b1acbe70184daf63cd53558896b6be82c49736c0ed6094b4deeb5c3"
+      ]
+    },
+    {
+      "id": "四时代.md:39",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 39,
+      "section": "1-02 · 轻营造日常底景（简单城默认备选 · 双木吉他交错拨弦与微风留白 · 无主奏）",
+      "text": "Complete pastoral instrumental track in G Mixolydian around 74 BPM, loose 4/4 feel with natural rubato. Two intimate acoustic guitars—one warm nylon-string and one mellow fingerstyle steel-string—exchange sparse, interlocking open-interval motifs separated by generous moments of silence. Accompanied only by subtle bowed viola da gamba harmonic swells in the low-mids. No prominent solo melody, no piano, no drums. Close, dry-warm wooden room acoustics with natural air. The piece develops through gentle harmonic shifts, drops to a single guitar, and fades on an open fifth.",
+      "prompt_code": "1-02",
+      "era": "pastoral",
+      "density_intent": "simple_background",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "eb7040ced000b5005709e2ae8ad7811085aa090589fcf5524ad9d4f0d8f777ea"
+      ]
+    },
+    {
+      "id": "四时代.md:45",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 45,
+      "section": "1-03 · 围合农庄与暖院（庭院/围合场景 · 大提琴松香低音与低音木笛短叹）",
+      "text": "Warm pastoral folk chamber piece in D Dorian at 72 BPM, gentle 6/8 meter. A solo cello playing warm, rosin-rich fifth double-stops and a fingerpicked gut-string guitar create an intimate, enclosing wooden courtyard atmosphere. Every few bars, a breathy wooden alto flute enters in its warm middle register with a brief, two-note pastoral sigh before resting for several measures. No piano, no bright high notes. Natural acoustic dynamics with a sparse middle section where the flute rests completely, concluding on a warm, unhurried cello and guitar cadence.",
+      "prompt_code": "1-03",
+      "era": "pastoral",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "8caa5fc12a7669720bd96f451d4d745d5f638dcd2f167a565f30cf790ae80915"
+      ]
+    },
+    {
+      "id": "四时代.md:51",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 51,
+      "section": "1-04 · 临水河湾与曲径（水岸/内陆流动场景 · 9/8 摇曳指弹与芦笛微澜）",
+      "text": "Flowing acoustic pastoral piece in A Mixolydian at 78 BPM in a lilting 9/8 compound meter. A fingerpicked acoustic guitar and a small Celtic folk harp weave a gentle, rolling water-like arpeggio texture with asymmetrical five-bar phrasing and natural breathing gaps. A warm low-register clarinet occasionally answers with short, lyrical three-note folk fragments, leaving more space than notes. Grounded by soft plucked upright bass. Intimate open-air riverbend soundstage, no piano, no drums, tapering off gradually into quiet harp harmonics and natural decay.",
+      "prompt_code": "1-04",
+      "era": "pastoral",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "9db4e5b95c1f96564240bc47baabb50a62d66fecc58d2c769de8869492143526"
+      ]
+    },
+    {
+      "id": "四时代.md:57",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 57,
+      "section": "1-05 · 木作水车与乡间晒场（手作/细节场景 · 曼陀林木拨、手鼓轻擦与吉他对话）",
+      "text": "Rustic, unhurried acoustic folk miniature in C major with open fourths, 82 BPM in a relaxed 4/4 meter. A warm octave mandolin and a nylon-string guitar trade sparse, plucked wooden counter-melodies with plenty of air between phrases. Subtle, soft finger-taps on a wooden frame drum and plucked double bass provide a gentle handmade pulse without a heavy beat. A wooden recorder adds a fleeting, cheerful grace-note motif only in the middle section. Dry, natural timber acoustics, no piano, ending cleanly with a decaying plucked chord.",
+      "prompt_code": "1-05",
+      "era": "pastoral",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "1195bfab767eeb20f906bd9cb12ff277b8c9f478ea493c4c3e1ebdec5d15506a"
+      ]
+    },
+    {
+      "id": "四时代.md:63",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 63,
+      "section": "1-06 · 远山草甸与暮色炊烟（高地/黄昏/独立备选 · 宽幅五度弦乐与木管余晖）",
+      "text": "Spacious pastoral instrumental for twilight hills, 64 BPM with free, breathing tempo. Solo viola and cello sustain quiet, open-fifth harmonies and natural harmonics, creating a wide, airy horizon. A fingerpicked acoustic guitar places isolated, unhurried notes in the spaces between the bowed strings, joined briefly by a mellow English horn playing a single wistful four-note phrase in the midrange. No piano, no percussion, no dramatic crescendo. The texture gradually simplifies to bare bowed fifths and a final acoustic guitar note decaying into silence.",
+      "prompt_code": "1-06",
+      "era": "pastoral",
+      "density_intent": "richer_space",
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代.md:73",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 73,
+      "section": "2-01 · 孤屋与石阶初建（简单城默认 · 独奏鲁特琴二声部稀疏慢行 · 无主奏）",
+      "text": "Sparse Renaissance early-music instrumental for a quiet stone courtyard, 66 BPM in a poised 2/2 meter. A solo Renaissance lute plucked gently with fingerpads plays transparent two-voice counterpoint in D Dorian, featuring delicate 4-3 harmonic suspensions and long, contemplative rests between short two-bar thoughts. Occasionally supported by a single deep plucked note from a bass theorbo. No continuous lead melody, no modern synth pads, no piano. Crisp, clear short acoustic reflections of a stone loggia, ending naturally on an open fifth cadence.",
+      "prompt_code": "2-01",
+      "era": "renaissance",
+      "density_intent": "simple_background",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "c4834ad5249f5412b8adb395ebb710681333c5a18840e19e9ed21b93e2deb583",
+        "12ae8d21a8f84d8be89be6165fcb35d142f9692b12ba0f88c2f5feae9d5423ef"
+      ]
+    },
+    {
+      "id": "四时代.md:79",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 79,
+      "section": "2-02 · 轻营造古街底景（简单城默认备选 · 维奥尔琴与西奥伯琴交错呼吸 · 无主奏）",
+      "text": "Restrained early-music ambient chamber piece in F Lydian at 70 BPM, gentle 3/4 meter. A theorbo and a bass viola da gamba share a sparse, breathing dialogue: the theorbo plucks slow, resonant dyads while the viol responds with soft, non-vibrato bowed intervals and subtle 7-6 suspensions. No prominent melody, no harpsichord clutter, and no modern chord progressions. Clear, intimate stone arcade acoustics with short natural decay. The music unfolds through quiet contrapuntal shifts, leaves generous silent gaps, and resolves on a warm Picardy third.",
+      "prompt_code": "2-02",
+      "era": "renaissance",
+      "density_intent": "simple_background",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "82e7649382b57276c77e5b7b83f9f69a7a737d89b985ae5e4dedec0037d7e725",
+        "3ace6b15e64bbca0673b8c7f66d5db1d5ad4dee333646626b9397a5ba6cf63a1"
+      ]
+    },
+    {
+      "id": "四时代.md:85",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 85,
+      "section": "2-03 · 连拱回廊与内院（庭院/围合场景 · 三声部维奥尔合奏与悬留温度）",
+      "text": "Intimate Renaissance consort piece in G Dorian at 68 BPM, unhurried 4/4 Pavane feel. A small trio of treble, tenor, and bass viols plays warm, non-vibrato polyphony with gentle staggered imitation and expressive 4-3 suspensions, underpinned by a softly plucked lute. Voices enter one by one and frequently drop out to leave transparent two-voice texture and breathing room. Recorded in a warm stone cloister with clear short reflections. No modern strings, no piano, no heavy climax, concluding with a poised, natural renaissance cadence.",
+      "prompt_code": "2-03",
+      "era": "renaissance",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "7ae28dd8cac95364d4c4a795ae98bc590f868338201ac1035d35210d6501802d"
+      ]
+    },
+    {
+      "id": "四时代.md:91",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 91,
+      "section": "2-04 · 石桥水道与世俗舞步（水岸/曲路流动场景 · 6/8 与 3/4 交错的轻盈古舞曲）",
+      "text": "Graceful secular Renaissance dance instrumental in A minor modal at 84 BPM, featuring a lilting 6/8 meter that occasionally shifts into 3/4 hemiola. A plucked Renaissance guitar and lute establish a light, flowing rhythmic gait with clear articulation and open spaces. A warm wooden tenor recorder joins intermittently for brief, conversational three-bar phrases in imitation with a bowed viol, then rests. Crisp stone arch acoustics, no heavy percussion, no baroque pomp. The texture thins before a gentle, decaying final chord.",
+      "prompt_code": "2-04",
+      "era": "renaissance",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "f1eb3ac520584856b725ef47b34ae417f0281caa553f00c098bc08bde1f65cd5"
+      ]
+    },
+    {
+      "id": "四时代.md:97",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 97,
+      "section": "2-05 · 百工连拱与制琴坊（手作/细节场景 · 毛毡维吉那琴与鲁特琴精密对答）",
+      "text": "Delicate Renaissance chamber piece in C Mixolydian at 76 BPM, light 2/2 duple meter. A soft-plucked lute-harpsichord (Lautenwerck) with warm gut-string tone and a Renaissance lute engage in quiet, intricate hocketed dialogue and short imitative motifs, supported by sparse plucked bass viol notes. Every phrase is followed by a clear pause that lets the short stone room reflection decay. No harsh metallic highs, no continuous busy scalar runs. The interplay gradually simplifies to solo lute and fades naturally.",
+      "prompt_code": "2-05",
+      "era": "renaissance",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "9ad221e9f33c712a592223f7cb15dc38c5537f149e2b213aa804fe8eca340a22"
+      ]
+    },
+    {
+      "id": "四时代.md:103",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 103,
+      "section": "2-06 · 望楼日落与石砌广场（高地/广场/独立备选 · 庄重帕凡舞曲与石廊共鸣）",
+      "text": "Poised Renaissance Pavane for a sunlit stone plaza, 62 BPM in a stately 2/2 meter. A deep theorbo, two violas da gamba, and a mellow renaissance bassoon (dulcian) weave a spacious, breathable modal tapestry in E Phrygian-inflected minor. The voices move in slow, dignified counterpoint with wide vertical spacing, frequent rests, and luminous suspensions that resolve into warm major triads. Clear stone courtyard acoustics without muddy reverb. The ensemble recedes in the final third, leaving the theorbo and bass viol to close in stillness.",
+      "prompt_code": "2-06",
+      "era": "renaissance",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "77403b7614bab5120e1512aeceee19061dd1a6081963808cf8fe09be3b2dac16"
+      ]
+    },
+    {
+      "id": "四时代.md:113",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 113,
+      "section": "3-01 · 孤屋与发条初动（简单城默认 · 大提琴拨弦与巴松管稀疏错位咬合 · 无主奏）",
+      "text": "Sparse, handcrafted chamber groove for a quiet clockwork workshop, 88 BPM in a precise yet unhurried 4/4 meter. Dry cello pizzicato and a warm solo bassoon play an interlocking, syncopated hocket pattern where notes fit together like wooden joinery, separated by sudden one-bar rests of pure silence. A rosewood marimba softly touches warm low-mid chords every few bars. No clock-ticking sound effects, no metallic gears, no continuous lead melody, and no bright glockenspiel. Intimate timber room acoustics, winding down cleanly into silence.",
+      "prompt_code": "3-01",
+      "era": "clockwork",
+      "density_intent": "simple_background",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "126096e99297d79a378d65d831b54501e415f2a2706849e2e4c26bc562434951"
+      ]
+    },
+    {
+      "id": "四时代.md:119",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 119,
+      "section": "3-02 · 玻璃花房的晨间呼吸（简单城默认备选 · 竖琴泛音与无马达颤音琴微光 · 无主奏）",
+      "text": "Airy, translucent chamber ambient piece for a sunlit glass conservatory, 74 BPM in a gentle 3/4 meter. Soft concert harp harmonics, a motor-off vibraphone played with soft yarn mallets in the warm midrange, and a mellow bass clarinet sustain sparse, breathing major-ninth and sixth chords. Delicate, syncopated plucked acoustic bass notes provide a light, floating pulse with generous pauses between gestures. Bright, clear glass-and-timber room acoustics without harshness or shrill highs, no lead melody, fading out on a warm lingering harmonic.",
+      "prompt_code": "3-02",
+      "era": "clockwork",
+      "density_intent": "simple_background",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "fe3e03abff5b0e08f99fe7b7091389e47f407155b1179c392cd32c6b5208bf51"
+      ]
+    },
+    {
+      "id": "四时代.md:125",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 125,
+      "section": "3-03 · 暖雾花房与藤蔓内院（庭院/围合场景 · 手风琴、单簧管与弦乐慢圆舞曲）",
+      "text": "Warm, intimate chamber waltz at 96 BPM in a relaxed, elastic 3/4 meter with a slightly hesitated second beat. A mellow concertina, warm B-flat clarinet, and bowed cello share a gentle, breathing waltz accompanied by soft guitar and upright bass pizzicato. The arrangement alternates between cozy three-voice warmth and sparse two-bar dropouts where only the bass and concertina breathe. No shrill high notes, no heavy percussion. Warm wooden parlor acoustics, concluding with a poised, quiet waltz cadence.",
+      "prompt_code": "3-03",
+      "era": "clockwork",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "83ec758fcb9b0d852f6f896e086755e0f0fb208d0e9208c8f4cac8f43511d4a1"
+      ]
+    },
+    {
+      "id": "四时代.md:131",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 131,
+      "section": "3-04 · 精密街巷与5/4弹性步态（水岸/曲路流动场景 · 5/4 拍木管与马林巴精密律动）",
+      "text": "Nimble, precision-crafted chamber instrumental at 92 BPM in a graceful 5/4 meter (3+2 grouping). A rosewood marimba in its warm lower-middle register, crisp viola pizzicato, and a staccato bassoon create a clever, interlocking rhythmic gait with displaced accents and periodic half-bar pauses. A mellow clarinet weaves brief, articulate three-note figures through the gaps without dominating. No mechanical sound effects, no harsh metallic percussion. Clean, dry-warm chamber acoustics, gradually dropping voices until only the marimba and pizzicato softly finish.",
+      "prompt_code": "3-04",
+      "era": "clockwork",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "10e6ebfa698bcaae183250e7b9a79e53cf0b2fd7edd371bbdb37754f80ce3bbd"
+      ]
+    },
+    {
+      "id": "四时代.md:137",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 137,
+      "section": "3-05 · 钟表匠廊与簧片木作（手作/细节场景 · 巴松、圆号、中音钢片琴与断奏交错）",
+      "text": "Playful yet restrained small chamber ensemble piece at 86 BPM in 4/4 with crisp, handcrafted syncopation. Staccato bassoon, muted French horn, cello pizzicato, and a warm mid-register celesta trade short, interlocking pointillist motifs like a delicate musical automaton. The texture frequently strips back to bare pizzicato and soft woodblock taps before reassembling for a brief, warm harmonic phrase. No clock effects, no piercing high bells, no heavy drums. Clear workshop acoustics, ending with a neat, unhurried staccato final chord.",
+      "prompt_code": "3-05",
+      "era": "clockwork",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "49e3e4277732f2aa12a789df8f5faaaf045bab3d7abf40bcfafaf7fb0dc8813d"
+      ]
+    },
+    {
+      "id": "四时代.md:143",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 143,
+      "section": "3-06 · 玻璃穹顶与黄昏温室（高地/广场/独立备选 · 宽幅木管重奏与花房光影）",
+      "text": "Luminous, spacious chamber piece for a grand glass conservatory at dusk, 76 BPM in a flowing 6/8 meter. Concert flute, clarinet, harp, and cello perform dovetailing arpeggios and warm sixth intervals that pass seamlessly from one instrument to another across a wide stereo stage. Supported by soft vibraphone swells and sparse contrabass pizzicato. The high register is airy, clear, and transparent without any sharpness. Long breathing spaces separate each harmonic wave, gently receding into a quiet harp and cello resolution.",
+      "prompt_code": "3-06",
+      "era": "clockwork",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "1ce3d33345ec535722855ff56a91e277b8d3e7b33edd1d5f1122d69e5e8bd6ff"
+      ]
+    },
+    {
+      "id": "四时代.md:153",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 153,
+      "section": "4-01 · 孤屋与生态初脉（简单城默认 · 温暖模拟合成器慢呼吸与低通门电子点滴 · 无主奏）",
+      "text": "Minimalist organic electronic ambient piece at 72 BPM, designed for a serene ecological landscape. Warm polyphonic analog synthesizer pads breathe slowly through gentle filter modulation in C Lydian, creating a wide, living harmonic field. A soft Buchla-style low-pass-gate electronic pluck adds sparse, rounded, wood-like micro-pulses in an asymmetrical rhythm with long silent intervals. Grounded by a subtle, warm sine sub-bass. No lead melody, no EDM drums, no harsh sawtooth synths. Spacious, three-dimensional production that slowly fades on a warm analog chord.",
+      "prompt_code": "4-01",
+      "era": "modern",
+      "density_intent": "simple_background",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "1bbe2dac0d27ea6333bbb146f657089fed1a8f0ffb8fb9b58a3b9333e28ada80"
+      ]
+    },
+    {
+      "id": "四时代.md:159",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 159,
+      "section": "4-02 · 轻营造绿廊底景（简单城默认备选 · 5拍对4拍极简错位电子循环 · 无主奏）",
+      "text": "Hypnotic minimalist electronic and electro-acoustic background piece at 80 BPM. A five-beat sequence of warm, rounded analog synth plucks gently phase-shifts against a four-beat soft Rhodes electric piano dyad and deep sub-bass pulse. The overlapping loops create continuously evolving harmonic patterns in G major ninths without a prominent solo melody or repetitive fatigue. No drum kit, no cinematic crescendos, no sharp digital highs. Clean, wide spatial mix with natural tape warmth, gradually dissolving one loop at a time into stillness.",
+      "prompt_code": "4-02",
+      "era": "modern",
+      "density_intent": "simple_background",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "536f44fce3e04d0c71777cd2e963dab908b0a701e9912074ab38dca6c026b2de"
+      ]
+    },
+    {
+      "id": "四时代.md:165",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 165,
+      "section": "4-03 · 垂直花园与共生庭院（庭院/围合场景 · 模块化合成器温暖包裹与大提琴泛音）",
+      "text": "Warm electro-acoustic ambient chamber piece at 70 BPM in D major ninths. A lush, enveloping modular synthesizer bed with slow tape-saturated timbre evolution forms a cozy, grounded harmonic core. Soft, muted felt-piano single notes and a solo cello playing warm mid-register phrases and natural harmonics converse sparsely with rounded electronic micro-percussion. Electronic and acoustic voices share equal footing without a dominant lead. Intimate yet spacious acoustics, breathing through quiet dropouts before a gentle decaying finish.",
+      "prompt_code": "4-03",
+      "era": "modern",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "674b920a3a8d64dce5592f8921c19f9fc5bfdc7c9ed4524feb83a9ac3d67eb9e"
+      ]
+    },
+    {
+      "id": "四时代.md:171",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 171,
+      "section": "4-04 · 生态水系与光能流线（水岸/曲路流动场景 · 多声部极简琶音脉冲与柔光合成器）",
+      "text": "Flowing organic electronica and minimalist hybrid at 88 BPM in E Dorian with major-ninth shadings. Soft, rounded analog synthesizer arpeggios and muted electric guitar harmonics interlock in a gentle, rippling polyrhythm, supported by a warm, pulsing sub-bass and brushed electronic shakers. A breathy alto flute enters briefly with floating two-note intervals that merge into the synth texture. No EDM build-ups or four-on-the-floor kick drums. Expansive stereo depth with crystal-clear midrange, tapering softly into a final rippling synth echo.",
+      "prompt_code": "4-04",
+      "era": "modern",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "b0607682c39b837a29ccfaa715a2bb56f5a7336804e617d9d36ef1f30dc2010e"
+      ]
+    },
+    {
+      "id": "四时代.md:177",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 177,
+      "section": "4-05 · 太阳能工坊与精密生态（手作/细节场景 · 颗粒感微电子节拍、颤音琴与合成器对答）",
+      "text": "Intricate, tactile organic electronic piece at 84 BPM with a clean, spacious rhythmic grid. Delicate low-pass-gate synth plucks, soft acoustic vibraphone notes, and muted clean electric guitar harmonics trade nimble, syncopated micro-motifs across the stereo field. A warm analog bass synth anchors the harmony with sparse, rounded notes and frequent two-bar pauses. Crisp, high-resolution modern production with warm transients and zero harshness, avoiding any continuous lead melody and ending cleanly on a decaying vibraphone and synth chord.",
+      "prompt_code": "4-05",
+      "era": "modern",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "f47617e77233fb47257279b3ee3d8e8f23eb769e0f5fda539fa28c579704f4eb",
+        "b71b5f1a2da63ecbc5ca7c4e01ba15d5ff6c994e8f5e9618f6c38a3fdae12dc7"
+      ]
+    },
+    {
+      "id": "四时代.md:183",
+      "source": "数据/音乐制作/提示词来源/20261104/四时代.md",
+      "source_sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+      "line": 183,
+      "section": "4-06 · 天际生态连廊与群落交响（高地/广场/独立备选 · 宽幅声部交响尺度与慢速演进）",
+      "text": "Expansive electro-acoustic symphonic ambient piece at 66 BPM, expressing scale through vertical register spacing rather than orchestral bombast. Deep, grounded sub-bass and warm polyphonic analog brass-synth swells support interleaving minimalist keyboard patterns and distant, airy string harmonics. Voices enter in slow, contrapuntal waves across a vast, breathable canopy, leaving wide open midrange space. No trailer drums, no harsh distortion, no overbearing soloists. After a luminous, wide middle section, the layers recede one by one into a tranquil analog horizon.",
+      "prompt_code": "4-06",
+      "era": "modern",
+      "density_intent": "richer_space",
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "cbdccc72de6d14a8c9fcd77ff0679d49725e7e87abff431cc4670f82cc318c0a"
+      ]
+    },
+    {
+      "id": "四时代扩充.md:12",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 12,
+      "section": "1-07 · 孤屋星夜与河滩蛙眠 `[无主奏 · 简单城夜晚默认 · light_phase=2]`",
+      "text": "Complete nocturnal pastoral instrumental for a quiet riverside cabin at night, 60 BPM in a loose, breathing 4/4 feel. A solo baritone acoustic guitar tuned down to open C is plucked softly with the thumb, producing deep, warm wooden resonance and open fifth intervals. A bowed contrabass occasionally adds whisper-quiet natural harmonics in the background. No piano, no lead melody, no percussion, and no bright high frequencies. Wide three-bar silences let the warm timber decay breathe, ending on a single low open string fading into stillness.",
+      "prompt_code": "1-07",
+      "era": "pastoral",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "孤屋星夜与河滩蛙眠 `[无主奏 · 简单城夜晚默认 · light_phase=2]`"
+      ],
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "f035358a447edb16a06a7c44f8d4ca79adadd54e1011a5483cf51a37b62fbd8f"
+      ]
+    },
+    {
+      "id": "四时代扩充.md:18",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 18,
+      "section": "1-08 · 破晓薄雾与露水草甸 `[无主奏 · 简单城清晨默认 · light_phase=0]`",
+      "text": "Serene morning pastoral instrumental in D Mixolydian at 66 BPM, unhurried 6/8 meter. A finger-plucked mountain dulcimer and a warm acoustic guitar in open tuning weave sparse, dew-like open fourths and fifths with gentle natural rubato. A solo viola sustains a quiet, breathy low-mid drone beneath the plucked strings. No continuous melody, no piano, no metallic sharpness. The music starts with isolated notes, blossoms gently in harmonic warmth, strips back to bare dulcimer plucks, and decays naturally.",
+      "prompt_code": "1-08",
+      "era": "pastoral",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "破晓薄雾与露水草甸 `[无主奏 · 简单城清晨默认 · light_phase=0]`"
+      ],
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "193ee6b26b6c96fa76834d25acdfc902b0e3473c0d8ef376b7fcca02085d5f56"
+      ]
+    },
+    {
+      "id": "四时代扩充.md:24",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 24,
+      "section": "1-09 · 柴扉半院与乡间窄巷 `[微短句 · U/L型半围合与窄巷 · half_enclosure]`",
+      "text": "Intimate, close-miked acoustic folk piece for a narrow country lane and half-enclosed wooden yard, 74 BPM in a relaxed 3/4 meter. A fingerstyle walnut-body acoustic guitar plays warm, syncopated thumb-and-finger patterns with audible fret warmth. A wooden low whistle in its mellow bottom octave enters only every four bars with a brief, breathy three-note conversational answer before resting. Grounded by sparse upright bass pizzicato. Dry, cozy wooden acoustics, no piano, tapering off to solo guitar thumb-plucks.",
+      "prompt_code": "1-09",
+      "era": "pastoral",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "柴扉半院与乡间窄巷 `[微短句 · U/L型半围合与窄巷 · half_enclosure]`"
+      ],
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "3a5587faeeadc86ebae934d98815937e572a75576178435d114d3602b182fab9"
+      ]
+    },
+    {
+      "id": "四时代扩充.md:30",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 30,
+      "section": "1-10 · 亲水石埠与木船坞 `[微短句 · 水岸石埠与船坞 · water_ghat]`",
+      "text": "Gently rocking riverside folk chamber piece at 70 BPM in a swaying 12/8 compound meter, evoking wooden boats tied to a stone pier. A warm nylon-string guitar and a small folk harp share a rolling, unhurried arpeggio texture, punctuated by soft viola pizzicato. An English horn plays a single warm, pastoral two-bar phrase in the middle section and then yields back to the plucked strings. No piano, no drums. Open-air water-edge acoustics with natural breathing room, ending on a decaying harp fifth.",
+      "prompt_code": "1-10",
+      "era": "pastoral",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "亲水石埠与木船坞 `[微短句 · 水岸石埠与船坞 · water_ghat]`"
+      ],
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "15c5b49a2f8546f2a4a2f4711a02c725bbd78237648ae548baf0c4ff3846ac28"
+      ]
+    },
+    {
+      "id": "四时代扩充.md:36",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 36,
+      "section": "1-11 · 无水内陆山径与折角村落 `[无主奏 · 内陆曲路摇曳 · inland_sway]`",
+      "text": "Unhurried acoustic folk walking piece for a winding inland hillside path, 80 BPM in a buoyant 4/4 meter with gentle folk syncopation. A warm mandocello and a steel-string acoustic guitar played with fingerpads create a light, swaying walking pulse using open sixths and fifths. Soft palm-brushed strokes on a wooden frame drum add tactile warmth without a heavy beat. No lead solo instrument, no piano. The arrangement pauses periodically on open chords, thins out in the final third, and finishes cleanly.",
+      "prompt_code": "1-11",
+      "era": "pastoral",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "无水内陆山径与折角村落 `[无主奏 · 内陆曲路摇曳 · inland_sway]`"
+      ],
+      "generation_status": "present_in_library",
+      "observed_source_ids": [
+        "090c6c71aafb78ee128afca5ef1c7b33f6f7e82a8214317e6e1868f8c2ce91ab"
+      ]
+    },
+    {
+      "id": "四时代扩充.md:42",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 42,
+      "section": "1-12 · 梯田坡街与木阶高地 `[微短句 · 坡地高差与跨接门阶 · highland_contour]`",
+      "text": "Airy, open-horizon pastoral instrumental for terraced hillside streets, 68 BPM in G Lydian-inflected folk mode. Acoustic guitar natural harmonics and open-string chords float above a light, grounded cello fifth drone, keeping the low frequencies lean and clear. A wooden alto flute plays a short, ascending four-note motif that echoes the feeling of climbing stone steps, followed by four bars of open sky-like silence. No piano, no heavy bass. Wide natural acoustics, fading out on high guitar harmonics.",
+      "prompt_code": "1-12",
+      "era": "pastoral",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "梯田坡街与木阶高地 `[微短句 · 坡地高差与跨接门阶 · highland_contour]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:48",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 48,
+      "section": "1-13 · 麦香晒谷场与村口茶棚 `[微短句 · 居民入座茶叙与烘焙 · cafe_visit]`",
+      "text": "Warm, convivial acoustic folk piece for a sunny village tea arbor and bakery yard, 84 BPM in a relaxed, swinging 6/8 meter. Two acoustic guitars play warm parallel sixths and gentle thumb-bass patterns, joined by a mellow chalumeau-register clarinet and bowed cello exchanging short, cheerful two-bar folk phrases. The mood is cozy, human, and unhurried, with frequent dropouts where only a single guitar keeps the warm pulse. No piano, no brassy fanfare, ending on a soft, contented acoustic cadence.",
+      "prompt_code": "1-13",
+      "era": "pastoral",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "麦香晒谷场与村口茶棚 `[微短句 · 居民入座茶叙与烘焙 · cafe_visit]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:54",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 54,
+      "section": "1-14 · 古树村落广场与木棚共鸣 `[微短句 · 乡间广场重奏 · plaza_resonance]`",
+      "text": "Warm pastoral acoustic quintet for a timber-roofed village green, 76 BPM in D major with modal seventh inflections, 4/4 meter. Fingerstyle guitar, folk harp, viola, cello, and wooden flute weave a rich yet breathable communal texture where no single instrument dominates. Short melodic fragments pass warmly from cello to viola to flute, supported by resonant acoustic plucking. Natural wooden pavilion acoustics with warm early reflections. The ensemble gradually steps back one by one, closing on a quiet guitar and cello fifth.",
+      "prompt_code": "1-14",
+      "era": "pastoral",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "古树村落广场与木棚共鸣 `[微短句 · 乡间广场重奏 · plaza_resonance]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:60",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 60,
+      "section": "1-15 · 太阳雨与溪畔垂柳 `[无主奏 · 晴雨气候与垂柳林风 · weeping_willow]`",
+      "text": "Delicate, raindrop-like acoustic pastoral ambient piece at 72 BPM, loose 9/8 feel. A nylon-string guitar and a small lever harp play sparse, pointillist single notes and soft open intervals, joined by occasional warm viola pizzicato droplets. No continuous melody, no piano, and no sustained dense chords, leaving abundant acoustic space for natural wind and water ambience. The tone is mellow, woody, and rounded, drifting through subtle modal shifts before dissolving into isolated plucked notes and silence.",
+      "prompt_code": "1-15",
+      "era": "pastoral",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "太阳雨与溪畔垂柳 `[无主奏 · 晴雨气候与垂柳林风 · weeping_willow]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:66",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 66,
+      "section": "1-16 · 田园长日与静默耕作 `[无主奏 · 180秒+长驻防疲劳曲 · Long-Dwell]`",
+      "text": "Meditative, ultra-sparse acoustic folk bed for long, focused listening, 58 BPM in a calm, unmeasured-feeling 4/4. An open-tuned acoustic guitar and a muted double bass sustain slow, breathing open fifths and ninths with four-to-six seconds of natural decay between gestures. Subtle fingerpicked inner voices appear briefly and recede like a slow tide. Zero melodic hooks, no piano, no solo instruments, no rhythmic urgency. Pure warm wood and gut-string resonance that ends with a long, natural fade.",
+      "prompt_code": "1-16",
+      "era": "pastoral",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "田园长日与静默耕作 `[无主奏 · 180秒+长驻防疲劳曲 · Long-Dwell]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:76",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 76,
+      "section": "2-07 · 石拱月色与守夜鲁特琴 `[无主奏 · 简单城夜晚默认 · light_phase=2]`",
+      "text": "Nocturnal Renaissance solo archlute meditation for moonlit stone arcades, 56 BPM in a slow, poised 2/2 meter. Plucked softly with bare fingers on gut strings, the archlute plays deep contrapuntal bass notes and sparse upper dyads in E Aeolian, featuring gentle 7-6 suspensions and long, tranquil pauses. No continuous melody, no bowed strings, no piano. Crisp, quiet stone courtyard acoustics let each low string resonance decay completely before the next note, ending on a hushed Picardy major third.",
+      "prompt_code": "2-07",
+      "era": "renaissance",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "石拱月色与守夜鲁特琴 `[无主奏 · 简单城夜晚默认 · light_phase=2]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:82",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 82,
+      "section": "2-08 · 连拱晨曦与钟楼微光 `[无主奏 · 简单城清晨默认 · light_phase=0]`",
+      "text": "Dawn Renaissance ambient chamber piece in G Mixolydian at 64 BPM, gentle 3/2 meter. A gut-string vihuela plucks sparse, sunlit open intervals while a small wooden chamber organ using only a single soft, breathy wooden flute stop sustains quiet, transparent fifths in the background. No liturgical chant, no heavy baroque organ, and no prominent lead melody. Short, clear stone loggia reflections keep the texture airy and intimate, gradually thinning to solo vihuela and decaying naturally.",
+      "prompt_code": "2-08",
+      "era": "renaissance",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "连拱晨曦与钟楼微光 `[无主奏 · 简单城清晨默认 · light_phase=0]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:88",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 88,
+      "section": "2-09 · 石阶半院与回音窄巷 `[微短句 · U/L型半围合与石巷 · half_enclosure]`",
+      "text": "Intimate Renaissance lute duet for a narrow stone alleyway and half-court, 74 BPM in A Dorian, light 4/4 Allemande feel. Two gut-string lutes—one treble and one tenor—exchange short, imitative two-bar phrases across a clear stereo image, separated by frequent rests that highlight the crisp 25-millisecond stone wall reflection. Accompanied only by occasional plucked bass viol notes. No continuous soloing, no modern instruments. The two lutes gradually simplify their dialogue to sparse dyads and close in unison stillness.",
+      "prompt_code": "2-09",
+      "era": "renaissance",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "石阶半院与回音窄巷 `[微短句 · U/L型半围合与石巷 · half_enclosure]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:94",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 94,
+      "section": "2-10 · 运河石埠与拱桥倒影 `[微短句 · 水岸石埠与拱桥 · water_ghat]`",
+      "text": "Flowing Renaissance chamber piece for a stone canal pier and arched bridge, 72 BPM in F Lydian, swaying 6/8 meter. A plucked lute and a softly bowed lirone create a gentle, water-like harmonic bed rich in delicate 4-3 suspensions. A wooden Renaissance transverse flute enters intermittently with brief, airy three-note motifs that float over the water and rest for several bars. Clear stone-and-water acoustics without heavy reverb, no piano, receding into quiet lute arpeggios and natural decay.",
+      "prompt_code": "2-10",
+      "era": "renaissance",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "运河石埠与拱桥倒影 `[微短句 · 水岸石埠与拱桥 · water_ghat]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:100",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 100,
+      "section": "2-11 · 折角连拱街与世俗漫步 `[无主奏 · 内陆曲路与微折角 · inland_sway]`",
+      "text": "Poised secular Renaissance walking piece for winding arcaded streets, 80 BPM in a graceful 3/4 meter with subtle hemiola shifts. A warm gut-string lute, a softly plucked cittern, and a bass viola da gamba establish a light, articulate rhythmic gait through interlocking accompaniment figures rather than a solo melody. Frequent one-bar breath pauses keep the texture airy and uncluttered. Recorded in a dry-warm stone gallery, thining out in the final section to bare bass viol and lute before a clean final cadence.",
+      "prompt_code": "2-11",
+      "era": "renaissance",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "折角连拱街与世俗漫步 `[无主奏 · 内陆曲路与微折角 · inland_sway]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:106",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 106,
+      "section": "2-12 · 转角望楼与山城石阶 `[微短句 · 坡街高差与望楼 · highland_contour]`",
+      "text": "Elevated, spacious Renaissance consort piece for a hillside loggia tower, 68 BPM in D Dorian, open 3/2 meter. Treble and tenor viols weave transparent, wide-interval counterpoint in the clear upper-middle register, keeping the low end light and uncluttered with only sparse theorbo bass notes. Short, soaring two-bar imitative phrases evoke looking out over tiled rooftops, followed by generous silent rests. Crisp open-air stone loggia acoustics, fading gently on an open fifth.",
+      "prompt_code": "2-12",
+      "era": "renaissance",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "转角望楼与山城石阶 `[微短句 · 坡街高差与望楼 · highland_contour]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:112",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 112,
+      "section": "2-13 · 连拱茶座与市井闲谈 `[微短句 · 居民入座茶叙 · cafe_visit]`",
+      "text": "Warm, convivial secular Renaissance miniature for an outdoor arcade cafe, 86 BPM in C major modal, light 2/2 meter. A strummed-and-plucked Renaissance guitar, tenor viol, and a mellow low-register dulcian share a gentle, conversational Frottola-inspired texture with warm thirds and sixths. Melodic thoughts are short, friendly, and unhurried, trading off with plenty of breathing space and never turning into a busy solo. Cozy stone porch acoustics, winding down to solo Renaissance guitar.",
+      "prompt_code": "2-13",
+      "era": "renaissance",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "连拱茶座与市井闲谈 `[微短句 · 居民入座茶叙 · cafe_visit]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:118",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 118,
+      "section": "2-14 · 书院石板广场与礼乐重奏 `[微短句 · 闭合石板广场 · plaza_resonance]`",
+      "text": "Rich yet transparent Renaissance chamber consort for a stone-paved civic plaza, 66 BPM in Bb Lydian-inflected major, stately 4/4 Pavane meter. A quartet of violas da gamba (played without vibrato) plus lute and theorbo perform balanced, interlocking polyphony with cascading suspensions and clear cadential resting points. The stone plaza provides a noble, articulate short resonance without muddiness. After a warm middle section, voices drop out one by one until only the theorbo and bass viol remain.",
+      "prompt_code": "2-14",
+      "era": "renaissance",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "书院石板广场与礼乐重奏 `[微短句 · 闭合石板广场 · plaza_resonance]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:124",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 124,
+      "section": "2-15 · 庭院喷泉与石廊微雨 `[无主奏 · 气候与花架水声 · pergola_fountain]`",
+      "text": "Delicate, pointillist Renaissance instrumental for a stone courtyard fountain in light rain, 70 BPM in a gentle 6/8 meter. A felted virginal (soft plucked keyboard with warm, muted attack), a Renaissance lute playing high natural harmonics, and a pizzicato tenor viol weave a sparse, droplet-like contrapuntal texture. No continuous melody, no sustained pads, leaving wide gaps for natural water ambience. Crisp, intimate stone acoustics, gradually slowing and dissolving into isolated lute notes.",
+      "prompt_code": "2-15",
+      "era": "renaissance",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "庭院喷泉与石廊微雨 `[无主奏 · 气候与花架水声 · pergola_fountain]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:130",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 130,
+      "section": "2-16 · 古卷抄写室与长日静思 `[无主奏 · 180秒+长驻防疲劳曲 · Long-Dwell]`",
+      "text": "Contemplative, ultra-sparse Renaissance duo for long, focused building sessions, 54 BPM in F major modal with slow 2/2 breathing. A solo theorbo and a bass viola da gamba move in quiet, unhurried two-voice harmony, sustaining gentle 4-3 and 9-8 suspensions that resolve softly before resting for several seconds. Completely free of catchy melodic hooks, bright high notes, or rhythmic drive. Intimate, warm stone study acoustics, ending on a long, naturally decaying open chord.",
+      "prompt_code": "2-16",
+      "era": "renaissance",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "古卷抄写室与长日静思 `[无主奏 · 180秒+长驻防疲劳曲 · Long-Dwell]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:140",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 140,
+      "section": "3-07 · 守夜钟表铺与发条余温 `[无主奏 · 简单城夜晚默认 · light_phase=2]`",
+      "text": "Nocturnal, sparse chamber groove for a quiet clockmaker's study at night, 72 BPM in a hushed 4/4 meter. Soft cello pizzicato, a breathy bass clarinet in its lowest register, and a warm mid-register dulcitone (felt-mallet tuning-fork keyboard) play a quiet, interlocking syncopated pattern with long two-bar rests of stillness. No clock-ticking sound effects, no bright high bells, and no continuous lead melody. Intimate, dark-wood room acoustics, slowly winding down with longer pauses until a final plucked bass note.",
+      "prompt_code": "3-07",
+      "era": "clockwork",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "守夜钟表铺与发条余温 `[无主奏 · 简单城夜晚默认 · light_phase=2]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:146",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 146,
+      "section": "3-08 · 花房晨露与玻璃微光 `[无主奏 · 简单城清晨默认 · light_phase=0]`",
+      "text": "Translucent morning ambient chamber piece for a glass conservatory at dawn, 68 BPM in E major ninths, gentle 3/4 meter. Concert harp natural harmonics, a warm mid-register marimba played with soft yarn mallets, and breathy alto flute dyads create a sparse, sunlit texture with wide breathing spaces. No prominent solo melody, no heavy bass, and no dull low-pass filtering—the upper register remains airy, soft, and clear. The piece unfolds through quiet harmonic shifts and fades on a shimmering harp harmonic.",
+      "prompt_code": "3-08",
+      "era": "clockwork",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "花房晨露与玻璃微光 `[无主奏 · 简单城清晨默认 · light_phase=0]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:152",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 152,
+      "section": "3-09 · 铸铁半院与红砖窄巷 `[微短句 · U/L型半围合与窄巷 · half_enclosure]`",
+      "text": "Intimate, nimble chamber trio for a narrow brick lane and ironwork courtyard, 88 BPM in G minor with major-sixth inflections, 4/4 meter with a playful stop-start gait. A warm bandoneon, staccato bassoon, and viola pizzicato trade short, interlocking two-bar figures that pause abruptly for a beat of silence before resuming smoothly. No literal mechanical sound effects, no shrill highs. Close, dry-warm parlor acoustics keep every articulation crisp, ending neatly on a quiet pizzicato and reed dyad.",
+      "prompt_code": "3-09",
+      "era": "clockwork",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "铸铁半院与红砖窄巷 `[微短句 · U/L型半围合与窄巷 · half_enclosure]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:158",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 158,
+      "section": "3-10 · 温室水道与铁桥茶台 `[微短句 · 水岸石埠与悬挑茶台 · water_ghat]`",
+      "text": "Flowing, sunlit chamber piece for a conservatory canal andwaterside tea deck, 78 BPM in a lilting 6/8 meter. A concert harp and a motor-off vibraphone weave a gentle, rippling accompaniment of interlocking sixths and ninths, grounded by sparse double bass pizzicato. A warm oboe d'amore enters occasionally with a brief, lyrical three-note phrase before resting for several measures. Airy glass-and-water acoustics with clear, non-harsh highs, gradually simplifying to harp and vibraphone decay.",
+      "prompt_code": "3-10",
+      "era": "clockwork",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "温室水道与铁桥茶台 `[微短句 · 水岸石埠与悬挑茶台 · water_ghat]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:164",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 164,
+      "section": "3-11 · 鹅卵石曲街与7/8发条步态 `[无主奏 · 内陆曲路与折角街 · inland_sway]`",
+      "text": "Clever, interlocking chamber groove for winding cobblestone streets, 94 BPM in a graceful 7/8 meter (grouped 2+2+3). A warm rosewood marimba, bass clarinet, and cello/viola pizzicato lock together in a nimble, syncopated hocket texture where accents shift playfully between instruments. No solo melody, no clock-ticking sound effects, and no drums. Frequent two-bar dropouts leave only the plucked strings breathing, before the ensemble gently re-engages and concludes on a crisp, soft final chord.",
+      "prompt_code": "3-11",
+      "era": "clockwork",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "鹅卵石曲街与7/8发条步态 `[无主奏 · 内陆曲路与折角街 · inland_sway]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:170",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 170,
+      "section": "3-12 · 齿轮缆车坡街与高空花廊 `[微短句 · 坡街高差与跨接门阶 · highland_contour]`",
+      "text": "Buoyant, airy chamber piece for a steep hillside street and elevated glass skywalk, 84 BPM in F Lydian, light 3/4 meter. Flute, clarinet, and concert harp pass ascending, dovetailing arpeggios cleanly from low-mid to upper-middle register, while a muted French horn provides warm, lightweight harmonic cushions without heavy bass. Periodic pauses create a sense of looking out from a high terrace. Bright, open conservatory acoustics, tapering off into a quiet flute and harp fifth.",
+      "prompt_code": "3-12",
+      "era": "clockwork",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "齿轮缆车坡街与高空花廊 `[微短句 · 坡街高差与跨接门阶 · highland_contour]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:176",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 176,
+      "section": "3-13 · 蒸汽烘焙坊与露天咖啡座 `[微短句 · 居民入座茶叙与烘焙 · cafe_visit]`",
+      "text": "Cozy, unhurried European chamber waltz for a bustling yet peaceful bakery patio and conservatory cafe, 92 BPM in A major, elastic 3/4 meter. A warm concertina, fingerpicked acoustic guitar, and upright bass pizzicato establish a gentle, swaying waltz pulse. A mellow B-flat clarinet adds brief, smiling two-bar melodic comments and then rests, letting the warm accordion and guitar chords breathe. No loud brass, no busy virtuosity. Intimate courtyard acoustics, ending with a soft, charming waltz cadence.",
+      "prompt_code": "3-13",
+      "era": "clockwork",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "蒸汽烘焙坊与露天咖啡座 `[微短句 · 居民入座茶叙与烘焙 · cafe_visit]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:182",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 182,
+      "section": "3-14 · 木壳声学亭与博览广场 `[微短句 · 广场与木壳声学亭 · timber_acoustic_shell]`",
+      "text": "Refined small chamber ensemble piece for a timber acoustic shell in a stone plaza, 80 BPM in Eb major, poised 4/4 meter. Woodwind quintet (flute, oboe, clarinet, bassoon, muted horn) alongside harp and cello pizzicato perform intricately woven, hocketed chamber music where short motifs dovetail across the ensemble. The timber acoustic shell imparts a warm, focused resonance with crystal-clear instrument separation. After a rich contrapuntal middle section, instruments drop out one by one to a quiet bassoon and harp close.",
+      "prompt_code": "3-14",
+      "era": "clockwork",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "木壳声学亭与博览广场 `[微短句 · 广场与木壳声学亭 · timber_acoustic_shell]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:188",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 188,
+      "section": "3-15 · 玻璃屋顶的太阳雨 `[无主奏 · 晴雨气候与植物花房 · conservatory_rain]`",
+      "text": "Delicate, pointillist chamber ambient piece evoking a sun-shower on a glass conservatory roof, 76 BPM in a gentle 5/4 meter. Warm mid-register celesta, concert harp, motor-off vibraphone, and soft viola/cello pizzicato play sparse, interlocking droplet patterns with generous silent spaces between phrases. The high frequencies are clear and sparkling like sunlit glass yet rounded with soft mallet articulation. No continuous lead melody, no drums, slowly thinning into isolated harp notes and silence.",
+      "prompt_code": "3-15",
+      "era": "clockwork",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "玻璃屋顶的太阳雨 `[无主奏 · 晴雨气候与植物花房 · conservatory_rain]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:194",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 194,
+      "section": "3-16 · 钟摆平衡与工坊长昼 `[无主奏 · 180秒+长驻防疲劳曲 · Long-Dwell]`",
+      "text": "Hypnotic, ultra-restrained chamber minimalist bed for long building sessions, 64 BPM in a steady, pendulum-like 6/8 meter. Low-mid rosewood marimba and muted cello pizzicato maintain a quiet, interlocking two-note ostinato, while a muted French horn and bass clarinet fade in and out with long, warm sixth and ninth intervals. Zero ear-grabbing melodies, no clock sound effects, no high-frequency fatigue. Periodic four-bar subtractions keep the ear refreshed before a gradual, natural fade-out.",
+      "prompt_code": "3-16",
+      "era": "clockwork",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "钟摆平衡与工坊长昼 `[无主奏 · 180秒+长驻防疲劳曲 · Long-Dwell]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:204",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 204,
+      "section": "4-07 · 生态穹顶星夜与深海微光 `[无主奏 · 简单城夜晚默认 · light_phase=2]`",
+      "text": "Nocturnal organic ambient electronic piece for a quiet bioluminescent eco-city at night, 60 BPM. Deep, warm polyphonic analog synthesizer pads in F# minor ninths evolve slowly through gentle low-pass filter movement and subtle tape saturation. Sparse, rounded sine-wave and low-pass-gate electronic droplets echo quietly across a wide stereo field, anchored by a soft sub-bass breath. No piano clichés, no lead melody, no drum beats. Vast, tranquil spatial depth that gradually dissolves into a single warm analog chord.",
+      "prompt_code": "4-07",
+      "era": "modern",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "生态穹顶星夜与深海微光 `[无主奏 · 简单城夜晚默认 · light_phase=2]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:210",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 210,
+      "section": "4-08 · 光伏晨露与雾培花园 `[无主奏 · 简单城清晨默认 · light_phase=0]`",
+      "text": "Luminous morning ambient electronica for a mist-filled vertical garden at dawn, 68 BPM in A Lydian. Warm analog harmonic oscillators and a soft, tremolo-free Rhodes electric piano play sparse, floating fifths and major ninths, joined occasionally by a solo cello sustaining airy natural harmonics. Gentle, rounded micro-electronic pulses provide a subtle sense of photosynthesis and waking life without a drum beat or lead melody. Wide, breathable stereo production, fading out cleanly on a warm synth harmonic.",
+      "prompt_code": "4-08",
+      "era": "modern",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "光伏晨露与雾培花园 `[无主奏 · 简单城清晨默认 · light_phase=0]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:216",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 216,
+      "section": "4-09 · 绿墙半院与立体空中步道 `[微短句 · U/L型半围合与窄巷 · half_enclosure]`",
+      "text": "Intimate electro-acoustic minimalist piece for a green-walled courtyard and narrow skywalk, 82 BPM in D Dorian, clean 4/4 pulse. A warm, clean fingerpicked electric guitar with soft palm-muting and a rounded Buchla low-pass-gate synth pluck trade short, syncopated two-bar patterns up close, cushioned by a warm Juno-style analog pad. Every few bars, the plucks pause to let the warm synth chord breathe. No harsh distortion, no heavy drums, ending on a soft decaying guitar and synth dyad.",
+      "prompt_code": "4-09",
+      "era": "modern",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "绿墙半院与立体空中步道 `[微短句 · U/L型半围合与窄巷 · half_enclosure]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:222",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 222,
+      "section": "4-10 · 生态湿地石埠与净水阶梯 `[微短句 · 水岸石埠与亲水平台 · water_ghat]`",
+      "text": "Flowing organic electronic and acoustic hybrid for a terraced wetland waterfront, 78 BPM in G major ninths, gentle 6/8 feel. Rounded analog synth arpeggios processed through warm, subtle tape delay interlock with soft acoustic vibraphone notes, evoking clear water cascading over stone steps. A warm sub-bass provides a grounded foundation while a breathy alto flute contributes brief, floating two-note phrases before resting. Crystal-clear, wide spatial mix with zero harshness, receding into quiet delay ripples.",
+      "prompt_code": "4-10",
+      "era": "modern",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "生态湿地石埠与净水阶梯 `[微短句 · 水岸石埠与亲水平台 · water_ghat]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:228",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 228,
+      "section": "4-11 · 流线型内陆绿道与7拍错位循环 `[无主奏 · 内陆曲路与流线街区 · inland_sway]`",
+      "text": "Nimble minimalist electronic track for curving inland eco-boulevards, 86 BPM. A seven-beat sequence of warm, rounded analog synthesizer plucks gently phase-shifts against a four-beat soft sub-bass and muted felt-piano chord pulse in C Mixolydian add9. The interlocking polymetric cycles generate a smooth, self-evolving forward motion without any solo lead melody or repetitive drum loop. Clean, tactile modern production with warm midrange, gradually stripping away layers to a single fading synth pulse.",
+      "prompt_code": "4-11",
+      "era": "modern",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "流线型内陆绿道与7拍错位循环 `[无主奏 · 内陆曲路与流线街区 · inland_sway]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:234",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 234,
+      "section": "4-12 · 云端垂直森林与高空连桥 `[微短句 · 坡地高差与高层连廊 · highland_contour]`",
+      "text": "Elevated, spacious ambient symphonic piece for high-altitude skybridges and terraced forest towers, 64 BPM. Wide, breathable polyphonic analog synth chords and clean electric guitar volume-pedal swells float in the upper-middle register, keeping the bass light, airy, and transparent. A solo cello plays a brief, serene three-note motif in its warm tenor register, answered by shimmering granular synth overtones and long silent spaces. Expansive three-dimensional soundstage, fading into open air.",
+      "prompt_code": "4-12",
+      "era": "modern",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "云端垂直森林与高空连桥 `[微短句 · 坡地高差与高层连廊 · highland_contour]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:240",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 240,
+      "section": "4-13 · 零碳阳光茶席与社区工坊 `[微短句 · 居民入座茶叙 · cafe_visit]`",
+      "text": "Warm, human-scale organic folktronica piece for a sunlit community tea terrace, 84 BPM in F major ninths, relaxed 4/4 groove. A warm Wurlitzer electric piano, fingerpicked acoustic guitar, and a rounded analog synth bass share a cozy, unhurried pulse accented by soft brushed micro-percussion. A mellow clarinet enters intermittently with a friendly, conversational two-bar phrase before yielding back to the warm electro-acoustic texture. Intimate, sunlit production, winding down to solo electric piano and synth warmth.",
+      "prompt_code": "4-13",
+      "era": "modern",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "零碳阳光茶席与社区工坊 `[微短句 · 居民入座茶叙 · cafe_visit]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:246",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 246,
+      "section": "4-14 · 共鸣穹顶广场与声部交响 `[微短句 · 闭合广场与现代声学亭 · plaza_resonance]`",
+      "text": "Majestic yet restrained electro-acoustic symphonic chamber piece for a central eco-plaza and acoustic pavilion, 74 BPM in Bb Lydian. Warm analog brass-synth swells, interlocking minimalist piano and marimba patterns, and a small acoustic string section (viola, cello, double bass) converse across a wide, resonant soundstage. Scale is achieved through rich harmonic stratification and contrapuntal depth rather than loud percussion or trailer clichés. The layers gradually subside into a serene analog and string fifth.",
+      "prompt_code": "4-14",
+      "era": "modern",
+      "density_intent": "richer_space",
+      "scene_intents": [
+        "共鸣穹顶广场与声部交响 `[微短句 · 闭合广场与现代声学亭 · plaza_resonance]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:252",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 252,
+      "section": "4-15 · 雾森水幕与微电子雨滴 `[无主奏 · 晴雨气候与生态水景 · mist_canopy]`",
+      "text": "Translucent organic electronic ambient piece for a botanical mist garden and water curtain, 70 BPM. Soft granular synthesizer clouds and warm analog pad swells provide a gentle, humid harmonic cushion, while delicate low-pass-gate electronic droplets and isolated acoustic harp harmonics patter softly in asymmetrical rhythms. No continuous melody, no drum beat, and no sharp digital transients. Designed to blend seamlessly with natural water and wind ambience, dissolving peacefully into silence.",
+      "prompt_code": "4-15",
+      "era": "modern",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "雾森水幕与微电子雨滴 `[无主奏 · 晴雨气候与生态水景 · mist_canopy]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
+    },
+    {
+      "id": "四时代扩充.md:258",
+      "source": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+      "source_sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+      "line": 258,
+      "section": "4-16 · 生态脉搏与长时冥想营造 `[无主奏 · 180秒+长驻防疲劳曲 · Long-Dwell]`",
+      "text": "Deeply calming, ultra-sparse ambient electronic meditation for extended city-building sessions, 56 BPM. A warm polyphonic analog synthesizer sustains wide, open fifth and ninth chords whose timbre slowly brightens and softens over sixteen-second breathing cycles, accompanied by a soft sine sub-bass and an occasional isolated felt-piano or vibraphone note every four bars. Zero melodic hooks, zero rhythmic urgency, and zero ear fatigue. Pure, evolving analog warmth that ends with a long, natural decay.",
+      "prompt_code": "4-16",
+      "era": "modern",
+      "density_intent": "sparse_background_candidate",
+      "scene_intents": [
+        "生态脉搏与长时冥想营造 `[无主奏 · 180秒+长驻防疲劳曲 · Long-Dwell]`"
+      ],
+      "generation_status": "not_seen_in_current_library",
+      "observed_source_ids": []
     }
   ],
-  "mapping_policy": "Unordered, incomplete generations. Never infer prompt identity from list position or filename.",
-  "generation_status": "unknown per prompt; repeated prompts may yield independent compositions"
+  "mapping_policy": "Numbered Four Eras songs explicitly confirmed by user on 2026-11-04; exact code mapping is recorded per source ID. Other source assignments remain unconfirmed. Style/scene recommendations are separate from generation provenance.",
+  "generation_status": "Incomplete generation; absent recordings are not evidence that a prompt was never generated. Older recordings remain reserves."
 }

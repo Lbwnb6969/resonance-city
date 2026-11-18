@@ -65,9 +65,18 @@ func run()->void:
 	city.set_workshop_open("h5",false);life._sync()
 	check(Supply.status(city,"h4").tempo_mult==1.,"closing a clock hub removes its real efficiency aura")
 	life.free()
+	verify_free_quiet()
 	verify_rarity()
 	print("CIVIC_SUPPLY ",JSON.stringify({"ok":failures.is_empty(),"checks":checks,"failures":failures,"debut_events":events}))
 	quit(0 if failures.is_empty() else 1)
+func verify_free_quiet()->void:
+	var city:=State.new();city.initialize_free()
+	check(city.add_house(Vector2(-25,-20)).ok and city.add_house(Vector2(-18,-20)).ok,"free quiet fixture creates ordinary homes")
+	check(city.set_house_role("h1","bakery").ok and city.set_house_role("h2","workshop").ok,"free quiet fixture assigns real roles")
+	var life:=attach(city)
+	life.site_wishes.on_edit({"ok":true,"plant_ids":["p1"]});life.site_wishes.poll(true)
+	check(city.bakery_status("h1").produced==0 and city.workshop_status("h2").produced==0 and city.wish_rewards.is_empty(),"free editing keeps real inventories and wish history quiet")
+	life.free()
 func verify_rarity()->void:
 	check(Rarity.roll_card_rarity(0,.99,0)==1 and Rarity.roll_card_rarity(0,.2,0)==2 and Rarity.roll_card_rarity(0,.05,0)==3,"silver/gilded/prismatic use actual 62/28/10 ranges")
 	check(Rarity.roll_card_rarity(3,.30,0)==3 and Rarity.roll_card_rarity(0,.99,2)==3,"school affinity and the third-draw guarantee change real rarity")

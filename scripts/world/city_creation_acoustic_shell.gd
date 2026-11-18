@@ -24,8 +24,11 @@ static func for_house(city:RefCounted,house:Dictionary)->Dictionary:
 	var side:Vector2i=entries[0].side if not entries.is_empty() else Vector2i.DOWN
 	if side.x!=0:var width:float=plan.width;plan.width=plan.depth;plan.depth=width
 	plan.angle=atan2(float(side.x),float(side.y));plan.front=side;plan.base_y=float(house.get("base_y",0.));plan.version=VERSION
+	if house.get("roof_pitch",{}).get("version")==7 and house.roof_pitch.get("profile")=="acoustic_shell":plan.degrees=float(house.roof_pitch.degrees)
 	return plan
 static func point(plan:Dictionary,t:float)->Vector2:
+	if plan.has("degrees"):
+		var rise:float=(float(plan.depth)-.08)*tan(deg_to_rad(float(plan.degrees)));return Vector2(.18+maxf(float(plan.height)-rise,0.)+rise*sin(t*PI*.5),-float(plan.depth)*.5+.04+(float(plan.depth)-.08)*(1.-cos(t*PI*.5)))
 	return Vector2(.18+float(plan.height)*sin(t*PI*.5),-float(plan.depth)*.5+.04+(float(plan.depth)-.08)*(1.-cos(t*PI*.5)))
 static func cell_at(house:Dictionary,plan:Dictionary,local:Vector2)->Dictionary:
 	var design:Vector2=plan.center+local.rotated(-float(plan.angle));var nearest:Dictionary={};var distance:=INF

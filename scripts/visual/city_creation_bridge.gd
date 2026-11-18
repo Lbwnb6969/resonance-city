@@ -42,6 +42,8 @@ static func prepare(profile: Dictionary) -> Dictionary:
 					_prism(data.stones,run,lerpf(interval.x,interval.y,t0+gap),lerpf(interval.x,interval.y,t1-gap),minf(inside,outside),maxf(inside,outside),low0,low1,minf(y+.025,low0+.16),minf(y+.025,low1+.16))
 		for pier_range: Vector2 in [Vector2(start-.12,start+.13),Vector2(middle-pier*.5,middle+pier*.5),Vector2(finish-.13,finish+.12)]:
 			_prism(data.faces,run,pier_range.x,pier_range.y,-half,half,foot,foot,y-.012,y-.012)
+		for side: int in [-1,1]:
+			_cutwater(data,run,middle,pier,half,side,foot,spring,rise)
 		# Thick coping and low colonnade parapets leave the full walkway clear.
 		var sections := maxi(2,ceili((finish-start)/.20))
 		for index in range(sections):
@@ -57,7 +59,12 @@ static func prepare(profile: Dictionary) -> Dictionary:
 			var arc := lerpf(start,finish,float(index)/posts)
 			for side: int in [-1,1]:
 				var across := float(side)*(half-.06)
+				if absf(arc-middle)<.19: continue
 				_prism(data.stones,run,arc-.055,arc+.055,across-.055,across+.055,y+.12,y+.12,y+.53,y+.53)
+		for side: int in [-1,1]:
+			var across := float(side)*(half-.06)
+			_prism(data.stones,run,middle-.15,middle+.15,across-.11,across+.11,y,y,y+.63,y+.63)
+			_prism(data.caps,run,middle-.18,middle+.18,across-.14,across+.14,y+.63,y+.63,y+.71,y+.71)
 		for arc: float in [start,finish]:
 			for side: int in [-1,1]:
 				var across := float(side)*(half-.055)
@@ -70,6 +77,20 @@ static func prepare(profile: Dictionary) -> Dictionary:
 				for index in range(4): data.caps.append_array([ring[index],point,ring[(index+1)%4]])
 				_prism(data.lamps,run,arc-.075,arc+.075,across-.075,across+.075,y+.88,y+.88,y+1.02,y+1.02)
 	return data
+
+static func _cutwater(data: Dictionary,run: Dictionary,arc: float,pier: float,half: float,side: int,foot: float,spring: float,rise: float) -> void:
+	var shoulder := spring+rise*.40
+	var flank := pier*.72*side
+	var bank := half*side
+	var nose := (half+.42)*side
+	var left := _vertex(run,arc-flank,bank,shoulder)
+	var right := _vertex(run,arc+flank,bank,shoulder)
+	var tip := _vertex(run,arc,nose,shoulder-.08)
+	var base_left := _vertex(run,arc-flank,bank,foot)
+	var base_right := _vertex(run,arc+flank,bank,foot)
+	var base_tip := _vertex(run,arc,nose,foot)
+	data.faces.append_array([left,base_tip,tip,left,base_left,base_tip,tip,base_right,right,tip,base_tip,base_right])
+	data.caps.append_array([left,tip,right])
 
 # Arc-space material data follows the same wet intervals as the walking
 # profile, including simple pastoral bridges without an architectural run.

@@ -117,6 +117,7 @@ static func sample(box:Variant,t:Vector2)->Vector2:
 	return Vector2(box.center)+((t*2.-Vector2.ONE)*Vector2(box.half)).rotated(-float(box.angle))
 static func boxes_overlap(a:Variant,b:Variant)->bool:
 	if a is Rect2 and b is Rect2:return a.intersects(b)
+	if not bounds(a).intersects(bounds(b)):return false
 	var pa:=corners(a);var pb:=corners(b)
 	for poly:PackedVector2Array in [pa,pb]:
 		for i in range(poly.size()):

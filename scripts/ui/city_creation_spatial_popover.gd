@@ -182,9 +182,10 @@ func refresh()->void:
 	temperament_button.caption={"andante":"温润","allegro":"轻快","largo":"深邃"}.get(temperament,"温润")
 	temperament_button.queue_redraw()
 	var role:=str(house.get("role","residential"))
-	concert_button.visible=house.get("signature","") in demo.State.Signatures.IDS
-	concert_button.caption="停奏" if str(demo.life.concert_status().get("venue_id",""))==target_house_id else "奏乐章"
-	concert_button.tooltip_text="奏响传世共鸣乐章：聚落接力，末两乐句齐奏";concert_button.queue_redraw()
+	var is_hall:=role=="symphony_hall"
+	concert_button.visible=is_hall or role=="venue" or house.get("signature","") in demo.State.Signatures.IDS
+	concert_button.caption="停奏" if str(demo.life.concert_status().get("venue_id",""))==target_house_id else ("发起全城跨时代盛典" if is_hall else "奏乐章")
+	concert_button.tooltip_text="沿真实街道邀请四个时代的居民，依次奏响全城终章" if is_hall else "奏响传世共鸣乐章：聚落接力，末两乐句齐奏";concert_button.queue_redraw()
 	parade_button.visible=concert_button.visible and demo.life.ConductorParade.eligible(demo.state)
 	parade_button.disabled=demo.life.concert_status().phase!="idle"
 	parade_button.tooltip_text="手绘指挥顺序：划过聚落与地标，街坊沿真实街道提灯巡游"

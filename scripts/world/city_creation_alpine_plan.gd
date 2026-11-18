@@ -49,8 +49,11 @@ static func seams(city, house: Dictionary, cell: Dictionary, direction: Vector2i
 			if str(other.id)!=str(house.id) and (not is_zero_approx(Frame.yaw(house)) or not is_zero_approx(Frame.yaw(other))):continue
 			if city.house_era(other)!="modern_eco" or absf(float(other.get("base_y",0.))-float(house.get("base_y",0.)))>.002: continue
 			if kind_for(other)!=kind_for(house) or front(city,other)!=direction: continue
+			if house.get("roof_pitch",{}).get("version",0)==3 or other.get("roof_pitch",{}).get("version",0)==3:
+				if house.get("roof_pitch",{})!=other.get("roof_pitch",{}):continue
 			for room: Dictionary in other.cells:
 				if room.kind!="room" or int(room.level)!=int(cell.level) or not top(other,room): continue
+				if other.get("roof_pitch",{}).get("version",0)==3 and other.cells.any(func(c):return c.x==room.x and c.z==room.z and int(c.level)>int(room.level)):continue
 				var center := Vector2(other.origin[0]+room.x*1.8,other.origin[1]+room.z*1.8)
 				if center.distance_to(target)<.002: result[index]=true
 	return result

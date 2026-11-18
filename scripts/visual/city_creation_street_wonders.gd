@@ -26,6 +26,7 @@ func _process(delta:float)->void:
 	if epoch==key or demo.life.last_revision!=city.revision:return
 	epoch=key;rebuild(city)
 func rebuild(city:RefCounted)->void:
+	var began:=Time.get_ticks_usec()
 	for layer:Node3D in layers:remove_child(layer);layer.queue_free()
 	layers.clear()
 	crowns.clear()
@@ -34,7 +35,10 @@ func rebuild(city:RefCounted)->void:
 	var automatic:bool=city.creative_settings.get("presentation",{}).get("automatic_decoration",true)
 	if automatic:
 		for row:Dictionary in plan.piers:_pier(row)
-		for row:Dictionary in plan.pockets:_pocket(row)
+		var pocket_template:Node3D=null
+		for row:Dictionary in plan.pockets:
+			var pocket:=_pocket(row,pocket_template)
+			if pocket_template==null:pocket_template=pocket
 		for row:Dictionary in plan.fountains:_flowers(row,city)
 		for row:Dictionary in plan.loops:
 			if not city.plaza_loops.any(func(p):return p.loop_key==preload("res://scripts/world/city_creation_plaza_loops.gd").key(row.polygon)):preload("res://scripts/visual/city_creation_loop_garden.gd").build(self,row)
@@ -51,6 +55,7 @@ func rebuild(city:RefCounted)->void:
 		var node:=Ground.build(self,row);ground_landmarks.append(node);layers.append(node)
 	set_meta("legendary_plan",wonders)
 	set_meta("plan",plan)
+	set_meta("rebuild_stats",{"total_ms":(Time.get_ticks_usec()-began)/1000.,"pockets":plan.pockets.size(),"pocket_mesh_templates":1 if automatic and not plan.pockets.is_empty() else 0})
 func _root(label:String,row:Dictionary,at:Vector3,yaw:float=0.)->Node3D:
 	var node:=Node3D.new();node.name=label;add_child(node);node.position=at;node.rotation.y=yaw;node.set_meta("plan",row);layers.append(node);return node
 func _stone(color:String)->Material:return Wall.source(Color(color),null,"component",Wall.Kind.STONE)
@@ -61,7 +66,7 @@ func _contact(parent:Node3D,size:Vector2,offset:Vector3=Vector3.ZERO)->void:
 func _lamp(parent:Node3D,at:Vector3,stone:bool=false)->void:
 	var r=demo.town;var base:Material=_stone("b9ac91") if stone else r._material(Color("785d42"))
 	r._cylinder(parent,.055,.075,.36,at+Vector3.UP*.18,base,8)
-	var warm:Material=r._material(Color("e9bd6e"));warm.emission_enabled=true;warm.emission=Color("c68f47");warm.emission_energy_multiplier=.22
+	var warm:Material=preload("res://scripts/visual/city_creation_phase_lamp.gd").material(r,Color("e9bd6e"),Color("c68f47"),.22)
 	r._box(parent,Vector3(.11,.13,.11),at+Vector3.UP*.41,warm)
 	r._box(parent,Vector3(.20,.045,.20),at+Vector3.UP*.50,base)
 	parent.set_meta("water_lamp",at+Vector3.UP*.41)
@@ -87,7 +92,10 @@ func _bloom(parent:Node3D,at:Vector3,index:int)->void:
 		r._cylinder(parent,.012,.018,.16,at+offset+Vector3.UP*.08,leaf,5)
 		for petal in range(4):
 			r._box(parent,Vector3(.055,.022,.045),at+offset+Vector3(sin(petal*PI*.5)*.025,.17,cos(petal*PI*.5)*.025),flower)
-func _pocket(row:Dictionary)->void:
+func _pocket(row:Dictionary,template:Node3D=null)->Node3D:
+	if template!=null:
+		var pocket:Node3D=template.duplicate();pocket.name="CornerPocket_"+str(row.house_id);pocket.position=Vector3(row.at.x,row.y,row.at.y);pocket.rotation.y=row.yaw;pocket.set_meta("plan",row)
+		add_child(pocket);layers.append(pocket);return pocket
 	var r=demo.town;var root:=_root("CornerPocket_"+str(row.house_id),row,Vector3(row.at.x,row.y,row.at.y),row.yaw)
 	var stone:=_stone("c9bc9b");var wood:Material=r._material(Color("94704d"))
 	_contact(root,Vector2(1.48,1.48))
@@ -101,6 +109,7 @@ func _pocket(row:Dictionary)->void:
 	_lamp(root,Vector3(.32,.06,.17),true)
 	for i in range(4):_bloom(root,Vector3(-.32+i*.10,.06,.25+sin(i*1.7)*.11),i)
 	r._merge_meshes(root)
+	return root
 func _flowers(row:Dictionary,city:RefCounted)->void:
 	var root:=_root("FountainFlowerbed_"+str(row.owner_id),row,Vector3(row.center.x,city.street_height(row.center),row.center.y))
 	for i in range(8):

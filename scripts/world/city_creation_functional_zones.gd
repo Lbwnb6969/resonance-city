@@ -20,6 +20,7 @@ static func for_city(city:RefCounted)->Dictionary:
 	if not result.enabled:return result
 	var components:Dictionary=city._region_network.get("house_components",{}) if ready else {}
 	var footprints:Dictionary={}
+	var stages:Dictionary={};var began:=Time.get_ticks_usec()
 	for house:Dictionary in city.houses:
 		var id:String=house.id;var boxes:Array=[];var water:=INF;var tram:Array=[]
 		for cell:Dictionary in house.cells:
@@ -43,6 +44,7 @@ static func for_city(city:RefCounted)->Dictionary:
 		if prototype in CIVIC or role in ["atelier","venue","symphony_hall"] or float(house.get("base_y",0.))>=1.5 or not landmarks.is_empty():reasons.civic=["prototype" if prototype in CIVIC else "authored_role" if role in ["atelier","venue","symphony_hall"] else "plateau" if float(house.get("base_y",0.))>=1.5 else "landmark"]
 		if reasons.is_empty():reasons.courtyard=["dwelling_form"]
 		result.houses[id]={"id":id,"prototype":prototype,"role":role,"kinds":reasons.keys().map(func(k):return str(k)),"reasons":reasons,"water_distance":water,"base_y":float(house.get("base_y",0.)),"tram_roads":tram,"landmarks":landmarks,"connected":components.has(id),"component":str(components.get(id,""))}
+	stages.houses_ms=(Time.get_ticks_usec()-began)/1000.;began=Time.get_ticks_usec()
 	# Separate nearby physical clusters within each street component. Remote
 	# houses on one long road don't become a single courtyard by sharing a tag.
 	var ids:Array=result.houses.keys();ids.sort()
@@ -60,15 +62,23 @@ static func for_city(city:RefCounted)->Dictionary:
 					seen[candidate]=true;members.append(candidate)
 			members.sort()
 			result.zones.append({"id":kind+":"+str(members[0]),"kind":kind,"members":members,"active":result.houses[id].connected,"component":result.houses[id].component})
+	stages.groups_ms=(Time.get_ticks_usec()-began)/1000.;began=Time.get_ticks_usec()
 	result.spaces=preload("res://scripts/world/city_creation_courtyard_contract.gd").derive(city,result,func(box):return _water_distance(city,box))
+	stages["courtyard_contract_ms"]=(Time.get_ticks_usec()-began)/1000.;began=Time.get_ticks_usec()
 	result.spaces.append_array(preload("res://scripts/world/city_creation_waterfront_contract.gd").derive(city,result,func(box):return _water_distance(city,box)))
+	stages["waterfront_contract_ms"]=(Time.get_ticks_usec()-began)/1000.;began=Time.get_ticks_usec()
 	result.spaces.append_array(preload("res://scripts/world/city_creation_artisan_contract.gd").derive(city,result,func(box):return _water_distance(city,box)))
+	stages["artisan_contract_ms"]=(Time.get_ticks_usec()-began)/1000.;began=Time.get_ticks_usec()
 	result.space_contracts.artisan="workshop_forecourt"
 	result.spaces.append_array(preload("res://scripts/world/city_creation_civic_contract.gd").derive(city,result,func(box):return _water_distance(city,box)))
+	stages["civic_contract_ms"]=(Time.get_ticks_usec()-began)/1000.;began=Time.get_ticks_usec()
 	result.space_contracts.civic="cultural_forecourt"
 	result.spaces.append_array(preload("res://scripts/world/city_creation_plaza_loops.gd").spaces(city))
+	stages["plaza_loops_ms"]=(Time.get_ticks_usec()-began)/1000.;began=Time.get_ticks_usec()
 	result.spaces.append_array(preload("res://scripts/world/city_creation_landmark_contract.gd").derive(city,result,func(box):return _water_distance(city,box)))
+	stages["landmark_contract_ms"]=(Time.get_ticks_usec()-began)/1000.;began=Time.get_ticks_usec()
 	result.space_contracts.placed_landmark="landmark_forecourt"
+	city.set_meta("functional_zone_prepare_stats",stages)
 	city.set_meta("functional_zones",{"key":key,"value":result});return result
 
 static func _adjacent(a:Array,b:Array)->bool:

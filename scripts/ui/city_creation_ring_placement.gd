@@ -2,17 +2,21 @@ extends RefCounted
 ## At viewport edges, place only displaced islands in the nearest free margin.
 static func clamp_at(at:Vector2,size:Vector2,view:Rect2)->Vector2:
 	return at.clamp(view.position,view.end-size)
-static func fit(items:Array,house:Rect2,view:Rect2,neighbors:Array=[],reserved:Array=[])->bool:
+static func fit(items:Array,house:Rect2,view:Rect2,neighbors:Array=[],reserved:Array=[],heading:Control=null)->bool:
 	var occupied:Array[Rect2]=[];
 	for rect:Rect2 in reserved:occupied.append(rect)
 	var success:=true
 	var ordered:Array=items.duplicate()
 	ordered.sort_custom(func(a:Control,b:Control)->bool:
+		if a == heading or b == heading: return a == heading and b != heading
 		var difference:=a.size.x*a.size.y-b.size.x*b.size.y
 		return items.find(a)<items.find(b) if absf(difference)<1. else difference>0.)
 	for item:Control in ordered:
 		var desired:=item.global_position;var size:=item.size
 		var candidates:Array[Vector2]=[clamp_at(desired,size,view)]
+		if heading != null and item != heading:
+			var title := heading.get_global_rect()
+			candidates.append(clamp_at(Vector2(desired.x, title.end.y + 6.), size, view))
 		for x:float in [house.position.x-size.x-12.,house.end.x+12.]:candidates.append(clamp_at(Vector2(x,desired.y),size,view))
 		for y:float in [house.position.y-size.y-12.,house.end.y+12.]:candidates.append(clamp_at(Vector2(desired.x,y),size,view))
 		for y in range(ceili(view.size.y/(size.y+8.))):

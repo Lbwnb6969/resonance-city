@@ -1,6 +1,36 @@
 extends RefCounted
 ## End walls, inner bays and courtyard faces derive from real adjacent cells.
 const Wall=preload("res://scripts/visual/city_creation_wall_material.gd")
+static func lute_sign(renderer,wall:Node3D)->void:
+ var iron:Material=renderer._material(Color("405950"));var maple:=Color("d6a25a")
+ renderer._box(wall,Vector3(.09,.10,.85),Vector3(.82,1.60,.45),iron)
+ var sign:=Node3D.new();sign.name="WorkshopLute";wall.add_child(sign);sign.position=Vector3(.82,1.02,.82);sign.rotation.z=-.20
+ renderer._crown(sign,Vector3(0,-.12,0),Vector3(.24,.30,.08),Color("63412f"))
+ renderer._crown(sign,Vector3(0,-.12,.05),Vector3(.214,.278,.06),maple)
+ renderer._box(sign,Vector3(.075,.40,.08),Vector3(0,.22,.04),iron)
+ renderer._box(sign,Vector3(.13,.12,.09),Vector3(0,.43,.04),renderer._material(maple))
+ renderer._crown(sign,Vector3(0,-.04,.105),Vector3(.064,.067,.014),Color("493d34"))
+ for offset:float in [-.018,0.,.018]:renderer._box(sign,Vector3(.006,.56,.008),Vector3(offset,.05,.121),renderer._material(Color("ecdaac")))
+ renderer._box(wall,Vector3(.023,.15,.025),Vector3(.91,1.51,.82),iron)
+static func atelier_banner(renderer,wall:Node3D)->void:
+ var banner:=Node3D.new();banner.name="AtelierWeaving";wall.add_child(banner);banner.position=Vector3(-.65,.95,.16)
+ var brass:Material=renderer._material(Color("b99755"));var cloth:=Color("954d60");var hem:=Color("dfbc78")
+ renderer._box(banner,Vector3(.57,.045,.065),Vector3(0,.40,0),brass)
+ for side:float in [-1.,1.]:
+  renderer._box(banner,Vector3(.04,.05,.22),Vector3(side*.22,.40,-.08),brass)
+  renderer._quad(banner,Vector3(0,.38,.01),Vector3(side*.23,.38,0),Vector3(side*.23,-.37,.045),Vector3(0,-.22,.065),cloth)
+  renderer._quad(banner,Vector3(0,-.16,.068),Vector3(side*.23,-.31,.050),Vector3(side*.23,-.34,.050),Vector3(0,-.19,.068),hem)
+ renderer._quad(banner,Vector3(0,.28,.04),Vector3(.15,.09,.048),Vector3(0,-.10,.070),Vector3(-.15,.09,.048),hem)
+ renderer._quad(banner,Vector3(0,.20,.052),Vector3(.075,.09,.061),Vector3(0,-.025,.076),Vector3(-.075,.09,.061),Color("477674"))
+static func entry_gable(renderer,wall:Node3D,palette:Array)->void:
+ var roof:Material=renderer._material(palette[1]);var timber:Material=renderer._material(palette[2]);var fascia:Material=renderer._material(Color("decba8"))
+ for side:float in [-1.,1.]:
+  var pitch:float=-side*atan2(.26,.62)
+  var panel:MeshInstance3D=renderer._box(wall,Vector3(.682,.065,.74),Vector3(side*.31,1.51,.41),roof);panel.rotation.z=pitch
+  var verge:MeshInstance3D=renderer._box(wall,Vector3(.682,.072,.055),Vector3(side*.31,1.49,.777),fascia);verge.rotation.z=pitch
+  var bracket:MeshInstance3D=renderer._box(wall,Vector3(.068,.07,.54),Vector3(side*.46,1.30,.33),timber);bracket.rotation.x=-.34
+ renderer._box(wall,Vector3(1.10,.065,.065),Vector3(0,1.39,.72),timber)
+ wall.set_meta("residential_entry_gable",true)
 static func room(row:Dictionary)->bool:return not row.is_empty() and row.cell.kind=="room"
 static func profile(context:RefCounted,house:Dictionary,cell:Dictionary,direction:Vector2i)->Dictionary:
  var tangent:=Vector2i(direction.y,-direction.x)

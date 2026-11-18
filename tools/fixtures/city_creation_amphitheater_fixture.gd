@@ -34,6 +34,8 @@ static func place_connected(city:RefCounted)->Dictionary:
 	if at==Vector2.INF:return {"ok":false,"message":"no shore site"}
 	var result:Dictionary=city.place_signature("floating_amphitheater",at)
 	if not result.ok:return result
+	var role:Dictionary=city.set_house_role(str(result.house_id),"symphony_hall")
+	if not role.ok:return role
 	var points:Array[Vector2]=[at+Vector2(0,-1.4),at+Vector2(0,-2.2),Vector2(at.x+3.,at.y-2.2),Vector2(at.x+3.,9.)]
 	result.access=city.add_road(points,"promenade");result.at=at
 	return result

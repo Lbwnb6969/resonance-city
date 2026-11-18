@@ -38,14 +38,16 @@ static func validate(city:RefCounted,data:Dictionary)->Dictionary:
 	var settings:Variant=data.get("creative_settings",{});var journey:Variant=data.get("harmony_journey",{})
 	if data.schema<SCHEMA or not settings is Dictionary or settings.get("creation_policy")!="free" or not journey is Dictionary or not journey.has("growth_cutoff"):return city._fail("新经营账期需要版本24及既有自由创作截止")
 	return {"ok":true} if valid(data.cozy_progression) else city._fail("经营账期字段或计数无效")
-static func write(city:RefCounted,data:Dictionary)->void:
+static func write(city:RefCounted,data:Dictionary,complete_paused_baseline:bool=true)->void:
 	if city.cozy_progression.is_empty():return
 	data.cozy_progression=city.cozy_progression.duplicate(true);data.schema=maxi(int(data.schema),SCHEMA)
-	if not data.cozy_progression.enabled:skip_counts(city,data.cozy_progression)
-static func apply(city:RefCounted,data:Dictionary,history:bool)->void:
+	if not data.cozy_progression.enabled and complete_paused_baseline:skip_counts(city,data.cozy_progression)
+static func apply(city:RefCounted,data:Dictionary,history:bool,paused_policy:Dictionary={})->void:
 	# Geometry history never revokes an epoch, its enabled state or earned receipts.
 	if history and not city.cozy_progression.is_empty():
-		if not city.cozy_progression.enabled:skip_counts(city,city.cozy_progression)
+		if not city.cozy_progression.enabled:
+			if paused_policy.is_empty():skip_counts(city,city.cozy_progression)
+			else:_merge_baseline(city.cozy_progression,paused_policy)
 		_merge_baseline(city.cozy_progression,data.get("cozy_progression",{}))
 		return
 	city.cozy_progression=data.get("cozy_progression",{}).duplicate(true)
@@ -61,6 +63,7 @@ static func _merge_baseline(policy:Dictionary,other:Dictionary)->void:
 	for key:String in other.get("baseline",{}):policy.baseline[key]=maxi(int(policy.baseline.get(key,0)),int(other.baseline[key]))
 static func skip_counts(city:RefCounted,policy:Dictionary)->void:
 	var counts:=Epoch.baseline(city)
+	preload("res://scripts/world/city_creation_paused_counter_history.gd").merge(counts,preload("res://scripts/world/city_creation_paused_counter_history.gd").flush(city))
 	for key:String in policy.receipts:counts[key]=maxi(int(counts.get(key,0)),int(policy.receipts[key]))
 	for key:String in counts:policy.baseline[key]=maxi(int(policy.baseline.get(key,0)),int(counts[key]))
 	# Latest history snapshots carry prior off-period high water without a history scan.

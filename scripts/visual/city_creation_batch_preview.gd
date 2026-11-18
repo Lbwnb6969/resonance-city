@@ -9,7 +9,7 @@ var merging:=false
 var ready:=false
 var hidden:Array=[]
 func clear()->void:
-	for node:Node3D in hidden:
+	for node:Variant in hidden:
 		if is_instance_valid(node):node.show()
 	hidden.clear();ids.clear();cursor=0;ready=false;merging=false
 	if is_instance_valid(renderer):renderer.queue_free()
@@ -25,7 +25,8 @@ func start(owner,plan:Dictionary)->void:
 	renderer.water_field.texture=demo.town.water_field.texture
 	renderer.light_phase=demo.light_phase
 	renderer.buildings=Node3D.new();renderer.add_child(renderer.buildings)
-	renderer.building_context.prepare(renderer.state.houses,renderer.state.roads)
+	if plan.has("context"):renderer.building_context.copy_cache_from(plan.context)
+	else:renderer.building_context.prepare(renderer.state.houses,renderer.state.roads,renderer.state)
 	renderer.craft.setup(renderer);renderer.quality_visual.setup(renderer)
 func step()->void:
 	if renderer==null or ready:return

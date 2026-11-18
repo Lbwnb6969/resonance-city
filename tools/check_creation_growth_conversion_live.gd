@@ -19,7 +19,7 @@ func run()->void:
 	var expected:=State.new();check(expected.restore(demo.state.snapshot()).ok,"independent original collector reads current legacy geometry");var payout:Dictionary=Receipts.collect(expected)
 	check(added.ok and payout.earned>=2,"actual pending pre-conversion house difference exists")
 	await key(KEY_F1);await settle();var options:Node=demo.get_meta("creation_options")
-	check(options.convert_button.is_visible_in_tree() and "不再新增经营共鸣" in options.convert_button.tooltip_text,"native conversion explains cutoff and retained old rights")
+	check(options.convert_button.is_visible_in_tree() and ["旧成长截止","邀约和旧来信奖励保留","另启轻量经营新账期"].all(func(text):return text in options.convert_button.tooltip_text),"native conversion explains old cutoff retained rights and separate optional epoch")
 	await capture("legacy_conversion_entry");await ui_click(options.convert_button);await settle()
 	check(await wait_for(func():return not options.last_conversion.is_empty() and not demo.gallery.busy,12000),"native conversion completes backed-up work transaction")
 	check(options.last_conversion.ok and demo.state.harmony_journey.growth_cutoff.source=="converted_legacy" and not options.convert_button.visible,"actual handbook click commits cutoff and retires conversion button")

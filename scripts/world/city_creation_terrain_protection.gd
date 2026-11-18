@@ -40,7 +40,7 @@ func build(city: RefCounted,road_profiles: Dictionary = {}) -> Array:
 	result.append_array(_court_pads)
 	for marker: Dictionary in Roundabouts.all(city.roads):
 		result.append({"id":"roundabout/"+marker.owner_id+str(marker.center),"a":marker.center,"b":marker.center,"radius":marker.radius,"target_y":city._ground_terrain.raw_height_at(marker.center),"transition":1.2,"priority":4.0})
-	return result
+	return preload("res://scripts/world/city_creation_road_shoulder.gd").protect(city,result)
 
 func _prepare_layout(city: RefCounted) -> void:
 	# Layout depends on buildings, doors, roads and water, not sculpted height.

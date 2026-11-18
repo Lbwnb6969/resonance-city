@@ -2,6 +2,7 @@ extends RefCounted
 ## Derived from authored room columns and actual road frontage; no saved fields.
 const Wall = preload("res://scripts/visual/city_creation_wall_material.gd")
 const Pick = preload("res://scripts/visual/city_creation_roof_pick.gd")
+const Frame=preload("res://scripts/world/city_creation_house_frame.gd")
 const SIDES = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
 enum Kind { PORTICO_COTTAGE, TRIPARTITE_TOWNHOUSE, CORNER_ORIEL }
 
@@ -19,20 +20,21 @@ static func classify(level: int, total_floors: int, corner: bool) -> int:
 	return Kind.TRIPARTITE_TOWNHOUSE if total_floors >= 2 else Kind.PORTICO_COTTAGE
 
 static func corner_sides(city, house: Dictionary, cell: Dictionary) -> Array:
-	var at := Vector2(house.origin[0], house.origin[1]) + Vector2(cell.x, cell.z)*1.8
+	var at := Frame.center(house,cell)
+	var nearby:=preload("res://scripts/world/city_creation_frontage_neighborhoods.gd").for_house(city,str(house.id))
 	var fronts: Array = []
 	for side: Vector2i in SIDES:
-		var normal := Vector2(side)
+		var normal := Frame.direction(house,Vector2(side),cell)
 		var blocked := false
-		for other: Dictionary in city.houses:
+		for other: Dictionary in nearby.get("houses",city.houses):
 			for room: Dictionary in other.cells:
 				if int(room.level) != int(cell.level) or room.kind != "room": continue
-				var center := Vector2(other.origin[0], other.origin[1])+Vector2(room.x, room.z)*1.8
+				var center := Frame.center(other,room)
 				var offset := center-at
 				if offset.dot(normal)>0.01 and offset.dot(normal)<=1.81 and absf(offset.cross(normal))<1.79: blocked = true
 		if blocked: continue
 		var front := false
-		for road: Dictionary in city.roads:
+		for road: Dictionary in nearby.get("roads",city.roads):
 			for i in range(1, road.points.size()):
 				var a := Vector2(road.points[i-1][0], road.points[i-1][1])
 				var b := Vector2(road.points[i][0], road.points[i][1])
@@ -44,13 +46,21 @@ static func corner_sides(city, house: Dictionary, cell: Dictionary) -> Array:
 			if a.x*b.x+a.y*b.y==0: return [a,b]
 	return []
 
+static func corner_signature(city,house:Dictionary)->Array:
+	if city.house_era(house)!="renaissance" or not eligible(house,"renaissance",str(house.get("style","classic"))) or house.get("architecture","") in ["portico","townhouse","recessed_townhouse","stepped_guildhouse"]:return []
+	var result:Array=[]
+	for cell:Dictionary in house.cells:
+		if int(cell.level)>0 and cell.kind=="room":result.append([str(cell.id),corner_sides(city,house,cell)])
+	return result
+
 static func windows(renderer, wall: Node3D, level: int, palette: Array) -> void:
 	var stone := Wall.source(palette[0].lerp(Color("ecdfc5"), .7), null, "component", Wall.Kind.STONE)
 	var glass: Material = renderer._material(Color("425b59"))
 	var height := .88 if level > 0 else .64
+	wall.set_meta("neoclassical_glass",true)
 	for x: float in [-.44,.44]:
 		renderer._box(wall, Vector3(.44,height+.12,.12), Vector3(x,.96,.11), stone)
-		renderer._box(wall, Vector3(.32,height,.055), Vector3(x,.96,.19), glass)
+		var pane:MeshInstance3D=renderer._box(wall, Vector3(.32,height,.055), Vector3(x,.96,.19), glass);pane.set_meta("creation_roof_window_glass",true)
 		renderer._box(wall, Vector3(.025,height,.04), Vector3(x,.96,.23), stone)
 		renderer._box(wall, Vector3(.35,.028,.04), Vector3(x,.96,.23), stone)
 		renderer._box(wall, Vector3(.52,.075,.25), Vector3(x,.91-height*.5,.19), stone)
@@ -99,7 +109,7 @@ static func build(renderer, wall: Node3D, house: Dictionary, cell: Dictionary, d
 	bay.position = Vector3(signf(local.x)*.72,0,.10)
 	_oriel(renderer, bay, house, cell, stone, palette)
 
-static func _portico(renderer, details: Node3D, stone: Material, color: Color) -> void:
+static func _portico(renderer, details: Node3D, stone: Material, color: Color, roof:bool=true) -> void:
 	for x: float in [-.56,.56]:
 		renderer._box(details, Vector3(.24,.11,.36), Vector3(x,.19,.29), stone)
 		renderer._cylinder(details,.082,.064,1.02,Vector3(x,.75,.29),stone,12)
@@ -107,7 +117,8 @@ static func _portico(renderer, details: Node3D, stone: Material, color: Color) -
 		for offset: float in [-.08,.08]:
 			var volute: MeshInstance3D = renderer._cylinder(details,.045,.045,.18,Vector3(x+offset,1.27,.33),stone,10)
 			volute.rotation.x=PI*.5
-	_pediment(renderer, details, color)
+	if roof:_pediment(renderer, details, color)
+	else:renderer._box(details,Vector3(1.68,.08,.58),Vector3(0,1.37,.36),Wall.source(color,null,"component",Wall.Kind.STONE))
 	details.set_meta("portal_clear_width", .88)
 
 static func _pediment(renderer, parent: Node3D, color: Color) -> void:
@@ -125,7 +136,7 @@ static func _oriel(renderer, bay: Node3D, house: Dictionary, cell: Dictionary, s
 	var tile := Wall.source(palette[1].lerp(Color("b8694c"),.65),null,"component",Wall.Kind.TERRACOTTA)
 	renderer._cylinder(bay,.12,.37,.22,Vector3(0,.31,0),stone,8).name="CarvedCorbel"
 	renderer._cylinder(bay,.35,.35,.09,Vector3(0,.46,0),stone,8)
-	renderer._cylinder(bay,.30,.30,.75,Vector3(0,.88,0),glass,8).name="FacetedBayGlazing"
+	var glazing:MeshInstance3D=renderer._cylinder(bay,.30,.30,.75,Vector3(0,.88,0),glass,8);glazing.name="FacetedBayGlazing";glazing.set_meta("creation_roof_window_glass",true)
 	for i in range(8):
 		var angle := TAU*i/8.+PI/8.
 		renderer._cylinder(bay,.025,.025,.80,Vector3(cos(angle)*.31,.88,sin(angle)*.31),stone,6)

@@ -29,6 +29,7 @@ func run()->void:
 		check(result.ok,"public local edit "+kind)
 		var snapshot:Dictionary=city.snapshot();var context:Node3D=r.budget_rebuild._context(r,Change.snapshot(city))
 		context.set_meta("local_service_seed",Local.seed(Change.diff(previous,Change.snapshot(city)),published))
+		preload("res://scripts/visual/city_creation_prepared_frontages.gd").prepare(context.state)
 		var stats:=Local.prime(context);reused+=int(stats.blessings_reused)+int(stats.cafes_reused)+int(stats.courts_reused)
 		var fresh:=Fixture.State.new();check(fresh.restore(snapshot).ok,"fresh cold city "+kind)
 		check(context.state.courtyard_plans()==fresh.courtyard_plans(),"whole courtyard plan arrays equal cold derivation "+kind)

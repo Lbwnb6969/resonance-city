@@ -22,6 +22,7 @@ static func prepare(city:RefCounted)->Dictionary:
 			var road_id:=_road(city,entry)
 			if road_id.is_empty():continue
 			var row:Dictionary={"house_id":id,"cell_id":str(entry.cell_id),"road_id":road_id,"wall":entry.wall_at,"normal":normal,"base_y":base,"yaw":atan2(normal.x,normal.y)}
+			if house.role=="garden_cafe":row["cafe_cloth"]=true
 			row.footprint={"center":Vector2(entry.wall_at)+normal*DEPTH*.5,"half":Vector2(WIDTH*.5,DEPTH*.5),"angle":row.yaw}
 			if not clear(city,row,accepted):continue
 			rows.append(row);accepted.append(row)

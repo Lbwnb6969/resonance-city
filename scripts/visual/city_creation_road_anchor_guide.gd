@@ -19,7 +19,7 @@ func setup(owner)->void:
 	hint.add_theme_stylebox_override("normal",paper);hint.add_theme_color_override("font_color",UI.INK);demo.ui_layer.add_child(hint);clear()
 func clear()->void:
 	root.hide();hint.hide();dots.visible_instance_count=0;lines.clear_surfaces();compass.clear()
-func point(at:Vector2)->Vector3:return Vector3(at.x,demo.state.street_height(at)+.10,at.y)
+func point(at:Vector2)->Vector3:return Vector3(at.x,demo.town._preview_street_height(at)+.10,at.y)
 func draw(anchors:Array[Vector2],tail:Vector2,text:String)->void:
 	root.visible=demo.ui_layer.visible;hint.visible=root.visible;hint.text=(str(compass.get("label",""))+"\n" if not str(compass.get("label","")).is_empty() else "")+text
 	var screen:Vector2=demo.camera.unproject_position(point(tail))+Vector2(16,-35)

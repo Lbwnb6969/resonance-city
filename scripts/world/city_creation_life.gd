@@ -62,6 +62,7 @@ var arrival_callback: Callable
 var concert_callback: Callable
 var last_completed_movement:Dictionary={}
 var concert_start_gate: Callable
+var concert_elapsed_source: Callable
 var production_callback: Callable
 var wish_callback:Callable
 var site_wishes:RefCounted
@@ -98,6 +99,8 @@ var _budget_generation := 0
 var _budget_running_generation := -1
 var _budget_worker: RefCounted
 var _budget_ready_network: RefCounted
+var _budget_ticket:RefCounted
+var budget_cancelled_jobs:=0
 var _budget_hold := false
 var _budget_delta := 0.0
 var _budget_catching_up := false
@@ -190,12 +193,14 @@ func begin_budget_sync() -> bool:
 	budget_prepare_ms=0.0
 	budget_commit_ms=0.0
 	var signature := _signature()
-	if signature == _network_signature:
+	if signature == _network_signature and not preload("res://scripts/world/city_creation_spatial_prepared.gd").needed(state):
 		cancel_budget_sync()
 		last_revision = state.revision
 		_read_progress()
 		if not _budget_hold:state.prepare_regional_echo(_network)
 		return false
+	if _budget_ticket!=null:_budget_ticket.cancel()
+	_budget_ticket=preload("res://scripts/world/city_creation_preparation_ticket.gd").new()
 	_budget_generation += 1
 	_budget_ready_network = null
 	var actors: Array[Dictionary] = []
@@ -221,9 +226,16 @@ func begin_budget_sync() -> bool:
 	_budget_request.snapshot["cafe_context"]=cafe.layout_api.snapshot_city(state)
 	_budget_request.snapshot["network_reuse"]=preload("res://scripts/visual/city_creation_local_service_cache.gd").network_seed(_network)
 	_budget_request.snapshot["biome_seed"]=state.biome_seed.duplicate()
+	_budget_request.snapshot["musical_links"]=state.musical_links.duplicate(true)
 	_budget_request.snapshot["era_modifiers"]=state.era_modifiers.duplicate()
 	_budget_request.snapshot["harmony_journey"]=state.harmony_journey.duplicate(true)
 	_budget_request.snapshot.merge({"plaza_loops":state.plaza_loops.duplicate(true),"plants":state.plants.duplicate(true),"cozy_progression":state.cozy_progression.duplicate(true),"placed_landmarks":state.placed_landmarks.duplicate(true)})
+	_budget_request.snapshot["expression_geometry_needed"]=preload("res://scripts/audio/city_creation_expression_geometry.gd").needed(state)
+	_budget_request.snapshot["paused_counter_sources"]=preload("res://scripts/world/city_creation_paused_counter_history.gd").capture(state)
+	var court_seed=state._courtyards.get_script().new();court_seed.copy_cache_from(_network.state._courtyards if _network!=null and _network.state!=null else state._courtyards);_budget_request.snapshot["courtyard_cache"]=court_seed
+	_budget_request.snapshot["frontage_seed"]=preload("res://scripts/visual/city_creation_prepared_frontages.gd").history_seed(state)
+	_budget_request.snapshot["lane_seed"]=preload("res://scripts/world/city_creation_lane_prepared.gd").history_seed(state)
+	_budget_request.snapshot["preparation_ticket"]=_budget_ticket
 	var resident_stops:Dictionary={}
 	for resident:Dictionary in residents:resident_stops[str(resident.home_id)]=resident.stops.duplicate()
 	_budget_request.snapshot["resident_stops"]=resident_stops
@@ -252,6 +264,7 @@ func poll_budget_sync(commit: bool = true) -> bool:
 	_budget_worker = null
 	if not budget_sync_pending(): return true
 	if _budget_running_generation != int(_budget_request.generation):
+		if prepared.prepare_stats.get("cancelled",false):budget_cancelled_jobs+=1
 		_start_budget_worker()
 		return false
 	if int(_budget_request.revision) != state.revision or _budget_request.signature != _signature():
@@ -269,7 +282,7 @@ func commit_budget_sync() -> bool:
 	# native value comparisons cover every captured geometry input here without
 	# reconstructing all held actors' remaining route bounds a second time.
 	var captured:Dictionary=_budget_request.snapshot
-	if int(_budget_request.revision) != state.revision or captured.houses!=state.houses or captured.roads!=state.roads or captured.waters!=state.waters or captured.districts!=state.districts or captured.terrain_strokes!=state.terrain_strokes or captured.biome_seed!=state.biome_seed or captured.era_modifiers!=state.era_modifiers or captured.harmony_journey.get("traditions",[])!=state.harmony_journey.get("traditions",[]):
+	if int(_budget_request.revision) != state.revision or captured.houses!=state.houses or captured.roads!=state.roads or captured.waters!=state.waters or captured.districts!=state.districts or captured.terrain_strokes!=state.terrain_strokes or captured.biome_seed!=state.biome_seed or captured.era_modifiers!=state.era_modifiers or captured.get("musical_links",[])!=state.musical_links or captured.harmony_journey.get("traditions",[])!=state.harmony_journey.get("traditions",[]) or captured.plants!=state.plants or captured.placed_landmarks!=state.placed_landmarks or captured.creative_settings!=state.creative_settings or captured.terrain_policy!=state.terrain_policy:
 		begin_budget_sync()
 		return false
 	var started := Time.get_ticks_usec()
@@ -303,6 +316,7 @@ func commit_budget_sync() -> bool:
 	return true
 
 func cancel_budget_sync() -> void:
+	if _budget_ticket!=null:_budget_ticket.cancel();_budget_ticket=null
 	_budget_generation += 1
 	_budget_request = {}
 	_budget_ready_network = null
@@ -315,6 +329,7 @@ func cancel_budget_sync() -> void:
 
 func _exit_tree() -> void:
 	quiet_walk.clear()
+	if _budget_ticket!=null:_budget_ticket.cancel()
 	if _budget_thread != null:
 		_budget_thread.wait_to_finish()
 		_budget_thread = null
@@ -373,6 +388,7 @@ func _process(delta: float) -> void:
 		return
 	quiet_walk.resume_idle()
 	if has_meta("progression_resume_delta"):
+		if concert_elapsed_source.is_valid() and _concert.get("phase","")=="playing":concert_elapsed_source.call(str(_concert.venue_id),float(_concert.elapsed))
 		remove_meta("progression_resume_delta");delta=0.
 	if _budget_hold or budget_sync_pending():
 		_budget_delta += delta
@@ -440,7 +456,7 @@ func _tick_life(delta: float) -> void:
 	cafe.tick(delta)
 	if already_playing and str(_concert.get("phase", "idle")) == "playing":
 		var until_finish := CONCERT_DURATION - float(_concert.elapsed)
-		_concert.elapsed = minf(CONCERT_DURATION, float(_concert.elapsed) + delta)
+		_concert.elapsed = preload("res://scripts/world/city_creation_concert_clock.gd").elapsed(self,delta)
 		if float(_concert.elapsed) >= CONCERT_DURATION: _end_concert(true, maxf(0.0, delta - until_finish))
 	elif str(_concert.get("phase", "idle")) == "gathering":
 		if not _budget_catching_up and int(concert_status().arrived) == int(concert_status().invited) and (not concert_start_gate.is_valid() or bool(concert_start_gate.call())):
@@ -569,7 +585,7 @@ func _tick_citizen(resident: Dictionary,delta: float,base_walk_step: float,has_t
 	body.position.y = sin(time * 9.0 + float(resident.phase)) * 0.025
 
 func _signature() -> Array:
-	var result: Array = [preload("res://scripts/world/city_creation_bridge_plan.gd").era_signature(state),state.era_modifiers.duplicate(),state.harmony_journey.get("traditions",[]).duplicate()]
+	var result: Array = [preload("res://scripts/world/city_creation_bridge_plan.gd").era_signature(state),state.era_modifiers.duplicate(),state.harmony_journey.get("traditions",[]).duplicate(),state.musical_links.duplicate(true),state.plants.duplicate(true),state.placed_landmarks.duplicate(true),state.creative_settings.duplicate(true)]
 	result.append([state.terrain_policy,preload("res://scripts/world/city_creation_stair_keys.gd").minimum_rise(state)])
 	result.append(preload("res://scripts/world/city_creation_plaza_pergola.gd").signature(state))
 	if state.houses.any(func(h):return h.get("architecture","")=="cantilever_tea_deck"):result.append(preload("res://scripts/world/city_creation_tea_deck_plan.gd").all(state).duplicate(true))
@@ -1493,6 +1509,7 @@ func _adopt_network(network: RefCounted) -> void:
 	_route_cache = network._route_cache
 	_route_cache_entries = network._route_cache_entries
 	state.prepare_regional_echo(network)
+	preload("res://scripts/world/city_creation_spatial_prepared.gd").adopt(state,network)
 
 func _route(start: String, finish: String) -> Array[Vector3]:
 	# Test tools may assign graph/positions directly; they are still authoritative.

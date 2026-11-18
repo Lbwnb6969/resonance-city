@@ -33,11 +33,12 @@ static func ports(city:RefCounted,house:Dictionary)->Array:
 				var access:=Height.assess(city,house,entry,at,road)
 				if access.ok and access.get("scope","")!="unchanged":result.append({"entry":entry,"street_at":at,"road_id":road.id,"height_access":access})
 	return result
-static func derive(city:RefCounted,house:Dictionary,member:Dictionary,faces:Array,geometry:Array,water_distance:Callable)->Dictionary:
+static func derive(city:RefCounted,house:Dictionary,member:Dictionary,faces:Array,geometry:Array,water_distance:Callable,context:Dictionary={})->Dictionary:
 	var entries:Array=[];var rejected:Array=[];var sources:Array=[]
-	if not member.connected:return {"entries":entries,"rejected":rejected,"sources":sources}
+	if not member.connected or faces.is_empty():return {"entries":entries,"rejected":rejected,"sources":sources}
 	var starts:=ports(city,house)
-	var route_obstacles:=Route.Walk.obstacles(city)
+	if not context.has("obstacles"):context.obstacles=Route.Walk.obstacles(city)
+	var route_obstacles:Array=context.obstacles
 	for face:Dictionary in faces:
 		for road:Dictionary in city.roads:
 			for i in range(1,road.points.size()):

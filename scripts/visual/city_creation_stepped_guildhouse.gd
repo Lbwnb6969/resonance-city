@@ -44,6 +44,8 @@ static func pick(node:Node3D,house:Dictionary,cell:Dictionary)->void:
 static func glow(rig,root:Node3D,cell:Dictionary,side:Vector2i,surface:SurfaceTool,windows:Array)->bool:
 	for wall:Node3D in root.find_children("*","Node3D",true,false):
 		if not wall.has_meta("guild_shop_window") or str(wall.get_parent().name)!=str(cell.id) or Vector2(wall.basis.z.x,wall.basis.z.z).dot(Vector2(side))<.99:continue
+		for pane:Dictionary in root.get_meta("roof_window_panes",[]):
+			if str(pane.get("source",""))=="guild_shop" and str(pane.get("cell_id",""))==str(cell.id) and pane.get("side",Vector2i.ZERO)==side:return true
 		var frame:=root.global_transform.affine_inverse()*wall.global_transform
 		var center:float=wall.get_meta("recessed_facade").holes[0].x
 		for x:float in [-.18,.18]:

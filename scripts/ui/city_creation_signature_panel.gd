@@ -48,7 +48,7 @@ func setup(owner: Node3D, parent: Control) -> void:
 		label.custom_minimum_size.x = 0
 		card_col.add_child(label)
 		labels[id] = label
-		var place: Button = demo._button("免费选址", begin.bind(id, ""))
+		var place=preload("res://scripts/ui/city_creation_shape_button.gd").new();place.configure("landmark/"+id,"免费选址");place.pressed.connect(begin.bind(id,""))
 		place.name = "PlaceSignature_" + id
 		card_col.add_child(place)
 		buttons[id] = place
@@ -80,7 +80,7 @@ func refresh() -> void:
 		var earned: bool = demo.state.Signatures.available(demo.state,id)
 		var is_placed: bool = placed.has(id)
 		buttons[id].disabled = not earned or is_placed
-		buttons[id].text = "已在河湾 · 可选中移动" if is_placed else "免费选址" if earned else "里程碑尚未达成"
+		buttons[id].caption = "已在河湾 · 可选中移动" if is_placed else "免费选址" if earned else "里程碑尚未达成";buttons[id].tooltip_text=demo.state.Signatures.NAMES[id]+" · "+buttons[id].caption;buttons[id].queue_redraw()
 		var primary:bool=earned and not is_placed
 		if _button_primary.get(id)!=primary:
 			_button_primary[id]=primary

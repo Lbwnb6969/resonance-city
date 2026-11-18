@@ -27,16 +27,19 @@ static func build(r,parent:Node3D,house:Dictionary,palette:Array,ancient)->void:
 		if columns==4 and i in [1,2]:x=-.54 if i==1 else .54
 		ancient.column(r,node,Vector3(x,.10,front-.12),1.45,.105,cream)
 	r._box(node,Vector3(half*2,.13,.72),Vector3(0,1.59,(back+front)*.5),cream).name="VillaContinuousEntablature"
-	var eave:=1.76;var ridge:=eave+minf(.50,half*.28)
-	var faces:Array[Vector3]=[Vector3(-half,eave,back),Vector3(-half,eave,front),Vector3(0,ridge,front),Vector3(-half,eave,back),Vector3(0,ridge,front),Vector3(0,ridge,back),Vector3(0,ridge,back),Vector3(0,ridge,front),Vector3(half,eave,front),Vector3(0,ridge,back),Vector3(half,eave,front),Vector3(half,eave,back)]
-	var roof:MeshInstance3D=preload("res://scripts/visual/city_creation_ancient_roof_finish.gd").tiles(r,node,faces,palette[1]);roof.name="VillaProjectingTerracottaRoof"
-	var ped:=Node3D.new();node.add_child(ped);ped.position.z=front
-	var tympanum:MeshInstance3D=r._triangles(ped,A._extrude(PackedVector2Array([Vector2(-half,eave),Vector2(half,eave),Vector2(0,ridge)]),.10),cream.albedo_color);tympanum.material_override=cream;tympanum.name="VillaDoricFullPediment"
-	for side:float in [-1.,1.]:
-		var cornice:MeshInstance3D=r._box(node,Vector3(Vector2(half,ridge-eave).length()+.04,.065,.16),Vector3(side*half*.5,(ridge+eave)*.5,front+.025),cream);cornice.rotation.z=-side*atan2(ridge-eave,half)
+	if not preload("res://scripts/world/city_creation_portico_roof_pitch.gd").active(r.state,house):
+		var eave:=1.76;var ridge:=eave+minf(.50,half*.28)
+		var faces:Array[Vector3]=[Vector3(-half,eave,back),Vector3(-half,eave,front),Vector3(0,ridge,front),Vector3(-half,eave,back),Vector3(0,ridge,front),Vector3(0,ridge,back),Vector3(0,ridge,back),Vector3(0,ridge,front),Vector3(half,eave,front),Vector3(0,ridge,back),Vector3(half,eave,front),Vector3(half,eave,back)]
+		var roof:MeshInstance3D=preload("res://scripts/visual/city_creation_ancient_roof_finish.gd").tiles(r,node,faces,palette[1]);roof.name="VillaProjectingTerracottaRoof"
+		var ped:=Node3D.new();node.add_child(ped);ped.position.z=front
+		var tympanum:MeshInstance3D=r._triangles(ped,A._extrude(PackedVector2Array([Vector2(-half,eave),Vector2(half,eave),Vector2(0,ridge)]),.10),cream.albedo_color);tympanum.material_override=cream;tympanum.name="VillaDoricFullPediment"
+		for side:float in [-1.,1.]:
+			var cornice:MeshInstance3D=r._box(node,Vector3(Vector2(half,ridge-eave).length()+.04,.065,.16),Vector3(side*half*.5,(ridge+eave)*.5,front+.025),cream);cornice.rotation.z=-side*atan2(ridge-eave,half)
 	for i in range(int(half*2/.32)):
 		for k in range(3):r._box(node,Vector3(.018,.09,.025),Vector3(-half+.12+i*.32+k*.033,1.61,front+.02),cream)
-	var ridge_cap:MeshInstance3D=r._cylinder(node,.045,.045,front-back+.06,Vector3(0,ridge+.018,(back+front)*.5),tile,10);ridge_cap.rotation.x=PI*.5
+	if not preload("res://scripts/world/city_creation_portico_roof_pitch.gd").active(r.state,house):
+		var ridge:=1.76+minf(.50,half*.28)
+		var ridge_cap:MeshInstance3D=r._cylinder(node,.045,.045,front-back+.06,Vector3(0,ridge+.018,(back+front)*.5),tile,10);ridge_cap.rotation.x=PI*.5
 	var body:=StaticBody3D.new();node.add_child(body);body.set_meta("house_id",house.id);body.set_meta("cell_id",p.cell.id);body.set_meta("cell",p.cell)
 	for m:MeshInstance3D in node.find_children("*","MeshInstance3D",true,false):
 		var shape:=ConcavePolygonShape3D.new();shape.backface_collision=true;shape.set_faces(m.mesh.get_faces())

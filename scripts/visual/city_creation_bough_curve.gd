@@ -40,3 +40,16 @@ static func append(data:Dictionary,start:Vector3,end:Vector3,low:float,high:floa
 		for sector in range(SIDES):
 			var a:int=first+ring*SIDES+sector;var b:int=first+ring*SIDES+(sector+1)%SIDES
 			data.indices.append_array([a,a+SIDES,b,b,a+SIDES,b+SIDES])
+
+static func caps(data:Dictionary,first:int)->void:
+	for top:bool in [false,true]:
+		var ring:=first+(RINGS-1)*SIDES if top else first
+		var center:=Vector3.ZERO
+		for i in range(SIDES):center+=data.vertices[ring+i]/float(SIDES)
+		var normal:Vector3=(data.vertices[ring+1]-data.vertices[ring]).cross(data.vertices[ring+2]-data.vertices[ring]).normalized()*(1. if top else -1.)
+		var base:int=data.vertices.size()
+		for i in range(SIDES):data.vertices.append(data.vertices[ring+i]);data.normals.append(normal);data.colors.append(data.colors[ring+i])
+		var middle:int=data.vertices.size();data.vertices.append(center);data.normals.append(normal);data.colors.append(data.colors[ring])
+		for i in range(SIDES):
+			var next:int=base+(i+1)%SIDES
+			data.indices.append_array([base+i,middle,next] if top else [base+i,next,middle])

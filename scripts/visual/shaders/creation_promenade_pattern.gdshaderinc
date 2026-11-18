@@ -1,3 +1,4 @@
+uniform float promenade_relief=1.0;
 float stone_hash(vec2 p) { return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 vec3 promenade_color(vec2 at) {
 	float row=floor(at.y/.34);
@@ -15,4 +16,17 @@ vec3 promenade_color(vec2 at) {
 	float detail=1.0-smoothstep(.003,.012,footprint);
 	stone*=mix(.9925,.97+.045*grain,detail);
 	return mix(vec3(.40,.40,.35),stone,face);
+}
+
+// Three millimetres of rounded stone relief, filtered out below pixel scale.
+float promenade_height(vec2 at){
+ vec2 scale=vec2(.56,.34);
+ float row=floor(at.y/scale.y);
+ vec2 cell=fract(vec2(at.x/scale.x+mod(row,2.0)*.5,at.y/scale.y));
+ vec2 edge=min(cell,1.0-cell)*scale;
+ float joint=min(edge.x,edge.y);
+ float aa=max(fwidth(joint),.0005);
+ float footprint=max(length(dFdx(at)),length(dFdy(at)));
+ float detail=1.0-smoothstep(.025,.10,footprint);
+ return smoothstep(.006-aa,.026+aa,joint)*.003*detail*promenade_relief;
 }

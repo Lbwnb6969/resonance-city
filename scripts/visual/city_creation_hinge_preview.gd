@@ -8,7 +8,10 @@ static func apply(renderer,root:Node3D,source:Dictionary,cells:Array,angle:float
 		host=renderer.state._new_stroke_house(Vector2(source.origin[0],source.origin[1]));host.base_y=source.get("base_y",0.)
 	if is_finite(angle):host.yaw=angle
 	for cell:Dictionary in cells:
-		if not host.cells.any(func(c):return int(c.x)==int(cell.x) and int(c.z)==int(cell.z) and int(c.level)==int(cell.level)):host.cells.append(cell)
+		if not host.cells.any(func(c):return int(c.x)==int(cell.x) and int(c.z)==int(cell.z) and int(c.level)==int(cell.level)):
+			var preview_cell:=cell.duplicate(true)
+			if not preview_cell.has("id"):preview_cell.id="preview_%d"%host.cells.size()
+			host.cells.append(preview_cell)
 	if fresh:preload("res://scripts/world/city_creation_build_brush.gd").apply(renderer.state,host)
 	host=Hug.candidate(renderer.state,host)
 	var bend:=Frame.Hinge.angle(host)

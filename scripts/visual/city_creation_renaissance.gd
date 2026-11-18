@@ -2,6 +2,7 @@ extends RefCounted
 const Wall = preload("res://scripts/visual/city_creation_wall_material.gd")
 ## Original octagonal terracotta crown, articulated stone ribs and lit lantern.
 static func build(renderer, root: Node3D, house: Dictionary, plans: Array) -> void:
+	if renderer.state.house_era(house)=="renaissance" and preload("res://scripts/world/city_creation_renaissance_roof_pitch.gd").authored(house):preload("res://scripts/visual/city_creation_renaissance_roof_pitch.gd").build(renderer,root,house);return
 	if preload("res://scripts/world/city_creation_stepped_guildhouse.gd").active(renderer.state,house):preload("res://scripts/visual/city_creation_stepped_guildhouse.gd").build(renderer,root,house);return
 	if preload("res://scripts/visual/city_creation_ancient_architecture.gd").active(house,renderer.state.house_era(house)):
 		preload("res://scripts/visual/city_creation_ancient_architecture.gd").finish(renderer,root,house,plans);return
@@ -37,7 +38,7 @@ static func build(renderer, root: Node3D, house: Dictionary, plans: Array) -> vo
 		Wall.apply(renderer._triangles(dome,ribs,Color("ebd6ad")), Wall.Kind.STONE).name="EightStoneRibs"
 		var lantern_y := .24+h
 		renderer._cylinder(dome,r*.22,r*.25,.09,Vector3(0,lantern_y,0),stone,8)
-		var glass := StandardMaterial3D.new(); glass.albedo_color=Color("d8ba7d"); glass.emission_enabled=true; glass.emission=Color("f6c477"); glass.emission_energy_multiplier=.35
+		var glass:Material=preload("res://scripts/visual/city_creation_facade_glass.gd").material(renderer,3)
 		renderer._cylinder(dome,r*.15,r*.15,.38,Vector3(0,lantern_y+.23,0),glass,8).name="LanternWindows"
 		for side in range(8):
 			var angle := TAU*side/8.0+PI/8.0

@@ -12,11 +12,11 @@ const Obstacles=preload("res://scripts/world/city_creation_public_space_obstacle
 static func derive(city:RefCounted,report:Dictionary,water_distance:Callable)->Array:
 	var result:Array=[];var geometry:=Obstacles.collect(city)
 	for house:Dictionary in city.houses:
-		var obstacles:=Obstacles.for_source(geometry,house.id)
 		var member:Dictionary=report.houses[house.id];var prototype:String=member.prototype
 		if prototype not in BODIES or not Civic.eligible(city,house):continue
 		# Only the renaissance renderer installs PedimentedGuildhall.
 		if prototype=="guildhall" and city.house_era(house)!="renaissance":continue
+		var obstacles:=Obstacles.for_source(geometry,house.id)
 		var courts:Array=[];var entries:Array=[];var rejected:Array=[];var sources:Array=[house.id]
 		for cell:Dictionary in house.cells:
 			if int(cell.level)==0 and cell.kind=="room":sources.append(cell.id)

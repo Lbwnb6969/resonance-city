@@ -6,8 +6,8 @@ static func build(owner:Node3D,town:Node3D,row:Dictionary)->Node3D:
 	var point:Vector2=row.get("hang_at",row.at);root.position=Vector3(point.x,row.y,point.y)
 	var direction:Vector2=row.get("hang_axis",row.get("along",row.axis));root.rotation.y=-atan2(direction.y,direction.x)
 	root.set_meta("plan",row)
-	var metal:=Wall.source(Color("b49654"),null,"component",Wall.Kind.STONE)
-	var wood:=Wall.source(Color("80684c"),null,"component",Wall.Kind.CANTILEVER)
+	var metal:=Wall.source(Color("b49654"),null,"component",Wall.Kind.METAL)
+	var wood:=Wall.source(Color("80684c"),null,"component",Wall.Kind.TIMBER)
 	# Low bridge bells hang outside the rails, above the actual water surface.
 	var side:float=0. if row.kind=="skybridge" else float(row.half_width)+.08
 	var height:=.38 if row.kind=="skybridge" else .24

@@ -27,7 +27,7 @@ func run()->void:
 		for i in range(polygon.size()):shifted.append(polygon[(i+1)%polygon.size()])
 		check(Plaza.key(shifted)==id,"same closed border has stable identity regardless of traversal start")
 		check(Plaza.plans(city).is_empty() and not city.snapshot().has("plaza_loops"),"old road loop opens as original default lawn without adopting fields")
-		check(Plaza.choose(city,id,"fan_stone").ok and city.snapshot().schema==34 and city.houses==before.houses and city.roads==before.roads,"explicit paving adopts schema34 without rewriting authored roads/houses")
+		check(Plaza.choose(city,id,"fan_stone").ok and city.snapshot().schema==maxi(int(before.schema),Plaza.SCHEMA) and city.houses==before.houses and city.roads==before.roads,"explicit paving preserves newer schema or adopts schema34 without rewriting authored roads/houses")
 		var painted_changes:Dictionary=change_script.snapshot(city);var diff:Dictionary=change_script.diff(source_changes,painted_changes)
 		check(diff.labels==["plazas"] and diff.bounds.size()==1 and Rect2(diff.bounds[0].new).has_point(f.center),"plaza-only author edit emits bounded vegetation invalidation without rebuilding roads")
 		var meadow:=preload("res://scripts/visual/city_creation_meadow.gd").new();meadow.state=city;var entrances:Dictionary=meadow._entrances_by_house();var bins:=preload("res://scripts/visual/city_creation_ground_obstacle_bins.gd").new();bins.prepare(city,entrances);var block:=Vector2i((f.center/8.).floor())

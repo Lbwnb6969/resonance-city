@@ -95,7 +95,8 @@ func follow(pop:RefCounted,house:Dictionary)->void:
 		if dock.nature_row.is_visible_in_tree():reserved.append(dock.nature_row.get_global_rect())
 	var islands:=controls();var key:=[house_rect,viewport,neighbors,reserved,colors.visible,pop.card.scale,islands.map(func(item:Control)->Array:return [item.get_instance_id(),item.size])]
 	if key!=_placement_key:
-		placement_ok=preload("res://scripts/ui/city_creation_ring_placement.gd").fit(islands,house_rect,Rect2(Vector2(10,68),viewport-Vector2(20,188)),neighbors,reserved)
+		var details_open := extra_controls.any(func(item:Control)->bool:return item.is_visible_in_tree())
+		placement_ok=preload("res://scripts/ui/city_creation_ring_placement.gd").fit(islands,house_rect,Rect2(Vector2(10,68),viewport-Vector2(20,188)),neighbors,reserved,heading if details_open else null)
 		_placement_key=key;_placed.clear()
 		for item:Control in islands:_placed[item.get_instance_id()]=item.global_position
 	else:

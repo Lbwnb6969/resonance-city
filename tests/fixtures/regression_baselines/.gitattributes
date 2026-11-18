@@ -1,0 +1,4 @@
+# Keep the line endings of the archived road-edge baselines.
+path_edge_before_empty_boundary_filter.gd -text
+path_edge_before_joined_attributes.gd -text
+quiet_street_300.json -text

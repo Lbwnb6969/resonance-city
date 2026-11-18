@@ -1,17 +1,21 @@
 extends RefCounted
 const State=preload("res://scripts/world/city_creation_state.gd")
-static func build(count:int=225, four_eras:bool=false)->RefCounted:
+static func build(count:int=225, four_eras:bool=false, cafe_clearance:bool=false)->RefCounted:
 	var city:RefCounted
 	if four_eras:city=preload("res://tools/fixtures/city_creation_modern_fixture.gd").earned_city()
 	else:city=State.new();city.initialize()
+	if cafe_clearance:
+		city.set_house_role("h4","garden_cafe")
+		for at:Vector2 in [Vector2(-18,-2),Vector2(-22,-2)]:city.add_house(at)
 	var last_z:=-36.
 	for z in range(-36,37,4):
 		if city.houses.size()>=count:break
 		var points:Array[Vector2]=[Vector2(-38,z+1.52),Vector2(38,z+1.52)]
-		city.add_road(points,"cobble")
+		if not cafe_clearance or absf(z+1.52)>=7.:city.add_road(points,"cobble")
 		last_z=z+1.52
 		for x in range(-36,37,4):
 			if city.houses.size()>=count:break
+			if cafe_clearance and Vector2(x,z).distance_to(Vector2(-6,-2))<8.:continue
 			city.add_house(Vector2(x,z))
 	var spine:Array[Vector2]=[Vector2(-38,-34.48),Vector2(-38,last_z)]
 	city.add_road(spine,"cobble")

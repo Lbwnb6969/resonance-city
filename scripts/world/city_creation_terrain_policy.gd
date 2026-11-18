@@ -1,14 +1,16 @@
 extends RefCounted
 ## A city rule, independent of stroke algorithms. Old works default to v1.
-const VERSION:=2
+const VERSION:=3
+const NATURAL_SCHEMA:=47
 const SCHEMA:=23
 const Surface=preload("res://scripts/world/city_creation_activity_surface.gd")
 const Visits=preload("res://scripts/world/city_creation_cafe_terrain_visits.gd")
-static func enabled(city)->bool:return city.terrain_policy==VERSION and city.CreationPolicy.is_free(city)
+static func enabled(city)->bool:return city.terrain_policy>=2 and city.CreationPolicy.is_free(city)
 static func walk_height(city,at:Vector2)->float:return city._ground_terrain.height_at(at)+.075
 static func validate(city,data:Dictionary)->Dictionary:
 	if data.has("terrain_policy"):
-		if data.schema<SCHEMA or not city._is_integer(data.terrain_policy) or (data.terrain_policy!=1 and data.terrain_policy!=VERSION) or not city.CreationPolicy.data_is_free(data):return city._fail("自由街景地形需要版本23自由作品")
+		if data.schema<SCHEMA or not city._is_integer(data.terrain_policy) or int(data.terrain_policy) not in [1,2,VERSION] or not city.CreationPolicy.data_is_free(data):return city._fail("自由街景地形需要版本23自由作品")
+	if data.get("terrain_policy",1)==VERSION and data.schema<NATURAL_SCHEMA:return city._fail("自然路肩需要版本47自由作品")
 	var journeys:Variant=data.get("journey_checkpoint",{})
 	if journeys is Dictionary and journeys.has("cafe_terrain") and (data.schema<SCHEMA or not data.has("terrain_policy")):return city._fail("街景地形行程需要新城市规则")
 	return {"ok":true}
@@ -16,7 +18,7 @@ static func signature(city)->int:
 	return hash([city.terrain_policy,city.houses,city.roads,city.waters,city.terrain_strokes,city.districts,city.placed_landmarks,city.plants,city.creative_settings])
 static func plan(city)->Dictionary:
 	if not city.CreationPolicy.is_free(city):return city._fail("旧经营作品保留原地形规则")
-	if enabled(city):return {"ok":true,"no_op":true,"message":"街景已随地形调整"}
+	if city.terrain_policy==VERSION:return {"ok":true,"no_op":true,"message":"自然路肩已采用"}
 	var began:=Time.get_ticks_usec();city.prepare_ground_height();var before:Dictionary=city.snapshot();var candidate=city.get_script().new()
 	var restored:Dictionary=candidate.restore(before)
 	if not restored.ok:return restored
@@ -32,7 +34,7 @@ static func plan(city)->Dictionary:
 	var layouts:Dictionary={};var planner=load("res://scripts/world/city_creation_cafe_layout_context.gd").new()
 	for house:Dictionary in candidate.houses:
 		if house.role=="garden_cafe":layouts[house.id]=planner.layout(candidate,house.id)
-	var message:="解除茶座与聚会坪的广域平地\n桌椅重新择地，屋基与路床保留";var no_space:=0
+	var message:="路肩随削坡深度平缓展开\n屋基、路面与旧笔画保持；原作品另存" if city.terrain_policy==2 else "解除街景地形锁定并采用自然路肩\n桌椅重新择地，屋基与路床保留";var no_space:=0
 	for layout:Dictionary in layouts.values():
 		if layout.is_empty():no_space+=1
 	if no_space>0:message+="\n%d处茶座暂缺空地，保留茶聚进度"%no_space

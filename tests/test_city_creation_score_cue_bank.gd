@@ -22,7 +22,7 @@ func run()->void:
 				var midi:=Cues.Grid.snap_to_chord_tone(int(note.midi),data.harmony[row.bar])
 				valid=valid and data.harmony[row.bar].any(func(n):return posmod(int(n)-midi,12)==0)
 		check(valid,"all ten modal recipe projections fit the written chord "+str(mode))
-	var templates:=Cues.templates(music,4);var data:=Master.section(0,4);var waves:=Cues.render(templates,data.harmony,data.signature,music);var pcm_bytes:=0;var unchanged:=true;var pitches:=true;var lengths:=true;var real_pcm:=true
+	var templates:=Cues.templates(music,4);var data:=Master.section(0,4);var render_started:=Time.get_ticks_usec();var waves:=Cues.render(templates,data.harmony,data.signature,music);var render_ms:=(Time.get_ticks_usec()-render_started)/1000.;var pcm_bytes:=0;var unchanged:=true;var pitches:=true;var lengths:=true;var real_pcm:=true
 	for key:String in waves:
 		var wave:AudioStreamWAV=waves[key];var notes:Array=wave.get_meta("master_cue_notes");var source:Array=templates[key].notes;var bar:int=templates[key].bar
 		pcm_bytes+=wave.data.size();lengths=lengths and wave.data.size()==(roundi(templates[key].seconds*22050.)+roundi(Cues.Grid.GRID*22050.))*2 and wave.loop_mode==AudioStreamWAV.LOOP_DISABLED
@@ -45,4 +45,4 @@ func run()->void:
 	check(music._harmony_streams==original and music._edit_streams.world_water_1==original[key] and not music.has_meta("score_cue_originals"),"retire restores both source catalogue and currently aliased short table exactly")
 	check(active.get_meta("master_score_signature")==data.signature and not active.data.is_empty(),"already-owned short wave remains valid after catalogue retirement")
 	check(music.audio_report.harmony_notes==ledger,"original report and original wave samples never rewritten")
-	music.free();print("SCORE_CUE_BANK ",JSON.stringify({"ok":failures.is_empty(),"checks":checks,"failures":failures,"catalogues":sizes,"pcm_bytes":pcm_bytes,"seconds":(Time.get_ticks_msec()-began)/1000.}));quit(0 if failures.is_empty() else 1)
+	music.free();print("SCORE_CUE_BANK ",JSON.stringify({"ok":failures.is_empty(),"checks":checks,"failures":failures,"catalogues":sizes,"pcm_bytes":pcm_bytes,"render_ms":render_ms,"seconds":(Time.get_ticks_msec()-began)/1000.}));quit(0 if failures.is_empty() else 1)

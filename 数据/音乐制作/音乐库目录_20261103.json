@@ -1219,7 +1219,7 @@
         "essentia_key_estimate": "F major",
         "human_beat_clock_confirmed": false
       },
-      "prompt_assignment": null,
+      "prompt_assignment": "四时代.md:73",
       "groups": {
         "coarse_six": {
           "kept": 3,
@@ -1230,8 +1230,15 @@
           "excluded": 3
         }
       },
-      "prompt_assignment_status": "unconfirmed",
-      "runtime_ready": false
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "runtime_ready": false,
+      "era": "renaissance",
+      "prompt_code": "2-01",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      }
     },
     {
       "source_id": "82e7649382b57276c77e5b7b83f9f69a7a737d89b985ae5e4dedec0037d7e725",
@@ -1247,7 +1254,7 @@
         "essentia_key_estimate": "Bb major",
         "human_beat_clock_confirmed": false
       },
-      "prompt_assignment": null,
+      "prompt_assignment": "四时代.md:79",
       "groups": {
         "coarse_six": {
           "kept": 4,
@@ -1258,8 +1265,15 @@
           "excluded": 2
         }
       },
-      "prompt_assignment_status": "unconfirmed",
-      "runtime_ready": false
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "runtime_ready": false,
+      "era": "renaissance",
+      "prompt_code": "2-02",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      }
     },
     {
       "source_id": "7ae28dd8cac95364d4c4a795ae98bc590f868338201ac1035d35210d6501802d",
@@ -1275,7 +1289,7 @@
         "essentia_key_estimate": "F major",
         "human_beat_clock_confirmed": false
       },
-      "prompt_assignment": null,
+      "prompt_assignment": "四时代.md:85",
       "groups": {
         "coarse_six": {
           "kept": 3,
@@ -1286,8 +1300,15 @@
           "excluded": 2
         }
       },
-      "prompt_assignment_status": "unconfirmed",
-      "runtime_ready": false
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "runtime_ready": false,
+      "era": "renaissance",
+      "prompt_code": "2-03",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      }
     },
     {
       "source_id": "1bbe2dac0d27ea6333bbb146f657089fed1a8f0ffb8fb9b58a3b9333e28ada80",
@@ -1303,7 +1324,7 @@
         "essentia_key_estimate": "Bb major",
         "human_beat_clock_confirmed": false
       },
-      "prompt_assignment": null,
+      "prompt_assignment": "四时代.md:153",
       "groups": {
         "coarse_six": {
           "kept": 6,
@@ -1314,8 +1335,15 @@
           "excluded": 0
         }
       },
-      "prompt_assignment_status": "unconfirmed",
-      "runtime_ready": false
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "runtime_ready": false,
+      "era": "modern",
+      "prompt_code": "4-01",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      }
     },
     {
       "source_id": "536f44fce3e04d0c71777cd2e963dab908b0a701e9912074ab38dca6c026b2de",
@@ -1331,7 +1359,7 @@
         "essentia_key_estimate": "C minor",
         "human_beat_clock_confirmed": false
       },
-      "prompt_assignment": null,
+      "prompt_assignment": "四时代.md:159",
       "groups": {
         "coarse_six": {
           "kept": 6,
@@ -1342,8 +1370,15 @@
           "excluded": 1
         }
       },
-      "prompt_assignment_status": "unconfirmed",
-      "runtime_ready": false
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "runtime_ready": false,
+      "era": "modern",
+      "prompt_code": "4-02",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      }
     },
     {
       "source_id": "674b920a3a8d64dce5592f8921c19f9fc5bfdc7c9ed4524feb83a9ac3d67eb9e",
@@ -1359,7 +1394,7 @@
         "essentia_key_estimate": "Eb major",
         "human_beat_clock_confirmed": false
       },
-      "prompt_assignment": null,
+      "prompt_assignment": "四时代.md:165",
       "groups": {
         "coarse_six": {
           "kept": 6,
@@ -1370,8 +1405,15 @@
           "excluded": 0
         }
       },
-      "prompt_assignment_status": "unconfirmed",
-      "runtime_ready": false
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "runtime_ready": false,
+      "era": "modern",
+      "prompt_code": "4-03",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      }
     },
     {
       "source_id": "b0607682c39b837a29ccfaa715a2bb56f5a7336804e617d9d36ef1f30dc2010e",
@@ -1387,7 +1429,7 @@
         "essentia_key_estimate": "C minor",
         "human_beat_clock_confirmed": false
       },
-      "prompt_assignment": null,
+      "prompt_assignment": "四时代.md:171",
       "groups": {
         "coarse_six": {
           "kept": 6,
@@ -1398,8 +1440,15 @@
           "excluded": 0
         }
       },
-      "prompt_assignment_status": "unconfirmed",
-      "runtime_ready": false
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "runtime_ready": false,
+      "era": "modern",
+      "prompt_code": "4-04",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      }
     },
     {
       "source_id": "f47617e77233fb47257279b3ee3d8e8f23eb769e0f5fda539fa28c579704f4eb",
@@ -1415,7 +1464,7 @@
         "essentia_key_estimate": "F# major",
         "human_beat_clock_confirmed": false
       },
-      "prompt_assignment": null,
+      "prompt_assignment": "四时代.md:177",
       "groups": {
         "coarse_six": {
           "kept": 6,
@@ -1426,8 +1475,15 @@
           "excluded": 0
         }
       },
-      "prompt_assignment_status": "unconfirmed",
-      "runtime_ready": false
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "runtime_ready": false,
+      "era": "modern",
+      "prompt_code": "4-05",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      }
     },
     {
       "source_id": "b71b5f1a2da63ecbc5ca7c4e01ba15d5ff6c994e8f5e9618f6c38a3fdae12dc7",
@@ -1443,7 +1499,7 @@
         "essentia_key_estimate": "C minor",
         "human_beat_clock_confirmed": false
       },
-      "prompt_assignment": null,
+      "prompt_assignment": "四时代.md:177",
       "groups": {
         "coarse_six": {
           "kept": 6,
@@ -1454,8 +1510,15 @@
           "excluded": 1
         }
       },
-      "prompt_assignment_status": "unconfirmed",
-      "runtime_ready": false
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "runtime_ready": false,
+      "era": "modern",
+      "prompt_code": "4-05",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      }
     },
     {
       "source_id": "cbdccc72de6d14a8c9fcd77ff0679d49725e7e87abff431cc4670f82cc318c0a",
@@ -1471,7 +1534,7 @@
         "essentia_key_estimate": "Bb major",
         "human_beat_clock_confirmed": false
       },
-      "prompt_assignment": null,
+      "prompt_assignment": "四时代.md:183",
       "groups": {
         "coarse_six": {
           "kept": 6,
@@ -1482,8 +1545,15 @@
           "excluded": 0
         }
       },
-      "prompt_assignment_status": "unconfirmed",
-      "runtime_ready": false
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "runtime_ready": false,
+      "era": "modern",
+      "prompt_code": "4-06",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      }
     },
     {
       "source_id": "483daa585133ec997c7ee388c0a636341cebc20f4734e2b2911eba9b489e2904",
@@ -1708,9 +1778,919 @@
       },
       "prompt_assignment_status": "unconfirmed",
       "runtime_ready": false
+    },
+    {
+      "source_id": "7dace1320b1acbe70184daf63cd53558896b6be82c49736c0ed6094b4deeb5c3",
+      "name": "1-01.mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261104/1-01.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/参考分析/四时代追加_20261104/20261104-152451-404738/001_1-01/summary.json",
+        "sha256": "f05bd95b57ec973193fa25613c7cdac012adbe89b7172d7c7dba2e7f92114909",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 160.73142857142858,
+        "librosa_bpm_estimate": 135.99917763157896,
+        "essentia_bpm_estimate": 135.859100342,
+        "essentia_key_estimate": "D major",
+        "human_beat_clock_confirmed": false
+      },
+      "groups": {
+        "coarse_six": {
+          "kept": 5,
+          "excluded": 1
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 6,
+          "excluded": 1
+        }
+      },
+      "prompt_assignment": "四时代.md:33",
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "era": "pastoral",
+      "prompt_code": "1-01",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      },
+      "stem_review": "制作批次/four_eras_addition_20261104_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261104_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "77403b7614bab5120e1512aeceee19061dd1a6081963808cf8fe09be3b2dac16",
+      "name": "2-06.mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261104/2-06.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/参考分析/四时代追加_20261104/20261104-152451-404738/004_2-06/summary.json",
+        "sha256": "0d772b680d03683f8efaa20a35a9efe83c0436a7078fffc7462997b080001be0",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 148.89795918367346,
+        "librosa_bpm_estimate": 129.19921875,
+        "essentia_bpm_estimate": 129.788070679,
+        "essentia_key_estimate": "Bb major",
+        "human_beat_clock_confirmed": false
+      },
+      "groups": {
+        "coarse_six": {
+          "kept": 5,
+          "excluded": 1
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 5,
+          "excluded": 2
+        }
+      },
+      "prompt_assignment": "四时代.md:103",
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "era": "renaissance",
+      "prompt_code": "2-06",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      },
+      "stem_review": "制作批次/four_eras_addition_20261104_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261104_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "9ad221e9f33c712a592223f7cb15dc38c5537f149e2b213aa804fe8eca340a22",
+      "name": "2-05(好听).mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261104/2-05(好听).mp3",
+      "analysis": {
+        "path": "数据/音乐资产/参考分析/四时代追加_20261104/20261104-152451-404738/003_2-05(好听)/summary.json",
+        "sha256": "8f0d1509d1256b2f0acd279586e632332a3052b31d9888436c1383be90e51e3f",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 118.96163265306123,
+        "librosa_bpm_estimate": 151.99908088235293,
+        "essentia_bpm_estimate": 154.379364014,
+        "essentia_key_estimate": "C minor",
+        "human_beat_clock_confirmed": false
+      },
+      "groups": {
+        "coarse_six": {
+          "kept": 3,
+          "excluded": 3
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 4,
+          "excluded": 3
+        }
+      },
+      "prompt_assignment": "四时代.md:97",
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "user_feedback": {
+        "sentiment": "positive",
+        "quote": "好听",
+        "origin": "user supplied filename",
+        "date": "2026-11-04"
+      },
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "era": "renaissance",
+      "prompt_code": "2-05",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      },
+      "stem_review": "制作批次/four_eras_addition_20261104_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261104_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "f1eb3ac520584856b725ef47b34ae417f0281caa553f00c098bc08bde1f65cd5",
+      "name": "2-04.mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261104/2-04.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/参考分析/四时代追加_20261104/20261104-152451-404738/002_2-04/summary.json",
+        "sha256": "c71524a06d44161fdf329c00fee90ba918918798b9c7ccc9d96a0528e214707e",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 130.45551020408163,
+        "librosa_bpm_estimate": 123.046875,
+        "essentia_bpm_estimate": 172.265670776,
+        "essentia_key_estimate": "G major",
+        "human_beat_clock_confirmed": false
+      },
+      "groups": {
+        "coarse_six": {
+          "kept": 3,
+          "excluded": 3
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 4,
+          "excluded": 3
+        }
+      },
+      "prompt_assignment": "四时代.md:91",
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras",
+      "era": "renaissance",
+      "prompt_code": "2-04",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-04",
+        "user_statement": "我那些数字命名的就是四时代那一篇来的",
+        "matching": "exact prompt code; parenthesized suffix is a separate retained generation"
+      },
+      "stem_review": "制作批次/four_eras_addition_20261104_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261104_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "eb7040ced000b5005709e2ae8ad7811085aa090589fcf5524ad9d4f0d8f777ea",
+      "name": "1-02 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/1-02.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/001_1-02/summary.json",
+        "sha256": "d55492e1cf4859273767ffa1209a34ce08ea2c900faf33f99a3bfe47b511fc49",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 164.25795918367348,
+        "librosa_bpm_estimate": 123.046875,
+        "essentia_bpm_estimate": 133.229522705,
+        "essentia_key_estimate": "F major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:39",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "1-02",
+      "era": "pastoral",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 3,
+          "excluded": 3
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 4,
+          "excluded": 3
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "8caa5fc12a7669720bd96f451d4d745d5f638dcd2f167a565f30cf790ae80915",
+      "name": "1-03 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/1-03.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/002_1-03/summary.json",
+        "sha256": "692271f73e4f9af424a3870fa3b1e4cb2c2920b2644786064e33344f9f0444c1",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 117.28979591836735,
+        "librosa_bpm_estimate": 143.5546875,
+        "essentia_bpm_estimate": 147.962753296,
+        "essentia_key_estimate": "F major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:45",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "1-03",
+      "era": "pastoral",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 4,
+          "excluded": 2
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 6,
+          "excluded": 1
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "9db4e5b95c1f96564240bc47baabb50a62d66fecc58d2c769de8869492143526",
+      "name": "1-04 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/1-04.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/003_1-04/summary.json",
+        "sha256": "850e61566fece711f76a18c4bfb29f647e93c60fc81e32a99531608f2e33d633",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 137.2734693877551,
+        "librosa_bpm_estimate": 161.4990234375,
+        "essentia_bpm_estimate": 155.276626587,
+        "essentia_key_estimate": "F major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:51",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "1-04",
+      "era": "pastoral",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 5,
+          "excluded": 1
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 5,
+          "excluded": 2
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "1195bfab767eeb20f906bd9cb12ff277b8c9f478ea493c4c3e1ebdec5d15506a",
+      "name": "1-05 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/1-05.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/004_1-05/summary.json",
+        "sha256": "ecc987861f8d204d10cc4694565507ea553657e25f50b5206018b5a5a13e10f2",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 102.87020408163265,
+        "librosa_bpm_estimate": 172.265625,
+        "essentia_bpm_estimate": 164.405960083,
+        "essentia_key_estimate": "F major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:57",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "1-05",
+      "era": "pastoral",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 3,
+          "excluded": 3
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 4,
+          "excluded": 3
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "f035358a447edb16a06a7c44f8d4ca79adadd54e1011a5483cf51a37b62fbd8f",
+      "name": "1-07 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/1-07.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/005_1-07/summary.json",
+        "sha256": "019a09d844872ad360d55164c6ead6842b6ed93aa018a86f8cc5ef3b2e8955ce",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 170.2138775510204,
+        "librosa_bpm_estimate": 117.45383522727273,
+        "essentia_bpm_estimate": 120.0753479,
+        "essentia_key_estimate": "Ab major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代扩充.md:12",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "1-07",
+      "era": "pastoral",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 5,
+          "excluded": 1
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 6,
+          "excluded": 1
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "193ee6b26b6c96fa76834d25acdfc902b0e3473c0d8ef376b7fcca02085d5f56",
+      "name": "1-08 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/1-08.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/006_1-08/summary.json",
+        "sha256": "eb9a7826a50247b6d4bfd32e53657947ed38c965d1dc8800137a2bf513528121",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 121.36489795918368,
+        "librosa_bpm_estimate": 135.99917763157896,
+        "essentia_bpm_estimate": 135.037078857,
+        "essentia_key_estimate": "C major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代扩充.md:18",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "1-08",
+      "era": "pastoral",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 4,
+          "excluded": 2
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 5,
+          "excluded": 2
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "3a5587faeeadc86ebae934d98815937e572a75576178435d114d3602b182fab9",
+      "name": "1-09 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/1-09.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/007_1-09/summary.json",
+        "sha256": "078ae6eae65fff3a69e25ba2cba883d457686591e18cb9dbe8f70a00eff62ace",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 154.2791836734694,
+        "librosa_bpm_estimate": 151.99908088235293,
+        "essentia_bpm_estimate": 148.577301025,
+        "essentia_key_estimate": "Eb major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代扩充.md:24",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "1-09",
+      "era": "pastoral",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 6,
+          "excluded": 0
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 7,
+          "excluded": 0
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "15c5b49a2f8546f2a4a2f4711a02c725bbd78237648ae548baf0c4ff3846ac28",
+      "name": "1-10（with voice） [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/1-10（with voice）.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/008_1-10（with voice）/summary.json",
+        "sha256": "d7dcdf70c96c0de8345ec9a63c2ac40558124bf30b0413ae5936d0ba6ac92f6a",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 177.71102040816328,
+        "librosa_bpm_estimate": 143.5546875,
+        "essentia_bpm_estimate": 143.051895142,
+        "essentia_key_estimate": "C# major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代扩充.md:30",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "1-10",
+      "era": "pastoral",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": true,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "voice_marked_not_automatic_instrumental_background",
+      "groups": {
+        "coarse_six": {
+          "kept": 5,
+          "excluded": 1
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 6,
+          "excluded": 1
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "090c6c71aafb78ee128afca5ef1c7b33f6f7e82a8214317e6e1868f8c2ce91ab",
+      "name": "1-11 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/1-11.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/009_1-11/summary.json",
+        "sha256": "87edbd2a15c23b3fa2d16a357e480f823871d5700899552cb66766a554ac404c",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 174.1061224489796,
+        "librosa_bpm_estimate": 161.4990234375,
+        "essentia_bpm_estimate": 161.946853638,
+        "essentia_key_estimate": "A major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代扩充.md:36",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "1-11",
+      "era": "pastoral",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 6,
+          "excluded": 0
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 7,
+          "excluded": 0
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "12ae8d21a8f84d8be89be6165fcb35d142f9692b12ba0f88c2f5feae9d5423ef",
+      "name": "2-01 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/2-01.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/010_2-01/summary.json",
+        "sha256": "2862033ca1b1c707bf33d997180f1c76b1ca26b98ca2dbdc4e7ba8a8ef7381e4",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 114.72979591836734,
+        "librosa_bpm_estimate": 129.19921875,
+        "essentia_bpm_estimate": 128.594665527,
+        "essentia_key_estimate": "C major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:73",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "2-01",
+      "era": "renaissance",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 3,
+          "excluded": 3
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 5,
+          "excluded": 2
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "3ace6b15e64bbca0673b8c7f66d5db1d5ad4dee333646626b9397a5ba6cf63a1",
+      "name": "2-02 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/2-02.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/011_2-02/summary.json",
+        "sha256": "26fb15b0435b7924273982591b0bf044277e879ff2a9e879b81b4c2fac08c83a",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 171.91183673469388,
+        "librosa_bpm_estimate": 143.5546875,
+        "essentia_bpm_estimate": 152.073806763,
+        "essentia_key_estimate": "Eb major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:79",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "2-02",
+      "era": "renaissance",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 3,
+          "excluded": 3
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 4,
+          "excluded": 3
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "126096e99297d79a378d65d831b54501e415f2a2706849e2e4c26bc562434951",
+      "name": "3-01 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/3-01.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/012_3-01/summary.json",
+        "sha256": "1eaabfd1ff96749653a64bae380a56cd14fbfc0713178ce5626ba46250734eba",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 110.83755102040816,
+        "librosa_bpm_estimate": 89.10290948275862,
+        "essentia_bpm_estimate": 89.9240188599,
+        "essentia_key_estimate": "C minor",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:113",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "3-01",
+      "era": "clockwork",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 6,
+          "excluded": 0
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 7,
+          "excluded": 0
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "fe3e03abff5b0e08f99fe7b7091389e47f407155b1179c392cd32c6b5208bf51",
+      "name": "3-02 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/3-02.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/013_3-02/summary.json",
+        "sha256": "a843ad7c694d720748becb0d2f96af6008e93962b9f375f87cb5b9b18a53cc22",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 174.94204081632654,
+        "librosa_bpm_estimate": 151.99908088235293,
+        "essentia_bpm_estimate": 152.362304688,
+        "essentia_key_estimate": "G major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:119",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "3-02",
+      "era": "clockwork",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 5,
+          "excluded": 1
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 5,
+          "excluded": 2
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "83ec758fcb9b0d852f6f896e086755e0f0fb208d0e9208c8f4cac8f43511d4a1",
+      "name": "3-03 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/3-03.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/014_3-03/summary.json",
+        "sha256": "44bb6522e760852f8941cd91d4ce4c2e4a4eb497fa8af2c62b70e5bfa7eaf7b8",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 176.14367346938775,
+        "librosa_bpm_estimate": 112.34714673913044,
+        "essentia_bpm_estimate": 132.810058594,
+        "essentia_key_estimate": "E minor",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:125",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "3-03",
+      "era": "clockwork",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 5,
+          "excluded": 1
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 7,
+          "excluded": 0
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "10e6ebfa698bcaae183250e7b9a79e53cf0b2fd7edd371bbdb37754f80ce3bbd",
+      "name": "3-04 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/3-04.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/015_3-04/summary.json",
+        "sha256": "fc577dc2f1764d8200c7c0bf78e007263697d03902c266e5cb0b5c21cce0ccee",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 175.80408163265307,
+        "librosa_bpm_estimate": 123.046875,
+        "essentia_bpm_estimate": 91.9552536011,
+        "essentia_key_estimate": "Eb major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:131",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "3-04",
+      "era": "clockwork",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 5,
+          "excluded": 1
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 6,
+          "excluded": 1
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "49e3e4277732f2aa12a789df8f5faaaf045bab3d7abf40bcfafaf7fb0dc8813d",
+      "name": "3-05 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/3-05.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/016_3-05/summary.json",
+        "sha256": "5d7875f74f8008bc2708dcd590911b73f6ecf59c1de2421f87dc627da593fdf2",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 133.01551020408164,
+        "librosa_bpm_estimate": 172.265625,
+        "essentia_bpm_estimate": 172.265853882,
+        "essentia_key_estimate": "Eb major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:137",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "3-05",
+      "era": "clockwork",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 6,
+          "excluded": 0
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 6,
+          "excluded": 1
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
+    },
+    {
+      "source_id": "1ce3d33345ec535722855ff56a91e277b8d3e7b33edd1d5f1122d69e5e8bd6ff",
+      "name": "3-06 [20261105].mp3",
+      "source": "数据/音乐资产/原曲/Lyria/20261105/3-06.mp3",
+      "analysis": {
+        "path": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/017_3-06/summary.json",
+        "sha256": "d9898c313543511ff9952c9f7fcc8652df0d76308d0245069175d6a0ce603e69",
+        "status": "dual_engine_analysis_ready",
+        "duration_seconds": 158.92897959183674,
+        "librosa_bpm_estimate": 143.5546875,
+        "essentia_bpm_estimate": 151.682571411,
+        "essentia_key_estimate": "F# major",
+        "human_beat_clock_confirmed": false
+      },
+      "prompt_assignment": "四时代.md:143",
+      "prompt_assignment_status": "user_confirmed_numbered_four_eras_and_expansion",
+      "prompt_code": "3-06",
+      "era": "clockwork",
+      "prompt_assignment_evidence": {
+        "date": "2026-11-05",
+        "user_statement": "这里有一些新歌C:\\Users\\Administrator\\Desktop\\codex\\music，都是按照四时代.md和四时代扩充.md提示词",
+        "matching": "exact numbered code in supplied original/expansion; separate SHA retained for every audio version"
+      },
+      "runtime_ready": false,
+      "listening_approved": false,
+      "production_status": "separated_curated_audited_pending_runtime_pack",
+      "content_flags": {
+        "filename_voice_marker": false,
+        "voice_presence_listening_confirmed": false
+      },
+      "background_candidate_status": "pending_sparse_scene_review",
+      "groups": {
+        "coarse_six": {
+          "kept": 6,
+          "excluded": 0
+        },
+        "woodwind_plus_remaining_six": {
+          "kept": 6,
+          "excluded": 1
+        }
+      },
+      "stem_review": "制作批次/four_eras_addition_20261105_v1/listening/listen.html",
+      "stem_curation": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/curation.json"
     }
   ],
-  "distinct_generated_audio": 61,
+  "distinct_generated_audio": 82,
   "prompt_index": "数据/音乐制作/提示词来源/20261103/提示词索引.json",
   "active_curation": "数据/音乐资产/目录/20261103_evening_v1/curation.json",
   "totals": {
@@ -1720,5 +2700,76 @@
     "silent": 0
   },
   "runtime_ready": false,
-  "listening_approved": false
+  "listening_approved": false,
+  "supplement_20261104": {
+    "prompt_sources": [
+      {
+        "source": "C:\\Users\\Administrator\\Desktop\\codex\\四时代.md",
+        "stored": "数据/音乐制作/提示词来源/20261104/四时代.md",
+        "sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+        "reused": false
+      },
+      {
+        "source": "C:\\Users\\Administrator\\Desktop\\codex\\新的五区.md",
+        "stored": "数据/音乐制作/提示词来源/20261103/新的五区.md",
+        "sha256": "f2f56190e0ab30e0ccf1605a04655ff218cdc5ea106e580f18274942a1ad949d",
+        "reused": true
+      }
+    ],
+    "new_source_ids": [
+      "7dace1320b1acbe70184daf63cd53558896b6be82c49736c0ed6094b4deeb5c3",
+      "77403b7614bab5120e1512aeceee19061dd1a6081963808cf8fe09be3b2dac16",
+      "9ad221e9f33c712a592223f7cb15dc38c5537f149e2b213aa804fe8eca340a22",
+      "f1eb3ac520584856b725ef47b34ae417f0281caa553f00c098bc08bde1f65cd5"
+    ],
+    "policy": "retain older songs as reserves; source confirmation does not approve sparse background fit or runtime defaults"
+  },
+  "style_review": "数据/音乐制作/音乐分类建议_20261104.json",
+  "reserve_curation": "数据/音乐资产/目录/20261105_reserve_v1/curation.json",
+  "user_reviews": "数据/音乐制作/用户听评/20261104_听评原始导出.json",
+  "supplement_20261105": {
+    "prompt_sources": [
+      {
+        "source": "C:\\Users\\Administrator\\Desktop\\codex\\四时代.md",
+        "stored": "数据/音乐制作/提示词来源/20261104/四时代.md",
+        "sha256": "b9caaa040b0b3b01f1666a0f558de07055619a79475cbe53c16cadbccbbb5643",
+        "reused": true
+      },
+      {
+        "source": "C:\\Users\\Administrator\\Desktop\\codex\\四时代扩充.md",
+        "stored": "数据/音乐制作/提示词来源/20261105/四时代扩充.md",
+        "sha256": "63210406bebcdab4111aee7b9419205e0963a77041205df183856f761d2c6efe",
+        "reused": false
+      }
+    ],
+    "new_source_ids": [
+      "eb7040ced000b5005709e2ae8ad7811085aa090589fcf5524ad9d4f0d8f777ea",
+      "8caa5fc12a7669720bd96f451d4d745d5f638dcd2f167a565f30cf790ae80915",
+      "9db4e5b95c1f96564240bc47baabb50a62d66fecc58d2c769de8869492143526",
+      "1195bfab767eeb20f906bd9cb12ff277b8c9f478ea493c4c3e1ebdec5d15506a",
+      "f035358a447edb16a06a7c44f8d4ca79adadd54e1011a5483cf51a37b62fbd8f",
+      "193ee6b26b6c96fa76834d25acdfc902b0e3473c0d8ef376b7fcca02085d5f56",
+      "3a5587faeeadc86ebae934d98815937e572a75576178435d114d3602b182fab9",
+      "15c5b49a2f8546f2a4a2f4711a02c725bbd78237648ae548baf0c4ff3846ac28",
+      "090c6c71aafb78ee128afca5ef1c7b33f6f7e82a8214317e6e1868f8c2ce91ab",
+      "12ae8d21a8f84d8be89be6165fcb35d142f9692b12ba0f88c2f5feae9d5423ef",
+      "3ace6b15e64bbca0673b8c7f66d5db1d5ad4dee333646626b9397a5ba6cf63a1",
+      "126096e99297d79a378d65d831b54501e415f2a2706849e2e4c26bc562434951",
+      "fe3e03abff5b0e08f99fe7b7091389e47f407155b1179c392cd32c6b5208bf51",
+      "83ec758fcb9b0d852f6f896e086755e0f0fb208d0e9208c8f4cac8f43511d4a1",
+      "10e6ebfa698bcaae183250e7b9a79e53cf0b2fd7edd371bbdb37754f80ce3bbd",
+      "49e3e4277732f2aa12a789df8f5faaaf045bab3d7abf40bcfafaf7fb0dc8813d",
+      "1ce3d33345ec535722855ff56a91e277b8d3e7b33edd1d5f1122d69e5e8bd6ff"
+    ],
+    "policy": "Source provenance confirmed by user; preserve older versions and hearing reviews; prompt intent is not audio quality approval; voice-marked original never auto-selected as instrumental background",
+    "stem_batch": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1",
+    "totals": {
+      "kept": 176,
+      "excluded": 45,
+      "silent": 0,
+      "protected_sparse_or_combined": 2
+    },
+    "separation_elapsed_seconds": 742.353,
+    "audit": "数据/音乐资产/制作批次/four_eras_addition_20261105_v1/curation_v1/audit.json"
+  }
 }

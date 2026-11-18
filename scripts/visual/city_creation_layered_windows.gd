@@ -26,7 +26,7 @@ static func build(r,job,frame,wall:Node3D)->void:
 	for i in range(plan.holes.size()):
 		var h:Dictionary=plan.holes[i];var height:float=h.spring-h.bottom;var x:float=h.x;var middle:float=(h.spring+h.bottom)*.5
 		var group:=posmod(hash([job.house.seed,frame.cell.id,wall.rotation.y,i]),3)
-		r._box(wall,Vector3(.32,height,.012),Vector3(x,middle,-.035),Glass.material(r,group)).name="LayeredWindowGlass"
+		var pane:MeshInstance3D=r._box(wall,Vector3(.32,height,.012),Vector3(x,middle,-.035),Glass.material(r,group));pane.name="LayeredWindowGlass";pane.set_meta("creation_roof_window_glass",true)
 		for sign_value:float in [-1.,1.]:
 			r._box(wall,Vector3(.025,height,.04),Vector3(x+sign_value*.1475,middle,-.005),timber).name="LayeredInnerFrame"
 			r._box(wall,Vector3(.055,height+.10,.10),Vector3(x+sign_value*.1875,middle,.075),stone).name="LayeredStoneJamb"
@@ -40,6 +40,10 @@ static func glow(rig,root:Node3D,cell:Dictionary,side:Vector2i,surface:SurfaceTo
 		if not wall.has_meta("layered_window"):continue
 		var plan:Dictionary=wall.get_meta("layered_window")
 		if plan.cell_id!=str(cell.id) or Vector2(wall.transform.basis.z.x,wall.transform.basis.z.z).dot(Vector2(side))<.99:continue
+		var actual:=false
+		for pane:Dictionary in root.get_meta("roof_window_panes",[]):
+			if str(pane.get("source",""))=="layered" and str(pane.get("cell_id",""))==str(cell.id) and pane.get("side",Vector2i.ZERO)==side:actual=true;break
+		if actual:return true
 		var frame:Transform3D=root.global_transform.affine_inverse()*wall.global_transform
 		for h:Dictionary in plan.openings:
 			var middle:float=(h.bottom+h.spring)*.5

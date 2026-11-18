@@ -16,11 +16,43 @@ func opened(label:String)->RefCounted:
 	var city:=State.new();city.initialize_free();check(city.begin_progression_epoch(out+"/"+label+".json").ok,"backed-up empty epoch "+label);return city
 func cells(shape:String)->Array:
 	var f:=Fixture.courtyard(shape,"none");return f.city.houses[0].cells.map(func(c):return {"x":c.x,"z":c.z,"level":c.level,"kind":c.kind})
+func paused_space_history()->void:
+	var city:=opened("paused_space")
+	check(city.CreationPolicy.set_progression_enabled(city,false,out+"/paused_space.json").ok,"disable actual account before courtyard construction")
+	var life:=preload("res://scripts/world/city_creation_life.gd").new();root.add_child(life);life.set_process(false);life.setup(city,true)
+	check(city.add_house_stroke(Fixture.ORIGIN,cells("U")).ok,"create real off-period half court")
+	check(not city.get_meta("paused_counter_sources",[]).is_empty(),"live paused history retains immutable geometry before background preparation")
+	check(life.begin_budget_sync(),"actual network worker accepts retained off-period inputs")
+	var first_cell:Dictionary=city.houses[0].cells[0]
+	check(city.add_cell(city.houses[0].id,int(first_cell.x),int(first_cell.z),1).ok and city.add_cell(city.houses[0].id,int(first_cell.x),int(first_cell.z),2).ok,"two rapid real edits supersede an in-flight paused worker")
+	var expected:Dictionary=preload("res://scripts/world/city_creation_paused_counter_history.gd").flush(city)
+	var deadline:=Time.get_ticks_msec()+30000
+	while not life.poll_budget_sync(false) and Time.get_ticks_msec()<deadline:await process_frame
+	check(life.commit_budget_sync() and city.get_meta("paused_counter_sources",[]).is_empty(),"validated publication merges exact counter union and retires only processed inputs")
+	check(city.get_meta("paused_counter_baseline",{})==expected,"superseded worker retains the full independent union including intermediate cell peaks")
+	var ready:Dictionary=Epoch.baseline(city)
+	preload("res://scripts/world/city_creation_paused_counter_history.gd").history_snapshot(city)
+	check(city.get_meta("paused_counter_sources",[]).is_empty() and ready.keys().all(func(k):return city.get_meta("paused_counter_baseline",{}).get(k,0)>=ready[k]),"exact published facts merge immediately without queuing another identical city")
+	network(city)
+	var keys:Array=Epoch.spaces(city).keys()
+	check(not keys.is_empty(),"off-period courtyard has real geometric receipt keys")
+	var policy:Dictionary=city.cozy_progression.duplicate(true);var frozen:Dictionary=city.snapshot()
+	check(city.cozy_progression==policy and keys.all(func(k):return frozen.cozy_progression.baseline.get(k,0)==1),"read-only paused snapshot records all space high water without mutating account")
+	check(city.remove_house(city.houses[0].id).ok and city.save_city(out+"/removed_paused_space.json").ok,"save after off-period courtyard has been removed")
+	var reader:=State.new();check(reader.load_city(out+"/removed_paused_space.json").ok,"cold restore removed off-period geometry")
+	check(keys.all(func(k):return reader.cozy_progression.baseline.get(k,0)==1),"cold paused baseline remembers removed off-period space keys")
+	check(reader.CreationPolicy.set_progression_enabled(reader,true,out+"/resumed_removed_space.json").ok,"resume after cold read of removed courtyard")
+	check(reader.add_house_stroke(Fixture.ORIGIN,cells("U")).ok,"recreate off-period court with fresh identities after resume")
+	network(reader)
+	check(Ledger.collect(reader).earned==0,"cold save and off-period deletion cannot repay the same house cell peaks or space discovery")
+	var other:=State.new();other.initialize_free()
+	check(city.restore(other.snapshot()).ok and not city.has_meta("paused_counter_baseline") and not city.has_meta("paused_counter_sources"),"explicit different-city restore clears retained accounting inputs and completed union")
+	life.free()
 func run()->void:
 	for arg:String in OS.get_cmdline_user_args():
 		if arg.begins_with("--out-dir="):out=arg.trim_prefix("--out-dir=")
 	if not OS.get_cmdline_user_args().has("--isolated-session") or not out.begins_with("res://验证记录/") or DirAccess.dir_exists_absolute(out):quit(1);return
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out));var began:=Time.get_ticks_msec();var city:=opened("houses");var old:Dictionary=city.harmony_journey.duplicate(true)
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out));var began:=Time.get_ticks_msec();await paused_space_history();var city:=opened("houses");var old:Dictionary=city.harmony_journey.duplicate(true)
 	for i in range(5):check(city.add_house(Vector2(-35+i*5,-25)).ok,"actual peak house")
 	check(Ledger.collect(city).earned==10,"five net houses pay original two point valuation")
 	var xp:int=city.cozy_progression.xp

@@ -32,6 +32,7 @@ static func prepare(city:RefCounted,house:Dictionary)->Dictionary:
 	return {"roofs":roofs,"bridges":Plan.for_house(city,house)}
 
 static func roof(renderer,root:Node3D,house:Dictionary,p:Array,cell:Dictionary)->Dictionary:
+	if preload("res://scripts/world/city_creation_modern_roof_pitch.gd").authored(house):return preload("res://scripts/visual/city_creation_modern_roof_pitch.gd").build(renderer,root,house,p,cell)
 	return preload("res://scripts/visual/city_creation_alpine_modern.gd").roof(renderer,root,house,p,cell)
 
 static func build(renderer,root:Node3D,house:Dictionary,p:Array)->void:
@@ -58,7 +59,7 @@ static func _bridge(renderer,root:Node3D,house:Dictionary,plan:Dictionary,p:Arra
 	var middle:Vector2=Frame.inverse(house,(plan.a+plan.b)*.5);var direction:Vector2=(plan.b-plan.a).normalized().rotated(Frame.yaw(house))
 	node.position=Vector3(middle.x,plan.floor_y,middle.y);node.rotation.y=atan2(direction.x,direction.y)
 	_slab(renderer,node,Vector3.ZERO,Vector2(plan.width+.16,plan.length),.14,p[0])
-	var wood:Material=renderer._material(p[2]);var white:Material=Wall.source(p[0], null, "component", Wall.Kind.CANTILEVER)
+	var wood:Material=Wall.component(renderer,p[2],Wall.Kind.TIMBER);var white:Material=Wall.source(p[0], null, "component", Wall.Kind.CANTILEVER)
 	for side:float in [-1.,1.]:
 		var pane:MeshInstance3D=renderer._box(node,Vector3(.028,1.24,plan.length),Vector3(side*plan.width*.5,.66,0),white)
 		pane.material_override=renderer.conservatory.ensure_material(true);pane.set_meta("creation_live_visual",true)

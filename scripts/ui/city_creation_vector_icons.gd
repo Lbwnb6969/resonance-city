@@ -20,6 +20,10 @@ static func draw_icon(canvas:CanvasItem,kind:String,center:Vector2,radius:float,
 			for i:int in range(4):
 				var phase:float=-.6+float(i)*1.1
 				canvas.draw_circle(center+Vector2.from_angle(phase)*radius*.4,radius*.13,accent)
+		"road_curve":
+			var start:=center+Vector2(-.64,.54)*radius
+			canvas.draw_arc(start+Vector2.UP*radius,radius,0.,PI*.5,16,color,1.8,true)
+			for endpoint:Vector2 in [start,start+Vector2(1.,-1.)*radius]:canvas.draw_circle(endpoint,.15*radius,accent)
 		"straight","rails":
 			for x:float in [-.38,.38]:stroke(canvas,[Vector2(x,-.72),Vector2(x,.72)],center,radius,color)
 			for y:float in [-.48,0.,.48]:stroke(canvas,[Vector2(-.60 if kind=="rails" else -.06,y),Vector2(.60 if kind=="rails" else .06,y)],center,radius,accent,1.3)

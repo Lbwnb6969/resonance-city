@@ -16,9 +16,15 @@ static func snapshot(state: RefCounted) -> Dictionary:
 		"waters": state.waters.duplicate(true),
 		"terrain": state.terrain_strokes.duplicate(true),
 		"plants": state.plants.duplicate(true),
+		"planting_ground":planting_ground(state).duplicate(true),
 		"landmarks":state.placed_landmarks.duplicate(true),
 		"plazas":preload("res://scripts/world/city_creation_plaza_loops.gd").change_rows(state),
 	}
+
+static func planting_ground(city:RefCounted)->Array:
+	# Plant-only edits keep the visible ground. Every input that can move its
+	# terrain, roads, door pads or structural platforms must match exactly.
+	return [city.houses,city.roads,city.waters,city.terrain_strokes,city.terrain_policy,city.biome_seed,city.districts,city.placed_landmarks,city.plaza_loops,city.creative_settings,city.era_modifiers,city.harmony_journey.get("traditions",[])]
 
 static func diff(previous: Dictionary, current: Dictionary) -> Dictionary:
 	var labels: Array[String] = []

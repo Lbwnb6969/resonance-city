@@ -6,8 +6,15 @@ static func material(r,color:Color,kind:int)->Material:
 	var key:="clockwork_prototype/%s/%d"%[str(color),kind]
 	if not r.materials.has(key):r.materials[key]=Wall.source(color,null,"component",kind)
 	return r.materials[key]
+static func metal(r,color:Color)->Material:
+	var result:StandardMaterial3D=material(r,color,Wall.Kind.METAL)
+	# A weathered/coated finish retains diffuse body under the night sky.
+	result.metallic=.55;result.roughness=.48
+	return result
 static func beam(r,parent:Node3D,a:Vector3,b:Vector3,width:float,mat:Material)->void:
 	Frame._beam(r,parent,a,b,width,mat)
+static func atrium_materials(r)->Dictionary:
+	return {"atrium_glass":preload("res://scripts/visual/city_creation_facade_glass.gd").material(r,2),"atrium_brick":material(r,Color("ab7058"),Wall.Kind.TERRACOTTA)}
 static func face(r,parent:Node3D,points:Array,mat:Material,name:String)->MeshInstance3D:
 	# Roof sheets face the sky; vertical end cheeks face away from the roof centre.
 	var outward:Array=[]

@@ -17,8 +17,10 @@ uniform float pluck_base_y = 0.0;
 uniform float pluck_height = 1.7;
 varying float part;
 varying float window_height;
+varying float glazing;
 void vertex() {
 	part = floor(COLOR.r * 8.0 + 0.5);
+	glazing = COLOR.g;
 	window_height = clamp((VERTEX.y-pluck_base_y)/max(pluck_height,0.01),0.0,1.0);
 	if (part > 1.5 && part < 2.5) {
 		VERTEX.x += sin(clock_sec * 8.37758 + house_phase + UV.y * 1.6) * 0.055 * UV.y * response;
@@ -32,6 +34,8 @@ void vertex() {
 	}
 }
 void fragment() {
+	// Window and lantern overlays belong to dusk/night, including musical pulses.
+	if (part < 1.5 && night_glow <= 0.0) discard;
 	float breath = 0.78 + beat_pulse * 0.22;
 	float amount = response * breath;
 	vec3 amber = mix(vec3(1.0, 0.62, 0.28), vec3(1.0, 0.82, 0.48), lead);
@@ -82,5 +86,7 @@ void fragment() {
 	}
 	if (part<1.5) EMISSION+=vec3(1.,.72,.28)*salon_pulse*.6;
 	ROUGHNESS = 1.0;
+	// Broad modern panes retain the underlying transparent glass and its frames.
+	if (part < .5 && glazing > .5) opacity *= .28;
 	ALPHA = clamp(opacity, 0.0, 1.0);
 }

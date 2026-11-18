@@ -12,6 +12,7 @@ const EAVE := 0.12
 const STEP := 0.30
 const PROFILE := 0.62
 const Towers = preload("res://scripts/world/city_creation_towers.gd")
+const Pitch=preload("res://scripts/world/city_creation_roof_pitch_geometry.gd")
 const SIDES := [Vector2i.LEFT,Vector2i.RIGHT,Vector2i.UP,Vector2i.DOWN]
 var _rows: Array = []
 var _bins: Dictionary = {}
@@ -38,7 +39,7 @@ func copy_cache_from(source: RefCounted) -> void:
 	stats = source.stats.duplicate(true)
 	party_joints = source.party_joints.duplicate(false)
 
-func prepare(houses: Array, roads: Array = []) -> void:
+func prepare(houses: Array, roads: Array = [], city:Variant=null) -> void:
 	var started := Time.get_ticks_usec()
 	_rows.clear(); _bins.clear(); _by_key.clear()
 	_patches.clear(); _signatures.clear(); _joined.clear()
@@ -47,6 +48,8 @@ func prepare(houses: Array, roads: Array = []) -> void:
 	var ordered := houses.duplicate()
 	ordered.sort_custom(func(a,b): return str(a.id).naturalnocasecmp_to(str(b.id)) < 0)
 	for house: Dictionary in ordered:
+		if city!=null and house.get("architecture","") in ["creek_boathouse","portico"]:
+			house=house.duplicate(false);house.era_theme=city.house_era(house)
 		_patches[str(house.id)] = []
 		_signatures[str(house.id)] = []
 		_joined[str(house.id)] = false
@@ -57,6 +60,7 @@ func prepare(houses: Array, roads: Array = []) -> void:
 		# house in both synchronous and worker publication paths.
 		_signatures[str(house.id)].append(["tower_cells",tower_ids])
 		_signatures[str(house.id)].append(["party_joints",party_joints[str(house.id)]])
+		var round_part:bool=house.get("assembly_part",{}).get("version",0)==1 and not Towers.RoundTower.for_house(house,houses,roads).is_empty()
 		var cells: Array = house.cells.duplicate()
 		var roof_family:String="stepped_guildhouse" if preload("res://scripts/world/city_creation_stepped_guildhouse.gd").authored(house) else ""
 		if preload("res://scripts/world/city_creation_corner_loggia.gd").authored(house):roof_family="corner_loggia_tower"
@@ -64,8 +68,13 @@ func prepare(houses: Array, roads: Array = []) -> void:
 		for cell: Dictionary in cells:
 			var center := Vector2(float(house.origin[0])+int(cell.x)*UNIT,float(house.origin[1])+int(cell.z)*UNIT)
 			var row := {"deformed":not is_zero_approx(preload("res://scripts/world/city_creation_house_hinge.gd").angle(house)),"yaw":float(house.get("yaw",0.)),"house_id":str(house.id),"cell_id":str(cell.id),"cell":cell.duplicate(true),"center":center,"level":int(cell.level),"base_y":float(house.get("base_y",0.0)),"key":str(house.id)+":"+str(cell.id)}
+			row["round_part"]=round_part
 			_rows.append(row)
 			row["roof_family"]=roof_family
+			row["pitch"]=Pitch.degrees(house)
+			row["pitch_temple"]=Pitch.temple(house)
+			if row.pitch>=0.:row.roof_family="pitch/"+str(row.pitch)
+			if not row.pitch_temple.is_empty():row.roof_family+="/temple/"+str(house.id)
 			_by_key[row.key] = row
 			var bin := _bin(center,row.level)
 			if not _bins.has(bin): _bins[bin] = []
@@ -139,6 +148,7 @@ func tower_cells(house_id: String) -> Array:
 
 func _record(row: Dictionary) -> Array:
 	var result:Array=[row.house_id,row.cell_id,row.center,row.level,str(row.cell.kind),row.base_y,row.yaw,row.deformed]
+	if row.get("round_part",false):result.append("round_part")
 	if not str(row.roof_family).is_empty():result.append(row.roof_family)
 	return result
 
@@ -154,6 +164,7 @@ func _neighbor_row(row: Dictionary,side: Vector2i,offset: int,gaps: bool) -> Dic
 		for z in range(-1,2):
 			for other: Dictionary in _bins.get(bin+Vector3i(x,0,z),[]):
 				if other.key == row.key: continue
+				if other.house_id!=row.house_id and (row.get("round_part",false) or other.get("round_part",false)):continue
 				if other.house_id!=row.house_id and (bool(other.deformed) or bool(row.deformed) or not is_zero_approx(float(other.yaw)) or not is_zero_approx(float(row.yaw))):continue
 				# Floors from independently elevated houses never erase each
 				# other's walls or participate in one continuous roof group.
@@ -174,6 +185,7 @@ func _neighbor_row(row: Dictionary,side: Vector2i,offset: int,gaps: bool) -> Dic
 	return best
 
 func _build_group(group: Array,group_id: String) -> Array:
+	if not group[0].pitch_temple.is_empty():return Pitch.temple_patches(group,group_id)
 	var members: Dictionary = {}
 	for row: Dictionary in group: members[row.key] = true
 	var domains: Array = []
@@ -231,7 +243,8 @@ func _build_group(group: Array,group_id: String) -> Array:
 				line_bins[key].append(edge)
 	var result: Array = []
 	var base := float(group[0].base_y)+(int(group[0].level)+1)*FLOOR+0.03
-	var sample:=func(p):return _point(p,base,line_bins,bounds) if gable.is_empty() else _gable_point(p,base,gable,bounds)
+	var pitch:float=group[0].pitch
+	var sample:=func(p):return _point(p,base,line_bins,bounds,pitch) if gable.is_empty() else _gable_point(p,base,gable,bounds,pitch)
 	var point_cache: Dictionary = {}
 	var covered_bins: Dictionary = {}
 	var pieces: Array = []
@@ -265,7 +278,7 @@ func _build_group(group: Array,group_id: String) -> Array:
 			var column: Array[Vector3] = []
 			for z: float in zs:
 				var p := Vector2(x,z)
-				if not point_cache.has(p): point_cache[p] = _point(p,base,line_bins,bounds) if gable.is_empty() else _gable_point(p,base,gable,bounds)
+				if not point_cache.has(p): point_cache[p] = sample.call(p)
 				column.append(point_cache[p])
 			points.append(column)
 		for ix in range(xs.size()-1):
@@ -275,8 +288,12 @@ func _build_group(group: Array,group_id: String) -> Array:
 				var c: Vector3 = points[ix+1][iz+1]
 				var d: Vector3 = points[ix][iz+1]
 				vertices.append_array(preload("res://scripts/visual/city_creation_roof_quad.gd").vertices(a,b,c,d,sample) if gable.is_empty() else [a,c,b,a,d,c])
-		result.append({"house_id":domain.row.house_id,"cell_id":domain.row.cell_id,"vertices":vertices,"surface":"roof","group_id":group_id,"bounds":rect,"base_y":base,"roof_kind":"union" if gable.is_empty() else "gable"})
-	if not gable.is_empty():
+		var patch:={"house_id":domain.row.house_id,"cell_id":domain.row.cell_id,"vertices":vertices,"surface":"roof","group_id":group_id,"bounds":rect,"base_y":base,"roof_kind":"union" if gable.is_empty() else "gable"}
+		if not gable.is_empty():
+			var ridge:=preload("res://scripts/visual/city_creation_row_ridge.gd").guide(gable,bounds,xs,zs,points)
+			if not ridge.is_empty():patch.ridge_guide=ridge
+		result.append(patch)
+	if not gable.is_empty() and pitch!=0.:
 		for end: Dictionary in gable.ends:
 			var blocker := _neighbor_row(end.row,end.side,0,false)
 			if not blocker.is_empty() and not members.has(blocker.key) and str(blocker.cell.kind)=="room": continue
@@ -294,7 +311,7 @@ func _build_group(group: Array,group_id: String) -> Array:
 				var c := Vector3(b.x,base,b.z)
 				var d := Vector3(a.x,base,a.z)
 				vertices.append_array([a,b,c,a,c,d])
-			var tip := _gable_point(center,base,gable,bounds)
+			var tip:Vector3 = sample.call(center)
 			result.append({"house_id":end.row.house_id,"cell_id":end.row.cell_id,"vertices":vertices,"surface":"gable","group_id":group_id,"side":end.side,"center":center,"base_y":base,"height":tip.y-base,"profile":PROFILE})
 	# Vertical eave thickness only on the true outline, never on host seams.
 	for edge: Dictionary in outline:
@@ -339,7 +356,7 @@ func _insert_sample(samples: Array[float],value: float,low: float,high: float) -
 	samples.append(value)
 	samples.sort()
 
-func _gable_point(p: Vector2,base: float,gable: Dictionary,bounds: Rect2) -> Vector3:
+func _gable_point(p: Vector2,base: float,gable: Dictionary,bounds: Rect2,pitch:float=-1.) -> Vector3:
 	var along_x: bool = gable.along_x
 	var cross: float = gable.cross
 	var q: float = p.y if along_x else p.x
@@ -347,10 +364,8 @@ func _gable_point(p: Vector2,base: float,gable: Dictionary,bounds: Rect2) -> Vec
 	var high: float = bounds.end.y if along_x else bounds.end.x
 	var half_span := cross-low if q<=cross else high-cross
 	var nearest := maxf(0.0,1.0-absf(q-cross)/half_span)*minf(cross-low,high-cross)
-	var rise := 0.55*pow(nearest,0.5+PROFILE)
 	var axis: float = (p.x-bounds.position.x)/bounds.size.x if along_x else (p.y-bounds.position.y)/bounds.size.y
-	var sag := -0.025*sin(axis*PI)*minf(nearest,1.0)
-	return Vector3(p.x,base+rise+sag,p.y)
+	return Pitch.point(p,base,nearest,axis,pitch)
 
 func _subtract_rect(source: Rect2,cover: Rect2) -> Array:
 	var overlap := source.intersection(cover)
@@ -380,7 +395,7 @@ func _axis_samples(low: float,high: float) -> Array[float]:
 	values.append(high)
 	return values
 
-func _point(p: Vector2,base: float,bins: Dictionary,bounds: Rect2) -> Vector3:
+func _point(p: Vector2,base: float,bins: Dictionary,bounds: Rect2,pitch:float=-1.) -> Vector3:
 	var nearest := 2.0
 	var bin := Vector2i(floori(p.x/4.0),floori(p.y/4.0))
 	for x in range(-1,2):
@@ -390,7 +405,5 @@ func _point(p: Vector2,base: float,bins: Dictionary,bounds: Rect2) -> Vector3:
 				var delta: Vector2 = edge.b-a
 				var t := clampf((p-a).dot(delta)/delta.length_squared(),0.0,1.0)
 				nearest = minf(nearest,p.distance_to(a+delta*t))
-	var rise := 0.55*pow(nearest,0.5+PROFILE)
 	var axis: float = (p.x-bounds.position.x)/bounds.size.x if bounds.size.x>=bounds.size.y else (p.y-bounds.position.y)/bounds.size.y
-	var sag := -0.025*sin(axis*PI)*minf(nearest,1.0)
-	return Vector3(p.x,base+rise+sag,p.y)
+	return Pitch.point(p,base,nearest,axis,pitch)

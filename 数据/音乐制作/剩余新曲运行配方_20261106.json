@@ -1,0 +1,434 @@
+{
+  "schema": "music_remaining_recipes_v1",
+  "curation": "res://数据/音乐资产/目录/20261105_reserve_v1/curation.json",
+  "parent_catalog": "res://数据/音乐资产/游戏音乐包/20261106_sparse_eras_v2/catalog.json",
+  "policy": "Explicit provisional same-source model-slot recipes. No instrument, register, lead-free or listening approval inferred. Voice-marked and unassigned ceremonial complete masters are manual-only. All originals and unused stems retained.",
+  "songs": [
+    {
+      "source_id": "7dace1320b1acbe70184daf63cd53558896b6be82c49736c0ed6094b4deeb5c3",
+      "source_name": "1-01.mp3",
+      "era": "pastoral",
+      "folder": "7dace1320b1acbe7",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "guitar"
+      ],
+      "voices": []
+    },
+    {
+      "source_id": "f1eb3ac520584856b725ef47b34ae417f0281caa553f00c098bc08bde1f65cd5",
+      "source_name": "2-04.mp3",
+      "era": "renaissance",
+      "folder": "f1eb3ac520584856",
+      "mode": "sparse_candidate",
+      "group": "woodwind_plus_remaining_six",
+      "background_slots": [
+        "guitar"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "other"
+          ],
+          "control": "flow",
+          "cap": 0.3,
+          "role": "response",
+          "layer": 2
+        },
+        {
+          "id": "motion",
+          "slots": [
+            "woodwinds"
+          ],
+          "control": "flow",
+          "cap": 0.12,
+          "role": "lead",
+          "layer": 3
+        }
+      ]
+    },
+    {
+      "source_id": "9ad221e9f33c712a592223f7cb15dc38c5537f149e2b213aa804fe8eca340a22",
+      "source_name": "2-05(好听).mp3",
+      "era": "renaissance",
+      "folder": "9ad221e9f33c712a",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "guitar"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "other"
+          ],
+          "control": "craft",
+          "cap": 0.3,
+          "role": "response",
+          "layer": 2
+        }
+      ]
+    },
+    {
+      "source_id": "77403b7614bab5120e1512aeceee19061dd1a6081963808cf8fe09be3b2dac16",
+      "source_name": "2-06.mp3",
+      "era": "renaissance",
+      "folder": "77403b7614bab512",
+      "mode": "complete_manual_only",
+      "reason": "full ceremonial scene work; no independent background assigned from the present stems"
+    },
+    {
+      "source_id": "8caa5fc12a7669720bd96f451d4d745d5f638dcd2f167a565f30cf790ae80915",
+      "source_name": "1-03.mp3",
+      "era": "pastoral",
+      "folder": "8caa5fc12a766972",
+      "mode": "sparse_candidate",
+      "group": "woodwind_plus_remaining_six",
+      "background_slots": [
+        "guitar"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "other"
+          ],
+          "control": "enclosure",
+          "cap": 0.3,
+          "role": "response",
+          "layer": 2
+        },
+        {
+          "id": "motion",
+          "slots": [
+            "woodwinds"
+          ],
+          "control": "enclosure",
+          "cap": 0.12,
+          "role": "lead",
+          "layer": 3
+        }
+      ]
+    },
+    {
+      "source_id": "9db4e5b95c1f96564240bc47baabb50a62d66fecc58d2c769de8869492143526",
+      "source_name": "1-04.mp3",
+      "era": "pastoral",
+      "folder": "9db4e5b95c1f9656",
+      "mode": "sparse_candidate",
+      "group": "woodwind_plus_remaining_six",
+      "background_slots": [
+        "guitar"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "other"
+          ],
+          "control": "flow",
+          "cap": 0.25,
+          "role": "response",
+          "layer": 2
+        },
+        {
+          "id": "motion",
+          "slots": [
+            "woodwinds"
+          ],
+          "control": "flow",
+          "cap": 0.1,
+          "role": "lead",
+          "layer": 3
+        }
+      ]
+    },
+    {
+      "source_id": "1195bfab767eeb20f906bd9cb12ff277b8c9f478ea493c4c3e1ebdec5d15506a",
+      "source_name": "1-05.mp3",
+      "era": "pastoral",
+      "folder": "1195bfab767eeb20",
+      "mode": "sparse_candidate",
+      "group": "woodwind_plus_remaining_six",
+      "background_slots": [
+        "guitar"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "other"
+          ],
+          "control": "craft",
+          "cap": 0.3,
+          "role": "response",
+          "layer": 2
+        },
+        {
+          "id": "motion",
+          "slots": [
+            "woodwinds"
+          ],
+          "control": "craft",
+          "cap": 0.1,
+          "role": "lead",
+          "layer": 3
+        }
+      ]
+    },
+    {
+      "source_id": "f035358a447edb16a06a7c44f8d4ca79adadd54e1011a5483cf51a37b62fbd8f",
+      "source_name": "1-07.mp3",
+      "era": "pastoral",
+      "folder": "f035358a447edb16",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "guitar"
+      ],
+      "voices": []
+    },
+    {
+      "source_id": "193ee6b26b6c96fa76834d25acdfc902b0e3473c0d8ef376b7fcca02085d5f56",
+      "source_name": "1-08.mp3",
+      "era": "pastoral",
+      "folder": "193ee6b26b6c96fa",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "guitar",
+        "piano"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "other"
+          ],
+          "control": "enclosure",
+          "cap": 0.3,
+          "role": "response",
+          "layer": 2
+        }
+      ]
+    },
+    {
+      "source_id": "3a5587faeeadc86ebae934d98815937e572a75576178435d114d3602b182fab9",
+      "source_name": "1-09.mp3",
+      "era": "pastoral",
+      "folder": "3a5587faeeadc86e",
+      "mode": "sparse_candidate",
+      "group": "woodwind_plus_remaining_six",
+      "background_slots": [
+        "guitar"
+      ],
+      "voices": [
+        {
+          "id": "motion",
+          "slots": [
+            "woodwinds"
+          ],
+          "control": "enclosure",
+          "cap": 0.12,
+          "role": "lead",
+          "layer": 3
+        }
+      ]
+    },
+    {
+      "source_id": "15c5b49a2f8546f2a4a2f4711a02c725bbd78237648ae548baf0c4ff3846ac28",
+      "source_name": "1-10（with voice）.mp3",
+      "era": "pastoral",
+      "folder": "15c5b49a2f8546f2",
+      "mode": "complete_manual_only",
+      "reason": "user filename explicitly marks vocals; no voice removal claimed"
+    },
+    {
+      "source_id": "090c6c71aafb78ee128afca5ef1c7b33f6f7e82a8214317e6e1868f8c2ce91ab",
+      "source_name": "1-11.mp3",
+      "era": "pastoral",
+      "folder": "090c6c71aafb78ee",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "guitar",
+        "bass"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "other"
+          ],
+          "control": "enclosure",
+          "cap": 0.2,
+          "role": "response",
+          "layer": 2
+        },
+        {
+          "id": "motion",
+          "slots": [
+            "drums"
+          ],
+          "control": "flow",
+          "cap": 0.1,
+          "role": "motion",
+          "layer": 2
+        }
+      ]
+    },
+    {
+      "source_id": "12ae8d21a8f84d8be89be6165fcb35d142f9692b12ba0f88c2f5feae9d5423ef",
+      "source_name": "2-01.mp3",
+      "era": "renaissance",
+      "folder": "12ae8d21a8f84d8b",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "guitar"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "other"
+          ],
+          "control": "enclosure",
+          "cap": 0.3,
+          "role": "response",
+          "layer": 2
+        }
+      ]
+    },
+    {
+      "source_id": "126096e99297d79a378d65d831b54501e415f2a2706849e2e4c26bc562434951",
+      "source_name": "3-01.mp3",
+      "era": "clockwork",
+      "folder": "126096e99297d79a",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "other"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "guitar",
+            "piano"
+          ],
+          "control": "enclosure",
+          "cap": 0.25,
+          "role": "response",
+          "layer": 2
+        }
+      ]
+    },
+    {
+      "source_id": "83ec758fcb9b0d852f6f896e086755e0f0fb208d0e9208c8f4cac8f43511d4a1",
+      "source_name": "3-03.mp3",
+      "era": "clockwork",
+      "folder": "83ec758fcb9b0d85",
+      "mode": "sparse_candidate",
+      "group": "woodwind_plus_remaining_six",
+      "background_slots": [
+        "guitar",
+        "piano"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "other"
+          ],
+          "control": "enclosure",
+          "cap": 0.3,
+          "role": "response",
+          "layer": 2
+        },
+        {
+          "id": "motion",
+          "slots": [
+            "woodwinds"
+          ],
+          "control": "enclosure",
+          "cap": 0.15,
+          "role": "lead",
+          "layer": 3
+        }
+      ]
+    },
+    {
+      "source_id": "10e6ebfa698bcaae183250e7b9a79e53cf0b2fd7edd371bbdb37754f80ce3bbd",
+      "source_name": "3-04.mp3",
+      "era": "clockwork",
+      "folder": "10e6ebfa698bcaae",
+      "mode": "sparse_candidate",
+      "group": "woodwind_plus_remaining_six",
+      "background_slots": [
+        "other"
+      ],
+      "voices": [
+        {
+          "id": "motion",
+          "slots": [
+            "guitar"
+          ],
+          "control": "flow",
+          "cap": 0.2,
+          "role": "motion",
+          "layer": 2
+        }
+      ]
+    },
+    {
+      "source_id": "49e3e4277732f2aa12a789df8f5faaaf045bab3d7abf40bcfafaf7fb0dc8813d",
+      "source_name": "3-05.mp3",
+      "era": "clockwork",
+      "folder": "49e3e4277732f2aa",
+      "mode": "sparse_candidate",
+      "group": "woodwind_plus_remaining_six",
+      "background_slots": [
+        "other"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "guitar"
+          ],
+          "control": "craft",
+          "cap": 0.25,
+          "role": "response",
+          "layer": 2
+        }
+      ]
+    },
+    {
+      "source_id": "1ce3d33345ec535722855ff56a91e277b8d3e7b33edd1d5f1122d69e5e8bd6ff",
+      "source_name": "3-06.mp3",
+      "era": "clockwork",
+      "folder": "1ce3d33345ec5357",
+      "mode": "sparse_candidate",
+      "group": "woodwind_plus_remaining_six",
+      "background_slots": [
+        "other"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "slots": [
+            "piano"
+          ],
+          "control": "highland",
+          "cap": 0.25,
+          "role": "response",
+          "layer": 2
+        }
+      ]
+    }
+  ]
+}

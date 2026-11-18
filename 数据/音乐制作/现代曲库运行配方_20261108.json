@@ -1,0 +1,124 @@
+{
+  "schema": "sparse_music_recipes_v1",
+  "curation": "res://数据/音乐资产/目录/20261105_reserve_v1/curation.json",
+  "parent_catalog": "res://数据/音乐资产/游戏音乐包/20261106_remaining_v2/catalog.json",
+  "policy": "Complete same-source timeline, original masters/stems remain intact; no BPM/key edits, unassigned residual stays zero automatically; technical candidates only, formal_default=false/listening_approved=false",
+  "songs": [
+    {
+      "source_id": "536f44fce3e04d0c71777cd2e963dab908b0a701e9912074ab38dca6c026b2de",
+      "era": "modern_eco",
+      "folder": "536f44fce3e04d0c",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "other",
+        "piano"
+      ],
+      "voices": [
+        {
+          "id": "motion",
+          "role": "motion",
+          "layer": 2,
+          "cap": 0.25,
+          "control": "flow",
+          "slots": [
+            "bass"
+          ]
+        }
+      ],
+      "intent": "Provisional independent background and limited flow response; model slot names do not confirm instruments or listening quality; strong drum/vocal slots retained only in disabled residual"
+    },
+    {
+      "source_id": "674b920a3a8d64dce5592f8921c19f9fc5bfdc7c9ed4524feb83a9ac3d67eb9e",
+      "era": "modern_eco",
+      "folder": "674b920a3a8d64dc",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "other"
+      ],
+      "voices": [
+        {
+          "id": "body",
+          "role": "response",
+          "layer": 2,
+          "cap": 0.35,
+          "control": "enclosure",
+          "slots": [
+            "bass"
+          ]
+        }
+      ],
+      "intent": "Provisional independent background and limited enclosure response; model slot names do not confirm instruments or listening quality; strong drum/vocal slots retained only in disabled residual"
+    },
+    {
+      "source_id": "b0607682c39b837a29ccfaa715a2bb56f5a7336804e617d9d36ef1f30dc2010e",
+      "era": "modern_eco",
+      "folder": "b0607682c39b837a",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "other"
+      ],
+      "voices": [
+        {
+          "id": "motion",
+          "role": "motion",
+          "layer": 2,
+          "cap": 0.35,
+          "control": "flow",
+          "slots": [
+            "guitar"
+          ]
+        }
+      ],
+      "intent": "Provisional independent background and limited flow response; model slot names do not confirm instruments or listening quality; strong drum/vocal slots retained only in disabled residual"
+    },
+    {
+      "source_id": "b71b5f1a2da63ecbc5ca7c4e01ba15d5ff6c994e8f5e9618f6c38a3fdae12dc7",
+      "era": "modern_eco",
+      "folder": "b71b5f1a2da63ecb",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "other"
+      ],
+      "voices": [
+        {
+          "id": "motion",
+          "role": "motion",
+          "layer": 2,
+          "cap": 0.35,
+          "control": "craft",
+          "slots": [
+            "guitar"
+          ]
+        }
+      ],
+      "intent": "Provisional independent background and limited craft response; model slot names do not confirm instruments or listening quality; strong drum/vocal slots retained only in disabled residual"
+    },
+    {
+      "source_id": "cbdccc72de6d14a8c9fcd77ff0679d49725e7e87abff431cc4670f82cc318c0a",
+      "era": "modern_eco",
+      "folder": "cbdccc72de6d14a8",
+      "mode": "sparse_candidate",
+      "group": "coarse_six",
+      "background_slots": [
+        "other"
+      ],
+      "voices": [
+        {
+          "id": "motion",
+          "role": "motion",
+          "layer": 2,
+          "cap": 0.3,
+          "control": "highland",
+          "slots": [
+            "bass"
+          ]
+        }
+      ],
+      "intent": "Provisional independent background and limited highland response; model slot names do not confirm instruments or listening quality; strong drum/vocal slots retained only in disabled residual"
+    }
+  ]
+}

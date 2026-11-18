@@ -1,7 +1,7 @@
 extends RefCounted
 ## Schema20 extension. Historical ledgers remain validated by their original owners.
 const SCHEMA:=20
-const LATEST_SCHEMA:=34
+const LATEST_SCHEMA:=47
 const Progression=preload("res://scripts/world/city_creation_progression_ledger.gd")
 const VERSION:=1
 const FIELDS:=["creative_settings","placed_landmarks","next_landmark_id","landmark_high_watermark"]
@@ -61,8 +61,8 @@ static func validate(city:RefCounted,data:Dictionary)->Dictionary:
 	if not settings_valid(city,data.get("creative_settings")):return city._fail("创作政策或偏好字段无效")
 	return preload("res://scripts/world/city_creation_placed_landmarks.gd").validate_fields(city,data)
 
-static func apply(city:RefCounted,data:Dictionary,history:bool)->void:
-	Progression.apply(city,data,history)
+static func apply(city:RefCounted,data:Dictionary,history:bool,paused_policy:Dictionary={})->void:
+	Progression.apply(city,data,history,paused_policy)
 	var current:Dictionary=city.creative_settings
 	var incoming:Dictionary=data.get("creative_settings",{}).duplicate(true)
 	if history and current.get("creation_policy","")=="free":

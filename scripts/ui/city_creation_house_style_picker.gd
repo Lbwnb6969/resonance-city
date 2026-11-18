@@ -19,7 +19,7 @@ func setup(owner:RefCounted)->void:
 	var close:=Button.new();close.name="CloseHouseStyles";close.text="收起";close.pressed.connect(panel.hide);heading.add_child(close)
 	var row:=HBoxContainer.new();row.add_theme_constant_override("separation",7);column.add_child(row)
 	for i:int in range(IDS.size()):
-		var button:Button=pop._seal(row,"house",NAMES[i],choose.bind(IDS[i]));button.name="HouseStyle_"+IDS[i];button.custom_minimum_size=Vector2(72,48);buttons[IDS[i]]=button
+		var button=preload("res://scripts/ui/city_creation_shape_button.gd").new();button.configure("style/"+IDS[i],NAMES[i]);button.toggle_mode=true;button.pressed.connect(choose.bind(IDS[i]));row.add_child(button);button.name="HouseStyle_"+IDS[i];buttons[IDS[i]]=button
 		button.tooltip_text="圆塔需单列连续房间、无穿堂且邻屋留有净空；条件不足时保留屋式选择，外观随房形适配。" if IDS[i]=="round_tower" else "此屋屋式 · "+NAMES[i]
 	var note:=Label.new();note.text="屋式不改房间、配色和手选原型。原型是否显现依真实屋式与房形；重新选原型时沿用其适配规则。";note.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART;note.custom_minimum_size.x=300;note.add_theme_font_size_override("font_size",12);column.add_child(note)
 	feedback=Label.new();feedback.name="HouseStyleFeedback";feedback.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART;feedback.add_theme_font_size_override("font_size",12);column.add_child(feedback)

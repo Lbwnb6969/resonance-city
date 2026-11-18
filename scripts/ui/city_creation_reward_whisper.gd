@@ -12,6 +12,7 @@ static func submit(owner:Node3D,text:String)->bool:
  var kind:=""
  for prefix:String in KINDS:
   if text.begins_with(prefix):kind=KINDS[prefix];break
+ if owner.state.CreationPolicy.is_free(owner.state):return not kind.is_empty()
  if not owner.has_meta("reward_whisper"):
   if kind.is_empty():return false
   var node=load("res://scripts/ui/city_creation_reward_whisper.gd").new();node.demo=owner;node.epoch=owner.state.get_instance_id();owner.add_child(node);owner.set_meta("reward_whisper",node)

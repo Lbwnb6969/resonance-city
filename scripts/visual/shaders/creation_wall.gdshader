@@ -1,6 +1,7 @@
 shader_type spatial;
 render_mode diffuse_burley, specular_schlick_ggx, cull_back;
 #include "res://scripts/visual/shaders/creation_safe_math.gdshaderinc"
+#include "res://scripts/visual/shaders/creation_material_noise.gdshaderinc"
 
 uniform vec4 albedo_color : source_color = vec4(1.0);
 uniform sampler2D wall_texture : source_color, filter_linear_mipmap, repeat_enable;
@@ -25,7 +26,7 @@ vec3 wall_srgb_to_linear(vec3 value) {
 }
 
 float wall_hash(vec2 at) {
-	return fract(sin(dot(at,vec2(127.1,311.7))) * 43758.5453);
+	return material_hash(at);
 }
 
 // Value and analytic derivatives share the same smooth paper height field.
@@ -37,10 +38,20 @@ vec3 paper_noise(vec2 at) {
 	return vec3(mix(mix(a,b,u.x),mix(c,d,u.x),u.y),
 		du.x*mix(b-a,d-c,u.y), du.y*mix(c-a,d-b,u.x));
 }
-vec3 paper(vec2 at, float fine) {
-	vec3 coarse = paper_noise(at*4.5), small = paper_noise(at*16.0);
-	return vec3(coarse.x*.70+small.x*.30*fine,
-		coarse.yz*3.15+small.yz*4.8*fine);
+vec3 paper(vec2 at, float fine, float footprint) {
+	float coarse_scale=2.2, small_scale=34.0, relief=.12;
+	if(surface_kind==1){coarse_scale=3.0;small_scale=22.0;relief=.16;}
+	if(surface_kind==2){coarse_scale=5.0;small_scale=40.0;relief=.38;}
+	if(surface_kind==3){coarse_scale=2.4;small_scale=26.0;relief=.28;}
+	if(surface_kind==4){coarse_scale=1.8;small_scale=42.0;relief=.20;}
+	if(surface_kind==6){coarse_scale=1.3;small_scale=30.0;relief=.12;}
+	// Fade the fine height field before its cell falls below several pixels.
+	// Its derivative otherwise becomes visible diagonal bands on pale walls.
+	if(surface_kind<2){fine *= 1.0-smoothstep(.15,.50,footprint*small_scale);}
+	float coarse_relief = surface_kind<2 ? .12 : .75;
+	vec3 coarse=paper_noise(at*coarse_scale),small=paper_noise(at*small_scale);
+	return vec3(.5+(coarse.x-.5)*.75+(small.x-.5)*.25*fine,
+		(coarse.yz*coarse_scale*coarse_relief+small.yz*small_scale*.25*fine)*relief);
 }
 
 void vertex() {
@@ -66,16 +77,29 @@ void fragment() {
 	float footprint = max(length(dFdx(world_at)),length(dFdy(world_at)));
 	float fine = 1.0-smoothstep(0.018,0.070,footprint);
 	float detail = 1.0-smoothstep(0.09,0.28,footprint);
-	vec3 x = paper(world_at.yz,fine), y = paper(world_at.xz,fine), z = paper(world_at.xy,fine);
-	if (surface_kind == 5) {
-		// Vertical joinery: long fibres on the side, end grain on horizontal cuts.
-		x=paper_noise(vec2(world_at.y*1.2,world_at.z*36.0));x.yz*=vec2(1.2,36.0);
-		y=paper_noise(world_at.xz*18.0);y.yz*=18.0;
-		z=paper_noise(vec2(world_at.x*36.0,world_at.y*1.2));z.yz*=vec2(36.0,1.2);
-		x=mix(vec3(.5,0.,0.),x,fine);y=mix(vec3(.5,0.,0.),y,fine);z=mix(vec3(.5,0.,0.),z,fine);
+	float grain=.5;
+	vec3 gradient=vec3(0.0);
+	if(surface_kind==5){
+		// Recover the actual board's longest UV-chart direction after batching;
+		// horizontal rails must not inherit the world's vertical grain direction.
+		vec3 along=vec3(0.,1.,0.)-normal*normal.y;
+		if(dot(along,along)<.001){along=vec3(1.,0.,0.);}
+		along=safe_normalize(along);
+		vec3 px=dFdx(world_at),py=dFdy(world_at);vec2 ux=dFdx(UV),uy=dFdy(UV);
+		float determinant=ux.x*uy.y-ux.y*uy.x;
+		if(abs(determinant)>.0000000001){
+			vec3 u=(px*uy.y-py*ux.y)/determinant,v=(py*ux.x-px*uy.x)/determinant;
+			along=safe_normalize(length(u)>length(v) ? u : v);
+		}
+		vec3 across=safe_normalize(cross(normal,along));
+		vec3 fibre=paper_noise(vec2(dot(world_at,along)*1.1,dot(world_at,across)*28.0));
+		grain=mix(.5,fibre.x,fine);
+		gradient=(along*fibre.y*1.1+across*fibre.z*28.0)*fine;
+	}else{
+		vec3 x=paper(world_at.yz,fine,footprint),y=paper(world_at.xz,fine,footprint),z=paper(world_at.xy,fine,footprint);
+		grain=dot(vec3(x.x,y.x,z.x),weights);
+		gradient=vec3(0.0,x.yz)*weights.x+vec3(y.y,0.0,y.z)*weights.y+vec3(z.yz,0.0)*weights.z;
 	}
-	float grain = dot(vec3(x.x,y.x,z.x),weights);
-	vec3 gradient = vec3(0.0,x.yz)*weights.x + vec3(y.y,0.0,y.z)*weights.y + vec3(z.yz,0.0)*weights.z;
 	gradient -= normal*dot(gradient,normal);
 	vec3 perturbed = safe_normalize(normal-gradient*micro_normal_strength*detail);
 	NORMAL = safe_normalize((VIEW_MATRIX * vec4(perturbed,0.0)).xyz);

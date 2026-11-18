@@ -4,6 +4,7 @@ const Ionic=preload("res://scripts/visual/city_creation_ionic_order.gd")
 static func node(parent:Node3D,house:Dictionary,plan:Dictionary,label:String)->Node3D:
 	var result:=Node3D.new();result.name=label;parent.add_child(result);result.position=Vector3(plan.center.x,float(house.get("base_y",0.)),plan.center.y);return result
 static func roof(r,parent:Node3D,house:Dictionary,palette:Array,p:Dictionary)->void:
+	if preload("res://scripts/world/city_creation_stoa_roof_pitch.gd").authored(house):preload("res://scripts/visual/city_creation_stoa_roof_pitch.gd").build(r,parent,house,palette,p);return
 	var root:=node(parent,house,p,"IonicStoaRoof");var half:float=p.width*.5+.14;var back:float=-p.depth*.5-.12;var front:float=p.depth*.5+.84
 	var eave:float=p.height+.12;var ridge:float=eave+minf(.65,p.depth*.25);var faces:Array[Vector3]=[]
 	for side:float in [-1.,1.]:
@@ -13,6 +14,11 @@ static func roof(r,parent:Node3D,house:Dictionary,palette:Array,p:Dictionary)->v
 	Meshes.roof(r,root,faces,palette[1],"IonicContinuousTileRoof",0,ridge)
 	for side:float in [-1.,1.]:Meshes.gable(r,root,PackedVector2Array([Vector2(back,eave),Vector2(front,eave),Vector2(0,ridge)]),Vector3(side*half,0,0),palette[0],-PI*.5)
 	Meshes.pick(root,house);parent.set_meta("ancient_roof_patches",1)
+	var high:=-INF;var anchor:=Vector3.ZERO
+	for i in range(0,faces.size(),3):
+		var point:Vector3=(faces[i]+faces[i+1]+faces[i+2])/3.+root.position
+		if point.y>high:high=point.y;anchor=point
+	parent.set_meta("stoa_original_anchor",anchor)
 static func build(r,parent:Node3D,house:Dictionary,palette:Array,p:Dictionary)->void:
 	var root:=node(parent,house,p,"IonicStoaColonnade");var mat:=Meshes.stone(palette[0]);var half:float=p.width*.5;var front:float=p.depth*.5+.58
 	var count:=maxi(2,ceili(p.width/1.2)+1)

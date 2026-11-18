@@ -8,6 +8,7 @@ const EPS:=.002
 const MAX_APPROACH:=.82 # Same door-to-street bound as Network._build_graph.
 
 static func derive(city:RefCounted,report:Dictionary,water_distance:Callable)->Array:
+	var stages:Dictionary={"pieces_ms":0.,"rows_ms":0.};var began:=Time.get_ticks_usec()
 	var walls:Array=[];var obstacles:Array=[];var entrances:Dictionary={}
 	for house:Dictionary in city.houses:
 		for cell:Dictionary in house.cells:
@@ -19,7 +20,9 @@ static func derive(city:RefCounted,report:Dictionary,water_distance:Callable)->A
 				if a.distance_to(b)<EPS:continue
 				walls.append({"house_id":house.id,"cell_id":cell.id,"a":a,"b":b,"center":Frame.box_center(box)})
 		if house.role=="residential":entrances[house.id]=city.house_entrances(house.id)
+	stages.inputs_ms=(Time.get_ticks_usec()-began)/1000.
 	var result:Array=[]
+	var corridor_obstacles:RefCounted=null
 	for road:Dictionary in city.roads:
 		var points:=_straight_runs(road.points)
 		for index in range(1,points.size()):
@@ -35,14 +38,20 @@ static func derive(city:RefCounted,report:Dictionary,water_distance:Callable)->A
 			for i in range(1,breaks.size()):
 				var lo:float=breaks[i-1];var hi:float=breaks[i]
 				if hi-lo<EPS:continue
+				began=Time.get_ticks_usec()
 				var piece:=_piece(a,direction,normal,lo,hi,nearby,obstacles,water_distance)
+				stages.pieces_ms+=(Time.get_ticks_usec()-began)/1000.
 				if piece.is_empty():
 					if not run.is_empty():runs.append(run);run=[]
 				else:run.append(piece)
 			if not run.is_empty():runs.append(run)
 			for pieces:Array in runs:
-				var row:=_row(city,report,road,index,a,direction,normal,pieces,entrances,obstacles,water_distance)
+				if corridor_obstacles==null:corridor_obstacles=preload("res://scripts/world/city_creation_entry_obstacles.gd").create(preload("res://scripts/world/city_creation_public_space_obstacles.gd").collect(city))
+				began=Time.get_ticks_usec()
+				var row:=_row(city,report,road,index,a,direction,normal,pieces,entrances,obstacles,water_distance,corridor_obstacles)
+				stages.rows_ms+=(Time.get_ticks_usec()-began)/1000.
 				if not row.is_empty():result.append(row)
+	city.set_meta("lane_contract_prepare_stats",stages)
 	return preload("res://scripts/world/city_creation_lane_continuity.gd").join(result,city,report,obstacles,water_distance)
 
 static func _straight_runs(raw:Array)->Array[Vector2]:
@@ -84,7 +93,7 @@ static func _piece(a:Vector2,direction:Vector2,normal:Vector2,lo:float,hi:float,
 	if float(water_distance.call(box))<.05:return {}
 	return {"lo":lo,"hi":hi,"walls":sides,"polygon":polygon,"widths":widths}
 
-static func _row(city:RefCounted,report:Dictionary,road:Dictionary,index:int,a:Vector2,direction:Vector2,normal:Vector2,pieces:Array,entrances:Dictionary,obstacles:Array,water_distance:Callable)->Dictionary:
+static func _row(city:RefCounted,report:Dictionary,road:Dictionary,index:int,a:Vector2,direction:Vector2,normal:Vector2,pieces:Array,entrances:Dictionary,obstacles:Array,water_distance:Callable,corridor_obstacles:RefCounted)->Dictionary:
 	var members:Array=[];var sources:Array=[road.id];var walls:Array=[];var widths:Array=[]
 	for piece:Dictionary in pieces:
 		widths.append_array(piece.widths)
@@ -98,6 +107,7 @@ static func _row(city:RefCounted,report:Dictionary,road:Dictionary,index:int,a:V
 	for id:String in members:
 		var component:String=report.houses[id].component
 		if not component.is_empty() and not components.has(component):components.append(component)
+		if not report.network_ready:continue
 		for entry:Dictionary in entrances[id]:
 			if not walls.any(func(w):return w.house_id==id and w.cell_id==entry.cell_id):continue
 			var offset:float=(entry.at-a).dot(direction)
@@ -108,7 +118,7 @@ static func _row(city:RefCounted,report:Dictionary,road:Dictionary,index:int,a:V
 			var path:={"center":(target+Vector2(entry.at))*.5,"angle":-delta.angle(),"half":Vector2(maxf(delta.length()*.5,EPS),.35)}
 			if obstacles.any(func(o):return Frame.boxes_overlap(path,o)) or float(water_distance.call(path))<.05:continue
 			var house:Dictionary=city.houses[city._house_index(id)]
-			var access:Dictionary=preload("res://scripts/world/city_creation_entry_height.gd").assess(city,house,entry,target,road)
+			var access:Dictionary=preload("res://scripts/world/city_creation_entry_height.gd").assess(city,house,entry,target,road,corridor_obstacles)
 			var record:={"house_id":id,"cell_id":entry.cell_id,"road_id":road.id,"at":entry.at,"street_at":target,"height_access":access}
 			if not access.ok:rejected.append(record);continue
 			entries.append(record)

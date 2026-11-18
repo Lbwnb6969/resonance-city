@@ -18,6 +18,7 @@ static func openings(r,job,frame,wall:Node3D,door:bool,lit:bool,width:float)->vo
 	# Deep shuttered openings have an arched head, no modern cross mullions.
 	var rhythm:=preload("res://scripts/visual/city_creation_street_rhythm.gd").opening(r,job.house,frame.cell,wall)
 	var radius:float=rhythm.radius;wall.set_meta("street_openings",rhythm)
+	var glow_panes:Array=[]
 	for x:float in rhythm.positions:
 		var faces:Array[Vector3]=[]
 		for i in range(12):
@@ -26,6 +27,7 @@ static func openings(r,job,frame,wall:Node3D,door:bool,lit:bool,width:float)->vo
 			faces.append_array([Vector3(x,.99,.105),Vector3(x+a.x,a.y,.105),Vector3(x+b.x,b.y,.105)])
 		var pane:MeshInstance3D=r._triangles(wall,faces,Color("364238"));pane.material_override=shade;pane.name="RomanArchedShutterHead"
 		r._box(wall,Vector3(radius*2.,.39,.045),Vector3(x,.795,.105),shade).name="AncientShutter"
+		glow_panes.append({"at":Vector3(x,.795,.1335),"size":Vector2(radius*2.-.02,.37)})
 		for side:float in [-1.,1.]:r._box(wall,Vector3(.065,.44,.12),Vector3(x+side*(radius+.035),.80,.13),stone)
 		for i in range(12):
 			var a:=PI*i/12.;var b:=PI*(i+1)/12.
@@ -33,6 +35,9 @@ static func openings(r,job,frame,wall:Node3D,door:bool,lit:bool,width:float)->vo
 			Wall.apply(r._triangles(wall,Arch._extrude(polygon,.19),stone.albedo_color),Wall.Kind.STONE).name="RomanWindowVoussoir"
 		r._box(wall,Vector3(radius*2.+.17,.07,.22),Vector3(x,.56,.15),stone)
 	wall.set_meta("ancient_openings",true)
+	var recorded:Array=job.root.get_meta("ancient_window_panes",[])
+	recorded.append({"cell_id":str(frame.cell.id),"side":Vector2i(roundi(wall.basis.z.x),roundi(wall.basis.z.z)),"frame":job.root.global_transform.affine_inverse()*wall.global_transform,"windows":glow_panes})
+	job.root.set_meta("ancient_window_panes",recorded)
 static func facade(r,job,frame,wall:Node3D,door:bool,width:float)->void:
 	var color:Color=job.palette[0].lerp(Color("e6d8b8"),.48);var stone:Material=material(color)
 	var detail:=Node3D.new();detail.name="AncientElevation";wall.add_child(detail)
@@ -48,10 +53,11 @@ static func facade(r,job,frame,wall:Node3D,door:bool,width:float)->void:
 	for x:float in [-.64,.64]:column(r,detail,Vector3(x,.10,.34),1.22,.10,stone)
 	r._box(detail,Vector3(1.70,.11,.61),Vector3(0,1.39,.29),stone)
 	if job.house.get("architecture","")=="townhouse":r._box(detail,Vector3(1.70,.08,.62),Vector3(0,1.47,.29),stone).name="RomanEntryLintel"
-	else:
+	elif not preload("res://scripts/world/city_creation_portico_roof_pitch.gd").active(r.state,job.house):
 		var tri:=PackedVector2Array([Vector2(-.85,1.45),Vector2(.85,1.45),Vector2(0,1.74)])
 		Wall.apply(r._triangles(detail,Arch._extrude(tri,.62),color),Wall.Kind.STONE).name="GreekClosedPediment"
 	var body:=StaticBody3D.new();detail.add_child(body)
+	if job.hidden:r._hold_house_body(body)
 	for key:String in ["house_id","cell_id","cell"]:body.set_meta(key,job.house.id if key=="house_id" else (frame.cell.id if key=="cell_id" else frame.cell))
 	# Per-piece mesh collisions preserve the open central aisle.
 	for mesh:MeshInstance3D in detail.find_children("*","MeshInstance3D",true,false):
@@ -72,22 +78,27 @@ static func column(r,parent:Node3D,at:Vector3,height:float,radius:float,stone:Ma
 	r._cylinder(parent,radius*.8,radius*1.3,.10,at+Vector3.UP*(height-.12),stone,20).name="DoricEchinus"
 	r._box(parent,Vector3(radius*2.9,.08,radius*2.9),at+Vector3.UP*(height-.03),stone).name="DoricAbacus"
 static func roofs(r,parent:Node3D,house:Dictionary,palette:Array)->void:
+	if preload("res://scripts/world/city_creation_portico_roof_pitch.gd").active(r.state,house):
+		Mass.roof(r,parent,house,palette,load("res://scripts/visual/city_creation_ancient_architecture.gd"))
+		preload("res://scripts/visual/city_creation_portico_roof_pitch.gd").build(r,parent,house,palette);return
 	if preload("res://scripts/visual/city_creation_ancient_extensions.gd").roofs(r,parent,house,palette):return
 	if Mass.roof(r,parent,house,palette,load("res://scripts/visual/city_creation_ancient_architecture.gd")):return
 	var domes:Dictionary=parent.get_meta("dome_cells",{});var count:=0
+	var pitch_scale:=1. if preload("res://scripts/world/city_creation_roof_pitch_geometry.gd").degrees(house)>=0. else .48
 	for patch:Dictionary in r.building_context.roof_patches(str(house.id)):
 		if domes.has(str(patch.cell_id)):continue
 		patch=preload("res://scripts/visual/city_creation_organic_corners.gd").patch(r,house,patch,null)
 		var cell:Dictionary=house.cells.filter(func(c):return str(c.id)==str(patch.cell_id))[0]
 		var eave:float=float(house.get("base_y",0.))+(int(cell.level)+1)*1.7
 		var faces:Array[Vector3]=[]
-		for p:Vector3 in patch.vertices:faces.append(Vector3(p.x,eave+(p.y-eave)*.48,p.z))
-		preload("res://scripts/visual/city_creation_gable_trim.gd").prepare_part(parent,patch.merged({"vertices":faces,"height":float(patch.get("height",0.))*.48,"base_y":eave+(float(patch.base_y)-eave)*.48},true),{},domes)
+		for p:Vector3 in patch.vertices:faces.append(Vector3(p.x,eave+(p.y-eave)*pitch_scale,p.z))
+		preload("res://scripts/visual/city_creation_gable_trim.gd").prepare_part(parent,patch.merged({"vertices":faces,"height":float(patch.get("height",0.))*pitch_scale,"base_y":eave+(float(patch.base_y)-eave)*pitch_scale},true),{},domes)
 		var tile:bool=patch.surface=="roof"
 		var color:Color=palette[1] if tile else palette[0].lerp(Color("e4d5b5"),.45)
 		var mesh:MeshInstance3D=preload("res://scripts/visual/city_creation_ancient_roof_finish.gd").surface(r,parent,patch,faces,color,tile)
 		mesh.name="AncientLowTileRoof" if tile else "AncientPedimentTympanum"
 		var body:=StaticBody3D.new();parent.add_child(body);body.set_meta("house_id",house.id);body.set_meta("cell_id",cell.id);body.set_meta("cell",cell)
+		if tile and preload("res://scripts/world/city_creation_boathouse_roof_pitch.gd").authored(house):body.set_meta("roof_surface",true)
 		var shape:=ConcavePolygonShape3D.new();shape.backface_collision=true;shape.set_faces(mesh.mesh.get_faces());var collider:=CollisionShape3D.new();collider.shape=shape;body.add_child(collider);count+=1
 	parent.set_meta("ancient_roof_patches",count)
 static func finish(r,parent:Node3D,house:Dictionary,plans:Array)->void:
@@ -95,6 +106,7 @@ static func finish(r,parent:Node3D,house:Dictionary,plans:Array)->void:
 	if preload("res://scripts/visual/city_creation_ancient_extensions.gd").finish(r,parent,house,parent.get_meta("palette_colors")):return
 	if Mass.rotunda(r,parent,house,parent.get_meta("palette_colors"),load("res://scripts/visual/city_creation_ancient_architecture.gd")):return
 	Mass.Villa.build(r,parent,house,parent.get_meta("palette_colors"),load("res://scripts/visual/city_creation_ancient_architecture.gd"))
+	if house.get("architecture","")=="portico" and not preload("res://scripts/world/city_creation_portico_roof_pitch.gd").active(r.state,house):parent.set_meta("portico_original_anchor",preload("res://scripts/visual/city_creation_portico_roof_pitch.gd").original_anchor(parent))
 	for plan:Dictionary in plans:
 		var node:=Node3D.new();node.name="RomanOculusRotunda";parent.add_child(node);node.position=Vector3(plan.center.x,plan.drum_y,plan.center.y)
 		var stone:Material=material(parent.get_meta("palette_colors")[0]);var radius:=float(plan.radius)

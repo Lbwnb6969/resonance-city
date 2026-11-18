@@ -3,9 +3,14 @@ extends SceneTree
 const State := preload("res://scripts/world/city_creation_state.gd")
 var failures: Array[String] = []
 var checks := 0
+var out:=""
 
 
 func _initialize() -> void:
+	for arg:String in OS.get_cmdline_user_args():
+		if arg.begins_with("--out-dir="):out=arg.trim_prefix("--out-dir=")
+	if not "--isolated-session" in OS.get_cmdline_user_args() or not out.begins_with("res://验证记录/") or DirAccess.dir_exists_absolute(out):quit(1);return
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out))
 	var city := State.new()
 	city.initialize()
 	var initial := city.snapshot()
@@ -58,6 +63,7 @@ func _initialize() -> void:
 	_check(b.ok and int(b.added_cells[0].id.substr(1)) > int(a.added_cells[-1].id.substr(1)) and branch._redo.is_empty(), "history fork never reuses issued cell identities")
 	_new_house_contract()
 	_supply_contract()
+	FileAccess.open(out+"/report.json",FileAccess.WRITE).store_string(JSON.stringify({"ok":failures.is_empty(),"checks":checks,"failures":failures}))
 	if failures.is_empty():
 		print("PASS city creation house stroke: %d checks" % checks)
 		quit(0)
@@ -91,7 +97,7 @@ func _new_house_contract() -> void:
 	_check(city.redo().ok and city.houses == built.houses, "new stroke redo restores exact host and cells")
 	var loaded := State.new()
 	_check(loaded.restore(built).ok and loaded.houses == built.houses, "schema 1 snapshot restores whole stroke")
-	var path := "user://house_stroke_contract_%d.json" % Time.get_ticks_usec()
+	var path := out+"/house_stroke_contract.json"
 	_check(city.save_city(path).ok and loaded.load_city(path).ok and loaded.houses == built.houses, "atomic disk save reloads new house brush")
 	city.undo()
 	var fork := city.add_house_stroke(origin, [_cell(0, 0), _cell(1, 0)])
@@ -131,7 +137,7 @@ func _supply_contract() -> void:
 	_check(city.bakery_batch_size("h2") == 2 and city.bakery_supply == current_supply and city.life_progress == progress and city.journey_checkpoint == checkpoint, "stroke undo preserves occurred production life and journeys")
 	city.redo()
 	_check(city.bakery_batch_size("h2") == 4 and city.bakery_supply == current_supply, "stroke redo restores geometry without rolling back inventory")
-	_check(city.save_city("user://house_stroke_journeys_%d.json" % Time.get_ticks_usec()).ok, "brush with retained actual journeys remains saveable")
+	_check(city.save_city(out+"/house_stroke_journeys.json").ok, "brush with retained actual journeys remains saveable")
 
 
 func _reject(city: CityCreationState, id: String, cells: Array, label: String) -> void:

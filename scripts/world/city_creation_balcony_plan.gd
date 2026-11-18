@@ -95,14 +95,18 @@ static func polygon(house:Dictionary,data:Dictionary)->PackedVector2Array:
 	for p:Vector2 in outline(data):var at:=world(house,data,Vector3(p.x,1.85,p.y));result.append(Vector2(at.x,at.z))
 	return result
 static func conflict(city,a:Dictionary,b:Dictionary)->bool:
-	for pair:Array in [[a,b],[b,a]]:
-		var data:=plan(city,pair[0])
+	if authored(a)==0 and authored(b)==0:return false
+	# The furthest balcony projects .95m beyond its room, and a roof adds .14m.
+	# Expanded source footprints also enclose rotated and hinged cells.
+	if not Frame.house_bounds(a).grow(1.1).intersects(Frame.house_bounds(b).grow(1.1)):return false
+	var first:=plan(city,a);var second:=plan(city,b)
+	for pair:Array in [[a,b,first],[b,a,second]]:
+		var data:Dictionary=pair[2]
 		if data.is_empty():continue
 		var poly:=polygon(pair[0],data);var base:=float(pair[0].get("base_y",0.))
 		for cell:Dictionary in pair[1].cells:
 			var box:Variant=obstruction(pair[1],cell,base)
 			if box!=null and not Geometry2D.intersect_polygons(poly,Frame.corners(box)).is_empty():return true
-	var first:=plan(city,a);var second:=plan(city,b)
 	return not first.is_empty() and not second.is_empty() and absf(float(a.get("base_y",0.))-float(b.get("base_y",0.)))<1.7 and not Geometry2D.intersect_polygons(polygon(a,first),polygon(b,second)).is_empty()
 static func validate_site(city,house:Dictionary)->Dictionary:
 	var data:=plan(city,house)

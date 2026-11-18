@@ -8,13 +8,18 @@ static func build(renderer,parent:Node3D,rows:Array)->void:
 		root.position=Vector3(row.wall.x,row.base_y-parent.position.y,row.wall.y);root.rotation.y=row.yaw
 		root.set_meta("market_frontage",row.duplicate(true))
 		var st:=SurfaceTool.new();st.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var cafe:bool=row.get("cafe_cloth",false)
 		for strip in range(10):
 			var x0:float=-Plan.WIDTH*.5+Plan.WIDTH*strip/10.;var x1:float=-Plan.WIDTH*.5+Plan.WIDTH*(strip+1)/10.
 			var color:=Color("efdfba") if strip%2==0 else Color("a95e46")
+			if cafe:color=Color("547f75") if strip in [0,9] else Color("326459")
 			for part in range(6):
 				var z0:float=Plan.DEPTH*part/6.;var z1:float=Plan.DEPTH*(part+1)/6.
 				_quad(st,Vector3(x0,_height(z0),z0),Vector3(x1,_height(z0),z0),Vector3(x1,_height(z1),z1),Vector3(x0,_height(z1),z1),color)
-			_quad(st,Vector3(x0,_height(Plan.DEPTH),Plan.DEPTH),Vector3(x1,_height(Plan.DEPTH),Plan.DEPTH),Vector3(x1,Plan.LOW,Plan.DEPTH),Vector3(x0,Plan.LOW,Plan.DEPTH),color)
+			if cafe:
+				_cafe_valance(st,strip)
+			else:
+				_front(st,x0,x1,Plan.LOW,Plan.LOW,color)
 		st.generate_normals();var mesh:=MeshInstance3D.new();mesh.name="StripedCloth";mesh.mesh=st.commit();mesh.extra_cull_margin=.04;root.add_child(mesh)
 		var material:=ShaderMaterial.new();material.shader=Cloth;mesh.material_override=material
 		var support:=ShaderMaterial.new();support.shader=Wall.WallShader;support.set_shader_parameter("albedo_color",Color("84644c"));support.set_shader_parameter("surface_kind",Wall.Kind.CANTILEVER);support.set_shader_parameter("component_bounds",Vector2(row.base_y+1.34,row.base_y+1.66))
@@ -27,6 +32,20 @@ static func build(renderer,parent:Node3D,rows:Array)->void:
 		var faces:=ConcavePolygonShape3D.new();faces.backface_collision=true;faces.set_faces(mesh.mesh.get_faces())
 		var shape:=CollisionShape3D.new();shape.shape=faces;body.add_child(shape)
 static func _height(z:float)->float:return Plan.HIGH-.20*(z/Plan.DEPTH)-sin(z/Plan.DEPTH*PI)*.045
+
+static func _cafe_valance(st:SurfaceTool,strip:int)->void:
+	for segment in range(4):
+		var u0:float=(strip+segment/4.)/10.
+		var u1:float=(strip+(segment+1)/4.)/10.
+		var y0:float=Plan.LOW+.032-.078*absf(sin(u0*5.*PI))
+		var y1:float=Plan.LOW+.032-.078*absf(sin(u1*5.*PI))
+		_front(st,(u0-.5)*Plan.WIDTH,(u1-.5)*Plan.WIDTH,y0,y1,Color("e7d4ab"))
+
+static func _front(st:SurfaceTool,x0:float,x1:float,y0:float,y1:float,color:Color)->void:
+	var front:=Plan.DEPTH
+	var top:=_height(front)
+	_quad(st,Vector3(x0,top,front),Vector3(x1,top,front),Vector3(x1,y1,front),Vector3(x0,y0,front),color)
+
 static func _quad(st:SurfaceTool,a:Vector3,b:Vector3,c:Vector3,d:Vector3,color:Color)->void:
 	for p:Vector3 in [a,c,b,a,d,c]:
 		st.set_color(Color(color.r,color.g,color.b,clampf(p.z/Plan.DEPTH,0.,1.)));st.set_uv(Vector2(p.x,p.z));st.add_vertex(p)

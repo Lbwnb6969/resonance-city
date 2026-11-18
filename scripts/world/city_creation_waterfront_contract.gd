@@ -8,13 +8,13 @@ const HALF_FACE:=.35 # Existing ordinary doorway/public approach width.
 const Obstacles=preload("res://scripts/world/city_creation_public_space_obstacles.gd")
 
 static func derive(city:RefCounted,report:Dictionary,water_distance:Callable)->Array:
-	var result:Array=[];var geometry:=Obstacles.collect(city)
+	var result:Array=[];var geometry:=Obstacles.collect(city);var route_context:Dictionary={}
 	for house:Dictionary in city.houses:
 		var deck:Dictionary=preload("res://scripts/world/city_creation_tea_deck_public.gd").derive(city,report,house)
 		if not deck.is_empty():result.append(deck);continue
-		var obstacles:=Obstacles.for_source(geometry,house.id)
 		var member:Dictionary=report.houses[house.id]
 		if member.water_distance>MAX_WATER and member.prototype not in ["venetian_loggia","peristyle"]:continue
+		var obstacles:=Obstacles.for_source(geometry,house.id)
 		var faces:Array=[];var entries:Array=[];var rejected:Array=[];var sources:Array=[house.id]
 		for cell:Dictionary in house.cells:
 			if int(cell.level)==0 and cell.kind=="room":sources.append(cell.id)
@@ -57,7 +57,7 @@ static func derive(city:RefCounted,report:Dictionary,water_distance:Callable)->A
 				for id:String in face.water_ids:
 					if not sources.has(id):sources.append(id)
 			if report.network_ready:
-				var side_access:=preload("res://scripts/world/city_creation_side_shore_access.gd").derive(city,house,member,faces,geometry,water_distance)
+				var side_access:=preload("res://scripts/world/city_creation_side_shore_access.gd").derive(city,house,member,faces,geometry,water_distance,route_context)
 				entries.append_array(side_access.entries);rejected.append_array(side_access.rejected)
 				for id:String in side_access.sources:
 					if not sources.has(id):sources.append(id)

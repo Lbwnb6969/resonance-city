@@ -8,7 +8,7 @@ const DIAMETER:=46.0
 const GAP:=6
 const OPTION_ICONS:Dictionary={
 	"RoadDecoration":["road","erase","lamp","garden_cafe","vegetation","garden_cafe"],
-	"RoadMode":["road","straight","road"],"RoadSize":["road","brush_small","brush_medium","brush_large","road"],"RoadStyle":["road","lamp","vegetation","rails","road","road","road","road"],
+	"RoadMode":["road","straight","road_curve"],"RoadSize":["road","brush_small","brush_medium","brush_large","road"],"RoadStyle":["road","lamp","vegetation","rails","road","road","road","road"],
 	"RemovalMode":["erase","house"],"Species":["vegetation","cypress","shrub","vegetation","garden_cafe","garden_cafe","garden_cafe","vegetation"],"PlantingMode":["brush_small","brush_large"],
 	"BrushSize":["brush_small","brush_medium","brush_large"],"WaterMode":["pond","water"],
 	"WaterWidth":["brush_small","brush_medium","brush_large"],"DistrictWidth":["brush_small","brush_medium","brush_large"],
@@ -56,12 +56,16 @@ func _setup(owner:Node,parent_control:Control)->void:
 	demo=owner
 	parent=parent_control
 	var toolbar:PanelContainer=parent.get_node("Toolbar")
-	var style:=UI.panel(4);style.set_corner_radius_all(30);style.bg_color=Color(UI.PAPER,.78);style.shadow_size=6
+	var style := UI.panel(6)
+	style.set_corner_radius_all(20)
+	style.bg_color = Color(UI.PAPER, .95)
+	style.shadow_size = 5
 	toolbar.add_theme_stylebox_override("panel",style)
-	toolbar.offset_left=-174;toolbar.offset_right=174;toolbar.offset_top=-89;toolbar.offset_bottom=-39
+	toolbar.offset_left=-201;toolbar.offset_right=201;toolbar.offset_top=-97;toolbar.offset_bottom=-39
 	for i in range(demo.tool_buttons.size()):
 		var button:Button=demo.tool_buttons[i]
 		button.set_script(Seal);button.configure(Icons.TOOL_KINDS[i],44.)
+		button.configure_primary()
 		button.caption=CAPTIONS[PRIMARY.find(i)] if i in PRIMARY else demo.TOOL_NAMES[i];button.key_label=""
 		button.visible=i in PRIMARY
 		button.tooltip_text=button.caption+" · 原快捷键 "+str(i+1)
@@ -124,8 +128,7 @@ func _rebuild(tool:int)->void:
 	var row_count:=0
 	if tool in [0,1]:
 		row=HBoxContainer.new();row.add_theme_constant_override("separation",GAP);row.alignment=BoxContainer.ALIGNMENT_CENTER;bubble_rows.add_child(row)
-		_seal(row,"house","房间","扩建房间").pressed.connect(func()->void:demo.select_tool(0);demo.house_module_mode=true)
-		_seal(row,"vegetation","露台","点击侧墙或屋顶添置露台").pressed.connect(func()->void:demo.select_tool(1))
+		_seal(row,"house","营造","空地筑屋、靠屋吸附加建；上层悬空自动露台").pressed.connect(func()->void:demo.select_tool(0))
 		_seal(row,"erase","拆除","点击模块拆除；Shift整栋").pressed.connect(func()->void:demo.select_tool(3))
 		preload("res://scripts/ui/city_creation_build_palette.gd").setup(self,bubble_rows)
 	elif tool==4:

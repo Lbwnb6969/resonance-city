@@ -6,6 +6,7 @@ varying vec3 terrain_normal;
 #include "res://scripts/visual/shaders/creation_meadow_palette.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_shore_palette.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_meadow_contact.gdshaderinc"
+#include "res://scripts/visual/shaders/creation_surface_height.gdshaderinc"
 uniform sampler2D cliff_surface : source_color, filter_linear_mipmap, repeat_enable;
 uniform bool cliff_surface_enabled = false;
 uniform float cliff_uv_scale = 0.34;
@@ -45,14 +46,14 @@ float stone_cover(float mask, float height) {
 	// Foundation terrain.fragment: max(mask+height)-blendSmooth, positive
 	// normalized layer weights. Only the slope transition receives height;
 	// flat grass and fully exposed stone retain their original endpoints.
-	// .65/.42/.72 are our art-direction values, not recovered uniforms.
+	// .65/.62/.50 are our art-direction values, not recovered uniforms.
 	float transition = 4.0*mask*(1.0-mask);
 	float stone_score = mask+(height-.5)*.65*transition;
 	float grass_score = 1.0-mask;
-	float offset = max(stone_score,grass_score)-.42;
+	float offset = max(stone_score,grass_score)-.62;
 	float sw = max(stone_score-offset,0.0);
 	float gw = max(grass_score-offset,0.0);
-	return mix(mask,sw/(sw+gw),transition*.72);
+	return mix(mask,sw/(sw+gw),transition*.50);
 }
 #include "res://scripts/visual/shaders/creation_window_bounce.gdshaderinc"
 void vertex() {
@@ -64,15 +65,27 @@ void fragment() {
 	vec3 metric_normal = safe_normalize(terrain_normal);
 	vec3 relief_normal = safe_normalize(metric_normal+meadow_normal(world_at.xz)-vec3(0.0,1.0,0.0));
 	NORMAL = safe_normalize((VIEW_MATRIX*vec4(relief_normal,0.0)).xyz);
-	vec3 grass = meadow_contact_color(world_at.xz,shore_ground(world_at.xz,meadow_color(world_at.xz,grass_low.rgb,grass_high.rgb)));
+	vec3 grass = meadow_contact_color(world_at.xz,shore_ground(world_at,meadow_color(world_at.xz,PROJECTION_MATRIX)));
 	float bank = (1.0-smoothstep(-0.08,-0.015,world_at.y))*(1.0-smoothstep(0.25,0.6,shore_distance(world_at.xz)));
-	// TG terrain_derivative's metric rock threshold, applied to real normals.
+	// Real metric slope with a broad, lightly weathered material transition.
 	float slope = length(metric_normal.xz)/max(metric_normal.y,0.001);
-	float rock = smoothstep(0.75,1.25,slope);
+	float weathering=(meadow_noise(world_at.xz*.85)-.5)*.20+(meadow_noise(world_at.xz*2.4)-.5)*.06;
+	float rock = smoothstep(.62,1.45,slope+weathering);
+	if(terrain_height_enabled){
+		// Positive metre-scale convexity exposes narrow ridges, not flat plateaus.
+		float neighbors=terrain_surface_height(world_at.xz+vec2(.8,0.))+terrain_surface_height(world_at.xz-vec2(.8,0.))
+			+terrain_surface_height(world_at.xz+vec2(0.,.8))+terrain_surface_height(world_at.xz-vec2(0.,.8));
+		float convexity=world_at.y-neighbors*.25;
+		rock=max(rock,smoothstep(.06,.32,convexity)*.85);
+	}
 	vec3 soil = mix(grass,bank_soil.rgb*0.72,bank*0.50);
 	vec4 stone = vec4(soil,.5);
 	if (rock>.005) { stone=exposed_stone(world_at,metric_normal); }
-	vec3 ground_surface = mix(soil,stone.rgb,stone_cover(rock,stone.a)*.92);
+	float exposed=stone_cover(rock,stone.a);
+	float fringe=4.*exposed*(1.-exposed);
+	vec3 thin_soil=mix(bank_soil.rgb*vec3(.84,.79,.69),stone.rgb,.32);
+	vec3 weathered=mix(soil,thin_soil,fringe*.32);
+	vec3 ground_surface = mix(weathered,stone.rgb,exposed*.92);
 	if (cliff_shore_toe_enabled && bank_sand_enabled) {
 		// Recovered rocky-terrain displacement fades at the water mask. Here
 		// the shared metre-distance field blends steep rock back into the same
@@ -80,7 +93,7 @@ void fragment() {
 		float shore = 1.0-smoothstep(0.16,1.12,shore_distance(world_at.xz));
 		float toe_height = 1.0-smoothstep(-0.10,0.34,world_at.y);
 		float rocky_toe = rock*shore*toe_height;
-		vec3 wet_sand = shore_ground(world_at.xz,grass);
+		vec3 wet_sand = shore_ground(world_at,grass);
 		ground_surface = mix(ground_surface,wet_sand,rocky_toe*.92);
 	}
 	ALBEDO = ground_surface;

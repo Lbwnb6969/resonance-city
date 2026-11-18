@@ -28,7 +28,7 @@ func stroke() -> void:
 	if candidate.cells.is_empty(): return
 	building(candidate)
 func road(points: Array[Vector2], width: float, style: String, valid: bool) -> void:
-	_update("road",{"valid":valid},points,width,style)
+	_update("road",{"valid":valid,"decoration":preload("res://scripts/world/city_creation_road_decoration.gd").selected(demo),"connected":demo.life.connected_houses.duplicate()},points,width,style)
 func _update(mode: String, candidate: Dictionary, points: Array[Vector2], width: float, style: String) -> void:
 	var preview_ids:=_preview_ids()
 	var key := str([demo.state.get_instance_id(),demo.state.revision,mode,candidate,points,width,style,preview_ids])
@@ -57,6 +57,8 @@ func tick(delta: float) -> void:
 	left_at = 0.; dwell += delta
 	if dwell < .22 or demo.music.muted or demo.music._loading or demo.music.concert_active: return
 	for row: Dictionary in rows:
+		if row.kind in ["road_connected","road_unconnected"]:continue
+		if not row.get("valid",true):continue
 		if heard.has(row.kind): continue
 		var band: int = ["courtyard","arcade","conservatory","bridge","stairs","skybridge"].find(row.kind)%5
 		var bar := int(demo.music._playback_clock()/3.)%8

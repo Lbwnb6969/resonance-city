@@ -1,0 +1,308 @@
+{
+  "basis": "Accepted before elevation edit guard, authored via public add_house/add_cell/terrain-target APIs. Historical overlap is intentional regression data; source evidence elevation_terrace_conflict_20261108/before_complete.json.",
+  "before": {
+    "automatic_neighborhoods": true,
+    "bakery_supply": {},
+    "cafe_credits": {},
+    "cafe_progress": {},
+    "creative_settings": {
+      "creation_policy": "free",
+      "guidance": false,
+      "migration_version": 0,
+      "music": {
+        "mode": "auto",
+        "seed": 74001,
+        "style": ""
+      },
+      "presentation": {
+        "automatic_decoration": true,
+        "legacy_crowns": false,
+        "window_pennants": false
+      },
+      "version": 1
+    },
+    "districts": [],
+    "harmony_journey": {
+      "growth_cutoff": {
+        "source": "new_free",
+        "version": 1,
+        "vignette": {}
+      },
+      "harmony_level": 1,
+      "harmony_xp": 0,
+      "pending_draft": [],
+      "ranks": {},
+      "receipts": {
+        "school_receipts_baseline": 1,
+        "tea": 0
+      },
+      "traditions": []
+    },
+    "high_watermark": {
+      "cell": 3,
+      "district": 0,
+      "house": 1,
+      "plant": 0,
+      "road": 0,
+      "water": 0
+    },
+    "house_improvements": {},
+    "houses": [
+      {
+        "auto_matinee": false,
+        "bakery_open": true,
+        "base_y": 0.0,
+        "cells": [
+          {
+            "id": "c1",
+            "kind": "room",
+            "level": 0,
+            "source": "new_house",
+            "x": 0,
+            "z": 0
+          },
+          {
+            "id": "c2",
+            "kind": "room",
+            "level": 1,
+            "source": "player",
+            "x": 0,
+            "z": 0
+          },
+          {
+            "id": "c3",
+            "kind": "terrace",
+            "level": 1,
+            "source": "player",
+            "x": 1,
+            "z": 0
+          }
+        ],
+        "id": "h1",
+        "name": "石榴巷1号",
+        "origin": [
+          -25.0,
+          -20.0
+        ],
+        "palette": 0,
+        "role": "residential",
+        "seed": 81977,
+        "workshop_open": true
+      }
+    ],
+    "journey_checkpoint": {},
+    "landmark_high_watermark": 0,
+    "life_progress": {
+      "auto_concerts": 0,
+      "concerts": 0,
+      "gatherings": 0,
+      "purchases": 0,
+      "tea_parties": 0,
+      "tea_visits": 0
+    },
+    "matinee_cooldown": 0.0,
+    "matinee_credits": {},
+    "matinee_last_venue": "",
+    "matinee_pending": {},
+    "matinee_progress": {},
+    "microclimate": "spring_breeze",
+    "next_cell_id": 4,
+    "next_district_id": 1,
+    "next_house_id": 2,
+    "next_landmark_id": 1,
+    "next_plant_id": 1,
+    "next_road_id": 1,
+    "next_water_id": 1,
+    "placed_landmarks": [],
+    "plants": [],
+    "resonance_afterglow": {},
+    "revision": 5,
+    "roads": [],
+    "schema": 47,
+    "terrain_policy": 3,
+    "terrain_strokes": [
+      {
+        "mode": "plateau",
+        "natural": true,
+        "points": [
+          [
+            -23.2000007629395,
+            -20.0
+          ]
+        ],
+        "radius": 2.0,
+        "strength": 1.0,
+        "target_y": 1.4,
+        "terrain_version": 2
+      }
+    ],
+    "venue_commissions": {},
+    "waters": [],
+    "workshop_supply": {}
+  },
+  "after": {
+    "automatic_neighborhoods": true,
+    "bakery_supply": {},
+    "cafe_credits": {},
+    "cafe_progress": {},
+    "creative_settings": {
+      "creation_policy": "free",
+      "guidance": false,
+      "migration_version": 0,
+      "music": {
+        "mode": "auto",
+        "seed": 74001,
+        "style": ""
+      },
+      "presentation": {
+        "automatic_decoration": true,
+        "legacy_crowns": false,
+        "window_pennants": false
+      },
+      "version": 1
+    },
+    "districts": [],
+    "harmony_journey": {
+      "growth_cutoff": {
+        "source": "new_free",
+        "version": 1,
+        "vignette": {}
+      },
+      "harmony_level": 1,
+      "harmony_xp": 0,
+      "pending_draft": [],
+      "ranks": {},
+      "receipts": {
+        "school_receipts_baseline": 1,
+        "tea": 0
+      },
+      "traditions": []
+    },
+    "high_watermark": {
+      "cell": 4,
+      "district": 0,
+      "house": 2,
+      "plant": 0,
+      "road": 0,
+      "water": 0
+    },
+    "house_improvements": {},
+    "houses": [
+      {
+        "auto_matinee": false,
+        "bakery_open": true,
+        "base_y": 0.0,
+        "cells": [
+          {
+            "id": "c1",
+            "kind": "room",
+            "level": 0,
+            "source": "new_house",
+            "x": 0,
+            "z": 0
+          },
+          {
+            "id": "c2",
+            "kind": "room",
+            "level": 1,
+            "source": "player",
+            "x": 0,
+            "z": 0
+          },
+          {
+            "id": "c3",
+            "kind": "terrace",
+            "level": 1,
+            "source": "player",
+            "x": 1,
+            "z": 0
+          }
+        ],
+        "id": "h1",
+        "name": "石榴巷1号",
+        "origin": [
+          -25.0,
+          -20.0
+        ],
+        "palette": 0,
+        "role": "residential",
+        "seed": 81977,
+        "workshop_open": true
+      },
+      {
+        "auto_matinee": false,
+        "bakery_open": true,
+        "base_y": 1.4,
+        "cells": [
+          {
+            "id": "c4",
+            "kind": "room",
+            "level": 0,
+            "source": "new_house",
+            "x": 0,
+            "z": 0
+          }
+        ],
+        "id": "h2",
+        "name": "石榴巷2号",
+        "origin": [
+          -23.2000007629395,
+          -20.0
+        ],
+        "palette": 1,
+        "role": "residential",
+        "seed": 82954,
+        "workshop_open": true
+      }
+    ],
+    "journey_checkpoint": {},
+    "landmark_high_watermark": 0,
+    "life_progress": {
+      "auto_concerts": 0,
+      "concerts": 0,
+      "gatherings": 0,
+      "purchases": 0,
+      "tea_parties": 0,
+      "tea_visits": 0
+    },
+    "matinee_cooldown": 0.0,
+    "matinee_credits": {},
+    "matinee_last_venue": "",
+    "matinee_pending": {},
+    "matinee_progress": {},
+    "microclimate": "spring_breeze",
+    "next_cell_id": 5,
+    "next_district_id": 1,
+    "next_house_id": 3,
+    "next_landmark_id": 1,
+    "next_plant_id": 1,
+    "next_road_id": 1,
+    "next_water_id": 1,
+    "placed_landmarks": [],
+    "plants": [],
+    "resonance_afterglow": {},
+    "revision": 6,
+    "roads": [],
+    "schema": 47,
+    "terrain_policy": 3,
+    "terrain_strokes": [
+      {
+        "mode": "plateau",
+        "natural": true,
+        "points": [
+          [
+            -23.2000007629395,
+            -20.0
+          ]
+        ],
+        "radius": 2.0,
+        "strength": 1.0,
+        "target_y": 1.4,
+        "terrain_version": 2
+      }
+    ],
+    "venue_commissions": {},
+    "waters": [],
+    "workshop_supply": {}
+  }
+}

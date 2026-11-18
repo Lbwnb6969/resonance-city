@@ -4,6 +4,7 @@ const Frame=preload("res://scripts/world/city_creation_house_frame.gd")
 
 static func derive(city:RefCounted,report:Dictionary,water_distance:Callable)->Array:
 	var rows:Array=[];var covered:Dictionary={};var open_context:Dictionary={}
+	var stages:Dictionary={};var began:=Time.get_ticks_usec()
 	for court:Dictionary in city.courtyard_plans():
 		var homes:Array=[];var components:Array=[];var cells:Array=[]
 		for id:String in court.members:
@@ -28,7 +29,9 @@ static func derive(city:RefCounted,report:Dictionary,water_distance:Callable)->A
 		roads.sort()
 		rows.append({"kind":"courtyard","stage":"district" if eligible else "cluster","members":court.members.duplicate(),"source_ids":Array(court.members)+cells+roads+[court.id],"component":components[0] if connected else "","connected":connected,"evidence":{"geometry":"closed_ground_ring","court_id":court.id,"residential":homes,"usable_tiles":court.tiles.size(),"area_m2":court.tiles.size()*3.24,"public_portals":portals,"network":"ready" if report.network_ready else "waiting"},"eligibility":{"district":eligible,"warm":eligible,"reason":"qualified" if eligible else "network_waiting" if not report.network_ready else "public_portal_missing" if portals.is_empty() else "portal_disconnected"}})
 		for id:String in homes:covered[id]=true
-	var lanes:Array=preload("res://scripts/world/city_creation_lane_contract.gd").derive(city,report,water_distance)
+	stages.closed_ms=(Time.get_ticks_usec()-began)/1000.;began=Time.get_ticks_usec()
+	var lanes:Array=preload("res://scripts/world/city_creation_lane_prepared.gd").derive(city,report,water_distance)
+	stages.lanes_ms=(Time.get_ticks_usec()-began)/1000.;began=Time.get_ticks_usec()
 	rows.append_array(lanes)
 	for house:Dictionary in city.houses:
 		if covered.has(house.id) or house.role!="residential":continue
@@ -44,6 +47,7 @@ static func derive(city:RefCounted,report:Dictionary,water_distance:Callable)->A
 		if cells.is_empty():continue
 		var member:Dictionary=report.houses[house.id]
 		rows.append({"kind":"courtyard","stage":"trait","members":[house.id],"source_ids":[house.id]+cells,"component":member.component,"connected":member.connected,"evidence":{"geometry":"dwelling_mass","ground_rooms":cells.size(),"network":"ready" if report.network_ready else "waiting"},"eligibility":{"district":false,"warm":false,"reason":"courtyard_geometry_missing"}})
+	stages.open_ms=(Time.get_ticks_usec()-began)/1000.;city.set_meta("courtyard_contract_prepare_stats",stages)
 	rows.sort_custom(func(a,b):return str(a.source_ids)<str(b.source_ids))
 	return rows
 

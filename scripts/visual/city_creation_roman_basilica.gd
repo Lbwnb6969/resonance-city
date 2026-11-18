@@ -51,6 +51,9 @@ static func build(r,parent:Node3D,house:Dictionary,palette:Array,p:Dictionary)->
 				var polygon:=PackedVector2Array([Vector2(-.21,.55),Vector2(.21,.55),Vector2(.21,1.03)])
 				for j in range(1,13):polygon.append(Vector2(cos(PI*j/12.)*.21,1.03+sin(PI*j/12.)*.21))
 				var panel:MeshInstance3D=r._triangles(recess,Arch._extrude(polygon,.035),palette[2].darkened(.42));panel.name="BasilicaArchedRecess"
+				var light_outline:=PackedVector2Array()
+				for point:Vector2 in polygon:light_outline.append(point-Vector2(0,.80))
+				panel.set_meta("basilica_civic_pane",{"visible":true,"at":Vector3(0,.80,.025),"normal":Vector3(0,0,1),"size":Vector2(.32,.34),"outline":light_outline})
 	for door_x:float in p.door_xs:
 		for i in range(16):
 			var a:=PI*i/16.;var b:=PI*(i+1)/16.
@@ -58,6 +61,8 @@ static func build(r,parent:Node3D,house:Dictionary,palette:Array,p:Dictionary)->
 			var block:MeshInstance3D=r._triangles(front,Arch._extrude(polygon,.19),trim.albedo_color);block.material_override=trim;block.name="BasilicaArchVoussoir"
 		for side:float in [-1.,1.]:r._box(root,Vector3(.10,.8,.19),Vector3(door_x+side*(opening+.05),.4,depth+.02),trim).name="BasilicaEntryJamb"
 	r._box(root,Vector3(p.width+.08,.13,.21),Vector3(0,h-.05,depth+.03),trim).name="BasilicaFrontCornice"
+	if preload("res://scripts/world/city_creation_basilica_roof_pitch.gd").authored(house):
+		Meshes.pick(root,house);preload("res://scripts/visual/city_creation_basilica_roof_pitch.gd").build(r,parent,house,palette,p);return
 	var upper:=h+.64;var ridge:=upper+.38
 	var nave_faces:Array[Vector3]=[];var aisle_faces:Array[Vector3]=[]
 	for side:float in [-1.,1.]:
@@ -77,11 +82,16 @@ static func build(r,parent:Node3D,house:Dictionary,palette:Array,p:Dictionary)->
 		uv.append_array(PackedVector2Array([Vector2((i+.5)*columns/32.,0),Vector2(float(i)*columns/32.,Vector2(radius+.07,rise-.04).length()/.28),Vector2(float(i+1)*columns/32.,Vector2(radius+.07,rise-.04).length()/.28)]))
 	Meshes.tiled(r,root,cap,uv,palette[1],"BasilicaApseTileRoof")
 	Meshes.pick(root,house);parent.set_meta("roman_basilica",{"floors":p.floors,"nave_height":ridge,"apse_radius":radius,"open_door_width":opening*2.});parent.set_meta("ancient_roof_patches",3)
+	var high:=-INF;var anchor:=Vector3.ZERO
+	for i in range(0,nave_faces.size(),3):
+		var point:Vector3=(nave_faces[i]+nave_faces[i+1]+nave_faces[i+2])/3.+root.position
+		if point.y>high:high=point.y;anchor=point
+	parent.set_meta("basilica_original_anchor",anchor)
 static func clerestory(r,parent:Node3D,x:float,bottom:float,top:float,depth:float,palette:Array,stone:Material)->void:
 	var count:=maxi(2,roundi(depth*2/.75));var step:=depth*2/count
 	r._box(parent,Vector3(.10,.07,depth*2),Vector3(x,bottom+.035,0),stone).name="BasilicaClerestorySill"
 	r._box(parent,Vector3(.13,.07,depth*2+.12),Vector3(x,top-.035,0),stone).name="BasilicaClerestoryLintel"
-	var glass:Material=r._material(palette[2].darkened(.42));glass.roughness=.35
+	var glass:Material=r._material(palette[2].darkened(.42)).duplicate();glass.roughness=.35
 	for i in range(count):
 		r._box(parent,Vector3(.11,top-bottom,.09),Vector3(x,(top+bottom)*.5,-depth+i*step),stone).name="BasilicaClerestoryPier"
 		r._box(parent,Vector3(.018,top-bottom-.14,step-.12),Vector3(x,(top+bottom)*.5,-depth+(i+.5)*step),glass).name="BasilicaClerestoryGlass"

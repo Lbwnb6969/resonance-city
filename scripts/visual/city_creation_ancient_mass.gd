@@ -16,26 +16,29 @@ static func pick(parent:Node3D,house:Dictionary,cell:Dictionary)->void:
 	for m:MeshInstance3D in parent.find_children("*","MeshInstance3D",true,false):
 		var shape:=ConcavePolygonShape3D.new();shape.backface_collision=true;shape.set_faces(m.mesh.get_faces())
 		var collider:=CollisionShape3D.new();collider.shape=shape;collider.transform=parent.global_transform.affine_inverse()*m.global_transform;body.add_child(collider)
+		if m.name=="GreekContinuousTileRoof" and preload("res://scripts/world/city_creation_boathouse_roof_pitch.gd").authored(house):collider.set_meta("roof_surface",true)
 static func roof(r,parent:Node3D,house:Dictionary,palette:Array,ancient)->bool:
 	var plan:=temple(house)
 	if plan.is_empty():return false
 	# Full building-width pediment, roof and colonnade share a single order.
 	var node:=Node3D.new();node.name="GreekTempleMassing";parent.add_child(node);node.position=Vector3(plan.center.x,float(house.get("base_y",0.)),plan.center.y)
 	var x:float=float(plan.width)*.5+.13;var front:float=float(plan.depth)*.5+.47;var back:float=-float(plan.depth)*.5-.12
-	var eave:=1.80;var ridge:float=eave+minf(.68,x*.38);var color:Color=palette[0].lerp(Color("e6d8b8"),.48);var mat:=stone(color)
-	var a:=Vector3(-x,eave,back);var b:=Vector3(x,eave,back);var c:=Vector3(-x,eave,front);var d:=Vector3(x,eave,front);var top0:=Vector3(0,ridge,back);var top1:=Vector3(0,ridge,front)
-	mesh(r,node,[a,c,top1,a,top1,top0,top0,top1,d,top0,d,b],palette[1],"GreekContinuousTileRoof",Wall.Kind.TERRACOTTA)
-	for z:float in [back,front]:
-		var ped:=Node3D.new();node.add_child(ped);ped.position.z=z
-		mesh(r,ped,A._extrude(PackedVector2Array([Vector2(-x,eave),Vector2(x,eave),Vector2(0,ridge)]),.13),color,"GreekFullWidthPediment")
-		r._box(node,Vector3(x*2+.10,.12,.22),Vector3(0,eave-.055,z),mat)
-		for side:float in [-1.,1.]:
-			var beam:MeshInstance3D=r._box(node,Vector3(Vector2(x,ridge-eave).length()+.08,.065,.20),Vector3(side*x*.5,(ridge+eave)*.5,z+.015),mat)
-			beam.rotation.z=-side*atan2(ridge-eave,x);beam.name="GreekRakingCornice"
-	var caps:Material=Wall.source(palette[1].lightened(.09),null,"component",Wall.Kind.TERRACOTTA)
-	for i in range(1,int(x*2/.22)):
-		var xx:float=-x+i*.22;var y:float=eave+(ridge-eave)*(1.-absf(xx)/x)
-		r._box(node,Vector3(.037,.026,front-back),Vector3(xx,y+.015,(back+front)*.5),caps).name="GreekTerracottaCoverTile"
+	var pitch:float=preload("res://scripts/world/city_creation_roof_pitch_geometry.gd").degrees(house)
+	var eave:=1.80;var ridge:float=eave+(tan(deg_to_rad(pitch))*x if pitch>=0. else minf(.68,x*.38));var color:Color=palette[0].lerp(Color("e6d8b8"),.48);var mat:=stone(color)
+	if not preload("res://scripts/world/city_creation_portico_roof_pitch.gd").active(r.state,house):
+		var a:=Vector3(-x,eave,back);var b:=Vector3(x,eave,back);var c:=Vector3(-x,eave,front);var d:=Vector3(x,eave,front);var top0:=Vector3(0,ridge,back);var top1:=Vector3(0,ridge,front)
+		mesh(r,node,[a,c,top1,a,top1,top0,top0,top1,d,top0,d,b],palette[1],"GreekContinuousTileRoof",Wall.Kind.TERRACOTTA)
+		for z:float in [back,front]:
+			var ped:=Node3D.new();node.add_child(ped);ped.position.z=z
+			if ridge>eave+.00001:mesh(r,ped,A._extrude(PackedVector2Array([Vector2(-x,eave),Vector2(x,eave),Vector2(0,ridge)]),.13),color,"GreekFullWidthPediment")
+			r._box(node,Vector3(x*2+.10,.12,.22),Vector3(0,eave-.055,z),mat)
+			for side:float in [-1.,1.]:
+				var beam:MeshInstance3D=r._box(node,Vector3(Vector2(x,ridge-eave).length()+.08,.065,.20),Vector3(side*x*.5,(ridge+eave)*.5,z+.015),mat)
+				beam.rotation.z=-side*atan2(ridge-eave,x);beam.name="GreekRakingCornice"
+		var caps:Material=Wall.source(palette[1].lightened(.09),null,"component",Wall.Kind.TERRACOTTA)
+		for i in range(1,int(x*2/.22)):
+			var xx:float=-x+i*.22;var y:float=eave+(ridge-eave)*(1.-absf(xx)/x)
+			r._box(node,Vector3(.037,.026,front-back),Vector3(xx,y+.015,(back+front)*.5),caps).name="GreekTerracottaCoverTile"
 	var columns:=4 if plan.width>2. else 2
 	for i in range(columns):
 		var xx:float=lerpf(-x+.23,x-.23,float(i)/(columns-1))

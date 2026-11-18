@@ -2,6 +2,7 @@ extends RefCounted
 ## Red brick, bronze cornices and a joined, two-slope slate mansard envelope.
 const Wall = preload("res://scripts/visual/city_creation_wall_material.gd")
 const Brick=preload("res://scripts/visual/shaders/creation_clockwork_brick.gdshader")
+const Frame=preload("res://scripts/world/city_creation_house_frame.gd")
 const UNIT := 1.8
 const FLOOR := 1.7
 const EAVE := .10
@@ -26,16 +27,25 @@ static func facade(renderer,wall: Node3D,door: bool,upper: bool)->void:
 		for x: float in [-.49,.49]:renderer._box(wall,Vector3(.03,.54,.06),Vector3(x,1.0,.145),bronze)
 	wall.set_meta("clockwork_bronze",true)
 
-static func _tops(city: RefCounted)->Array[Dictionary]:
+static func _tops(city: RefCounted,target:Dictionary)->Array[Dictionary]:
 	var rows: Array[Dictionary]=[]
 	for house: Dictionary in city.houses:
 		if city.house_era(house)!="clockwork":continue
+		var own:bool=str(house.id)==str(target.id)
+		if not own:
+			# A shared square edge must align in the target's design frame.
+			# Directional prototypes also retain their roof orientation.
+			var turn:=wrapf(Frame.yaw(house)-Frame.yaw(target),-PI,PI)
+			if not is_zero_approx(Frame.Hinge.angle(target)) or not is_zero_approx(Frame.Hinge.angle(house)):continue
+			if absf(sin(turn*2.))>.00001 or (target.get("architecture","") in preload("res://scripts/world/city_creation_architecture_choice.gd").CLOCKWORK and not is_zero_approx(turn)):continue
 		for cell: Dictionary in house.cells:
 			if cell.kind!="room":continue
 			var covered := false
 			for other: Dictionary in house.cells:
 				if int(other.x)==int(cell.x) and int(other.z)==int(cell.z) and int(other.level)>int(cell.level):covered=true;break
-			if not covered:rows.append({"house":str(house.id),"cell":cell,"center":Vector2(house.origin[0]+cell.x*UNIT,house.origin[1]+cell.z*UNIT),"base":float(house.get("base_y",0.))+(int(cell.level)+1)*FLOOR})
+			if not covered:
+				var center:=Vector2(house.origin[0]+cell.x*UNIT,house.origin[1]+cell.z*UNIT) if own else Frame.inverse(target,Frame.center(house,cell))
+				rows.append({"house":str(house.id),"cell":cell,"center":center,"base":float(house.get("base_y",0.))+(int(cell.level)+1)*FLOOR})
 	return rows
 
 static func roof_height(distance: float)->float:
@@ -44,17 +54,16 @@ static func roof_height(distance: float)->float:
 static func adjacency_signature(city: RefCounted,house: Dictionary)->Array:
 	if city.house_era(house)!="clockwork":return []
 	var result: Array=[]
-	var bounds:=Rect2(Vector2(house.origin[0],house.origin[1]),Vector2.ZERO)
-	for cell: Dictionary in house.cells:bounds=bounds.expand(Vector2(house.origin[0]+cell.x*UNIT,house.origin[1]+cell.z*UNIT))
+	var bounds:=Frame.house_bounds(house).grow(UNIT+.01)
 	for other: Dictionary in city.houses:
-		for cell: Dictionary in other.cells:
-			if bounds.grow(UNIT+.01).has_point(Vector2(other.origin[0]+cell.x*UNIT,other.origin[1]+cell.z*UNIT)):
-				result.append([other.id,city.house_era(other),other.cells]);break
+		if bounds.intersects(Frame.house_bounds(other),true):
+			result.append([other.id,city.house_era(other),other.cells,other.get("base_y",0.),other.get("yaw",0.),other.get("architecture",""),other.get("roof_pitch",{}),other.get("bend_angle_deg",0.)])
 	return result
 
 static func prepare(city: RefCounted,house: Dictionary)->Array:
-	if house.get("architecture","") in preload("res://scripts/world/city_creation_architecture_choice.gd").CLOCKWORK:return preload("res://scripts/visual/city_creation_clockwork_prototypes.gd").prepare(city,house,_tops(city))
-	var rows := _tops(city)
+	if preload("res://scripts/world/city_creation_clockwork_roof_pitch.gd").authored(house):return preload("res://scripts/world/city_creation_clockwork_roof_pitch.gd").records(city,house)
+	var rows:Array=_tops(city,house).filter(func(row):return not preload("res://scripts/world/city_creation_clockwork_roof_pitch.gd").authored(city.houses[city._house_index(row.house)]))
+	if house.get("architecture","") in preload("res://scripts/world/city_creation_architecture_choice.gd").CLOCKWORK:return preload("res://scripts/visual/city_creation_clockwork_prototypes.gd").prepare(city,house,rows)
 	var boundaries: Array=[]
 	for row: Dictionary in rows:
 		for side: Vector2 in [Vector2.RIGHT,Vector2.LEFT,Vector2.UP,Vector2.DOWN]:
@@ -64,6 +73,7 @@ static func prepare(city: RefCounted,house: Dictionary)->Array:
 			if neighbor:continue
 			var tangent := Vector2(-side.y,side.x)
 			boundaries.append({"a":Vector2(row.center)+side*(.9+EAVE)-tangent*(.9+EAVE),"b":Vector2(row.center)+side*(.9+EAVE)+tangent*(.9+EAVE),"base":row.base})
+	var query=preload("res://scripts/visual/city_creation_clockwork_roof_query.gd").new(boundaries)
 	var records: Array=[]
 	for row: Dictionary in rows:
 		if row.house!=str(house.id):continue
@@ -85,10 +95,7 @@ static func prepare(city: RefCounted,house: Dictionary)->Array:
 				var points: Array[Vector3]=[]
 				for corner: Vector2 in [Vector2(x,z),Vector2(x+1,z),Vector2(x+1,z+1),Vector2(x,z+1)]:
 					var at := rect.position+corner/Vector2(nx,nz)*rect.size
-					var distance:=INF
-					for edge: Dictionary in boundaries:
-						if absf(float(edge.base)-float(row.base))>.002:continue
-						distance=minf(distance,at.distance_to(Geometry2D.get_closest_point_to_segment(at,edge.a,edge.b)))
+					var distance:float=query.distance_at(at,float(row.base))
 					points.append(Vector3(at.x,float(row.base)+roof_height(distance),at.y))
 				faces.append_array([points[0],points[2],points[1],points[0],points[3],points[2]])
 		var surface:=SurfaceTool.new();surface.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -101,6 +108,7 @@ static func prepare(city: RefCounted,house: Dictionary)->Array:
 	return records
 
 static func install(renderer,root:Node3D,house:Dictionary,data:Dictionary)->void:
+	if data.get("authored_clockwork",false):preload("res://scripts/visual/city_creation_clockwork_roof_pitch.gd").build(renderer,root,house,data);return
 	if data.has("prototype"):
 		preload("res://scripts/visual/city_creation_clockwork_prototypes.gd").install(renderer,root,house,data);return
 	var row:Dictionary=data

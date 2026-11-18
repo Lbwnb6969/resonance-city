@@ -1,13 +1,11 @@
 shader_type spatial;
-render_mode specular_disabled;
+render_mode specular_disabled, cull_disabled;
 #include "res://scripts/visual/shaders/creation_safe_math.gdshaderinc"
-#include "res://scripts/visual/shaders/creation_wind.gdshaderinc"
-uniform float wind_time_override=-1.;
-uniform vec2 touch_at=vec2(0.0);
-uniform float touch_time=10.0;
+#include "res://scripts/visual/shaders/creation_paint_color.gdshaderinc"
+#include "res://scripts/visual/shaders/creation_foliage_motion.gdshaderinc"
 uniform float season_gold=0.0;
-uniform float micro_normal_strength=.045;
-uniform float transmission_strength=.32;
+uniform float micro_normal_strength=.018;
+uniform float transmission_strength=.42;
 varying float leaf_height;
 varying vec3 leaf_world;
 varying vec3 canopy_normal;
@@ -26,23 +24,24 @@ vec3 leaf_micro_normal(vec3 world,vec3 n){
 }
 void vertex(){
 	vec3 world=(MODEL_MATRIX*vec4(VERTEX,1)).xyz;
-	float clock=wind_time_override<0.?TIME:wind_time_override;
-	float weight=COLOR.a*COLOR.a;
-	float touched=exp(-touch_time*3.0)*sin(touch_time*13.0)*(1.0-smoothstep(0.,2.5,length(world.xz-touch_at)));
-	vec3 drift=creation_wind_offset(world.xz,clock,.047)+vec3(touched*.10,0.,touched*.06);
-	VERTEX+=inverse(mat3(MODEL_MATRIX))*drift*weight;
+	VERTEX+=inverse(mat3(MODEL_MATRIX))*creation_foliage_offset(world,COLOR.a);
 	leaf_world=(MODEL_MATRIX*vec4(VERTEX,1)).xyz;
 	canopy_normal=safe_normalize(MODEL_NORMAL_MATRIX*NORMAL);leaf_height=COLOR.a;
 }
 void fragment(){
-	vec3 world_normal=leaf_micro_normal(leaf_world,safe_normalize(canopy_normal));
+	float footprint=max(length(dFdx(leaf_world)),length(dFdy(leaf_world)));
+	float detail=1.0-smoothstep(.006,.028,footprint);
+	vec3 normal=safe_normalize(canopy_normal);
+	vec3 world_normal=normal;
+	if(detail>.001){world_normal=safe_normalize(mix(normal,leaf_micro_normal(leaf_world,normal),detail));}
 	NORMAL=safe_normalize((VIEW_MATRIX*vec4(world_normal,0)).xyz);
-	float grain=leaf_grain(leaf_world.xz*18.0)*.04-.02;
-	ALBEDO=mix(COLOR.rgb,COLOR.rgb*vec3(1.28,.91,.58),season_gold*.72)*(1.0+grain);
-	float canopy_ao=mix(.66,1.0,smoothstep(.12,.92,leaf_height));
+	float grain=detail>.001 ? (leaf_grain(leaf_world.xz*18.0)*.04-.02)*detail : 0.;
+	vec3 paint=creation_paint_color(COLOR.rgb);
+	ALBEDO=mix(paint,paint*vec3(1.28,.91,.58),season_gold*.72)*(1.0+grain);
+	float canopy_ao=mix(.82,1.0,smoothstep(.12,.92,leaf_height));
 	AO=canopy_ao;ROUGHNESS=.96;SPECULAR=0.;
 	float edge=pow(1.0-abs(dot(safe_normalize(NORMAL),safe_normalize(VIEW))),2.0);
-	EMISSION=ALBEDO*.008;RIM=edge*.09;RIM_TINT=.9;
+	RIM=edge*.04;RIM_TINT=.9;
 }
 void light(){
 	float ndl=dot(safe_normalize(NORMAL),safe_normalize(LIGHT));

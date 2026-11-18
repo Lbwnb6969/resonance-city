@@ -30,6 +30,8 @@ var key_label:="":
 		if key_label!=value:key_label=value;queue_redraw()
 var draw_count:=0
 var _hover:Tween
+var _primary := false
+var _selection_style: StyleBoxFlat
 
 func configure(glyph:String,diameter:float=36.)->void:
 	kind=glyph;text="";set_meta("vector_seal",true)
@@ -45,12 +47,35 @@ func configure(glyph:String,diameter:float=36.)->void:
 	pivot_offset=size*.5
 	queue_redraw()
 
+func configure_primary() -> void:
+	_primary = true
+	custom_minimum_size = Vector2(56, 46)
+	for state: String in ["normal", "disabled", "hover", "pressed", "focus"]:
+		var style := StyleBoxFlat.new()
+		style.set_corner_radius_all(12)
+		style.bg_color = UI.CARD if state == "hover" else Color.TRANSPARENT
+		add_theme_stylebox_override(state, style)
+	_selection_style = StyleBoxFlat.new()
+	_selection_style.bg_color = Color("38584d")
+	_selection_style.set_corner_radius_all(12)
+
+func _draw_primary() -> void:
+	var selected := active or is_pressed()
+	var ink := UI.INSET if selected else UI.INK
+	if selected:
+		draw_style_box(_selection_style, Rect2(Vector2.ZERO, size))
+	Icons.draw_icon(self, kind, Vector2(size.x*.5, 15), 12.0, ink, UI.GOLD)
+	draw_string(get_theme_default_font(), Vector2(0, 39), caption, HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, ink)
+
 func _float_to(value:float)->void:
 	if _hover!=null:_hover.kill()
 	_hover=create_tween();_hover.tween_property(self,"scale",Vector2.ONE*value,.20).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 func _draw()->void:
 	draw_count+=1
+	if _primary:
+		_draw_primary()
+		return
 	var color:=UI.PAPER if is_pressed() or active else UI.INK
 	if muted:color=UI.MUTED
 	if active:

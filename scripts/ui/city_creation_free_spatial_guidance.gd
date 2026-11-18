@@ -1,6 +1,7 @@
 extends RefCounted
 ## Read-only free-city guidance; historical business status remains classic-only.
 const Zones=preload("res://scripts/world/city_creation_functional_zones.gd")
+const Description=preload("res://scripts/ui/city_creation_space_description.gd")
 static func inspector(city:RefCounted,id:String)->Dictionary:
 	var result:={"text":"","action":"","tool":-1,"target":id,"command":""}
 	var report:Dictionary=city.functional_zones()
@@ -10,6 +11,14 @@ static func inspector(city:RefCounted,id:String)->Dictionary:
 	var house:Dictionary=report.houses[id];var names:PackedStringArray=[]
 	for kind:String in house.kinds:names.append(Zones.NAMES[kind])
 	result.text=" / ".join(names)
+	var spaces:Array=report.spaces.filter(func(space):return id in space.members)
+	var ranks:={"trait":0,"cluster":1,"district":2}
+	spaces.sort_custom(func(a,b):return ranks[a.stage]>ranks[b.stage])
+	var descriptions:PackedStringArray=[]
+	for space:Dictionary in spaces:
+		var line:String=Description.STAGES[space.stage]+" · "+Description.detail(space,report.network_ready)
+		if not line in descriptions:descriptions.append(line)
+	if not descriptions.is_empty():result.text="\n".join(descriptions)
 	if not house.connected:
 		result.text+=" · 门前尚未接路。";result.action="到门前接路";result.tool=2;return result
 	result.text+=" · 门前已接路。"

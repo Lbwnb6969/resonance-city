@@ -1,0 +1,2399 @@
+{
+  "schema": "music_style_scene_review_v1",
+  "policy": "Provisional editorial fit, separate from exact prompt provenance. Retain every older original as reserve.",
+  "counts": {
+    "古典田园河湾": 27,
+    "蒸汽钟表与花房": 9,
+    "跨时代储备": 15,
+    "现代生态交响城": 20,
+    "采样 / 环境素材": 3,
+    "文艺复兴连拱城": 8
+  },
+  "songs": [
+    {
+      "source_id": "01a8ed354b835f12df7a7671a83f150ca249abfabbc2d7be757d1fe65b520e5d",
+      "name": "Pastoral Riverside Dawn Chamber Music [20261102].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "用户原曲听评优先；分轨与运行适配独立待验",
+      "reasons": [
+        "用户听评：旋律比较突出，不适合作为开局；需要再听",
+        "频谱质心均值 774 Hz；起音率估计 2.83/秒",
+        "吉他模型槽 -5.1 dB、钢琴槽 -22.5 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -2.691206022014503,
+        "vocals": -17.970200148069715,
+        "guitar": -5.134329043562448,
+        "piano": -22.533584739680812
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35/ly35_river_dawn/v1/analysis/20261102-130707-788112/001_Pastoral Riverside Dawn Chamber Music/summary.json",
+      "analysis_sha256": "48a6298157be8a0d0bd4487c7cfc3f0c2278785a9b00dc22ac7aa5d127e6dcca",
+      "user_review": {
+        "source_id": "01a8ed354b835f12df7a7671a83f150ca249abfabbc2d7be757d1fe65b520e5d",
+        "name": "Pastoral Riverside Dawn Chamber Music [20261102].mp3",
+        "updated_at": "2026-11-04T06:56:57.760Z",
+        "status": "user_review_pending_engine_adoption",
+        "assignment": "",
+        "era": "田园",
+        "density": "",
+        "verdict": "需要再听",
+        "notes": "旋律比较突出，不适合作为开局"
+      },
+      "full_mix_user_verdict": "需要再听",
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "41eb46deae028be4e50d15d0a2576303c52b1d64690e12162745dfec6df5b44f",
+      "name": "Acoustic Instrument Sampling Session [20261102].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "空地 / 孤屋背景（用户听评）"
+      ],
+      "confidence": "用户原曲听评优先；分轨与运行适配独立待验",
+      "reasons": [
+        "用户听评：比较单一的音轨；接受",
+        "频谱质心均值 893 Hz；起音率估计 2.00/秒"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -55.835360017454434,
+        "other": -2.7147735124659826,
+        "vocals": -48.33708339156614,
+        "guitar": -6.639198597888679,
+        "piano": -22.747134114976582
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/001_Acoustic Instrument Sampling Session/summary.json",
+      "analysis_sha256": "493d46e9e371c3e7921ae2330e226c9b79b921c2447329cb3943683e828e07e6",
+      "user_review": {
+        "source_id": "41eb46deae028be4e50d15d0a2576303c52b1d64690e12162745dfec6df5b44f",
+        "name": "Acoustic Instrument Sampling Session [20261102].mp3",
+        "updated_at": "2026-11-04T06:57:51.781Z",
+        "status": "user_review_pending_engine_adoption",
+        "assignment": "",
+        "era": "田园",
+        "density": "空地 / 孤屋背景",
+        "verdict": "接受",
+        "notes": "比较单一的音轨"
+      },
+      "full_mix_user_verdict": "接受",
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "b6f52a110a0af1901181af9f06aace39a5b52d20942a4226dea56ecd4186bc02",
+      "name": "Comforting Neoclassical Chamber Music [20261102].mp3",
+      "era": "clockwork",
+      "era_label": "蒸汽钟表与花房",
+      "scenes": [
+        "丰富空间（用户听评）"
+      ],
+      "confidence": "用户原曲听评优先；分轨与运行适配独立待验",
+      "reasons": [
+        "用户听评：多条轨比较适合分出去；接受",
+        "频谱质心均值 805 Hz；起音率估计 2.57/秒",
+        "钢琴模型槽相对母带 RMS -3.9 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -26.83028810479331,
+        "other": -6.216898507539296,
+        "vocals": -32.018609106142776,
+        "guitar": -15.656189739302429,
+        "piano": -3.86165882827929
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/002_Comforting Neoclassical Chamber Music/summary.json",
+      "analysis_sha256": "05c65bd35d905e961ff3aaf8ba3c04461933f04e35fd69b2a0cd0dacd07e6a02",
+      "user_review": {
+        "source_id": "b6f52a110a0af1901181af9f06aace39a5b52d20942a4226dea56ecd4186bc02",
+        "name": "Comforting Neoclassical Chamber Music [20261102].mp3",
+        "updated_at": "2026-11-04T06:58:33.559Z",
+        "status": "user_review_pending_engine_adoption",
+        "assignment": "",
+        "era": "机械",
+        "density": "丰富空间",
+        "verdict": "接受",
+        "notes": "多条轨比较适合分出去"
+      },
+      "full_mix_user_verdict": "接受",
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "90a277ed169c5e895da22110f8c6947026792d3ae489b44f9d7aeb80faeebca2",
+      "name": "Joyful Chamber Ensemble Celebration [20261102].mp3",
+      "era": "clockwork",
+      "era_label": "蒸汽钟表与花房",
+      "scenes": [
+        "流动水岸 / 曲路候选",
+        "围合暖院候选",
+        "手作街区候选"
+      ],
+      "confidence": "低：起音 / 低音织体适合尝试钟表街区",
+      "reasons": [
+        "频谱质心均值 1317 Hz；起音率估计 3.12/秒",
+        "打击起音模型槽 -17.6 dB、低音槽 -10.9 dB；不证明具有机械时代的作曲语言",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -10.921136730209236,
+        "drums": -17.593432706480087,
+        "other": -1.3160142075919992,
+        "vocals": -38.04245285049069,
+        "guitar": -14.713628787353436,
+        "piano": -29.59482317854541
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/003_Joyful Chamber Ensemble Celebration/summary.json",
+      "analysis_sha256": "9f30dd7675826171bfafb0ab4db80efe0927d6fb7a686dff44347ade928c6171",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "bce5a2416e254a2d61dc7b5a801b516d8d731df85f44acb006e7c4850b326ed5",
+      "name": "Minimalist Botanical Chamber Composition [20261102].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "流动水岸 / 曲路候选",
+        "围合暖院候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 782 Hz；起音率估计 3.78/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -11.009705220552258,
+        "other": -1.6870852404137038,
+        "vocals": -14.647442645784313,
+        "guitar": -16.857859019551885,
+        "piano": -18.663442994190778
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/004_Minimalist Botanical Chamber Composition/summary.json",
+      "analysis_sha256": "26bfdf8b3817158c19c725d9644def74994b7439c607d2a5be21526494c48521",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "e1f82908d73abd0d725eb6171d8ea0565077d56852fe7fc5e8323180bad9822a",
+      "name": "Minimalist Chamber Music Composition [20261102].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "流动水岸 / 曲路候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 653 Hz；起音率估计 3.76/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "drums": -36.85077520497349,
+        "other": -1.323360717611474,
+        "vocals": -24.064525242686244,
+        "guitar": -17.64345585883666,
+        "piano": -17.368976573628704
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/005_Minimalist Chamber Music Composition/summary.json",
+      "analysis_sha256": "ba2c1685854637825caf9b764734f91e8500b4a8fe741a9eb50eed63932f1361",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "63b4d6819dad065edf3a849b475e7dd0de140600d90169a936d594b9f859473d",
+      "name": "Misty River Instrumental Chamber Music [20261102].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 834 Hz；起音率估计 2.53/秒",
+        "吉他模型槽 -5.4 dB、钢琴槽 -21.9 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -2.631461081984561,
+        "guitar": -5.363836457856424,
+        "piano": -21.871905370195233
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/006_Misty River Instrumental Chamber Music/summary.json",
+      "analysis_sha256": "1a9012e76e707c4448a979386d0dbe52eb07ce88e52fe3e2e2b1cf468cae4e7e",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "bcaf1a13910f33f9a3dcbf3e993c675fecc34ee7e02eb567614aca1a9caa25ed",
+      "name": "Neoclassical Coastal Chamber Music [20261102].mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 767 Hz；起音率估计 2.40/秒",
+        "钢琴模型槽相对母带 RMS -8.5 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -41.1476037747093,
+        "drums": -47.476529044893866,
+        "other": -4.872578479355399,
+        "vocals": -20.151422497844425,
+        "guitar": -10.450974851581236,
+        "piano": -8.497547371035134
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/007_Neoclassical Coastal Chamber Music/summary.json",
+      "analysis_sha256": "4bd1465e255dac86d6c74b7b2c2381255cc6293eeeefb9ccff9fd4a35e47bfa1",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "1070b2492cbe6553297f353d8003460bbe6511b5dae1118fbe14ad112938ec07",
+      "name": "Nocturnal Chamber Music Composition [20261102].mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 800 Hz；起音率估计 2.02/秒",
+        "钢琴模型槽相对母带 RMS -6.5 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -43.05951872469009,
+        "drums": -40.5127402646835,
+        "other": -4.7542053002696125,
+        "vocals": -18.837252583904373,
+        "guitar": -13.157869171064547,
+        "piano": -6.476548033099906
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/008_Nocturnal Chamber Music Composition/summary.json",
+      "analysis_sha256": "0fac4b80b5c5307a6825afdb8f55de7962e708e190a733c995a65f04181e711d",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "c194a9a9d01b186e25c244902254b9fe6a0e9a5c78f7b954dfb720e5875c7b76",
+      "name": "Pastoral Chamber Music Composition [20261102].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 926 Hz；起音率估计 2.58/秒",
+        "吉他模型槽 -4.5 dB、钢琴槽 -26.7 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -2.9173767488282127,
+        "vocals": -33.05785132825127,
+        "guitar": -4.459849551078773,
+        "piano": -26.677044320355563
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/009_Pastoral Chamber Music Composition/summary.json",
+      "analysis_sha256": "46295a3d8d9efec83a5dac2f3b238bafa46f25dd732fdd82b45a811e1e11c068",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "745c986623de307a6ca19c4615d9c554415a0631f9d03fabb6a6d55e6cec25a6",
+      "name": "Pastoral Chamber Trio Composition [20261102].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 880 Hz；起音率估计 2.68/秒",
+        "吉他模型槽 -4.6 dB、钢琴槽 -33.0 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -38.94559572971654,
+        "other": -2.6273489697818224,
+        "guitar": -4.644239710541019,
+        "piano": -32.9755597752967
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/010_Pastoral Chamber Trio Composition/summary.json",
+      "analysis_sha256": "e1e23a281e673b87e98c575f3fc13431c9da5f0d3edf0b4adae8ac9c18566087",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "553cf9787956e896fe1d26fcf4defceff8a7306bade7feecc5b76c0b561a0177",
+      "name": "Renaissance Chamber Music Composition [20261102].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "开阔庭院 / 高地候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 1250 Hz；起音率估计 2.65/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -0.4107236264164643,
+        "guitar": -18.36004814544395,
+        "piano": -26.130237669115953
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/011_Renaissance Chamber Music Composition/summary.json",
+      "analysis_sha256": "5b46bd2b1f541572da9dac8832b7f042fa6a178cccaadfd7237c8a33854324d0",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "299dfc96194530c13263077f844e3870280b9b3c7ac1cf3e026a5e245f5871ac",
+      "name": "Renaissance Chamber Pavane Trio [20261102].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 963 Hz；起音率估计 2.64/秒",
+        "吉他模型槽 -6.3 dB、钢琴槽 -24.2 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -22.58405867658358,
+        "drums": -36.39841553695018,
+        "other": -2.7787371428747694,
+        "vocals": -26.874697909951877,
+        "guitar": -6.305432205105084,
+        "piano": -24.180758971535504
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/012_Renaissance Chamber Pavane Trio/summary.json",
+      "analysis_sha256": "e3edfc1233a0f6e07fe9a49c4ebf6a8dabe27d310ea68fd07eb992dcf09d2f0e",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "c8dfc3fb53e4c719865007379808f8860a90c25f72789855ba5074947a25226f",
+      "name": "Serene Ecological City Soundscape [20261102].mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "安静庭院 / 黄昏候选",
+        "围合暖院候选",
+        "手作街区候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 897 Hz；起音率估计 2.37/秒",
+        "钢琴模型槽相对母带 RMS -5.7 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -4.254919951514679,
+        "drums": -7.983665131830888,
+        "other": -12.081624457036478,
+        "vocals": -33.94741016496049,
+        "guitar": -33.039244849129865,
+        "piano": -5.680515607612189
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/013_Serene Ecological City Soundscape/summary.json",
+      "analysis_sha256": "4293929e77e57f278b9b02779b743b094f527c62cc89b022c8c4865f77f49c38",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "6281a35da5928a5381800ef4ff0e6fc3ab62e6b8351802396992f526d19b00e8",
+      "name": "Soulful Cello Chamber Composition [20261102].mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "开阔庭院 / 高地候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 1279 Hz；起音率估计 2.44/秒",
+        "钢琴模型槽相对母带 RMS -4.2 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -35.43930056654737,
+        "drums": -35.66770027080895,
+        "other": -4.206804048677878,
+        "vocals": -34.48848023890516,
+        "guitar": -18.785501216703096,
+        "piano": -4.234744798915678
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/014_Soulful Cello Chamber Composition/summary.json",
+      "analysis_sha256": "da5b411a6aaf2ac699740f00b0fd5df84e438d4aaf44aadad9f29bbbc5fb73e6",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "fc6dd428265f6f13de1686bc3f984b288f70e6ef33d6d769b99f7e8c6def9c4b",
+      "name": "Sunlight on Still Water [20261102].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 863 Hz；起音率估计 2.23/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -34.918791032063325,
+        "other": -3.30206869308733,
+        "vocals": -35.111916334646914,
+        "guitar": -14.61686006056854,
+        "piano": -10.616802614561134
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/015_Sunlight on Still Water/summary.json",
+      "analysis_sha256": "c03a269a75d0c1155790716697277d1e14396c77f1c20c76c574c7c34613c68f",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "94effa99ebd29f680d37dd824d5f110d888ddaf558f5c2114985837943a8f894",
+      "name": "Tranquil Chinese Chamber Music Composition [20261102].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 819 Hz；起音率估计 2.37/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -40.63858110887904,
+        "other": -1.6639757020176746,
+        "vocals": -42.66677691139403,
+        "guitar": -10.390269100269142,
+        "piano": -16.049735925962555
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/016_Tranquil Chinese Chamber Music Composition/summary.json",
+      "analysis_sha256": "158108d9ea6163e2a69d2370680091d1a23d6df178e218182471fdf9f768bd6c",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "dc0817dd28c07ff3ca19f4ee024db155a969fad3648077f3090a8c028fd9f388",
+      "name": "Wakeup [20261102].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 900 Hz；起音率估计 2.48/秒",
+        "吉他模型槽 -1.7 dB、钢琴槽 -100.0 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -19.701675137737706,
+        "other": -9.505640870630792,
+        "vocals": -22.761527822669336,
+        "guitar": -1.7454949167415865,
+        "drums": -45.42925902912158
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/017_Wakeup/summary.json",
+      "analysis_sha256": "8e1d77e1a6586d8cf71cd6b02fe10af59f079fb0d5bdf33824d5ac441d65affe",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "1a0e9068ba1a1e61cb3fb121690a456b02b83baeada8a8ac141d078a8a70dca2",
+      "name": "Woodland Chamber Folk Instrumental [20261102].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "流动水岸 / 曲路候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 903 Hz；起音率估计 3.13/秒",
+        "吉他模型槽 -4.8 dB、钢琴槽 -14.8 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -38.72586704005491,
+        "drums": -49.14024973687887,
+        "other": -2.604062888703787,
+        "guitar": -4.83387202793396,
+        "piano": -14.760819748889677
+      },
+      "analysis": "数据/音乐资产/制作批次/lyria35_instruments/20261102_v1/analysis/20261102-133225-780126/018_Woodland Chamber Folk Instrumental/summary.json",
+      "analysis_sha256": "becfbb1399a06c68c8da559c12b9bd378eae0baed6b165e093b8eee77a78393a",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "3528f0d8681b2a567e1f3bee1c8e35130c92ccda44f58e1d1fbdc4f764fdbced",
+      "name": "Acoustic Guitar Soundtrack Loop [20261103].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "流动水岸 / 曲路候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 628 Hz；起音率估计 3.72/秒",
+        "吉他模型槽 -0.7 dB、钢琴槽 -26.7 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -15.72973732687042,
+        "drums": -23.755356823594013,
+        "other": -18.964756031972133,
+        "guitar": -0.6623147047643663,
+        "piano": -26.709070300683845
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/001_Acoustic Guitar Soundtrack Loop/summary.json",
+      "analysis_sha256": "ece521cdc95f5f11868c93600c8ea07daa3e5b1a732ba52218fa3ba9e405e1f7",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "be35cfacbc0666a140f6d06f25eea110a0298365999ac5958e53bccd8bcd5be0",
+      "name": "Acoustic Instrument Sampling Session [20261103].mp3",
+      "era": "special",
+      "era_label": "采样 / 环境素材",
+      "scenes": [
+        "专用素材储备，不进普通曲目自动池"
+      ],
+      "confidence": "沿用已登记的素材类别",
+      "reasons": [
+        "频谱质心均值 884 Hz；起音率估计 3.44/秒"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -39.541612575001764,
+        "drums": -38.65406083456974,
+        "other": -30.604258207590767,
+        "guitar": -0.1317383605015549,
+        "piano": -21.59929081629552
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/002_Acoustic Instrument Sampling Session/summary.json",
+      "analysis_sha256": "ab283f0f913e02334e0895c96c7ab933ec5ce59e8f44dcb5585fc3812ab8f52b",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "55c50201dc3016f73a8c28da60ada9b855933b6fbae33978df835d90cc23c936",
+      "name": "Cinematic Neoclassical Ambient Composition [20261103].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "安静庭院 / 黄昏候选",
+        "手作街区候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 791 Hz；起音率估计 2.14/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -16.64249814406257,
+        "drums": -17.959614786376065,
+        "other": -4.6645254669398994,
+        "vocals": -40.575057895980805,
+        "guitar": -9.884288361780257,
+        "piano": -9.231736426196512
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/003_Cinematic Neoclassical Ambient Composition/summary.json",
+      "analysis_sha256": "049f19fa265dd24eb87493b605458cc0d24999175ad07d610fb2ee47441fc8b7",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "1aad98352b8efa3f62f47726fd846c29b047e8865f8aae326e5ae1bb6f1797db",
+      "name": "Clockwork Chamber Music Composition [20261103].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "流动水岸 / 曲路候选",
+        "围合暖院候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 1041 Hz；起音率估计 3.19/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -8.249490096975764,
+        "drums": -26.899281352282106,
+        "other": -1.6078915296595884,
+        "guitar": -17.070036200192263,
+        "piano": -20.052818691856533
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/004_Clockwork Chamber Music Composition/summary.json",
+      "analysis_sha256": "4535fd93e9a9b7e068d3e19e15b0e56c9be0282a35137a782325fee9e4192a90",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "b0f8656af3e02f097b6d87b6a0a839d7e772c21a9cb1603f940fc6482377b435",
+      "name": "Coastal Ambient Piano Composition [20261103].mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 501 Hz；起音率估计 2.38/秒",
+        "钢琴模型槽相对母带 RMS -3.4 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -32.62217335844541,
+        "drums": -52.52281015692298,
+        "other": -7.053695411663506,
+        "guitar": -31.87473493543928,
+        "piano": -3.3823671202515477
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/005_Coastal Ambient Piano Composition/summary.json",
+      "analysis_sha256": "47bc89f69d2a01fc35bd3bacaf7d2e52d60fb4beb2f9c9ba98a66119630074ea",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "046e57c4629a21e2e1b229722c21aaafe72a298a061e5dcbf5781897ab22d414",
+      "name": "Golden Autumn Chamber Music [20261103].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "安静庭院 / 黄昏候选",
+        "围合暖院候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 917 Hz；起音率估计 2.79/秒",
+        "吉他模型槽 -7.9 dB、钢琴槽 -37.4 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -6.205665802349464,
+        "drums": -39.08951916297487,
+        "other": -2.859756297717533,
+        "vocals": -34.956175572271924,
+        "guitar": -7.884969496753893,
+        "piano": -37.438976808568356
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/006_Golden Autumn Chamber Music/summary.json",
+      "analysis_sha256": "e57abcbda1b88ec0b8ae5cf2799e8ceeb7d7fe6c7a4d333a285040746cd0a43f",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "200d0c73687ac128abe1851289d99d803f66d4f9afcf7c580287b8cad77b1d70",
+      "name": "Intimate Chamber Music for Twilight [20261103].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "开阔庭院 / 高地候选",
+        "围合暖院候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 1107 Hz；起音率估计 2.07/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -4.744899713193211,
+        "drums": -35.239039200195855,
+        "other": -4.398000350280697,
+        "vocals": -31.803847331041524,
+        "guitar": -9.353580896140443,
+        "piano": -36.34637207239677
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/007_Intimate Chamber Music for Twilight/summary.json",
+      "analysis_sha256": "7812d8c9a26e4c5b8b11dc0c8aad3558d9e95bc7d62986dc3ce97632d6b6d005",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "090b1413d9fd5daf8582d6fbdd43b83bd758211431b595d3b7aa79fed87722a8",
+      "name": "Intimate Chamber Trio Composition [20261103].mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "开阔庭院 / 高地候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 1183 Hz；起音率估计 2.30/秒",
+        "钢琴模型槽相对母带 RMS -4.1 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -49.57104015021247,
+        "drums": -36.379788879039985,
+        "other": -4.736444588718274,
+        "vocals": -21.160033195798217,
+        "guitar": -16.107117248493164,
+        "piano": -4.147940586792366
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/008_Intimate Chamber Trio Composition/summary.json",
+      "analysis_sha256": "23f1ec3e9c73785f020c8bcf45ea5ae64634b6acc81ed26e8804aeea7c276758",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "a0fd001c88648ab88ed3d57c7c885e6a2a22a55d0e77e6fe3ac3801371edc8e8",
+      "name": "Intimate Neoclassical Piano Cello Ballad [20261103].mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 784 Hz；起音率估计 2.13/秒",
+        "钢琴模型槽相对母带 RMS -4.6 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -4.8473691227105,
+        "vocals": -18.759596567826232,
+        "guitar": -20.123492072476864,
+        "piano": -4.559648811763431
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/009_Intimate Neoclassical Piano Cello Ballad/summary.json",
+      "analysis_sha256": "1ce923b0d4ea6ce15a25e990447070892541680d4c37fa685ae358026f742199",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "b159dc46cb24b2b5d11b8b718beda1e287687ac22d46d89b2d4ae6ebf24dc033",
+      "name": "Joyful Instrumental Chamber Celebration [20261103].mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "流动水岸 / 曲路候选",
+        "围合暖院候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 1092 Hz；起音率估计 3.75/秒",
+        "钢琴模型槽相对母带 RMS -8.4 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -8.621368430021189,
+        "drums": -39.4924913580348,
+        "other": -3.018659451243825,
+        "vocals": -37.608362699331394,
+        "guitar": -14.826562093206391,
+        "piano": -8.38840630454547
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/010_Joyful Instrumental Chamber Celebration/summary.json",
+      "analysis_sha256": "98028b14140a5e8d91e62f1a6d87b6b6e8ef5884e3bcec4c043156c402d373e4",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "7177074b57f9d88b853463cd3d519b60b9e8ca1d47d62bab56375712c7fcbc3e",
+      "name": "Luminous Chamber Trio Composition [20261103].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "流动水岸 / 曲路候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 898 Hz；起音率估计 3.09/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -2.11885286129748,
+        "vocals": -40.79918506755527,
+        "guitar": -11.717973895278925,
+        "piano": -14.972121719362256
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/011_Luminous Chamber Trio Composition/summary.json",
+      "analysis_sha256": "3de38349b07f5fb4f2fc366fd6726a9d03436be048db78c28419d9b70711cede",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "1e19b421b76c9722dbd55fb6abc676cae5eceba7794bc1822a82ced1a122f544",
+      "name": "Mediterranean Olive Grove Soundscape [20261103].mp3",
+      "era": "special",
+      "era_label": "采样 / 环境素材",
+      "scenes": [
+        "专用素材储备，不进普通曲目自动池"
+      ],
+      "confidence": "沿用已登记的素材类别",
+      "reasons": [
+        "频谱质心均值 783 Hz；起音率估计 2.76/秒"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -1.0325684652418703,
+        "guitar": -14.59505075868285,
+        "piano": -17.429393618555565,
+        "drums": -47.9319472545246
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/012_Mediterranean Olive Grove Soundscape/summary.json",
+      "analysis_sha256": "ff71f78df3ef2a5ca5677a4e806a34626f80565b636fced3a7e434bebf7331e5",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "731cecdd3a4f8a07c479da2fd6fb10d1a310470e2faa36c804dd1d79388114d6",
+      "name": "Neoclassical Ambient Electronica Composition [20261103].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "安静庭院 / 黄昏候选",
+        "围合暖院候选",
+        "手作街区候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 764 Hz；起音率估计 2.10/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -6.0097795307509845,
+        "drums": -7.716704484083204,
+        "other": -7.162878516280333,
+        "vocals": -34.75129359829885,
+        "guitar": -18.98319052197536,
+        "piano": -10.524787163573183
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/013_Neoclassical Ambient Electronica Composition/summary.json",
+      "analysis_sha256": "778b7bc9dcf7ce53a96e49d373e6c06170358e969b119d24cf6cdd3b8b00635c",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "78ffef6c0a20ae696f619797a7c53bf99611a527e537a8e78994f4137fe54d0e",
+      "name": "Neoclassical Chamber Composition Description [20261103].mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "开阔庭院 / 高地候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 1120 Hz；起音率估计 1.56/秒",
+        "钢琴模型槽相对母带 RMS -7.1 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -27.92961493220618,
+        "drums": -24.249446148989655,
+        "other": -3.694491320056517,
+        "vocals": -17.44485161441917,
+        "guitar": -20.736615471972417,
+        "piano": -7.0624628688778746
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/014_Neoclassical Chamber Composition Description/summary.json",
+      "analysis_sha256": "ba57acb7ec2649c86f1943fd3b7ead6a90217395edbc5e5fc3b9a0271cf7164c",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "55c96560592aea0c72af4c477174fd3bdba14008e5b8a170880272d3314ae797",
+      "name": "Neoclassical Chamber Music Composition [20261103].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "安静庭院 / 黄昏候选",
+        "手作街区候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 1042 Hz；起音率估计 2.13/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -22.624222616640026,
+        "drums": -15.748386606382423,
+        "other": -1.3528335055251584,
+        "vocals": -33.51023586139024,
+        "guitar": -14.579680355549424,
+        "piano": -18.636468556968737
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/015_Neoclassical Chamber Music Composition/summary.json",
+      "analysis_sha256": "30d42cb13858740b4a0510dc2f337ed20764dc5405bc22f911a775aed273e30f",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "6892f862cb20fcc17edf922d08c7cbf1ee4d58deeb164ef882004a86cc9574e3",
+      "name": "Pastoral European Chamber Folk Piece [20261103].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "流动水岸 / 曲路候选",
+        "围合暖院候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 969 Hz；起音率估计 3.08/秒",
+        "吉他模型槽 -7.9 dB、钢琴槽 -31.9 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -4.062985401725504,
+        "drums": -32.464389154380925,
+        "other": -4.496498551533489,
+        "vocals": -33.09497265266155,
+        "guitar": -7.859670253814038,
+        "piano": -31.948224236536408
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/016_Pastoral European Chamber Folk Piece/summary.json",
+      "analysis_sha256": "db51943bb678097089468dbd52e79e53840c87dee74c079d7c24ecf66d551531",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "748684bae8b59355d3aa51a1bde4aa525d3977303c1457f07fbba849cbd2a1c1",
+      "name": "Reflective Felt Piano Composition [20261103].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "安静庭院 / 黄昏候选",
+        "围合暖院候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 846 Hz；起音率估计 1.74/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -5.184060388019845,
+        "drums": -22.07397876518639,
+        "other": -6.974696425442353,
+        "vocals": -35.939948102992275,
+        "guitar": -15.24967708032789,
+        "piano": -9.000029993918035
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/017_Reflective Felt Piano Composition/summary.json",
+      "analysis_sha256": "67580109719c51b852719b3e16c01089f0071f8adccd67a2ca22eaf1272b58f4",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "f0581fbb40a74cf7d480a9e131e7987ee7e700bbf116ac77af1b87c2b7a8515a",
+      "name": "Serene Pastoral Chamber Quartet [20261103].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "开阔庭院 / 高地候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 1141 Hz；起音率估计 2.35/秒",
+        "吉他模型槽 -5.6 dB、钢琴槽 -100.0 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -1.9590108720192716,
+        "guitar": -5.607265826245248
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/018_Serene Pastoral Chamber Quartet/summary.json",
+      "analysis_sha256": "af7f2725f30adc4d7fc48a14bc027b11491d77a683e55295cde85ae1af5486e4",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "c4a650192f8d52c0b35e72add7d4ba5a60cbc2e83a9349451398e23ba965de7d",
+      "name": "Soothing Brook Field Recording [20261103].mp3",
+      "era": "special",
+      "era_label": "采样 / 环境素材",
+      "scenes": [
+        "专用素材储备，不进普通曲目自动池"
+      ],
+      "confidence": "沿用已登记的素材类别",
+      "reasons": [
+        "频谱质心均值 1523 Hz；起音率估计 2.42/秒"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -34.973619925562815,
+        "drums": -11.653171667952229,
+        "other": -3.72853845676599,
+        "guitar": -4.910618771599759,
+        "piano": -21.09625742089055
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/019_Soothing Brook Field Recording/summary.json",
+      "analysis_sha256": "8790b7ddf08f56cdb61e255301be6e8b67b11b7deb87a97e11253cb17f61250d",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "7541c967ad244fe84e80447bc4ec8d407e8a6f08315cb61d7dcaf1b747c2e8f1",
+      "name": "Sparse Marimba Game Soundtrack Stem [20261103].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "流动水岸 / 曲路候选",
+        "手作街区候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 1190 Hz；起音率估计 3.06/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "drums": -17.32744906837842,
+        "other": -0.32165036662062485,
+        "piano": -19.81654808347344
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/020_Sparse Marimba Game Soundtrack Stem/summary.json",
+      "analysis_sha256": "acabe468cb374c33816c706af0be4822f498918d730febb9bb4b484fd791d59a",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "7dffeb68ac91e4702d78789406ebd16673ff66f3c999ddc264cdd414a4b0c691",
+      "name": "Sun-Shower Chamber Music Composition [20261103].mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 730 Hz；起音率估计 2.85/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -33.30904516802063,
+        "other": -2.3003370028887646,
+        "guitar": -12.246316212001972,
+        "piano": -13.756013877229876
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/021_Sun-Shower Chamber Music Composition/summary.json",
+      "analysis_sha256": "da9d0f538e3db7027282d2246e1fe9cdcca6d8e8b995913d52baa586488156f3",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "d005db9a2b3761a402d8b0deafbe3f1f7226a6f17a11da32984f661c82d2bb5c",
+      "name": "Warm Harmonic Game Soundtrack Bed [20261103].mp3",
+      "era": "clockwork",
+      "era_label": "蒸汽钟表与花房",
+      "scenes": [
+        "开阔庭院 / 高地候选",
+        "围合暖院候选",
+        "手作街区候选"
+      ],
+      "confidence": "低：起音 / 低音织体适合尝试钟表街区",
+      "reasons": [
+        "频谱质心均值 1150 Hz；起音率估计 2.70/秒",
+        "打击起音模型槽 -9.6 dB、低音槽 -3.6 dB；不证明具有机械时代的作曲语言",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -3.646163583878483,
+        "drums": -9.648642788554568,
+        "other": -6.830252275111687,
+        "vocals": -20.92231570228116,
+        "guitar": -16.349157437471412,
+        "piano": -13.31982884928036
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/022_Warm Harmonic Game Soundtrack Bed/summary.json",
+      "analysis_sha256": "105a2053f20907c626076e493230cf0a69d794e07ecab5c9dab084c50a01ef19",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "a0a98d7244bec5f83c594d2bf9b063134c457717d0b35f0232e83ffb9f13f8cf",
+      "name": "Warm Neoclassical Chamber Piece [20261103].mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 987 Hz；起音率估计 2.19/秒",
+        "钢琴模型槽相对母带 RMS -5.0 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -30.307604200745356,
+        "drums": -50.540432950759396,
+        "other": -4.479761179910879,
+        "vocals": -25.238796755086156,
+        "guitar": -16.084019864600688,
+        "piano": -4.9964067217537975
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/023_Warm Neoclassical Chamber Piece/summary.json",
+      "analysis_sha256": "fc43047ace56cd2f2e42bfc38f65fe645cfefe499ec965c59a6da092ea77c578",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "eae0e7319629c7507dbdb7e6a567ef4507051d7780fc934d663bcaa1e60241cf",
+      "name": "Woodland Chamber Folk Composition [20261103].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 1034 Hz；起音率估计 2.80/秒",
+        "吉他模型槽 -4.5 dB、钢琴槽 -32.1 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -39.18942906861257,
+        "drums": -45.71521278602109,
+        "other": -2.7081406615858468,
+        "vocals": -25.18280818073095,
+        "guitar": -4.541423592009736,
+        "piano": -32.117399944204706
+      },
+      "analysis": "数据/音乐资产/歌曲分析/20261103/20261103-003702-210565/024_Woodland Chamber Folk Composition/summary.json",
+      "analysis_sha256": "20ba4a005a94b507ad227367b425d57a7078ff9d30baef20e705efa5bd9da735",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "c4834ad5249f5412b8adb395ebb710681333c5a18840e19e9ed21b93e2deb583",
+      "name": "2-01.mp3",
+      "era": "renaissance",
+      "era_label": "文艺复兴连拱城",
+      "scenes": [
+        "孤屋 / 简单城背景候选"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 651 Hz；起音率估计 2.95/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -11.54296289995225,
+        "guitar": -0.9052104995005206,
+        "piano": -19.086248107973375
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/001_2-01/summary.json",
+      "analysis_sha256": "412ae1466aec5de5c9f6ed52fb03e459c87c69ad8aafb11cbf1f13006d2b4b61",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "82e7649382b57276c77e5b7b83f9f69a7a737d89b985ae5e4dedec0037d7e725",
+      "name": "2-02.mp3",
+      "era": "renaissance",
+      "era_label": "文艺复兴连拱城",
+      "scenes": [
+        "轻营造背景候选"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 851 Hz；起音率估计 2.01/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -34.6995081051236,
+        "other": -5.988932754692601,
+        "guitar": -2.236999000248294,
+        "piano": -28.220159842831745
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/002_2-02/summary.json",
+      "analysis_sha256": "a0ebbc39257915b28037d08ccbd1062b20d2a7e4bbbd9340c40d74e79fdb8266",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "7ae28dd8cac95364d4c4a795ae98bc590f868338201ac1035d35210d6501802d",
+      "name": "2-03.mp3",
+      "era": "renaissance",
+      "era_label": "文艺复兴连拱城",
+      "scenes": [
+        "围合庭院"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 1132 Hz；起音率估计 2.37/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -0.9316873117545964,
+        "guitar": -14.299416788776835,
+        "piano": -13.82909657741627
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/003_2-03/summary.json",
+      "analysis_sha256": "c00d7f3326f9bdd28b1e433762eba5d1f244ef0ab9415001ae907c839ae82f35",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "1bbe2dac0d27ea6333bbb146f657089fed1a8f0ffb8fb9b58a3b9333e28ada80",
+      "name": "4-01.mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "孤屋 / 简单城背景候选"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 636 Hz；起音率估计 2.83/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -8.3206096556595,
+        "drums": -24.277157908391477,
+        "other": -2.1356657016213374,
+        "vocals": -39.708570298879906,
+        "guitar": -30.974842139890477,
+        "piano": -14.36506188951779
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/004_4-01/summary.json",
+      "analysis_sha256": "19f2e48ec2d790fc12e65b4359880eca4de6a04dbbf93c80f44866e2a785a5d5",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "536f44fce3e04d0c71777cd2e963dab908b0a701e9912074ab38dca6c026b2de",
+      "name": "4-02.mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "轻营造背景候选"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 670 Hz；起音率估计 3.99/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -5.449899370524532,
+        "drums": -2.888651828772267,
+        "other": -9.043230019988084,
+        "vocals": -34.01030052457266,
+        "guitar": -30.78719497498716,
+        "piano": -20.8044443243625
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/005_4-02/summary.json",
+      "analysis_sha256": "40c2ae5a44e2eb44b7563be0101def2807660421296e00848b7eb7a0fd270df0",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "674b920a3a8d64dce5592f8921c19f9fc5bfdc7c9ed4524feb83a9ac3d67eb9e",
+      "name": "4-03.mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "围合庭院"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 872 Hz；起音率估计 1.84/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -7.6494797278155175,
+        "drums": -34.24694704458302,
+        "other": -2.230234060220017,
+        "vocals": -24.99112629424671,
+        "guitar": -26.37184788226646,
+        "piano": -16.669966821324415
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/006_4-03/summary.json",
+      "analysis_sha256": "dee70418549dde435a7c2083f5a483ba29335ccce2c81d40337149cb6a98e027",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "b0607682c39b837a29ccfaa715a2bb56f5a7336804e617d9d36ef1f30dc2010e",
+      "name": "4-04.mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "水岸 / 曲路"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 1134 Hz；起音率估计 3.96/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -8.020800836698982,
+        "drums": -4.012402111010742,
+        "other": -7.3931574531556,
+        "vocals": -29.388953762803894,
+        "guitar": -13.347277643245835,
+        "piano": -21.301767460910824
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/007_4-04/summary.json",
+      "analysis_sha256": "746005a6bd5cd0f6bb8211709845fc344c50fab2a72bd4b76a6f455c55e6fc46",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "f47617e77233fb47257279b3ee3d8e8f23eb769e0f5fda539fa28c579704f4eb",
+      "name": "4-05(2).mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "手作街区"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 817 Hz；起音率估计 3.50/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -4.131763354798526,
+        "drums": -4.301994522276708,
+        "other": -8.992989312585003,
+        "vocals": -34.67007163080636,
+        "guitar": -12.542458246441567,
+        "piano": -28.06245773341798
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/009_4-05(2)/summary.json",
+      "analysis_sha256": "138a3fd98e52a48bb59cf2bbf0229f22af2597c317d7ea5d8dc7ab0f1b97e084",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "b71b5f1a2da63ecbc5ca7c4e01ba15d5ff6c994e8f5e9618f6c38a3fdae12dc7",
+      "name": "4-05.mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "手作街区"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 985 Hz；起音率估计 4.18/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -3.474567890120138,
+        "drums": -5.130012184893773,
+        "other": -9.396443063749832,
+        "vocals": -33.04178370885863,
+        "guitar": -12.59748294713986,
+        "piano": -22.223594763165075
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/008_4-05/summary.json",
+      "analysis_sha256": "6304d36a4c94ff6247c71f98608b210a7d51d2a3563712e4132cf628f48595b4",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "cbdccc72de6d14a8c9fcd77ff0679d49725e7e87abff431cc4670f82cc318c0a",
+      "name": "4-06.mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "高地 / 黄昏 / 广场"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 1260 Hz；起音率估计 0.79/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -6.25626276165971,
+        "drums": -19.9780232730822,
+        "other": -2.7095465770320324,
+        "vocals": -26.352004947633844,
+        "guitar": -25.001657862606386,
+        "piano": -30.587642889288794
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/010_4-06/summary.json",
+      "analysis_sha256": "f053bd86d61feb9a83c9e48354a6dce8e220580393090e7d56c784abb53c91c4",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "483daa585133ec997c7ee388c0a636341cebc20f4734e2b2911eba9b489e2904",
+      "name": "Breezy Instrumental Pastoral Composition.mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 757 Hz；起音率估计 2.95/秒",
+        "钢琴模型槽相对母带 RMS -8.6 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -3.1594008624635412,
+        "guitar": -14.210573325707118,
+        "piano": -8.580324765170953
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/011_Breezy Instrumental Pastoral Composition/summary.json",
+      "analysis_sha256": "d8cdfb08f703a3a5cdeaf976aa529cb6c1284c737512fd50edd537dbcc0ecb7a",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "112e76a675f7f86a31e25523c6b425567c18fc912515cda3cafec0c43714da6f",
+      "name": "Chamber Trio for Strings.mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "开阔庭院 / 高地候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 1391 Hz；起音率估计 2.52/秒",
+        "吉他模型槽 -8.9 dB、钢琴槽 -33.0 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -23.462340742168514,
+        "other": -1.218451819863884,
+        "guitar": -8.89223046486524,
+        "piano": -33.01979265414171
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/012_Chamber Trio for Strings/summary.json",
+      "analysis_sha256": "c49e1a8816917804addff1d25738797268a40e29d7197efc2dd5758df444cd54",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "8902e7b714ff362c4e8af2076548833753ccbae3924714612c436382fa331423",
+      "name": "Coastal Neoclassical Piano Composition.mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 878 Hz；起音率估计 1.38/秒",
+        "钢琴模型槽相对母带 RMS -3.9 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -40.291727234526576,
+        "drums": -50.869458510165344,
+        "other": -5.519814380412761,
+        "guitar": -14.220421972464596,
+        "piano": -3.940669488828808
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/013_Coastal Neoclassical Piano Composition/summary.json",
+      "analysis_sha256": "773c2196b7373aa3b811f0da829a9bc17c8f5c6daaa2d921b4a3aab0e23e3f4f",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "a09cc7ff2311fe090db97c8dfaabce0846ae70c44e40a1c74f648112f5959a68",
+      "name": "Fluid Waterside Instrumental Composition.mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 625 Hz；起音率估计 2.97/秒",
+        "吉他模型槽 -2.5 dB、钢琴槽 -25.2 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -28.20418795313286,
+        "other": -5.855122175330645,
+        "vocals": -28.414528203589228,
+        "guitar": -2.463372806626783,
+        "piano": -25.19986596186792
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/014_Fluid Waterside Instrumental Composition/summary.json",
+      "analysis_sha256": "b6c9333e4007c79f404633670399e2dd76973d7be02d0c885dbe51b86855f431",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "7826d21cd45dd34589c8c0bfb3b1ca1cdc12754b6f0b168a0e53e33113c7bced",
+      "name": "Quiet Meadow Chamber Piece.mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "安静庭院 / 黄昏候选",
+        "围合暖院候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 476 Hz；起音率估计 2.31/秒",
+        "吉他模型槽 -5.1 dB、钢琴槽 -34.9 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -3.6378056451989345,
+        "drums": -37.379922202149665,
+        "other": -9.938033802189599,
+        "vocals": -37.71277034337159,
+        "guitar": -5.052988435245643,
+        "piano": -34.92688420934225
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/015_Quiet Meadow Chamber Piece/summary.json",
+      "analysis_sha256": "2d033042e3a1a6826361280064c13cfc194ef7a89e47c3468ade44652856dd41",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "e97e2e417e3ab32e76f32d9cdc3534922fb683b451e7970ab30b59b446b9c1fb",
+      "name": "Rain-Inspired Chamber Music Piece.mp3",
+      "era": "mixed_reserve",
+      "era_label": "跨时代储备",
+      "scenes": [
+        "安静庭院 / 黄昏候选"
+      ],
+      "confidence": "低：统计特征不能唯一识别历史风格",
+      "reasons": [
+        "频谱质心均值 649 Hz；起音率估计 2.96/秒",
+        "其余器乐占比高或缺乏可区分证据，保留跨时代室内乐储备，不强塞进古乐时代",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -1.0554841503133456,
+        "guitar": -17.9482758579376,
+        "piano": -17.721833862992863
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/016_Rain-Inspired Chamber Music Piece/summary.json",
+      "analysis_sha256": "76a98836c69a9b71d6c386928ba1092952262d46588710695e1025d7a5508f6e",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "715ba27fd9bc8f462a7984df23752ff067cdbd21062c1837f832e4955d9cea7f",
+      "name": "Sunlit Stone Stairway Chamber Piece.mp3",
+      "era": "modern",
+      "era_label": "现代生态交响城",
+      "scenes": [
+        "安静庭院 / 黄昏候选",
+        "围合暖院候选"
+      ],
+      "confidence": "中低：钢琴型现代室内乐适配候选",
+      "reasons": [
+        "频谱质心均值 729 Hz；起音率估计 2.13/秒",
+        "钢琴模型槽相对母带 RMS -5.5 dB；仅支持配器候选，不证明乐器纯净或生成来源",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -8.922530688296176,
+        "other": -4.5483171475309225,
+        "vocals": -27.46170092084548,
+        "guitar": -27.862830353598493,
+        "piano": -5.521345593930204
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/017_Sunlit Stone Stairway Chamber Piece/summary.json",
+      "analysis_sha256": "2bec75d2c44579f3369b841d25adfc70ef3503f6eadc03ac6d979aa0ea88c259",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "49ee59e292839273c4e670972fcc4da30a5304574db46e410ecf690387bc42e8",
+      "name": "Warm Instrumental Chamber Folk Piece.mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "流动水岸 / 曲路候选"
+      ],
+      "confidence": "中低：拨弦型田园适配候选，古乐仍需辨听",
+      "reasons": [
+        "频谱质心均值 820 Hz；起音率估计 3.01/秒",
+        "吉他模型槽 -3.0 dB、钢琴槽 -28.1 dB；不能凭模型槽区分木吉他与鲁特琴",
+        "稀疏开局资格待查主奏与持续密度；未按低音量或慢速直接批准"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -5.38290282326909,
+        "guitar": -2.9795109929042636,
+        "piano": -28.06240336390372,
+        "drums": -46.87763681106884
+      },
+      "analysis": "数据/音乐资产/参考分析/Lyria追加_20261103/20261103-230812-343070/018_Warm Instrumental Chamber Folk Piece/summary.json",
+      "analysis_sha256": "ac871b9cfae72631602b1d6c8b89732d5ea306fbbaf702f799465e2c292c8c8b",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "7dace1320b1acbe70184daf63cd53558896b6be82c49736c0ed6094b4deeb5c3",
+      "name": "1-01.mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "孤屋 / 简单城背景候选"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 589 Hz；起音率估计 2.47/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -22.29811711853039,
+        "other": -25.13238759237676,
+        "guitar": -0.25053348686838794,
+        "piano": -36.84667429208552,
+        "drums": -44.937516904924884
+      },
+      "analysis": "数据/音乐资产/参考分析/四时代追加_20261104/20261104-152451-404738/001_1-01/summary.json",
+      "analysis_sha256": "f05bd95b57ec973193fa25613c7cdac012adbe89b7172d7c7dba2e7f92114909",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "77403b7614bab5120e1512aeceee19061dd1a6081963808cf8fe09be3b2dac16",
+      "name": "2-06.mp3",
+      "era": "renaissance",
+      "era_label": "文艺复兴连拱城",
+      "scenes": [
+        "高地 / 黄昏 / 广场"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 991 Hz；起音率估计 2.03/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -42.79262063880516,
+        "drums": -28.093295523042006,
+        "other": -0.5171535234297557,
+        "guitar": -22.448230736476788,
+        "piano": -18.269119573310995
+      },
+      "analysis": "数据/音乐资产/参考分析/四时代追加_20261104/20261104-152451-404738/004_2-06/summary.json",
+      "analysis_sha256": "0d772b680d03683f8efaa20a35a9efe83c0436a7078fffc7462997b080001be0",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "9ad221e9f33c712a592223f7cb15dc38c5537f149e2b213aa804fe8eca340a22",
+      "name": "2-05(好听).mp3",
+      "era": "renaissance",
+      "era_label": "文艺复兴连拱城",
+      "scenes": [
+        "手作街区"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 599 Hz；起音率估计 2.64/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -1.6465816012322358,
+        "guitar": -8.836725562127082,
+        "piano": -39.05619114758719
+      },
+      "analysis": "数据/音乐资产/参考分析/四时代追加_20261104/20261104-152451-404738/003_2-05(好听)/summary.json",
+      "analysis_sha256": "8f0d1509d1256b2f0acd279586e632332a3052b31d9888436c1383be90e51e3f",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "f1eb3ac520584856b725ef47b34ae417f0281caa553f00c098bc08bde1f65cd5",
+      "name": "2-04.mp3",
+      "era": "renaissance",
+      "era_label": "文艺复兴连拱城",
+      "scenes": [
+        "水岸 / 曲路"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 1263 Hz；起音率估计 3.05/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -1.9316581534805641,
+        "guitar": -8.398208343999379,
+        "piano": -20.729292359994083
+      },
+      "analysis": "数据/音乐资产/参考分析/四时代追加_20261104/20261104-152451-404738/002_2-04/summary.json",
+      "analysis_sha256": "c71524a06d44161fdf329c00fee90ba918918798b9c7ccc9d96a0528e214707e",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "eb7040ced000b5005709e2ae8ad7811085aa090589fcf5524ad9d4f0d8f777ea",
+      "name": "1-02 [20261105].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "轻营造背景候选"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 836 Hz；起音率估计 2.54/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -9.193489500526802,
+        "vocals": -22.34940225598872,
+        "guitar": -1.5316435665269823
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/001_1-02/summary.json",
+      "analysis_sha256": "d55492e1cf4859273767ffa1209a34ce08ea2c900faf33f99a3bfe47b511fc49",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "8caa5fc12a7669720bd96f451d4d745d5f638dcd2f167a565f30cf790ae80915",
+      "name": "1-03 [20261105].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "围合庭院"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 934 Hz；起音率估计 2.50/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -3.853942588006658,
+        "vocals": -20.654674755545535,
+        "guitar": -4.0576305112595925,
+        "bass": -46.754771393508925
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/002_1-03/summary.json",
+      "analysis_sha256": "692271f73e4f9af424a3870fa3b1e4cb2c2920b2644786064e33344f9f0444c1",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "9db4e5b95c1f96564240bc47baabb50a62d66fecc58d2c769de8869492143526",
+      "name": "1-04 [20261105].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "水岸 / 曲路"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 656 Hz；起音率估计 3.41/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -27.04013402482975,
+        "other": -2.5343094010231693,
+        "vocals": -37.18460580617208,
+        "guitar": -7.660163754217484,
+        "piano": -25.046221628944107
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/003_1-04/summary.json",
+      "analysis_sha256": "850e61566fece711f76a18c4bfb29f647e93c60fc81e32a99531608f2e33d633",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "1195bfab767eeb20f906bd9cb12ff277b8c9f478ea493c4c3e1ebdec5d15506a",
+      "name": "1-05 [20261105].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "手作街区"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 839 Hz；起音率估计 3.40/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -5.831680029499166,
+        "guitar": -2.1171374669939738,
+        "piano": -23.91677286688349
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/004_1-05/summary.json",
+      "analysis_sha256": "ecc987861f8d204d10cc4694565507ea553657e25f50b5206018b5a5a13e10f2",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "f035358a447edb16a06a7c44f8d4ca79adadd54e1011a5483cf51a37b62fbd8f",
+      "name": "1-07 [20261105].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "孤屋星夜与河滩蛙眠 `[无主奏 · 简单城夜晚默认 · light_phase=2]`"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 628 Hz；起音率估计 1.60/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "drums": -38.94975344361112,
+        "other": -10.522541154521674,
+        "vocals": -16.14487402858081,
+        "guitar": -1.413848481720905,
+        "piano": -36.884953360568474
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/005_1-07/summary.json",
+      "analysis_sha256": "019a09d844872ad360d55164c6ead6842b6ed93aa018a86f8cc5ef3b2e8955ce",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "193ee6b26b6c96fa76834d25acdfc902b0e3473c0d8ef376b7fcca02085d5f56",
+      "name": "1-08 [20261105].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "破晓薄雾与露水草甸 `[无主奏 · 简单城清晨默认 · light_phase=0]`"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 787 Hz；起音率估计 2.41/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -4.876988182956542,
+        "vocals": -11.380799127016612,
+        "guitar": -6.49592911745634,
+        "piano": -14.811881760698014
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/006_1-08/summary.json",
+      "analysis_sha256": "eb9a7826a50247b6d4bfd32e53657947ed38c965d1dc8800137a2bf513528121",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "3a5587faeeadc86ebae934d98815937e572a75576178435d114d3602b182fab9",
+      "name": "1-09 [20261105].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "柴扉半院与乡间窄巷 `[微短句 · U/L型半围合与窄巷 · half_enclosure]`"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 666 Hz；起音率估计 3.94/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -43.455711949343296,
+        "drums": -43.33820832678484,
+        "other": -41.588033173763186,
+        "vocals": -43.22773611121381,
+        "guitar": -0.1246675910863918,
+        "piano": -43.254822664986506
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/007_1-09/summary.json",
+      "analysis_sha256": "078ae6eae65fff3a69e25ba2cba883d457686591e18cb9dbe8f70a00eff62ace",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "15c5b49a2f8546f2a4a2f4711a02c725bbd78237648ae548baf0c4ff3846ac28",
+      "name": "1-10（with voice） [20261105].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "亲水石埠与木船坞 `[微短句 · 水岸石埠与船坞 · water_ghat]`",
+        "带人声标记版本，单独试听；不自动作为稀疏器乐背景"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 1440 Hz；起音率估计 3.45/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标",
+        "用户文件名明确标有with voice；保留原件，人声内容与可用伴奏仍待核，不进纯器乐背景默认"
+      ],
+      "model_slot_relative_rms_db": {
+        "drums": -49.24254612380749,
+        "other": -7.138576220874286,
+        "vocals": -3.2333093381327247,
+        "guitar": -8.132060355897234,
+        "piano": -36.37240176328208
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/008_1-10（with voice）/summary.json",
+      "analysis_sha256": "d7dcdf70c96c0de8345ec9a63c2ac40558124bf30b0413ae5936d0ba6ac92f6a",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "090c6c71aafb78ee128afca5ef1c7b33f6f7e82a8214317e6e1868f8c2ce91ab",
+      "name": "1-11 [20261105].mp3",
+      "era": "pastoral",
+      "era_label": "古典田园河湾",
+      "scenes": [
+        "无水内陆山径与折角村落 `[无主奏 · 内陆曲路摇曳 · inland_sway]`"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 860 Hz；起音率估计 3.14/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -6.26503778486602,
+        "drums": -11.524188447474755,
+        "other": -7.1941401933118465,
+        "vocals": -37.235607514968606,
+        "guitar": -4.998644496979031,
+        "piano": -37.09166630886095
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/009_1-11/summary.json",
+      "analysis_sha256": "87edbd2a15c23b3fa2d16a357e480f823871d5700899552cb66766a554ac404c",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "12ae8d21a8f84d8be89be6165fcb35d142f9692b12ba0f88c2f5feae9d5423ef",
+      "name": "2-01 [20261105].mp3",
+      "era": "renaissance",
+      "era_label": "文艺复兴连拱城",
+      "scenes": [
+        "孤屋 / 简单城背景候选"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 1006 Hz；起音率估计 1.50/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -4.870064290802263,
+        "vocals": -38.60670664335351,
+        "guitar": -3.070232826627128
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/010_2-01/summary.json",
+      "analysis_sha256": "2862033ca1b1c707bf33d997180f1c76b1ca26b98ca2dbdc4e7ba8a8ef7381e4",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "3ace6b15e64bbca0673b8c7f66d5db1d5ad4dee333646626b9397a5ba6cf63a1",
+      "name": "2-02 [20261105].mp3",
+      "era": "renaissance",
+      "era_label": "文艺复兴连拱城",
+      "scenes": [
+        "轻营造背景候选"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 565 Hz；起音率估计 2.03/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "other": -13.82070795995112,
+        "guitar": -0.8004564536261778,
+        "piano": -30.154788165857024
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/011_2-02/summary.json",
+      "analysis_sha256": "26fb15b0435b7924273982591b0bf044277e879ff2a9e879b81b4c2fac08c83a",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "126096e99297d79a378d65d831b54501e415f2a2706849e2e4c26bc562434951",
+      "name": "3-01 [20261105].mp3",
+      "era": "clockwork",
+      "era_label": "蒸汽钟表与花房",
+      "scenes": [
+        "孤屋 / 简单城背景候选"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 575 Hz；起音率估计 2.90/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -38.15223210395275,
+        "drums": -40.15723352871422,
+        "other": -1.1065833106874812,
+        "vocals": -15.050007410742442,
+        "guitar": -17.393312565376558,
+        "piano": -18.378789827146065
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/012_3-01/summary.json",
+      "analysis_sha256": "1eaabfd1ff96749653a64bae380a56cd14fbfc0713178ce5626ba46250734eba",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "fe3e03abff5b0e08f99fe7b7091389e47f407155b1179c392cd32c6b5208bf51",
+      "name": "3-02 [20261105].mp3",
+      "era": "clockwork",
+      "era_label": "蒸汽钟表与花房",
+      "scenes": [
+        "轻营造背景候选"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 764 Hz；起音率估计 2.41/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -24.016368422778925,
+        "drums": -43.2453641702142,
+        "other": -1.4044883241081152,
+        "guitar": -16.182034422589226,
+        "piano": -13.661637283825925
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/013_3-02/summary.json",
+      "analysis_sha256": "a843ad7c694d720748becb0d2f96af6008e93962b9f375f87cb5b9b18a53cc22",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "83ec758fcb9b0d852f6f896e086755e0f0fb208d0e9208c8f4cac8f43511d4a1",
+      "name": "3-03 [20261105].mp3",
+      "era": "clockwork",
+      "era_label": "蒸汽钟表与花房",
+      "scenes": [
+        "围合庭院"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 983 Hz；起音率估计 2.16/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -10.968089935598078,
+        "other": -2.332425681148143,
+        "guitar": -8.81331687240692,
+        "piano": -21.803722870527356,
+        "drums": -45.62868866237124
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/014_3-03/summary.json",
+      "analysis_sha256": "44bb6522e760852f8941cd91d4ce4c2e4a4eb497fa8af2c62b70e5bfa7eaf7b8",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "10e6ebfa698bcaae183250e7b9a79e53cf0b2fd7edd371bbdb37754f80ce3bbd",
+      "name": "3-04 [20261105].mp3",
+      "era": "clockwork",
+      "era_label": "蒸汽钟表与花房",
+      "scenes": [
+        "水岸 / 曲路"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 872 Hz；起音率估计 4.59/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "drums": -45.965528389393455,
+        "other": -0.6529249898336995,
+        "vocals": -45.06827830912778,
+        "guitar": -18.12180637248837,
+        "piano": -25.68126038541324
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/015_3-04/summary.json",
+      "analysis_sha256": "fc577dc2f1764d8200c7c0bf78e007263697d03902c266e5cb0b5c21cce0ccee",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "49e3e4277732f2aa12a789df8f5faaaf045bab3d7abf40bcfafaf7fb0dc8813d",
+      "name": "3-05 [20261105].mp3",
+      "era": "clockwork",
+      "era_label": "蒸汽钟表与花房",
+      "scenes": [
+        "手作街区"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 1131 Hz；起音率估计 3.90/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -25.13083067683878,
+        "drums": -35.16668034101964,
+        "other": -1.2015468818536348,
+        "vocals": -38.34152079591326,
+        "guitar": -9.200380627693942,
+        "piano": -30.12460905677468
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/016_3-05/summary.json",
+      "analysis_sha256": "5d7875f74f8008bc2708dcd590911b73f6ecf59c1de2421f87dc627da593fdf2",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    },
+    {
+      "source_id": "1ce3d33345ec535722855ff56a91e277b8d3e7b33edd1d5f1122d69e5e8bd6ff",
+      "name": "3-06 [20261105].mp3",
+      "era": "clockwork",
+      "era_label": "蒸汽钟表与花房",
+      "scenes": [
+        "高地 / 黄昏 / 广场"
+      ],
+      "confidence": "提示词来源由用户确认；实际听感适配仍待评",
+      "reasons": [
+        "频谱质心均值 985 Hz；起音率估计 2.31/秒",
+        "场景取自已确认编号对应的创作意图，未据此认定音频已达标"
+      ],
+      "model_slot_relative_rms_db": {
+        "bass": -11.317325420859303,
+        "drums": -34.529864554456765,
+        "other": -1.82569061771513,
+        "vocals": -35.810071544725886,
+        "guitar": -24.118204232606445,
+        "piano": -12.083002219910867
+      },
+      "analysis": "数据/音乐资产/歌曲分析/四时代追加_20261105/20261105-022029-304892/017_3-06/summary.json",
+      "analysis_sha256": "d9898c313543511ff9952c9f7fcc8652df0d76308d0245069175d6a0ce603e69",
+      "user_review": null,
+      "full_mix_user_verdict": null,
+      "basis": "verified offline measurements and explicitly confirmed provenance; no style recognition model or subjective listening",
+      "listening_approved": false,
+      "automatic_runtime_adoption": false
+    }
+  ]
+}

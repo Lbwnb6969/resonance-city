@@ -17,9 +17,21 @@ void vertex() {
 }
 void fragment() {
 	float mask = texture(leaf_mask, UV).r;
-	if (!flower && mask < mix(0.0, 0.9, instance_seed)) discard;
+	// Even low-seed leaves retain the existing mask's characteristic open cleft.
+ if (!flower && mask < mix(0.64, 0.82, instance_seed)) discard;
 	vec3 linear_color = original_vertex_color.rgb;
-	if (flower) {
+ if (!flower) {
+  vec2 p=UV-vec2(.5,.55);
+  float radial=length(p);
+  float spoke=abs(sin(atan(p.y,p.x)*6.0))*radial;
+  float aa=max(fwidth(spoke),.001);
+  float veins=1.0-smoothstep(.002-aa,.006+aa,spoke);
+  float resolved=1.0-smoothstep(.015,.06,length(fwidth(UV)));
+  // Quiet radial shading and filtered veins distinguish a floating leaf from turf.
+  linear_color*=mix(.78,1.04,smoothstep(.02,.48,radial));
+  linear_color*=1.0-veins*.12*resolved;
+ }
+ if (flower) {
 		vec3 sampled = texture(flower_texture, world_position.xz * 0.1).rgb;
 		if (OUTPUT_IS_SRGB) {
 			sampled = mix(sampled/12.92,pow((sampled+0.055)/1.055,vec3(2.4)),step(vec3(0.04045),sampled));

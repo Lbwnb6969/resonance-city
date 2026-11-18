@@ -35,19 +35,52 @@ static func glass(plan: Dictionary) -> Dictionary:
 static func skybridge(plan: Dictionary) -> Dictionary:
 	var a := Vector3(plan.a.x,plan.floor_y,plan.a.y); var b := Vector3(plan.b.x,plan.floor_y,plan.b.y)
 	var across := Vector3(-(b-a).z,0,(b-a).x).normalized()*float(plan.width)*.5
-	return row("skybridge","空中和鸣",[[a-across,b-across,b+across,a+across,a-across],[a-across+Vector3.UP*1.3,b-across+Vector3.UP*1.3,b+across+Vector3.UP*1.3,a+across+Vector3.UP*1.3,a-across+Vector3.UP*1.3]],(a+b)*.5+Vector3.UP*1.6)
+	return row("skybridge",("九米云廊" if float(plan.length)+1.74>7.2 else "空中连桥")+" · 第%d层同高相接"%(int(plan.level)+1),[[a-across,b-across,b+across,a+across,a-across],[a-across+Vector3.UP*1.3,b-across+Vector3.UP*1.3,b+across+Vector3.UP*1.3,a+across+Vector3.UP*1.3,a-across+Vector3.UP*1.3]],(a+b)*.5+Vector3.UP*1.6)
 static func bridge(plan: Dictionary) -> Dictionary:
-	var lines: Array = []
-	for side: float in [-1.,1.]:
-		for span in range(2):
-			var arch: Array[Vector3] = []
-			for i in range(17):
-				var t := float(i)/16.; var p := Bridge._point(plan.samples,lerpf(plan.start,plan.end,(span+t)*.5))
-				var at: Vector2 = p.at+Vector2(-p.tangent.y,p.tangent.x)*float(plan.width)*side*.5
-				arch.append(Vector3(at.x,float(plan.deck_y)-.9+sin(t*PI)*.75,at.y))
-			lines.append(arch)
-	var center: Vector2 = Bridge._point(plan.samples,(plan.start+plan.end)*.5).at
-	return row("bridge","双孔石拱桥",lines,Vector3(center.x,float(plan.deck_y)+.8,center.y))
+	var lines:Array=[];var first:float=plan.start;var last:float=plan.end;var y:float=plan.deck_y
+	var family:String=plan.get("family","");var label:="钢桁连桥" if family=="clockwork_truss" else "现代单拱桥" if family=="modern_single_arch" else "双拱石桥"
+	var half:=float(plan.width)*.5+(.16 if family=="clockwork_truss" else .15 if family=="modern_single_arch" else .13)
+	for side:float in [-1.,1.]:
+		lines.append([_bridge_at(plan,first,side*half,y),_bridge_at(plan,last,side*half,y)])
+		if family=="clockwork_truss":
+			var rib:Array=[]
+			for i in range(33):
+				var t:=float(i)/32.;rib.append(_bridge_at(plan,lerpf(first,last,t),side*half,y+.30+2.1*sin(PI*t)))
+			lines.append(rib)
+		else:
+			var count:=1 if family=="modern_single_arch" else 2
+			var middle:float=(first+last)*.5;var pier:=minf(.28,(last-first)*.1)
+			for span in range(count):
+				var lo:=first if count==1 else first+.12 if span==0 else middle+pier*.5
+				var hi:=last if count==1 else middle-pier*.5 if span==0 else last-.12
+				var spring:=-.19;var rise:=maxf(.10,y-(.20 if count==1 else .18)-spring);var arch:Array=[]
+				for i in range(33):
+					var t:=float(i)/32.;arch.append(_bridge_at(plan,lerpf(lo,hi,t),side*half,spring+rise*sin(PI*t)))
+				lines.append(arch)
+	var center:=_bridge_at(plan,(first+last)*.5,0.,y+.8)
+	return row("bridge",label+" · 两岸接通后成桥",lines,center)
+static func _bridge_at(plan:Dictionary,arc:float,across:float,height:float)->Vector3:
+	var point:=Bridge._point(plan.samples,arc);var at:Vector2=point.at+Vector2(-point.tangent.y,point.tangent.x)*across
+	return Vector3(at.x,height,at.y)
+static func simple_bridge(profile:Dictionary,width:float)->Array:
+	var lines:Array=[];var run:Array=[]
+	var reserved:Array=profile.get("bridge_runs",[])+profile.get("stepping_runs",[])
+	for sample:Dictionary in profile.samples:
+		var covered:bool=reserved.any(func(span):return float(sample.distance)>=float(span.start)-.000001 and float(sample.distance)<=float(span.get("end",span.get("finish",0.)))+.000001)
+		if sample.bridge and not covered:run.append(sample)
+		else:
+			if run.size()>1:_simple_lines(run,width,lines,profile.samples)
+			run=[]
+	if run.size()>1:_simple_lines(run,width,lines,profile.samples)
+	return [row("bridge","跨水小桥 · 两岸接通后成桥",lines,lines[0][0]+Vector3.UP*.8)] if not lines.is_empty() else []
+static func _simple_lines(samples:Array,width:float,lines:Array,full_samples:Array)->void:
+	for side:float in [-1.,1.]:
+		var line:Array=[]
+		for sample:Dictionary in samples:
+			var tangent:Vector2=Bridge._point(full_samples,float(sample.distance)).tangent;var at:Vector2=sample.xz+Vector2(-tangent.y,tangent.x)*width*.5*side
+			line.append(Vector3(at.x,float(sample.y),at.y))
+		lines.append(line)
+
 static func stairs(treads: Array) -> Dictionary:
 	var lines: Array = []
 	for tread: Dictionary in treads:

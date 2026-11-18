@@ -2,6 +2,7 @@ extends RefCounted
 ## One recovered Foundation diffuse/height sample, shared by all shore blends.
 ## Alpha is a layer-height input, never opacity. See the adjacent source note.
 const Sand = preload("res://资源/自然参考/湿砂河岸.png")
+const Terrain=preload("res://scripts/world/city_creation_terrain.gd")
 const Bounds = preload("res://scripts/world/city_creation_bounds.gd")
 
 static func configure(material: ShaderMaterial) -> void:
@@ -9,3 +10,4 @@ static func configure(material: ShaderMaterial) -> void:
 	material.set_shader_parameter("water_world_rect",Vector4(rect.position.x,rect.position.y,rect.size.x,rect.size.y))
 	material.set_shader_parameter("bank_sand", Sand)
 	material.set_shader_parameter("bank_sand_enabled", true)
+	material.set_shader_parameter("shore_water_level",Terrain.WATER_LEVEL)

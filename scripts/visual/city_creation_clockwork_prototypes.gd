@@ -23,8 +23,8 @@ static func install(r,root:Node3D,house:Dictionary,data:Dictionary)->void:
 	var node:=Node3D.new();root.add_child(node);node.name="ClockworkPrototype_"+str(data.cell.id)
 	node.position=Vector3(data.center.x,data.base,data.center.y);node.set_meta("clockwork_prototype",data.prototype)
 	var stone:Material=Parts.material(r,Color("d9c6a3"),Parts.Wall.Kind.STONE)
-	var copper:Material=Parts.material(r,Color("a88c58"),Parts.Wall.Kind.SLATE)
-	var iron:Material=Parts.material(r,Color("40524f"),Parts.Wall.Kind.SLATE)
+	var copper:Material=Parts.metal(r,Color("a88c58"))
+	var iron:Material=Parts.metal(r,Color("40524f"))
 	var slate:Material=Parts.material(r,Color("43585b"),Parts.Wall.Kind.SLATE)
 	r._box(node,Vector3(1.8,.10,1.8),Vector3(0,.025,0),stone)
 	match str(data.prototype):
@@ -34,19 +34,29 @@ static func install(r,root:Node3D,house:Dictionary,data:Dictionary)->void:
 		"guild_arcade":_guild(r,node,house,data,slate,stone,copper)
 	var body:=StaticBody3D.new();node.add_child(body)
 	body.set_meta("house_id",str(house.id));body.set_meta("cell_id",str(data.cell.id));body.set_meta("cell",data.cell.duplicate(true))
-	Pick.from_children(body,node,"ClockworkPrototypePick")
+	if data.prototype=="sawtooth_atrium":
+		Pick.attach(body,node.get_meta("atrium_roof_bounds"),"ClockworkPrototypePick")
+		if node.has_meta("atrium_vent_bounds"):Pick.attach(body,node.get_meta("atrium_vent_bounds"),"AtriumVentPick")
+	else:Pick.from_children(body,node,"ClockworkPrototypePick")
 	var metadata:Array=root.get_meta("clockwork_prototypes",[]);metadata.append(data.metadata);root.set_meta("clockwork_prototypes",metadata)
 	root.set_meta("prototype_caption",Choice.label(str(data.prototype)))
 static func _saw(r,node:Node3D,data:Dictionary,slate:Material,copper:Material,iron:Material)->void:
-	var glass:Material=r.conservatory.ensure_roof_material()
-	for tooth in range(3):
-		var z:float=-.9+float(tooth)*.6;var end:float=z+.6
-		Parts.quad(r,node,Vector3(-.9,.11,z),Vector3(-.9,.77,end),Vector3(.9,.77,end),Vector3(.9,.11,z),slate,"SawtoothSlope")
-		Parts.quad(r,node,Vector3(-.86,.13,end),Vector3(.86,.13,end),Vector3(.86,.73,end),Vector3(-.86,.73,end),glass,"SawtoothGlazing")
-		for x:float in [-.88,0.,.88]:Parts.beam(r,node,Vector3(x,.12,z),Vector3(x,.78,end),.035,copper)
-		Parts.beam(r,node,Vector3(-.9,.78,end),Vector3(.9,.78,end),.045,iron)
-		for side:float in [-1.,1.]:
-			if Vector2(side,0) in data.sides:Parts.face(r,node,[Vector3(side*.9,.11,z),Vector3(side*.9,.11,end),Vector3(side*.9,.77,end)],slate,"SawtoothEndCheek")
+	var parts:Array=[]
+	preload("res://scripts/world/city_creation_clockwork_pitched_types.gd").saw(parts,.66/.6,data.sides,data.feature)
+	var materials:={"slate":slate,"copper":copper,"iron":iron};materials.merge(Parts.atrium_materials(r))
+	var surfaces:Dictionary={}
+	var bounds:={"atrium_roof_bounds":AABB(Vector3(-.9,-.025,-.9),Vector3(1.8,.10,1.8))}
+	for part:Dictionary in parts:
+		if not surfaces.has(part.material):surfaces[part.material]=[]
+		surfaces[part.material].append_array(part.vertices)
+		var key:="atrium_vent_bounds" if str(part.name).begins_with("AtriumVent") else "atrium_roof_bounds"
+		var box:AABB=bounds.get(key,AABB(part.vertices[0],Vector3.ZERO))
+		for point:Vector3 in part.vertices:box=box.expand(point)
+		bounds[key]=box
+	for key:String in bounds:node.set_meta(key,bounds[key])
+	for finish:String in surfaces:
+		var mesh:MeshInstance3D=r._triangles(node,surfaces[finish],Color.WHITE)
+		mesh.name="Atrium_"+finish;mesh.material_override=materials[finish]
 static func _clock(r,node:Node3D,feature:bool,slate:Material,copper:Material,stone:Material,iron:Material)->void:
 	for side:float in [-1.,1.]:
 		Parts.quad(r,node,Vector3(side*.9,.10,-.9),Vector3(side*.9,.10,.9),Vector3(0,.52,.9),Vector3(0,.52,-.9),slate,"CopperHipShoulder")
@@ -84,6 +94,8 @@ static func _guild(r,node:Node3D,house:Dictionary,data:Dictionary,slate:Material
 		Parts.face(r,node,[Vector3(-.9,.10,side.y*.9),Vector3(.9,.10,side.y*.9),Vector3(0,.68,side.y*.9)],stone,"GuildStonePediment")
 		Parts.beam(r,node,Vector3(-.92,.12,side.y*.92),Vector3(.92,.12,side.y*.92),.10,copper)
 	if not data.feature:return
+	arcade(r,node,house,data,stone)
+static func arcade(r,node:Node3D,house:Dictionary,data:Dictionary,stone:Material)->void:
 	var brick:Material=Parts.material(r,Color("a8664e"),Parts.Wall.Kind.TERRACOTTA)
 	for cell:Dictionary in house.cells:
 		if int(cell.level)!=0 or cell.kind!="room":continue

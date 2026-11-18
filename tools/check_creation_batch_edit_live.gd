@@ -36,7 +36,7 @@ func run()->void:
 	if not OS.get_cmdline_user_args().has("--isolated-session") or not OUT.begins_with("res://验证记录/") or DirAccess.dir_exists_absolute(OUT):quit(1);return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT));root.size=Vector2i(1440,900);Engine.max_fps=60;var began:=Time.get_ticks_msec();var personal:=FileAccess.get_file_as_bytes(State.DEFAULT_PATH)
 	demo=Scene.instantiate();demo.persistence=false;demo.collection_directory=OUT+"/works";root.add_child(demo);await settle();isolate_input();await show(BatchFixture.fixture(),Vector2(-23,-19),"成组编辑六屋街排");quiet();demo.life.set_process(false)
-	demo.zoom=18.;demo.pitch=.7;demo.yaw=.1;demo._update_camera();await settle();var bar=demo.get_meta("batch_edit")
+	demo.zoom=18.;demo.pitch=.7;demo.yaw=.1;demo._update_camera();await settle();demo.select_tool(4);var bar=demo.get_meta("batch_edit")
 	await move(roof("h1"));await mouse_event(roof("h1"),true);await mouse_event(roof("h1"),false);await create_timer(.1).timeout
 	await mouse_event(roof("h1"),true,true);await mouse_event(roof("h1"),false);await settle()
 	check(bar.selected.size()==6 and bar.panel.visible and bar.protect.button_pressed,"actual double-click selects the six-house natural cluster with protection")
@@ -55,6 +55,7 @@ func run()->void:
 	check(demo.state.houses[2]==custom and demo.state.houses.filter(func(h):return int(h.palette)==2 and not h.has("custom_colors")).size()==5,"real confirm updates five colors and preserves hand-custom home")
 	await key(KEY_Z,true);await settle();quiet();check(demo.state.houses==original.houses,"one native Undo restores all six homes")
 	await key(KEY_Y,true);await settle();quiet();var final:Dictionary=demo.state.snapshot();var final_gpu:=gpu_signature();FileAccess.open(OUT+"/hot_gpu.json",FileAccess.WRITE).store_string(JSON.stringify(gpu_rows(),"\t"))
+	demo.select_tool(0)
 	# Native marquee covers every house centre; modifiers never invoke Shift removal.
 	var rect:=Rect2(demo.camera.unproject_position(bar.selection.center(demo.state.houses[0])),Vector2.ZERO)
 	for house:Dictionary in demo.state.houses:rect=rect.expand(demo.camera.unproject_position(bar.selection.center(house)))

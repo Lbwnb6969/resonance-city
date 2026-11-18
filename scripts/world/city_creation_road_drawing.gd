@@ -75,7 +75,7 @@ static func add(city:RefCounted,points: Array[Vector2],style: String = "path",as
 			length += resolved[i - 1].distance_to(resolved[i])
 	if length < 0.2:
 		return city._fail("道路太短")
-	var before:Dictionary = city.snapshot()
+	var before:Dictionary = preload("res://scripts/world/city_creation_paused_counter_history.gd").history_snapshot(city)
 	var road_number := maxi(city._next_road_id, int(city._high_watermark.road) + 1)
 	var road := {"id": "r%d" % road_number, "points": encoded, "width":float(valid.width), "bridge": valid.bridge, "source": "player"}
 	if style!="path": road.style = style
@@ -85,4 +85,4 @@ static func add(city:RefCounted,points: Array[Vector2],style: String = "path",as
 	city._next_road_id = road_number + 1
 	city._high_watermark.road = road_number
 	city._commit(before, "铺设道路")
-	return {"ok": true, "message": str(Upgrade.NAMES[style])+"已铺好", "road_id": road.id,"upgrade_road_id":"","width":float(road.width),"style":style,"upgraded":false,"no_op":false}
+	return {"ok": true, "message": str(Upgrade.NAMES[style])+"已铺好", "road_id": road.id,"connection_at":resolved[-1],"upgrade_road_id":"","width":float(road.width),"style":style,"upgraded":false,"no_op":false}

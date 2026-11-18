@@ -17,7 +17,7 @@ func run()->void:
 	for kind:String in fixture.groups:
 		for id:String in fixture.groups[kind]:
 			var house:Dictionary=city.houses[city._house_index(id)]
-			check(Choice.choices(city,house)==Choice.CLOCKWORK,"all four prototypes remain selectable for actual house "+id)
+			check(Choice.choices(city,house)==Choice.CLOCKWORK+["recessed_townhouse"],"four clockwork prototypes and recessed townhouse remain selectable for "+id)
 			var records:Array=Clock.prepare(city,house)
 			check(not records.is_empty() and records.all(func(row):return row.prototype==kind),"worker prepares the selected recipe "+id)
 			var built:Node3D=r._house(house);var parts:Array=[]
@@ -28,11 +28,15 @@ func run()->void:
 			var finite:=true;var shaded:=true
 			for mesh:MeshInstance3D in built.find_children("*","MeshInstance3D",true,false):
 				var box:=mesh.mesh.get_aabb();finite=finite and box.position.is_finite() and box.size.is_finite() and mesh.transform.origin.is_finite()
-				if mesh.get_parent().name.begins_with("ClockworkPrototype_") and mesh.material_override is StandardMaterial3D:shaded=shaded and bool(mesh.material_override.get_meta("creation_wall",false))
+				if mesh.get_parent().name.begins_with("ClockworkPrototype_") and mesh.material_override is StandardMaterial3D:shaded=shaded and (mesh.material_override.get_meta("creation_wall",false) or mesh.material_override.has_meta("creation_facade_glass"))
 				parts.append([mesh.name,mesh.transform,box])
 			check(finite and shaded,"finite component geometry retains contact-AO wall sources "+id)
 			if id==fixture.groups[kind][0]:signatures.append(hash(parts))
-			if kind=="sawtooth_atrium":check(built.find_children("SawtoothGlazing*","MeshInstance3D",true,false).size()==records.size()*3,"real three-tooth glazed profile")
+			if kind=="sawtooth_atrium":
+				var glazing:=built.find_children("Atrium_atrium_glass","MeshInstance3D",true,false)
+				check(glazing.size()==records.size() and glazing.all(func(mesh):return mesh.mesh.get_faces().size()==18),"three physical glazing quads per exposed cell")
+				var vents:=built.find_children("AtriumVentPick","CollisionShape3D",true,false)
+				check(vents.size()==1 and vents[0].shape.size.x<.4 and vents[0].position.y+vents[0].shape.size.y*.5>.9,"one locally pickable crown without raising the entire roof pick box")
 			if kind=="clock_turret":check(built.find_children("RomanClockFace*","Node3D",true,false).size()==4,"one eight-sided copper turret has four actual Roman dials")
 			if kind=="iron_conservatory":check(built.find_children("BarrelGlazing*","MeshInstance3D",true,false).size()==records.size()*14,"real arched glazing replaces opaque cylinder")
 			if kind=="guild_arcade":check(not built.find_children("GroundBrickArcade","Node3D",true,false).is_empty(),"actual ground-level red-brick arcade")

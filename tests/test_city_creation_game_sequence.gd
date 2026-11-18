@@ -27,6 +27,7 @@ func run()->void:
 	for second in range(60):host.clock=second;host.spatial_facts={"enclosure":1. if second<30 else 0.,"flow":0. if second<30 else 1.,"craft":0. if second<30 else .5};sequence.observe()
 	var mean:=sequence.average();check(sequence.history.size()==30 and absf(mean[0])<.00001 and absf(mean[1]-1.)<.00001 and absf(mean[2]-.5)<.00001,"rolling affinity drops prior thirty seconds and averages the latest actual inputs")
 	sequence.observe();check(sequence.history.size()==30 and sequence.average()==mean,"same playback second never duplicates a frame sample")
+	host.spatial_facts.era="pastoral"
 	var selected:=sequence.select_next();check(selected.source_id!=host.prepared.manifest.source_id and selected.kind=="music","auto successor is a different complete music source")
 	check(music._pluck_city.snapshot()==city and host.prepared.manifest.source_id==catalog.packs[0].source_id,"selection observes geometry without changing current packet or city")
 	var prefs:Dictionary=music._pluck_city.creative_settings.music.duplicate(true);prefs.mode="fixed";prefs.style="warm";check(music._pluck_city.CreationPolicy.set_preferences(music._pluck_city,{"music":prefs}).ok and sequence.select_next().source_id==catalog.packs[0].source_id,"actual fixed preference repeats exactly current source")

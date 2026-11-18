@@ -273,7 +273,7 @@ func set_night(value: bool) -> void:
 
 func _refresh_harmony_gains() -> void:
 	harmony_gains.clear()
-	if _pluck_city==null: return
+	if _pluck_city==null or preload("res://scripts/audio/city_creation_free_music_route.gd").holds(self): return
 	var districts := {}
 	for house: Dictionary in _pluck_city.houses:
 		if str(house.role)!="residential": continue
@@ -1315,6 +1315,7 @@ func _process(delta: float) -> void:
 	spatial.set_concert_remote(_remote_concert())
 	spatial.set_theme_remote(_grand_active() and _remote_concert())
 	var experience_lift:=Experience.lift(self)
+	var envelope_delta:float=preload("res://scripts/audio/city_creation_music_envelope_clock.gd").step(self,delta)
 	for key in _players:
 		var weight:=_long_acoustic_weight(key)
 		if muted or weight<=0.0:
@@ -1324,7 +1325,7 @@ func _process(delta: float) -> void:
 		# long stems only return to the already verified PCM peak envelope.
 		var target := target_gain_db(key, concert_active and (key=="concert" or not _remote_concert()))+linear_to_db(weight)+attention.backing_duck_db+ATTENTION_HEADROOM_DB+experience_lift
 		if not is_finite(_players[key].volume_db): _players[key].volume_db=-60.0
-		_players[key].volume_db=lerpf(_players[key].volume_db,target,1.-exp(-delta*2.8))
+		_players[key].volume_db=lerpf(_players[key].volume_db,target,1.-exp(-envelope_delta*2.8))
 
 
 func _exit_tree() -> void:

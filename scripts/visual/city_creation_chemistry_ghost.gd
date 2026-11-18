@@ -9,6 +9,8 @@ static func build(parent: Node3D, rows: Array) -> void:
 	var segments := 0
 	var labels := {}
 	for row: Dictionary in rows:
+		var color:Color=GOLD if row.get("valid",true) else Color("ef9f8d")
+		surface.set_color(color)
 		for line: Array in row.lines:
 			var walked := 0.
 			for i in range(1,line.size()):
@@ -23,8 +25,8 @@ static func build(parent: Node3D, rows: Array) -> void:
 				walked += length
 		if not labels.has(row.kind):
 			labels[row.kind] = true
-			var label := Label3D.new(); label.text = "◇ "+str(row.label)
-			label.font_size = 40; label.pixel_size = .006; label.modulate = GOLD
+			var label := Label3D.new(); label.text = ("◇ " if row.get("valid",true) else "× ")+str(row.label)
+			label.font_size = 40; label.pixel_size = .006; label.modulate = color
 			label.outline_modulate = Color("294e43"); label.outline_size = 7
 			label.billboard = BaseMaterial3D.BILLBOARD_ENABLED; label.no_depth_test = true; label.position = row.at
 			root.add_child(label)

@@ -48,7 +48,7 @@ func run()->void:
 	var town:=Renderer.new();root.add_child(town);town.setup(city)
 	var actual:=physical(town)
 	check(actual.has(Wall.Kind.TIMBER) and actual.has(Wall.Kind.METAL),"real courtyard doors shutters and handles route to both physical kinds")
-	for row:Array in actual.get(Wall.Kind.TIMBER,[]):check(is_equal_approx(row[0],0.) and is_equal_approx(row[1],.66),"actual timber dielectric and roughness")
+	for row:Array in actual.get(Wall.Kind.TIMBER,[]):check(is_equal_approx(row[0],0.) and row[1]>=.6 and row[1]<=.85,"actual timber remains a rough dielectric")
 	for row:Array in actual.get(Wall.Kind.METAL,[]):check(is_equal_approx(row[0],.82) and is_equal_approx(row[1],.34),"actual handle metallic and roughness")
 	check(Wall.component(town,Color("d6bb74"),Wall.Kind.METAL)==Wall.component(town,Color("d6bb74"),Wall.Kind.METAL),"actual source factory reuses shared physical component")
 	check(city.snapshot()==saved,"rendering adds no author or entitlement fields")

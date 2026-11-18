@@ -54,4 +54,35 @@ func run()->void:
 	var saved:Dictionary=city.snapshot();var loaded:=Fixture.Modern.Clockwork.State.new()
 	check(loaded.restore(JSON.parse_string(JSON.stringify(saved,"",true,true))).ok and loaded.snapshot()==saved,"full JSON restores existing schema and deterministic alpine derivation")
 	check(city.snapshot()==before,"all architecture preparation and material publication leave authored world unchanged")
+	check_chalet_frontage(renderer)
 	renderer.free();print("MODERN_ARCHITECTURE ",JSON.stringify({"ok":failures.is_empty(),"checks":checks,"failures":failures}));quit(0 if failures.is_empty() else 1)
+
+func check_chalet_frontage(renderer) -> void:
+	var city := preload("res://scripts/world/city_creation_state.gd").new()
+	city.initialize_free()
+	var id: String = city.add_house(Vector2(-25,-20)).house_id
+	city.set_house_era(id,"modern_eco");city.set_house_architecture(id,"chalet")
+	city.add_cell(id,1,0,0);city.add_cell(id,0,0,1)
+	renderer.state = city
+	for connected: bool in [false,true]:
+		if connected:
+			check(city.add_road([Vector2(-22.3,-20),Vector2(-17,-20)] as Array[Vector2],"path").ok,"side road connects to the chalet")
+		var house: Dictionary = city.houses[0]
+		var before := city.snapshot()
+		var main: Dictionary = renderer._primary_entrance(house)
+		var built: Node3D = renderer._house(house)
+		var caps := built.find_children("ChaletEntryCanopy","Node3D",true,false)
+		var doors := built.find_children("Entrance_*","Node3D",true,false)
+		check(doors.size()==city.house_entrances(id).size() and doors.size()>=2,"every real chalet entrance remains an entrance")
+		var main_wall: Node3D
+		for wall: Node3D in doors:
+			var entry: Dictionary = wall.get_meta("entrance")
+			if entry.cell_id==main.cell_id and entry.side==main.side: main_wall=wall
+		if connected:
+			check(main.active and main.side==Vector2i.RIGHT and main_wall!=null and main_wall.has_meta("porch_steps") and caps.is_empty(),"new road owns the active porch; no redundant gable over the former main door")
+		else:
+			check(caps.size()==1 and main_wall!=null and main_wall.is_ancestor_of(caps[0]),"only the selected main entrance wears the projecting gable")
+		var panes: Array = built.get_meta("modern_window_panes")
+		check(panes.any(func(row):return row.panes.size()==2) and panes.all(func(row):return row.panes.size() in [0,2]),"published daylight and night-light records use the paired glass panels")
+		check(city.snapshot()==before,"building chalet entrance hierarchy never mutates the work")
+		built.free()

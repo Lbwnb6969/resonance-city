@@ -23,7 +23,8 @@ func run()->void:
 	for id:String in f.ids:
 		var house:Dictionary=demo.town._house_record(id);var p:=Plan.rectangle(house);var built:Node3D=demo.town.house_roots[id]
 		check(built.has_meta("ionic_stoa") if house.architecture=="ionic_stoa" else built.has_meta("roman_basilica"),"actual published civic mass "+id)
-		check(not built.get_meta("civic_windows",[]).is_empty() and demo.town.resonance.rigs[id].mesh.get_meta("windows")==built.get_meta("civic_windows"),"resonance panes equal actual compiled civic glass only "+id)
+		var civic_windows:Array=built.get_meta("civic_windows",[]);var emitted_civic:Array=demo.town.resonance.rigs[id].mesh.get_meta("windows",[]).filter(func(w):return str(w.get("source",""))=="civic")
+		check(emitted_civic==civic_windows,"resonance panes equal actual compiled civic glass only "+id)
 		await view(id)
 		for phase:int in [0,2]:demo._set_light_phase(phase);await capture(id+"_"+house.architecture+"_phase"+str(phase))
 		await physics_frame

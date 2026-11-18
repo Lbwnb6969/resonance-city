@@ -1,16 +1,19 @@
 extends RefCounted
-## Reuses the twelve existing voices. Saved mixes contain bank identities only.
+## Reuses existing voices. Saved mixes reference banks or a signed same-source bundle.
 const Palette=preload("res://scripts/audio/city_creation_harmonic_palette.gd")
 const Catalog=preload("res://scripts/audio/city_creation_music_catalog.gd")
 const Emergence=preload("res://scripts/audio/city_creation_harmonic_emergence.gd")
 const Acoustic=preload("res://scripts/audio/city_creation_acoustic_field.gd")
+const Candidate=preload("res://scripts/audio/city_creation_candidate_record.gd")
 const STEMS:=["foundation","wood","air","terrace","concert","wood_deep","wood_weave","wood_market","wood_sylvan","renaissance_fugue","clockwork_waltz","modern_symphony"]
 var active:=false
+var candidate_player:Node
 var mix:Dictionary={}
 var _resume:Dictionary={}
 var _fade:=0.
 
 static func valid(value:Variant)->bool:
+	if value is Dictionary and value.get("version")==2:return Candidate.valid(value)
 	if not value is Dictionary or value.get("version")!=1 or not value.get("tracks") is Dictionary:return false
 	if value.tracks.size()!=STEMS.size():return false
 	for field:String in ["position","theme_pan","concert_pan"]:
@@ -44,6 +47,8 @@ static func _banks(music:Node)->Dictionary:
 	return {"original":music._original_streams,"variations":music._variation_streams,"harmony":music._harmony_streams}
 
 static func capture(music:Node)->Dictionary:
+	var candidate:=Candidate.capture(music)
+	if not candidate.is_empty():return candidate
 	if music._loading or music.phonograph.active or music._players.size()!=12:return {}
 	var tracks:Dictionary={};var banks:=_banks(music)
 	for stem:String in STEMS:
@@ -71,6 +76,7 @@ static func reconstruct(city:RefCounted,view:Dictionary)->Dictionary:
 	return {"version":1,"tracks":tracks,"position":0.,"mode":mode,"theme_pan":0.,"concert_pan":0.}
 
 func begin(music:Node,value:Dictionary)->Dictionary:
+	if value.get("version")==2:return Candidate.begin(music,value)
 	if music._loading or not valid(value):return {"ok":false,"message":"这份留声机曲目尚未准备好"}
 	var banks:=_banks(music)
 	for stem:String in STEMS:
@@ -78,7 +84,7 @@ func begin(music:Node,value:Dictionary)->Dictionary:
 		if row.bank=="harmony" and str(row.key).begins_with("core1/") and not preload("res://scripts/audio/city_creation_core_score_cache.gd").request(music,str(row.key)):return {"ok":false,"message":"正在后台准备这份城市乐章，请稍候播放"}
 		if row.bank=="harmony" and str(row.key).begins_with("chamber_legato/"):preload("res://scripts/audio/city_creation_chamber_legato.gd").materialize(music,str(row.key))
 		if not banks[row.bank].has(row.key):return {"ok":false,"message":"请先准备本地音乐声部库"}
-	if active:stop(music)
+	if active or candidate_player!=null:stop(music)
 	# Retire explicit audition owners before capturing the bank to resume.
 	for name:String in ["GameMusicPlayer","LyriaSpatialPreview"]:
 		var audition:Node=music.get_node_or_null(NodePath(name))
@@ -101,10 +107,12 @@ func begin(music:Node,value:Dictionary)->Dictionary:
 	return {"ok":true,"message":"留声机正在播放"}
 
 func tick(music:Node,delta:float)->void:
+	if mix.get("version")==2:return
 	_fade=minf(1.,_fade+delta*5.)
 	for stem:String in STEMS:music._players[stem].volume_db=-80. if music.muted else maxf(-80.,float(mix.tracks[stem].db)+linear_to_db(maxf(.00001,_fade)))
 
 func stop(music:Node)->void:
+	if candidate_player!=null:candidate_player.stop();return
 	if not active:return
 	for stem:String in STEMS:
 		var row:Dictionary=_resume.players[stem];var player:AudioStreamPlayer=music._players[stem]

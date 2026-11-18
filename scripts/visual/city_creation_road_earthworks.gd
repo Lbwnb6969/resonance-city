@@ -58,8 +58,10 @@ static func prepare(renderer, road: Dictionary, profile: Dictionary) -> Dictiona
 			if interval.bank:
 				low0=minf(low0,minf(renderer.state.ground_height(outer0),renderer.state.raw_terrain_height(outer0))-.12)
 				low1=minf(low1,minf(renderer.state.ground_height(outer1),renderer.state.raw_terrain_height(outer1))-.12)
-			var top0 := maxf(y0+0.10,terrain0+0.08) if cut else y0+0.04
-			var top1 := maxf(y1+0.10,terrain1+0.08) if cut else y1+0.04
+			# The cut shoulder has already been reshaped. Its retaining wall meets
+			# that published surface, not the higher untouched hill 1.15m away.
+			var top0 := maxf(y0+0.10,maxf(renderer.state.ground_height(a),renderer.state.ground_height(outer0))+0.08) if cut else y0+0.04
+			var top1 := maxf(y1+0.10,maxf(renderer.state.ground_height(b),renderer.state.ground_height(outer1))+0.08) if cut else y1+0.04
 			low0=minf(low0,y0-0.12);low1=minf(low1,y1-0.12)
 			var v := [Vector3(a.x,low0,a.y),Vector3(b.x,low1,b.y),Vector3(b.x,top1,b.y),Vector3(a.x,top0,a.y),
 				Vector3(outer0.x,low0,outer0.y),Vector3(outer1.x,low1,outer1.y),Vector3(outer1.x,top1,outer1.y),Vector3(outer0.x,top0,outer0.y)]

@@ -10,7 +10,7 @@ void vertex() {
 	terrain_normal=safe_normalize(MODEL_NORMAL_MATRIX*NORMAL);
 }
 void fragment() {
-	vec3 grass=shore_ground(world_at.xz,meadow_color(world_at.xz,grass_low.rgb,grass_high.rgb));
+	vec3 grass=shore_ground(world_at,meadow_color(world_at.xz,PROJECTION_MATRIX));
 	float slope=1.0-clamp(terrain_normal.y,0.0,1.0);
 	vec3 stone=mix(vec3(.39,.45,.38),vec3(.57,.58,.46),meadow_noise(world_at.xz*.08));
 	vec3 terrain=mix(grass,stone,smoothstep(.28,.72,slope)*.78);

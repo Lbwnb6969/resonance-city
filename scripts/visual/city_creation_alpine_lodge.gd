@@ -4,7 +4,7 @@ const Plan=preload("res://scripts/world/city_creation_alpine_plan.gd")
 const Pick=preload("res://scripts/visual/city_creation_roof_pick.gd")
 static func facade(r, wall: Node3D, door: bool, p: Array, house: Dictionary, cell: Dictionary, direction: Vector2i) -> void:
 	var kind:=Plan.kind_for(house);var level:=int(cell.level)
-	var wood:=Wall.source(p[2].lerp(Color("95653f"),.65),null,"component",Wall.Kind.STONE)
+	var wood:=Wall.source(p[2].lerp(Color("95653f"),.65),null,"component",Wall.Kind.TIMBER)
 	var stone:=Wall.source(Color("938d7b"),null,"component",Wall.Kind.STONE)
 	var face:=Node3D.new();face.name="LodgeFrame";wall.add_child(face)
 	var pane:MeshInstance3D=r._box(face,Vector3(1.62,1.30,.035),Vector3(0,.87,-.16),r.conservatory.ensure_material(true))
@@ -34,7 +34,7 @@ static func roof(r, root: Node3D, house: Dictionary, p: Array, cell: Dictionary)
 	var frame:=Node3D.new();frame.name="AlpineLodgeRoof_"+str(cell.id);root.get_node(str(cell.id)).add_child(frame)
 	frame.rotation.y=atan2(float(front.x),float(front.y));frame.set_meta("alpine_kind",kind)
 	var y:float=(int(cell.level)+1)*1.7
-	var wood:=Wall.source(p[2].lerp(Color("95653f"),.65),null,"component",Wall.Kind.STONE)
+	var wood:=Wall.source(p[2].lerp(Color("95653f"),.65),null,"component",Wall.Kind.TIMBER)
 	var slate:=Wall.source(Color("536269"),null,"component",Wall.Kind.SLATE)
 	var stone:=Wall.source(Color("a8a38e"),null,"component",Wall.Kind.STONE)
 	if kind==3:
@@ -69,4 +69,4 @@ static func _gable(r, root: Node3D, width: float, depth: float, eave: float, rid
 	var c:=Vector3(x+width*.5,eave,depth*.5);var d:=c-Vector3(width,0,0)
 	var top0:=Vector3(x,ridge,-depth*.5);var top1:=Vector3(x,ridge,depth*.5)
 	for vertices:Array in [[a,d,top1,a,top1,top0],[top0,top1,c,top0,c,b],[a,top0,b],[d,c,top1],[a,b,c,a,c,d]]:
-		var mesh:MeshInstance3D=r._triangles(root,vertices,material.albedo_color);mesh.material_override=material
+		var mesh:MeshInstance3D=r._triangles(root,vertices,material.albedo_color);mesh.material_override=material;preload("res://scripts/visual/city_creation_slate_finish.gd").apply(mesh)

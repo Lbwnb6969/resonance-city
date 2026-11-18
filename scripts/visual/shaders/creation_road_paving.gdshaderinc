@@ -1,3 +1,4 @@
+#include "res://scripts/visual/shaders/creation_surface_relief.gdshaderinc"
 // World-metric continuous paving. Pixel footprints average the fine joints;
 // no extra geometry, material instances or per-stone draw calls are created.
 vec4 paving_sample(vec2 at,float pattern,vec3 fallback){
@@ -47,11 +48,4 @@ vec4 paving_sample(vec2 at,float pattern,vec3 fallback){
 	vec3 stone=mix(low,high,seed);
 	vec3 mortar=kind==2 ? vec3(.43,.39,.30) : vec3(.35,.37,.32);
 	return vec4(mix(mix(low,high,.5)*.94,mix(mortar,stone,face),detail),face*.003*detail);
-}
-vec3 paving_normal(vec3 normal,vec3 position,float height){
-	vec3 px=dFdx(position),py=dFdy(position);
-	vec3 rx=cross(py,normal),ry=cross(normal,px);
-	float determinant=dot(px,rx);
-	if(abs(determinant)<1e-10){return normal;}
-	return normalize(normal-(rx*dFdx(height)+ry*dFdy(height))/determinant);
 }

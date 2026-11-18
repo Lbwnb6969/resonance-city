@@ -65,7 +65,9 @@ func sync()->void:
 			label=("原 " if options.selected==0 else "")+str(width)+"m"
 		heads[field].caption=label;heads[field].tooltip_text=options.get_item_text(options.selected)+( " · 悬停滚轮或 [ / ] 调宽" if field=="RoadSize" else " · 点击选择")
 	var tool=demo.get_meta("road_tool")
-	heads.More.caption="更多 · "+str(LABELS.RoadMode[tool.effective if tool.active() else tool.mode])
+	var mode:int=tool.effective if tool.active() else tool.mode
+	heads.More.kind=dock.OPTION_ICONS.RoadMode[mode]
+	heads.More.caption="画法 · "+str(LABELS.RoadMode[mode])
 	heads.More.tooltip_text="画法 / 环岛 · Tab切换活动草稿直曲 · 右键取消"
 
 func _wheel(event:InputEvent,field:String)->void:

@@ -30,7 +30,7 @@ static func faces(city)->Array:
 	city.set_meta("public_plaza_faces",{"stamp":stamp,"rows":result});return result
 static func plans(city)->Array:
 	var result:Array=[]
-	if not city.CreationPolicy.is_free(city):return result
+	if not city.CreationPolicy.is_free(city) or city.plaza_loops.is_empty():return result
 	for face:Dictionary in faces(city):
 		for choice:Dictionary in city.plaza_loops:
 			if choice.loop_key==face.loop_key:

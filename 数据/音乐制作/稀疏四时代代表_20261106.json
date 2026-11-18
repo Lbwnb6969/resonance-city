@@ -1,0 +1,53 @@
+{
+  "schema": "sparse_music_recipes_v1",
+  "curation": "res://数据/音乐资产/目录/20261105_reserve_v1/curation.json",
+  "policy": "Candidate model-slot arrangements, no instrument/pitch/listening approval inferred; preserve source masters and every unused stem",
+  "songs": [
+    {
+      "source_id": "3ace6b15e64bbca0673b8c7f66d5db1d5ad4dee333646626b9397a5ba6cf63a1",
+      "era": "renaissance",
+      "folder": "2_02",
+      "label": "2-02 · 古街背景分层候选",
+      "group": "coarse_six",
+      "background_slots": [
+        "guitar"
+      ],
+      "body_slots": [
+        "other"
+      ],
+      "body_cap": 0.4,
+      "intent": "Four-era 2-02: viol/theorbo interlocking breath; model guitar slot is not confirmed lute or a lead-free part"
+    },
+    {
+      "source_id": "fe3e03abff5b0e08f99fe7b7091389e47f407155b1179c392cd32c6b5208bf51",
+      "era": "clockwork",
+      "folder": "3_02",
+      "label": "3-02 · 花房背景分层候选",
+      "group": "woodwind_plus_remaining_six",
+      "background_slots": [
+        "guitar",
+        "piano"
+      ],
+      "body_slots": [
+        "other"
+      ],
+      "body_cap": 0.2,
+      "intent": "Four-era 3-02: harp/vibraphone glints; these model slots only approximate that arrangement. Strong wind slot retained in unused residual"
+    },
+    {
+      "source_id": "1bbe2dac0d27ea6333bbb146f657089fed1a8f0ffb8fb9b58a3b9333e28ada80",
+      "era": "modern_eco",
+      "folder": "4_01",
+      "label": "4-01 · 生态背景分层候选",
+      "group": "coarse_six",
+      "background_slots": [
+        "other"
+      ],
+      "body_slots": [
+        "bass"
+      ],
+      "body_cap": 0.35,
+      "intent": "Four-era 4-01: slow breathing warm synth; other/bass slots are provisional and not verified instruments"
+    }
+  ]
+}

@@ -39,6 +39,7 @@ static func progress(city:RefCounted,id:String)->int:
 	return int(city.bakery_supply.get(id,{}).get("produced",0))+int(city.workshop_supply.get(id,{}).get("produced",0))+int(city.cafe_progress.get(id,{}).get("groups",0))
 static func encore(demo:Node3D,id:String,ambient:bool=false)->bool:
 	var city:RefCounted=demo.state
+	if city.CreationPolicy.is_free(city):return false
 	if preload("res://scripts/world/city_creation_economy_pause.gd").paused(city):return false
 	if Supply.status(city,id).tier<1:return false
 	var count:=progress(city,id);var key:="encore_progress/"+id
@@ -56,6 +57,7 @@ static func encore(demo:Node3D,id:String,ambient:bool=false)->bool:
 	city.set_meta("encore_events",events);return true
 static func tick(juice:Node)->void:
 	var demo:Node3D=juice.demo;var city:RefCounted=demo.state
+	if city.CreationPolicy.is_free(city):return
 	preload("res://scripts/audio/city_creation_civic_music.gd").tick(demo)
 	var key:=[city.get_instance_id(),city._wish_epoch]
 	var clock:Dictionary=juice.get_meta("encore_clock",{})

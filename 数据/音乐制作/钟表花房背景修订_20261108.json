@@ -1,0 +1,21 @@
+{
+  "schema": "sparse_background_role_revision_v1",
+  "source_id": "fe3e03abff5b0e08f99fe7b7091389e47f407155b1179c392cd32c6b5208bf51",
+  "prior_manifest": "res://数据/音乐资产/游戏音乐包/20261106_sparse_eras_v2/3_02/bundle.json",
+  "prior_manifest_sha256": "c50c18ea9680842dfd0418505ae04f52cba5a25aa775a6e55ad38bd6fe0ec4b3",
+  "prior_catalog": "res://数据/音乐资产/游戏音乐包/20261108_modern_v2/catalog.json",
+  "prior_catalog_sha256": "ca1bcdc7b4a96acea1a4bd79741a8d2216f97d97a43641bfd6f53bfe16d4d683",
+  "output": "res://数据/音乐资产/游戏音乐包/20261108_greenhouse_background_v2",
+  "name": "3-02 · 花房持续背景候选",
+  "background_slots": [
+    "other"
+  ],
+  "body_slots": [
+    "guitar",
+    "piano"
+  ],
+  "body_cap": 0.2,
+  "basis": "Original background has 5-7-second windows below .0003 RMS while full mix >.01. Existing same-source other has no such quiet window. Swap existing background/body audio roles; do not add woodwind/residual or full mix. Instrument identity, melody restraint and listening quality remain unconfirmed.",
+  "formal_default": false,
+  "listening_approved": false
+}

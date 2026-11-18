@@ -20,13 +20,15 @@ func _record(row:Dictionary)->void:
 	if journal.size()>256:journal.pop_front()
 static func edited(owner:Node3D,result:Dictionary,kind:String)->void:
 	owner.life.site_wishes.on_edit(result)
-	if owner.has_meta("juice_feedback"):owner.get_meta("juice_feedback").mark(kind)
+	if owner.has_meta("juice_feedback"):owner.get_meta("juice_feedback").mark(kind,result.get("connection_at"))
 func setup(owner:Node3D,parent:Control)->void:
 	demo=owner;name="JuiceFeedback";demo.add_child(self);demo.set_meta("juice_feedback",self)
 	arcs.setup(demo);flight=Flight.new();flight.setup(demo,parent)
+	preload("res://scripts/ui/city_creation_road_connection_feedback.gd").new().setup(demo)
 	epoch=[demo.state.get_instance_id(),demo.town.get_instance_id(),demo.state._wish_epoch]
 	demo.town.set_meta("juice_feedback",self);detector.rebase(demo.state);baseline=false
-func mark(kind:String)->void:
+func mark(kind:String,connection_at:Variant=null)->void:
+	demo.get_meta("road_connection_feedback").mark(kind,connection_at)
 	if kind=="history":clear();baseline=true
 	dirty=true
 func clear()->void:
@@ -38,6 +40,7 @@ func cancel_task_feedback()->void:
 		if row.kind in ["wish","vignette"]:row.clock=-100.;row.arrived=true
 	flight.queue_redraw()
 func enqueue(event:Dictionary)->void:
+	if demo.state.CreationPolicy.is_free(demo.state):return
 	var ids:=Events.sequence(demo.state,str(event.source),event.members)
 	ids=preload("res://scripts/visual/city_creation_prototype_activity.gd").extend(demo,event,ids)
 	if ids.is_empty():return

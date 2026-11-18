@@ -18,6 +18,23 @@ func run()->void:
 	var personal:=FileAccess.get_file_as_bytes(State.DEFAULT_PATH) if FileAccess.file_exists(State.DEFAULT_PATH) else PackedByteArray()
 	demo=Scene.instantiate();demo.persistence=false;demo.collection_directory=OUT+"/works";root.add_child(demo);await settle();isolate_input()
 	var voices:=pool();road_tool=demo.get_meta("road_tool")
+	if "--narrow" in OS.get_cmdline_user_args():
+		root.size=Vector2i(800,540);await new_city();await settle()
+		var palette=demo.tactile_dock.road_palette
+		await ui_click(palette.heads.More);await settle()
+		var curve:Button=demo.tactile_dock.button_for("RoadMode",2)
+		check(curve!=null and curve.is_visible_in_tree() and root.get_visible_rect().encloses(curve.get_global_rect()),"curve choice reachable in narrow menu")
+		await capture("road_modes")
+		if curve!=null:await ui_click(curve)
+		check(road_tool.mode==2 and not palette.menu.visible and palette.heads.More.kind=="road_curve","curve choice collapses menu and remains visible on current control")
+		var start:=Vector2(-26,-18);var control:=Vector2(-23,-21);var end:=Vector2(-19,-17)
+		await click_world(start);await click_world(control);await motion(end)
+		var preview:Array=demo.road_preview.duplicate();check(preview.size()>2 and demo.state.roads.is_empty(),"curve preview exists before authoring")
+		await capture("road_preview");await click_world(end);await settle()
+		check(demo.state.roads.size()==1 and exact(preview),"single click commits displayed curve")
+		await key(KEY_Z,true);await settle();check(demo.state.roads.is_empty(),"undo removes narrow-window stroke")
+		FileAccess.open(OUT+"/report.json",FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures},"\t"))
+		print("NARROW_ROAD ",checks," ",failures);demo.queue_free();await process_frame;quit(int(not failures.is_empty()));return
 	for size:Vector2i in [Vector2i(1440,900),Vector2i(1024,768)]:
 		root.size=size;await new_city();await settle()
 		var palette=demo.tactile_dock.road_palette

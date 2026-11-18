@@ -7,7 +7,7 @@ const EPS:=.002
 const SAMPLE:=.04
 const MODERN_SILL_DROP:=.18 # Doorway allowance; road treads still use STEP_HEIGHT.
 
-static func assess(city:RefCounted,house:Dictionary,entry:Dictionary,target:Vector2,road:Dictionary)->Dictionary:
+static func assess(city:RefCounted,house:Dictionary,entry:Dictionary,target:Vector2,road:Dictionary,prepared_obstacles:Variant=null)->Dictionary:
 	# Through arches keep their existing road-floor semantics in this batch.
 	if entry.get("passage",false):return {"ok":true,"kind":"existing_passage","scope":"unchanged"}
 	var modern:bool=not entry.active and city.house_era(house)=="modern_eco"
@@ -15,9 +15,10 @@ static func assess(city:RefCounted,house:Dictionary,entry:Dictionary,target:Vect
 	# Keep that separate geometry explicit until its entire approach is covered.
 	if modern and preload("res://scripts/world/city_creation_alpine_plan.gd").kind_for(house)==2:return {"ok":true,"kind":"existing_modern_deck","scope":"unchanged"}
 	var plan:Dictionary=Frontage.porch_plan(city,house,entry) if entry.active else {}
-	var profile:Dictionary=city.road_profile(road)
+	city.road_profile(road)
+	var sampler=preload("res://scripts/world/city_creation_entry_surface.gd").create(city,house,entry,road,plan)
 	var start:Vector2=entry.wall_at+Frame.normal(entry)*.18
-	var previous:=_surface(city,house,entry,start,road,profile,plan)
+	var previous:Dictionary=sampler.sample(start)
 	var top:float=float(house.get("base_y",0.))+(.15 if entry.active or modern else .105)
 	var result:={"ok":false,"kind":"modern_ground_door" if modern else "ordinary_door","sill_y":top,"street_y":city.street_height(target),"active_steps":bool(entry.active),"step_count":int(plan.get("count",0)),"max_rise":0.,"max_grade":0.,"samples":0,"reason":"door_buried"}
 	if float(previous.y)>top+EPS:result.blocked_at=start;return _diagnostic(result)
@@ -27,7 +28,7 @@ static func assess(city:RefCounted,house:Dictionary,entry:Dictionary,target:Vect
 		result.reason="unsupported_sill_drop";result.blocked_at=start;return _diagnostic(result)
 	var count:=maxi(1,ceili(start.distance_to(target)/SAMPLE));var last:=start
 	for i in range(1,count+1):
-		var at:=start.lerp(target,float(i)/count);var surface:=_surface(city,house,entry,at,road,profile,plan)
+		var at:=start.lerp(target,float(i)/count);var surface:Dictionary=sampler.sample(at)
 		var rise:float=absf(surface.y-previous.y);var distance:=at.distance_to(last)
 		result.max_rise=maxf(result.max_rise,rise);result.samples=i
 		if rise>Roads.STEP_HEIGHT+Roads.MAX_GRADE*distance+EPS:
@@ -38,7 +39,7 @@ static func assess(city:RefCounted,house:Dictionary,entry:Dictionary,target:Vect
 		previous=surface;last=at
 	if absf(float(previous.y)-float(result.street_y))>Roads.STEP_HEIGHT+EPS:
 		result.reason="steps_miss_street";result.blocked_at=target;return _diagnostic(result)
-	result.corridor=preload("res://scripts/world/city_creation_entry_corridor.gd").assess(city,house,entry,target,road,func(at:Vector2)->Dictionary:return _surface(city,house,entry,at,road,profile,plan))
+	result.corridor=preload("res://scripts/world/city_creation_entry_corridor.gd").assess(city,house,entry,target,road,sampler.sample,prepared_obstacles)
 	if not result.corridor.ok:result.reason=result.corridor.reason;return _diagnostic(result)
 	result.ok=true;result.reason="supported";return _diagnostic(result)
 
@@ -49,21 +50,4 @@ static func _diagnostic(result:Dictionary)->Dictionary:
 	return result
 
 static func _surface(city:RefCounted,house:Dictionary,entry:Dictionary,at:Vector2,road:Dictionary,profile:Dictionary,plan:Dictionary)->Dictionary:
-	var result:={"y":city.ground_height(at),"kind":"ground"}
-	if city._water_stroke_distance(at,road.points)<=float(road.width)*.5+EPS:
-		var surface:Dictionary=city._road_heights.surface_at(at)
-		var y:float=surface.get("top_y",city.street_height(at))
-		if not surface.is_empty() and not surface.get("supported",true):
-			if city.water_clearance(at)<.05:result={"y":y,"kind":"road_gap"}
-		elif not surface.is_empty() and y>=float(result.y):result={"y":y,"kind":surface.kind}
-	var relative:Vector2=at-Vector2(entry.wall_at);var along:=relative.dot(Frame.normal(entry));var lateral:=absf(relative.cross(Frame.normal(entry)))
-	var base:float=house.get("base_y",0.)
-	if entry.active:
-		var count:int=plan.count;var rise:float=.15-float(plan.bottom)
-		for i in range(count):
-			var center:=.18+i*.23;var top:=base+.15-i*rise/count
-			if absf(along-center)<=.145+EPS and lateral<=.47+i*.045+EPS and top>=float(result.y):result={"y":top,"kind":"porch_step"}
-	elif city.house_era(house)!="modern_eco":
-		for row:Array in [[.3,.27,.48,.105],[.55,.34,.52,.0445]]:
-			if absf(along-float(row[0]))<=float(row[1])+EPS and lateral<=float(row[2])+EPS and base+float(row[3])>=float(result.y):result={"y":base+float(row[3]),"kind":"door_step"}
-	return result
+	return preload("res://scripts/world/city_creation_entry_surface.gd").create(city,house,entry,road,plan).sample(at)

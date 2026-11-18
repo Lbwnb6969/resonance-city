@@ -42,14 +42,22 @@ var _roundabout_markers: Array[Dictionary]=[]
 var _upper_entries:Dictionary={}
 var ghat_seats:Dictionary={}
 
+func _cancelled(snapshot:Dictionary)->bool:
+	var ticket:RefCounted=snapshot.get("preparation_ticket")
+	if ticket==null or not ticket.cancelled():return false
+	prepare_stats["cancelled"]=true
+	return true
+
 func prepare(snapshot: Dictionary, prior: Dictionary, actors: Array[Dictionary]) -> RefCounted:
 	var started := Time.get_ticks_usec()
 	prepare_stats = {}
+	if _cancelled(snapshot):return self
 	state = State.new()
 	state.houses.assign(snapshot.houses)
 	state.roads.assign(snapshot.roads)
 	state.waters.assign(snapshot.waters)
 	state.districts.assign(snapshot.get("districts",[]))
+	state.musical_links.assign(snapshot.get("musical_links",[]))
 	state.terrain_strokes.assign(snapshot.get("terrain_strokes",[]))
 	state.placed_landmarks.assign(snapshot.get("placed_landmarks",[]));state.creative_settings=snapshot.get("creative_settings",{}).duplicate(true)
 	state.biome_seed=snapshot.get("biome_seed",{}).duplicate()
@@ -57,6 +65,8 @@ func prepare(snapshot: Dictionary, prior: Dictionary, actors: Array[Dictionary])
 	state.plaza_loops.assign(snapshot.get("plaza_loops",[]));state.plants.assign(snapshot.get("plants",[]));state.cozy_progression=snapshot.get("cozy_progression",{}).duplicate(true)
 	state.harmony_journey=snapshot.get("harmony_journey",{}).duplicate(true)
 	state.terrain_policy=int(snapshot.get("terrain_policy",1))
+	state.set_meta("prepared_lane_proofs",snapshot.get("lane_seed",{}))
+	if snapshot.has("courtyard_cache"):state._courtyards=snapshot.courtyard_cache
 	if snapshot.has("ground_cache"):
 		# The request owns this cache; it was copied before starting the thread.
 		state._ground_terrain = snapshot.ground_cache
@@ -64,13 +74,15 @@ func prepare(snapshot: Dictionary, prior: Dictionary, actors: Array[Dictionary])
 		state._terrain_protection = snapshot.protection_cache
 	if snapshot.has("road_height_cache"):state._road_heights=snapshot.road_height_cache
 	prepared_cafe_context.restore_city(snapshot.get("cafe_context",{}),state)
-	preload("res://scripts/visual/city_creation_prepared_frontages.gd").prepare(state)
+	preload("res://scripts/visual/city_creation_prepared_frontages.gd").prepare(state,snapshot.get("frontage_seed",{}))
+	if _cancelled(snapshot):return self
 	connected_houses = prior
 	var stage_started := Time.get_ticks_usec()
 	_build_graph()
 	preload("res://scripts/visual/city_creation_local_service_cache.gd").reuse_network(self,snapshot.get("network_reuse",{}))
 	prepare_stats["graph_ms"] = float(Time.get_ticks_usec()-stage_started)/1000.0
 	prepare_stats["terrain_changed_vertices"] = int(state._ground_terrain.stats.get("raw_changed_vertices",0))
+	if _cancelled(snapshot):return self
 	stage_started=Time.get_ticks_usec()
 	var cafe_entries: Dictionary={}
 	for house: Dictionary in state.houses:
@@ -83,6 +95,7 @@ func prepare(snapshot: Dictionary, prior: Dictionary, actors: Array[Dictionary])
 		cafe_entries[str(house.id)]=Vector2(at.x,at.z)
 	prepared_cafe_context.warm_seats(state,cafe_entries)
 	prepare_stats["cafe_seats_ms"]=(Time.get_ticks_usec()-stage_started)/1000.
+	if _cancelled(snapshot):return self
 	stage_started = Time.get_ticks_usec()
 	# Warm only source queries needed by live actors and every surviving door.
 	# Attachment depends on the planar origin and component, never its old Y.
@@ -113,6 +126,7 @@ func prepare(snapshot: Dictionary, prior: Dictionary, actors: Array[Dictionary])
 		origins[pkey].merge(services)
 		origins[pkey][id] = true
 	for pkey: String in origins:
+		if _cancelled(snapshot):return self
 		var point: Vector3 = origin_points[pkey]
 		var routes: Dictionary = {}
 		var exterior: Dictionary = {}
@@ -132,6 +146,7 @@ func prepare(snapshot: Dictionary, prior: Dictionary, actors: Array[Dictionary])
 	prepare_stats["cafe_attachments"]=cafe_routes
 	stage_started = Time.get_ticks_usec()
 	for start: String in connected_houses.values():
+		if _cancelled(snapshot):return self
 		for finish: String in connected_houses.values():
 			if start != finish and not service_ports.has(start) and not service_ports.has(finish): continue
 			var route:=_route(start,finish)
@@ -148,6 +163,7 @@ func prepare(snapshot: Dictionary, prior: Dictionary, actors: Array[Dictionary])
 	prepared_travel.sync(state)
 	travel_prepare_ms=float(Time.get_ticks_usec()-travel_started)/1000.0
 	prepare_stats["travel_ms"] = travel_prepare_ms
+	if _cancelled(snapshot):return self
 	stage_started=Time.get_ticks_usec()
 	if not actors.is_empty():
 		# Actors are held at these exact planar points until publication. Use
@@ -158,6 +174,11 @@ func prepare(snapshot: Dictionary, prior: Dictionary, actors: Array[Dictionary])
 			var point:Vector3=actor.point;var at:=Vector2(point.x,point.z)
 			if not prepared_street_heights.has(at):prepared_street_heights[at]=state.street_height(at)
 	prepare_stats["actor_heights_ms"]=float(Time.get_ticks_usec()-stage_started)/1000.
+	if _cancelled(snapshot):return self
+	preload("res://scripts/world/city_creation_spatial_prepared.gd").prepare(self)
+	if _cancelled(snapshot):return self
+	preload("res://scripts/world/city_creation_paused_counter_history.gd").prepare(self,snapshot.get("paused_counter_sources",[]))
+	if snapshot.get("expression_geometry_needed",false):state.set_meta("expression_geometry_prepared",preload("res://scripts/audio/city_creation_expression_geometry.gd").prepare(state))
 	prepare_stats["total_ms"] = float(Time.get_ticks_usec()-started)/1000.0
 	return self
 

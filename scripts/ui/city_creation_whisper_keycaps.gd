@@ -23,7 +23,7 @@ func setup(owner:Node3D,parent:Control)->void:
 	demo.hint.clip_text=true;demo.hint.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
 	demo.hint.add_theme_font_size_override("font_size",12);demo.hint.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 	demo.hint.add_theme_color_override("font_color",UI.PAPER);demo.hint.add_theme_color_override("font_shadow_color",Color("152e29"));demo.hint.add_theme_constant_override("shadow_outline_size",3)
-	var navigation:=Label.new();navigation.text="滚轮 缩放 · 右键 转动 · J 手记"
+	var navigation:=Label.new();navigation.text="WASD 移动 · 滚轮 缩放 · Esc 空手 · J 手记"
 	navigation.add_theme_font_size_override("font_size",11);navigation.add_theme_color_override("font_color",UI.PAPER);navigation.add_theme_color_override("font_shadow_color",Color("152e29"));navigation.add_theme_constant_override("shadow_outline_size",3)
 	navigation.mouse_filter=Control.MOUSE_FILTER_IGNORE;add_child(navigation)
 	mouse_entered.connect(func()->void:_quiet=0.)
@@ -40,10 +40,10 @@ func record_action(tool:int)->void:uses[tool]+=1
 func _process(delta:float)->void:
 	if demo.tool!=_tool or demo.hint.text!=_text:
 		_tool=demo.tool;_text=demo.hint.text;_quiet=0.;tooltip_text=_text+"\nAlt 自由落点 · Esc 取消 · Ctrl+Z 撤销"
-	demo.hint.text="点工坊/奇观听独奏 · Esc 结束" if demo.camera_rig.strolling else "独奏中 · Esc 结束 · 右键自由转动" if demo.get_meta("solo_spotlight").active() else demo.get_meta("road_tool").hint() if demo.tool==2 else SHORT_HINTS[demo.tool]
+	demo.hint.text="点工坊/奇观听独奏 · Esc 结束" if demo.camera_rig.strolling else "独奏中 · Esc 结束 · 右键自由转动" if demo.get_meta("solo_spotlight").active() else preload("res://scripts/ui/city_creation_overview_navigation.gd").HINT if demo.tool<0 else preload("res://scripts/ui/city_creation_unified_build.gd").hint(demo) if demo.tool==0 else demo.get_meta("road_tool").hint() if demo.tool==2 else SHORT_HINTS[demo.tool]
 	_text=demo.hint.text
 	var changed:=[demo.light_phase,_text,size]
 	if changed!=_draw_signature:_draw_signature=changed;queue_redraw()
 	_quiet+=delta
-	var target:=(.60 if demo.light_phase==2 else .30) if uses[_tool]>=3 and _quiet>2. and not get_global_rect().has_point(get_global_mouse_position()) else .88
+	var target:=(.60 if demo.light_phase==2 else .30) if _tool>=0 and uses[_tool]>=3 and _quiet>2. and not get_global_rect().has_point(get_global_mouse_position()) else .88
 	modulate.a=move_toward(modulate.a,target,delta*1.8)

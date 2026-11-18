@@ -1571,7 +1571,1252 @@
       "source": "文档/来源/20261029_resonance_city_v7_审阅原稿.md",
       "source_sha256": "38f8cc6f003e86cc908b174a9f36add1765ca81cf2dfa43877608b41737d3232",
       "adopted": "用户2026-10-29要求V7最终优化作为实际施工改造版本；不改历史完成状态。",
-      "next_step": "2026-11-02用户要求只继续非音乐施工，音乐留待用户重构，暂停制作/听评/接入。M84屋脊彩幡样板已补真实屋面支撑与最高房间选择，15项CPU和31项OpenGL实窗通过（验证记录/M84/window_pennants_20261102_support_cases、window_pennants_live_20261102_support_cases）；自选创作题签已接入J页两张固定灵感：可忽略/更换/放下，首次收藏原城、creative_settings v2独立inspiration v1随城保存；30项CPU、24项OpenGL实窗通过，见文档/成长样板/自选创作题签_交付记录.md及验证记录/M84/creative_prompts_20261102/live_cards。三画法道路端点目标/整线重建已接通，37项CPU与36项OpenGL实窗、129项相关回归通过；保真实正向门阶、稳定路端/交点、Alt/锁段/原位升级与桥意图，见文档/道路端点意图_施工记录.md。旁路入口已新增0.7m宽/0.04m网格、真实两段路径及转弯圆域支撑证据，39项CPU/77项OpenGL实窗和570项入口回归通过；见文档/旁路入口走廊_施工记录.md。保持legacy正式网络与旧权益，不宣称任意绕行路线或临水网格全验。1.75m宽穿堂采用相邻分层街屋共用过梁，保留外柱与上层；70项CPU、130项新建OpenGL实窗及41项原位扩宽实窗通过，普通穿堂/拱几何/旋转/旧档575项回归通过，见文档/宽穿堂_施工记录.md。混合桥路局部tread分类已修，远处台阶不再给普通路面额外高差容差；11项CPU/26项OpenGL实窗、39项走廊与113项高差回归通过，证据见文档/旁路入口走廊_施工记录.md追加节。汀步真实十边石顶、湿缝与接岸圆头裁路已同源识别，14项CPU/20项OpenGL实窗通过，原跨步height_at不变；独立Critic发现的圆头外扩漏采已修，最近三轮复核通过。桥岸斜向入口三样本17项CPU/21项OpenGL实窗通过，合法入口918点全宽与转弯圆域逐点核真实可见支撑，近桥头/近岸两类实际断差拒绝有网格证据；见文档/旁路入口走廊_施工记录.md。环渠/水域回接已开放，扫掠胶囊按真实水域并集查新增区域，重复水渠no_op不写ID/revision/历史；15项CPU与11项OpenGL实窗通过，见文档/水渠回接_施工记录.md。channel水渠过路已接独立生产候选渲染/明确确认/原城收藏/复验一笔提交，33项CPU与18项OpenGL实窗通过；原道路身份与属性保持，实际汀步/石桥、原入口全幅/Network/路口剖面及异步会话隔离受测，独立Critic问题已修复核，见文档/水渠回接_施工记录.md追加节。岸线并集外边界/天然河世界距离近岸与到岸全宽/停留圆域证据已修，14项CPU/21项OpenGL实窗、183项水岸回归通过；实际7250网格点零缺面、侧坡拒绝点实际坡度0.3532，见文档/岸线与公共到岸_施工记录.md。侧背门至独立面水界面的真实公共街路已接通：68项CPU/35项OpenGL实窗通过，20673个全幅及转弯点逐点核生产可见三角形零缺面，真实旋转拱廊净空、断路及同网络汀步湿缝拒绝、道路删除/Undo与独立冷读受测；证据side_shore_20261102_cpu_final及live，详见岸线施工记录追加节。近岸干地道路全幅路床已按最终铺路三角形/原顶点下接真实地形，普通修路预览与正式同源：98项CPU/77项OpenGL实窗通过，14867点零缺面，765桥湿域点无新增填塞、两处实际汀步湿缝保持；Undo/Redo/冷读与作者及个人档保持；每3项独立Critic问题修复后复核通过，详见岸线施工记录追加节。实际路网段高亮及显式双切点局部裁路已接生产候选/Enter确认/一笔事务，146项CPU/35项OpenGL实窗和36项三画法端点实窗回归通过；包含曲线/宽度T口/重叠所有权、环岛映射及撤回、未裁门口高差、断桥/半穿堂拒绝、Schema13权益/原件、轨街消费者、UndoRedo/高水位/冷读/城市隔离，见文档/局部裁路_施工记录.md。地标非破坏性植物退让已完成同源底座/入口mask、影响预览与旧新址增量失效：57项CPU/31项OpenGL实窗和6项ChangeSet回归通过，四类带树选址、旋转/移动/回收、作者记录不变、全量与增量实际树木及Meadow变换一致、个人档/旧Schema13保持，见文档/地标植物退让_施工记录.md。显式深窗街屋样板已接真实孔洞/内退玻璃/木框石套，57项CPU、22项OpenGL实窗及65项原型回归通过，全屋遮挡、配色冷读/Undo、联排最大视觉脉冲及窗洞拾取受测；独立Critic已复核局部裁路/植物退让/深窗三轮，问题修复后通过，见文档/四层窗_施工记录.md。单母型木百叶/石山花两种细部已接独立ID/版本/seed及Schema25，真实详情选择、休眠覆盖、沿用外观、原窗/Undo/冷读通过；69项CPU、53项OpenGL实窗、97项账期与375项27旧作品回归通过，328条最终网格窗前射线零遮挡，百叶合并为每扇一组木片，详见文档/街屋窗部变体_施工记录.md。用户2026-11-03要求先完成植物删项，再制作偏重炭火美食氛围的烤肉坊；烤肉坊样板已通过36项CPU/21项OpenGL实窗：双库存、真实工人取餐/手持串、停炉烟火、Schema26与经营暂停冷读及UndoRedo；143项面包状态、原Life、97项账期与27旧作品375项回归通过，独立Critic复核闭环，见文档/烤肉坊_施工记录.md。阶梯山墙行会母型已接显式剪影/真实阶梯瓦顶及宽拱窗，50项CPU/42项OpenGL实窗通过；原Context1540、建筑选择67、文艺复兴72、用途96、深窗57回归通过，侧门三跨/实际邻屋9点屋面/换色与邻接冷算/Jolt/3.0613秒PCM受测，独立Critic通过；见文档/阶梯山墙行会_施工记录.md。悬挑亲水茶台cantilever_tea_deck已接真实1.4m木台/斜撑/侧翼与玻璃护栏、两席实际茶聚及带高度证据的公共到岸；57项CPU、28项OpenGL实窗和570项茶座/现代/水岸/选择/地形回归通过，98个湿处居民样本全支撑，磁盘冷读/旋转/Jolt/原生UndoRedo、旧free三席暂停/恢复与纯legacy保存通过，独立Critic通过，见文档/悬挑亲水茶台_施工记录.md。天窗细部槽已接山墙/斜面两配方及原屋面/无天窗选择，Schema27独立slots/seed与旧窗v1并存；87项CPU、47项OpenGL实窗和620项相关回归通过，轴向及2x2斜脊独立拒绝、L共顶真实落位、121点实体支撑、Jolt、配色RGB碰撞/Undo/冷读与沿用受测，修复三角面污染同色材质缓存的增量差异；27旧作品375项保持，独立Critic通过，见文档/天窗细部插槽_施工记录.md。烟囱细部槽已接双陶管/铜风帽及无烟囱/原屋面，Schema28三槽独立ID/版本/seed与旧25/27并存；74项CPU、57项OpenGL实窗和337项计数回归及原面包Life行程通过，真实49点屋顶支撑/通孔与侧出口/Jolt、三槽1024界面、改色/旋转/邻接冷读GPU一致、实际到岗多口炉烟与账期暂停恢复/关炉满仓熄烟受测，独立Critic通过，见文档/烟囱细部插槽_施工记录.md。山墙檐口槽已接木边板/齿饰石檐及原檐口，Schema29四槽独立ID/版本/seed；66项CPU、49项OpenGL实窗和230项原窗/天窗/烟囱回归通过，实际压缩曲线逐段贴合、源Box外向法线/绕序、每cell碰撞与最终64m GPU顶点匹配、1024四行界面、磁盘原子备份/UndoRedo/沿用、仅檐口近邻旋转71→72及热冷GPU一致受测；独立Critic发现的实际屋面传递/外部签名/二次翻面均修复，最终复核通过，见文档/山墙檐口细部插槽_施工记录.md。门廊微景槽已接花盆/柴筐及原门廊，Schema30五槽独立ID/版本/seed；90项CPU、71项OpenGL实窗和231项相关回归通过，实际门框/墙脚/柱脚/柜台与25点支撑、道路全宽/门口通路/水渠/邻屋避让、原生UndoRedo/五槽1024、磁盘原件备份/沿用/纯legacy、植物增删外层缓存与热冷GPU一致、天然木色与作者同RGB冷读后二次换色保持、真实炭炉工人/烟与账期暂停库存保持受测；独立Critic问题已修，见文档/门廊微景插槽_施工记录.md。五类细部三屋混合联排旅程已通过83项OpenGL实窗31.490秒：真实五槽按钮逐次保留其余四槽/邻屋/seed，门边道路及邻屋增层UndoRedo、全排房屋GPU与磁盘冷读一致，1612段中心线/0.32m宽0.90m高胶囊零实体命中，真实served0至22，见文档/五类细部混合联排_施工记录.md。旋转/折翼街屋五槽兼容已修凹角相邻墙/百叶挡窗，仅接缝凹面改单居中窗，折直恢复；104项CPU6.683秒覆盖四轴/正负28度/两窗饰16组，1568条窗前采样零挡；186项OpenGL实窗79.171秒通过，含两风貌三旋转门路退让、田园正反折翼/原生叶印折直/四槽休眠恢复、房屋GPU热冷与Schema30磁盘一致，904处实际玻璃/Jolt/窗前净空全通过，原窗57项回归保持，见文档/旋转折翼街屋细部_施工记录.md。文艺复兴柱廊仍按原支持矩阵拒绝微折且零写入。9m云廊已以Schema31/skybridge_span v1接free逐屋显式跨度，任一端选择/首次收藏原城，不全局扩旧free桥、不伪造卡/XP；45项CPU2.710秒、62项实窗22.467秒通过，340点实际桥板外沿及栏间内侧GPU/Jolt支持零缺，1024/1440按钮、跨端增量/三层阻挡撤回恢复、UndoRedo/磁盘冷读全房屋GPU一致；原云廊8、旧章程230及27旧作品375项回归通过，见文档/九米云廊_施工记录.md。不新增居民跨廊导航，不泛化任意坡地。浅阶琴键已接修路更多菜单的free显式开关，Schema32严格true/关闭移字段，首次收藏原城；45项CPU1.366秒、38项OpenGL实窗17.570秒通过，直/曲与冷读280个近边沿实际GPU/Jolt样本零缺，原地形/profile/实体阶面/栏杆和作者道路保持，UndoRedo/磁盘/原格式恢复受测；修复Life网络签名遗漏有效阶高导致热发布显示与交互脱节，原阶键29、旧章程230、27旧作品375项回归通过，独立Critic通过，见文档/浅阶琴键_施工记录.md。沿原声音不宣称新听感。free L页去重复已完成受测切片：保实际spaces名单/失败说明及原合奏摘要，撤旧zones第二表、常驻倍率/互哺/经营和弦，原按钮直达J展开历史权益；59项OpenGL实窗16.858秒、正式收益46/历史权益217项CPU通过，1024/1440标题及正文首行实可见、读页整快照/原公式/邀约不变、断路与Undo、F1实际原卡领取及冷读、legacy账本/叶页/F1保持，见文档/free总谱去重复_施工记录.md。free选屋/可关闭轻语去催促已受测：撤常驻倍率/互哺、保真实接路/pending无假动作/修路与L动作；中性任选画具/CtrlZ轻语复用8至10秒淡出，不按房屋/道路/百工/水岸排任务。22项CPU、40项OpenGL实窗34.135秒通过，1024/1440卡片/按钮，真实F1启闭/运行淡出/普通编辑不复发、断路动作/Undo、磁盘关闭保持/空城任意画具/legacy分支受测，快照/1.35来源不变，独立Critic无阻断，见文档/自由操作轻语_施工记录.md。F1非音乐帮助已对齐新旧账期/暂停/历史手札，撤普通风貌旧纪念门槛；实际经营状态底栏、free L名称、翻页回页首与转换提示已修。100项OpenGL实窗32.656秒通过，1024/1440原生F1/页签/滚轮/关闭、J启用暂停/真实磁盘冷读、free只读快照与经典四页/原邀约保持，见文档/F1自由营造帮助_施工记录.md。free五画具已真实重排为筑屋/修路/水岸/林木/地形，独立水岸/林木及用途退出常驻，保留内部编号/原键5批量用途/选屋单用途/API；经典林水子页与换城/同城转换保持。183项OpenGL实窗52.008秒及F1专项100项33.253秒通过，含1024/1440真实控件及五类落笔、池塘UndoRedo整世界与真实revision+2、全局1至9/道路内123及文本焦点、磁盘冷读；见文档/free五画具布局_施工记录.md。下一非音乐子步恢复61要求的可发现屋式编辑，核屋式/原型互斥与签名地标边界；任意复杂房形/混合风貌邻接/折翼和完整桥岸导航仍待验。长期创作动力待用户体验，不改点值、不标M84～M86整体验收；仅本地Git备份。 本音乐会话2026-11-03按用户要求将旧19＋新增24份音乐及已有成果迁回数据/音乐资产；3171文件31.50GB核SHA及独立重算通过，新增24分析/384WAV审计通过；合并43原件/559轨SHA及86组余量通过，479轨保留/80近空退出；三份提示词及43正文保存，不按乱序强配，见数据/音乐制作/README.md与文档/音乐制作批次/Lyria35_音乐入库与整合_20261103.md。已完成43施工包156派生声部（35曲4层/4曲3层/4专用单层），原件覆盖与PCM界限审计通过，Godot43包实际加载通过，首曲39项实窗通过；见文档/音乐制作批次/Lyria35_施工AI音乐接入手册_20261103.md。围合已读真实空间，flow/craft是待接真实消费者的表达API；下一步逐曲听评、来源映射、真实节拍/和声/循环与发行依赖；runtime_ready=false，正式默认未切换，不标M84～M86整体验收。 2026-11-03自动空间表达及独立试玩入口已接：真实临水/内陆曲路/匠造前庭自动flow/craft，停笔3秒/观察6秒/暂停及删除Undo保持；23项CPU、57项OpenGL/WASAPI通过。tools/play_creation_music_trial.cmd可打开可编辑隔离空城，L页39候选选择/暂停/结束/真实层状态，14项实窗及1024/1440原图Critic通过；作品仅存本次验证works。当前完整作品候选不代表稀疏背景默认；高差/茶叙/半围合、稀疏新曲及M84～M86整体仍未完成。P0-1五槽休眠解释已接真实渲染状态：失配行仍可见、原选择高亮与[!]、具体几何拒绝原因及恢复指引；Undo/冷读/清除单槽与无天窗烟囱意图保持。71项OpenGL实窗19.862秒，天窗87/烟囱74/门廊90项CPU回归通过，两尺寸原图及独立Critic通过，见旋转折翼细部施工记录。P0-2净峰值/空间发现已接：仅当期账期按房屋与净扩建量峰值计点，20次原地换ID重建零重复；已发布cluster/district以kind+7.2m地理格去重，零店铺无需居民结算。旧账户加载补既有几何基线，不改原文件、余额或旧权益。70项CPU、16项实窗及97账期/55暂停/12旧计数/375项27旧作品回归通过，详见65新增记录。P0-3经营开启空闲漫步已接：本人复用14m局部路线、24可见更新预算/屏外休眠、长椅/阳台和真实连拱避雨；实际工作/购物不抢占，冷却结束从当前位置接续路线、冷读保合法驻留，J暂停恢复无闲人跳变。26CPU5.085秒/17OpenGL实窗16.697秒、33静谧与97建账回归通过，独立Critic无阻断。顺带修复32屋建账中Vector2规范化坐标末位比较阻断，原文件SHA/账本数值严格保持。P0-4剩余既有空间消费者已接：真实半围合.70/窄巷.65暖度，实际base_y加权P10/P90高差独立观察后最多+.25流动染色/暖度上限，真实连拱与可见坐席茶叙按茶座去重。16CPU1.698秒/16OpenGL实窗50.612秒通过；PCM18.293秒峰值0.361145零满幅，原围合29/表达23回归保持，独立Critic高差阈值问题已修并实测推子。正式默认未切、听感待评；垂柳/二层门阶等随后续对应资产接入。P0-5单小窗互斥与作品来源筛选已接：J/L共卷、详情/用途/收藏馆互斥，全部/手动/自动只读筛选保原ID与原件，示范独立；内置封面改用导入纹理。49项OpenGL实窗18.836秒通过，三尺寸原图/作品SHA与个人档保持，独立Critic无阻断。P0-6三态曝光/白点、屋瓦GGX与真实岸际湿线已接：保较新光色/微法线/水平接触AO，湿线放真实石基/石桥表面，复用本城水域纹理。31项OpenGL实窗16.549秒通过；三态同景六图、484表面/几何哈希及DrawCall1719/1726/1715保持，真实GPU水编辑/Undo/磁盘冷读一致，主观整体美术待Play Test。P1-1成组编辑已接：先单击再双击聚落、Ctrl增减与CtrlShift矩形选区，默认保护手选屋；四风貌/屋式/原型/五槽使用原API副本预览，仅外观7字段一笔提交，库存/成交不覆盖。21CPU.268秒、43OpenGL实窗135.247秒（含系统菜单实操等待）及12原自选色回归通过；四配色实际GPU热冷一致、三尺寸/原生菜单/蒸汽生态预览与拖框切画具受测，Critic问题已修。顺带补自动天窗原有灰泥快换色配方，原件/个人档保持。P1-2五槽跨风貌已接：显式深窗街屋扩至蒸汽/生态，保原砖墙/木壳与实际mansard/chalet屋顶，铜框及同色板岩屋面/天窗；121/49点真实支撑、上表面檐口与源顶cell身份、孔洞/净空仍生效。74CPU4.963秒/105OpenGL61.795秒及原深窗57/原型67回归通过，四风貌两配方、Jolt/64m GPU、旋转Undo/刻意RGB撞色磁盘冷读与1024原图受测。文艺临拱深窗改单居中防外拱遮窗，独立Critic无阻断；不宣称任意屋式适配或整体品质通过。P1-3已接分户石垛与≤22.5°微折角楔柱：24CPU/37OpenGL17.751秒通过，保28°原折翼、作者值和零新字段；详见细部施工记录。P1-4a二层跨接门阶已接：72CPU/73OpenGL34.564秒、113原入口回归4.196秒通过，保真实高程/源cell及拆路Undo冷读；原图待整体Play Test。P1-4b石埠/干阶看水/B静听已接，Schema33；52CPU/56实窗、桥岸50/长椅13/静谧33/云廊8通过，见岸线记录。P1-5a宽环岛已接，18CPU/20实窗及原轨道25回归通过，保2.4m旧默认与1.82m旧路线。P1-5b闭合路环草坪/扇石/砖石已接Schema34；67CPU.597秒/46OpenGL11.844秒，原ChangeSet6/草地索引232回归通过。真实36～320平方米路环、首次原城备份、坡面三角形贴合、水池/屋基退让、草簇遮罩与原数量恢复、1024/拆路Undo/独立冷读GPU受测，原件/个人档保持。未开子代理，自审修复三项实际问题；主观整体美术待评。P1-6风物折页及Lv.4庆典彩旗/浮灯已接：25CPU3.482秒/38OpenGL24.438秒与原彩旗8/浮灯31回归通过。J原三项Lv.2保留实际原生开关、130px内滚动/待制作预览，100栋真实四层建造拆除达到Lv.4；无路住宅真彩旗/全湿浮灯、夜间实际像素发光、暂停/Undo/磁盘冷读GPU与个人档受测。修旧浮灯Shader注入失效，旧默认源位不变；不开子代理/主观品质待评。P1-7a新增18曲运行包已接隔离候选：复用已验分轨，18/18联合分析、70新增同源层制作40.422秒，61包/226层离线独立复读19.875秒通过，61原件/793候选/122近空保留通过，新18实际引擎加载23.062秒无降级。隔离试玩57音乐可选，旧4自然/单音仍专槽；15实窗通过，新增曲PCM3.178667秒峰值.151123零满幅。旧43包不重制/原曲不改，原指针和目录先哈希归档；不把完整core候选视作新稀疏背景或正式默认，听评/角色仍false。P1-7b候选完整曲终续播已接：实际finished后按最后30秒空间输入均值与已测纹理选择后曲，后台一次只读一包；同播放器/同初始lease，3秒自然声留白后慢入，不曲中切歌；fixed只重复本曲，暂停冻结留白/观察，新城撤回pending。7CPU.119秒/36OpenGL24.092秒通过；实际留白3.009/3.017秒（主动暂停另记wall4.296），PCM7.573秒峰值.151459零满幅；自然两声部持续、12长轨4短槽池、1024原L、旧单次API/释放原lease受测。候选技术通而听感待评，无跨曲叠加/移调/硬切循环。P1-7c候选游标和声/短音已接：57音乐生成每秒三和弦候选，2444/9059秒窗可用，其余或未标定明确为无固定音高木质触感。帧数/原混音SHA/源ID和量测字段校验；ScoreHarmony/CueGrid/6阶落笔/原生P拨奏/八度踏阶沿用原池，不套旧D调8小节。83CPU1.323秒、48OpenGL8.033秒、250旧和声/1信号回归通过；实际PCM测C5/B4及原生E4，旧/未明音集同物理PCM，暂停/停止同帧释权/同对象新城epoch/磁盘字段/15试玩与原36续播回归通过。61包226层新元数据审计35.453秒、61实际引擎115.819秒；不重制层音频。原生缓存完整烘焙235.339秒/4336回读、旧新4336 PCM字节一致与QOA12400ms更新，旧两缓存先归档同SHA，冷启动缓存386.838ms，避免原248秒现场生成。品质/语义仍待评。P1-7d自由营造留白/触感与两首隔离背景意图候选已接，56OpenGL31.057秒、83CPU1.295秒、48候选和声/15试玩回归通过，缺包/退出/连续建造/Undo/旧城/显式兼容及pending立即释权受测；旧新4336缓存PCM不变。两首适配仍待听评，不改正式待评状态。P2-1a街角双向连拱望楼已接稳定architecture ID/v1，无新字段/等级锁；最高可用外角双面三连拱/石栏露台与真实空洞碰撞，原四坡瓦Shader和微法线材质。38CPU.773秒、28OpenGL13.723秒、72旧原型回归通过；真实原型册/屋顶加层/同屋Undo、六拱12Jolt空洞与实体柱/旧邻屋9点屋顶覆盖、相邻换角/颜色增量冷读同GPU、1024卡片与个人档受测。修颜色配方未收录导致增量/冷读不一致；石质实体不进节奏响应pivot。仅本地备份/未开子代理，整体美术待Play Test。P2-1b溪畔木船坞已接，岸上木架/真实双栈道/泊船水槽/系泊小船/瓦棚，水域与净空不足保留原型并退出码头；无新schema/等级/经营加成。23CPU.567秒、31OpenGL12.643秒、旧茶台57/原型72/草地232/ChangeSet6回归通过；真实原型册/屋盖点选加层/同屋Undo、窄栈道与空水槽Jolt、RGB/依水派生/草地实际实例冷读一致/1024/三态原图及个人档受测。State仅5行/Renderer2行委托，原件保留。用户2026-11-04恢复每完成一大部分同步双库，已验收至船坞及发布维护版本已从隔离目录双库同步并核树：origin/main 6608f5eb、ai-sync/main 118d5503，237216328/99994790字节；核心共享blob一致，个人大音频不上传，主脏工作区/暂存保持。证据验证记录/轮次发布/f3395f2e/verification.json。P2-1c现代木壳声学亭已接稳定architecture/v1，无新字段或音乐门槛；真实弧形双面木壳/舞台/逐房格精确曲面拾取，完整原房形伸展，局部加层/穿堂保留选择并回原随形建筑。31CPU.774秒、32OpenGL16.653秒及96用途/12颜色回归通过；原生加建/Undo、6入口空洞Jolt与舞台/曲面、侧路同步入口方向、用户RGB/相邻旧屋9点屋顶及全GPU独立冷读、1024/三态原图与个人档受测。State仅1行/Renderer零新增行，原件保留。三母型技术完成，主观待Play Test；精简库离线索引镜像转完整库保留，运行资源不减。三母型已双库核树：完整库780bbcb8/237246317字节、精简库afcef820/99749872字节，完整库零删、共享blob一致、375旧档及32隔离原生16.425秒通过。证据验证记录/轮次发布/c7302adb/verification.json。P2-2a亲水垂柳已接开局第8株，复用原植物字段/三变体缓存/林木画具/共享风与批量渲染；21CPU.235秒、21OpenGL14.654秒及91旧枝叶回归通过，18旧冠层数组字节一致。实际点选种树/UndoRedo、原子冷读全GPU、1024、覆盖地标隐藏GPU/真实自然声并保留原植物、Undo恢复受测。原两自然声/12长轨4短槽保持，独立256GPU风时差14635像素而CPU网格不变，Master3.061333秒峰值.008240零削波；无等级或音乐门槛，不增schema。22行新几何、四主文件零新增，修原图串珠状团簇为连贯冠层/长垂枝，原件与失败证据保留。主观品质待Play Test。P2-2b新账期Lv3广场木花架/八角涌泉已接原J街景折页可选开关，默认关、暂停保资格；沿用Schema34和现有presentation扩展，无重复逐环开关。62/39/36/21行规划/步行支路/几何/UI小模块，四主文件零新增。真实净空石板广场上木柱木格棚/藤蔓/八角水盆与水纹；后台独立快照携带植物/铺装/账期/地标，单路支线不改原road_edges。66CPU3.562秒、33OpenGL15.359秒及原铺装67/静谧33/空闲26/庆典25回归通过；6Jolt空进路/4真柱/真盆、全部实际渲染缓冲、换档冷读同GPU、1024/昼夕夜、开关/Undo及真实地标遮挡撤回与恢复受测。修旧固定转向永不进入新支路的问题；实际三户中两户以生产步速沿真实路线61.8逻辑秒同时到泉边，作者/XP/经营账本不变，不瞬移或补造顾客。花架开关/自动装饰不改原铺装空间/收据/音乐资格；房/树/水/地标占位时保留偏好并退场。两资产本地备份后按授权同步双库，品质待Play Test。P2-2已从隔离提交整体双库同步并核树：完整库6f8d2c7c/237303764字节、精简库658a645a/99806553字节，两库零删除且共享blob一致；干净隔离导入无错、375旧作品及33原生15.425秒通过，证据验证记录/轮次发布/0f855c91/verification.json。P2-3作品衍生谱系/48字作者题跋/只读城市编年/Lv5鎏金章已接原收藏馆和J页，5个小模块34/33/35/43/21行，四主文件零新增。作品封套新写v2并读v1，parent_work_id/author_note/chronicle/gilded_seal与world并列且受原SHA覆盖，不加城市字段/Schema；原版本与PNG从不覆盖，分支前按原before_open留存，默认衍生标题留在64字上限。真实几何发布后记首合院/石桥/广场，真实Cafe满座才记茶聚；未收藏条目随立即Undo撤回，已保存小记保留，至多12条、打开旧城不补造过去。28CPU.359秒/18CPU1.016秒/40OpenGL22.012秒与25庆典回归通过；真实v1只读夹具及原始SHA、Unicode原生输入/独立分支另存/原件JSON+PNG字节不变、实际铺装J小记/UndoRedo/冷读、旧回放、暂停Lv5资格/自选金框、J→原收藏互斥导航、1024/1440和新城清空受测。无XP/经营写入、无用户个人档写入；Lv5为明确隔离已得夹具，不冒称现场赚级，真实茶聚使用原买面包/行走/落座系统。失败证据留本批，主观待Play Test。子步备份后按大部分整体双库同步。唯一下一步：P2-4先核P1已制作背景意图候选的坡街/广场覆盖，保留较新成果不重复制作，再执行300屋M85测量与M86五旅程终验。M84～M86仍未整验。",
+      "next_step": "2026-11-18 折顶天窗、山墙木屋与沿街草缘已替换。PlayTest/verge_final_20261118 实窗15/15、verge_geometry_confirm_20261118 逐角64/64。候选播放器读取空间采样的年代；coupling_*_20261118 四组128/128。门前接路、并行未接、撤销重接实窗26/26；两片已接门户的路网合并反馈实窗29/29。临水院落拆屋后两声部独立响应实窗11/11，听感待评；小窗选型放置与宽窗连续选型实窗10/10；四种屋式卡片已重绘。住宅接路门廊、草地配色与双拱桥中墩已更新。窄窗曲路选取、预览、提交与撤销已验证；普通书院入口已改为织锦招牌并核过近景；四店同街已核对，工坊改用琴形吊招；水岸咖啡馆青绿篷面新增五道浅色波形下缘；工坊改住宅再撤销时，琴牌正确移除和恢复，水岸声部沿原流播放。现行两套路缘回归改从项目内夹具读取。桥头长河浅滩色已做昼夜同机位验收（GL 15/15），普通直排连屋已加陶瓦压顶，实窗20/20，坡度与历史Schema35冷读42/42、L/U屋谷53/53。窄窗详情避开屋名栏，800×540和1440×900实窗19/19。双岸重叠区留住已观察权重，新增水岸满观察再接入；原候选实窗21/21，稀疏候选23/23。木构连屋主副入口与侧窗实窗39/39。下一步核对作品馆「继续创作」的作品谱系和保存反馈。整体美术、实听及M84～M86待验。",
+      "playtest_followup_queue": [
+        {
+          "order": 1,
+          "scope": "操作流畅与后台准备",
+          "status": "pending",
+          "work": "已接输入/统一入口、植物局部准备、真实接路反馈、道路暂态面与局部高度/门口邻域。300屋15路规划2193→152ms；入口单次准备/内部暂停快照使完整发布6927→5559ms；本轮局部障碍/渲染门口前置使完整4932ms，render3467ms。剩Life4868ms、lane rows999ms/暂停历史1243ms继续实际分段，不省空间资格/原始几何或历史高水位。 本轮三类空间适用性先筛，完整发布4795ms、Life4731ms/暂停1107ms；局部技术证据不代表道路跟手体验已通过。下一步转整体光影，规模后台等待继续保留。",
+          "verification": "旧road_connection_feedback/road_prepare_latency/entry_proof_latency证据保留；本轮entry_sampling_locality_20261105：215完整入口/209窄巷旧版完全相同、8192旧SAT数值对照一致；boundary228/lane94/epoch88/services145 CPU及road_live_final15GL通过。lane日志有一次MCP并发临时文件rename警告，非脚本错误；最终GL日志干净，个人存档未变。完整4931.741ms仍有后台等待，整体passes保持。 spatial_preparation_20261105：三类ready/unready六组完整数组等旧版，waterfront183/artisan158/civic323/epoch88/side_shore68，共820CPU及15GL通过；civic仅MCP并发rename警告。工坊旧输出覆盖历史汇总，按原始final控制台重建，字节原件未确证，详report_recovery。输出路由正向158/已有目录拒写exit1通过。",
+          "latest_road_query_verification": {
+            "evidence": "验证记录/PlayTest/road_publish_hotspots_20261106",
+            "cpu_exact_comparisons": 38,
+            "native": 12,
+            "baseline": {
+              "publish_ms": 6637.602,
+              "worker_ms": 5285.718,
+              "main_ms": 274.901,
+              "max_step_ms": 111.595,
+              "road_heights_ms": 905.515,
+              "road_earthworks_ms": 896.454,
+              "road_height_vertices": null,
+              "road_height_queries": null
+            },
+            "final": {
+              "publish_ms": 6575.019,
+              "worker_ms": 5165.27,
+              "main_ms": 278.397,
+              "max_step_ms": 111.645,
+              "road_heights_ms": 672.332,
+              "road_earthworks_ms": 863.997,
+              "road_height_vertices": 83493,
+              "road_height_queries": 51004
+            },
+            "still_pending": "6.58-second publication and 111.645ms main-thread road task; integrated natural building experience unproven"
+          },
+          "latest_road_install_verification": {
+            "evidence": "验证记录/PlayTest/road_install_stages_20261106",
+            "cpu_compatibility": 38,
+            "native_300": 21,
+            "native_mesh_shape_ray": 29,
+            "native_partial_cancel": 9,
+            "before": {
+              "wall_ms": 6409.918,
+              "worker_ms": 5034.251,
+              "main_ms": 278.519,
+              "max_step_ms": 110.615,
+              "max_task": "road",
+              "install_stages": {
+                "r20": {
+                  "curbs": 0.002,
+                  "earthworks": 0.003,
+                  "edge": 0.007,
+                  "finish": 0.019,
+                  "pebbles": 0.666,
+                  "roundabouts": 0.002,
+                  "shore_bed": 0.003,
+                  "stairs": 0.003,
+                  "stepping": 0.005,
+                  "surface": 0.134,
+                  "total": 0.847,
+                  "tram": 0.002
+                },
+                "r22": {
+                  "curbs": 0.004,
+                  "earthworks": 1.327,
+                  "edge": 0.008,
+                  "finish": 8.415,
+                  "pebbles": 0.003,
+                  "roundabouts": 0.009,
+                  "shore_bed": 98.498,
+                  "stairs": 0.003,
+                  "stepping": 0.011,
+                  "surface": 2.297,
+                  "total": 110.58,
+                  "tram": 0.005
+                },
+                "r7": {
+                  "curbs": 0.501,
+                  "earthworks": 0.004,
+                  "edge": 0.008,
+                  "finish": 2.835,
+                  "pebbles": 0.823,
+                  "roundabouts": 0.01,
+                  "shore_bed": 64.56,
+                  "stairs": 0.677,
+                  "stepping": 0.01,
+                  "surface": 3.459,
+                  "total": 72.891,
+                  "tram": 0.003
+                }
+              }
+            },
+            "after": {
+              "wall_ms": 6609.479,
+              "worker_ms": 5152.404,
+              "main_ms": 173.962,
+              "max_step_ms": 34.153,
+              "max_task": "road",
+              "install_stages": {
+                "r20": {
+                  "curbs": 0.003,
+                  "earthworks": 0.003,
+                  "edge": 0.005,
+                  "finish": 0.018,
+                  "pebbles": 0.649,
+                  "roundabouts": 0.003,
+                  "shore_bed": 0.004,
+                  "shore_collision": 0.003,
+                  "stairs": 0.004,
+                  "stepping": 0.006,
+                  "surface": 0.145,
+                  "total": 0.847,
+                  "tram": 0.004
+                },
+                "r22": {
+                  "curbs": 0.004,
+                  "earthworks": 1.375,
+                  "edge": 0.007,
+                  "finish": 8.899,
+                  "pebbles": 0.012,
+                  "roundabouts": 0.011,
+                  "shore_bed": 3.378,
+                  "shore_collision": 34.132,
+                  "stairs": 0.005,
+                  "stepping": 0.012,
+                  "surface": 2.231,
+                  "total": 50.083,
+                  "tram": 0.017
+                },
+                "r7": {
+                  "curbs": 0.542,
+                  "earthworks": 0.009,
+                  "edge": 0.01,
+                  "finish": 2.705,
+                  "pebbles": 0.905,
+                  "roundabouts": 0.011,
+                  "shore_bed": 2.268,
+                  "shore_collision": 21.395,
+                  "stairs": 0.716,
+                  "stepping": 0.012,
+                  "surface": 3.467,
+                  "total": 32.049,
+                  "tram": 0.009
+                }
+              }
+            },
+            "still_pending": "34.132ms collision step and6.61s publication; aggregate frame windows include verification readbacks and differ in work counts",
+            "native_prepared_preview": 8
+          },
+          "latest_road_bed_query_verification": {
+            "evidence": "验证记录/PlayTest/road_bed_queries_20261106",
+            "cpu_fixtures": 38,
+            "large_exact": 4,
+            "native": 21,
+            "comparison": {
+              "before": {
+                "publish_ms": 6609.479,
+                "worker_ms": 5152.404,
+                "main_ms": 173.962,
+                "max_step_ms": 34.153,
+                "earthworks_ms": 890.035,
+                "road_geometry_ms": 2551.157
+              },
+              "after": {
+                "publish_ms": 6467.482,
+                "worker_ms": 5010.215,
+                "main_ms": 175.314,
+                "max_step_ms": 34.152,
+                "earthworks_ms": 723.91,
+                "road_geometry_ms": 2402.505
+              },
+              "large_local": [
+                {
+                  "exact_equal": true,
+                  "faces": 109809,
+                  "id": "r7",
+                  "new_ms": 238.961,
+                  "old_ms": 288.243,
+                  "pieces": 5229
+                },
+                {
+                  "exact_equal": true,
+                  "faces": 165690,
+                  "id": "r22",
+                  "new_ms": 247.181,
+                  "old_ms": 315.424,
+                  "pieces": 7890
+                }
+              ],
+              "boundary": "Single native runs, no general FPS or statistically established total speedup claim. Aggregate frames include verification mesh readbacks."
+            },
+            "rejected_experiment": "验证记录/PlayTest/road_collision_slices_20261106/decision.json",
+            "still_pending": "Road geometry2402.505ms, total publication6.47s, collision34.152ms; no overall completion claim"
+          },
+          "latest_road_height_context_verification": {
+            "evidence": "验证记录/PlayTest/road_geometry_queries_20261106",
+            "cpu_fixture": 38,
+            "large_exact": 5,
+            "policy_cold": 16,
+            "native": 21,
+            "comparison": {
+              "before": {
+                "publish_ms": 6467.482,
+                "worker_ms": 5010.215,
+                "main_ms": 175.314,
+                "max_step_ms": 34.152,
+                "road_heights_ms": 661.097,
+                "road_geometry_ms": 2402.505,
+                "life_prepare_ms": 4406.835
+              },
+              "after": {
+                "publish_ms": 6467.926,
+                "worker_ms": 4929.062,
+                "main_ms": 172.435,
+                "max_step_ms": 32.446,
+                "road_heights_ms": 492.284,
+                "road_geometry_ms": 2281.558,
+                "life_prepare_ms": 4452.3
+              },
+              "local_height_rows": [
+                {
+                  "after_ms": 241.251,
+                  "before_ms": 297.144,
+                  "id": "r7",
+                  "queries": 25287,
+                  "same": true,
+                  "vertices": 51250
+                },
+                {
+                  "after_ms": 12.938,
+                  "before_ms": 11.516,
+                  "id": "r20",
+                  "queries": 430,
+                  "same": true,
+                  "vertices": 1189
+                },
+                {
+                  "after_ms": 140.218,
+                  "before_ms": 204.398,
+                  "id": "r22",
+                  "queries": 25287,
+                  "same": true,
+                  "vertices": 31054
+                }
+              ],
+              "boundary": "One warm local and one independent native run each; overall publication unchanged. Frame samples include validation GPU mesh readbacks/hashes."
+            },
+            "next_hotspot": "Life.prepare4452.3ms; spatial/lanes/paused timing scopes overlap",
+            "still_pending": "Total publication6.47s, max road32.446ms, overall PlayTest/M84-M86"
+          },
+          "latest_entry_query_context_verification": {
+            "evidence": "验证记录/PlayTest/life_spatial_prepare_20261106",
+            "checks": {
+              "exact_v1": 45,
+              "corridor_v1": 39,
+              "platforms_v1": 16,
+              "native_v1": 21
+            },
+            "comparison": {
+              "before": {
+                "publish_ms": 6467.926,
+                "life_ms": 4452.3,
+                "spatial_ms": 1776.628,
+                "lanes_ms": 1074.234,
+                "lane_rows_ms": 940.777000000001,
+                "paused_ms": 1188.623,
+                "render_ms": 4929.062,
+                "main_ms": 172.435,
+                "max_road_ms": 32.446
+              },
+              "after": {
+                "publish_ms": 6124.718,
+                "life_ms": 4092.772,
+                "spatial_ms": 1512.075,
+                "lanes_ms": 875.769,
+                "lane_rows_ms": 746.284,
+                "paused_ms": 1125.042,
+                "render_ms": 4690.779,
+                "main_ms": 175.58,
+                "max_road_ms": 33.973
+              }
+            },
+            "still_pending": "paused geometry highwater1125ms, publication6125ms, collision34ms; single-native timings not general causation or FPS"
+          },
+          "latest_paused_frontage_verification": {
+            "evidence": "验证记录/PlayTest/paused_geometry_queries_20261106",
+            "checks": {
+              "exact_v2": 12,
+              "epoch_v1": 88,
+              "native_v1": 21
+            },
+            "comparison": {
+              "before": {
+                "publish_ms": 6124.718,
+                "life_ms": 4092.772,
+                "paused_ms": 1125.042,
+                "lanes_ms": 875.769,
+                "render_ms": 4690.779,
+                "road_geometry_ms": 2158.401,
+                "max_step_ms": 33.973
+              },
+              "after": {
+                "publish_ms": 6253.901,
+                "life_ms": 4082.599,
+                "paused_ms": 1018.765,
+                "lanes_ms": 913.313,
+                "render_ms": 4747.784,
+                "road_geometry_ms": 2215.089,
+                "max_step_ms": 33.951
+              }
+            },
+            "remaining": "6.25-second publication, road geometry2.22s and34ms original collision. No general performance or visual/listening approval."
+          },
+          "latest_shore_cell_minimum_verification": {
+            "evidence": "验证记录/PlayTest/shore_cell_minimum_20261106",
+            "checks": {
+              "large_v1": 4,
+              "cpu_v1": 38,
+              "native_v1": 21
+            },
+            "comparison": {
+              "before": {
+                "publish_ms": 6253.901,
+                "render_ms": 4747.784,
+                "main_ms": 177.492,
+                "max_step_ms": 33.951,
+                "geometry_ms": 2215.089,
+                "earthworks_ms": 724.59,
+                "life_ms": 4082.599
+              },
+              "after": {
+                "publish_ms": 6179.709,
+                "render_ms": 4690.624,
+                "main_ms": 176.965,
+                "max_step_ms": 34.704,
+                "geometry_ms": 2131.902,
+                "earthworks_ms": 664.318,
+                "life_ms": 4083.674
+              }
+            },
+            "still_pending": "6.18s publication and34.704ms collision; integrated natural art and listening not approved"
+          },
+          "latest_path_edge_query_verification": {
+            "evidence": "验证记录/PlayTest/path_edge_queries_20261106",
+            "checks": {
+              "cpu_v3": 48,
+              "native_v1": 21
+            },
+            "comparison": {
+              "before": {
+                "publish_ms": 6179.709,
+                "render_ms": 4690.624,
+                "main_ms": 176.965,
+                "max_step_ms": 34.704,
+                "geometry_ms": 2131.902,
+                "edges_ms": 275.078,
+                "life_ms": 4083.674
+              },
+              "after": {
+                "publish_ms": 6205.163,
+                "render_ms": 4756.358,
+                "main_ms": 173.585,
+                "max_step_ms": 33.092,
+                "geometry_ms": 2158.89,
+                "edges_ms": 280.054,
+                "life_ms": 4111.926
+              }
+            },
+            "still_pending": "Real300 r7/r20 empty edges cost280ms before output; this optimization helps real bridge edge meshes but not that scene. Overall publication6.21s and original collision33ms remain."
+          },
+          "latest_missing_edge_repair_verification": {
+            "evidence": "验证记录/PlayTest/path_edge_empty_20261106",
+            "checks": {
+              "boundary_cpu": 45,
+              "mask_assertions": 194296,
+              "mask_vertices": 26158,
+              "mask_triangles": 20342,
+              "native": 29
+            },
+            "comparison": {
+              "before_missing_edges": {
+                "publish_ms": 6205.163,
+                "render_ms": 4756.358,
+                "main_ms": 173.585,
+                "max_step_ms": 33.092,
+                "geometry_ms": 2158.89,
+                "edges_ms": 280.054,
+                "life_ms": 4111.926,
+                "cold_open_wall_ms": 36024.389,
+                "cold_open_renderer_ms": 24062.63,
+                "cold_open_edges_ms": 742.973
+              },
+              "after_repaired_edges": {
+                "publish_ms": 7203.238,
+                "render_ms": 5685.557,
+                "main_ms": 180.997,
+                "max_step_ms": 32.677,
+                "geometry_ms": 3238.733,
+                "edges_ms": 1417.645,
+                "life_ms": 4059.292,
+                "cold_open_wall_ms": 47080.931,
+                "cold_open_renderer_ms": 34976.916,
+                "cold_open_edges_ms": 11956.363
+              }
+            },
+            "still_pending": "Restored natural boundary increases publish to7.2s and cold open47s; reduce actual geometry/duplicate queries without returning to missing edge. Whole art/listening/PlayTest unapproved."
+          },
+          "latest_edge_attribute_verification": {
+            "evidence": "验证记录/PlayTest/path_edge_attributes_20261106",
+            "checks": {
+              "exact_arrays": 48,
+              "native": 29
+            },
+            "comparison": {
+              "before": {
+                "publish_ms": 7203.238,
+                "render_ms": 5685.557,
+                "main_ms": 180.997,
+                "max_step_ms": 32.677,
+                "geometry_ms": 3238.733,
+                "edges_ms": 1417.645,
+                "life_ms": 4059.292,
+                "cold_open_wall_ms": 47080.931,
+                "cold_open_edges_ms": 11956.363
+              },
+              "after": {
+                "publish_ms": 7095.779,
+                "render_ms": 5552.755,
+                "main_ms": 188.352,
+                "max_step_ms": 33.803,
+                "geometry_ms": 3131.373,
+                "edges_ms": 1288.933,
+                "life_ms": 3987.808,
+                "cold_open_wall_ms": 46128.929,
+                "cold_open_edges_ms": 10966.773
+              }
+            },
+            "still_pending": "Actual input responsiveness during7-second background rebuild; cold46.1s and33.8ms single collision; overallPlayTest/natural art/listening unapproved."
+          },
+          "latest_real_input_verification": {
+            "evidence": "验证记录/PlayTest/road_input_under_load_20261106",
+            "checks": {
+              "exact_baseline": 16,
+              "existing_junction_assertions": 10919,
+              "native": 24
+            },
+            "comparison": {
+              "before": {
+                "first_press_frame_ms": 2484.769,
+                "move_frame_median_ms": 224.636,
+                "move_frame_max_ms": 280.663,
+                "commit_frame_ms": 675.876,
+                "pending_events": 34,
+                "events": 34,
+                "frame_max_ms": 2484.8
+              },
+              "after": {
+                "first_press_frame_ms": 2464.191,
+                "move_frame_median_ms": 33.6835,
+                "move_frame_max_ms": 242.084,
+                "commit_frame_ms": 113.576,
+                "pending_events": 34,
+                "events": 34,
+                "frame_max_ms": 2464.22
+              }
+            },
+            "still_pending": "Historical2.46s first press and dark triangle superseded by latest_first_press_revalidation; current first106.19ms/live ground stays stale/held image clear. Cold45.527s, queued publication10.159s and sampled max211.53ms remain; overall art/flow unapproved."
+          },
+          "latest_first_press_revalidation": {
+            "evidence": "验证记录/PlayTest/road_first_press_20261108/native_final",
+            "native": 25,
+            "seconds": 60.610029,
+            "first_press_frame_ms": 106.19,
+            "live_ground_before_after": [
+              352,
+              352
+            ],
+            "author_revision": 353,
+            "moves_frame_median_ms": 31.105,
+            "moves_frame_max_ms": 45.643,
+            "commit_frame_ms": 65.938,
+            "frame_max_ms": 211.53,
+            "cold_open_ms": 45527.128,
+            "publication_latency_ms": 10159.031,
+            "life_prepare_ms": 7827.379,
+            "life_commit_ms": 9.305,
+            "pcm_seconds": 11.9253333333333,
+            "clipped_samples": 0,
+            "production_changed": false,
+            "scope": "Current implementation revalidation plus native regression assertion, not new production optimization. Existing published-ground preview already prevents first-press current terrain preparation.",
+            "limits": "One large fixture/camera journey. No overall flow approval. ground_before in final report sampled after input enqueue; capture moved before enqueue after run as metadata-only fix, report retained."
+          },
+          "latest_clockwork_roof_query_verification": {
+            "evidence": "验证记录/PlayTest/clockwork_roof_queries_20261108",
+            "cpu_boundary_and_combination_checks": 48,
+            "large_clockwork_houses_exact_arrays": 48,
+            "local_before_ms": 3501.055,
+            "local_after_ms": 372.189,
+            "native": 25,
+            "native_seconds": 57.322218,
+            "cold_open_before_ms": 45527.128,
+            "cold_open_after_ms": 42174.03,
+            "clockwork_roofs_before_ms": 3720.644,
+            "clockwork_roofs_after_ms": 382.018,
+            "publication_latency_ms": 10117.302,
+            "pcm_clipped_samples": 0,
+            "limits": "One fixed300 scene. Native held picture is pastoral focus, not clockwork closeup; actual48 clockwork arrays/normals/indices/metadata exactly match frozen old CPU output. Single measurements not statistical global performance. Existing manual pitch/prototype early returns preserved."
+          },
+          "latest_path_edge_bulk_experiment": {
+            "evidence": "验证记录/PlayTest/path_edge_scan_20261108",
+            "adopted": false,
+            "exact_arrays": true,
+            "three_case_ms_before_after": [
+              [
+                403.74,
+                473.628
+              ],
+              [
+                1027.118,
+                1211.161
+              ],
+              [
+                136.186,
+                143.301
+              ]
+            ],
+            "archive": "废弃/path_edge_scan_20261108/rejected_bulk",
+            "production_edge_restored": true
+          },
+          "latest_superseded_life_verification": {
+            "evidence": "验证记录/PlayTest/life_superseded_work_20261109",
+            "cpu": 7,
+            "native": 25,
+            "native_seconds": 57.299709,
+            "facts": "Godot Mutex保护协作取消票；新代次/停止/换城/退出标记过期，Network阶段边界早退，join仍按请求/代次拒绝partial；冻结旧实现完整graph/routes/spatial精确一致。真实300屋连续编辑取消旧任务1次，最新路网/原房水地形/声池/个人档保持，Critic无P1/P2。",
+            "input_to_publish_ms": 11624.303,
+            "life_prepare_ms": 6630.334,
+            "pcm_seconds": 11.616,
+            "pcm_clipped_samples": 0,
+            "limits": "非抢占式，单个重阶段完成后才检查；未称整体等待/卡顿解决，历史样本非同轮严格A/B。",
+            "next_hotspot": "最终Network paused_counters两份历史source重算共2015.003ms，先核它们是否可复用已完成几何事实；保历史计数/权益，不裁掉消费者。"
+          },
+          "latest_paused_history_result_verification": {
+            "evidence": "验证记录/PlayTest/paused_history_reuse_20261109",
+            "checks": {
+              "cpu": 14,
+              "epoch": 88,
+              "native_300": 25
+            },
+            "large_exact": {
+              "houses": 300,
+              "sources": 2,
+              "counters": 398,
+              "before_ms": 1885.634,
+              "cold_ms": 1875.765,
+              "reuse_ms": 3.006,
+              "complete_snapshot_schema": 24
+            },
+            "native_seconds": 57.636665,
+            "input_to_publish_ms": 11731.71,
+            "life_prepare_ms": 6698.737,
+            "paused_first_sources_ms": 2056.715,
+            "native_source_results": [
+              {
+                "computations": 1,
+                "reuses": 0
+              },
+              {
+                "computations": 1,
+                "reuses": 0
+              }
+            ],
+            "pcm_seconds": 11.744,
+            "pcm_clipped_samples": 0,
+            "critic": "critic_review.md；独立上下文无P1/P2",
+            "scope": "每份内部不可变source拥有RefCounted结果，Mutex保护single-flight；capture共享该对象，外部快照仍输出完整计数；旧无result源、Undo/冷读/跨城清理及旧权益保持。",
+            "limits": "首次source仍需原计数；此原生流程未复用、未证明总等待提速。收益仅同源重复flush/后续准备，主线程撞上首次计算仍等待。"
+          }
+        },
+        {
+          "scope": "直路松手定点与圆心曲路",
+          "work": "已接真正圆心曲路：起点点击松手→圆心点击松手→移动预演→终点点击成路。固定半径、扫角、超过半圆与整圆，同圆路段交点吸附，不挪圆心强接不在同圆的端点。两点直路、自由拖画与旧道路点列保持。",
+          "verification": "center_arc_20261104：cpu_final_v3 42/42；live_reviewed 21/21；continuity_final 27/27，隔离实窗/persistence=false/个人档不变。取消、切工具/Tab、换城、整笔Undo/Redo、磁盘冷读与持续路面受测；主观体验待整体Play Test。",
+          "order": 2,
+          "status": "technical_substep_verified"
+        },
+        {
+          "scope": "单体屋顶直观连续调坡",
+          "work": "普通/街屋、圆塔、真实分体组合、现代六型及深窗/亲水悬挑、钟表六型、文艺四型、溪畔船坞、木壳声学亭、爱奥尼长馆和巴西利卡三盖已有连续调坡受测子步。Schema35/36/37/38/39/40/41/42/43/44边界及旧原顶/作者选择保持；最高格拾取、真实屋面与桥廊同源。portico主屋与前廊Schema45/v10已接；未适配guildhall/peristyle等古典/穹顶/折翼及任意局部混型仍待；按next_step继续。实现差异与历史边界统一查文档60，不以局部验收冒称全屋面完成。 guildhall文艺线性公共大厅Schema46/v11已接主殿/双翼/高门廊，pastoral同名仍未装大厅；peristyle/穹顶/折翼等未覆盖。 用户2026-11-05改以自然美观取舍，围廊/穹顶/折翼不再逐型强补调坡；已有适配保留，未采用暂稿归档。",
+          "verification": "本会话最终：boathouse_roof_pitch_20261105：101CPU/71GL/7桥；acoustic_roof_pitch_20261105：229CPU/67GL/7桥；stoa_roof_pitch_20261105：176CPU/62GL/7桥；basilica_roof_pitch_20261105：361CPU/77GL/7桥。目录均在验证记录/PlayTest；具体报告名、命令、耗时、复核和旧失败索引统一见文档60。此前现代/钟表/文艺/普通/圆塔/组合等证据同查60。新屋顶300屋、整体美术和听评未验，旧长馆49/51两窗断言在旧builder同样失败，旧5家屋/5链接另保持。中间计数不重复累计，整体M84～M86 passes不改。 portico最终报告位于portico_roof_pitch_20261105：cpu_final、live_verified、bridge_v1；旧失败保留，不累计中间通过；Critic及主线原图记录在同目录。 portico最终276CPU/95GL/7桥；legacy375/27，非中间累计。 guildhall最终cpu_resumed241/241、live_final132/132，legacy375/27；真实桥廊报告bridge_final通过，不累计中间失败。 自然形态保留与入口收口18GL/19.04秒；Schema46保持。新屋顶300屋/整体动态与美术仍独立待验。",
+          "order": 3,
+          "status": "selected_scope_technically_verified",
+          "latest_clockwork_rotation_verification": {
+            "evidence": "验证记录/PlayTest/clockwork_rotation_20261108",
+            "cpu": 27,
+            "legacy_cpu": 48,
+            "native_before": {
+              "checks": 12,
+              "failures": 3
+            },
+            "native_after": {
+              "checks": 18,
+              "seconds": 21.7412871
+            },
+            "scope": "Automatic mansards and aligned directional prototypes; target design frame plus real world bounds invalidation. Actual E/UndoRedo/new neighbour/removal/cold GPU arrays; personal save unchanged.",
+            "limits": "Not all roofs, hinge geometry, all-city art or performance acceptance. No audio changes."
+          }
+        },
+        {
+          "order": 4,
+          "scope": "材质质感与光影",
+          "status": "pending",
+          "work": "按59提升墙、瓦、木、石、金属、玻璃、植物与非卵石道路的材质区分、尺度和表面细节；提升受光背光层次、接触阴影与昼夕夜可读性，沿用当前美术风格。 光照按大幅改进处理，不限于曝光；查当前官方技术资料，同城比较Compatibility提升路线与Forward+候选的画质/性能，按实测选择，不预先限制路线或直接全开重效果。 本轮已做同城300屋两镜头三态的GL/Forward基线/候选；接原始sRGB绘色修复（顶点/草尖/接触常量），环境仍候选。Forward地表块边界、材料层次和夜树近黑未过；地表分块已隔离并修复整数格点噪声，默认仍Compatibility。 GL的natural局部改进已接主填光/三态白点/阴影及2xMSAA，关闭默认墙距橙光，真实灯具/玻璃仍切相位；整体材质区分和树冠下部仍待。 material_character_20261106已接灰泥/石/陶/板岩/平整悬挑的不同颗粒尺度/粗糙度，木纹按实际UV长边而非世界竖直；修山居木/拱下乐器木金/现代连桥误路由，保持Kind0～6与profile旧索引。原不透明窗玻璃减粗糙并加原生coat，透明花房不改；normal_bias .65→5减轻真实阴影斜纹，未关阴影/增图谱/加级联或改光色，少量暗痕仍待。",
+          "verification": "同场景同镜头昼夕夜原图对照与实际移动观察，记录帧时和卡顿；技术通过与主观品质分开。 lighting_material_20261105：双后端原生source_color基准各20采样误差约1/255，旧Forward raw控制.286275；修色FP300屋10项、默认GL修路15项过，12静态组同/动物运行时组不同；原图/候选版本/源码SHA保留。静态测世界，moving=相机+风，水TIME未冻结；未把API/GPU性能当美术通过。 ground_layer_seams_20261105：Forward旧噪声平面最大邻差.584314失败保留；整数格点后两后端.007843<.016093，独立CPU128²原生GPU控制误差0。300屋GL/FP各11项、57.744/182.043秒，生产绑定无光地面复制24uniform，三态/近景原图已查；个人档和作者快照不变。Forward实际开城172873ms/GL45273ms，不将整段探针或GPU时长冒充加载性能。跨后端直接PNG暗色差7/255保留，未据此声称最终色相等。 renderer_startup_20261105：CPU unit BoxMesh append适配器仅供C++SurfaceTool输入，GL/Forward各600旋转/非均匀/负缩放全属性字节一致；Forward实测开城176310→161639ms，默认GL40784ms，均完整300屋。12非预览/非wildlife几何组同原基线；GL实际增量合批16/16。共享盒cache候选164348ms无额外收益，已核SHA归档撤回；墙面组装/finish余量不冒充已定位全部机制。 lighting_balance_20261105：v1探针未同步灯具，夜景无效原件保留；v2正式相位31项/68.975秒选natural。production_v3 24项/1失败为把未覆盖null误判非0，v4用引擎有效默认值，实际5材质全0且无显式覆盖，25/25/52.177秒，旧9组灯光参数回放全同。候选移动GPU10.222→11.844ms，正式13.834ms/p95 15.423，帧间隔22.304ms/p95 25.629、显存291.2MB，不声称稳定FPS收益。 material_character_20261106：冻结公共API六屋world，before31项/11.230秒、仅阴影fixed19项/11.048秒、材质v1 19项/15.034秒、最终25项/13.461秒，四次world及38460建筑三角SHA同；palette→原生Undo/Redo→保存冷读，全部native vertex/attribute/index bytes同。物理26/26/3.990秒、组件29/29、四时代乐器与真实公共上层桥规划11/11过。300屋10/10/78.083秒（整探针非开城计时），移动GPU11.732ms/p95 15.140，帧19.884ms，显存315.0MB；不与旧树草/不同进程样本做单因子性能归因。独立Critic实看同源材质对照/300日夜，无新阻断，整体美术待评；关闭阴影对照会改变Compatibility光色，未作色值基准。",
+          "latest_corner_orientation_verification": {
+            "evidence": "验证记录/PlayTest/oriel_world_frame_20261108",
+            "cpu": 56,
+            "native": 14,
+            "unchanged_author_queries": true,
+            "native_scope": "Renaissance explicit oriel, E rotation, Undo/Redo, road removal/recovery, independent cold publication of bay world position",
+            "limits": "Not all era architecture or every visual buffer. Signature-only 300-house scene has 20 upper-room houses, not 300 upper-room houses."
+          },
+          "latest_promenade_relief_verification": {
+            "evidence": "验证记录/PlayTest/promenade_relief_20261108/final",
+            "native_checks": 41,
+            "seconds": 21.952,
+            "scope": "3mm footprint-filtered promenade relief on road/bridge/held preview; extracted unchanged paving normal helper",
+            "critic": "One out-of-scope non-paved preview change removed before final run.",
+            "limits": "Static day/night near/normal/bridge/far image review; no claim of motion aliasing elimination or whole-city art approval."
+          },
+          "latest_dusk_camera_verification": {
+            "evidence": "验证记录/PlayTest/dusk_camera_direction_20261108",
+            "before": {
+              "checks": 10,
+              "failures": 2,
+              "street_strength_both": 0.335726782329786
+            },
+            "after": {
+              "native": 10,
+              "seconds": 6.906,
+              "street_back_front": [
+                1.0,
+                0.25
+              ],
+              "stroll_regression": 19,
+              "stroll_seconds": 11.418,
+              "warnings": 0
+            },
+            "visible_backlight_pixels_over_one_code": 341,
+            "scope": "Native V into perspective, real portico, frozen veil on/off pair, overview old directional formula preserved, day/high cards hidden; author/history/personal bytes preserved.",
+            "limits": "GPU difference concentrated at roof opening; no overall lighting/art approval. No all-city, all-camera or Forward validation; audio unchanged."
+          },
+          "latest_ancient_eave_verification": {
+            "evidence": "验证记录/PlayTest/roof_opening_20261109",
+            "native_checks": 4,
+            "shader_errors_final": 0,
+            "tile_body_exact": true,
+            "scope": "Public portico at actual perspective low camera; ray confirms existing triangles; single/double-sided diagnostic plus final production native images. Material diagnostic keeps GPU mesh arrays and author snapshot, personal bytes unchanged.",
+            "limits": "One portico view, no all-roof/all-camera or scale test. Initial include of full shader plus render_mode failed; logs retained. No audio changes."
+          },
+          "latest_window_overlay_verification": {
+            "evidence": "验证记录/PlayTest/window_overlay_20261109/actual_final",
+            "native": 6,
+            "day_changed_pixels": 0,
+            "night_changed_pixels": 582,
+            "scope": "Actual classical pastoral portico, six panes match recorded physical pane positions/sizes. Window-only GPU render with response/afterglow/pluck forced high; day overlay absent and night present. Authored world and personal bytes preserved.",
+            "limits": "Other facade archetypes not fully aligned/accepted. Early fixture inherited timber brush and failed alignment; retained reports; explicit classic fixture is final. No audio changes."
+          },
+          "latest_wall_relief_verification": {
+            "evidence": "验证记录/PlayTest/wall_shadow_20261109",
+            "diagnosis": "Directional shadows off and distance52m do not remove diagonal wall relief; setting wall micro_normal_strength0 does.",
+            "final_native": 16,
+            "seconds": 14.715,
+            "views": "Same actual pastoral/classic portico, 9m ordinary framing and 4m camera-size diagnostic crop; day/dusk/night before/after.",
+            "scope": "Kinds0/1 relief and high-frequency filtering only; other material kinds retain prior formula. Construction GPU arrays/transforms, author and personal bytes unchanged. Environment source identical.",
+            "limits": "16 checks contain13 saved images and3 invariants; not broad gameplay or statistical performance. No all-city, all-angle or Forward validation; no audio changes. Full shadow/lighting acceptance pending."
+          },
+          "latest_sky_reflection_verification": {
+            "evidence": "验证记录/PlayTest/sky_reflection_20261109",
+            "native_ab": 23,
+            "native_ab_seconds": 24.947,
+            "production": 12,
+            "production_seconds": 8.858,
+            "same_process_gpu_median_ms": [
+              1.18299996852875,
+              1.19400000572205
+            ],
+            "gpu_samples_per_mode": 24,
+            "production_gpu_median_ms": 1.442999958992,
+            "scope": "Actual public API portico/iron conservatory/chalet; same cameras and three phases; reflection source only. Production default and phase transitions retain SKY2/BG_COLOR1. Construction arrays/transforms, author and personal bytes unchanged.",
+            "limits": "Screenshots account for18 of23 AB checks; no full-city/per-device performance, local reflection occlusion, full GI or subjective art approval. Simulation and shader time frozen; no dynamic night-window acceptance."
+          },
+          "latest_wall_key_light_verification": {
+            "evidence": "验证记录/PlayTest/wall_key_light_20261109production",
+            "native": 9,
+            "rotations": [
+              "day (-43,-25,0)",
+              "dusk (-22,-32,0)",
+              "night (-38,25,0)"
+            ],
+            "scope": "Actual pastoral/classic portico at 4m orthographic view; warm directional key light is re-aimed toward the facade while the cooler sky fill remains. Day/dusk images show clearer eave, column and side-wall projection; night direction stays unchanged. GPU construction, author snapshot and personal bytes remain unchanged, persistence=false.",
+            "limits": "One house and one camera scale; no all-city/all-angle/Forward validation, shadow-map performance study or subjective overall art approval."
+          },
+          "latest_ancient_multi_lighting_verification": {
+            "evidence": "验证记录/PlayTest/ancient_light_20261109multi",
+            "native": 57,
+            "audio_peak": 0.172210693359375,
+            "scope": "Actual four Ancient architecture houses across 1440/1024, day/night, low/high pitch views; roof identity rays, authored snapshot, cold roundtrip, personal bytes and unclipped Master all pass under the calibrated key-light direction.",
+            "limits": "Representative Ancient multi-house coverage only; no all-city population, all camera angles, Forward renderer or subjective overall art acceptance."
+          },
+          "latest_modern_window_overlay_verification": {
+            "evidence": "验证记录/PlayTest/modern_window_fit_20261109/verified",
+            "native": 35,
+            "seconds": 12.237,
+            "types": [
+              "chalet",
+              "pavilion",
+              "terrace",
+              "panorama",
+              "twin_gable",
+              "green_lodge"
+            ],
+            "max_pane_error_m": 5.18560409545898e-06,
+            "scope": "Actual GlassShader panes and Resonance overlay vertices; day/night examples, rotation h4, Undo, independent cold renderer. Author/construction/personal bytes unchanged, persistence false.",
+            "limits": "Modern six archetypes only; no all-special-window or overall art/audio acceptance."
+          },
+          "latest_civic_arch_window_verification": {
+            "evidence": "验证记录/PlayTest/civic_arch_window_fit_20261109final",
+            "native": 52,
+            "seconds": 15.0,
+            "scope": "Actual Ionic Stoa/Roman Basilica public fixtures; civic pane records are emitted before ancient-window fallback, and BasilicaArchedRecess uses its published arched outline for the Resonance overlay. Day/night images for h2/h4 show the outline follows the real arch; author snapshot, construction, personal bytes and isolated works remain unchanged.",
+            "limits": "The 52 checks cover the public civic fixtures and window-source grouping, not every special facade, all-city lighting or subjective overall art/audio acceptance."
+          },
+          "latest_roof_window_glow_verification": {
+            "evidence": "验证记录/PlayTest/roof_window_glow_20261109focused5",
+            "native": 16,
+            "scope": "Actual gable_light and shed_light DormerGlass plus the restored automatic terracotta skylight. Published roof-glass triangles are reused by Resonance; recorded/emitted triangle counts match exactly and source identity remains explicit. Day/night PNGs show the response on the roof glass; persistence=false and author response snapshot remain unchanged.",
+            "limits": "Focused roof-window fixtures only; the older full dormer verifier retains one separate response-transform exact-hash failure. No all-special-window, all-city lighting, Forward renderer or subjective art acceptance."
+          },
+          "latest_neoclassical_window_glow_verification": {
+            "evidence": "验证记录/PlayTest/neo_window_glow_20261109focused2",
+            "native": 7,
+            "facts": "Renaissance普通住宅夹具：3个新古典窗节点、6个实际玻璃pane、24个玻璃三角面，Resonance发出6个同源窗灯；白天/夜间原图与作者房屋、构造、个人快照保持，persistence=false。",
+            "scope": "仅覆盖Neo.eligible的普通文艺复兴住宅；窗灯复用Neoclassical实际玻璃盒，不再在墙面生成固定矩形色块。",
+            "limits": "牧歌时代由Ancient路径处理；不代表巴西利卡/现代/屋顶之外全部特殊窗、全城光影、Forward渲染或主观美术通过。"
+          },
+          "latest_layered_window_glow_verification": {
+            "evidence": "验证记录/PlayTest/layered_window_glow_20261109focused",
+            "native": 7,
+            "facts": "Renaissance深窗街屋夹具：6个LayeredWindowGlass实际pane记录为24个三角面，Resonance发出6个同源窗灯；白天/夜间原图与作者房屋、构造、个人快照保持，persistence=false。",
+            "scope": "仅覆盖recessed_townhouse深窗街屋；旧四块解析小面在实际记录存在时不再绘制，窗灯复用实际玻璃盒的宽面。",
+            "limits": "牧歌时代Ancient深窗、其他特殊窗、全城光影、Forward渲染和主观美术仍未通过。"
+          },
+          "latest_balcony_window_glow_verification": {
+            "evidence": "验证记录/PlayTest/balcony_window_glow_20261109focused",
+            "native": 10,
+            "facts": "Timber普通外挑/Oriel夹具：5个实际Oriel玻璃pane记录为20个三角面，Resonance发出5个同源窗灯；白天/夜间原图、作者房屋、构造、个人快照保持，persistence=false。",
+            "scope": "仅覆盖Balcony mode 1的普通Oriel；mode>=3的开放栏杆/小灯路径保持，实际玻璃不存在时仍不强行铺窗灯。",
+            "limits": "半圆/转角阳台、全部旋转朝向、其他特殊窗、全城光影、Forward渲染和主观美术仍未通过。"
+          },
+          "latest_guild_window_glow_verification": {
+            "evidence": "验证记录/PlayTest/guild_window_glow_20261109focused",
+            "native": 7,
+            "facts": "阶梯山墙行会夹具：6个实际RecessedArchedGlass pane记录为12个三角面，Resonance发出6个同源窗灯；白天/夜间原图、作者房屋、构造、个人快照保持，persistence=false。",
+            "scope": "仅覆盖stepped_guildhouse的guild_shop_window；行会拱窗优先使用实际玻璃记录，记录缺失时保留旧解析回退。",
+            "limits": "其他行会变体、旋转朝向、其他特殊窗、全城光影、Forward渲染和主观美术仍未通过。"
+          },
+          "latest_round_window_glow_verification": {
+            "evidence": "验证记录/PlayTest/round_window_glow_20261109focused",
+            "native": 8,
+            "facts": "孤立圆塔夹具：3个真实暗玻璃pane记录为12个三角面，Resonance保留3个原round_windows身份并使用同源玻璃；白天/夜间原图、作者房屋、构造、个人快照保持，persistence=false。",
+            "scope": "仅覆盖单层孤立round_tower；原round_windows字典和共鸣计数保持，实际玻璃存在时跳过旧解析矩形灯片。",
+            "limits": "多层/复杂邻接圆塔、旋转朝向、其他特殊窗、全城夜景、Forward渲染和主观美术仍未通过。"
+          },
+          "latest_flagship_lighting_verification": {
+            "evidence": "验证记录/PlayTest/flagship_lighting_20261109",
+            "native_images": 10,
+            "houses": 127,
+            "lighting_scope": "Official flagship gallery on real OpenGL Compatibility: day, warm dusk, star night and close night views retain coherent wall/eave shadow direction; no obvious daytime warm window blocks or floating night windows in the reviewed representative frames.",
+            "known_unrelated_failures": [
+              "actual action invites four era sources and their real audience",
+              "over one hundred actual residents reach the shoreline venue before performance",
+              "actual uninterrupted PCM visits four eras and full tutti over eight real-time phrases",
+              "all phrases are audible, intermediate real save validates and the entire performance settles once"
+            ],
+            "limits": "Showcase fixed cameras and lighting coverage only; the four audience/PCM failures remain outside this art round; no Forward renderer or subjective whole-game art approval."
+          },
+          "latest_dome_window_phase_verification": {
+            "evidence": "验证记录/PlayTest/dome_window_phase_20261109",
+            "native": 7,
+            "facts": "A real Renaissance 2x2 rotunda keeps one phase-aware lantern glass material after batching; emission energy is day 0.0, dusk 0.12, night 0.38, neutral albedo 667873, persistence=false, authored snapshot and personal bytes unchanged.",
+            "scope": "Only the Renaissance rotunda lantern window material; existing three-phase light propagation is reused and no geometry or saved schema changes are introduced.",
+            "limits": "Does not cover every emissive prop, all special windows, Forward rendering or subjective overall art acceptance."
+          },
+          "latest_corner_loggia_window_glow_verification": {
+            "evidence": "验证记录/PlayTest/corner_loggia_window_glow_20261109",
+            "native": 6,
+            "facts": "街角双向连拱望楼的真实LoggiaRearGlass记录为2个pane、8个三角面，Resonance发出2个同源窗灯；白天/夜间原图、作者快照、个人字节保持，persistence=false。",
+            "scope": "仅覆盖corner_loggia_tower最高外角的真实后向拱窗；复用roof_window_glow记录链，不再让该玻璃落入通用矩形灯片路径。",
+            "limits": "不代表其他文艺原型、复杂邻接/旋转朝向、全城光影、Forward渲染或主观美术通过。"
+          },
+          "latest_corner_oriel_window_glow_verification": {
+            "evidence": "验证记录/PlayTest/corner_oriel_window_glow_20261109",
+            "native": 6,
+            "facts": "普通文艺复兴转角凸窗的FacetedBayGlazing记录为1个pane、16个三角面，Resonance发出1个同源窗灯；白天/夜间原图、作者快照、个人字节保持，persistence=false。",
+            "scope": "仅覆盖Neo.corner_sides产生的单个转角凸窗；record支持按真实网格名筛选，避免把同墙普通新古典窗重复记录。",
+            "limits": "不代表多转角、旋转/邻接组合、其他文艺原型、全城光影、Forward渲染或主观美术通过。"
+          },
+          "latest_phase_lamp_verification": {
+            "evidence": "验证记录/PlayTest/phase_lamp_20261109",
+            "native": 8,
+            "facts": "柱廊吊灯/门廊灯接入统一phase_lamp材质；4个实际灯材质的发光能量为day0.0、dusk0.105、night0.35，作者快照与个人字节保持，persistence=false。",
+            "scope": "ArcadeHangingLamp、door porch lamp和现有水岸灯调用统一阶段门控；灯具几何与批处理保持。",
+            "limits": "未统一所有历史灯笼/地标火焰/电车灯；不代表全城灯具、Forward渲染或主观美术通过。"
+          },
+          "latest_grand_festival_entry_verification": {
+            "evidence": "验证记录/PlayTest/grand_festival_transport_20261109/native_clock_v1/grand_live.json",
+            "cpu_checks": 25,
+            "native_checks": 22,
+            "native_passed": 20,
+            "native_failed": 2,
+            "status": "audio_clock_fixed_whole_performance_pending",
+            "sounding_wall_seconds": 24.500745,
+            "pcm": {
+              "clipped_samples": 0,
+              "ok": true,
+              "peak": 0.128265380859375,
+              "seconds": 26.037333333333333
+            },
+            "finale_visual": {
+              "active": false,
+              "strength": 0.0,
+              "type": 3,
+              "zero": true
+            },
+            "rail_edges": 39,
+            "maximum_street_distance": 79.4103075042367,
+            "frame_p95_ms": 392.801,
+            "frame_max_ms": 562.866,
+            "production": "ConcertClock依同venue音频elapsed结算/账期恢复重锚；ChamberRoles分配当前时代唯一layer3，普通音乐会保持。",
+            "remaining": "钟表首句-38.7978dB/audible=false，包络仍用模拟delta；phrase3/7实际id正确但为合法premixed transition，需要记录目标与边界，不能直接等同稳定bank对象。",
+            "rejected": "-42dB报告阈值与遗漏普通终奏的预算公式撤回；Music/stamp与原bank恢复，拒绝bank核SHA归档，见bank_restore.json/restored_signature.json。",
+            "limits": "legacy127屋样例；观众/终章受控模拟，保存为内存JSON恢复；未切free默认，未听评，20/22不作整体验收。",
+            "critic": "同批critic_review.md独立审阅，保留未通过项。"
+          },
+          "latest_music_envelope_verification": {
+            "evidence": "验证记录/PlayTest/music_envelope_clock_20261109",
+            "checks": {
+              "envelope_cpu": 12,
+              "premix_cpu": 9,
+              "targeted_native": 11
+            },
+            "clockwork_first_phrase_db": -9.97710800170898,
+            "audible_floor_unchanged": -38,
+            "remote_weight": 0.25,
+            "pcm": {
+              "clipped_samples": 0,
+              "ok": true,
+              "peak": 0.22406005859375,
+              "seconds": 24.6186666666667
+            },
+            "observed_premixes": 4,
+            "sample_windows_per_premix": 3,
+            "samples_per_premix": 96,
+            "max_pcm_error": 1.52583234012127e-05,
+            "bank": {
+              "signature": "fd46460f66f2d8e21a48d4adfa994bacb06418dfdd59ddc89a142e6159b2624d",
+              "source": "precompiled",
+              "codec": "qoa",
+              "exact_round_trips": 4336,
+              "old_new_raw_pcm_exact": 4336,
+              "old_raw_and_compact_sha_verified": true
+            },
+            "production": "只将演出音量指数平滑的步长切至实际播放时钟；城市实例/恢复代次/场所/origin隔离，非演出保旧delta。StreamTransition短期moving记录旧流/身份/实际边界，音频生成不变。",
+            "critic": "critic_review.md独立上下文接受两P2窄收口，无新增P1/P2。",
+            "limits": "原生使用上一批127屋实际cast，独立Production Music节点+350ms主线程停顿；本轮不重验UI/到场/renderer/结算，不称整城22/22。四处观察时处old段，blend/target为真实预混数据解码与CPU分类核验；原生换城/暂停及主观听评未重验。"
+          },
+          "latest_clockwork_window_glow_verification": {
+            "evidence": "验证记录/PlayTest/clockwork_window_glow_20261109final",
+            "native": 17,
+            "seconds": 6.366,
+            "facts": "显式调坡钟表孟莎顶window_glass复用已有FacadeGlass group2及roof_window_glow实际三角面，4pane/16tri，记录至发布玻璃顶点误差0；日/夕/夜材质能量0/.03/.095，原图显示昼无暖灯块、夜贴窗。Resonance沿用fixed_window_geometry，峰值领奏输入下pivot.scale.y保持1。作者快照和个人档保持，persistence=false，独立Critic复核。",
+            "scope": "普通45度及旋转0.6rad深窗街屋60度各二层；峰值领奏通过生产update注入报表，未播放整段演出。温室玻璃Shader与CPU屋顶/碰撞计划未改。",
+            "limits": "其他钟表屋顶、坡度、邻接与视角未扩验；旧CPU132项中24项source.schema==39断言与当前schema47冲突，原失败不改写。headless截图停等不作图像验收。整体美术与音乐听感仍待。"
+          },
+          "latest_shadow_cascade_experiment": {
+            "evidence": "验证记录/PlayTest/lighting_shadow_range_20261109",
+            "adopted": false,
+            "facts": "Godot4.7源码表明正交相机忽略太阳max_distance，使用camera.far400划级联；对照split .30与按视野拟合.156/.133，8张昼夜原图与Critic确认收益不足，生产值不改。",
+            "limits": "compare17/diagnose18均有1条GPU不变失败，唯一动态路径ValleyWildlife/RooftopBirds；建筑/作者不变，不把原失败刷绿。",
+            "archive": "废弃/lighting_shadow_range_20261109/rejected_split"
+          },
+          "latest_cavity_contact_experiment": {
+            "evidence": "验证记录/PlayTest/wall_cavity_contact_20261109",
+            "adopted": false,
+            "native_checks": 21,
+            "native_seconds": 9.792,
+            "parameters": {
+              "candidate_radius_intensity": [
+                0.8,
+                1.1
+              ],
+              "baseline_radius_intensity": [
+                0.5,
+                1.35
+              ]
+            },
+            "decision": "No clear normal-view gain in three static pairs; wider/softer base halos close up. Independent visual Critic rejects.",
+            "production_environment_unchanged": true,
+            "archive": "废弃/wall_cavity_contact_20261109/rejected_candidate",
+            "limits": "No production change, motion/performance claim, audio or overall art acceptance."
+          }
+        },
+        {
+          "scope": "树木与高草形状纹理及光影重做",
+          "work": "用户明确否定当前树木/高草形状纹理和光影，按整体重做处理：树干枝冠比例、冠层轮廓体积/叶片分布；高草叶片和成簇结构/尺度/疏密；本色、法线粗糙度、透光、投影/自阴影和接地。参考本地Tiny Glade草木资料，不只调绿或放大卡片。 2026-11-06树木局部已接五类分枝叶簇、杏形不透明折叶、垂柳弓枝/垂条、枝端封口；共享种子/15变体树顶/花丛几何保持。叶面去人工发光，远处淡出细法线；高草仍待，柳条梳齿和密叶碎片感未称最终品质通过。 高草/短草局部已重做：独立九叶高簇/七叶短簇/四叶远簇，窄弯叶与强折角分离法线，撤去三瓣底座，原母子种子/布点/遮挡不变；微叶脉按远距淡出、提高粗糙度和根部AO，沿用真实wrap/透光与不透明GPU风，不逐叶投影。",
+          "verification": "近景/造城常用距离/远景、昼夕夜、逆光/背光和风动对照；记录透明过绘、drawcall、帧时和落笔/发布延迟，不少画已种对象或丢更新，主观品质待Play Test。 vegetation_remake_20261106：最终模型108/108、6.893秒，30分件有限单位法线/非退化/新bank确定性、15旧顶及9花丛原bytes同；247株真实树林A/B21/21、13.879秒，另38河道拒绝逐点水距核实，作者/GPU transforms/个人档保持。垂柳CPU21/21、真实操作21/21/16.46秒，风动7925像素且CPU网格未动；该风探针在最终细法线过滤前。旧枝曲API73/73。移动GPU中位2.199→2.896ms/p95 2.248→4.237，帧中位2.233→2.958；仅grove/day相机+风，非全模拟性能。v1解析错误A/B无效，v2期望285但实种247失败原件保留。 grass_remake_20261106：最终GL35/35、14.523秒，37418草根与全部实例生产原AABB上限检查、39簇11692顶点极值不穿边；冻结旧builder全候选字段同，实际buffer/作者/个人档同，九簇独立风1870差异像素且CPUbytes保持。clumps30/30，drifts23/23，edge96064距离方向对照过；弯尖法线反向在原失败保留后修复。移动GPU1.642→1.546ms/p95 1.961→1.825，静止p95 2.018→3.098ms，限court/day72帧短样本。重复V簇/密草均匀感及整体Play Test待评；不将局部实现标整项passes。",
+          "order": 5,
+          "status": "pending",
+          "latest_meadow_shape_experiment": {
+            "evidence": "验证记录/PlayTest/meadow_fan_variation_20261108",
+            "adopted": false,
+            "native_checks": 22,
+            "native_seconds": 19.374,
+            "decision": "Close silhouette changes slightly; normal/far-view repeated density remains. Independent visual Critic agrees to reject.",
+            "production_shader_restored_sha256": "097736af257fad19857fe494f47d439bace5a54f2e754f3543238f49028bfaa3",
+            "archive": "废弃/meadow_fan_variation_20261108/rejected_candidate",
+            "limits": "Sampled edge/wind/species extreme checks only, no all-angle guarantee; vegetation overall remains pending."
+          },
+          "latest_grass_normal_filter_verification": {
+            "evidence": "验证记录/PlayTest/grass_normal_filter_20261109",
+            "adopted": true,
+            "native_checks": 21,
+            "native_seconds": 12.503,
+            "production_sha256": "ed1c8d6c10788be33a116e676ae6610c0d54af2dbba7995d13b76dc3989a3026",
+            "change": "Filter only unresolved blade normals toward shared turf normal using actual screen width; no vertex/density/placement/direct light equation changes.",
+            "decision": "Independent visual Critic accepts reduced normal-view grass speckles; fine close blades softer, tall tufts retain volume. Far view neutral.",
+            "limits": "Four static pairs/one camera yaw, no motion or performance claim; vegetation overall pending."
+          }
+        },
+        {
+          "order": 6,
+          "scope": "地形与陆水过渡",
+          "status": "pending",
+          "work": "按62改造地形，使起伏轮廓、坡面、台地、土石草分布更好看、更逼真、更多样；自然岸坡、浅水深浅、湿润带与植被过渡连贯，桥岸/路岸/建筑落地协调。定向参考本地城市天际线资料，现有资料不足时再补针对性研究。 landwater_surface_20261106新增只读193² RF高度场，与已发布CPU顶点同源；水色吸收/底色与浅水焦散改按实际垂直床深，岸距RF原格式、地形版本/作者笔触/碰撞不改。旧尖山/草岩硬界、宽岸带与完整地貌仍待。 shore_height_blend_20261106已把共享岸色改为实际高度/岸距分层，沙带标称宽.42m并小幅漂移，高于水面.24m退出沙色；草丛同遮罩并取实际根部高度，旧地形形状不变。 slope_surface_blend_20261106草岩坡度过渡拓宽/加入薄土，使用已发布高度场±.8m邻域凸度识别尖脊露岩，未改几何/作者版本；平坦台地不按绝对海拔染岩。",
+          "verification": "平缓/陡坡/高地/凹地与河岸/池岸样本，近远景和移动对照；旧地形与作品不被静默重解释，地形/水面/道路支持、拾取、Undo和冷算一致。 原生GL旧地貌/斜岸路两场景昼夕夜21图26/26、18.022秒；原author/terrain mesh SHA同基线。另实际GLSL与CPU128点误差8.20e-5米，native RF逐字节、编辑/UndoRedo/冷读/renderer在途换城28/28、16.781秒。失败field_v2为Gallery编辑锁拒绝开城，测试误判已保留，改用renderer真实在途生成调用后最终通过；不修改生产锁。整体美术待评。 shore_height_blend_20261106：原生GL旧地貌/斜岸路同机位21图26/26、23.737秒，author/terrain mesh SHA同基线；共享GLSL高程/距离128²诊断8/8、.221秒，离水高岸/远岸全0，湿床端点1，两个方向单调无反向跳变。主线实看池塘日夜/河流/低岸，宽沙圈减轻；未作完整地形美术通过。 本轮原生gl_form_v2 26/26、19.433秒，旧样例/斜岸路作者与terrain mesh SHA同基线；field_final32/32、16.445秒，新增实际ground绑定高度纹理，编辑/native UndoRedo/冷读/换城及GLSL128点保持。旧尖锐轮廓、规则岸形和整体美术不冒称完成。",
+          "latest_elevation_geometry_verification": {
+            "evidence": "验证记录/PlayTest/elevation_terrace_conflict_20261108",
+            "cpu": 25,
+            "native": 15,
+            "candidate_base_y_in_native": 1.15,
+            "old_snapshot_reader_unchanged": true,
+            "limits": "Additional edit-only room/terrace solid guard across different authored levels/bases. Old overlapping works remain readable; no automatic repair or full roof/ornament envelope claim. Cold State data only."
+          },
+          "latest_pond_visual_diagnosis": {
+            "diagnosis": "验证记录/PlayTest/pond_center_diagnosis_20261108",
+            "cause": "Derived leaf at seed .1852445; hide lilypads removes disk. Bed -.34 vs water -.16. No water/terrain hole.",
+            "fix_evidence": "验证记录/PlayTest/lilypad_readability_20261108/native_final",
+            "native": 22,
+            "seconds": 14.976,
+            "scope": "Leaf mask cutoff .64-.82, filtered veins and radial albedo shading only; all source geometry, transforms, layout, water and terrain unchanged.",
+            "limits": "Three representative GPU seeds and one actual small pond; no whole vegetation/art approval or cross-backend claim."
+          },
+          "latest_stroll_switch_verification": {
+            "evidence": "验证记录/PlayTest/stroll_city_switch_20261108",
+            "before": {
+              "checks": 16,
+              "failures": 3,
+              "seconds": 10.841
+            },
+            "after": {
+              "checks": 19,
+              "seconds": 12.504
+            },
+            "scope": "Native V / CtrlO / saved card, source auto-checkpoint view, rejected open and panel close preserve stroll, target V round trip, real new house plus UndoRedo; personal bytes unchanged, persistence false.",
+            "limits": "No full street movement/collision or bench/tour integration pass. Existing waterfront_light.gd:49 colinear warning observed in both baseline and final; audio unchanged."
+          },
+          "latest_pond_bank_readability_verification": {
+            "evidence": "验证记录/PlayTest/pond_bank_readability_20261109",
+            "adopted": true,
+            "diagnostic": {
+              "native_checks": 10,
+              "seconds": 7.316,
+              "sampled_height_min": -0.340000003576279,
+              "sampled_height_max": -0.0199999995529652,
+              "conclusion": "Wide continuous sand mask causes raised rim impression; zero S4AO strength keeps it, no_sand removes it. Sampled pond ground never above flat base."
+            },
+            "comparison": {
+              "native_checks": 15,
+              "seconds": 15.766,
+              "pairs": 5,
+              "scope": "2m pond normal/close/day/night plus mixed city pond/river. Only town ground/water/lawn/grass shader replaced; scenery river incomplete and not claimed improved."
+            },
+            "production_mask": {
+              "checks": 8,
+              "seconds": 0.198,
+              "elevated_max": 0,
+              "far_max": 0,
+              "wet_min": 1,
+              "height_reversal": 0,
+              "distance_reversal": 0,
+              "covered_pixels": 1089
+            },
+            "production_palette_sha256": "be876629bb782f3a1259f7d8ecd6ba6b579c9c61aa6587f2d9839d292f853811",
+            "change": "Shared sand band .24m with .34/.06 noise; height retreat .035 to .14m over water. No metric geometry or author change.",
+            "critic": "Accept local small-pond width reduction, no new P1/P2. Regular close rim/corners P3 and long scenery river remain.",
+            "limits": "No moving camera/performance/audio/whole-shore acceptance; live water TIME differences excluded."
+          }
+        },
+        {
+          "order": 7,
+          "scope": "必要动画与动效过渡",
+          "status": "pending",
+          "work": "在实际出现突跳或状态难辨的放置确认、吸附/合法预览、工具/面板切换、镜头和视觉状态变化处添加短过渡；可随各功能轮同步实施，不单独铺量。",
+          "verification": "连续输入可即时打断和重定向，不延迟落笔，不阻塞取消/撤销，不以过渡遮盖漏画或过期发布。",
+          "latest_focus_gesture_verification": {
+            "evidence": "验证记录/PlayTest/focus_loss_gestures_20261108",
+            "before": {
+              "checks": 7,
+              "failures": 2,
+              "focus_exits": 1
+            },
+            "native_final": {
+              "checks": 47,
+              "seconds": 8.844,
+              "focus_exits": 9
+            },
+            "scope": "Actual native auxiliary Window steals focus; five held tools, late release no commit/history; fresh house UndoRedo; free rotation cancel; empty-hand and modified box selection release. Legacy orbit/pan flags set directly before real focus event.",
+            "limits": "No manual external-app AltTab or all dormant legacy modes journey; pending authored edits are not cancelled. Audio unchanged/Dummy, no PCM hearing claim."
+          }
+        },
+        {
+          "order": 8,
+          "scope": "按音乐设计文档继续正式实现",
+          "status": "pending",
+          "work": "2026-11-05新增17首已校验入库、双引擎分析/两套同源分轨/近空筛选/审计和原曲分类试听接通；共82资产/107提示词/31来源确认，保旧版与用户听评。按专题B继续正式时代调度、真正同源稀疏分轨及新四首+本次17首共21原曲运行包/测试接入；游戏L仍57候选。简单城少量背景、允许零领唱，人声标记1-10单列待核，不从提示词宣称达到声音/默认门槛。 music_era_sequence_20261106：隔离候选自然曲尾续曲按实际空间权重的城市时代筛选，复用现有编辑初分且不提升听评/default批准；unknown/reserve不混入，无适配保自然声，手动fixed可重复。正式默认与真正稀疏同源分轨仍待。 sparse_music_v2_20261106：首份1-02真实同源独立背景v2进入L，身体回应可从零进退、残余自动0，零声明领唱；保旧v1完整core，不改听评批准。真实听感/音域与独立背景适配未确认，剩20首与四时代代表包继续。 sparse_eras_v2_20261106新增文艺/钟表/现代3份，合旧田园成四时代v2代表，L61条目；新21首已包3份，现代代表为旧库曲，剩18份不误减为17。听感/实际音域未批准，默认仍自然声。",
+          "verification": "new_music_20261105/report.json：17源/221声部SHA、34组同源对齐/任意0—1共同峰值余量通过；176有效/45近空全留，17音频HTTP206与分轨页200、旧65目录/分类和听评文件保持，未碰浏览器存储。正式运行仍需隔离实窗与PCM验证声部/时代/过渡/换城；制作不等逐曲听评，品质待整体Play Test。 CPU18/18、.108秒，四时代公共房屋/focus权重/错代统计更优仍拒绝/未知/缺项/历史回退/固定手动和作者保持；原生GL36/36、21.189秒，实际曲尾呼吸3.010秒（含暂停墙钟4.180秒）、同代续曲、暂停/固定重复/换城撤回/原API/12长4短6总线/个人档与PCM通过。 v2CPU9/9、3.475秒；时代fixed协议隔离19/19、.105秒；实际L动作启动v2的GL27/27、55.394秒，空城/围合/拆除Undo/暂停静音/换城/12长4短6总线/个人档与PCM通过；最终续播36/36、20.382秒，原v1自动与v2手动fixed重复；独立Critic指出fixed同ID跨协议漏洞已修并保修前证据。 最终四时代实际L动作/孤屋/源schema与catalog SHA/独立背景PCM/现代同ID v1+v2 fixed自然续播45/45、36秒；旧pilot目录/manifest/WAV SHA保持。gl_v1 41项唯一失败为fixed夹具缺style=warm，原报告保持；修合法偏好并加4份实际源签名断言后最终通过。",
+          "runtime_packages": {
+            "new_sources": 21,
+            "new_sources_sparse": 19,
+            "new_sources_complete_manual_only": 2,
+            "remaining_new_sources_without_package": 0,
+            "L_entries": 84,
+            "all_sparse_entries": 25,
+            "all_complete_entries": 59,
+            "formal_default_changed": false,
+            "listening_approved": false
+          },
+          "latest_package_verification": {
+            "evidence": "验证记录/PlayTest/music_remaining_batch_20261106",
+            "cpu": 76,
+            "compatibility_cpu": 9,
+            "native_controls": 36,
+            "native_compact_caption": 16,
+            "limits": "New18 not each played full-length/listened; highland mapped in CPU only; real register/purity/sparse perception unconfirmed"
+          },
+          "latest_background_entry_verification": {
+            "evidence": "验证记录/PlayTest/music_background_entry_20261106",
+            "cpu": 14,
+            "native_launcher": 15,
+            "native_entry_highland": 27,
+            "native_seconds": 53.467,
+            "highland_control_live": true,
+            "default_changed": false,
+            "limits": "Isolated opt-in trial only; no sticky mode across cities; listening/purity/register/full-length/whole integration unapproved",
+            "native_caption_followup": 8,
+            "caption_followup_seconds": 4.678
+          },
+          "latest_background_pool_verification": {
+            "evidence": "验证记录/PlayTest/music_background_pool_20261109",
+            "native_entry": 27,
+            "native_seconds": 54.231,
+            "script_check": "Godot --headless --path . --check-only --script scripts/ui/city_creation_music_trial.gd",
+            "behavior": "Signed automatic city_sparse_music_v2 candidates now form the background-button successor pool; legacy explicit two-candidate selection remains unchanged",
+            "default_changed": false,
+            "listening_approved": false,
+            "limits": "Opt-in trial entry only; no formal default or listening approval"
+          },
+          "latest_sparse_sequence_fit_verification": {
+            "evidence": "验证记录/PlayTest/sparse_sequence_fit_20261107",
+            "cpu": 18,
+            "legacy_era_cpu": 19,
+            "legacy_sequence_cpu": 7,
+            "native": 24,
+            "native_seconds": 117.095,
+            "full_unseeked_source": "1-05",
+            "successor": "1-04",
+            "first_duration_seconds": 102.870204081633,
+            "active_breath_seconds": 3.01666666666666,
+            "Master_seconds": 111.488,
+            "Master_peak": 0.405670166015625,
+            "clipped_samples": 0,
+            "sparse_candidates": 20,
+            "distinct_declared_vectors": 6,
+            "formal_default_changed": false,
+            "listening_approved": false,
+            "limits": "Declared automatic spatial controls only; equal vectors retain catalog tie order; other sources not each full-length/listened; no acoustic purity/register/whole integration approval"
+          },
+          "latest_era_observation_verification": {
+            "evidence": "验证记录/PlayTest/music_era_observation_20261107",
+            "cpu": 26,
+            "era_cpu": 19,
+            "native": 36,
+            "native_seconds": 35.738,
+            "legacy_native": 36,
+            "caption_native": 12,
+            "Master_seconds": 25.6106666666667,
+            "Master_peak": 0.352874755859375,
+            "clipped_samples": 0,
+            "construction_era_hold_seconds": 13.6691636666669,
+            "stale_packet_hold_seconds": 6.88333333333331,
+            "scale_gate_cpu_median_ms": 0.008,
+            "scale_scope": "300 houses/600 calls/one focused source; excludes geometry/render/full simulation",
+            "initial_era": "first actual focus/brush context",
+            "formal_default_changed": false,
+            "listening_approved": false,
+            "limits": "Ending reached by seek, not full-length; candidate tie vote order unchanged, no new relative vote margin; true no-era-candidate still manual replacement/exit only; production drag signal plus real public road edit, not full physical pointer drag journey"
+          },
+          "latest_candidate_record_verification": {
+            "evidence": "验证记录/PlayTest/candidate_phonograph_20261107",
+            "cpu": 26,
+            "cpu_seconds": 4.15,
+            "native": 32,
+            "native_seconds": 12.92,
+            "cross_process_native": 19,
+            "cross_process_seconds": 12.433,
+            "owner_gate_native": 8,
+            "owner_gate_seconds": 5.251,
+            "record_schema": 2,
+            "legacy_bank_version1_preserved": true,
+            "city_work_wrapper_schema_changed": false,
+            "Master_seconds": 3.30666666666667,
+            "Master_peak": 0.24639892578125,
+            "cold_Master_seconds": 3.31733333333333,
+            "cold_Master_peak": 0.24639892578125,
+            "clipped_samples": 0,
+            "resource_signatures_unchanged": 86,
+            "formal_default_changed": false,
+            "listening_approved": false,
+            "limits": "Frozen gains/cursor not waveform/dynamic space/sequence; missing local assets refuse replay but work reads; failure preserves old L audition, existing phonograph switches keep old stop-first semantics; gate probe uses controlled flags and real workers, not full concert"
+          },
+          "latest_twenty_house_journey_verification": {
+            "evidence": "验证记录/PlayTest/music_build_journey_20261107",
+            "native_house_commits": 20,
+            "first_source": "1-04",
+            "full_unseeked_seconds": 137.273469387755,
+            "successor": "1-01",
+            "native_v1_checks": 49,
+            "native_v1_failed_checks": 3,
+            "space_v2_checks": 30,
+            "space_v2_failed_checks": 2,
+            "targeted_final_native_checks": 15,
+            "targeted_final_seconds": 17.607,
+            "final_counts": {
+              "houses": 20,
+              "roads": 5,
+              "plants": 1
+            },
+            "road_mode_regression_checks": 27,
+            "actual_release_ms_before": [
+              68.828,
+              105.571,
+              148.038,
+              369.165
+            ],
+            "actual_release_ms_after": [
+              35.272,
+              58.619,
+              83.574,
+              98.1
+            ],
+            "remaining_fourth_release_ms": {
+              "state_commit": 50.228,
+              "notification": 42.294
+            },
+            "Master_seconds": 143.317333333333,
+            "Master_peak": 0.38970947265625,
+            "clipped_samples": 0,
+            "resource_signatures_unchanged": 86,
+            "formal_default_changed": false,
+            "listening_approved": false,
+            "limits": "Original failed reports retained, proven substeps combined with targeted final15; not49/49 or30/30. Weak weighted flow correctly sparse; invalid sites refused. Input/phase measurements only, no arbitrary city/FPS/listening approval."
+          },
+          "latest_background_continuity_verification": {
+            "evidence": "验证记录/PlayTest/background_continuity_20261108",
+            "screened_sparse_backgrounds": 25,
+            "revised_source": "3-02",
+            "reused_WAVs": 3,
+            "new_WAVs": 0,
+            "unchanged_catalog_rows": 26,
+            "native_checks": 22,
+            "native_seconds": 32.16,
+            "source_problem_interval_seconds": [
+              35,
+              42
+            ],
+            "prior_Master_peak": 0.064544677734375,
+            "revised_Master_peak": 0.2742919921875,
+            "clipped_samples": 0,
+            "formal_default_changed": false,
+            "listening_approved": false,
+            "limits": "1-second energy screening is not a musical quality gate. Native recordings cover seek32s plus11.2s, include ambience, no full unseeked revised song or melody-purity/listening approval."
+          },
+          "latest_background_repartition_verification": {
+            "evidence": "验证记录/PlayTest/background_repartition_20261108",
+            "screened_sparse_sources": 25,
+            "revised_sources": [
+              "2-05",
+              "3-05"
+            ],
+            "native": 42,
+            "native_seconds": 63.15,
+            "pcm_clipped_samples": 0,
+            "maximum_automatic_endpoint_error": [
+              1.1660158634185791e-05,
+              1.7054378986358643e-05
+            ],
+            "L_entries": 84,
+            "default_changed": false,
+            "listening_approved": false,
+            "limits": "Complete non-overlapping 1-second windows only; partial tail not screened. Fixed same-source shares .12/.15, not verified instrument purity or sparse perception. Old two convenience logs and pointer snapshot overwritten during evidence-name collision; old native22 report/audio intact; collision recorded."
+          },
+          "latest_missing_era_recovery_verification": {
+            "evidence": "验证记录/PlayTest/music_era_recovery_20261108",
+            "before": {
+              "native_checks": 16,
+              "failures": 1,
+              "seconds": 30.512
+            },
+            "after": {
+              "native_checks": 19,
+              "seconds": 24.912,
+              "observation_cpu": 26,
+              "cpu_seconds": 0.099
+            },
+            "breath_active_seconds": 9.76666666666673,
+            "breath_wall_seconds": 10.266444,
+            "Master_seconds": 6.528,
+            "Master_peak": 0.389404296875,
+            "clipped_samples": 0,
+            "scope": "Real L starts signed1-01; Sequence.configure explicitly supplies one real pastoral row to test a supported missing-era inventory. Full current catalog covers four eras. Camera changes real context; ending sought near tail, natural finished triggers recovery path.",
+            "default_changed": false,
+            "listening_approved": false,
+            "limits": "Not full-length listening. Recovery only when established era changes; permanent file/signature errors remain latched. Same-era catalog hot reload not implemented."
+          }
+        }
+      ],
       "supersedes": "文档50及V3—V6冲突的产品规格和剩余排期；历史证据保持。",
       "sound_picture_addendum": {
         "document": "文档/54_V7_最终施工改造总案.md",
@@ -1681,14 +2926,14 @@
         "source": "文档/来源/20261031_Gemini_明暗双线与AI储备_删项摘录.txt",
         "source_sha256": "fc00c8443fc7be72ca53b3cf4e10586fb05bbedd6aa2e5369cf344e124ffe2f9",
         "candidate": "数据/音乐设计候选/Gemini明暗双线_续谱与储备_v1.json",
-        "candidate_sha256": "becb777bdc523cb8b0b41895b5228eda5c44ed90e2ba144a1490ed97b420a024",
+        "candidate_sha256": "690484bad268233958989ca506a69bf314e1e259d94375e357f9507bbe6f5196",
         "adopted": "用户要求明线也入库并最终整合，附暗线续稿。采用自由营造/轻量经营正向成长明线与音乐暗线、渐进储备；65覆盖旧free一律退场目标，以新账期/版本化启停保护旧截止。共有谱支一致，续谱更全；修正cross统计/张力/验证器/DSP/立体声/通用字典误述，原始候选不可运行，不改历史验收。",
         "bright_supplement": {
           "document": "文档/65_明暗双线与AI储备审阅及施工映射.md",
           "source": "文档/来源/20261031_Gemini_明线深审与储备补充_删项摘录.txt",
           "source_sha256": "5e15c951cc11733946590bd0bfc3091599e45f21c78f45384fb482ec05f624aa",
           "candidate": "数据/美术候选/Gemini明线深审_建筑与质感储备_v1.json",
-          "candidate_sha256": "3d6c47417ab649be980b658f38df8c3e64086dd70b5f3f7c847339c0176d910f",
+          "candidate_sha256": "b0d080a56ed32f77ecaec350e52e508573b3dbcb397c471c37c38ab3bbd7c83b",
           "adopted": "用户追加明线补充：四层窗/材质高光/树冠草叶、五维插槽、12原型/6色板合入65第9节；修正品质已有永久升阶、禁改原seed、政策双命名/测试旁路、合批/AO/色板快路100%保证。"
         }
       },
@@ -1722,7 +2967,204 @@
         "adopted": "用户授权将经审阅的成长动力/音乐制作设计纳入本地库，并下载开放音源。采用自选题签、新增奖励、生活事件与作品再创作；首曲离线制作/实听先于多曲多档铺量。旧权益/接口/源码原件保留，已通过状态不重写。",
         "runtime_ready": false
       },
-      "git_policy": "用户已明确要求每轮验证后提交并推送完整库/精简库，核对两库远端树及当前施工版本；不强推。"
+      "git_policy": "2026-11-05用户最新要求：只本地Git备份、不上传；允许子代理实际施工/测试/独立复核。保共享HEAD、原暂存及其他修改，独立索引备份明确已验路径，未验收施工不混入。",
+      "music_production_policy": {
+        "adopted": "2026-11-03用户要求贯通全部生效音乐设计、提示词与接入文档；简单城稀疏背景、允许零领唱、不起播满编；用户仅文字生成完整新曲；旧尖薄编码合成曲退出正式默认及自动回退。",
+        "document": "文档/专题B_音乐系统与音乐资产生产设计案_工程校准与曲库生产版_20261103.md",
+        "prompt_document": "文档/Gemini音乐补曲设计提示词_20261103.md",
+        "handoff_document": "文档/音乐制作批次/Lyria35_施工AI音乐接入手册_20261103.md",
+        "production": "约16条可选精简完整新曲提示词，每条约50～70英文词；不锁统一BPM/调性，不强凑四层，不跨曲叠轨；技术筛选后先本期隔离可玩接入再集中Play Test，正式采用仍需听评。",
+        "verification_boundary": "本项是设计采用，不是运行默认/回退或听感验收；core固定1且原曲含主奏时不能靠颜色层实现去旋律，须按实际候选适配。"
+      },
+      "natural_architecture_priority": {
+        "source": "用户2026-11-05最新要求",
+        "rule": "以建筑自然美观为准，有一些不需要做的就不用做。",
+        "adopted": "不强行给内院连柱/曲面穹顶/其他特殊形态套统一调坡；已有自然形态与作者选择保留，后续只按真实可见问题修。",
+        "evidence": "验证记录/PlayTest/peristyle_roof_pitch_20261105/natural_forms_final/report.json"
+      },
+      "runtime_validation_policy": {
+        "date": "2026-11-06",
+        "mode": "normal_validation_resumed_by_explicit_user",
+        "rules": "用户明确恢复正常检验与施工，覆盖此前临时禁启；最低充分CPU/API/必要实窗、隔离作品/persistence=false，不并行堆重负载；历史证据如实保留。"
+      },
+      "construction_efficiency_priority": {
+        "source": "用户2026-11-08最新要求",
+        "rule": "省去繁琐和低价值行为；优先可见美术、丰富音乐及规则涌现组合中的正常贴图/音乐。每个实际缺陷只做能证明修复的最低充分验证，已通过证据复用。"
+      },
+      "latest_space_feedback_verification": {
+        "evidence": "验证记录/PlayTest/space_feedback_20261117",
+        "native_checks": 45,
+        "native_seconds": 27.257,
+        "critic": "No P1/P2; published contracts and author data preserved",
+        "scope": "Selected-house spatial stage/reason shares L-page descriptions; read-only",
+        "limits": "Initial two incorrect fixture qualification expectations retained; long text uses existing ellipsis/tooltip; no music or whole integration approval"
+      },
+      "latest_avenue_canopy_verification": {
+        "evidence": "验证记录/PlayTest/avenue_canopy_20261117",
+        "native_checks": 23,
+        "seconds": 15.8,
+        "trees": 16,
+        "triangles_per_tree": 6048,
+        "draw_calls_median_before_after": [
+          298,
+          298
+        ],
+        "short_GPU_median_ms_before_after": [
+          1.143,
+          1.189
+        ],
+        "samples_per_stage": 36,
+        "scope": "Attached leaves/branches/shared plant shaders for avenue tree visuals; same records/obstacles; actual road deletion/native Undo and cold arrays/transforms equal",
+        "critic": "Accepted after day/night/near A-B review; no P1/P2",
+        "limits": "Initial invalid-radius failure retained; no large-city performance or dynamic wind art approval; music unchanged"
+      },
+      "latest_music_observation_caption_verification": {
+        "evidence": "验证记录/PlayTest/music_observation_caption_20261117",
+        "native_checks": 27,
+        "seconds": 24.543,
+        "scope": "L shows silent eligible voice observation before entry, actual sound/tail/silence and pause/mute; v2 caption respects declared control, legacy v1 highland fallback preserved",
+        "directed_probe": "Six caption-only synchronous probes for flow/craft/highland and zero caps; no audio process frame with simulated fields",
+        "critic": "P2 wrong v2 highland fallback found and corrected, rereview accepted",
+        "undo_difference": "Only revision 2 to4; houses/roads/terrain exact",
+        "limits": "Original whole-snapshot Undo assertion failed and retained; prior unexpanded L image retained, visible final screenshot reviewed; no audio changes or listening approval"
+      },
+      "latest_rotated_road_preview_verification": {
+        "evidence": "验证记录/PlayTest/rotated_road_preview_20261117",
+        "cpu_checks": 28,
+        "native_checks": 13,
+        "native_seconds": 12.057,
+        "scope": "Preview proximity uses actual transformed house cell centers; no State/qualification/audio change. CPU five angles; real Alt precise two-point road gesture/cancel/commit/UndoRedo/cold arrays",
+        "old_reproduced": "Legal 2.1-width roads at +90/180/-90 degrees committed arcades absent in frozen old preview; zero/.6 rad retained",
+        "critic": "No P1/P2; precise report reviewed",
+        "limits": "Default snap path NOT passed: unsnapped(-19.95,-18.4) became(-20.55,-19), invalid side road. Initial invalid-width fixture and failed native input attempts retained. Native test uses viewport-local push_input and window focus; no listening claim."
+      },
+      "latest_road_start_snap_verification": {
+        "evidence": "验证记录/PlayTest/road_start_snap_20261117",
+        "cpu_checks": 45,
+        "endpoint_regression_checks": 37,
+        "native_checks": 13,
+        "native_seconds": 12.285,
+        "scope": "Defer start-door snapping until stroke direction known; parallel street keeps raw start, frontal approaches still snap; exact complete candidate validated, valid original retained when assisted proposal fails",
+        "native": "No-Alt real two-point gesture/arcade preview/cancel/commit/UndoRedo/cold mesh equality; personal save byte-identical; persistence=false",
+        "critic": "No P1/P2. Locked intermediate anchors preserved; center-arc bypasses first warp and retains raw initial point",
+        "limits": "No new native door-side center-circle or locked multi-segment sample. Audio/schema/actual geometry rules unchanged; previous rotated-road failures retained."
+      },
+      "latest_rotated_street_clearance_verification": {
+        "evidence": "验证记录\\PlayTest\\rotated_street_clearance_20261117",
+        "cpu_checks": 43,
+        "native_checks": 11,
+        "seconds": 10.377,
+        "scope": "Street furniture clearance uses transformed room footprint; actual .6rad avenue restored two records, public rotation Undo and cold records equal",
+        "critic": "No P1/P2; bin bounds and distance consistent",
+        "limits": "Original test failed expecting unobserved wall intersection; retained. Same geometry helper as implementation, no independent polygon oracle, bent-house polygon and bench not tested. No broad art acceptance."
+      },
+      "latest_rotated_arcade_exposure_verification": {
+        "evidence": "验证记录\\PlayTest\\rotated_arcade_exposure_20261117",
+        "cpu_checks": 23,
+        "native_checks": 9,
+        "native_seconds": 8.23,
+        "scope": "Rotated exposed facade uses actual oriented wall and footprint; public two-house 2.6m center spacing restores falsely hidden arcade, common wall remains blocked; native Undo/cold GPU geometry equal",
+        "critic": "Geometry no P1/P2; test dependency on local-only old snapshot removed and retested",
+        "limits": "Initial invalid neighboring probe retained; no arbitrary geometry or whole art acceptance."
+      },
+      "latest_timber_entries_verification": {"checks": 39, "failures": 0, "seconds": 10.858, "probe": "tools/check_creation_timber_entries_live.gd", "evidence": "验证记录/PlayTest/timber_entries_20261118/final", "scope": "单排七间木构住宅，日夜灯光、原门位拾取、道路改接、Ctrl+Z、保存后独立冷读；隔离验证。"},
+      "latest_cross_district_mix_verification": {
+        "evidence": "验证记录/PlayTest/cross_district_music_20261118",
+        "mix": {
+          "before": 0.432393656032684,
+          "after": 0.686330342993336,
+          "retained_target": 0.495199419663177
+        },
+        "native_v1": {
+          "checks": 21,
+          "seconds": 25.507,
+          "pcm": {
+            "clipped_samples": 0,
+            "ok": true,
+            "peak": 0.3443603515625,
+            "seconds": 7.24462585034014
+          }
+        },
+        "native_sparse": {
+          "checks": 23,
+          "seconds": 25.297,
+          "pcm": {
+            "clipped_samples": 0,
+            "ok": true,
+            "peak": 0.15887451171875,
+            "seconds": 7.2562358276644
+          }
+        },
+        "cpu": {
+          "handoff_checks": 13,
+          "expression_checks": 16
+        },
+        "limits": "Adaptive candidate mix only. Two independently authored ponds, natural endpoint not crossed. Real synchronized voice volume checked on 2-04 sparse. Formal route and human listening acceptance remain pending."
+      },
+      "latest_house_detail_verification": {
+        "evidence": "验证记录/PlayTest/house_detail_20261118",
+        "native_checks": 19,
+        "native_seconds": 9.169,
+        "scope": "800x540 and 1440x900. Native roof selection with the purpose tool, detail placement, purpose edit and exact house Undo. Layout-only interactions preserved the city. Reviewed 800x540 before and after.",
+        "limits": "A single ordinary residential fixture. Dense and very tall landmark layouts were not assessed."
+      },
+      "latest_row_ridge_verification": {
+        "evidence": "验证记录/PlayTest/row_ridge_20261118",
+        "native_checks": 20,
+        "native_seconds": 8.843,
+        "roof_pitch_checks": 42,
+        "roof_valley_checks": 53,
+        "coverage": "Perpendicular timber rows, actual roof pick and upward build target, L edit, Undo, independent cold publish, day/night and close-up. Real schema35 slope fixture preserved.",
+        "limits": "Separate neighboring owners and hand-mixed roof finishes were not visually verified."
+      },
+      "latest_street_role_canopy_verification": {
+        "evidence": "验证记录/PlayTest/street_role_and_canopy_20261118",
+        "native_music": {
+          "checks": 19,
+          "seconds": 18.098,
+          "motion_gains": [
+            0.530621,
+            0.588241,
+            0.630552
+          ],
+          "flow": 0.920502,
+          "pcm_seconds": 0.882358,
+          "clipped_samples": 0
+        },
+        "native_canopy": {
+          "checks": 11,
+          "capture_zoom": [
+            16,
+            25
+          ],
+          "scope": "Five-lobed valance, same planned bounds, derived collision and actual below-old-hem ray."
+        },
+        "native_river": {
+          "checks": 15,
+          "seconds": 17.915,
+          "scope": "River-bank pigment varies with world-space deposits and masks against the real shore distance. Reviewed same-camera day and night from cutwater_20261118. No geometry edits."
+        },
+        "portable_path_edges": {
+          "attributes_checks": 64,
+          "attributes_seconds": 23.096,
+          "boundary_checks": 45,
+          "boundary_seconds": 33.338
+        },
+        "limits": "Music fixture uses the opt-in candidate and its independent waterway, with residents paused. No listening claim. Initial fixture/UI attempt and interrupted collider probe retained. Old path_edge_queries exact array mismatch (16/48 fail) retained. Full release tree not verified."
+      },
+      "latest_portable_regressions_verification": {
+        "evidence": "验证记录\\PlayTest\\portable_regressions_20261117",
+        "cpu_checks": [
+          45,
+          28,
+          43
+        ],
+        "native_checks": 23,
+        "native_seconds": 16.849,
+        "scope": "Four byte-identical historical baselines placed under publishable tests/fixtures and five direct call sites switched; original evidence retained",
+        "critic": "No P1/P2; direct dependencies are project sources, no verification-record preload",
+        "limits": "Other historical tests still preload excluded verification records; not a full clean-release tree test; no gameplay change."
+      }
     }
   },
   "current_design_document": "文档/54_V7_最终施工改造总案.md",

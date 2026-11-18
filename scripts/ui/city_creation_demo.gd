@@ -407,6 +407,7 @@ func _setup_life(prepared:Node3D=null) -> void:
 	music.tram_source_gate=life.tram.source_valid
 	music.travel_source_gate = life.travel_source_valid
 	life.concert_start_gate = music.concert_can_start
+	life.concert_elapsed_source = func(venue:String,resumed_elapsed:float=-1.)->float:return preload("res://scripts/world/city_creation_concert_clock.gd").transport(music,venue,resumed_elapsed)
 	if music!=null:town.living_music.metronomes.bind_life(music,life)
 
 func _setup_world() -> void:
@@ -621,7 +622,7 @@ func _refresh_ui() -> void:
 	if float(planning.expansion_multiplier)>1.:quest.text+="\n♫ "+str(planning.label)
 	for chord:String in planning.active_chords:quest.text+="\n♫ "+str(State.SynergyBuffs.CHORD_NAMES[chord])
 	if _painted_tool!=tool:
-		var changed:Array=range(tool_buttons.size()) if _painted_tool<0 else [_painted_tool,tool]
+		var changed:Array=preload("res://scripts/ui/city_creation_overview_navigation.gd").painted_tools(self)
 		for i:int in changed:
 			if tool_buttons[i].get_meta("vector_seal",false):
 				tool_buttons[i].active=i==tool;tool_buttons[i].queue_redraw()
@@ -630,7 +631,7 @@ func _refresh_ui() -> void:
 					tool_buttons[i].add_theme_stylebox_override(visual_state, UI.button(visual_state, i == tool))
 				tool_buttons[i].add_theme_color_override("font_color", UI.PAPER if i == tool else UI.INK)
 		_painted_tool=tool
-	hint.text = Copy.TOOL_HINTS[tool]
+	hint.text = preload("res://scripts/ui/city_creation_overview_navigation.gd").hint(self)
 	if tool==7 and district_link_mode:
 		hint.text = Copy.DISTRICT_LINK_HINT
 	if not guided_hint.is_empty(): hint.text=guided_hint
@@ -653,9 +654,9 @@ func _check(key: String) -> String:
 func select_tool(index: int) -> void:
 	if has_meta("batch_edit"):get_meta("batch_edit").close()
 	if has_meta("ground_landmark_tool"):get_meta("ground_landmark_tool").cancel()
-	strum_hold.cancel()
-	guided_hint=""
+	strum_hold.cancel();guided_hint=""
 	tool = index
+	if tool==5:preload("res://scripts/visual/city_creation_pending_plants.gd").activate(self)
 	_cancel_draft()
 	place_panel.visible = false
 	if spatial_popover!=null:spatial_popover.close()
@@ -677,6 +678,7 @@ func _update_camera() -> void:
 	if town != null and town.meadow != null: town.meadow.set_view_scale(zoom)
 	if town != null and town.shore != null: town.shore.set_view_scale(zoom)
 	if town != null: town.path_pebbles.set_view_scale(zoom)
+	if town != null and town.street_lighting!=null:town.street_lighting.set_view(Vector2(focus.x,focus.z))
 	camera.size = zoom
 	var direction := Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch))
 	# Orthographic zoom changes framing, not perspective. Pull back far enough
@@ -767,6 +769,7 @@ func _input(event: InputEvent) -> void:
 	if has_meta("ground_landmark_tool") and get_meta("ground_landmark_tool").handle(event):get_viewport().set_input_as_handled();return
 	if has_meta("house_rotation_input") and get_meta("house_rotation_input").handle(event):
 		get_viewport().set_input_as_handled();return
+	if camera_rig.navigation.input(self,event):get_viewport().set_input_as_handled();return
 	if get_meta("road_tool").input(event):get_viewport().set_input_as_handled();return
 	if conductor_gesture!=null and conductor_gesture.handle_input(event):
 		get_viewport().set_input_as_handled();return
@@ -840,6 +843,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if ledger!=null and ledger.visible() and ledger.blocks_world(event): return
 	if journal!=null and journal.panel.visible and journal.blocks_world(event): return
 	if gallery!=null and gallery.panel.visible: return
+	if camera_rig.navigation.unhandled(self,event):get_viewport().set_input_as_handled();return
 	if strum_hold.active() and event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT:
 		get_viewport().set_input_as_handled();return
 	if event is InputEventMouseMotion and house_drawing:
@@ -865,7 +869,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				else: orbiting = true
 			MOUSE_BUTTON_MIDDLE: panning = true
 			MOUSE_BUTTON_LEFT:
-				if _edit_pending and tool not in [0,1,2]:
+				if _edit_pending and tool not in [0,1,2] and not (tool==5 and preload("res://scripts/visual/city_creation_pending_plants.gd").can_paint(self)):
 					_message(Copy.EDIT_PENDING_ROAD_TOAST)
 					return
 				if tool in [0,1,4] and event.shift_pressed:
@@ -1015,12 +1019,12 @@ func _process(delta: float) -> void:
 		elif water_drawing: _append_water_point()
 		elif district_link_drawing: _preview_district_link()
 		elif district_drawing: _append_district_point()
-		elif _edit_pending and tool not in [0,1]: pass
+		elif _edit_pending and tool not in [0,1,5]: pass
 		elif get_meta("terrain_policy_preview",false):get_meta("terrain_policy_ui").keep_preview()
 		elif not ui_layer.visible:
 			town.clear_preview()
 			preview_key = ""
-		elif get_viewport().gui_get_hovered_control() == null and (not _edit_pending or tool in [0,1]): _update_hover()
+		elif get_viewport().gui_get_hovered_control() == null and (not _edit_pending or tool in [0,1,5]): _update_hover()
 		else:
 			town.clear_preview()
 			preview_key = ""
@@ -1077,6 +1081,7 @@ func _plane_at(screen: Vector2, height: float) -> Vector2:
 	return Vector2(p.x, p.z)
 
 func _update_hover() -> void:
+	if camera_rig.navigation.empty_hover(self):return
 	if has_meta("batch_edit") and get_meta("batch_edit").blocks_hover():return
 	if has_meta("road_trim_tool") and get_meta("road_trim_tool").update():return
 	if has_meta("ground_landmark_tool") and get_meta("ground_landmark_tool").hover():return
@@ -1086,6 +1091,7 @@ func _update_hover() -> void:
 		signatures.hover(_ground_at(pointer).snapped(Vector2.ONE*.1));return
 	hovered = _ray_hit(pointer)
 	candidate.clear()
+	if preload("res://scripts/ui/city_creation_unified_build.gd").hover(self):return
 	if tool == 2: return
 	if tool == 8:
 		terrain_brush.hover()
@@ -1212,7 +1218,7 @@ func _begin_house_stroke() -> void:
 		var host: Dictionary=town._house_record(house_stroke_host)
 		house_stroke_origin=Vector2(float(host.origin[0]),float(host.origin[1]))
 		house_stroke_base_y=float(host.get("base_y",0.0))
-		house_stroke_height=float(hovered.position.y)
+		house_stroke_height=preload("res://scripts/ui/city_creation_unified_build.gd").stroke_height(self)
 	elif candidate.has("new_house"):
 		first={"x":0,"z":0,"level":0,"kind":"room"}
 		house_stroke_host=""
@@ -1366,7 +1372,7 @@ func _finish_vegetation() -> void:
 		result = state.erase_vegetation_stroke(vegetation_points, vegetation_radius)
 	else:
 		result = state.place_plant(vegetation_points[-1],vegetation_kind) if vegetation_single else state.add_vegetation_stroke(vegetation_points, vegetation_kind, vegetation_radius)
-	_after_edit(result, "erase" if vegetation_erasing else "terrace")
+	preload("res://scripts/visual/city_creation_pending_plants.gd").keep(self,result);_after_edit(result, "erase" if vegetation_erasing else "terrace")
 	vegetation_points.clear()
 
 func _append_water_point() -> void:
@@ -1968,7 +1974,7 @@ func _invite_concert() -> void:
 	var active: Dictionary = life.concert_status()
 	var relay: Dictionary = life.relay_status()
 	var hall:bool=town._house_record(selected_house).get("role","")=="symphony_hall"
-	var result: Dictionary = life.cancel_concert() if bool(relay.active) or (str(active.phase) != "idle" and str(active.venue_id) == selected_house) else life.invite_landmark_movement(selected_house) if town._house_record(selected_house).has("signature") else life.invite_grand_festival(selected_house) if hall else life.invite_concert(selected_house)
+	var result: Dictionary = life.cancel_concert() if bool(relay.active) or (str(active.phase) != "idle" and str(active.venue_id) == selected_house) else life.invite_grand_festival(selected_house) if hall else life.invite_landmark_movement(selected_house) if town._house_record(selected_house).has("signature") else life.invite_concert(selected_house)
 	_message(str(result.message))
 	if result.ok:
 		if str(life.concert_status().phase)=="gathering": music.play_edit("concert")
@@ -2092,7 +2098,7 @@ func _message(text_value: String) -> void:
 	toast_time = 4.0
 
 func _notification(what: int) -> void:
-	if what in [NOTIFICATION_APPLICATION_FOCUS_OUT,NOTIFICATION_WM_WINDOW_FOCUS_OUT]:strum_hold.cancel()
+	if what in [NOTIFICATION_APPLICATION_FOCUS_OUT,NOTIFICATION_WM_WINDOW_FOCUS_OUT]:preload("res://scripts/ui/city_creation_focus_gestures.gd").lost(self)
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		if persistence and not save_blocked:
 			if _edit_pending:

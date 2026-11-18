@@ -1,0 +1,27 @@
+{
+  "schema": "sparse_background_repartition_v1",
+  "prior_catalog": "res://数据/音乐资产/游戏音乐包/20261108_greenhouse_background_v2/catalog.json",
+  "prior_catalog_sha256": "e3d86fcdc69f18ef9042b350f69eb2dc0f0c98a780f3cfb81f36c9b39deefa8d",
+  "output": "res://数据/音乐资产/游戏音乐包/20261108_continuous_background_v2",
+  "songs": [
+    {
+      "prior_manifest": "res://数据/音乐资产/游戏音乐包/20261106_remaining_v2/9ad221e9f33c712a/bundle.json",
+      "prior_manifest_sha256": "63e00822f6362be9c9e6a6e09136a8ae43612bb45359b292a0ad5521b314e9be",
+      "name": "2-05 · 持续底层候选",
+      "folder": "2_05",
+      "response_background_share": 0.12,
+      "basis": "Fixed same-source repartition; no time-dependent compressor or full-mix fallback. Original maximum automatic response contribution retained; listening/purity unconfirmed."
+    },
+    {
+      "prior_manifest": "res://数据/音乐资产/游戏音乐包/20261106_remaining_v2/49e3e4277732f2aa/bundle.json",
+      "prior_manifest_sha256": "d96192fcdfbbc5c528c50e7a34b0e0a63f55f53f24822322c337341c0ab7fd75",
+      "name": "3-05 · 持续底层候选",
+      "folder": "3_05",
+      "response_background_share": 0.15,
+      "basis": "Fixed same-source repartition; no time-dependent compressor or full-mix fallback. Original maximum automatic response contribution retained; listening/purity unconfirmed."
+    }
+  ],
+  "formal_default": false,
+  "listening_approved": false,
+  "measurement": "验证记录/PlayTest/background_repartition_20261108/measurement_v2/report.json"
+}

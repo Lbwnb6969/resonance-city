@@ -44,16 +44,15 @@ static func _upper_room(cells: Array, cell: Dictionary) -> bool:
 	return false
 
 static func _exposed(houses: Array, house: Dictionary, cell: Dictionary, wall: Vector2, normal: Vector2, tangent: Vector2, base: float) -> bool:
-	var half_extent := tangent.abs()*0.88+normal.abs()*0.025
-	var face := Rect2(wall+normal*0.02-half_extent,half_extent*2.0)
+	var face := {"center":wall+normal*.02,"angle":-tangent.angle(),"half":Vector2(.88,.025)}
 	for other: Dictionary in houses:
 		for blocker: Dictionary in other.cells:
 			if str(other.id)==str(house.id) and str(blocker.id)==str(cell.id): continue
 			if str(blocker.kind)!="room": continue
 			var low := float(other.get("base_y",0.0))+int(blocker.level)*FLOOR
 			if low+FLOOR<=base+0.002 or low>=base+FLOOR-0.002: continue
-			var footprint := Rect2(_center(other,blocker)-Vector2.ONE*0.9,Vector2.ONE*UNIT).grow(-0.002)
-			if footprint.intersects(face): return false
+			var footprint:Variant=Frame.footprint(other,blocker,-.002)
+			if Frame.boxes_overlap(footprint,face): return false
 	return true
 
 static func _street(city: RefCounted, road: Dictionary, wall: Vector2, normal: Vector2, tangent: Vector2, base: float) -> bool:

@@ -15,15 +15,17 @@ func setup(parent: Node3D) -> void:
 	environment.background_mode = Environment.BG_COLOR
 	environment.sky = sky
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	# Keep the painted background while PBR surfaces reflect the existing sky.
+	environment.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	environment.ambient_light_sky_contribution = 0.65
 	# Short-range screen-space contact grounds eaves, stairs and tree roots;
 	# broad sunlight and sky remain independent, as in TG's terrain light bake.
 	environment.ssao_enabled = true
-	environment.ssao_radius = 0.75
-	environment.ssao_intensity = 1.1
-	environment.ssao_power = 1.25
+	environment.ssao_radius = 0.5
+	environment.ssao_intensity = 1.35
+	environment.ssao_power = 1.2
 	environment.ssao_detail = 0.5
-	environment.ssao_light_affect = 0.10
+	environment.ssao_light_affect = 0.05
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	environment.tonemap_white = 1.85
 	world.environment = environment
@@ -34,12 +36,12 @@ func setup(parent: Node3D) -> void:
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 	sun.directional_shadow_split_1 = 0.30
 	sun.directional_shadow_blend_splits = true
-	sun.shadow_normal_bias = 1.15
-	sun.shadow_opacity = 0.82
-	sun.shadow_blur = 1.4
+	sun.shadow_normal_bias = 5.0
+	sun.shadow_opacity = 0.86
+	sun.shadow_blur = 1.2
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 92.0
-	sun.shadow_bias = 0.018
+	sun.shadow_bias = 0.012
 	parent.add_child(sun)
 	apply(0)
 
@@ -48,9 +50,9 @@ func apply(phase: int) -> void:
 	# daylight below clipping so plaster grain and cornices survive the sun.
 	# Warm direct light and cooler sky fill retain readable shaded facades.
 	var row: Array = [
-		["78a8c8","efe3cc","d8e2dc","fff1dc",0.95,0.44,0.72,Vector3(-46,-34,0),"bfd4e6"],
-		["5d7ea6","f0bfa0","b9a698","ffc18e",0.78,0.38,0.81,Vector3(-22,-48,0),"8a86a6"],
-		["182738","2c4257","1e2f40","6b82a8",0.28,0.34,1.04,Vector3(-38,25,0),"a6b9d3"]
+		["78a8c8","efe3cc","d8e2dc","fff1dc",1.08,0.34,0.64,Vector3(-43,-25,0),"bfd4e6"],
+		["5d7ea6","f0bfa0","b9a698","ffc18e",0.86,0.36,0.76,Vector3(-22,-32,0),"8a86a6"],
+		["182738","2c4257","1e2f40","6b82a8",0.34,0.47,1.04,Vector3(-38,25,0),"a6b9d3"]
 	][phase]
 	sky_material.sky_top_color = Color(row[0])
 	sky_material.sky_horizon_color = Color(row[1])
@@ -58,11 +60,12 @@ func apply(phase: int) -> void:
 	sky_material.ground_bottom_color = Color("858876").darkened(0.45 if phase==2 else 0.0)
 	environment.background_color = Color(row[2])
 	environment.ambient_light_color = Color(row[8])
-	# Day/dusk A/B improves volume; the darker night candidate hid paths/trees.
-	environment.ambient_light_sky_contribution = .65 if phase == 2 else .52
+	# Cooler fill keeps shaded plaster readable; night mixes in more ambient
+	# color so the canopy underside does not rely only on the dark sky.
+	environment.ambient_light_sky_contribution = .40 if phase == 2 else .60
 	environment.ambient_light_energy = row[5]
 	environment.tonemap_exposure = row[6]
-	environment.tonemap_white = [2.10,2.05,1.95][phase]
+	environment.tonemap_white = [2.60,2.35,2.20][phase]
 	sun.light_color = Color(row[3])
 	sun.light_energy = row[4]
 	sun.rotation_degrees = row[7]

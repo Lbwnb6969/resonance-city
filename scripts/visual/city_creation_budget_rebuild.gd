@@ -23,6 +23,8 @@ var _request_ms := 0.0
 var _max_step_ms := 0.0
 var _main_ms := 0.0
 var _published_snapshot: Dictionary = {}
+var published_ground:RefCounted
+var published_ground_owner:Array=[]
 var _published_services: Dictionary = {}
 var _cpu_retirement:=CPURetirement.new()
 var retired_values:Array=[]
@@ -87,7 +89,13 @@ func _merge_value_cache(target:Dictionary,incoming:Dictionary)->void:
 
 func record_published(state:RefCounted,owner:Node3D=null)->void:
 	_published_snapshot=ChangeSet.snapshot(state)
+	_record_published_ground(state)
 	if owner!=null:_published_services=preload("res://scripts/visual/city_creation_local_service_cache.gd").capture(owner)
+
+func _record_published_ground(state:RefCounted)->void:
+	published_ground_owner=[state.get_instance_id(),state._wish_epoch]
+	if published_ground!=null:retired_solvers.append(published_ground)
+	published_ground=state._ground_terrain.get_script().new();published_ground.copy_cache_from(state._ground_terrain)
 
 func _copy_fields(source: Object, target: Object, fields: Array) -> void:
 	for field: String in fields:
@@ -199,10 +207,11 @@ func _work(context: Node3D) -> Dictionary:
 	var changes: Dictionary = context.get_meta("changes",{})
 	var labels: Array = changes.get("labels",[])
 	var stages: Dictionary = {}
-	stages.local_services=preload("res://scripts/visual/city_creation_local_service_cache.gd").prime(context)
 	var stage_start := Time.get_ticks_usec()
 	preload("res://scripts/visual/city_creation_prepared_frontages.gd").prepare(context.state)
 	stages.frontages=float(Time.get_ticks_usec()-stage_start)/1000.;stage_start=Time.get_ticks_usec()
+	stages.local_services=preload("res://scripts/visual/city_creation_local_service_cache.gd").prime(context)
+	stages.local_services.elapsed_ms=float(Time.get_ticks_usec()-stage_start)/1000.;stage_start=Time.get_ticks_usec()
 	context.water_field.prepare_update()
 	context.era_road_field.prepare(context.state)
 	var water := _prepare_water(context) if labels.has("waters") else {"changed":false,"fingerprint":context.water_fingerprint,"live":{},"changes":{},"contours":0,"prepare_ms":0.0}
@@ -214,11 +223,11 @@ func _work(context: Node3D) -> Dictionary:
 	stages.terrain = float(Time.get_ticks_usec()-stage_start)/1000.0
 	stage_start = Time.get_ticks_usec()
 	var structure_start:=stage_start
-	var building_signature := hash([context.state.houses,context.state.roads])
+	var building_signature := hash([context.state.houses,context.state.roads,context.state.districts])
 	if labels.has("houses") or labels.has("roads"):
 		context.building_input_signature = -1 if context.building_input_signature != building_signature else context.building_input_signature
 	if context.building_input_signature != building_signature:
-		context.building_context.prepare(context.state.houses,context.state.roads)
+		context.building_context.prepare(context.state.houses,context.state.roads,context.state)
 		context.building_input_signature = building_signature
 	stages.building_context=float(Time.get_ticks_usec()-structure_start)/1000.;structure_start=Time.get_ticks_usec()
 	var signature: int = context._road_layout_key()
@@ -517,11 +526,10 @@ func _step(task: Array) -> bool:
 			# lamp materials inherit the live state at installation, not request time.
 			staging.promenade.evening=staging.get_parent().promenade.evening
 			staging.promenade.concert=staging.get_parent().promenade.concert
-			var root: Node3D = staging._install_road_data(task[1],task[2],staging.roads_layer)
-			for body: StaticBody3D in root.find_children("*","StaticBody3D",true,false):
-				body.set_meta("pending_collision_layer",body.collision_layer)
-				body.collision_layer=0
-			staging.road_roots[str(task[1].id)]=root
+			var installer=preload("res://scripts/visual/city_creation_road_install.gd")
+			var id:=str(task[1].id)
+			if not staging.road_roots.has(id):staging.road_roots[id]=installer.begin(task[1],staging.roads_layer)
+			return installer.advance(staging,task[1],task[2],staging.road_roots[id])
 		"pebbles":
 			var root := Node3D.new()
 			root.name = "PebbleReplacement_"+str(task[1].id)
@@ -694,6 +702,7 @@ func _commit(owner: Node3D) -> void:
 	staging.ground_contact_field.upload()
 	owner.water_field=staging.water_field
 	owner.water_field._state=owner.state
+	owner.surface_height_field.publish(owner)
 	# The retained texture arrays publish their dirty layers here, atomically
 	# with geometry. Shared ground/grass/water bindings keep the same RID.
 	stages.water_ms=float(Time.get_ticks_usec()-stage_start)/1000.0
@@ -859,6 +868,7 @@ func _commit(owner: Node3D) -> void:
 	committed_generation = generation
 	retired_values.append(_published_snapshot)
 	_published_snapshot = staging.get_meta("snapshot")
+	_record_published_ground(owner.state)
 	_published_services=preload("res://scripts/visual/city_creation_local_service_cache.gd").capture(owner)
 	_discard_staging(true)
 	stages.dispose_ms = float(Time.get_ticks_usec()-stage_start)/1000.0

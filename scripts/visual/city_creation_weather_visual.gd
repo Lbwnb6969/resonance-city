@@ -32,8 +32,16 @@ func update()->void:
 	if _center==Vector2.INF or _center.distance_squared_to(at)>36. or _revision!=demo.state.revision:
 		_center=at.snapped(Vector2.ONE*4.);_revision=demo.state.revision;_prepare()
 	particles.visible=mode in Weather.IDS
+	particles.multimesh.visible_instance_count=64 if mode=="spring_breeze" else particles.multimesh.instance_count
 	material.set_shader_parameter("music_clock",demo.music._playback_clock())
 	moment.update(mode)
+
+func restore_phase(phase:int)->void:
+	# Opening a work restores its explicit view. Weather defaults apply only
+	# to subsequent weather changes, not the first frame of this renderer.
+	_mode=str(demo.state.microclimate);_renderer=demo.town.get_instance_id()
+	_center=Vector2.INF;_material_key=null;_revision=-1
+	demo._set_light_phase(phase)
 
 func _prepare()->void:
 	var multi:=MultiMesh.new();multi.transform_format=MultiMesh.TRANSFORM_3D;multi.use_custom_data=true

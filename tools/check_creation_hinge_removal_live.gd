@@ -1,0 +1,33 @@
+extends "res://tools/check_creation_unified_build_live.gd"
+const Fixture=preload("res://tools/fixtures/city_creation_hinge_removal_fixture.gd")
+const Frame=preload("res://scripts/world/city_creation_house_frame.gd")
+func run()->void:
+	for arg:String in OS.get_cmdline_user_args():
+		if arg.begins_with("--out-dir="):OUT=arg.trim_prefix("--out-dir=")
+	if not "--isolated-session" in OS.get_cmdline_user_args() or not OUT.begins_with("res://验证记录/") or DirAccess.dir_exists_absolute(OUT):quit(1);return
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT));root.size=Vector2i(1440,900);Engine.max_fps=60
+	var personal:=FileAccess.get_file_as_bytes(State.DEFAULT_PATH)
+	demo=Scene.instantiate();demo.persistence=false;demo.start_empty=true;demo.collection_directory=OUT+"/works";root.add_child(demo);await settle();isolate_input();quiet()
+	var f:=Fixture.build();var city:RefCounted=f.city;check(f.ok and city.add_house(Vector2(-23,-20)).ok,"genuine folded city and valid neighbour")
+	await show(city,Vector2(-27,-21.5),"折翼拆除场地校验");await settle();quiet();demo.zoom=24.;demo._update_camera();demo.select_tool(3)
+	check(DisplayServer.get_name()!="headless","actual native OpenGL removal")
+	var wall:=Vector3(-32,2.4,-19.1);await point(wall)
+	check(demo.candidate.get("house_id","")==f.id and demo.candidate.get("cell_id","")==f.target,"actual upper wall ray selects intended cell")
+	check(demo.candidate.get("erase",false) and not demo.candidate.removal.ok and demo.candidate.removal.message.contains("重叠"),"native hover refuses unfolding into neighbour")
+	var before:Dictionary=demo.state.snapshot();var depth:int=demo.state._undo.size()
+	await click3(wall,true);await click3(wall,false);await settle();quiet()
+	check(demo.state.snapshot()==before and demo.state._undo.size()==depth,"blocked native click preserves full city and history")
+	check(not Frame.overlaps(demo.state.houses[0],demo.state.houses[1]),"blocked removal leaves actual houses separated")
+	await capture("blocked_unfolding")
+	demo._after_edit(demo.state.remove_house(str(demo.state.houses[1].id)),"erase");await settle();quiet();demo.select_tool(3);await point(wall)
+	check(demo.candidate.get("cell_id","")==f.target and demo.candidate.removal.ok,"native hover allows removal after blocker is gone")
+	var folded:Array=demo.state.houses.duplicate(true);depth=demo.state._undo.size()
+	await click3(wall,true);await click3(wall,false);await settle();quiet()
+	check(demo.state.houses[0].cells.size()==11 and is_zero_approx(Frame.Hinge.angle(demo.state.houses[0])) and demo.state._undo.size()==depth+1,"native allowed removal unfolds once and keeps other cells")
+	var unfolded:Array=demo.state.houses.duplicate(true)
+	check(demo.town.house_roots.has(f.id) and not demo.town.house_roots[f.id].find_children("*","MeshInstance3D",true,false).is_empty(),"legal unfolded building geometry is published")
+	await key(KEY_ESCAPE);await capture("legal_unfolding")
+	await key(KEY_Z,true);await settle();quiet();check(demo.state.houses==folded and not is_zero_approx(Frame.Hinge.angle(demo.state.houses[0])),"native Undo restores removed cell and active fold")
+	await key(KEY_Y,true);await settle();quiet();check(demo.state.houses==unfolded,"native Redo restores legal unfolded house")
+	var cold:=State.new();check(cold.restore(demo.state.snapshot()).ok and cold.houses==unfolded,"cold restore preserves legal removal")
+	await complete_report(personal)

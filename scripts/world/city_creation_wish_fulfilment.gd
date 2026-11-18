@@ -18,6 +18,7 @@ func remember_geometry() -> void:
 	published_houses = life.state.houses.duplicate(true)
 	published_roads = life.state.roads.duplicate(true)
 func on_edit(result: Dictionary) -> void:
+	if life.state.CreationPolicy.is_free(life.state):return
 	# Planting/water changes can reward against the still-published street graph.
 	# Existing workers stay on their exact real route while geometry rebuilds.
 	reset_if_loaded()
@@ -50,6 +51,7 @@ func observe(baseline: bool = false) -> void:
 	observed = current
 	observed_revision = life.state.revision
 func arm(id: String, kind: String) -> void:
+	if life.state.CreationPolicy.is_free(life.state): return
 	reset_if_loaded()
 	if kind not in ["water", "tree"] or consumed(life.state, id, kind): return
 	var index: int = life.state._house_index(id)
@@ -63,6 +65,7 @@ func reset_if_loaded() -> void:
 	epoch = life.state._wish_epoch
 	observe(true)
 func poll(immediate: bool = false) -> void:
+	if life.state.CreationPolicy.is_free(life.state): return
 	if preload("res://scripts/world/city_creation_economy_pause.gd").paused(life.state):return
 	reset_if_loaded()
 	if not immediate and life.last_revision != life.state.revision: return

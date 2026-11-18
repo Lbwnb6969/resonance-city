@@ -9,6 +9,10 @@ static func build(vertices:Array,center:Vector3,circular:bool)->PackedVector2Arr
 		var radius:=Vector2(local.x,local.z).length() if circular else maxf(absf(local.x),absf(local.z))
 		rings[local.y]=maxf(float(rings.get(local.y,0.)),radius)
 	var heights:Array=rings.keys();heights.sort()
+	if circular and heights.size()==1:
+		var flat:=PackedVector2Array()
+		for point:Vector3 in vertices:flat.append(Vector2(point.x-center.x,point.z-center.z)/Vector2(.22,.28))
+		return flat
 	var distances:Dictionary={};var distance:=0.;var previous:=Vector2.ZERO
 	for index in range(heights.size()):
 		var height:float=heights[index];var profile:=Vector2(float(rings[height]),height)

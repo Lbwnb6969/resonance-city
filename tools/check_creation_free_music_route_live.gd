@@ -16,6 +16,9 @@ func run()->void:
 	demo=Scene.instantiate();demo.persistence=false;demo.start_empty=true;demo.collection_directory=OUT+"/works";root.add_child(demo);await settle();isolate_input();quiet();var voices:=pool()
 	check(demo.state.CreationPolicy.is_free(demo.state) and demo.state.houses.is_empty() and no_old_long(),"real empty production free city never starts the twelve rejected long voices")
 	check(demo.music.audio_report.get("bank_source")=="precompiled","compatibility PCM and interaction bank loads from current actual cache")
+	check(not demo.music.has_meta("free_music_touch"),"untouched initial free city has not allocated physical-touch PCM")
+	var untouched_old:=State.new();untouched_old.initialize_empty();await show(untouched_old,Vector2.ZERO,"未落笔即打开旧城");quiet();check(not FreeRoute.holds(demo.music) and not demo.music.has_meta("free_music_context"),"untouched free-to-legacy transition clears context without querying absent touch metadata")
+	var untouched_free:=State.new();untouched_free.initialize_free();await show(untouched_free,Vector2.ZERO,"回到未落笔自由城");quiet();check(FreeRoute.holds(demo.music) and no_old_long(),"untouched return to free preserves nature policy before any physical input")
 	var old_clock:float=demo.music.CueGrid.transport_clock(demo.music);var nature:int=demo.ambience._forest_frames_pushed;await create_timer(.5).timeout
 	check(demo.music.CueGrid.transport_clock(demo.music)>old_clock and demo.music._playback_clock()==demo.music.CueGrid.transport_clock(demo.music),"input cue clock advances without reviving a silent concert transport")
 	check(demo.ambience.players.size()==2 and demo.ambience._forest_frames_pushed>nature,"existing two natural ambience voices keep feeding")

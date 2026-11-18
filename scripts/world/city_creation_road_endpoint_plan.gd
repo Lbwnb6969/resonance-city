@@ -13,8 +13,9 @@ static func warp(path:Array[Vector2],first:Vector2,last:Vector2)->Array[Vector2]
 		result[i]=path[i]+(first-path[0])*(1.-weight)+(last-path[-1])*weight
 	result[0]=first;result[-1]=last
 	return result
-static func start(city:RefCounted,at:Vector2,enabled:bool,width:float=1.25)->Vector2:
-	var hit:=Targets.pick(city,at,.9) if enabled else {}
+static func start(city:RefCounted,at:Vector2,enabled:bool,width:float=1.25,neighbor:Vector2=Vector2.INF)->Vector2:
+	# Door approaches need a direction; a first click alone cannot establish one.
+	var hit:=Targets.pick(city,at,.9,neighbor.is_finite(),neighbor) if enabled else {}
 	if not hit.is_empty() and hit.get("kind","")!="door":
 		if Intent._near_ground_house(city,at,width):return at
 		if city.water_clearance(at)>=width*.5+Intent.DRY_MARGIN and city.water_clearance(hit.at)<width*.5+Intent.DRY_MARGIN:return at
@@ -49,7 +50,14 @@ static func plan(city:RefCounted,path:Array[Vector2],raw:Vector2,control:Vector2
 			elif mode==0:candidate=warp(path,bank.points[0],bank.points[-1])
 			else:
 				candidate.assign(anchors);candidate[0]=bank.points[0];candidate.append(bank.points[-1]);candidate=Geometry.Stroke.polyline_points(candidate)
+	var first:Vector2=start(city,path[0],enabled,width,path[1])
+	if first!=path[0] and mode<2:
+		if mode==0:candidate=warp(candidate,first,candidate[-1])
+		elif anchors.size()<2:candidate=Geometry.straight(first,candidate[-1])
+		else:
+			candidate[0]=first;candidate=Geometry.Stroke.polyline_points(candidate)
 	var checked:Dictionary=city.preview_road(candidate,style,"none",width,decoration)
+	if not checked.ok and original.ok:return {"points":path.duplicate(),"closure":{},"control":control,"label":"","valid":original}
 	# Assistance cannot manufacture a water crossing absent from the drawn stroke.
 	if checked.get("bridge",false) and not Intent._contains_water_core(city,path):return {"points":path.duplicate(),"closure":{},"control":control,"label":"","valid":original}
 	if not str(checked.get("upgrade_road_id","")).is_empty():return {"points":path.duplicate(),"closure":{},"control":control,"label":"","valid":original}

@@ -13,6 +13,7 @@ func start(city:RefCounted,request:Dictionary)->void:
 static func _work(source:RefCounted,request:Dictionary)->Dictionary:
  var began:=Time.get_ticks_usec()
  var rows:Array=Plans.building(source,request.candidate) if request.mode=="house" else Plans.road(source,request.points,request.width,request.style,bool(request.candidate.valid))
+ if request.mode=="road" and request.candidate.valid:rows.append_array(preload("res://scripts/world/city_creation_road_connection_feedback.gd").preview(source,request))
  return {"key":request.key,"mode":request.mode,"preview_ids":request.get("preview_ids",[]),"state_id":request.state_id,"revision":source.revision,"rows":rows,"ms":(Time.get_ticks_usec()-began)/1000.}
 func poll()->Dictionary:
  if thread==null or thread.is_alive():return {}

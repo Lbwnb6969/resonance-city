@@ -13,7 +13,11 @@ static func source(color: Color, texture: Texture2D = null, style: String = "cla
 	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	material.texture_repeat = true
 	material.roughness = 0.96 if style == "stone" else 0.93
-	if kind == Kind.TIMBER: material.roughness = .66
+	if kind == Kind.STONE: material.roughness = .96
+	if kind == Kind.TERRACOTTA: material.roughness = .86
+	if kind == Kind.SLATE: material.roughness = .78
+	if kind == Kind.CANTILEVER: material.roughness = .90
+	if kind == Kind.TIMBER: material.roughness = .72
 	if kind == Kind.METAL: material.roughness = .34; material.metallic = .82
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED if style == "stone" else BaseMaterial3D.CULL_BACK
 	material.set_meta("creation_wall", true)
@@ -69,7 +73,7 @@ static func merged(source_material: StandardMaterial3D, world_base_y: float, sto
 	material.set_shader_parameter("surface_kind", kind)
 	material.set_shader_parameter("component_bounds", bounds)
 	material.set_shader_parameter("micro_normal_strength", 0.025 if kind != Kind.PLASTER else (0.014 if str(source_material.get_meta("creation_wall_style", "classic")) == "stone" else 0.022))
-	if kind in [Kind.TIMBER,Kind.METAL]:material.set_shader_parameter("micro_normal_strength",.008 if kind==Kind.TIMBER else .006)
+	if kind in [Kind.TIMBER,Kind.METAL]:material.set_shader_parameter("micro_normal_strength",.004 if kind==Kind.TIMBER else .003)
 	material.set_meta("creation_wall_batch", true)
 	material.set_meta("creation_fixed_color", bool(source_material.get_meta("creation_fixed_color",kind == Kind.METAL)))
 	return material

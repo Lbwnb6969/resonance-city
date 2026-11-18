@@ -9,6 +9,7 @@ static func prepare(owner:Node)->Dictionary:
 	var source:=str(owner.emergence.score.get("source_id",""));var leader:=str(owner.emergence.score.get("lead_track",""))
 	if owner.concert_active:
 		var active:Dictionary=owner._source_for_phrase(owner._concert_phrase());source=str(active.get("source_id",""));leader="concert"
+		if owner._grand_active():leader={"pastoral":"wood","renaissance":"renaissance_fugue","clockwork":"clockwork_waltz","modern_eco":"modern_symphony","tutti":"concert"}[active.era]
 	else:
 		var groups:Array=owner.ClusterHarmony.Tide.groups(owner._house_music,owner.acoustic,owner._pluck_city)
 		if not groups.is_empty():source=str(groups[0].source);leader=str(groups[0].track)

@@ -8,8 +8,10 @@ const Shape = preload("res://scripts/world/city_creation_chemistry_shapes.gd")
 
 static func fork(source: RefCounted) -> RefCounted:
 	var city := State.new()
-	for field: String in ["houses","roads","plants","waters","terrain_strokes","terrain_policy","districts","biome_seed","era_unlocks","creative_settings","placed_landmarks","plaza_loops","harmony_journey","era_modifiers","music_mode","revision"]:
+	for field: String in ["houses","roads","plants","waters","terrain_strokes","terrain_policy","districts","biome_seed","era_unlocks","creative_settings","placed_landmarks","plaza_loops","harmony_journey","era_modifiers","music_mode","revision","_next_house_id","_next_cell_id","_high_watermark"]:
 		city.set(field,source.get(field).duplicate() if source.get(field) is Array or source.get(field) is Dictionary else source.get(field))
+	if source.has_meta("new_house_brush"):city.set_meta("new_house_brush",source.get_meta("new_house_brush").duplicate(true))
+	city._courtyards.copy_cache_from(source._courtyards)
 	city._frontage_cache = source._frontage_cache.duplicate()
 	city._ground_terrain.copy_cache_from(source._ground_terrain)
 	city._ground_revision = source._ground_revision; city._raw_ground_revision = source._raw_ground_revision
@@ -30,19 +32,21 @@ static func building(source: RefCounted, candidate: Dictionary) -> Array:
 	if candidate.has("cell"):
 		changed = house(source,str(candidate.house_id)).duplicate(true)
 		if changed.is_empty(): return []
+		var next_cell:int=maxi(source._next_cell_id,int(source._high_watermark.cell)+1)
 		for input: Dictionary in candidate.get("cells",[candidate.cell]):
-			var cell: Dictionary = input.duplicate(true); cell.id = "preview_cell_"+str(changed.cells.size())
+			var cell: Dictionary = input.duplicate(true); cell.id = "c%d"%next_cell;next_cell+=1
 			changed.cells.append(cell)
 		for i in range(city.houses.size()):
 			if city.houses[i].id == changed.id: city.houses[i] = changed; break
 	elif candidate.has("new_house"):
 		var at: Vector2 = candidate.new_house
-		changed = {"id":"preview_house","origin":[at.x,at.y],"base_y":candidate.get("base_y",0.),"role":"residential","cells":[{"id":"preview_cell","x":0,"z":0,"level":0,"kind":"room"}]}
-		if candidate.has("cells"):
-			changed.cells = candidate.cells.duplicate(true)
-			for i in range(changed.cells.size()): changed.cells[i].id = "preview_cell_"+str(i)
+		changed=city._new_stroke_house(at)
+		changed.cells=candidate.get("cells",[{"x":0,"z":0,"level":0,"kind":"room"}]).duplicate(true)
+		for i in range(changed.cells.size()):changed.cells[i].id="c%d"%(maxi(source._next_cell_id,int(source._high_watermark.cell)+1)+i)
 		city.houses.append(changed)
+		preload("res://scripts/world/city_creation_build_brush.gd").apply(city,changed)
 	else: return []
+	city._ground_revision=-1;city._courtyard_revision=-1
 	var rows: Array = []
 	if candidate.has("new_house") or candidate.has("cells") or int(candidate.cell.level) == 0:
 		var old := {}
@@ -57,6 +61,7 @@ static func building(source: RefCounted, candidate: Dictionary) -> Array:
 	var old_bridges := _bridges(source)
 	for bridge: Dictionary in _bridges(city):
 		if bridge not in old_bridges: rows.append(Shape.skybridge(bridge))
+	if not rows.any(func(row):return row.kind=="skybridge"):rows.append_array(preload("res://scripts/world/city_creation_bridge_discovery.gd").building(city,changed))
 	return rows
 
 static func _bridges(city: RefCounted) -> Array:
@@ -86,11 +91,13 @@ static func road(source: RefCounted, points: Array[Vector2], width: float, style
 	for row: Dictionary in city.houses:
 		var near := false
 		for cell: Dictionary in row.cells:
-			if bounds.grow(width+2.).has_point(Vector2(row.origin[0]+cell.x*1.8,row.origin[1]+cell.z*1.8)): near = true; break
+			if bounds.grow(width+2.).has_point(Arcade.Frame.center(row,cell)): near = true; break
 		if near: rows.append_array(_facades(source,city,row))
+	city._prepare_raw_height()
 	city._road_heights.prepare(city)
 	var profile: Dictionary = city.road_profile(draft)
 	for run: Dictionary in profile.bridge_runs:
-		if int(run.arch_count) == 2: rows.append(Shape.bridge(run))
+		rows.append(Shape.bridge(run))
+	rows.append_array(Shape.simple_bridge(profile,width))
 	if not profile.treads.is_empty(): rows.append(Shape.stairs(profile.treads))
 	return rows

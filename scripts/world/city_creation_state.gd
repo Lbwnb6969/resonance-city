@@ -288,7 +288,7 @@ func add_cell(house_id: String, x: int, z: int, level: int, kind: String = "room
 	if not result.ok:
 		return result
 	var index := _house_index(house_id)
-	var before := snapshot()
+	var before:Dictionary=preload("res://scripts/world/city_creation_paused_counter_history.gd").history_snapshot(self)
 	var candidate: Dictionary = houses[index].duplicate(true)
 	var cell_number := maxi(_next_cell_id, int(_high_watermark.cell) + 1)
 	candidate.cells.append({"id": "c%d" % cell_number, "x": x, "z": z, "level": level, "kind": kind, "source": "player"})
@@ -459,6 +459,8 @@ func preview_remove_cell(house_id: String, cell_id: String) -> Dictionary:
 		var result := _validate_house(candidate)
 		if not result.ok:
 			return _removal_failure(result.message)
+		result=preload("res://scripts/world/city_creation_hinge_actions.gd").removal_site(self,houses[index],candidate)
+		if not result.ok:return _removal_failure(result.message)
 		if not preload("res://scripts/world/city_creation_wide_passage.gd").retained(self,houses[index],candidate):return _removal_failure("请先移走宽路，再拆除穿堂支撑")
 	var kept := {}
 	for cell in candidate.cells:
@@ -543,6 +545,7 @@ func validate_add_house(position: Vector2) -> Dictionary:
 	if not is_finite(position.x) or not is_finite(position.y):
 		return _fail("无效的位置")
 	var house := {"origin": [position.x, position.y], "cells": [{"x": 0, "z": 0, "level": 0, "kind": "room"}]}
+	house.base_y=sample_house_base_y(position)
 	if _house_overlaps(house):
 		return _fail("这里与另一栋房屋重叠")
 	return _validate_house_site(house)
@@ -629,6 +632,8 @@ func set_house_dormer(house_id:String,key:String)->Dictionary:
 func set_house_chimney(house_id:String,key:String)->Dictionary:
 	return preload("res://scripts/world/city_creation_architecture_variants.gd").set_chimney(self,house_id,key)
 func set_house_skybridge_span(house_id:String,enabled:Variant)->Dictionary:return preload("res://scripts/world/city_creation_skybridge_span.gd").choose(self,house_id,enabled)
+func add_compound_part(id:String,side:Vector2i,style:String,levels:int)->Dictionary:return preload("res://scripts/world/city_creation_compound_parts.gd").add(self,id,side,style,levels)
+func set_house_roof_pitch(house_id:String,degrees:Variant)->Dictionary:return preload("res://scripts/world/city_creation_roof_pitch.gd").choose(self,house_id,degrees)
 func set_house_food_kind(house_id:String,key:String)->Dictionary:return Grillhouse.select(self,house_id,key)
 func set_house_style(house_id: String, style: String) -> Dictionary:
 	var index := _house_index(house_id)
@@ -1143,19 +1148,8 @@ func water_clearance(position: Vector2) -> float:
 
 
 func street_height(position: Vector2) -> float:
-	var boat_y:float=preload("res://scripts/world/city_creation_boathouse_plan.gd").height(self,position)
-	if not is_nan(boat_y):return boat_y
-	var deck_y:float=TeaDeck.height(self,position)
-	if not is_nan(deck_y):return deck_y
-	if _ground_revision!=revision: prepare_ground_height()
-	if _street_marker_revision!=revision:_street_markers=Roundabouts.all(roads);_street_marker_revision=revision
-	for marker: Dictionary in _street_markers:
-		if position.distance_to(marker.center)<=marker.radius: return _ground_terrain.raw_height_at(marker.center)+.075
-	var road_y:float=_road_heights.height_at(position,NAN)
-	if not is_nan(road_y):return road_y
-	var legacy := 0.055+0.185*(1.0-smoothstep(-0.05,0.65,water_clearance(position)))
-	if TerrainPolicy.enabled(self):return TerrainPolicy.walk_height(self,position)
-	return maxf(_ground_terrain.height_at(position)+0.075,legacy)
+	return preload("res://scripts/world/city_creation_street_height_query.gd").height(self,position)
+
 
 func _prepare_raw_height() -> void:
 	if _raw_ground_revision==revision: return
@@ -1412,8 +1406,8 @@ func add_vegetation_stroke(points: Array[Vector2], kind: String, radius: float =
 	var rng := RandomNumberGenerator.new()
 	rng.seed = stroke_seed
 	var candidates: Array[Vector2] = _stroke_samples(points, radius)
-	var before := snapshot()
-	var accepted: Array[Dictionary] = []
+	var before:Dictionary=preload("res://scripts/world/city_creation_paused_counter_history.gd").history_snapshot(self)
+	var accepted:Array[Dictionary]=[];var entrances:Dictionary=_junctions.planting_frontages(self)
 	var plant_number := maxi(_next_plant_id, int(_high_watermark.get("plant", 0)) + 1)
 	for center in candidates:
 		if accepted.size() >= MAX_PLANTS_PER_STROKE:
@@ -1430,7 +1424,7 @@ func add_vegetation_stroke(points: Array[Vector2], kind: String, radius: float =
 			var scale_value := _plant_scale(kind, rng)
 			var plant_seed := int(rng.randi())
 			var candidate := _make_plant("p%d" % plant_number, position, kind, scale_value, plant_seed, "player")
-			if not _plant_geometry_compatible(candidate, accepted, true):
+			if not _plant_geometry_compatible(candidate, accepted, true,entrances):
 				continue
 			accepted.append(candidate)
 			plant_number += 1
@@ -1451,8 +1445,8 @@ func place_plant(position:Vector2,kind:String,scale_value:float=1.0)->Dictionary
 	if kind not in GardenSpecies.IDS or not is_finite(scale_value) or scale_value<.4 or scale_value>2.:return _fail("请选择植物和尺寸")
 	var number:=maxi(_next_plant_id,int(_high_watermark.get("plant",0))+1)
 	var plant:=_make_plant("p%d"%number,position,kind,scale_value,261014+number*977,"player")
-	if not _plant_geometry_compatible(plant,[],true):return _fail("这里没有可种植的空间")
-	var before:=snapshot()
+	if not _plant_geometry_compatible(plant,[],true,_junctions.planting_frontages(self,false)):return _fail("这里没有可种植的空间")
+	var before:Dictionary=preload("res://scripts/world/city_creation_paused_counter_history.gd").history_snapshot(self)
 	plants.append(plant);_next_plant_id=number+1;_high_watermark.plant=number
 	_commit(before,"摆放植物")
 	return {"ok":true,"message":"已种下"+str(GardenSpecies.NAMES[GardenSpecies.IDS.find(kind)]),"plant_ids":[plant.id],"added_count":1}
@@ -1462,7 +1456,7 @@ func erase_vegetation_stroke(points: Array[Vector2], radius: float) -> Dictionar
 	var check := _validate_erase_stroke(points, radius)
 	if not check.ok:
 		return check
-	var before := snapshot()
+	var before:Dictionary=preload("res://scripts/world/city_creation_paused_counter_history.gd").history_snapshot(self)
 	var removed: Array[String] = []
 	var kept: Array[Dictionary] = []
 	for plant in plants:
@@ -1539,8 +1533,7 @@ func _apply_appearance(target: Dictionary, ids: Array[String]) -> void:
 		else:houses[index].erase("custom_colors")
 
 
-func snapshot() -> Dictionary:
-	return Serializer.snapshot(self)
+func snapshot() -> Dictionary:return Serializer.snapshot(self)
 
 
 func restore(data: Dictionary) -> Dictionary:
@@ -2617,7 +2610,7 @@ func _commit(before: Dictionary, label: String) -> void:
 	_normalize_craft_transit()
 	revision += 1
 	dirty = true
-	_undo.append({"before": before, "after": snapshot(), "label": label})
+	_undo.append({"before": before, "after": preload("res://scripts/world/city_creation_paused_counter_history.gd").history_snapshot(self), "label": label})
 	_redo.clear()
 
 
@@ -2684,7 +2677,7 @@ func _house_overlaps(candidate: Dictionary, except_id: String = "") -> bool:
 	for house in houses:
 		if house.id == except_id:
 			continue
-		if _pair_overlaps(candidate, house):
+		if _pair_overlaps(candidate, house) or preload("res://scripts/world/city_creation_elevation_conflict.gd").houses(candidate,house):
 			return true
 		if AmphitheaterPlan.hits_house(AmphitheaterPlan.for_house(self,house),candidate) or AmphitheaterPlan.hits_house(AmphitheaterPlan.for_house(self,candidate),house):return true
 	return false
@@ -2705,6 +2698,7 @@ func _pair_overlaps(first: Dictionary, second: Dictionary) -> bool:
 
 
 func _apply_snapshot(data: Dictionary, preserve_issued_ids: bool = false) -> void:
+	var paused_policy:Dictionary=preload("res://scripts/world/city_creation_paused_counter_history.gd").before_restore(self,preserve_issued_ids)
 	_synergy_revision=-1
 	_quality_geometry_revision=-1
 	_signature_bonuses_revision=-1
@@ -2715,7 +2709,7 @@ func _apply_snapshot(data: Dictionary, preserve_issued_ids: bool = false) -> voi
 	_raw_ground_revision = -1
 	_road_heights = RoadHeights.new()
 	_courtyard_revision = -1
-	var had_plants := Serializer.apply_data(self,data,preserve_issued_ids)
+	var had_plants := Serializer.apply_data(self,data,preserve_issued_ids,paused_policy)
 	if preserve_issued_ids:
 		for id:String in resonance_afterglow:resonance_afterglow[id]=minf(float(resonance_afterglow[id]),afterglow_limit(id))
 	if not had_plants:
@@ -2741,17 +2735,18 @@ func house_entrances(house_id: String) -> Array[Dictionary]:
 	if has_meta("prepared_frontages"):return preload("res://scripts/visual/city_creation_prepared_frontages.gd").read(self,house_id)
 	for house: Dictionary in houses:
 		if str(house.id)!=house_id: continue
+		var near:Dictionary=preload("res://scripts/world/city_creation_frontage_neighborhoods.gd").for_house(self,house_id)
 		var signature: Array=[house.origin.duplicate(),[],Rotation.Frame.yaw(house),Rotation.Frame.Hinge.key(house)]
 		if preload("res://scripts/world/city_creation_acoustic_shell.gd").selected(house):signature.append(preload("res://scripts/world/city_creation_acoustic_shell.gd").frontage_key(house).duplicate(true))
 		for cell: Dictionary in house.cells:
 			if int(cell.level)==0:
 				signature[1].append([str(cell.id),int(cell.x),int(cell.z),str(cell.kind)])
-		for road: Dictionary in roads:
+		for road: Dictionary in near.get("roads",roads):
 			signature.append([str(road.id),float(road.width),road.points.duplicate(true)])
-		signature.append(Frontage.blocker_signature(house,houses))
+		signature.append(Frontage.blocker_signature(house,near.get("houses",houses)))
 		var cached: Dictionary=_frontage_cache.get(house_id,{})
 		if cached.is_empty() or cached.signature!=signature:
-			cached={"signature":signature,"records":Frontage.entrances(house,roads,houses),"passages":Passage.for_house(house,roads)}
+			cached={"signature":signature,"records":Frontage.entrances(house,near.get("roads",roads),near.get("houses",houses)),"passages":Passage.for_house(house,near.get("roads",roads))}
 			_frontage_cache[house_id]=cached
 		var result: Array[Dictionary]=[]
 		result.assign(cached.records.duplicate(true))

@@ -9,7 +9,7 @@ static func facade(renderer, wall: Node3D, door: bool, p: Array, house: Dictiona
 	var kind := Plan.kind_for(house)
 	if kind>=3:
 		preload("res://scripts/visual/city_creation_alpine_lodge.gd").facade(renderer,wall,door,p,house,cell,direction);return
-	var wood := Wall.source(p[2].lerp(Color("ad845b"),.48),null,"component",Wall.Kind.STONE)
+	var wood := Wall.source(p[2].lerp(Color("ad845b"),.48),null,"component",Wall.Kind.TIMBER)
 	var stone := Wall.source(p[0].lerp(Color("b8b3a0"),.55),null,"component",Wall.Kind.STONE)
 	var glass: Material = renderer.conservatory.ensure_material(true)
 	var face := Node3D.new(); face.name="AlpineFacade"; wall.add_child(face)
@@ -41,7 +41,7 @@ static func roof(renderer, root: Node3D, house: Dictionary, p: Array, cell: Dict
 	var kind := Plan.kind_for(house); var front := Plan.front(renderer.state,house)
 	frame.rotation.y=atan2(float(front.x),float(front.y)); frame.set_meta("alpine_kind",kind)
 	var y := (int(cell.level)+1)*1.7
-	var wood := Wall.source(p[2].lerp(Color("ad845b"),.48),null,"component",Wall.Kind.STONE)
+	var wood := Wall.source(p[2].lerp(Color("ad845b"),.48),null,"component",Wall.Kind.TIMBER)
 	var slate := Wall.source(p[1] if house.get("architecture","")=="recessed_townhouse" else Color("52636a"),null,"component",Wall.Kind.SLATE)
 	var stone := Wall.source(p[0].lerp(Color("b8b3a0"),.55),null,"component",Wall.Kind.STONE)
 	var join := Plan.seams(renderer.state,house,cell,front)
@@ -93,7 +93,7 @@ static func _prism(renderer, root: Node3D, top: Array, material: Material) -> vo
 	for i in range(4):
 		var j: int=(i+1)%4; faces.append([low[i],top[i],top[j],low[i],top[j],low[j]])
 	for face: Array in faces:
-		var mesh: MeshInstance3D=renderer._triangles(root,face,material.albedo_color); mesh.material_override=material
+		var mesh: MeshInstance3D=renderer._triangles(root,face,material.albedo_color); mesh.material_override=material;preload("res://scripts/visual/city_creation_slate_finish.gd").apply(mesh)
 		if root.get_meta("street_detail_roof",false):mesh.set_meta("creation_detail_roof",true);mesh.set_meta("creation_detail_cell",str(root.get_meta("street_detail_cell")))
 
 static func _deck(renderer, parent: Node3D, house: Dictionary, cell: Dictionary, front: Vector2i, wood: Material, stone: Material) -> void:

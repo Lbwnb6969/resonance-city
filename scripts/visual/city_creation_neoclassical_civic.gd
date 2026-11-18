@@ -54,17 +54,23 @@ static func build(renderer, root: Node3D, house: Dictionary) -> void:
 	var span := float(plan.span); var middle := minf(1.65,span*.55); var wing := (span-middle)*.5
 	# Central clerestory rises above two genuinely lower side roofs.
 	renderer._box(hall,Vector3(middle,.54,1.8),Vector3(0,.24,0),plaster).name="GuildhallRaisedNave"
-	_roof(renderer,hall,middle+.22,2.08,.54,.94,0.,tile)
+	var pitched:=preload("res://scripts/world/city_creation_guildhall_roof_pitch.gd").active(renderer.state,house)
+	if not pitched:_roof(renderer,hall,middle+.22,2.08,.54,.94,0.,tile)
 	for side: float in [-1.,1.]:
-		_roof(renderer,hall,wing+.14,2.03,.02,.30,side*(middle+wing)*.5,tile)
+		if not pitched:_roof(renderer,hall,wing+.14,2.03,.02,.30,side*(middle+wing)*.5,tile)
 		for z: float in [-.94,.94]: renderer._box(hall,Vector3(wing,.09,.20),Vector3(side*(middle+wing)*.5,.015,z),stone)
 	# Tall shallow portico attaches to the existing central front doorway.
 	var front := Node3D.new(); hall.add_child(front); front.position=Vector3(0,-1.70,1.0); front.scale.y=1.42
-	Neo._portico(renderer,front,stone,stone.albedo_color)
+	Neo._portico(renderer,front,stone,stone.albedo_color,not pitched)
 	front.name="GuildhallHighPortico"
 	var body := StaticBody3D.new(); hall.add_child(body)
 	body.set_meta("house_id",str(house.id)); body.set_meta("cell_id",str(plan.cell.id)); body.set_meta("cell",plan.cell)
-	Pick.from_children(body,hall,"GuildhallRoofPick")
+	if pitched:
+		Pick.from_geometry(body,hall,"GuildhallFixedPick")
+		preload("res://scripts/visual/city_creation_guildhall_roof_pitch.gd").build(renderer,root,house,palette)
+	else:
+		Pick.from_geometry(body,hall,"GuildhallRoofPick")
+		root.set_meta("guildhall_original_anchor",preload("res://scripts/visual/city_creation_guildhall_roof_pitch.gd").original_anchor(root,hall))
 
 static func _roof(renderer, root: Node3D, width: float, depth: float, eave: float, ridge: float, x: float, tile: Material) -> void:
 	var a:=Vector3(x-width*.5,eave,-depth*.5); var b:=a+Vector3(width,0,0)

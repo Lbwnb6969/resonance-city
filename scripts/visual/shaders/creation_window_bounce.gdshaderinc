@@ -1,8 +1,10 @@
 // Consumes the existing house-distance channel. No per-house lights or new field.
 uniform float window_light_phase=0.0;
-uniform float window_bounce_strength=1.0;
+// The distance field describes walls, not illuminated windows. Keep the old
+// glow available for historical A/B probes without drawing a default outline.
+uniform float window_bounce_strength=0.0;
 vec3 window_ground_bounce(vec2 at){
-	if (!ground_contact_enabled || window_light_phase<.01){return vec3(0.0);}
+	if (!ground_contact_enabled || window_light_phase<.01 || window_bounce_strength<=0.0){return vec3(0.0);}
 	vec2 uv=(at-ground_contact_world_rect.xy)/ground_contact_world_rect.zw;
 	float distance=tiled_field_sample(ground_contact_field,uv).r*ground_contact_range;
 	float halo=(1.0-smoothstep(.08,1.16,distance))*smoothstep(0.0,.04,distance);

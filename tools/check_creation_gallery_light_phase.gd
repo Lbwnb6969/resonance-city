@@ -1,7 +1,7 @@
 extends SceneTree
 const Scene=preload("res://scenes/city_creation.tscn")
 const State=preload("res://scripts/world/city_creation_state.gd")
-const OUT="res://验证记录/作品光线往返_2026-10-17"
+var OUT="res://验证记录/作品光线往返_2026-10-17"
 var demo
 var checks:Array=[]
 var failures:Array[String]=[]
@@ -17,6 +17,8 @@ func _audio()->Array:
 	for p:AudioStreamPlayer in demo.music._effects:rows.append(p.get_instance_id())
 	return rows
 func _run()->void:
+	for arg:String in OS.get_cmdline_user_args():
+		if arg.begins_with("--out-dir="):OUT=arg.trim_prefix("--out-dir=")
 	if DisplayServer.get_name()=="headless":push_error("Requires actual GL viewport");quit(1);return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	var personal:=FileAccess.get_file_as_bytes(State.DEFAULT_PATH) if FileAccess.file_exists(State.DEFAULT_PATH) else PackedByteArray()
@@ -25,6 +27,7 @@ func _run()->void:
 	var deadline:=Time.get_ticks_msec()+20000
 	while (demo.music.audio_report.is_empty() or not demo.ambience.report().ready) and Time.get_ticks_msec()<deadline:await process_frame
 	var identities:=_audio();var clock:float=demo.music._playback_clock()
+	var nature_ids:Array=demo.ambience.players.values().map(func(p):return [p.get_instance_id(),p.stream.get_instance_id()]);var nature_frames:int=demo.ambience._forest_frames_pushed
 	demo._toggle_light();demo._toggle_light()
 	_check(_phase_ok(2),"night phase propagates to environment, water, wildlife, ambience and music")
 	await demo.gallery.save_work("星夜作品")
@@ -52,7 +55,11 @@ func _run()->void:
 	_check(not library.save("不一致镜头",demo.state.snapshot(),malformed,cover).ok,"contradictory phase and legacy flag reject atomically")
 	var day_view:Dictionary=legacy_view.duplicate(true);day_view.evening=false;day_view.light_phase=3
 	_check(not library.save("越界镜头",demo.state.snapshot(),day_view,cover).ok,"out-of-range light phase rejects atomically")
-	_check(_audio()==identities and demo.music._playback_clock()>clock,"phase roundtrips preserve PCM identities and continuous transport")
+	print("GALLERY_PHASE_AUDIO ",JSON.stringify({"same_pcm":_audio()==identities,"initial_clock":clock,"final_clock":demo.music._playback_clock(),"free":demo.state.CreationPolicy.is_free(demo.state),"long_playing":demo.music._players.values().any(func(p):return p.playing)}))
+	_check(_audio()==identities,"phase roundtrips preserve PCM and pooled player identities")
+	if demo.state.CreationPolicy.is_free(demo.state):
+		_check(not demo.music._players.values().any(func(p):return p.playing) and demo.ambience.players.values().map(func(p):return [p.get_instance_id(),p.stream.get_instance_id()])==nature_ids and demo.ambience._forest_frames_pushed>nature_frames,"current free city preserves continuous nature generation without resurrecting old long songs")
+	else:_check(demo.music._playback_clock()>clock,"legacy long transport continues across phase roundtrips")
 	_check((FileAccess.get_file_as_bytes(State.DEFAULT_PATH) if FileAccess.file_exists(State.DEFAULT_PATH) else PackedByteArray())==personal,"personal continue-save bytes remain untouched")
 	var report={"ok":failures.is_empty(),"checks":checks,"failures":failures,"facts":{"restored_phase":demo.light_phase,"pcm_players":demo.music.get_child_count(),"legacy_fallback":1}}
 	FileAccess.open(OUT+"/结果.json",FileAccess.WRITE).store_string(JSON.stringify(report,"\t"));print("GALLERY_LIGHT_PHASE ",JSON.stringify(report))

@@ -11,7 +11,7 @@ static func tick(music:Node,delta:float)->bool:
 	if not holds(music):
 		if music.has_meta("free_music_context"):
 			music.remove_meta("free_music_context");music.attention.clear()
-			if music._edit_streams.get("free_physical_touch")==music.get_meta("free_music_touch",null):music._edit_streams.erase("free_physical_touch")
+			if music.has_meta("free_music_touch") and music._edit_streams.get("free_physical_touch")==music.get_meta("free_music_touch"):music._edit_streams.erase("free_physical_touch")
 			for voice:AudioStreamPlayer in music._players.values():
 				if not voice.playing and voice.stream!=null:voice.play()
 		return false

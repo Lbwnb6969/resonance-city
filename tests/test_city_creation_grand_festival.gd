@@ -36,6 +36,29 @@ func _run()->void:
 		var expected:String="wood" if phrase<2 else "renaissance_fugue" if phrase<4 else "clockwork_waltz" if phrase<6 else "modern_symphony"
 		for key:String in ["wood","renaissance_fugue","clockwork_waltz","modern_symphony"]:staged=staged and (music.concert_gain_for_phrase(key,phrase)>-30. if key==expected else music.concert_gain_for_phrase(key,phrase)==-60.)
 	_check(staged and music.concert_gain_for_phrase("wood",7)>-30. and music.concert_gain_for_phrase("modern_symphony",7)>-30.,"actual existing long voices alternate era lead and join bounded full final chord")
+	for phrase in range(8):
+		music._concert_clock_origin=-float(phrase)*3.
+		var roles:Dictionary=preload("res://scripts/audio/city_creation_chamber_roles.gd").prepare(music)
+		var expected:String="wood" if phrase<2 else "renaissance_fugue" if phrase<4 else "clockwork_waltz" if phrase<6 else "modern_symphony" if phrase==6 else "concert"
+		var leads:Array=roles.roles.keys().filter(func(key:String)->bool:return roles.roles[key].layer==3)
+		_check(roles.lead_track==expected and leads==[expected] and not "chamber_counter_" in str(roles.roles[expected].id),"actual chamber routing preserves exactly the scheduled era melody: "+str(phrase))
+	var audio_clock:Dictionary={"at":float(resumed._concert.elapsed),"venue":""}
+	resumed.concert_elapsed_source=func(venue:String,resumed_elapsed:float=-1.)->float:
+		audio_clock.venue=venue
+		if resumed_elapsed>=0.:audio_clock.at=resumed_elapsed
+		return audio_clock.at
+	var held:float=resumed._concert.elapsed;resumed._process(.1)
+	_check(resumed._concert.elapsed==held and audio_clock.venue==placed.house_id,"held audio clock prevents simulation delta from advancing the sounding concert")
+	audio_clock.at=18.4;resumed._process(.1)
+	_check(is_equal_approx(resumed._concert.elapsed,18.4),"slow simulation catches up to actual transport rather than replaying previous phrases")
+	audio_clock.at=12.;resumed._process(.1)
+	_check(is_equal_approx(resumed._concert.elapsed,18.4),"a transport observation never rewinds an existing performance")
+	audio_clock.at=100.;resumed.set_meta("progression_resume_delta",true);resumed._process(.1)
+	_check(is_equal_approx(resumed._concert.elapsed,18.4) and is_equal_approx(audio_clock.at,18.4),"economy resume rebases audio at saved progress without charging the paused interval")
+	audio_clock.at=23.99;resumed._process(.1)
+	_check(resumed.concert_status().phase=="playing" and fresh.life_progress.concerts==before,"audio performance cannot settle before the twenty-four-second boundary")
+	audio_clock.at=24.3;resumed._process(.1);resumed._process(.1)
+	_check(resumed.concert_status().phase=="idle" and fresh.life_progress.concerts==before+1 and not resumed.finale_view().is_empty(),"one delayed audio observation completes once and creates the real finale")
 	var bad:Dictionary=saved.duplicate(true);bad.journey_checkpoint.concert.era_cast.clockwork=bad.journey_checkpoint.concert.era_cast.pastoral
 	_check(not fresh.restore(bad).ok,"forged duplicate or mislabeled era cast is rejected on load")
 	_check(Quality.until(resumed,func()->bool:return resumed.concert_status().phase=="idle",30.) and fresh.life_progress.concerts==before+1,"restored actual twenty-four-second performance completes exactly once after remaining time")

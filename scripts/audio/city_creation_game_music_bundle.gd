@@ -5,6 +5,7 @@ const Harmony=preload("res://scripts/audio/city_creation_game_music_harmony.gd")
 
 static func read(path:String)->Dictionary:
 	var data:Variant=JSON.parse_string(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else null
+	if data is Dictionary and data.get("schema")=="city_sparse_music_v2":return preload("res://scripts/audio/city_creation_sparse_music_bundle.gd").read_data(path,data)
 	if not data is Dictionary or data.get("schema")!="city_adaptive_music_v1":return {"ok":false,"reason":"invalid_manifest"}
 	var frames:=int(data.get("frames",0));var rate:=int(data.get("sample_rate",0))
 	if frames<=0 or rate!=44100 or data.get("channels")!=2 or data.get("operations",{}).get("loop_enabled",true):return {"ok":false,"reason":"invalid_timeline"}

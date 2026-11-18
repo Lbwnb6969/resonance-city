@@ -70,9 +70,10 @@ func _process(_delta:float)->void:
 		var wave:AudioStreamWAV=worker.wait_to_finish();worker=null
 		var player:AudioStreamPlayer=owner._players[job.key]
 		if clock<job.deadline and player.stream==job.old and owner._variation_pending.get(job.key,{}).get("id","")==job.id:
+			var old_id:String=str(owner._variation_active.get(job.key,"original"))
 			var gain:=player.volume_db;player.stream=wave;player.play(fposmod(clock,24.));player.volume_db=gain
 			owner._variation_active[job.key]=job.id;owner._variation_pending.erase(job.key)
-			moving[job.key]={"stream":wave,"target":job.target,"id":job.id,"until":job.deadline+FADE}
+			moving[job.key]={"stream":wave,"old":job.old,"old_id":old_id,"target":job.target,"id":job.id,"boundary":job.deadline,"local_boundary":job.boundary,"until":job.deadline+FADE}
 			player.set_meta("last_smooth_swap",{"clock":clock,"boundary":job.deadline,"db":gain,"id":job.id,"method":"premixed","fade_seconds":FADE})
 		else:pending[job.key]={"key":job.key,"id":job.id,"old":player.stream,"target":job.target}
 		job={}

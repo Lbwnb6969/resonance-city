@@ -28,7 +28,7 @@ void fragment() {
 	EMISSION=window_ground_bounce(world_at.xz);
 	NORMAL = safe_normalize(NORMAL);
 	vec4 paving=paving_sample(world_at.xz,surface_pattern,path_color(world_at.xz));
-	NORMAL=paving_normal(NORMAL,VERTEX,paving.a*(1.0-bridge_paving.x)*(1.0-bridge_paving.y));
+	NORMAL=paving_normal(NORMAL,VERTEX,paving.a*(1.0-bridge_paving.x)*(1.0-bridge_paving.y)+promenade_height(world_at.xz)*bridge_paving.y);
 	vec3 surface=mix(paving.rgb,bridge_timber(UV),bridge_paving.x);
 	surface=mix(surface,promenade_color(world_at.xz),bridge_paving.y);
 	ALBEDO = era_road_color(world_at.xz,surface,surface_pattern>.125 ? 0.0 : 1.0);

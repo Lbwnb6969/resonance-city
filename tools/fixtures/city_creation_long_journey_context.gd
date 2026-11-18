@@ -58,6 +58,7 @@ func ground(at:Vector2)->void:
 	var world:=Vector3(at.x,demo.state.ground_height(at),at.y);var screen:Vector2=demo.camera.unproject_position(world)
 	await mouse(screen,true);await mouse(screen,false)
 func capture(name:String)->void:
+	while demo.journal.scrollbook.tween!=null and demo.journal.scrollbook.tween.is_running():await tree.process_frame
 	demo.toast.hide();demo.toast_time=0.;await RenderingServer.frame_post_draw
 	tree.root.get_texture().get_image().save_png(out+"/"+phase+"_"+name+".png")
 func postpone()->void:

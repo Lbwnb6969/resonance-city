@@ -1,6 +1,6 @@
 extends RefCounted
 ## Final frontage details inspect the finished original shell and food counter.
-static func build(r,parent:Node3D,house:Dictionary)->void:
+static func build(r,parent:Node3D,house:Dictionary,hidden:bool=false)->void:
 	preload("res://scripts/visual/city_creation_acoustic_shell.gd").build(r,parent,house)
 	preload("res://scripts/visual/city_creation_boathouse.gd").build(r,parent,house)
 	preload("res://scripts/visual/city_creation_upper_stoop.gd").build(r,parent,house)
@@ -8,3 +8,5 @@ static func build(r,parent:Node3D,house:Dictionary)->void:
 	preload("res://scripts/visual/city_creation_grillhouse.gd").attach(r,parent,house)
 	preload("res://scripts/visual/city_creation_porch_details.gd").build(r,parent,house)
 	preload("res://scripts/visual/city_creation_detail_status.gd").publish(r.state,parent,house)
+	if hidden:
+		for body:StaticBody3D in parent.find_children("*","StaticBody3D",true,false):r._hold_house_body(body)

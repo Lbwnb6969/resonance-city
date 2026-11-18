@@ -24,11 +24,13 @@ class DraftCity:
 	var source: RefCounted
 	var draft: Dictionary
 	var bounds: Rect2
+	var base_frontages: Dictionary={}
+	var house_index: Dictionary={}
 	func water_clearance(point: Vector2) -> float:
 		return float(source.water_clearance(point))
 	func house_entrances(id: String) -> Array[Dictionary]:
-		for house: Dictionary in houses:
-			if str(house.id)!=id: continue
+		if house_index.has(id):
+			var house:Dictionary=house_index[id]
 			# A draft can alter entrances only where it approaches a ground cell.
 			# The generous .56m terminal margin also covers CONTACT=.55; actual
 			# passage/terminal decisions still use full original Frontage code.
@@ -41,7 +43,7 @@ class DraftCity:
 					var a:=Vector2(float(draft.points[index-1][0]),float(draft.points[index-1][1]))
 					var b:=Vector2(float(draft.points[index][0]),float(draft.points[index][1]))
 					if Frontage.hits_rect(a,b,region): return Frontage.entrances(house,roads,houses)
-			return source.house_entrances(id)
+			return base_frontages[id] if base_frontages.has(id) else source.house_entrances(id)
 		return []
 var stats := {"pairs":0,"junctions":0,"regenerated":0,"cache_hits":0}
 var _cache: Dictionary = {}
@@ -52,6 +54,19 @@ var _signatures: Dictionary = {}
 var _bins: Dictionary = {}
 var _input: Array = []
 var _ids: Array[String] = []
+var _frontage_input: Array=[]
+var _frontages: Dictionary={}
+var _preview_frontage_input:Array=[]
+var _preview_frontages:Dictionary={}
+
+func planting_frontages(city:RefCounted,resolve_missing:bool=true)->Dictionary:
+	# Full values cover restore and external edits which reuse a revision.
+	# The transaction owns its copy; accepted plants never alter door geometry.
+	if _frontage_input==[city.houses,city.roads]:return _frontages.duplicate(true)
+	var rows:Dictionary={}
+	if resolve_missing:
+		for house:Dictionary in city.houses:rows[str(house.id)]=city.house_entrances(str(house.id))
+	return rows
 
 func copy_cache_from(source: RefCounted) -> void:
 	# Arrays are never modified after cache publication. Duplicate the dictionaries
@@ -63,6 +78,8 @@ func copy_cache_from(source: RefCounted) -> void:
 	_extras = source._extras.duplicate()
 	_signatures = source._signatures.duplicate()
 	_bins = source._bins.duplicate()
+	_frontage_input = source._frontage_input
+	_frontages = source._frontages.duplicate()
 
 func additions(road_id: String) -> Array[PackedVector2Array]:
 	var result: Array[PackedVector2Array] = []
@@ -78,6 +95,14 @@ func at(point: Vector2) -> String:
 		if entry.bounds.has_point(point) and Geometry2D.is_point_in_polygon(point,entry.polygon): return entry.id
 	return ""
 
+func preview_frontages(city:RefCounted)->Dictionary:
+	var input:Array=[city.houses,city.roads]
+	if _frontage_input==input:return _frontages
+	if _preview_frontage_input!=input:
+		_preview_frontages=preload("res://scripts/world/city_creation_preview_frontages.gd").build(city,_frontage_input,_frontages)
+		_preview_frontage_input=input.duplicate(true)
+	return _preview_frontages
+
 func preview_additions(city: RefCounted,points: Array[Vector2],width: float=1.25) -> Array[PackedVector2Array]:
 	# Call on a dedicated preview context. Only the new road's optional patches
 	# are built; old road geometry/connection components remain exact so preview
@@ -86,6 +111,10 @@ func preview_additions(city: RefCounted,points: Array[Vector2],width: float=1.25
 	draft_city.source=city
 	draft_city.WORLD_RECT=city.WORLD_RECT
 	draft_city.houses=city.houses
+	for house:Dictionary in city.houses:draft_city.house_index[str(house.id)]=house
+	# Full values also detect restore or external API edits that reuse a revision.
+	# Only published, unchanged frontages are reused; affected houses derive below.
+	draft_city.base_frontages=preview_frontages(city)
 	draft_city.waters=city.waters
 	draft_city.roads.assign(city.roads)
 	var encoded: Array=[]
@@ -128,8 +157,11 @@ func _prepare(city: RefCounted,only_id: String) -> void:
 	# Read existing real entrances; do not call State.road_at / road_junctions.
 	# The entrance cache is independent of derived extra street coverage.
 	var doors: Array = []
+	var frontages: Dictionary={}
 	for house: Dictionary in city.houses:
-		for entrance: Dictionary in city.house_entrances(str(house.id)):
+		var entries:Array[Dictionary]=city.house_entrances(str(house.id))
+		frontages[str(house.id)]=entries
+		for entrance: Dictionary in entries:
 			var target: Vector2=entrance.clearance_at
 			doors.append(Rect2(target-Vector2.ONE*0.28,Vector2.ONE*0.56))
 	houses.sort_custom(_rect_less)
@@ -142,6 +174,9 @@ func _prepare(city: RefCounted,only_id: String) -> void:
 	input.append(doors)
 	input.append(water_input)
 	input.append(only_id)
+	if only_id.is_empty():
+		_frontage_input=[city.houses.duplicate(true),city.roads.duplicate(true)]
+		_frontages=frontages
 	if input==_input: return
 	stats["doors_ms"]=float(Time.get_ticks_usec()-started)/1000.0
 	var graph_started:=Time.get_ticks_usec()
