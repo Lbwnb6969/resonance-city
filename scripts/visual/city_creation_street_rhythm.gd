@@ -46,6 +46,21 @@ static func opening(renderer,house:Dictionary,cell:Dictionary,wall:Node3D)->Dict
  view.positions=[0.] if view.kind=="gable_end" else [-.43,.43]
  view.radius=.24 if view.kind=="gable_end" else .17 if view.kind=="inner_row" else .19
  return view
+static func timber_windows(view:Dictionary,level:int)->Array:
+ var openings:Array[Vector2]=[]
+ var bottom:=.71 if level==0 else .62
+ var top:=1.31
+ match view.kind:
+  "gable_end":
+   openings=[Vector2(0.,.23)];top=1.37
+  "inner_row":openings=[Vector2(-.43,.16),Vector2(.43,.16)]
+  "row_end":openings=[Vector2(-.43,.19 if not view.left else .15),Vector2(.43,.19 if not view.right else .15)]
+  "courtyard":
+   openings=[Vector2(0.,.28)];bottom=.65;top=1.20
+ var holes:Array=[]
+ for opening_size:Vector2 in openings:
+  holes.append({"x":opening_size.x,"radius":opening_size.y,"bottom":bottom,"spring":top,"arched":false})
+ return holes
 static func decorate(renderer,job,frame,wall:Node3D,direction:Vector2i,width:float)->void:
  if job.house.has("signature") or width<1.79 or not frame.retreats.is_empty():return
  var view:=profile(renderer.building_context,job.house,frame.cell,direction)

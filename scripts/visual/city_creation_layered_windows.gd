@@ -3,6 +3,7 @@ extends RefCounted
 const Wall=preload("res://scripts/visual/city_creation_wall_material.gd")
 const Glass=preload("res://scripts/visual/city_creation_facade_glass.gd")
 const Hinge=preload("res://scripts/world/city_creation_house_hinge.gd")
+const Variants=preload("res://scripts/visual/city_creation_window_variants.gd")
 static func eligible(job,width:float,center:Vector3)->bool:
 	return job.house.get("architecture","")=="recessed_townhouse" and job.era in ["pastoral","renaissance","clockwork","modern_eco"] and job.style!="timber" and not job.house.has("signature") and width>=1.79 and center.is_zero_approx()
 static func inner_bay(house:Dictionary,cell:Dictionary,side:Vector2i)->bool:
@@ -21,20 +22,21 @@ static func holes(level:int,house:Dictionary={},cell:Dictionary={},side:Vector2i
 	return result
 static func build(r,job,frame,wall:Node3D)->void:
 	var plan:Dictionary=wall.get_meta("recessed_facade")
-	var stone:=Wall.source(job.palette[0].lerp(Color("ecdfc5"),.7),null,"component",Wall.Kind.STONE)
+	var stone:=Wall.component(r,job.palette[0].lerp(Color("ecdfc5"),.7),Wall.Kind.STONE) if plan.has("row_profile") else Wall.source(job.palette[0].lerp(Color("ecdfc5"),.7),null,"component",Wall.Kind.STONE)
 	var timber:Material=preload("res://scripts/visual/city_creation_detail_materials.gd").frame(r,job.house,job.palette)
 	for i in range(plan.holes.size()):
-		var h:Dictionary=plan.holes[i];var height:float=h.spring-h.bottom;var x:float=h.x;var middle:float=(h.spring+h.bottom)*.5
+		var h:Dictionary=plan.holes[i];var height:float=h.spring-h.bottom;var x:float=h.x;var middle:float=(h.spring+h.bottom)*.5;var radius:float=h.radius
 		var group:=posmod(hash([job.house.seed,frame.cell.id,wall.rotation.y,i]),3)
-		var pane:MeshInstance3D=r._box(wall,Vector3(.32,height,.012),Vector3(x,middle,-.035),Glass.material(r,group));pane.name="LayeredWindowGlass";pane.set_meta("creation_roof_window_glass",true)
+		var pane:MeshInstance3D=r._box(wall,Vector3(radius*2.,height,.012),Vector3(x,middle,-.035),Glass.material(r,group));pane.name="LayeredWindowGlass";pane.set_meta("creation_roof_window_glass",true)
 		for sign_value:float in [-1.,1.]:
-			r._box(wall,Vector3(.025,height,.04),Vector3(x+sign_value*.1475,middle,-.005),timber).name="LayeredInnerFrame"
-			r._box(wall,Vector3(.055,height+.10,.10),Vector3(x+sign_value*.1875,middle,.075),stone).name="LayeredStoneJamb"
-		r._box(wall,Vector3(.32,.025,.035),Vector3(x,middle,-.005),timber).name="LayeredCrossbar"
-		r._box(wall,Vector3(.43,.075,.17),Vector3(x,h.spring+.0375,.095),stone).name="LayeredWindowLintel"
-		r._box(wall,Vector3(.52,.075,.25),Vector3(x,h.bottom-.0375,.085),stone).name="LayeredWindowSill"
+			r._box(wall,Vector3(.025,height,.04),Vector3(x+sign_value*(radius-.0125),middle,-.005),timber).name="LayeredInnerFrame"
+			r._box(wall,Vector3(.055,height+.10,.10),Vector3(x+sign_value*(radius+.0275),middle,.075),stone).name="LayeredStoneJamb"
+		r._box(wall,Vector3(radius*2.,.025,.035),Vector3(x,middle,-.005),timber).name="LayeredCrossbar"
+		r._box(wall,Vector3(radius*2.+.11,.075,.17),Vector3(x,h.spring+.0375,.095),stone).name="LayeredWindowLintel"
+		r._box(wall,Vector3(radius*2.+.20,.075,.25),Vector3(x,h.bottom-.0375,.085),stone).name="LayeredWindowSill"
 	wall.set_meta("layered_window",{"version":1,"cell_id":str(frame.cell.id),"glass_z":-.035,"outer_face_z":.065,"openings":plan.holes})
-	preload("res://scripts/visual/city_creation_window_variants.gd").build(r,job,wall,plan,stone)
+	if plan.get("row_profile","")=="gable_end":Variants.row_shutters(r,job,wall,plan.holes[0])
+	elif not plan.has("row_profile"):Variants.build(r,job,wall,plan,stone)
 static func glow(rig,root:Node3D,cell:Dictionary,side:Vector2i,surface:SurfaceTool,windows:Array)->bool:
 	for wall:Node3D in root.find_children("*","Node3D",true,false):
 		if not wall.has_meta("layered_window"):continue

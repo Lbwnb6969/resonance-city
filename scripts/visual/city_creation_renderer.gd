@@ -391,7 +391,7 @@ func _bind_ground_contact_field() -> void:
 		if material!=null:
 			material.set_shader_parameter("grass2_world_tint",grass_world_tint)
 			material.set_shader_parameter("grass2_world_tint_enabled",true)
-	var targets: Array = [ground_material]
+	var targets: Array = [ground_material,water_material]
 	for part: String in ["lawn","grass"]:
 		if meadow != null and meadow.materials.has(part): targets.append(meadow.materials[part])
 	for material: ShaderMaterial in targets:

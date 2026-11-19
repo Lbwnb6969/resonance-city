@@ -24,7 +24,8 @@ static func build_details(renderer,wall: Node3D,palette: Array,door: bool,style:
 		by_color[(timber as StandardMaterial3D).albedo_color] = timber
 		for side: float in [-1.0,1.0]:
 			_box(renderer,wall,parts,"corner_post",Vector3(0.080,1.60,0.070),Vector3(side*0.82,0.85,0.087),timber)
-		if not door:
+		var facade: Dictionary = wall.get_meta("recessed_facade",{})
+		if not door and not (facade.has("row_profile") and facade.holes.size()==1):
 			_box(renderer,wall,parts,"middle_post",Vector3(0.075,1.40,0.070),Vector3(0,0.85,0.087),timber)
 		_box(renderer,wall,parts,"head_beam",Vector3(1.76,0.095,0.075),Vector3(0,1.515,0.089),timber)
 		for y: float in [0.245,0.515]:

@@ -6,6 +6,10 @@ const TimberEntries = preload("res://scripts/visual/city_creation_timber_entries
 
 static func openings(renderer, job, frame, wall: Node3D, door: bool, active: bool, width: float) -> void:
 	if wall.has_meta("guild_shop_window"):preload("res://scripts/visual/city_creation_recessed_openings.gd").build(renderer,job,frame,wall,active);preload("res://scripts/visual/city_creation_roof_window_glow.gd").record(job.root,wall,"guild_shop");return
+	if wall.get_meta("recessed_facade", {}).has("row_profile"):
+		preload("res://scripts/visual/city_creation_layered_windows.gd").build(renderer,job,frame,wall)
+		preload("res://scripts/visual/city_creation_roof_window_glow.gd").record(job.root,wall,"timber_row")
+		return
 	if wall.has_meta("recessed_facade") and job.house.get("architecture","")=="recessed_townhouse":preload("res://scripts/visual/city_creation_layered_windows.gd").build(renderer,job,frame,wall);preload("res://scripts/visual/city_creation_roof_window_glow.gd").record(job.root,wall,"layered");return
 	if Ancient.active(job.house,job.era):Ancient.openings(renderer,job,frame,wall,door,active,width);return
 	if door and TimberEntries.build(renderer, job, frame, wall, active, width):return

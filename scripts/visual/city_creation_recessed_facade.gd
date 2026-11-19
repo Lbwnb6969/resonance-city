@@ -1,22 +1,30 @@
 extends RefCounted
 ## Real holes through the 130mm facade shell; room physics and entrances stay authored.
 const Rhythm=preload("res://scripts/visual/city_creation_street_rhythm.gd")
+const Layered=preload("res://scripts/visual/city_creation_layered_windows.gd")
 const HALF:=.065
 static func shell(r,job,frame,wall:Node3D,direction:Vector2i,width:float,center:Vector3)->bool:
-	var layered:=preload("res://scripts/visual/city_creation_layered_windows.gd").eligible(job,width,center)
+	var layered:=Layered.eligible(job,width,center)
 	var guild:=int(frame.level)==0 and preload("res://scripts/world/city_creation_stepped_guildhouse.gd").active(r.state,job.house)
-	if (not layered and not guild and not r.Classical.Ancient.active(job.house,job.era)) or width<1.4 or (not guild and not center.is_zero_approx()):return false
 	var door:bool=job.doors.has([str(frame.cell.id),direction])
+	var row_profile:Dictionary={}
+	var row_windows:Array=[]
+	if not door and job.era=="pastoral" and job.style=="timber" and job.house.get("role","residential")=="residential" and job.house.get("architecture","")=="" and not job.house.has("signature") and width>=1.79 and center.is_zero_approx() and frame.cuts.is_empty() and frame.retreats.is_empty():
+		row_profile=Rhythm.profile(r.building_context,job.house,frame.cell,direction)
+		row_windows=Rhythm.timber_windows(row_profile,frame.level)
+	if (not layered and not guild and row_windows.is_empty() and not r.Classical.Ancient.active(job.house,job.era)) or width<1.4 or (not guild and not center.is_zero_approx()):return false
 	if (layered or guild) and door:return false
 	var holes:Array=[]
 	if door:holes.append({"x":0.,"radius":.25,"bottom":.18,"spring":1.32,"arched":false})
-	elif layered:holes=preload("res://scripts/visual/city_creation_layered_windows.gd").holes(frame.level,job.house,frame.cell,direction,wall.has_meta("arcade_recess"))
+	elif not row_windows.is_empty():holes=row_windows
+	elif layered:holes=Layered.holes(frame.level,job.house,frame.cell,direction,wall.has_meta("arcade_recess"))
 	elif guild:holes=[{"x":center.x,"radius":.42,"bottom":.60,"spring":.99,"arched":true}];wall.set_meta("guild_shop_window",true)
 	else:
 		var rhythm:=Rhythm.opening(r,job.house,frame.cell,wall);wall.set_meta("street_openings",rhythm)
 		for x:float in rhythm.positions:holes.append({"x":x,"radius":float(rhythm.radius),"bottom":.60,"spring":.99,"arched":true})
 	var plan:={"version":1,"door":door,"width":width,"height":1.7,"holes":holes,"thickness":HALF*2.}
 	if guild:plan["center_x"]=center.x
+	if not row_windows.is_empty():plan["row_profile"]=row_profile.kind
 	var mesh:MeshInstance3D=r._triangles(wall,faces(plan),job.palette[0]);mesh.material_override=job.walls;mesh.name="RecessedFacadeShell"
 	if job.style=="stone":r._stone_arch_surface(mesh,job.walls)
 	wall.set_meta("recessed_facade",plan)

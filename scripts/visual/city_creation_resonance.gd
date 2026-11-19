@@ -61,7 +61,7 @@ func build(renderer, house: Dictionary, root: Node3D) -> void:
 	var round_tower: Dictionary = root.get_meta("round_tower",{})
 	var timber_panes := {}
 	for pane: Dictionary in root.get_meta("roof_window_panes", []):
-		if pane.source == "timber_entry": timber_panes[[pane.cell_id, pane.side]] = true
+		if pane.source in ["timber_entry","timber_row"]: timber_panes[[pane.cell_id, pane.side]] = pane.source
 	for cell: Dictionary in house.cells:
 		var at: Vector3 = renderer._cell_position(house,cell)
 		var level := int(cell.level)
@@ -76,6 +76,7 @@ func build(renderer, house: Dictionary, root: Node3D) -> void:
 			if house.get("architecture","")=="recessed_townhouse" and preload("res://scripts/visual/city_creation_layered_windows.gd").glow(self,root,cell,side,surface,windows):continue
 			var neighbor: Dictionary = renderer._neighbor_cell(house,cell,side)
 			if not neighbor.is_empty() and str(neighbor.kind) == "room": continue
+			if timber_panes.get([str(cell.id),side]) == "timber_row": continue
 			var cuts: Array = []
 			for passage: Dictionary in passages:
 				if str(passage.cell_id) == str(cell.id): cuts.append(passage)
@@ -113,7 +114,7 @@ func build(renderer, house: Dictionary, root: Node3D) -> void:
 			for entrance: Dictionary in entrances:
 				if level == 0 and str(entrance.cell_id) == str(cell.id) and entrance.side == side: door = true
 			if door:
-				if timber_panes.has([str(cell.id), side]): continue
+				if timber_panes.has([str(cell.id),side]): continue
 				# A little glass lantern beside, never in, the real doorway.
 				_panel(surface,frame,Vector3(0.56,1.02,1.175),Vector2(0.095,0.145),1)
 				lanterns += 1
@@ -190,7 +191,7 @@ func build(renderer, house: Dictionary, root: Node3D) -> void:
 			var normal:Vector3=(faces[i+2]-faces[i]).cross(faces[i+1]-faces[i]).normalized()
 			_tri(surface,[faces[i]+normal*.003,faces[i+1]+normal*.003,faces[i+2]+normal*.003],0)
 		var kind:=str(pane.get("source","roof"));
-		if kind!="round_tower":windows.append({"source":"facade" if kind in ["layered","balcony","guild_shop","timber_entry"] else "roof","kind":kind,"triangles":faces.size()/3,"cell_id":pane.get("cell_id",""),"side":pane.get("side",Vector2i.ZERO)})
+		if kind!="round_tower":windows.append({"source":"facade" if kind in ["layered","balcony","guild_shop","timber_entry","timber_row"] else "roof","kind":kind,"triangles":faces.size()/3,"cell_id":pane.get("cell_id",""),"side":pane.get("side",Vector2i.ZERO)})
 	rig.mesh = surface.commit()
 	rig.custom_aabb = rig.mesh.get_aabb().grow(0.8)
 	var material := ShaderMaterial.new()

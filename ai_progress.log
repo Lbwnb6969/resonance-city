@@ -2251,3 +2251,19 @@ Critic无P1/P2；其他历史工具仍依赖不发布验证目录，未验证完
 check_creation_cross_district_music_live.gd 隔离GL，原候选21/21（25.507秒），--sparse 2-04候选23/23（25.297秒）；两个Master约7.25秒且零削波，删水后有界余韵、Undo恢复，同曲同播放器。主观听感与曲尾换曲未评。
 test_city_creation_affinity_handoff.gd 与 test_city_creation_expression_context.gd 隔离CPU 13/13、16/16；观察不跨城、共享河道不冒用新屋、高差仍整组。证据 PlayTest/cross_district_music_20261118；仅本地备份。
 2026-11-19 木构连屋副门新增朝向主门的实玻璃侧窗，夜光跟随实际窗格。check_creation_timber_entries_live.gd 隔离OpenGL 39/39（10.858秒）；改接道路、Ctrl+Z与独立冷读已核，证据 PlayTest/timber_entries_20261118/final。
+
+2026-11-19 六份外部草案审阅。归位规则修订，普通巷道与留白纳入54；下一步住宅连屋立面。
+小池同机位三版隔离GL各10/10，7.252/9.201/11.116秒；最终浅沙断续，近岸折线未消。证据 PlayTest/review_shore_20261119_125629。
+
+2026-11-19 木构连屋：端墙、中段、边间和临台窗洞复用邻接，夜灯用实玻璃，端墙加外翻百叶。证据 PlayTest/row_facade_20261119。
+check_creation_row_facade_live.gd 隔离GL：基线13/13（7.475秒），窗洞17/17（9.246秒），收口22/22（10.770秒）；同机位昼夜、点窗加屋、Undo/Redo、冷读。改前改后Schema47作品字节相同，个人继续档未变。
+test_city_creation_layered_windows.gd 隔离CPU 57/57（.845秒）；旧变体62/69（1.393秒），7项Schema25断言在Schema47失败，几何项通过。Harness通过；链接6项本地目标未入发布树。仅本地逐文件Git哈希备份；下一步核小池与弯河近岸折线。
+
+2026-11-19 水岸接缝：纯色遮罩定位到水面与0.5米地形三角交线；保持交线，浅水按发布床深从岸土、法线与湿度过渡。证据 PlayTest/shore_join_20261119。
+check_creation_shore_join_live.gd 隔离GL 18/18（11.717秒）；同机位小池/弯河昼夜接缝中位RGB差10～21→0.33/255，地形/水面网格签名与原作品字节同；实窗画池、Undo/Redo、冷读通过，个人档未变。
+test_city_creation_water_field.gd 1,835,008中心采样通过；check_creation_surface_height_live.gd Schema2隔离GL 32/32（14.528秒）。首版遮罩1项7cm假设失败留档。仅本地备份；下一步核旧坡城岩岸和桥脚接水。
+续验：check_creation_landwater_surface_live.gd 26/26（16.707秒）与check_creation_bridge_banks_live.gd斜桥18/18；已看旧坡城俯视与桥脚夜景，桥墙4接点最大间隙2.38e-7米。旧池外侧浅沙边仍显眼，转材质模块核对，不改旧水形。
+
+2026-11-19 旧池外侧浅沙：关阴影仍见折边，关沙层消失。共享沉积覆盖改为连续混合，保留低岸沙斑和沙纹高度权重。固定左岸RGB相邻差P95 1.67→1.00/255，沙色贡献未删。
+check_creation_shore_sediment_live.gd 隔离GL 基线12/12（10.966秒）、收口23/23（16.658秒）；旧Schema2原件、作者与网格签名相同。真实临水土路同源材质和画池/撤销/重做/冷读通过。证据 PlayTest/shore_sediment_20261119。
+首个无软路缘测试停在空实例，未算通过。个人档未动，只本地备份；下一步定位同一收口图的土路迎镜侧细白边。

@@ -13,13 +13,27 @@ static func build(r,job,wall:Node3D,plan:Dictionary,stone:Material)->void:
 		if key=="timber_shutters":
 			for sign_value:float in [-1.,1.]:
 				var leaf:=Node3D.new();leaf.name="VariantShutter";detail.add_child(leaf);leaf.position=Vector3(x+sign_value*.29,middle,.105);leaf.rotation.y=sign_value*deg_to_rad(14.)
-				r._box(leaf,Vector3(.14,height+.04,.025),Vector3.ZERO,Wall.component(r,job.palette[2],Wall.Kind.TIMBER))
-				var box:=BoxMesh.new();box.size=Vector3(.13,.025,.025);var strips:Array[Vector3]=[]
-				var tilt:=Basis(Vector3.RIGHT,deg_to_rad(10.+posmod(Choice.seed_for(job.house),3)*2.))
-				for slat in range(6):
-					for point:Vector3 in box.get_faces():strips.append(tilt*point+Vector3(0,-height*.40+height*.16*slat,.023))
-				var slats:MeshInstance3D=r._triangles(leaf,strips,job.palette[2].lightened(.13));slats.material_override=Wall.component(r,job.palette[2].lightened(.13),Wall.Kind.TIMBER);slats.name="VariantShutterSlats"
+				shutter_leaf(r,leaf,job.palette[2],height,.14,Choice.seed_for(job.house),0.)
 		else:
 			var bottom:float=h.spring+.075
 			var polygon:=PackedVector2Array([Vector2(x-.25,bottom),Vector2(x+.25,bottom),Vector2(x,bottom+.115+detail_seed*.01)])
 			var pediment:MeshInstance3D=r._triangles(detail,Arch._extrude(polygon,.12),stone.albedo_color);pediment.material_override=stone;pediment.position.z=.10;pediment.name="VariantStonePediment"
+
+static func row_shutters(r,job,wall:Node3D,hole:Dictionary)->void:
+	var height:float=hole.spring-hole.bottom
+	var color:Color=job.palette[2].lerp(Color("617968"),.55)
+	for side:float in [-1.,1.]:
+		var leaf:=Node3D.new()
+		leaf.name="RowGableShutter"
+		leaf.position=Vector3(hole.x+side*(hole.radius+.064),(hole.bottom+hole.spring)*.5,.115)
+		leaf.rotation.y=-side*deg_to_rad(14.)
+		wall.add_child(leaf,true)
+		shutter_leaf(r,leaf,color,height,.17,Choice.seed_for(job.house),side*.085)
+
+static func shutter_leaf(r,leaf:Node3D,color:Color,height:float,width:float,seed_value:int,center_x:float)->void:
+	r._box(leaf,Vector3(width,height+.04,.025),Vector3(center_x,0.,0.),Wall.component(r,color,Wall.Kind.TIMBER))
+	var box:=BoxMesh.new();box.size=Vector3(width-.01,.025,.025);var strips:Array[Vector3]=[]
+	var tilt:=Basis(Vector3.RIGHT,deg_to_rad(10.+posmod(seed_value,3)*2.))
+	for slat in range(6):
+		for point:Vector3 in box.get_faces():strips.append(tilt*point+Vector3(center_x,-height*.40+height*.16*slat,.023))
+	var slats:MeshInstance3D=r._triangles(leaf,strips,color.lightened(.13));slats.material_override=Wall.component(r,color.lightened(.13),Wall.Kind.TIMBER);slats.name="VariantShutterSlats"

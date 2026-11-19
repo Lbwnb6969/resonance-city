@@ -16,6 +16,7 @@ varying vec3 world_at;
 #include "res://scripts/visual/shaders/creation_water_lamps.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_meadow_palette.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_shore_palette.gdshaderinc"
+#include "res://scripts/visual/shaders/creation_meadow_contact.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_travel_ripple.gdshaderinc"
 #include "res://scripts/visual/shaders/creation_surface_height.gdshaderinc"
 
@@ -24,7 +25,8 @@ void vertex() { world_at = (MODEL_MATRIX*vec4(VERTEX,1.0)).xyz; }
 void fragment() {
 	vec2 at = world_at.xz;
 	// This is horizontal distance into water, not vertical bathymetry.
-	float depth = max(0.0,-shore_distance(at));
+	float shore_metres = shore_distance(at);
+	float depth = max(0.0,-shore_metres);
 	float bed_depth=depth;
 	bool bed_sample=terrain_height_enabled && all(greaterThanEqual(at,terrain_height_rect.xy)) && all(lessThanEqual(at,terrain_height_rect.xy+terrain_height_rect.zw));
 	if(bed_sample){bed_depth=max(0.0,world_at.y-terrain_surface_height(at));}
@@ -37,6 +39,14 @@ void fragment() {
 
 	// Preserve the shared meadow/Foundation wet-sand contact palette.
 	vec3 ground = shore_ground(world_at,meadow_color(at,PROJECTION_MATRIX));
+	float water_skin = bed_sample ? smoothstep(0.001,0.065,bed_depth) : 1.0;
+	float bank_damp = shore_damp(shore_metres,world_at.y);
+	vec3 bank_color = ground;
+	if (water_skin < 1.0) {
+		bank_color = shore_bank_soil(meadow_contact_color(at,ground),shore_metres,world_at.y);
+		vec3 bank_normal = safe_normalize(terrain_surface_normal(at)+meadow_normal(at)-vec3(0.0,1.0,0.0));
+		NORMAL = safe_normalize((VIEW_MATRIX*vec4(mix(bank_normal,wave_normal,water_skin),0.0)).xyz);
+	}
 	vec3 bed = mix(bank_soil.rgb*0.64,water_shallow.rgb,smoothstep(0.03,0.27+grain,bed_depth));
 	float caustic = smoothstep(0.65,0.94,sin(at.x*6.5+TIME*0.7)*cos(at.y*6.5-TIME*0.6)*0.5+0.5);
 	float shallows = smoothstep(0.03,0.14,bed_depth)*(1.0-smoothstep(0.22,0.55,bed_depth));
@@ -68,7 +78,9 @@ void fragment() {
 	float coverage = clamp((triangle+b-1.1)/max(fwidth(2.0*q+b),0.025),0.0,1.0);
 	float foam = coverage*smoothstep(0.01,0.05,depth)*(1.0-smoothstep(0.08,0.28,depth));
 	vec3 foam_color = mix(vec3(0.83,0.88,0.79),vec3(0.87,0.78,0.65),evening*0.5);
-	water = mix(water,foam_color,foam*0.22*(1.0-night*0.65));
+	// Break the pale rim into patches fixed to the bank as wave crests pass.
+	float bank_exposure = smoothstep(0.35,0.68,meadow_noise(at*0.84));
+	water = mix(water,foam_color,foam*bank_exposure*0.22*(1.0-night*0.65));
 
 	// A quiet analytic sky tint; no screen texture or extra reflection pass.
 	float fresnel = pow(1.0-clamp(dot(NORMAL,VIEW),0.0,1.0),5.0);
@@ -82,12 +94,12 @@ void fragment() {
 		float travel_wave = travel_water_wave(at,travel_ripple_at,travel_ripple_at,travel_ripple_time);
 		water += vec3(0.11,0.14,0.12)*travel_wave*travel_ripple_strength*smoothstep(0.10,0.35,depth);
 	}
-	ALBEDO = mix(ground,water,water_cover);
-	float festival=festival_wave(distance(at,festival_origin))*water_cover;
+	ALBEDO = mix(bank_color,mix(ground,water,water_cover),water_skin);
+	float festival=festival_wave(distance(at,festival_origin))*water_cover*water_skin;
 	ALBEDO=mix(ALBEDO,vec3(.95,.77,.35),festival*.56);
-	vec3 lamp_glint=waterfront_shimmer(at,depth,CAMERA_POSITION_WORLD)*night*water_cover;
+	vec3 lamp_glint=waterfront_shimmer(at,depth,CAMERA_POSITION_WORLD)*night*water_cover*water_skin;
 	ALBEDO+=lamp_glint*.55;
 	EMISSION=vec3(.58,.34,.08)*festival+lamp_glint*.65;
-	ROUGHNESS = mix(1.0,0.64,smoothstep(0.24,0.8,depth));
-	SPECULAR = mix(0.0,0.16,smoothstep(0.12,0.6,depth));
+	ROUGHNESS = mix(mix(1.0,0.40,bank_damp),mix(1.0,0.64,smoothstep(0.24,0.8,depth)),water_skin);
+	SPECULAR = mix(0.38*bank_damp,mix(0.0,0.16,smoothstep(0.12,0.6,depth)),water_skin);
 }

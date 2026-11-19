@@ -1571,7 +1571,32 @@
       "source": "文档/来源/20261029_resonance_city_v7_审阅原稿.md",
       "source_sha256": "38f8cc6f003e86cc908b174a9f36add1765ca81cf2dfa43877608b41737d3232",
       "adopted": "用户2026-10-29要求V7最终优化作为实际施工改造版本；不改历史完成状态。",
-      "next_step": "2026-11-18 折顶天窗、山墙木屋与沿街草缘已替换。PlayTest/verge_final_20261118 实窗15/15、verge_geometry_confirm_20261118 逐角64/64。候选播放器读取空间采样的年代；coupling_*_20261118 四组128/128。门前接路、并行未接、撤销重接实窗26/26；两片已接门户的路网合并反馈实窗29/29。临水院落拆屋后两声部独立响应实窗11/11，听感待评；小窗选型放置与宽窗连续选型实窗10/10；四种屋式卡片已重绘。住宅接路门廊、草地配色与双拱桥中墩已更新。窄窗曲路选取、预览、提交与撤销已验证；普通书院入口已改为织锦招牌并核过近景；四店同街已核对，工坊改用琴形吊招；水岸咖啡馆青绿篷面新增五道浅色波形下缘；工坊改住宅再撤销时，琴牌正确移除和恢复，水岸声部沿原流播放。现行两套路缘回归改从项目内夹具读取。桥头长河浅滩色已做昼夜同机位验收（GL 15/15），普通直排连屋已加陶瓦压顶，实窗20/20，坡度与历史Schema35冷读42/42、L/U屋谷53/53。窄窗详情避开屋名栏，800×540和1440×900实窗19/19。双岸重叠区留住已观察权重，新增水岸满观察再接入；原候选实窗21/21，稀疏候选23/23。木构连屋主副入口与侧窗实窗39/39。下一步核对作品馆「继续创作」的作品谱系和保存反馈。整体美术、实听及M84～M86待验。",
+      "next_step": "按模块导航建模与材质，定位临水土路迎镜侧的连续细白边，先区分铺面、路侧支撑与软路缘，再修实际来源，保持路网、拾取、旧作品与撤销。水面接缝与旧池外侧浅沙边已柔化；整体M84～M86仍待，仅本地施工。",
+      "latest_shore_sediment_verification": {
+        "evidence": "验证记录/PlayTest/shore_sediment_20261119",
+        "native_baseline": {"checks": 12, "seconds": 10.966},
+        "native_closure": {"checks": 23, "seconds": 16.658},
+        "coverage": "同机位关阴影保留折边，关沙层去除折边；共享连续覆盖保留间断浅沙。固定左岸测区的沙层相邻像素RGB差P95为1.67→1.00/255，沙层平均RGB贡献3.28→3.40/255。旧Schema2原件、作者签名和网格签名相同；水土草路缘共享沙纹，实际画池/撤销/重做/冷读通过。",
+        "limits": "首个夹具没有软路缘实例，未完成尝试保留；收口另建真实临水土路覆盖该消费者。测区限单池，不代表整体美术；临水土路白边仍待定位。"
+      },
+      "latest_shore_join_verification": {
+        "evidence": "验证记录/PlayTest/shore_join_20261119",
+        "native_edit": {"checks": 18, "seconds": 11.717},
+        "native_schema2_height_field": {"checks": 32, "seconds": 14.528},
+        "native_sculpted_and_bridge_review": {"landwater_checks": 26, "landwater_seconds": 16.707, "diagonal_bridge_checks": 18, "bridge_max_joint_gap_m": 0.000000238419},
+        "water_field_cpu": {"exact_centres": 1835008, "maximum_interpolation_error_m": 0.049185},
+        "coverage": "纯色实窗遮罩区分地形交线与色差；小池48断面、弯河21断面。昼夜四组接缝像素对的中位RGB跳变由10～21降为0.33/255。新旧保存字节与两类网格签名不变，实际画池/撤销/重做/冷读通过。",
+        "limits": "旧版遮罩基线1项采用过强的7cm固定下限，原件保留；弯河遮罩有131像素差，实测网格签名相同。旧坡城昼夕夜和斜桥脚技术复核通过；俯视外侧浅沙折边仍在，更长河段与整体美术未验收。"
+      },
+      "latest_row_facade_verification": {
+        "evidence": "验证记录/PlayTest/row_facade_20261119",
+        "before_gl_checks": 13,
+        "phase1_gl": {"checks": 17, "seconds": 9.246},
+        "closure_gl": {"checks": 22, "seconds": 10.77, "facades": 6, "panes": 9},
+        "layered_cpu": {"checks": 57, "seconds": 0.845},
+        "coverage": "同一隔离Schema47作品改前改后SHA-256相同；四种木构窗洞、玻璃同源夜灯、端墙外翻百叶、实际点中原房与加格、撤销/重做、冷读派生一致。个人继续档未变。",
+        "limits": "两次初测把同面阁楼圆窗计入墙窗，原报告保留。旧窗变体CPU 62/69：7项硬性Schema25预期与当前47冲突，几何断言通过；链接检查6个既有本地目标未入发布树，Harness通过。未覆盖其他材质、切口、廊道和复杂邻接。"
+      },
       "playtest_followup_queue": [
         {
           "order": 1,

@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode diffuse_burley, specular_disabled;
+render_mode diffuse_burley, specular_schlick_ggx;
 #include "res://scripts/visual/shaders/creation_safe_math.gdshaderinc"
 varying vec3 world_at;
 varying vec3 terrain_normal;
@@ -66,7 +66,7 @@ void fragment() {
 	vec3 relief_normal = safe_normalize(metric_normal+meadow_normal(world_at.xz)-vec3(0.0,1.0,0.0));
 	NORMAL = safe_normalize((VIEW_MATRIX*vec4(relief_normal,0.0)).xyz);
 	vec3 grass = meadow_contact_color(world_at.xz,shore_ground(world_at,meadow_color(world_at.xz,PROJECTION_MATRIX)));
-	float bank = (1.0-smoothstep(-0.08,-0.015,world_at.y))*(1.0-smoothstep(0.25,0.6,shore_distance(world_at.xz)));
+	float shore_metres = shore_distance(world_at.xz);
 	// Real metric slope with a broad, lightly weathered material transition.
 	float slope = length(metric_normal.xz)/max(metric_normal.y,0.001);
 	float weathering=(meadow_noise(world_at.xz*.85)-.5)*.20+(meadow_noise(world_at.xz*2.4)-.5)*.06;
@@ -78,7 +78,7 @@ void fragment() {
 		float convexity=world_at.y-neighbors*.25;
 		rock=max(rock,smoothstep(.06,.32,convexity)*.85);
 	}
-	vec3 soil = mix(grass,bank_soil.rgb*0.72,bank*0.50);
+	vec3 soil = shore_bank_soil(grass,shore_metres,world_at.y);
 	vec4 stone = vec4(soil,.5);
 	if (rock>.005) { stone=exposed_stone(world_at,metric_normal); }
 	float exposed=stone_cover(rock,stone.a);
@@ -97,5 +97,7 @@ void fragment() {
 		ground_surface = mix(ground_surface,wet_sand,rocky_toe*.92);
 	}
 	ALBEDO = ground_surface;
-	ROUGHNESS = 1.0;
+	float damp = shore_damp(shore_metres,world_at.y);
+	ROUGHNESS = mix(1.0,0.40,damp);
+	SPECULAR = 0.38*damp;
 }
