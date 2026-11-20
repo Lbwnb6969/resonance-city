@@ -50,6 +50,7 @@ static func ledger(widget:RefCounted,parent:Control)->void:
 	preload("res://scripts/ui/city_creation_ledger_leaves.gd").setup(widget,entries)
 	widget.body=RichTextLabel.new();widget.body.name="LedgerEntries";widget.body.fit_content=true;widget.body.scroll_active=false
 	widget.body.bbcode_enabled=true
+	widget.body.meta_clicked.connect(preload("res://scripts/ui/city_creation_space_focus.gd").follow.bind(widget))
 	widget.body.selection_enabled=true;widget.body.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 	widget.body.add_theme_font_size_override("normal_font_size",14);widget.body.add_theme_color_override("default_color",UI.INK)
 	widget.body.add_theme_constant_override("line_separation",5);entries.add_child(widget.body);widget.body.hide()

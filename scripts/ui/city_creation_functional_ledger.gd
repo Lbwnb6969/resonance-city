@@ -1,6 +1,7 @@
 extends RefCounted
 ## Free-city L page consumes the same geometry report used by later orchestration.
 const Safe=preload("res://scripts/ui/city_creation_life_capsules.gd")
+const SpaceFocus=preload("res://scripts/ui/city_creation_space_focus.gd")
 static func open_records(widget:RefCounted)->void:
 	if not widget.demo.state.CreationPolicy.is_free(widget.demo.state):widget.demo.guide.open_panel(1);return
 	widget.demo.journal.open_panel()
@@ -38,7 +39,8 @@ static func refresh(widget:RefCounted)->bool:
 	var lines:=PackedStringArray(["[b]城市的空间[/b]", "特色来自建筑，成区还需真实公共空间。"])
 	if not report.network_ready:lines.append("道路正在更新，空间激活待道路发布。")
 	lines.append("\n[b]场所空间[/b]")
-	for space:Dictionary in report.spaces:
+	for space_index in range(report.spaces.size()):
+		var space:Dictionary=report.spaces[space_index]
 		var names:Array=[]
 		for id:String in space.members:
 			var index:int=widget.demo.state._house_index(id)
@@ -46,7 +48,7 @@ static func refresh(widget:RefCounted)->bool:
 		var stage:String={"trait":"特色","cluster":"局部空间","district":"成区"}[space.stage]
 		var detail:String=preload("res://scripts/ui/city_creation_space_description.gd").detail(space,report.network_ready)
 		if space.evidence.geometry=="paved_plaza":names=["扇石广场" if space.evidence.paving=="fan_stone" else "砖石广场"]
-		lines.append("%s · %s\n%s"%["、".join(names),stage,detail])
+		lines.append("%s · %s · %s\n%s"%["、".join(names),stage,SpaceFocus.link(widget.demo.state,space_index,space),detail])
 	var plan:Dictionary=widget.demo.music.get_meta("orchestration_plan",{})
 	lines.append("\n[b]当前合奏[/b]")
 	var trial:=preload("res://scripts/ui/city_creation_music_trial_caption.gd").lines(widget.demo.music)

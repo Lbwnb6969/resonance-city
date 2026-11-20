@@ -721,6 +721,7 @@
     "scripts/ui/city_creation_solo_spotlight.gd.uid",
     "scripts/ui/city_creation_space_description.gd",
     "scripts/ui/city_creation_space_description.gd.uid",
+    "scripts/ui/city_creation_space_focus.gd",
     "scripts/ui/city_creation_spatial_popover.gd",
     "scripts/ui/city_creation_spatial_popover.gd.uid",
     "scripts/ui/city_creation_strum_hold.gd",
