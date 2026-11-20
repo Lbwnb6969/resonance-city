@@ -27,18 +27,22 @@ func refresh(city:RefCounted)->void:
 		var sources:Array=memberships.get(house.id,[]).duplicate();sources.sort()
 		records.append({"id":str(house.id),"at":Vector2(house.origin[0],house.origin[1]),"era":city.house_era(house),"enclosure":float(values.get(house.id,0.)),"sources":sources})
 	records.sort_custom(func(a,b):return a.id<b.id)
-func sample(focus:Vector2,zoom:float)->Dictionary:
+func sample(focus:Vector2,zoom:float,local_mix:bool=false)->Dictionary:
 	var totals:Dictionary={};var weights:Dictionary={};var source_ids:Array=[];var enclosure:=0.
 	var contributions: Array = []
 	var radius:=clampf(zoom*.75,12.,28.);var local:Array=[];var total:=0.
 	for row:Dictionary in records:
 		var q:=1.-smoothstep(.25,1.,focus.distance_to(row.at)/radius);local.append(q);total+=q
 	var near:=1.-smoothstep(18.,48.,zoom)
+	# The close-up mix can leave some of its budget unused when no house is nearby.
+	# Era selection and the overview still use the normalized city distribution.
+	var mix_budget:=maxf(1.,total)
 	for i in range(records.size()):
 		var row:Dictionary=records[i];var global_weight:=1./records.size()
-		var weight:=lerpf(global_weight,local[i]/total,near) if total>0. else global_weight
+		var era_weight:=lerpf(global_weight,local[i]/total,near) if total>0. else global_weight
+		var weight:=lerpf(global_weight,local[i]/mix_budget,near) if local_mix else era_weight
 		weights[row.id]=weight;enclosure+=weight*float(row.enclosure)
-		totals[row.era]=float(totals.get(row.era,0.))+weight
+		totals[row.era]=float(totals.get(row.era,0.))+era_weight
 		if weight>0. and row.enclosure>0.:
 			var sources: Array = row.sources.duplicate()
 			if not sources.has(row.id): sources.append(row.id)

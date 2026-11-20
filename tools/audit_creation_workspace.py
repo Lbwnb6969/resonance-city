@@ -62,11 +62,22 @@ def design_inventory(root, backlog):
     entries.extend(row for row in adopted if 'source' in row and 'source_sha256' in row)
     for row in adopted:
         for key in ('document', 'candidate', 'continuation_catalog'):
-            if key in row and not (root / row[key]).is_file():
-                errors.append('adopted ' + key + ' is missing: ' + row[key])
-        if 'candidate_sha256' in row and (root / row['candidate']).is_file():
-            if hashlib.sha256((root / row['candidate']).read_bytes()).hexdigest() != row['candidate_sha256']:
-                errors.append('adopted candidate hash differs: ' + row['candidate'])
+            if key not in row:
+                continue
+            if key == 'candidate' and 'document' not in row and 'candidate_sha256' not in row:
+                continue  # Run evidence can describe a whole candidate or name a song.
+            path = row[key]
+            if not isinstance(path, str):
+                errors.append('adopted ' + key + ' must be a path')
+            elif not (root / path).is_file():
+                errors.append('adopted ' + key + ' is missing: ' + path)
+        if 'candidate_sha256' in row:
+            candidate = row.get('candidate')
+            if not isinstance(candidate, str):
+                errors.append('adopted candidate hash has no file path')
+            elif (root / candidate).is_file():
+                if hashlib.sha256((root / candidate).read_bytes()).hexdigest() != row['candidate_sha256']:
+                    errors.append('adopted candidate hash differs: ' + candidate)
     entries = list({(row['source'], row['source_sha256']): row for row in entries}.values())
     for entry in entries:
         path = root / entry['source']

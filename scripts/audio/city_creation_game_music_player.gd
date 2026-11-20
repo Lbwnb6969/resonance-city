@@ -25,18 +25,21 @@ var saved:Dictionary={}
 var suspended:Dictionary={}
 var city_id:=0
 var city_epoch:=0
-var preferences:=""
+var preferences:Dictionary={}
 var old_processing:=true
 var active:=false
 var retired:=false
 var cancelled:=false
 var paused:=false
 var clock:=0.
+var mix_cursor:=0.
 var contour_value:=0.
 var contour_envelope:=Envelope.new()
 var contour_state:Dictionary={}
 var expression:={"flow":0.,"craft":0.}
 var values:Dictionary={}
+var audition_mix:=0
+var audition_weights:=Vector2.ZERO
 var lost_since:Dictionary={}
 var spatial_facts:Dictionary={}
 var envelope_state:Dictionary={}
@@ -51,7 +54,7 @@ static func request(owner:Node,path:String)->Dictionary:
 	return {"ok":true,"status":"preparing","node":node}
 
 func _ready()->void:
-	city_id=music._pluck_city.get_instance_id();preferences=JSON.stringify(music._pluck_city.creative_settings.music)
+	city_id=music._pluck_city.get_instance_id();preferences=music_preferences().duplicate()
 	city_epoch=music._pluck_city._wish_epoch
 	cues.setup(self)
 	music._pluck_city.set_meta("game_expression_owner",weakref(self))
@@ -61,8 +64,15 @@ func _ready()->void:
 		if packet.get("ok",false) and not shape_snapshot.is_empty():packet.expression_geometry=ExpressionGeometry.prepare_snapshot(shape_snapshot)
 		return packet)
 
+func music_preferences()->Dictionary:
+	# Pre-Schema20 cities retain an empty settings dictionary until explicit conversion.
+	return music._pluck_city.creative_settings.get("music",{})
+
 func valid_context()->bool:
-	return music._pluck_city!=null and music._pluck_city.get_instance_id()==city_id and music._pluck_city._wish_epoch==city_epoch and JSON.stringify(music._pluck_city.creative_settings.music)==preferences
+	return music._pluck_city!=null and music._pluck_city.get_instance_id()==city_id and music._pluck_city._wish_epoch==city_epoch and Sparse.compatible_preferences(self,music_preferences())
+
+func quiet_audition()->bool:
+	return Sparse.live_mode(self) and music_preferences().get("mode")=="quiet"
 
 func activate()->void:
 	ExpressionGeometry.adopt(music._pluck_city,prepared.get("expression_geometry",{}))
@@ -80,7 +90,7 @@ func activate()->void:
 		music.attention.last_sculpt_sec=-INF
 	player=music._players.foundation;player.stream=prepared.stream;player.stream_paused=false;player.bus="Master";player.volume_linear=0.
 	for id:String in prepared.ids:values[id]=Sparse.initial(prepared,id)
-	apply_volumes();player.play();player.stream_paused=paused
+	apply_volumes();mix_cursor=0.;player.play();player.stream_paused=paused
 	if not player.finished.is_connected(finished):player.finished.connect(finished)
 	active=true
 
@@ -91,6 +101,7 @@ func switch_packet(packet:Dictionary,path:String)->void:
 	cues.close();music.attention.clear()
 	music.attention.last_sculpt_sec=-INF
 	prepared=packet;manifest_path=path;clock=0.;values.clear()
+	audition_mix=0;audition_weights=Vector2.ZERO
 	if not manual_expression:expression={"flow":0.,"craft":0.}
 	color_states.clear();spatial_facts={};envelope_state={};contour_state={};contour_value=0.
 	envelope=Envelope.new();contour_envelope=Envelope.new()
@@ -100,7 +111,7 @@ func switch_packet(packet:Dictionary,path:String)->void:
 
 func refresh_spatial()->void:
 	affinity.refresh(music._pluck_city)
-	var facts:=affinity.sample(music._listener_focus,float(music.acoustic.zoom))
+	var facts:=affinity.sample(music._listener_focus,float(music.acoustic.zoom),true)
 	if facts.era.is_empty():facts.era=preload("res://scripts/world/city_creation_build_brush.gd").current(music._pluck_city).era
 	geometry.refresh(music._pluck_city)
 	spatial_facts=facts.merged(geometry.sample(facts.weights))
@@ -119,34 +130,37 @@ func _process(delta:float)->void:
 	if not active:return
 	if not valid_context() or player.stream!=prepared.stream or music.concert_active or music.phonograph.active or music.has_meta("authored_score"):stop();return
 	if not paused:refresh_spatial()
-	sequence.step(delta)
+	sequence.step()
 	if not paused and spatial_facts.is_empty():refresh_spatial()
 	cues.step(delta)
 	if not paused and not sequence.breathing:
-		clock+=delta
+		# Playback continues across slow render frames. A seek rebases this cursor.
+		var played:float=maxf(mix_cursor,player.get_playback_position())
+		var mix_delta:float=played-mix_cursor
+		mix_cursor=played;clock+=mix_delta
 		sequence.observe()
 		var marker:int=music.attention.sculpt_serial
 		if music.attention.dragging or marker!=edit_marker:last_edit=clock
 		edit_marker=marker
 		var observing:bool=clock-last_edit>=3.
-		contour_state=contour_envelope.step({"city":city_id,"enclosure":spatial_facts.highland.value,"source_ids":spatial_facts.highland.source_ids},clock,delta,observing)
+		contour_state=contour_envelope.step({"city":city_id,"enclosure":spatial_facts.highland.value,"source_ids":spatial_facts.highland.source_ids},clock,mix_delta,observing)
 		contour_value=contour_state.value
-		var warmth:=envelope.step(spatial_facts,clock,delta,observing)
+		var warmth:=envelope.step(spatial_facts,clock,mix_delta,observing)
 		envelope_state=warmth
 		if not manual_expression:
 			for kind:String in color_envelopes:
 				var input:={"city":city_id,"enclosure":spatial_facts[kind],"source_ids":spatial_facts[kind+"_sources"],
 					"contributions":spatial_facts[kind+"_contributions"]}
-				color_states[kind]=color_envelopes[kind].step(input,clock,delta,observing)
+				color_states[kind]=color_envelopes[kind].step(input,clock,mix_delta,observing)
 				expression[kind]=color_states[kind].value
-		if prepared.manifest.schema==Sparse.SCHEMA:Sparse.step(self,warmth)
+		if prepared.manifest.schema==Sparse.SCHEMA:Sparse.step(self,mix_delta,quiet_audition())
 		else:
 			for id:String in values:
 				if id=="core":continue
 				var target:=.35+.65*float(warmth.value if id=="body" else expression.get("flow" if id=="motion" else "craft",0.))
 				if id=="body":target=minf(target,1.-.25*contour_value)
 				if id=="motion" and not manual_expression:target=.35+.65*clampf(float(expression.flow)+.25*contour_value,0.,1.)
-				values[id]=target if id=="body" or not manual_expression else lerpf(float(values[id]),target,1.-exp(-delta/3.2))
+				values[id]=target if id=="body" or not manual_expression else lerpf(float(values[id]),target,1.-exp(-mix_delta/3.2))
 				if lost_since.has(id) and clock-float(lost_since[id])>=6.:values[id]=.35
 		apply_volumes()
 	player.volume_linear=0. if music.muted else .8*minf(1.,clock/.8)
@@ -166,6 +180,7 @@ func set_expression(flow:float,craft:float)->void:
 	expression=next
 
 func set_paused(value:bool)->void:
+	sequence.pause_changed(paused)
 	paused=value
 	if active:player.stream_paused=value
 
@@ -173,7 +188,8 @@ func seek(seconds:float)->bool:
 	if not active or not is_finite(seconds):return false
 	var end:float=float(prepared.manifest.frames)/44100.
 	music.attention.clear();music.attention.last_sculpt_sec=-INF
-	player.play(clampf(seconds,0.,maxf(0.,end-.05)));player.stream_paused=paused;return true
+	mix_cursor=clampf(seconds,0.,maxf(0.,end-.05))
+	player.play(mix_cursor);player.stream_paused=paused;return true
 
 func stop()->void:
 	if retired:return

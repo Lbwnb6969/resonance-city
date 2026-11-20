@@ -67,6 +67,7 @@ func step(delta:float)->void:
 	music._prune_plucks()
 func _dispatch(category:String,payload:Dictionary)->bool:
 	if category!="pluck_arp":return false
+	if payload.has("life_actor") and host.quiet_audition():return false
 	var music:Node=host.music;var played:bool=music._play_queued_house(payload)
 	if played and payload.get("world_kind","house")=="house" and music._pluck_player!=null:
 		var player:AudioStreamPlayer=music._pluck_player;var note:Dictionary=player.stream.get_meta("candidate_harmony",{})

@@ -1567,6 +1567,15 @@
       }
     },
     "current_construction_spec": {
+      "latest_music_density_preferences": {
+        "name": "隔离音乐偏好和同曲分轨对照",
+        "scope": "v2隔离试听，正式默认待听评",
+        "checks": 33,
+        "seconds": 14.364,
+        "measured_clip_samples": 0,
+        "action": "F1安静保留背景与主动拨弦，原生Undo/Redo不换流；曲尾从自动改固定后用原播放器重复原曲。",
+        "full_run": "验证记录/PlayTest/music_density_preferences_20261120"
+      },
       "document": "文档/54_V7_最终施工改造总案.md",
       "source": "文档/来源/20261029_resonance_city_v7_审阅原稿.md",
       "source_sha256": "38f8cc6f003e86cc908b174a9f36add1765ca81cf2dfa43877608b41737d3232",

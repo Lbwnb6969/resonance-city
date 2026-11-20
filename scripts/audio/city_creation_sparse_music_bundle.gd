@@ -29,6 +29,17 @@ static func read_data(path:String,data:Dictionary)->Dictionary:
 	return {"ok":true,"stream":synced,"ids":ids,"fallback":false,"manifest":data,"signature":FileAccess.get_sha256(path),"timeline":Harmony.authored_timeline(data,frames)}
 static func initial(packet:Dictionary,id:String)->float:
 	return (1. if id=="background" else 0.) if packet.manifest.schema==SCHEMA else (1. if id=="core" else .35)
+static func live_mode(host:Node)->bool:
+	return host.active and host.prepared.manifest.schema==SCHEMA and not host.has_meta("candidate_record_owner")
+static func compatible_preferences(host:Node,prefs:Dictionary)->bool:
+	if prefs==host.preferences:return true
+	if not live_mode(host) or prefs.size()!=host.preferences.size():return false
+	# The first switch to fixed writes the default style into a previously empty field.
+	var style:String=prefs.get("style","")
+	var opened_style:String=host.preferences.get("style","")
+	var default_styles:=["","pastoral_breeze"]
+	var same_style:=style==opened_style or (style in default_styles and opened_style in default_styles)
+	return same_style and prefs.get("seed")==host.preferences.get("seed")
 static func control(row:Dictionary)->String:
 	return str(row.get("control","enclosure" if row.id=="body" else "flow" if row.id=="motion" else "craft"))
 static func context(host:Node,row:Dictionary)->Dictionary:
@@ -38,9 +49,15 @@ static func context(host:Node,row:Dictionary)->Dictionary:
 	if name in ["flow","craft"]:
 		return {"value":host.expression.get(name,0.)} if host.manual_expression else host.color_states.get(name,{})
 	return {}
-static func step(host:Node,_warmth:Dictionary)->void:
+static func step(host:Node,mix_delta:float,quiet:bool=false)->void:
+	var target:=Vector2.ZERO
+	if quiet or host.audition_mix==1:target.x=1.
+	elif host.audition_mix==2:target.y=1.
+	host.audition_weights=host.audition_weights.move_toward(target,mix_delta/.65)
+	var weights:Vector2=host.audition_weights
+	var spatial_weight:=1.-weights.x-weights.y
 	for row:Dictionary in host.prepared.manifest.layers:
 		var id:String=row.id
 		if id=="background":host.values[id]=1.;continue
 		var influence:float=float(context(host,row).get("value",0.))
-		host.values[id]=float(row.automatic_max)*clampf(influence,0.,1.)
+		host.values[id]=float(row.automatic_max)*clampf(influence*spatial_weight+weights.y,0.,1.)

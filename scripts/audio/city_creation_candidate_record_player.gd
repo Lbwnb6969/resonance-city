@@ -4,7 +4,7 @@ const Record=preload("res://scripts/audio/city_creation_candidate_record.gd")
 var recorded_mix:Dictionary={}
 var ended:=false
 func _ready()->void:
-	city_id=music._pluck_city.get_instance_id();city_epoch=music._pluck_city._wish_epoch;preferences=JSON.stringify(music._pluck_city.creative_settings.music)
+	city_id=music._pluck_city.get_instance_id();city_epoch=music._pluck_city._wish_epoch;preferences=music_preferences().duplicate()
 	cues.setup(self);var value:=recorded_mix.duplicate(true)
 	worker=Thread.new();worker.start(func():return Record.prepare(value))
 func activate()->void:

@@ -32,6 +32,7 @@ func run()->void:
 	observe.step(a,0.,0,false);check(observe.established=="pastoral" and observe.reason().is_empty(),"first actual context seeds an era without startup silence")
 	observe.step(b,2.,0,false);check(observe.established==a and observe.reason()=="era_observation","two-second clockwork sweep does not replace established era")
 	observe.step(a,.1,0,false);check(observe.established==a and observe.observed==0. and observe.reason().is_empty(),"return to established era cancels transient sweep")
+	observe.step(b,10.,0,false);check(observe.established==a and observe.observed==0.,"slow frame arriving at a different era cannot credit the previous view")
 	observe.step(b,5.9,0,false);check(observe.established==a,"sub-six-second candidate remains unadopted")
 	observe.step(b,.11,0,false);check(observe.established==b and observe.reason().is_empty(),"six-second actual house-era candidate establishes")
 	observe.step(a,2.,1,false);check(observe.reason()=="construction" and observe.observed==0.,"discrete public edit serial resets observation")
@@ -40,11 +41,23 @@ func run()->void:
 	observe.step(a,6.,1,false);check(observe.established==a,"post-edit stable interval establishes actual new era")
 	for i in range(20):observe.step(b,1.,1,true)
 	check(observe.established==a and observe.observed==0. and observe.reason()=="construction","continuous dragging cannot accrue observation")
-	var seq:=Sequence.new();seq.owner=host;seq.enabled=true;host.spatial_facts={"era":a};seq.step(.1)
-	host.spatial_facts={"era":b};seq.step(2.);host.paused=true;var elapsed:float=seq.era_observation.elapsed;var seen:float=seq.era_observation.observed
-	seq.step(20.);check(seq.era_observation.elapsed==elapsed and seq.era_observation.observed==seen and seq.era_observation.established==a,"actual sequence pause freezes independent scheduling clock")
-	host.paused=false;seq.step(4.1);check(seq.era_observation.established==b,"actual sequence resume completes remaining era observation")
-	seq.finish();music.attention.dragging=true;seq.step(4.);check(seq.breathing and seq.worker==null and seq.remaining==0. and seq.wait_reason()=="construction","actual finish keeps nature and starts no preparation while dragging")
+	observe.step(b,12.,1,false)
+	check(observe.established==a and observe.observed==0. and observe.reason()=="construction","cancelled drag starts idle from the first observed release")
+	var seq:=Sequence.new();seq.owner=host;seq.enabled=true;host.spatial_facts={"era":a};seq.step(1_000_000)
+	host.spatial_facts={"era":b};seq.step(1_350_000);seq.step(3_350_000)
+	seq.pause_changed(false,3_350_000);host.paused=true
+	var elapsed:float=seq.era_observation.elapsed;var seen:float=seq.era_observation.observed
+	seq.step(23_350_000);check(elapsed==2.35 and seen==2. and seq.era_observation.elapsed==elapsed and seq.era_observation.observed==seen and seq.era_observation.established==a,"actual sequence uses wall time and pause freezes both observations")
+	seq.pause_changed(true,43_350_000);host.paused=false
+	seq.step(47_450_000);check(seq.era_observation.established==b and is_equal_approx(seq.era_observation.observed,6.1),"resume completes the remaining observation without crediting an unsampled paused interval")
+	seq.finish(47_500_000);music.attention.dragging=true
+	var end_usec:=seq.ended_usec
+	seq.step(end_usec+1_200_000)
+	check(is_equal_approx(seq.remaining,1.8),"short simulation delta still counts real active breath time")
+	host.paused=true;seq.step(end_usec+6_200_000)
+	check(is_equal_approx(seq.remaining,1.8) and is_equal_approx(seq.breath_clock,1.2),"paused wall time never counts toward breath")
+	host.paused=false;seq.step(end_usec+8_200_000)
+	check(seq.breathing and seq.worker==null and seq.remaining==0. and seq.wait_reason()=="construction","expired real timer still defers preparation while dragging")
 	city.creative_settings.music.mode="fixed";seq.era_observation.last_edit=-INF;seq.era_observation.candidate=a
 	check(seq.wait_reason().is_empty(),"explicit fixed repeat ignores camera-era observation")
 	city.creative_settings.music.mode="auto";check(var_to_bytes(city.snapshot())==original,"scheduling does not change author data or brush")

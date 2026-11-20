@@ -1,6 +1,8 @@
 extends Node
 ## Installed only by the isolated construction launcher; never a default music policy.
 const Player=preload("res://scripts/audio/city_creation_game_music_player.gd")
+const Sparse=preload("res://scripts/audio/city_creation_sparse_music_bundle.gd")
+const MIX_LABELS=["配器：随空间", "配器：仅背景", "配器：展开分轨"]
 var demo:Node3D
 var packs:Array=[]
 var picker:OptionButton
@@ -10,7 +12,9 @@ var pending_request:=false
 var play_button:Button
 var pause_button:Button
 var stop_button:Button
+var mix_button:Button
 var status:Label
+var current_track:Label
 var conductor:Node
 var background:Array=[]
 var background_pool:Array=[]
@@ -37,6 +41,11 @@ func install(owner:Node3D)->bool:
 			if not background_source_ids.has(row.source_id):background_source_ids.append(row.source_id)
 	var box:=VBoxContainer.new();box.name="MusicTrialControls";demo.ledger.scroll.get_child(0).add_child(box);demo.ledger.scroll.get_child(0).move_child(box,0)
 	status=Label.new();status.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART;status.text="隔离候选试听 · 技术通过 · 待听评";box.add_child(status)
+	current_track=Label.new()
+	current_track.name="MusicTrialCurrentTrack"
+	current_track.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	current_track.hide()
+	box.add_child(current_track)
 	picker=OptionButton.new();picker.name="MusicTrialPicker";picker.clip_text=true;picker.fit_to_longest_item=false;picker.custom_minimum_size.x=220;box.add_child(picker)
 	for row:Dictionary in packs:picker.add_item(("仅手选 · " if not row.get("automatic_candidate",true) else "")+("背景候选 · " if row.source_id in background_source_ids else "")+str(row.name).get_basename())
 	for i in range(packs.size()):
@@ -46,13 +55,18 @@ func install(owner:Node3D)->bool:
 	play_button=demo._button("试听所选",start_selected);buttons.add_child(play_button)
 	pause_button=demo._button("暂停",toggle_pause);buttons.add_child(pause_button)
 	stop_button=demo._button("结束试听",stop);buttons.add_child(stop_button)
+	mix_button=demo._button(MIX_LABELS[0],cycle_mix)
+	mix_button.tooltip_text="保持同一播放位置，对照空间配器、纯背景和按候选音量上限展开的分轨"
+	mix_button.hide()
+	box.add_child(mix_button)
 	demo.set_meta("music_trial",self);return true
 func start_background()->void:
 	if demo.edit_pending() or demo.gallery.busy or demo.music._loading:return
 	var affinity=preload("res://scripts/audio/city_creation_music_affinity.gd").new();affinity.refresh(demo.state)
 	var weights:Dictionary=affinity.sample(demo.music._listener_focus,float(demo.music.acoustic.zoom)).weights
 	var fit=preload("res://scripts/audio/city_creation_music_era_fit.gd")
-	var choice:Dictionary=preload("res://scripts/audio/city_creation_background_candidate.gd").select(packs,fit.read(),fit.city_era(demo.state,weights))
+	var scene:=preload("res://scripts/audio/city_creation_music_scene.gd").at(demo.state,demo.music._listener_focus,demo.music.acoustic.zoom)
+	var choice:Dictionary=preload("res://scripts/audio/city_creation_background_candidate.gd").select(packs,fit.read(),fit.city_era(demo.state,weights),scene)
 	if choice.is_empty():stop();status.text="当前时代暂无背景候选 · 保留自然声";return
 	picker.select(choice.index);start_selected()
 func start_selected()->void:
@@ -80,14 +94,41 @@ func _is_sparse_background(row:Dictionary)->bool:
 	return data is Dictionary and data.get("schema") == "city_sparse_music_v2" and data.get("automatic_candidate",true)
 func toggle_pause()->void:
 	if is_instance_valid(conductor):conductor.set_paused(not conductor.paused)
+
+func can_compare_mix()->bool:
+	return is_instance_valid(conductor) and conductor.active and not conductor.sequence.breathing and conductor.prepared.manifest.schema==Sparse.SCHEMA and conductor.prepared.ids.size()>1
+
+func cycle_mix()->void:
+	if can_compare_mix() and not conductor.paused and not conductor.quiet_audition():
+		conductor.audition_mix=(conductor.audition_mix+1)%MIX_LABELS.size()
+
 func stop()->void:
 	request_serial+=1;pending_request=false
 	if is_instance_valid(conductor):conductor.stop()
 	conductor=null
+
+func _current_caption()->String:
+	if not is_instance_valid(conductor) or not conductor.active:return ""
+	var title:String=conductor.prepared.manifest.name
+	if conductor.sequence.breathing:
+		return "留白已暂停 · 播完「%s」"%title if conductor.paused else "曲尾留白 · 播完「%s」"%title
+	var phase:="已暂停" if conductor.paused else "已静音" if demo.music.muted else "正在试听"
+	return "%s「%s」"%[phase,title]
+
 func _process(_delta:float)->void:
 	if status==null:return
 	var present:=is_instance_valid(conductor)
+	var caption:=_current_caption()
+	if current_track.text!=caption:
+		current_track.text=caption
+		current_track.visible=not caption.is_empty()
 	pause_button.disabled=not present;stop_button.disabled=not present and not pending_request
 	play_button.disabled=pending_request or (present and conductor.worker!=null)
 	background_button.disabled=play_button.disabled or demo.edit_pending() or demo.gallery.busy or demo.music._loading
 	pause_button.text="继续" if present and conductor.paused else "暂停"
+	var comparing:=can_compare_mix()
+	mix_button.visible=comparing
+	if comparing:
+		var quiet:bool=conductor.quiet_audition()
+		mix_button.disabled=conductor.paused or quiet
+		mix_button.text="配器：安静" if quiet else MIX_LABELS[conductor.audition_mix]
