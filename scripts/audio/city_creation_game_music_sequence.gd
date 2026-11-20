@@ -56,8 +56,12 @@ func select_next()->Dictionary:
 	var current:String=owner.prepared.manifest.source_id
 	if not play_counts.has(current):play_counts[current]=1
 	if fixed_order():
+		var same_source:Dictionary={}
 		for row:Dictionary in rows:
-			if row.source_id==owner.prepared.manifest.source_id and row.get("bundle_schema","city_adaptive_music_v1")==owner.prepared.manifest.get("schema","city_adaptive_music_v1"):return row
+			if row.source_id!=current or row.get("bundle_schema","city_adaptive_music_v1")!=owner.prepared.manifest.get("schema","city_adaptive_music_v1"):continue
+			if row.get("manifest_sha256","") == owner.prepared.get("signature",""):return row
+			if same_source.is_empty():same_source=row
+		if not same_source.is_empty():return same_source
 	selected_era=era_observation.established if not era_observation.established.is_empty() else str(owner.spatial_facts.get("era",""))
 	var suitable:Array=EraFit.eligible(rows,era_fit,selected_era).filter(func(row):return row.get("bundle_schema","city_adaptive_music_v1")==owner.prepared.manifest.get("schema","city_adaptive_music_v1") and row.get("automatic_candidate",true))
 	if suitable.any(func(row):return not str(row.get("scene","")).is_empty()):

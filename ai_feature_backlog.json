@@ -1567,6 +1567,14 @@
       }
     },
     "current_construction_spec": {
+      "latest_rendered_candidate_entry": {
+        "name": "新渲染分轨直接进入隔离L",
+        "scope": "明确启动参数预选本地分轨包，手选播放和收藏",
+        "release_live": 15,
+        "fixed_cpu": 24,
+        "pointer": "GitHub现用目录无临时候选，启动过程未修改",
+        "limits": "测试分轨原件留本地，正式采用与听感待验"
+      },
       "latest_music_density_preferences": {
         "name": "隔离音乐偏好和同曲分轨对照",
         "scope": "v2隔离试听，正式默认待听评",

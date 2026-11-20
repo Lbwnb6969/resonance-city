@@ -7,11 +7,13 @@ static func digest(value:Variant)->bool:
 	for c:String in value:
 		if c not in "0123456789abcdef":return false
 	return true
+static func manifest_path_valid(path:Variant)->bool:
+	return path is String and path.begins_with(ROOT) and path.ends_with("/bundle.json") and not path.contains("..") and not path.contains("\\") and not path.substr(6).contains(":")
+
 static func valid(value:Variant)->bool:
 	if not value is Dictionary or value.size()!=12 or value.get("version")!=2:return false
 	if value.get("bundle_schema") not in ["city_adaptive_music_v1","city_sparse_music_v2"] or not digest(value.get("source_id")) or not digest(value.get("manifest_sha256")):return false
-	var path:Variant=value.get("manifest")
-	if not path is String or not path.begins_with(ROOT) or not path.ends_with("/bundle.json") or path.contains("..") or path.contains("\\") or path.substr(6).contains(":"):return false
+	if not manifest_path_valid(value.get("manifest")):return false
 	if not number(value.get("frames")) or value.frames!=floorf(value.frames) or value.frames<=0.:return false
 	if not number(value.get("position")) or value.position<0. or value.position>float(value.frames)/44100.:return false
 	if not number(value.get("master_gain")) or value.master_gain<0. or value.master_gain>1.:return false

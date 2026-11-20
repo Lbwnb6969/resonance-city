@@ -19,6 +19,7 @@ var affinity:=Affinity.new()
 var envelope:=Envelope.new()
 var music:Node
 var manifest_path:=""
+var expected_signature:=""
 var worker:Thread
 var prepared:Dictionary={}
 var saved:Dictionary={}
@@ -45,12 +46,12 @@ var spatial_facts:Dictionary={}
 var envelope_state:Dictionary={}
 var player:AudioStreamPlayer
 
-static func request(owner:Node,path:String)->Dictionary:
+static func request(owner:Node,path:String,signature:String="")->Dictionary:
 	var imported:Node=owner.get_node_or_null("AuthoredScore")
 	if imported!=null and imported.worker!=null or owner.has_meta("authored_score_ready"):return {"ok":false,"reason":"music_context_busy"}
 	if owner._loading or owner._pluck_city==null or owner.concert_active or owner.phonograph.active or owner.phonograph.candidate_player!=null or owner.has_meta("authored_score") or owner.get_node_or_null("LyriaSpatialPreview")!=null or owner.get_node_or_null("GameMusicPlayer")!=null:return {"ok":false,"reason":"music_context_busy"}
 	var node=load("res://scripts/audio/city_creation_game_music_player.gd").new()
-	node.name="GameMusicPlayer";node.music=owner;node.manifest_path=path;owner.add_child(node)
+	node.name="GameMusicPlayer";node.music=owner;node.manifest_path=path;node.expected_signature=signature;owner.add_child(node)
 	return {"ok":true,"status":"preparing","node":node}
 
 func _ready()->void:
@@ -124,7 +125,9 @@ func _process(delta:float)->void:
 	if worker!=null:
 		if worker.is_alive():return
 		prepared=worker.wait_to_finish();worker=null
-		if cancelled or not prepared.get("ok",false) or not valid_context() or music._loading or music.concert_active or music.phonograph.active or music.has_meta("authored_score"):stop();return
+		if cancelled or not valid_context() or music._loading or music.concert_active or music.phonograph.active or music.has_meta("authored_score"):stop();return
+		if not prepared.get("ok",false):music.set_meta("game_music_error",str(prepared.get("reason","candidate_unavailable")));stop();return
+		if not expected_signature.is_empty() and prepared.signature!=expected_signature:music.set_meta("game_music_error","candidate_signature_changed");stop();return
 		if prepared.manifest.kind!="music":music.set_meta("game_music_error","dedicated_ambience_or_note_pipeline_required");stop();return
 		activate()
 	if not active:return

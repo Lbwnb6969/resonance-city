@@ -13,8 +13,11 @@ func ready_city()->void:
 func run()->void:
 	if not OS.get_cmdline_user_args().has("--isolated-session"):push_error("Launch with --isolated-session");quit(1);return
 	out="res://验证记录/PlayTest/music_trial_"+Time.get_datetime_string_from_system().replace(":","-")
+	var local_candidate:=""
 	for arg:String in OS.get_cmdline_user_args():
 		if arg.begins_with("--out-dir="):out=arg.trim_prefix("--out-dir=")
+		if arg.begins_with("--candidate="):local_candidate=arg.trim_prefix("--candidate=")
+	if "--candidate=" in OS.get_cmdline_user_args():push_error("Specify a local music bundle after --candidate=");quit(1);return
 	if not out.begins_with("res://验证记录/") or DirAccess.dir_exists_absolute(out):push_error("new isolated output directory required");quit(1);return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out));root.size=Vector2i(1440,900)
 	demo=Scene.instantiate();demo.persistence=false;demo.start_empty=true;demo.collection_directory=out+"/works";root.add_child(demo);await ready_city()
@@ -23,8 +26,9 @@ func run()->void:
 		if not built.ok:push_error("Integrated city construction failed");quit(1);return
 		await demo.gallery._open_chosen({"ok":true,"id":"integrated_city","title":"四时代河湾","world":built.city.snapshot(),"view":{"focus":[0.,.8,4.],"zoom":72.,"yaw":.25,"pitch":.8,"evening":false,"light_phase":0}});await ready_city()
 	trial=Trial.new();demo.add_child(trial)
-	if not trial.install(demo):push_error("Current candidate catalog unavailable");quit(1);return
-	trial.start_background();demo.ledger.open_panel();print("MUSIC_TRIAL_READY works=",ProjectSettings.globalize_path(demo.collection_directory))
+	if not trial.install(demo,local_candidate):push_error("候选目录或指定分轨包无法读取");quit(1);return
+	if local_candidate.is_empty():trial.start_background()
+	demo.ledger.open_panel();print("MUSIC_TRIAL_READY works=",ProjectSettings.globalize_path(demo.collection_directory))
 	if OS.get_cmdline_user_args().has("--verify-trial"):await verify()
 func click(control:Control)->void:
 	var at:=control.get_global_rect().get_center()

@@ -43,6 +43,9 @@ func run()->void:
 	host.prepared.manifest.schema="city_sparse_music_v2"
 	sequence.rows.append({"source_id":"past_a","fit":[0.,0.,0.],"bundle_schema":"city_sparse_music_v2"})
 	check(sequence.select_next().get("bundle_schema","")=="city_sparse_music_v2","fixed same source cannot fall from sparse v2 to complete v1")
+	host.prepared.signature="selected_render"
+	sequence.rows.append({"source_id":"past_a","fit":[0.,0.,0.],"bundle_schema":"city_sparse_music_v2","manifest_sha256":"selected_render"})
+	check(sequence.select_next().get("manifest_sha256","")=="selected_render","fixed mode keeps the exact current render when the same source was registered twice")
 	city.creative_settings.music.mode="auto";check(var_to_bytes(city.snapshot())==original,"selection itself leaves city author state intact")
 	var editorial:=Fit.read();check(not editorial.is_empty() and not editorial.values().has("modern") and not editorial.values().has("mixed_reserve"),"real editorial review normalizes modern and excludes unknown reserves")
 	var report:={"ok":failures.is_empty(),"checks":checks,"failures":failures,"seconds":(Time.get_ticks_msec()-began)/1000.,"editorial_rows":editorial.size()}

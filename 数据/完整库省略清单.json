@@ -433,6 +433,7 @@
     "scripts/audio/city_creation_internal_score.gd.uid",
     "scripts/audio/city_creation_life_sparkle.gd",
     "scripts/audio/city_creation_life_sparkle.gd.uid",
+    "scripts/audio/city_creation_local_music_candidate.gd",
     "scripts/audio/city_creation_long_form.gd",
     "scripts/audio/city_creation_long_form.gd.uid",
     "scripts/audio/city_creation_lyria_bundle.gd",
@@ -460,6 +461,7 @@
     "scripts/audio/city_creation_music_experience.gd",
     "scripts/audio/city_creation_music_experience.gd.uid",
     "scripts/audio/city_creation_music_scene.gd",
+    "scripts/audio/city_creation_music_scene.gd.uid",
     "scripts/audio/city_creation_music_sequence_fit.gd",
     "scripts/audio/city_creation_music_sequence_fit.gd.uid",
     "scripts/audio/city_creation_octave_dyad.gd",
@@ -3490,6 +3492,34 @@
     "资源/音乐/轻量音色库说明.md"
   ],
   "omitted": {
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_direct_trial/background.wav": [
+      19701804,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_direct_trial/background.wav.import": [
+      562,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_direct_trial/body.wav": [
+      19701804,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_direct_trial/body.wav.import": [
+      543,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_direct_trial/bundle.json": [
+      8629,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_direct_trial/motion.wav": [
+      19701804,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_direct_trial/motion.wav.import": [
+      549,
+      "user_local_music_original_or_derivative"
+    ],
     "数据/音乐资产/游戏音乐包/20261106_remaining_v2/9db4e5b95c1f9656/background.wav": [
       24215084,
       "user_local_music_original_or_derivative"

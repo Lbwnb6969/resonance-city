@@ -2,6 +2,7 @@ extends Node
 ## Installed only by the isolated construction launcher; never a default music policy.
 const Player=preload("res://scripts/audio/city_creation_game_music_player.gd")
 const Sparse=preload("res://scripts/audio/city_creation_sparse_music_bundle.gd")
+const Local=preload("res://scripts/audio/city_creation_local_music_candidate.gd")
 const MIX_LABELS=["配器：随空间", "配器：仅背景", "配器：展开分轨"]
 var demo:Node3D
 var packs:Array=[]
@@ -9,6 +10,7 @@ var picker:OptionButton
 var background_button:Button
 var request_serial:=0
 var pending_request:=false
+var awaiting_playback:=false
 var play_button:Button
 var pause_button:Button
 var stop_button:Button
@@ -19,20 +21,19 @@ var conductor:Node
 var background:Array=[]
 var background_pool:Array=[]
 var background_source_ids:Array=[]
-func install(owner:Node3D)->bool:
+func install(owner:Node3D,local_path:String="")->bool:
 	demo=owner
 	var pointer:Variant=JSON.parse_string(FileAccess.get_file_as_string("res://数据/音乐资产/active_game_music.json"))
-	if not pointer is Dictionary or FileAccess.get_sha256(pointer.catalog)!=pointer.catalog_sha256:return false
-	var catalog:Dictionary=JSON.parse_string(FileAccess.get_file_as_string(pointer.catalog))
-	var sparse:Dictionary=pointer.get("sparse_trial",{})
-	if not sparse.is_empty() and FileAccess.get_sha256(sparse.catalog)==sparse.catalog_sha256:
-		var extra:Dictionary=JSON.parse_string(FileAccess.get_file_as_string(sparse.catalog))
-		catalog.packs.append_array(extra.packs)
-	for row:Dictionary in catalog.packs:
-		if row.kind=="music":packs.append(row)
+	if not pointer is Dictionary:pointer={}
+	var local:=Local.row(local_path) if not local_path.is_empty() else {}
+	if not local_path.is_empty() and local.is_empty():return false
+	for row:Variant in Local.catalog(pointer)+Local.catalog(pointer.get("sparse_trial",{})):
+		if row is Dictionary and row.get("kind")=="music" and row.get("manifest")!=local_path:packs.append(row)
+	if not local.is_empty():packs.append(local)
 	if packs.is_empty():return false
 	var background_ids:Array=pointer.get("trial_background",{}).get("source_ids",[])
 	for row:Dictionary in packs:
+		if row.get("session_candidate",false):continue
 		if row.source_id in background_ids:
 			background.append(row)
 			background_source_ids.append(row.source_id)
@@ -47,9 +48,12 @@ func install(owner:Node3D)->bool:
 	current_track.hide()
 	box.add_child(current_track)
 	picker=OptionButton.new();picker.name="MusicTrialPicker";picker.clip_text=true;picker.fit_to_longest_item=false;picker.custom_minimum_size.x=220;box.add_child(picker)
-	for row:Dictionary in packs:picker.add_item(("仅手选 · " if not row.get("automatic_candidate",true) else "")+("背景候选 · " if row.source_id in background_source_ids else "")+str(row.name).get_basename())
+	for row:Dictionary in packs:picker.add_item(("仅手选 · " if not row.get("automatic_candidate",true) else "")+("背景候选 · " if not row.get("session_candidate",false) and row.source_id in background_source_ids else "")+str(row.name).get_basename())
 	for i in range(packs.size()):
 		if packs[i].source_id==pointer.get("trial_background",{}).get("first_source_id",""):picker.select(i)
+	if not local.is_empty():
+		picker.select(packs.size()-1)
+		status.text="本地候选已载入 · 点「试听所选」"
 	background_button=demo._button("试听时代背景",start_background);box.add_child(background_button)
 	var buttons:=HBoxContainer.new();box.add_child(buttons)
 	play_button=demo._button("试听所选",start_selected);buttons.add_child(play_button)
@@ -71,15 +75,18 @@ func start_background()->void:
 	picker.select(choice.index);start_selected()
 func start_selected()->void:
 	var row:Dictionary=packs[picker.selected];var city:int=demo.state.get_instance_id();var epoch:int=demo.state._wish_epoch
-	stop();var serial:int=request_serial;pending_request=true;status.text="隔离候选试听 · 技术通过 · 待听评"
+	if FileAccess.get_sha256(row.manifest)!=row.manifest_sha256:status.text="候选文件与目录签名不符";return
+	stop();var serial:int=request_serial;pending_request=true;status.text="正在准备候选分轨…"
 	while demo.music.get_node_or_null("GameMusicPlayer")!=null:await get_tree().process_frame
 	if request_serial!=serial:return
 	pending_request=false
 	if demo.state.get_instance_id()!=city or demo.state._wish_epoch!=epoch:return
 	if FileAccess.get_sha256(row.manifest)!=row.manifest_sha256:status.text="候选文件与目录签名不符";return
-	var ticket:Dictionary=Player.request(demo.music,row.manifest)
+	if demo.music.has_meta("game_music_error"):demo.music.remove_meta("game_music_error")
+	var ticket:Dictionary=Player.request(demo.music,row.manifest,row.manifest_sha256)
 	if not ticket.ok:status.text="当前音乐正在使用，请结束留声机或其他试听";return
 	conductor=ticket.node
+	awaiting_playback=true
 	var legacy_background:bool=background.has(row)
 	var sparse_background:bool=background_pool.has(row)
 	var is_background:bool=legacy_background or sparse_background
@@ -103,7 +110,8 @@ func cycle_mix()->void:
 		conductor.audition_mix=(conductor.audition_mix+1)%MIX_LABELS.size()
 
 func stop()->void:
-	request_serial+=1;pending_request=false
+	if status!=null and (pending_request or awaiting_playback):status.text="试听已取消"
+	request_serial+=1;pending_request=false;awaiting_playback=false
 	if is_instance_valid(conductor):conductor.stop()
 	conductor=null
 
@@ -118,6 +126,14 @@ func _current_caption()->String:
 func _process(_delta:float)->void:
 	if status==null:return
 	var present:=is_instance_valid(conductor)
+	if awaiting_playback:
+		if not present:
+			awaiting_playback=false
+			status.text="候选无法播放 · 请检查分轨文件和签名" if demo.music.has_meta("game_music_error") else "候选准备已结束"
+			if demo.music.has_meta("game_music_error"):demo.music.remove_meta("game_music_error")
+		elif conductor.active:
+			awaiting_playback=false
+			status.text="隔离候选试听 · 技术通过 · 待听评"
 	var caption:=_current_caption()
 	if current_track.text!=caption:
 		current_track.text=caption
