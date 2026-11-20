@@ -2,6 +2,7 @@ extends RefCounted
 ## Explicit v2: independent background plus optional same-source voices; no full-mix fallback.
 const SCHEMA="city_sparse_music_v2"
 const Wave=preload("res://scripts/audio/city_creation_lyria_bundle.gd")
+const Harmony=preload("res://scripts/audio/city_creation_game_music_harmony.gd")
 static func read_data(path:String,data:Dictionary)->Dictionary:
 	var frames:=int(data.get("frames",0));var rows:Array=data.get("layers",[])
 	if frames<=0 or data.get("sample_rate")!=44100 or data.get("channels")!=2 or data.get("operations",{}).get("loop_enabled",true):return {"ok":false,"reason":"invalid_sparse_timeline"}
@@ -25,7 +26,7 @@ static func read_data(path:String,data:Dictionary)->Dictionary:
 	if ids[0]!="background" or lead_count>1:return {"ok":false,"reason":"invalid_sparse_roles"}
 	var synced:=AudioStreamSynchronized.new();synced.stream_count=streams.size()
 	for i in range(streams.size()):synced.set_sync_stream(i,streams[i]);synced.set_sync_stream_volume(i,0. if i==0 else -INF)
-	return {"ok":true,"stream":synced,"ids":ids,"fallback":false,"manifest":data,"signature":FileAccess.get_sha256(path),"timeline":{}}
+	return {"ok":true,"stream":synced,"ids":ids,"fallback":false,"manifest":data,"signature":FileAccess.get_sha256(path),"timeline":Harmony.authored_timeline(data,frames)}
 static func initial(packet:Dictionary,id:String)->float:
 	return (1. if id=="background" else 0.) if packet.manifest.schema==SCHEMA else (1. if id=="core" else .35)
 static func control(row:Dictionary)->String:

@@ -1,0 +1,77 @@
+{
+  "schema": "city_adaptive_music_v1",
+  "source_id": "1e19b421b76c9722dbd55fb6abc676cae5eceba7794bc1822a82ced1a122f544",
+  "name": "Mediterranean Olive Grove Soundscape [20261103].mp3",
+  "kind": "ambience_pending_loop_and_listening",
+  "kind_evidence": "filename intent; human confirmation pending",
+  "frames": 7339392,
+  "sample_rate": 44100,
+  "channels": 2,
+  "full_mix": {
+    "path": "res://数据/音乐资产/制作批次/lyria35_instruments/20261103_v1/mediterranean_olive_grove_soundscape/stems/full_mix.wav",
+    "sha256": "02ac01403e2f3a42e33f0468d3bfa78bab9029ddb7f43bbc4041d5e9d8f89e71",
+    "rms": 0.0984618291258812,
+    "rms_relative_to_master_db": 0.0,
+    "peak": 0.4999999701976776,
+    "role": "unassigned"
+  },
+  "common_gain": 1.0,
+  "source_group": "coarse_six",
+  "group_selection": "minimum measured reconstruction error; not a listening preference",
+  "layers": [
+    {
+      "id": "core",
+      "path": "res://数据/音乐资产/游戏音乐包/20261103_v1/1e19b421b76c9722/core.wav",
+      "sha256": "02ac01403e2f3a42e33f0468d3bfa78bab9029ddb7f43bbc4041d5e9d8f89e71",
+      "min_gain": 1.0,
+      "max_gain": 1.0
+    }
+  ],
+  "descriptors": {},
+  "color_depth_scale": 1.0,
+  "presets": {
+    "original": {
+      "core": 1.0
+    },
+    "open": {
+      "core": 1.0
+    },
+    "courtyard": {
+      "core": 1.0
+    },
+    "flowing": {
+      "core": 1.0
+    },
+    "handcrafted": {
+      "core": 1.0
+    }
+  },
+  "controls": {
+    "warm": "body",
+    "flow": "motion",
+    "craft": "detail"
+  },
+  "timeline": {
+    "path": "res://数据/音乐资产/游戏音乐包/20261103_v1/1e19b421b76c9722/timeline.json",
+    "sha256": "499ec4a88d7ffbf647bd91608780592e7b7e2c32917fe61f18bf3679f4461dea"
+  },
+  "operations": {
+    "gain_slew_seconds": 3.2,
+    "source_loss_tail_seconds": 6.0,
+    "same_source_only": true,
+    "shared_clock_required": true,
+    "pitch_shift_allowed": false,
+    "time_stretch_allowed": false,
+    "automatic_cuts_allowed": false,
+    "loop_enabled": false
+  },
+  "evidence": {
+    "full_endpoint_max_error": 0.0,
+    "quantization_limit": 6.103515625e-05,
+    "all_gain_combinations_peak_bound": 0.499969482421875,
+    "maximum_reduction_rms_ratio_bound": 0.0,
+    "semantic_roles_confirmed": false
+  },
+  "runtime_ready": false,
+  "listening_approved": false
+}

@@ -1358,6 +1358,7 @@
     "scripts/world/city_creation_activity_surface.gd",
     "scripts/world/city_creation_activity_surface.gd.uid",
     "scripts/world/city_creation_alpine_deck_plan.gd",
+    "scripts/world/city_creation_alpine_deck_plan.gd.uid",
     "scripts/world/city_creation_alpine_plan.gd",
     "scripts/world/city_creation_alpine_plan.gd.uid",
     "scripts/world/city_creation_amphitheater_plan.gd",
@@ -1637,6 +1638,7 @@
     "scripts/world/city_creation_prototype_role_seed.gd",
     "scripts/world/city_creation_prototype_role_seed.gd.uid",
     "scripts/world/city_creation_public_ghat_access.gd",
+    "scripts/world/city_creation_public_ghat_access.gd.uid",
     "scripts/world/city_creation_public_shore_route.gd",
     "scripts/world/city_creation_public_shore_route.gd.uid",
     "scripts/world/city_creation_public_space_obstacles.gd",
@@ -2871,6 +2873,7 @@
     "tools/collect_creation_audio_profile.gd",
     "tools/compact_open_design_reference.py",
     "tools/compare_creation_reference_music.py",
+    "tools/compose_doorstep_breeze.py",
     "tools/create_concert_relay_example.gd",
     "tools/create_courtyard_example.gd",
     "tools/create_district_reply_example.gd",
@@ -3253,6 +3256,14 @@
     "数据/音乐资产/游戏音乐包/20261103_harmony_v1/f47617e77233fb47/timeline.json",
     "数据/音乐资产/游戏音乐包/20261103_harmony_v1/fc6dd428265f6f13/bundle.json",
     "数据/音乐资产/游戏音乐包/20261103_harmony_v1/fc6dd428265f6f13/timeline.json",
+    "数据/音乐资产/游戏音乐包/20261103_v1/1e19b421b76c9722/bundle.json",
+    "数据/音乐资产/游戏音乐包/20261103_v1/1e19b421b76c9722/timeline.json",
+    "数据/音乐资产/游戏音乐包/20261103_v1/41eb46deae028be4/bundle.json",
+    "数据/音乐资产/游戏音乐包/20261103_v1/41eb46deae028be4/timeline.json",
+    "数据/音乐资产/游戏音乐包/20261103_v1/be35cfacbc0666a1/bundle.json",
+    "数据/音乐资产/游戏音乐包/20261103_v1/be35cfacbc0666a1/timeline.json",
+    "数据/音乐资产/游戏音乐包/20261103_v1/c4a650192f8d52c0/bundle.json",
+    "数据/音乐资产/游戏音乐包/20261103_v1/c4a650192f8d52c0/timeline.json",
     "数据/高地河湾样例.json",
     "文档/37_双库同步与云端施工.md",
     "文档/43_自由创作政策与版本化存档.md",
@@ -3478,6 +3489,42 @@
     "资源/音乐/轻量音色库说明.md"
   ],
   "omitted": {
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_score_v3/bundle.json": [
+      8579,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_score_v3/trial_catalog.json": [
+      14773,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_v2/background.wav": [
+      19701804,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_v2/background.wav.import": [
+      552,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_v2/body.wav": [
+      19701804,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_v2/body.wav.import": [
+      534,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_v2/bundle.json": [
+      3630,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_v2/motion.wav": [
+      19701804,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_v2/motion.wav.import": [
+      539,
+      "user_local_music_original_or_derivative"
+    ],
     "参考资料/Tiny-Glade逆向成品-v2/evidence/reconstruction_grass2/draw_reference_verification.json": [
       447,
       "reference_bulk_data_or_media_local_original"
@@ -282450,16 +282497,8 @@
       5406,
       "user_local_music_original_or_derivative"
     ],
-    "数据/音乐资产/游戏音乐包/20261103_v1/1e19b421b76c9722/bundle.json": [
-      2391,
-      "user_local_music_original_or_derivative"
-    ],
     "数据/音乐资产/游戏音乐包/20261103_v1/1e19b421b76c9722/core.wav": [
       29357612,
-      "user_local_music_original_or_derivative"
-    ],
-    "数据/音乐资产/游戏音乐包/20261103_v1/1e19b421b76c9722/timeline.json": [
-      5815,
       "user_local_music_original_or_derivative"
     ],
     "数据/音乐资产/游戏音乐包/20261103_v1/200d0c73687ac128/body.wav": [
@@ -282534,16 +282573,8 @@
       5077,
       "user_local_music_original_or_derivative"
     ],
-    "数据/音乐资产/游戏音乐包/20261103_v1/41eb46deae028be4/bundle.json": [
-      2360,
-      "user_local_music_original_or_derivative"
-    ],
     "数据/音乐资产/游戏音乐包/20261103_v1/41eb46deae028be4/core.wav": [
       32094764,
-      "user_local_music_original_or_derivative"
-    ],
-    "数据/音乐资产/游戏音乐包/20261103_v1/41eb46deae028be4/timeline.json": [
-      6313,
       "user_local_music_original_or_derivative"
     ],
     "数据/音乐资产/游戏音乐包/20261103_v1/553cf9787956e896/body.wav": [
@@ -283062,16 +283093,8 @@
       5432,
       "user_local_music_original_or_derivative"
     ],
-    "数据/音乐资产/游戏音乐包/20261103_v1/be35cfacbc0666a1/bundle.json": [
-      2376,
-      "user_local_music_original_or_derivative"
-    ],
     "数据/音乐资产/游戏音乐包/20261103_v1/be35cfacbc0666a1/core.wav": [
       17584172,
-      "user_local_music_original_or_derivative"
-    ],
-    "数据/音乐资产/游戏音乐包/20261103_v1/be35cfacbc0666a1/timeline.json": [
-      3966,
       "user_local_music_original_or_derivative"
     ],
     "数据/音乐资产/游戏音乐包/20261103_v1/c194a9a9d01b186e/body.wav": [
@@ -283098,16 +283121,8 @@
       5319,
       "user_local_music_original_or_derivative"
     ],
-    "数据/音乐资产/游戏音乐包/20261103_v1/c4a650192f8d52c0/bundle.json": [
-      2368,
-      "user_local_music_original_or_derivative"
-    ],
     "数据/音乐资产/游戏音乐包/20261103_v1/c4a650192f8d52c0/core.wav": [
       10192940,
-      "user_local_music_original_or_derivative"
-    ],
-    "数据/音乐资产/游戏音乐包/20261103_v1/c4a650192f8d52c0/timeline.json": [
-      2657,
       "user_local_music_original_or_derivative"
     ],
     "数据/音乐资产/游戏音乐包/20261103_v1/c8dfc3fb53e4c719/body.wav": [

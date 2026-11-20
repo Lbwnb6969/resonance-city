@@ -1,0 +1,77 @@
+{
+  "schema": "city_adaptive_music_v1",
+  "source_id": "c4a650192f8d52c0b35e72add7d4ba5a60cbc2e83a9349451398e23ba965de7d",
+  "name": "Soothing Brook Field Recording [20261103].mp3",
+  "kind": "ambience_pending_loop_and_listening",
+  "kind_evidence": "filename intent; human confirmation pending",
+  "frames": 2548224,
+  "sample_rate": 44100,
+  "channels": 2,
+  "full_mix": {
+    "path": "res://数据/音乐资产/制作批次/lyria35_instruments/20261103_v1/soothing_brook_field_recording/stems/full_mix.wav",
+    "sha256": "94d7b71229952d5c4068e81d0198bc0b4e6a6682e9b95141bdcc1585bc4a020b",
+    "rms": 0.09674157202243805,
+    "rms_relative_to_master_db": 0.0,
+    "peak": 0.5,
+    "role": "unassigned"
+  },
+  "common_gain": 1.0,
+  "source_group": "woodwind_plus_remaining_six",
+  "group_selection": "minimum measured reconstruction error; not a listening preference",
+  "layers": [
+    {
+      "id": "core",
+      "path": "res://数据/音乐资产/游戏音乐包/20261103_v1/c4a650192f8d52c0/core.wav",
+      "sha256": "94d7b71229952d5c4068e81d0198bc0b4e6a6682e9b95141bdcc1585bc4a020b",
+      "min_gain": 1.0,
+      "max_gain": 1.0
+    }
+  ],
+  "descriptors": {},
+  "color_depth_scale": 1.0,
+  "presets": {
+    "original": {
+      "core": 1.0
+    },
+    "open": {
+      "core": 1.0
+    },
+    "courtyard": {
+      "core": 1.0
+    },
+    "flowing": {
+      "core": 1.0
+    },
+    "handcrafted": {
+      "core": 1.0
+    }
+  },
+  "controls": {
+    "warm": "body",
+    "flow": "motion",
+    "craft": "detail"
+  },
+  "timeline": {
+    "path": "res://数据/音乐资产/游戏音乐包/20261103_v1/c4a650192f8d52c0/timeline.json",
+    "sha256": "595cd2d0f51d5f6f11bb3ce73c4a8c29de7a2e5eb9d631e33fac0f1b427e0fb9"
+  },
+  "operations": {
+    "gain_slew_seconds": 3.2,
+    "source_loss_tail_seconds": 6.0,
+    "same_source_only": true,
+    "shared_clock_required": true,
+    "pitch_shift_allowed": false,
+    "time_stretch_allowed": false,
+    "automatic_cuts_allowed": false,
+    "loop_enabled": false
+  },
+  "evidence": {
+    "full_endpoint_max_error": 0.0,
+    "quantization_limit": 6.103515625e-05,
+    "all_gain_combinations_peak_bound": 0.5,
+    "maximum_reduction_rms_ratio_bound": 0.0,
+    "semantic_roles_confirmed": false
+  },
+  "runtime_ready": false,
+  "listening_approved": false
+}

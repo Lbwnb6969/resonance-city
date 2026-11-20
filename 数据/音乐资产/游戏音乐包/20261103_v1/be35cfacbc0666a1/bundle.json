@@ -1,0 +1,77 @@
+{
+  "schema": "city_adaptive_music_v1",
+  "source_id": "be35cfacbc0666a140f6d06f25eea110a0298365999ac5958e53bccd8bcd5be0",
+  "name": "Acoustic Instrument Sampling Session [20261103].mp3",
+  "kind": "note_study_pending_pitch_and_cuts",
+  "kind_evidence": "filename intent; human confirmation pending",
+  "frames": 4396032,
+  "sample_rate": 44100,
+  "channels": 2,
+  "full_mix": {
+    "path": "res://数据/音乐资产/制作批次/lyria35_instruments/20261103_v1/acoustic_instrument_sampling_session/stems/full_mix.wav",
+    "sha256": "4c6e8f478daaa05d46dee1f88f7d2f4d856d3f199e45321a73ac969ecced12d3",
+    "rms": 0.09826167672872543,
+    "rms_relative_to_master_db": 0.0,
+    "peak": 0.4999999701976776,
+    "role": "unassigned"
+  },
+  "common_gain": 1.0,
+  "source_group": "coarse_six",
+  "group_selection": "minimum measured reconstruction error; not a listening preference",
+  "layers": [
+    {
+      "id": "core",
+      "path": "res://数据/音乐资产/游戏音乐包/20261103_v1/be35cfacbc0666a1/core.wav",
+      "sha256": "4c6e8f478daaa05d46dee1f88f7d2f4d856d3f199e45321a73ac969ecced12d3",
+      "min_gain": 1.0,
+      "max_gain": 1.0
+    }
+  ],
+  "descriptors": {},
+  "color_depth_scale": 1.0,
+  "presets": {
+    "original": {
+      "core": 1.0
+    },
+    "open": {
+      "core": 1.0
+    },
+    "courtyard": {
+      "core": 1.0
+    },
+    "flowing": {
+      "core": 1.0
+    },
+    "handcrafted": {
+      "core": 1.0
+    }
+  },
+  "controls": {
+    "warm": "body",
+    "flow": "motion",
+    "craft": "detail"
+  },
+  "timeline": {
+    "path": "res://数据/音乐资产/游戏音乐包/20261103_v1/be35cfacbc0666a1/timeline.json",
+    "sha256": "f5828805520d48a207267798f87b490f3dcc874f249f5b9c17880fefa68417c1"
+  },
+  "operations": {
+    "gain_slew_seconds": 3.2,
+    "source_loss_tail_seconds": 6.0,
+    "same_source_only": true,
+    "shared_clock_required": true,
+    "pitch_shift_allowed": false,
+    "time_stretch_allowed": false,
+    "automatic_cuts_allowed": false,
+    "loop_enabled": false
+  },
+  "evidence": {
+    "full_endpoint_max_error": 0.0,
+    "quantization_limit": 6.103515625e-05,
+    "all_gain_combinations_peak_bound": 0.5,
+    "maximum_reduction_rms_ratio_bound": 0.0,
+    "semantic_roles_confirmed": false
+  },
+  "runtime_ready": false,
+  "listening_approved": false
+}

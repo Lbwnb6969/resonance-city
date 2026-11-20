@@ -8,3 +8,6 @@
 
 # User music prompt source hashes preserve exact source bytes.
 /数据/音乐制作/提示词来源/** -text -whitespace
+
+# The signed catalog, bundles and timelines use exact JSON bytes.
+/数据/音乐资产/游戏音乐包/**/*.json -text whitespace=cr-at-eol
