@@ -4,9 +4,11 @@ const Zones=preload("res://scripts/world/city_creation_functional_zones.gd")
 const Frame=preload("res://scripts/world/city_creation_house_frame.gd")
 const Context=preload("res://scripts/audio/city_creation_expression_context.gd")
 const Chamber=preload("res://scripts/audio/city_creation_chamber_context.gd")
+const Civic=preload("res://scripts/audio/city_creation_civic_response.gd")
 var signature:=0
 var city_id:=0
 var records:Dictionary={}
+var civic:Array=[]
 var rebuilds:=0
 static func key(city:RefCounted)->int:
 	return hash([city.houses,city.roads,city.waters,city.terrain_strokes,city.terrain_policy,city.districts,city.placed_landmarks])
@@ -19,7 +21,7 @@ static func needed(city:RefCounted)->bool:
 	return owner!=null and not owner.cancelled
 static func prepare(city:RefCounted)->Dictionary:
 	var model:RefCounted=load("res://scripts/audio/city_creation_expression_geometry.gd").new();model.refresh(city)
-	return {"signature":model.signature,"records":model.records}
+	return {"signature":model.signature,"records":model.records,"civic":model.civic}
 static func capture(city:RefCounted)->Dictionary:
 	if not ready(city):return {}
 	var fields:Dictionary={}
@@ -41,8 +43,9 @@ func refresh(city:RefCounted)->void:
 	if city_id==city.get_instance_id() and signature==next_key:return
 	city_id=city.get_instance_id();signature=next_key;rebuilds+=1;records={}
 	var prepared:Dictionary=city.get_meta("expression_geometry_prepared",{})
-	if prepared.get("signature",-1)==signature:records=prepared.records;return
+	if prepared.get("signature",-1)==signature and prepared.has("civic"):records=prepared.records;civic=prepared.civic;return
 	var spaces:Dictionary=city.functional_zones()
+	civic=Civic.collect(spaces)
 	var curves:Array=[]
 	for road:Dictionary in city.roads:curves.append({"id":road.id,"bins":Chamber.curves([road])})
 	for house:Dictionary in city.houses:

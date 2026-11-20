@@ -19,7 +19,8 @@ static func read_data(path:String,data:Dictionary)->Dictionary:
 		elif role=="unassigned":
 			if layer!=0 or cap!=0.:return {"ok":false,"reason":"unassigned_voice_enabled"}
 		elif role not in ["response","motion"] or layer not in [2,4]:return {"ok":false,"reason":"invalid_sparse_role"}
-		if control(row) not in ["none","enclosure","flow","craft","highland"]:return {"ok":false,"reason":"invalid_sparse_control"}
+		if control(row) not in ["none","enclosure","flow","craft","highland","civic"]:return {"ok":false,"reason":"invalid_sparse_control"}
+		if control(row)=="civic" and (role!="response" or cap>.35):return {"ok":false,"reason":"invalid_civic_response"}
 		var stream:=Wave.wave(row,frames,44100)
 		if stream==null:return {"ok":false,"reason":"invalid_sparse_audio"}
 		ids.append(id);streams.append(stream)
@@ -46,7 +47,7 @@ static func context(host:Node,row:Dictionary)->Dictionary:
 	var name:=control(row)
 	if name=="enclosure":return host.envelope_state
 	if name=="highland":return host.contour_state
-	if name in ["flow","craft"]:
+	if name in ["flow","craft","civic"]:
 		return {"value":host.expression.get(name,0.)} if host.manual_expression else host.color_states.get(name,{})
 	return {}
 static func step(host:Node,mix_delta:float,quiet:bool=false)->void:

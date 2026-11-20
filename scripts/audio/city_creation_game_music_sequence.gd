@@ -45,7 +45,7 @@ func observe()->void:
 	history.append(Fit.sample(facts))
 	if history.size()>30:history.pop_front()
 func average()->Array:
-	var result:Array=[0.,0.,0.,0.]
+	var result:Array=[0.,0.,0.,0.,0.]
 	for sample:Array in history:
 		for i in range(sample.size()):result[i]+=float(sample[i])/history.size()
 	return result

@@ -1,5 +1,6 @@
 extends SceneTree
 const Fixture=preload("res://tools/fixtures/city_creation_space_contract_fixture.gd")
+const Civic=preload("res://tools/fixtures/city_creation_civic_contract_fixture.gd")
 const Geometry=preload("res://scripts/audio/city_creation_expression_geometry.gd")
 const Affinity=preload("res://scripts/audio/city_creation_music_affinity.gd")
 const Envelope=preload("res://scripts/audio/city_creation_affinity_envelope.gd")
@@ -42,6 +43,20 @@ func run()->void:
 		check(blocked.craft==0.,"landmark obstruction withdraws artisan front geometry")
 		check(artisan.undo().ok and sample(artisan,g).craft>=.55,"Undo landmark restores actual front geometry")
 		check(artisan.remove_house("h1").ok and sample(artisan,g).craft==0.,"removed artisan source withdraws craft")
+	for kind:String in ["ionic_stoa","label","high","wall"]:
+		var f:=Civic.build(kind,0.,false)
+		var civic:RefCounted=f.city
+		g.refresh(civic)
+		var entry:Dictionary=g.Civic.sample(g.civic,Civic.ORIGIN+Vector2(0,2.),16.)
+		check(f.ok and (entry.civic>.55 if kind=="ionic_stoa" else not entry.civic_sources.has("h1")),"civic input follows the actual usable front "+kind)
+		if kind!="ionic_stoa":continue
+		check(g.Civic.sample(g.civic,Vector2(12,8),16.).civic==0. and g.Civic.sample(g.civic,Civic.ORIGIN,48.).civic==0.,"distant travel and wide city view leave civic response quiet")
+		var copied:=Fixture.State.new()
+		check(copied.restore(civic.snapshot()).ok and Geometry.prepare(copied).civic==g.civic,"cold restore produces the same civic anchors")
+	var landmark_city:=Fixture.State.new();landmark_city.initialize_free()
+	var placed_civic:Dictionary=landmark_city.PlacedLandmarks.place(landmark_city,"civic" if landmark_city.PlacedLandmarks.SIZES.has("civic") else "courtyard",Fixture.ORIGIN)
+	g.refresh(landmark_city)
+	check(placed_civic.ok and g.Civic.sample(g.civic,Fixture.ORIGIN+Vector2(0,3.),16.).civic_sources==[placed_civic.landmark_id],"actual standalone landmark front works without house weights")
 	var e:=Envelope.new();var facts:={"city":1,"enclosure":.7225,"source_ids":["road"]};var packet:Dictionary={}
 	for i in range(100):packet=e.step(facts,i*.1,.1,false)
 	check(packet.value==0.,"continuous editing cannot start a color")

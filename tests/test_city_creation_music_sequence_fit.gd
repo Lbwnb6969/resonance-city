@@ -29,15 +29,15 @@ func run()->void:
 	check(seq.rows.size()==catalog.packs.size(),"all active combined catalog rows signed and read")
 	var vectors:Dictionary={}
 	for row:Dictionary in seq.rows:vectors[row.name]=row.fit
-	check(vectors.values().any(func(v):return v==[0.,0.,0.,1.]),"real highland response survives intake")
+	check(vectors.values().any(func(v):return v==[0.,0.,0.,1.,0.]),"real highland response survives intake")
 	for f:Dictionary in [{"era":"pastoral","values":[0.,0.,0.,0.],"code":"1-01"},{"era":"pastoral","values":[1.,0.,0.,0.],"code":"1-02"},{"era":"pastoral","values":[0.,1.,0.,0.],"code":"1-04"},{"era":"pastoral","values":[0.,0.,1.,0.],"code":"1-05"},{"era":"clockwork","values":[0.,0.,0.,1.],"code":"3-06"}]:
 		Brush.select(city,f.era);host.spatial_facts.era=Brush.current(city).era;seq.history=[f.values];var selected:=seq.select_next()
 		check(selected.name.begins_with(f.code) and selected.bundle_schema=="city_sparse_music_v2","actual catalog spatial selection "+f.code)
-	seq.history=[];host.spatial_facts={"enclosure":.25,"flow":.5,"craft":.75,"highland":{"value":.9}};seq.observe()
-	check(seq.average()==[.25,.5,.75,.9],"actual observe samples highland value alongside original facts")
-	host.clock=2.;host.spatial_facts={};seq.observe();check(seq.average()==[.125,.25,.375,.45],"absent facts count as open space rather than stale affinity")
+	seq.history=[];host.spatial_facts={"enclosure":.25,"flow":.5,"craft":.75,"highland":{"value":.9},"civic":.8};seq.observe()
+	check(seq.average()==[.25,.5,.75,.9,.8],"observation samples civic and highland separately")
+	host.clock=2.;host.spatial_facts={};seq.observe();check(seq.average()==[.125,.25,.375,.45,.4],"absent facts count as open space rather than stale affinity")
 	for i in range(3,40):host.clock=float(i);seq.observe()
-	check(seq.history.size()==30 and seq.average()==[0.,0.,0.,0.],"thirty-second history ages out old spatial context")
+	check(seq.history.size()==30 and seq.average()==[0.,0.,0.,0.,0.],"thirty-second history ages out old spatial context")
 	host.spatial_facts.era=Brush.current(city).era
 	seq.history=[[0.,0.,0.,1.]];var selected:=seq.select_next();host.prepared.manifest.source_id=selected.source_id
 	check(seq.select_next().source_id!=selected.source_id,"actual current source excluded before spatial ranking")
@@ -48,7 +48,8 @@ func run()->void:
 	var stale:Dictionary=catalog.packs[0].duplicate(true);stale.manifest_sha256="stale";seq.configure(host,[stale]);check(not seq.enabled,"changed manifest signature cannot produce a ranked candidate")
 	var legacy:=Fit.vector({"schema":"city_adaptive_music_v1","descriptors":{"body":{"features":{"low_band_fraction":.2}},"motion":{"features":{"positive_envelope_change":1.2}},"detail":{"features":{"active_fraction":.7}}}})
 	check(Vector3(legacy[0],legacy[1],legacy[2]).is_equal_approx(Vector3(.2,1.,.3)),"v1 statistical feature calculation preserved")
-	check(Fit.vector({"schema":"city_sparse_music_v2","layers":[{"id":"background","role":"background","automatic_max":1.,"control":"flow"},{"id":"detail","role":"unassigned","automatic_max":0.,"control":"craft"} ]})==[0.,0.,0.,0.],"background and disabled residual never invent response affinity")
+	check(Fit.vector({"schema":"city_sparse_music_v2","layers":[{"id":"background","role":"background","automatic_max":1.,"control":"flow"},{"id":"detail","role":"unassigned","automatic_max":0.,"control":"craft"} ]})==[0.,0.,0.,0.,0.],"background and disabled residual never invent response affinity")
+	check(Fit.vector({"schema":"city_sparse_music_v2","layers":[{"id":"detail","role":"response","automatic_max":.30,"control":"civic"}]})==[0.,0.,0.,0.,1.],"civic recording is distinguishable from craft and terrain")
 	Brush.select(city,"pastoral");check(var_to_bytes(city.snapshot())==snapshot,"read-only selection leaves author state intact")
 	# Actual catalog: constant scenery must not starve the rest of an era.
 	var coverage:Array=[]

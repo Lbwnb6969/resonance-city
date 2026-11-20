@@ -10,7 +10,7 @@ const Shorts=preload("res://scripts/audio/city_creation_game_music_shorts.gd")
 var sequence:=Sequence.new()
 var cues:=Shorts.new()
 var geometry:=ExpressionGeometry.new()
-var color_envelopes:={"flow":Envelope.new(),"craft":Envelope.new()}
+var color_envelopes:={"flow":Envelope.new(),"craft":Envelope.new(),"civic":Envelope.new()}
 var color_states:Dictionary={}
 var manual_expression:=false
 var last_edit:=-INF
@@ -116,6 +116,7 @@ func refresh_spatial()->void:
 	if facts.era.is_empty():facts.era=preload("res://scripts/world/city_creation_build_brush.gd").current(music._pluck_city).era
 	geometry.refresh(music._pluck_city)
 	spatial_facts=facts.merged(geometry.sample(facts.weights))
+	spatial_facts.merge(geometry.Civic.sample(geometry.civic,music._listener_focus,float(music.acoustic.zoom)))
 	spatial_facts=geometry.Context.merge_activity(spatial_facts,geometry.Context.activity(music,facts.weights))
 
 func _process(delta:float)->void:

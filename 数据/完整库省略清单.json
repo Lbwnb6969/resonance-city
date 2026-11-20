@@ -381,6 +381,7 @@
     "scripts/audio/city_creation_circular_canon.gd.uid",
     "scripts/audio/city_creation_civic_music.gd",
     "scripts/audio/city_creation_civic_music.gd.uid",
+    "scripts/audio/city_creation_civic_response.gd",
     "scripts/audio/city_creation_close_life_audio.gd",
     "scripts/audio/city_creation_close_life_audio.gd.uid",
     "scripts/audio/city_creation_cluster_choir.gd",

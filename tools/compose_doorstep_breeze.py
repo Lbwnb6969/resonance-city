@@ -34,8 +34,10 @@ FORM = (
 )
 
 
-def score():
+def score(forecourt_response=False):
     events = {'background': [], 'body': [], 'motion': []}
+    if forecourt_response:
+        events['detail'] = []
 
     def add(stem, bar, beat, duration, pitch, velocity):
         events[stem].append((bar * BEATS_PER_BAR + beat, duration, pitch, velocity))
@@ -59,6 +61,10 @@ def score():
             add('motion', bar, 1.42, .72, high - 12, 36)
             if bar in (5, 12, 20, 26, 30):
                 add('motion', bar, 2.20, .53, inner, 33)
+        if forecourt_response and bar in (2, 7, 8, 14, 15, 17, 23, 24, 27, 31, 34):
+            add('detail', bar, 2.04, .66, high, 39)
+            if bar in (8, 17, 24, 31):
+                add('detail', bar, 2.82, .98, root + 12, 35)
     return events
 
 
@@ -112,9 +118,9 @@ def write_wave(path, values):
     return {'path': local(path), 'sha256': sha(path)}
 
 
-def write_score(out):
+def write_score(out, forecourt_response=False):
     out.mkdir(parents=True, exist_ok=False)
-    notes = score()
+    notes = score(forecourt_response)
     length = len(FORM) * BEATS_PER_BAR + TAIL_BEATS
     score_path = out / 'score.json'
     document = {'title': '屋前的风', 'bpm': BPM, 'beats_per_bar': BEATS_PER_BAR,
@@ -126,7 +132,7 @@ def write_score(out):
     return score_path
 
 
-def render(out):
+def render(out, forecourt_response=False):
     import numpy as np
 
     from build_sparse_music_pilot import local, save, sha
@@ -136,7 +142,9 @@ def render(out):
         'body': ('VSCO-2-CE/CelloEnsSusVib-Quiet.sfz', 'response', 2, 'enclosure', .43, .83),
         'motion': ('SalamanderGrandPiano/Salamander Grand Piano V3.sfz', 'motion', 4, 'flow', .34, .77),
     }
-    score_path = write_score(out)
+    if forecourt_response:
+        instruments['detail'] = ('VSCO-2-CE/ClarinetSus.sfz', 'response', 2, 'civic', .30, .72)
+    score_path = write_score(out, forecourt_response)
     audio = {}
     provenance = {}
     for stem, (sfz, _role, _layer, _control, _cap, balance) in instruments.items():
@@ -171,6 +179,8 @@ def render(out):
         row = write_wave(out / (stem + '.wav'), quantized[stem])
         layers.append({**row, 'id': stem, 'source_id': source_id, 'role': role, 'layer': layer,
                        'control': control, 'automatic_max': cap})
+    if forecourt_response:
+        layers[-1]['label'] = '前场回应 · 单簧管'
     manifest = {
         'schema': 'city_sparse_music_v2', 'kind': 'music', 'era': 'pastoral', 'name': '屋前的风 · 原创分层',
         'source_id': source_id, 'frames': frames, 'sample_rate': RATE, 'channels': 2, 'common_gain': gain,
@@ -182,6 +192,8 @@ def render(out):
         'evidence': {'full_endpoint_max_error': 0., 'all_gain_combinations_peak_bound': actual_bound,
                      'background_opening_rms': float(np.sqrt(np.mean((quantized['background'][:RATE * 5] / 32768) ** 2)))},
     }
+    if forecourt_response:
+        manifest['name'] = '屋前的风 · 礼乐前场'
     save(out / 'bundle.json', manifest)
     print(f'{manifest["name"]}: {frames / RATE:.3f}s, peak bound {actual_bound:.4f}, source {source_id}')
 
@@ -189,9 +201,10 @@ def render(out):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, required=True)
-    parser.add_argument('--score-only', action='store_true', help='Write the score and three MIDI tracks without samples.')
+    parser.add_argument('--score-only', action='store_true', help='Write the score and MIDI tracks without samples.')
+    parser.add_argument('--forecourt-response', action='store_true', help='Include the sparse clarinet response.')
     args = parser.parse_args()
     if args.score_only:
-        print(write_score(args.out.resolve()))
+        print(write_score(args.out.resolve(), args.forecourt_response))
     else:
-        render(args.out.resolve())
+        render(args.out.resolve(), args.forecourt_response)
