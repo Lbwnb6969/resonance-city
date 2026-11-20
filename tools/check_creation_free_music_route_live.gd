@@ -1,6 +1,7 @@
 extends "res://tools/check_game_music_live.gd"
 const FreeRoute=preload("res://scripts/audio/city_creation_free_music_route.gd")
 const TrialControls=preload("res://scripts/ui/city_creation_music_trial.gd")
+const TrialCatalog=preload("res://scripts/audio/city_creation_local_music_candidate.gd")
 func no_old_long()->bool:
 	return demo.music._players.values().all(func(voice):return not voice.playing)
 func button_press(control:Control)->void:
@@ -22,22 +23,27 @@ func run()->void:
 	var old_clock:float=demo.music.CueGrid.transport_clock(demo.music);var nature:int=demo.ambience._forest_frames_pushed;await create_timer(.5).timeout
 	check(demo.music.CueGrid.transport_clock(demo.music)>old_clock and demo.music._playback_clock()==demo.music.CueGrid.transport_clock(demo.music),"input cue clock advances without reviving a silent concert transport")
 	check(demo.ambience.players.size()==2 and demo.ambience._forest_frames_pushed>nature,"existing two natural ambience voices keep feeding")
+	demo.focus=Vector3(-28,.8,-20);demo.zoom=18.;demo._update_camera();await process_frame
 	var record:=Span.start();var built:Dictionary=demo.state.add_house(Vector2(-28,-20));check(built.ok,"first isolated public authoring operation succeeds")
-	demo.focus=Vector3(-28,.8,-20);demo.zoom=18.;demo._update_camera();demo._after_edit(built,"house");await settle()
-	check(await wait_for(func():return demo.music._effects.any(func(p):return p.playing and p.stream.has_meta("unpitched_touch")),2000),"actual construction publishes a physical short through the existing effect pool")
+	demo._after_edit(built,"house")
+	check(demo.music._effects.any(func(p):return p.playing and p.stream.has_meta("unpitched_touch")),"actual construction publishes a physical short through the existing effect pool")
 	check(demo.music.get_meta("construction_last_note",{}).get("unpitched",false) and demo.music.get_meta("construction_last_note",{}).get("midi",0)==-1,"construction receipt describes the actual physical sound instead of an old fixed pitch")
 	for voice:AudioStreamPlayer in demo.music._effects:
 		if voice.playing and voice.stream.has_meta("unpitched_touch"):voice.stream.save_to_wav(OUT+"/physical_touch.wav");break
 	if demo.music._pluck_player!=null and demo.music._pluck_player.stream.has_meta("unpitched_touch"):
 		check(demo.music._pluck_active.get("unpitched",false) and demo.music._pluck_active.midi==-1 and demo.music._pluck_stream==demo.music._pluck_player.stream,"short voice attribution describes the actual unpitched PCM")
 		demo.music._pluck_player.stream.save_to_wav(OUT+"/physical_touch.wav")
+	await settle()
 	for i in range(1,6):
 		built=demo.state.add_house(Vector2(-28+i*3.6,-20));check(built.ok,"continuous building operation "+str(i));demo._after_edit(built,"house");await settle();check(no_old_long(),"continuous building does not layer old songs "+str(i))
 	var undone:Dictionary=demo.state.undo();check(undone.ok,"Undo real last house");demo._after_edit(undone,"history");await settle();check(no_old_long(),"Undo keeps natural background")
 	facts.free_pcm=Span.finish(record,OUT+"/free_build_Master.wav");check(facts.free_pcm.ok,"actual physical input and nature PCM is non-silent and unclipped")
 	demo.ledger.open_panel();await create_timer(.3).timeout;demo.ledger._last_refresh=-500;demo.ledger.refresh();check("自然底景 · 音乐留白" in demo.ledger.body.text and not "第1段 / 六段" in demo.ledger.body.text,"original L page honestly presents the current nature-only policy");await capture("free_nature_L");await key(KEY_ESCAPE)
 	var saved:Dictionary=demo.state.snapshot();check(demo.state.save_city(OUT+"/city.json").ok,"real city saves to this isolated works batch");var reader:=State.new();check(reader.load_city(OUT+"/city.json").ok and reader.snapshot()==saved,"music route writes no hidden city policy or schema data")
-	var trial:=TrialControls.new();demo.add_child(trial);check(trial.install(demo) and trial.background.size()==2 and trial.packs.size()==57,"existing L selector retains all 57 choices and two explicitly unapproved background-intent candidates")
+	var pointer:Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://数据/音乐资产/active_game_music.json"))
+	var expected:Array=(TrialCatalog.catalog(pointer)+TrialCatalog.catalog(pointer.get("sparse_trial",{}))).filter(func(row):return row.get("kind")=="music")
+	var trial:=TrialControls.new();demo.add_child(trial)
+	check(trial.install(demo) and trial.packs==expected and trial.background.size()==2,"L includes the signed music catalog and two pending legacy background-intent choices")
 	trial.start_selected();check(await wait_for(func():return is_instance_valid(trial.conductor) and trial.conductor.active,30000),"actual default isolated background-intent candidate prepares")
 	if not is_instance_valid(trial.conductor) or not trial.conductor.active:quit(1);return
 	var node:Node=trial.conductor;var first:String=node.prepared.manifest.source_id
@@ -47,13 +53,17 @@ func run()->void:
 	check(node.seek(float(node.prepared.manifest.frames)/44100.-.3),"seek to real full source ending")
 	check(await wait_for(func():return node.sequence.breathing,4000),"actual finished emits a natural breath")
 	check(no_old_long(),"complete-song gap contains no legacy long player")
-	check(await wait_for(func():return node.prepared.manifest.source_id!=first,12000),"natural full-song sequence selects the other background-intent candidate")
-	check(node.sequence.rows.any(func(row):return row.source_id==node.prepared.manifest.source_id),"simple trial never auto-selects outside its pending background pool")
-	demo.ledger.open_panel();await create_timer(.3).timeout;demo.ledger._last_refresh=-500;demo.ledger.refresh();check("背景候选 · 旋律存在感与留白待听评" in demo.ledger.body.text,"existing L labels fit as pending rather than pretending a removed melody");await capture("background_candidate_L")
+	check(await wait_for(func():return node.sequence.failed=="no_era_candidate",6000),"natural ending stays silent when neither legacy candidate fits this pastoral city")
+	check(node.sequence.worker==null and node.prepared.manifest.source_id==first,"a manual out-of-era start does not publish an unsuitable successor")
+	demo.ledger.open_panel();await create_timer(.3).timeout;demo.ledger._last_refresh=-500;demo.ledger.refresh();check("当前场景暂无适配候选 · 保留自然声" in demo.ledger.body.text,"L explains the natural gap caused by unavailable fit");await capture("background_candidate_L")
 	await button_press(trial.stop_button);await process_frame;check(no_old_long() and demo.music.get_node_or_null("GameMusicPlayer")==null,"actual End Trial button restores natural silence immediately")
 	await key(KEY_ESCAPE)
+	var prefs:Dictionary=demo.state.creative_settings.music.duplicate();prefs.mode="fixed";prefs.style="pastoral_breeze"
+	check(demo.state.CreationPolicy.set_preferences(demo.state,{"music":prefs}).ok,"explicit fixed mode can repeat the manually selected legacy source")
 	trial.start_selected();check(await wait_for(func():return is_instance_valid(trial.conductor) and trial.conductor.active,30000),"candidate restarts after an explicit stop");node=trial.conductor
-	check(node.seek(float(node.prepared.manifest.frames)/44100.-.2),"seek for real pending handoff cancellation");check(await wait_for(func():return node.sequence.breathing,4000),"real ending starts a background pending packet");facts.cancel_pending_worker=node.sequence.worker!=null
+	check(node.seek(float(node.prepared.manifest.frames)/44100.-.2),"seek for real pending handoff cancellation")
+	check(await wait_for(func():return node.sequence.breathing and (node.sequence.worker!=null or not node.sequence.ready.is_empty()),6000),"real ending prepares a fixed repeat")
+	facts.cancel_pending_worker=node.sequence.worker!=null
 	trial.stop();check(no_old_long() and demo.music.is_processing(),"stop releases shared voices and parent processing before pending IO completes");check(await wait_for(func():return demo.music.get_node_or_null("GameMusicPlayer")==null,5000),"cancelled pending packet retires without re-adopting a song")
 	var bad:Dictionary=GamePlayer.request(demo.music,OUT+"/missing_bundle.json");check(bad.ok,"invalid packet probe uses real asynchronous request path");check(await wait_for(func():return demo.music.get_node_or_null("GameMusicPlayer")==null,3000),"invalid packet releases without adoption");check(no_old_long(),"failed packet never falls back to old synthetic music")
 	var old_mix:={"version":1,"position":0.,"mode":-1,"theme_pan":0.,"concert_pan":0.,"tracks":{}}

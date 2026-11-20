@@ -9,6 +9,7 @@ const SceneFit=preload("res://scripts/audio/city_creation_music_scene.gd")
 var era_observation:=EraObservation.new()
 var era_fit:Dictionary={}
 var selected_era:=""
+var selected_scene:=""
 var owner:Node
 var rows:Array=[]
 var history:Array=[]
@@ -63,10 +64,10 @@ func select_next()->Dictionary:
 			if same_source.is_empty():same_source=row
 		if not same_source.is_empty():return same_source
 	selected_era=era_observation.established if not era_observation.established.is_empty() else str(owner.spatial_facts.get("era",""))
+	selected_scene=current_scene() if rows.any(func(row):return not str(row.get("scene","")).is_empty()) else ""
 	var suitable:Array=EraFit.eligible(rows,era_fit,selected_era).filter(func(row):return row.get("bundle_schema","city_adaptive_music_v1")==owner.prepared.manifest.get("schema","city_adaptive_music_v1") and row.get("automatic_candidate",true))
 	if suitable.any(func(row):return not str(row.get("scene","")).is_empty()):
-		var scene:=current_scene()
-		suitable=suitable.filter(func(row):return row.get("scene","") in ["",scene])
+		suitable=suitable.filter(func(row):return row.get("scene","") in ["",selected_scene])
 	if suitable.is_empty():return {}
 	var candidates:Array=suitable.filter(func(row):return row.source_id!=owner.prepared.manifest.source_id and not recent.has(row.source_id))
 	if candidates.is_empty():candidates=suitable.filter(func(row):return row.source_id!=owner.prepared.manifest.source_id)
@@ -131,8 +132,8 @@ func step(now_usec:int=-1)->void:
 	era_observation.step(str(owner.spatial_facts.get("era","")),era_delta,owner.music.attention.sculpt_serial,owner.music.attention.dragging)
 	if not breathing:return
 	if not wait_reason().is_empty():return
-	# Missing-era silence is transient; retry only after a new stable era.
-	if failed=="no_era_candidate" and selected_era!=era_observation.established:failed=""
+	# A scene-tagged library can become eligible without a change of era.
+	if failed=="no_era_candidate" and (selected_era!=era_observation.established or (rows.any(func(row):return not str(row.get("scene","")).is_empty()) and selected_scene!=current_scene())):failed=""
 	if not ready.is_empty() and not fixed_order():
 		var tag:=str(next_row.get("scene",""))
 		if selected_era!=era_observation.established or (not tag.is_empty() and tag!=current_scene()):ready={};next_row={}

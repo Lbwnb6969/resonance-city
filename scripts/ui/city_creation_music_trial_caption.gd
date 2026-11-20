@@ -8,7 +8,8 @@ static func lines(music:Node)->PackedStringArray:
 		return PackedStringArray(["留声机回放 · 保存的同源混音",Safe.safe(str(node.recorded_mix.name)),"曲目已结束 · 静候收针" if node.ended else "已静音" if music.muted else "按保存的分层回放 · 待听评"])
 	if node.sequence.breathing:
 		var status:="曲尾呼吸留白 · 自然声"
-		if not node.sequence.failed.is_empty():status="后续候选未准备好 · 保留自然声"
+		if node.sequence.failed=="no_era_candidate":status="当前场景暂无适配候选 · 保留自然声"
+		elif not node.sequence.failed.is_empty():status="后续候选未准备好 · 保留自然声"
 		elif node.paused:status="曲尾呼吸留白 · 已暂停"
 		elif node.sequence.wait_reason()=="construction":status="曲尾呼吸留白 · 营造中，保留自然声"
 		elif node.sequence.wait_reason()=="era_observation":status="曲尾呼吸留白 · 风貌观察中，保留自然声"

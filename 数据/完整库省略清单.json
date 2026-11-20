@@ -434,6 +434,7 @@
     "scripts/audio/city_creation_life_sparkle.gd",
     "scripts/audio/city_creation_life_sparkle.gd.uid",
     "scripts/audio/city_creation_local_music_candidate.gd",
+    "scripts/audio/city_creation_local_music_candidate.gd.uid",
     "scripts/audio/city_creation_long_form.gd",
     "scripts/audio/city_creation_long_form.gd.uid",
     "scripts/audio/city_creation_lyria_bundle.gd",
@@ -3518,6 +3519,30 @@
     ],
     "数据/音乐资产/游戏音乐包/20261120_doorstep_breeze_direct_trial/motion.wav.import": [
       549,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_scene_v2/first_home/background.wav": [
+      26155052,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_scene_v2/first_home/bundle.json": [
+      2971,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_scene_v2/first_home/detail.wav": [
+      26155052,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_scene_v2/sun_shower/background.wav": [
+      30564908,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_scene_v2/sun_shower/bundle.json": [
+      2959,
+      "user_local_music_original_or_derivative"
+    ],
+    "数据/音乐资产/游戏音乐包/20261120_scene_v2/sun_shower/detail.wav": [
+      30564908,
       "user_local_music_original_or_derivative"
     ],
     "数据/音乐资产/游戏音乐包/20261106_remaining_v2/9db4e5b95c1f9656/background.wav": [
