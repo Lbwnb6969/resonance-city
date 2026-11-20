@@ -42,9 +42,8 @@ func run()->void:
 	check(city.CreationPolicy.set_preferences(city,{"presentation":presentation}).ok,"public modern decoration toggle");network(city)
 	check(rows(city)==original,"decoration cannot create modern support")
 	var terrace:=Fixture.build("mismatch",0.,"terrace");network(terrace.city)
-	var door:Dictionary=terrace.city.house_entrances("h1")[0]
-	var deferred:=Access.assess(terrace.city,terrace.city.houses[0],door,door.at,terrace.city.roads[0])
-	check(deferred.kind=="existing_modern_deck" and deferred.scope=="unchanged","terrain-supported terrace deck explicitly deferred")
+	var unsupported:Dictionary=rows(terrace.city)[0]
+	check(not unsupported.eligibility.district and unsupported.eligibility.reason=="height_access_missing" and unsupported.evidence.rejected_entries.any(func(e):return e.height_access.kind=="modern_terrace_deck" and not e.height_access.ok),"real terrace cannot mask a mismatched street")
 	var out:="res://验证记录/M84/modern_entry_20261030/cpu"
 	for arg:String in OS.get_cmdline_user_args():
 		if arg.begins_with("--out-dir="):out=arg.trim_prefix("--out-dir=")

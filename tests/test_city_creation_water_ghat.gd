@@ -6,6 +6,7 @@ const Life=preload("res://scripts/world/city_creation_life.gd")
 const Bench=preload("res://scripts/world/city_creation_bench_visits.gd")
 static func fixture(yaw:float=0.)->Dictionary:
 	var city:=State.new();city.initialize_free();var origin:=Vector2(-28,-20);var axis:=Vector2.RIGHT.rotated(-yaw);var side:=Vector2.DOWN.rotated(-yaw)
+	city.terrain_policy=1 # Exercise the explicit upgrade from a pre-ghat free work.
 	var ok:bool=city.add_water([origin-side*4.,origin+side*4.] as Array[Vector2],4.,"pond").ok
 	var made:Dictionary=city.add_road([origin-axis*7.,origin-axis*2.8] as Array[Vector2],"path","none");ok=made.ok and ok
 	if not ok:print("GHAT_FIXTURE ",JSON.stringify(made))

@@ -6,9 +6,9 @@ const Roads=preload("res://scripts/world/city_creation_road_heights.gd")
 const EntryObstacles=preload("res://scripts/world/city_creation_entry_obstacles.gd")
 const HALF_WIDTH:=.35
 const SPACING:=.04
-static func assess(city:RefCounted,house:Dictionary,entry:Dictionary,target:Vector2,road:Dictionary,surface:Callable,prepared_obstacles:Variant=null)->Dictionary:
+static func assess(city:RefCounted,house:Dictionary,entry:Dictionary,target:Vector2,road:Dictionary,surface:Callable,prepared_obstacles:Variant=null,start_offset:float=.18)->Dictionary:
 	var normal:=Frame.normal(entry)
-	var start:Vector2=entry.wall_at+normal*.18
+	var start:Vector2=entry.wall_at+normal*start_offset
 	var result:={"ok":false,"reason":"street_target_missing","half_width":HALF_WIDTH,"from":start,"entry_at":entry.at,"street_at":target,"source_ids":[house.id,entry.cell_id,road.id],"samples":0,"max_rise":0.,"max_grade":0.}
 	if city._water_stroke_distance(target,road.points)>float(road.width)*.5+.002:return diagnostic(result)
 	if (target-Vector2(entry.wall_at)).dot(normal)<.18:result.reason="street_behind_wall";return diagnostic(result)

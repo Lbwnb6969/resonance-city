@@ -1,5 +1,5 @@
 extends RefCounted
-const Frame=preload("res://scripts/world/city_creation_house_frame.gd")
+const Deck=preload("res://scripts/world/city_creation_alpine_deck_plan.gd")
 const Wall = preload("res://scripts/visual/city_creation_wall_material.gd")
 const Plan = preload("res://scripts/world/city_creation_alpine_plan.gd")
 const Pick = preload("res://scripts/visual/city_creation_roof_pick.gd")
@@ -29,7 +29,8 @@ static func facade(renderer, wall: Node3D, door: bool, p: Array, house: Dictiona
 	if door:
 		renderer._box(face,Vector3(.50,1.16,.045),Vector3(0,.72,.12),renderer._material(Color("526d60")))
 		renderer._box(face,Vector3(.025,.22,.06),Vector3(.17,.75,.16),wood)
-	if kind==2 and int(cell.level)==0 and direction==Plan.front(renderer.state,house): _deck(renderer,wall.get_parent(),house,cell,direction,wood,stone)
+	if kind==2 and int(cell.level)==0 and direction==Plan.front(renderer.state,house):
+		_deck(renderer,wall.get_parent(),house,cell,direction,door and not wall.get_meta("entrance",{}).get("active",false),wood,stone)
 	wall.set_meta("modern_glass",{"floor_to_ceiling":kind!=0,"alpine_kind":kind,"warm":true})
 
 static func roof(renderer, root: Node3D, house: Dictionary, p: Array, cell: Dictionary) -> Dictionary:
@@ -96,16 +97,15 @@ static func _prism(renderer, root: Node3D, top: Array, material: Material) -> vo
 		var mesh: MeshInstance3D=renderer._triangles(root,face,material.albedo_color); mesh.material_override=material;preload("res://scripts/visual/city_creation_slate_finish.gd").apply(mesh)
 		if root.get_meta("street_detail_roof",false):mesh.set_meta("creation_detail_roof",true);mesh.set_meta("creation_detail_cell",str(root.get_meta("street_detail_cell")))
 
-static func _deck(renderer, parent: Node3D, house: Dictionary, cell: Dictionary, front: Vector2i, wood: Material, stone: Material) -> void:
+static func _deck(renderer, parent: Node3D, house: Dictionary, cell: Dictionary, front: Vector2i, door:bool, wood: Material, stone: Material) -> void:
+	var plan:=Deck.build(renderer.state,house,Vector2(cell.x,cell.z),front,door)
+	if plan.is_empty():return
 	var deck := Node3D.new(); deck.name="TerrainSupportedDeck"; parent.add_child(deck); deck.rotation.y=atan2(float(front.x),float(front.y))
-	var samples: Array=[]
-	for x: float in [-.76,0.,.76]:
-		var at: Vector3=deck.to_global(Vector3(x,0,.97))
-		var ground: float=renderer.state.raw_terrain_height(Frame.point(house,Vector2(at.x,at.z)))-float(house.get("base_y",0.))
-		if ground>.10: deck.free(); return
-		samples.append({"x":x,"ground":ground})
-	renderer._box(deck,Vector3(1.92,.10,.58),Vector3(0,.16,.75),wood)
-	for sample: Dictionary in samples:
+	renderer._box(deck,Deck.DECK_SIZE,Deck.DECK_CENTER,wood)
+	if plan.tread:
+		var tread:MeshInstance3D=renderer._box(deck,plan.tread_size,plan.tread_center,stone)
+		tread.name="TerraceGroundTread"
+	for sample: Dictionary in plan.supports:
 		var bottom: float=sample.ground-.06; var height: float=.11-bottom
 		renderer._box(deck,Vector3(.14,height,.16),Vector3(sample.x,(.11+bottom)*.5,.97),stone)
-	deck.set_meta("support_samples",samples)
+	deck.set_meta("support_samples",plan.supports)

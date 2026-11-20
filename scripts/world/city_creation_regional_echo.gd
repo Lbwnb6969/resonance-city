@@ -45,7 +45,13 @@ static func prepare(city:RefCounted,network:RefCounted)->Dictionary:
 				var component:String=network.component_of[start]
 				if not road_components[id].has(component):road_components[id].append(component)
 	for values:Array in road_components.values():values.sort()
-	return {"nodes":nodes,"links":links,"house_components":house_components,"road_components":road_components,"road_spans":road_spans}
+	var prepared:={"nodes":nodes,"links":links,"house_components":house_components,"road_components":road_components,"road_spans":road_spans}
+	if not network.ghat_seats.is_empty():
+		var landings:Array=[]
+		for seat:Dictionary in network.ghat_seats.values():
+			landings.append({"plan":seat.ghat,"component":network.component_of[seat.id]})
+		prepared.stone_landings=landings
+	return prepared
 
 static func _region(city:RefCounted,house:Dictionary,tree_bins:Dictionary)->String:
 	if float(house.get("base_y",0.))>=1.2:return "highland"

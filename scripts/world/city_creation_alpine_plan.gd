@@ -15,6 +15,7 @@ static func front(city, house: Dictionary) -> Vector2i:
 	if kind_for(house)==Kind.STEPPED_TERRACE_HOUSE:
 		for side: Vector2i in [Vector2i.LEFT,Vector2i.RIGHT,Vector2i.UP,Vector2i.DOWN]:
 			var sample := at+Vector2(side)*1.3
+			if city.CreationPolicy.is_free(city):sample=Frame.point(house,sample)
 			var distance := 10.
 			for road: Dictionary in city.roads:
 				for i in range(1,road.points.size()):

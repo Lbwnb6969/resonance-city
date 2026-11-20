@@ -56,4 +56,9 @@ static func derive(city:RefCounted,house:Dictionary,member:Dictionary,faces:Arra
 					entries.append(row)
 					for id:String in path.road_ids+face.water_ids+path.clearance_source_ids:
 						if not sources.has(id):sources.append(id)
+	if entries.is_empty():
+		for row:Dictionary in preload("res://scripts/world/city_creation_public_ghat_access.gd").entries(city,house,member.component,faces,starts,context):
+			entries.append(row)
+			for id:String in row.street_path.road_ids+row.water_ids+row.street_path.clearance_source_ids+[row.ghat_id]:
+				if not sources.has(id):sources.append(id)
 	return {"entries":entries,"rejected":rejected,"sources":sources}

@@ -48,7 +48,8 @@ func run()->void:
 	f=Fixture.build();check(f.city.set_house_era("h1","modern_eco").ok and f.city.set_house_architecture("h1","chalet").ok,"public supported modern facade variant");network(f.city)
 	check(rows(f.city)[0].eligibility.district and rows(f.city)[0].evidence.public_entries.all(func(e):return e.height_access.kind=="modern_ground_door" and e.height_access.ok),"aligned modern height implementation supplies measured shore support")
 	check(f.city.set_house_architecture("h1","terrace").ok,"public terrain-supported external deck variant");network(f.city)
-	check(not rows(f.city)[0].eligibility.district and rows(f.city)[0].eligibility.reason=="entry_support_unverified","unverified external deck never grants new shore qualification")
+	var terrace:Dictionary=rows(f.city)[0]
+	check(terrace.eligibility.district and terrace.evidence.public_entries.all(func(e):return e.height_access.kind=="modern_terrace_deck" and e.height_access.step_count==1 and e.height_access.corridor.ok),"dry ground tread and full deck approach qualify the real shore")
 	var blocked:=Fixture.build("wall");network(blocked.city);check(blocked.ok and not rows(blocked.city).any(func(s):return s.eligibility.district),"full real wall blocks all faces despite same nearby water")
 	check(blocked.city.remove_house("h2").ok,"remove actual intervening wall");network(blocked.city);check(rows(blocked.city)[0].eligibility.district,"wall removal restores unobstructed source")
 	check(blocked.city.undo().ok,"Undo intervening wall removal");network(blocked.city);check(not rows(blocked.city).any(func(s):return s.eligibility.district),"Undo blocks shore again")

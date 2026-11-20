@@ -1891,6 +1891,8 @@ func _house_geometry_fingerprint(house: Dictionary) -> int:
 	quality_visual.prepare_geometry(self,house,frontages,arcades)
 	craft.prepare_layout(self,house,frontages,arcades)
 	var fingerprint:int=hash([house.get("signature",""),state.AmphitheaterPlan.for_house(state,house),state.Signatures.wheel_plan(state,house) if house.get("signature","")=="watermill" else {},state.house_era(house),house.origin,house.cells,house.get("roof_pitch",{}),house.get("base_y",0.0),footings,highland.contact_plan(self,house,footings).signature,RoundTowerPlan.for_house(house,state.houses,state.roads),ConservatoryPlan.for_house(state,house),Clockwork.adjacency_signature(state,house),Modern.Plan.adjacency_signature(state,house),arcades,house.get("style","classic"),house.get("architecture",""),house.get("architecture_variant",{}),house.get("food_kind",""),preload("res://scripts/world/city_creation_organic_form.gd").geometry_key(state,house),preload("res://scripts/world/city_creation_house_hinge.gd").key(house),house.get("seed",0),house.get("role","residential"),frontages,preload("res://scripts/world/city_creation_upper_stoop.gd").entries(state,house),building_context.signature(str(house.id)),preload("res://scripts/visual/city_creation_dormer_sites.gd").foreign_signature(state,house),TerraceCanopy.choose(state.houses,house),preload("res://scripts/visual/city_creation_neoclassical.gd").corner_signature(state,house)])
+	var alpine_decks:=preload("res://scripts/world/city_creation_alpine_deck_plan.gd").signature(state,house)
+	if not alpine_decks.is_empty():fingerprint=hash([fingerprint,alpine_decks])
 	house_geometry_cache[id]={"dependency":dependency,"fingerprint":fingerprint}
 	return fingerprint
 

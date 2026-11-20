@@ -1571,7 +1571,36 @@
       "source": "文档/来源/20261029_resonance_city_v7_审阅原稿.md",
       "source_sha256": "38f8cc6f003e86cc908b174a9f36add1765ca81cf2dfa43877608b41737d3232",
       "adopted": "用户2026-10-29要求V7最终优化作为实际施工改造版本；不改历史完成状态。",
-      "next_step": "按模块导航建模与材质，定位临水土路迎镜侧的连续细白边，先区分铺面、路侧支撑与软路缘，再修实际来源，保持路网、拾取、旧作品与撤销。水面接缝与旧池外侧浅沙边已柔化；整体M84～M86仍待，仅本地施工。",
+      "next_step": "M84 亲水石埠及错层台宅公共入口已验收。按模块导航建模与材质，定位临水土路迎镜侧的连续细白边，先区分铺面、路侧支撑与软路缘，再修实际来源，保持路网、拾取、旧作品与撤销。水面接缝与旧池外侧浅沙边已柔化；整体M84～M86仍待，仅本地施工。",
+      "latest_public_ghat_approach": {
+        "chapter": "62 水渠、沿岸道路与水岸资格",
+        "evidence": "验证记录/PlayTest/waterfront_public_approach_20261120/ghat_live_release",
+        "cpu_checks": 62,
+        "native_checks": 29,
+        "native_seconds": 11.695,
+        "regressions": {
+          "legacy_free_ghat": 52,
+          "waterfront": 183,
+          "side_shore": 68,
+          "regional_echo": 36
+        },
+        "verified": "可测房门、全宽公共道路和已发布Life石埠干阶形成同一连通证明。水域并集边界与实际干阶同源。原生启用石埠、L、Undo/Redo、物理拾取和本地冷读一致。旧自由存档采用时仍升级33并留原件，当前47原位启用。",
+        "remaining": "现代退台屋平台、复杂水岸整验和集中听评。施工审计工具仍阻于既有结构化candidate字段，本轮实时远端读遇TLS中断，主规格原稿SHA一致。"
+      },
+      "latest_modern_terrace_approach": {
+        "chapter": "62 修路及水岸资格",
+        "evidence": "验证记录/PlayTest/modern_waterfront_terrace_20261120/live_release",
+        "cpu_checks": 41,
+        "native_checks": 21,
+        "native_seconds": 11.73,
+        "schemas": [
+          20,
+          47
+        ],
+        "verified_action": "原型册选择错层台宅，实际干踏与街面全宽接通，L标明退台入口。三个平台和三个新石踏的最终24个顶角、原生Undo/Redo、隔离冷读及坡差反例通过。",
+        "backup": "验证记录/PlayTest/modern_waterfront_terrace_20261120/local_backup/files.tsv",
+        "remaining": "沿用悬挑茶台及船坞用途。集中听评、正式采用与M84整轮验收待做。"
+      },
       "latest_shore_sediment_verification": {
         "evidence": "验证记录/PlayTest/shore_sediment_20261119",
         "native_baseline": {"checks": 12, "seconds": 10.966},
